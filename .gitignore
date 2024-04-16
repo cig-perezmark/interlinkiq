@@ -53,3 +53,5 @@ Product_Page/upload/
 TCPDF/
 PHPExcel/
 PHPMailer/
+
+webhooks.php

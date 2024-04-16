@@ -55,3 +55,13 @@ PHPExcel/
 PHPMailer/
 
 webhooks.php
+error.log
+
+database.php
+database_payroll.php
+database_pmp.php
+database_sanitation.php
+database_emp.php
+database_afia_forms.php
+database_forms.php
+database_iiq.php

@@ -1,0 +1,213 @@
+/*GENERAL*/
+.page-header.navbar .page-logo {
+	background: #fff;
+	display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.page-header.navbar .page-logo img { 
+	height: 60px;
+	width: 100%;
+	max-width: 150px;
+    object-fit: contain;
+}
+
+.bootstrap-growl.alert {
+	z-index: 99999 !important;
+}
+.error {
+	border-color: #e73d4a !important;
+	color: #e73d4a;
+}
+.modal .modal-body .error {
+	border-color: #e73d4a;
+	color: #e73d4a;
+}
+.modal .modal-body .list-unstyled {
+	margin-bottom: 0;
+	padding: 7px 0px;
+}
+.modal .modal-body .list-unstyled .list-items {
+	display: flex;
+    flex-flow: row-reverse;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.sweet-overlay {
+	z-index: 10400;
+}
+.sweet-alert {
+	z-index: 20000;
+}
+
+.profile-userpic img {
+	width: 230px;
+	height: 150px;
+	object-fit: contain;
+	border-radius: unset !important;
+}
+.profile-avatar img {
+	width: 39px;
+	height: 39px;
+	object-fit: cover;
+}
+
+.multiselect {
+	text-align: left;
+}
+.multiselect b {
+	float: right;
+	margin-top: 8px;
+}
+.multiselect-container>li>a>label {
+    margin: 0;
+    height: 100%;
+    cursor: pointer;
+    font-weight: 400;
+    padding: 3px 20px 3px 40px !important;
+}
+
+.mt-element-ribbon .ribbon {
+	margin-top: -8px !important;
+    margin-right: 0 !important;
+    padding: 2px !important;
+    width: 30px !important;
+}
+.mt-element-ribbon .ribbon .ribbon-sub:after {
+	border-left-width: 15px !important;
+    border-right-width: 15px !important;
+    border-bottom-width: 0.5em !important;
+    bottom: -0.5em;
+}
+
+
+/*MENU*/
+.nav-item-section a {
+	padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+    line-height: 1 !important;
+    min-height: auto !important;
+    text-shadow: 0px 0px 0px black !important;
+    color: #343434 !important;
+}
+.nav-item-section-trial a {
+	background: yellow !important;
+}
+.nav-item-section-module a {
+	background: orange !important;
+}
+/*@media (min-width: 992px) {*/
+/*    .page-sidebar {*/
+/*        width: 200px;*/
+/*        float: left;*/
+/*        position: relative;*/
+/*        margin-right: -100%;*/
+/*    }*/
+/*}*/
+.page-sidebar .page-sidebar-menu.page-sidebar-menu-compact>li>a>.title, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu.page-sidebar-menu-compact>li>a>.title {
+    display: unset;
+}
+
+
+/*LOGIN PAGES*/
+.login form .form-group span {
+	position: absolute;
+}
+.login-container {
+	display: flex;
+    align-items: center;
+}
+.login-container .login-content {
+	margin-top: unset !important;
+}
+.login-container>.login-content>.login-form .rem-password {
+	margin: 0;
+}
+@media only screen and (max-width: 1023px) {
+	.login-container {
+		flex-direction: column;
+	}
+}
+
+
+/*LOCKED SCREEN*/
+.lock-avatar {
+	width: 110px;
+	object-fit: cover;
+}
+
+
+/*DASHBOARD*/
+.panel-group {
+	margin-bottom: 0;
+}
+.accordion .panel-heading {
+	padding: 15px !important;
+}
+.accordion .panel-heading h4 a {
+	padding: 0 !important;
+}
+.accordion .panel-heading ul {
+	margin-bottom: 0;
+}
+.accordion .panel-body .mt-action .mt-action-details  p {
+	margin-top: 5px;
+}
+.accordion .panel-body .mt-action .mt-action-details  p {
+	margin-top: 5px;
+}
+.mt-action-icon a {
+    font-size: 25px;
+    color: #78E0E8;
+}
+
+
+/*JSTREE*/
+@media only screen and (min-width: 600px) {
+	#jstreeContainer {
+		overflow: auto;
+	    height: calc(100vh - 300px);
+	}
+}
+.jstree-default a { 
+    white-space:break-spaces !important;
+    height: auto; 
+}
+.jstree-anchor {
+    height: auto !important;
+    word-break: break-word;
+}
+.jstree-default li > ins { 
+    vertical-align:top; 
+}
+.jstree-leaf {
+    height: auto;
+}
+.jstree-leaf a{
+    height: auto !important;
+    word-break: break-word;
+}
+
+
+/*FANCYBOX*/
+.fancybox__container {
+	z-index: 9999999;
+}
+
+
+/* Header fixed to the top of the modal */
+.modal-header--sticky {
+	position: sticky;
+	top: 0;
+	background-color: inherit; /* [1] */
+	z-index: 1055; /* [2] */
+}
+
+/* Footer fixed to the bottom of the modal */
+.modal-footer--sticky {
+	position: sticky;
+	bottom: 0;
+	background-color: inherit; /* [1] */
+	z-index: 1055; /* [2] */
+}

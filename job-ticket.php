@@ -1,0 +1,344 @@
+<?php 
+    $title = "Job Ticket Tracker";
+    $site = "job-ticket";
+    $breadcrumbs = '';
+    $sub_breadcrumbs = '';
+
+    if ($sub_breadcrumbs) {
+        $breadcrumbs .= '<li><span>'. $sub_breadcrumbs .'</span><i class="fa fa-angle-right"></i></li>';
+    }
+    $breadcrumbs .= '<li><span>'. $title .'</span></li>';
+
+    include_once ('header.php'); 
+?>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="portlet light ">
+                                <div class="portlet-title tabbable-line">
+                                    <div class="caption">
+                                        <i class="icon-earphones-alt font-dark"></i>
+                                        <span class="caption-subject font-dark bold uppercase">Job Ticket Tracker</span>
+                                    </div>
+                                    <ul class="nav nav-tabs">
+                                        <li class="active">
+                                            <a href="#tab_actions_assigned" data-toggle="tab">List</a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_actions_completed" data-toggle="tab">Completed</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="portlet-body">
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="tab_actions_assigned">
+                                            <div class="table-scrollable">
+                                                <table class="table table-bordered table-hover" id="tableDataServicesAssigned">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ID#</th>
+                                                            <th>Category</th>
+                                                            <th>Service</th>
+                                                            <th>Contact Info</th>
+                                                            <th style="width: 135px;" class="text-center">Date Requested</th>
+                                                            <th style="width: 135px;" class="text-center">Desire Due Date</th>
+                                                            <th style="width: 135px;" class="text-center">Status</th>
+                                                            <th style="width: 135px;"></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php
+                                                            // $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0 AND user_id = $current_userID AND (assigned_to_id IS NULL OR assigned_to_id = '')" );
+                                                            if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 17 OR $current_userID == 185 OR $current_userID == 95 OR $current_userID == 42 OR $current_userID == 88) { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0" ); }
+                                                            else { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0 AND user_id = $current_userID" ); }
+                                                            
+                                                            if ( mysqli_num_rows($result) > 0 ) {
+                                                                while($row = mysqli_fetch_array($result)) {
+                                                                    $category_id = $row["category"];
+                                                                    $category = array(
+                                                                        0 => 'Others',
+                                                                        1 => 'IT Services',
+                                                                        2 => 'Technical Services',
+                                                                        3 => 'Sales',
+                                                                        4 => 'Request Demo',
+                                                                        5 => 'Suggestion',
+                                                                        6 => 'Problem',
+                                                                        7 => 'Praise'
+                                                                    );
+
+                                                                    $status_id = $row["type"];
+                                                                    $status = array(
+                                                                        0 => '<span class="label label-sm label-info">Assigned</span>',
+                                                                        1 => '<span class="label label-sm label-primary">On Queue</span>',
+                                                                        2 => '<span class="label label-sm label-warning">On Going</span>',
+                                                                        3 => '<span class="label label-sm label-success">Fixed</span>',
+                                                                        4 => '<span class="label label-sm label-danger">Unresolved</span>'
+                                                                    );
+                                                                    
+                                                                    $file_files = $row["files"];
+                                                                    if (!empty($file_files)) {
+                                                                        $fileExtension = fileExtension($file_files);
+                                                                        $src = $fileExtension['src'];
+                                                                        $embed = $fileExtension['embed'];
+                                                                        $type = $fileExtension['type'];
+                                                                        $file_extension = $fileExtension['file_extension'];
+                                                                        $url = $base_url.'uploads/services/';
+                                                                    }
+                                                                    
+                                                                    echo '<tr id="tr_'. $row["ID"] .'">
+                                                                        <td>'. $row["ID"] .'</td>
+                                                                        <td>'. $category[$category_id].'</td>
+                                                                        <td>
+                                                                            <p style="margin: 0;"><b>'. $row["title"] .'</b></p>
+                                                                            <p style="margin: 0;">'. $row["description"] .'</p>';
+                                                                            echo !empty($file_files) ? '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-fancybox data-type="'.$type.'">'. $file_files .'</a></p>' : '';
+                                                                        echo '</td>
+                                                                        <td>
+                                                                            <p style="margin: 0;">'. $row["contact"] .'</p>
+                                                                            <p style="margin: 0;"><a href="mailto:'. $row["email"] .'" target="_blank">'. $row["email"] .'</a></p>
+                                                                        </td>
+                                                                        <td class="text-center">'. $row["last_modified"] .'</td>
+                                                                        <td class="text-center">'. $row["due_date"] .'</td>
+                                                                        <td class="text-center">'; echo empty($row["assigned_to_id"]) ? 'Pending':$status[$status_id]; echo '</td>
+                                                                        <td class="text-center">
+                                                                            <div class="btn-group btn-group-circle">
+                                                                                <a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-id="'. $row["ID"] .'" data-toggle="modal" onclick="btnView('. $row["ID"] .')">View</a>
+                                                                                <a href="javascript:;" class="btn btn-outlinex green btn-sm btnDone" data-id="'. $row["ID"] .'" onclick="btnDone('. $row["ID"] .')">Done</a>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>';
+                                                                }
+                                                            } else {
+                                                                echo '<tr class="text-center text-default"><td colspan="8">Empty Record</td></tr>';
+                                                            }
+                                                        ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane" id="tab_actions_completed">
+                                            <div class="table-scrollable">
+                                                <table class="table table-bordered table-hover" id="tableDataServicesComplete">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ID#</th>
+                                                            <th>Category</th>
+                                                            <th>Service</th>
+                                                            <th>Contact Info</th>
+                                                            <th class="text-center" style="width: 135px;">Desire Due Date</th>
+                                                            <th class="text-center" style="width: 135px;">Completed</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php
+                                                            if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 17 OR $current_userID == 185) { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 1 AND deleted = 0" ); }
+                                                            else { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 1 AND deleted = 0 AND user_id = $current_userID" ); }
+                                                            
+                                                            if ( mysqli_num_rows($result) > 0 ) {
+                                                                while($row = mysqli_fetch_array($result)) {
+                                                                    $category_id = $row["category"];
+                                                                    $category = array(
+                                                                        0 => 'Others',
+                                                                        1 => 'IT Services',
+                                                                        2 => 'Technical Services',
+                                                                        3 => 'Sales',
+                                                                        4 => 'Request Demo',
+                                                                        5 => 'Suggestion',
+                                                                        6 => 'Problem',
+                                                                        7 => 'Praise'
+                                                                    );
+
+                                                                    $file_files = $row["files"];
+                                                                    if (!empty($file_files)) {
+                                                                        $fileExtension = fileExtension($file_files);
+                                                                        $src = $fileExtension['src'];
+                                                                        $embed = $fileExtension['embed'];
+                                                                        $type = $fileExtension['type'];
+                                                                        $file_extension = $fileExtension['file_extension'];
+                                                                        $url = $base_url.'uploads/services/';
+                                                                    }
+                                                                    
+                                                                    echo '<tr id="tr_'. $row["ID"] .'">
+                                                                        <td>'. $row["ID"] .'</td>
+                                                                        <td>'. $category[$category_id].'</td>
+                                                                        <td>
+                                                                            <p style="margin: 0;">'. $row["title"] .'</p>
+                                                                            <p style="margin: 0;">'. $row["description"] .'</p>';
+                                                                            echo !empty($file_files) ? '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-fancybox data-type="'.$type.'">'. $file_files .'</a></p>' : '';
+                                                                        echo '</td>
+                                                                        <td>
+                                                                            <p style="margin: 0;">'. $row["contact"] .'</p>
+                                                                            <p style="margin: 0;"><a href="mailto:'. $row["email"] .'" target="_blank">'. $row["email"] .'</a></p>
+                                                                        </td>
+                                                                        <td class="text-center">'. $row["due_date"] .'</td>
+                                                                        <td class="text-center">'. $row["last_modified"] .'</td>
+                                                                    </tr>';
+                                                                }
+                                                            } else {
+                                                                echo '<tr class="text-center text-default"><td colspan="6">Empty Record</td></tr>';
+                                                            }
+                                                        ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade bs-modal-lg" id="modalView" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form method="post" class="form-horizontal modalForm modalUpdate">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                            <h4 class="modal-title">Service Details</h4>
+                                        </div>
+                                        <div class="modal-body"></div>
+                                        <div class="modal-footer">
+                                            <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
+                                            <button type="submit" class="btn green ladda-button" name="btnUpdate_Service" id="btnUpdate_Service" data-style="zoom-out"><span class="ladda-label">Submit</span></button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- / END MODAL AREA -->
+                                     
+                    </div><!-- END CONTENT BODY -->
+
+        <?php include_once ('footer.php'); ?>
+
+        <script type="text/javascript">
+            function btnDone(id) {
+                swal({
+                    title: "Are you sure?",
+                    text: "Your item will move to Completed Tab!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, confirm!",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "function.php?btnDone="+id,
+                        dataType: "html",
+                        success: function(response){
+                            $('#tr_'+id).remove();
+                            
+                            var obj = jQuery.parseJSON(response);
+                            var result = '<tr id="tr_'+obj.ID+'">';
+                                result += '<td>'+obj.ID+'</td>';
+                                result += '<td>'+obj.category+'</td>';
+                                result += '<td>';
+                                    result += '<p style="margin: 0;">'+obj.title+'</p>';
+                                    result += '<p style="margin: 0;">'+obj.description+'</p>';
+
+                                    if (obj.files != "") {
+                                        result += '<p style="margin: 0;">'+obj.files+'</p>';
+                                    }
+
+                                result += '</td>';
+                                result += '<td>';
+                                    result += '<p style="margin: 0;">'+obj.contact+'</p>';
+                                    result += '<p style="margin: 0;"><a href="mailto:'+obj.email+'" target="_blank">'+obj.email+'</a></p>';
+                                result += '</td>';
+                                result += '<td class="text-center">'+obj.due_date+'</td>';
+                                result += '<td class="text-center">'+obj.last_modified+'</td>';
+                            result += '</tr>';
+
+                            $('#tab_actions_completed #tableDataServicesComplete tbody').append(result);
+                        }
+                    });
+                    swal("Done!", "This item has been moved to Completed Tab.", "success");
+                });
+            }
+
+            function btnView(id) {
+                $.ajax({
+                    type: "GET",
+                    url: "function.php?modalView_Services="+id,
+                    dataType: "html",
+                    success: function(data){
+                        $("#modalView .modal-body").html(data);
+
+                        selectMulti();
+                    }
+                });
+            }
+            $(".modalUpdate").on('submit',(function(e) {
+                e.preventDefault();
+
+                formObj = $(this);
+                if (!formObj.validate().form()) return false;
+                    
+                var formData = new FormData(this);
+                formData.append('btnUpdate_Service',true);
+
+                var l = Ladda.create(document.querySelector('#btnUpdate_Service'));
+                l.start();
+
+                $.ajax({
+                    url: "function.php",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData:false,
+                    cache: false,
+                    xhr: function() {
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener("progress", function(evt) {
+                            if (evt.lengthComputable) {
+                                var percentComplete = Math.round((evt.loaded / evt.total) * 100);
+                                l.setProgress(percentComplete / 100);
+                            }
+                       }, false);
+                       return xhr;
+                    },
+                    success: function(response) {
+                        if ($.trim(response)) {
+                            msg = "Sucessfully Save!";
+
+                            var obj = jQuery.parseJSON(response);
+                            if (obj.assigned_to_id != '') {
+                                
+                                var obj = jQuery.parseJSON(response);
+                                var html = '<td>'+obj.ID+'</td>';
+                                html += '<td>'+obj.category+'</td>';
+                                html += '<td>';
+                                    html += '<p style="margin: 0;"><b>'+obj.title+'</b></p>';
+                                    html += '<p style="margin: 0;">'+obj.description+'</p>';
+
+                                    if (obj.files != "") { html += '<p style="margin: 0;">'+obj.files+'</p>'; }
+
+                                html += '</td>';
+                                html += '<td>';
+                                    html += '<p style="margin: 0;">'+obj.contact+'</p>';
+                                    html += '<p style="margin: 0;"><a href="mailto:'+obj.email+'" target="_blank">'+obj.email+'</a></p>';
+                                html += '</td>';
+                                html += '<td class="text-center">'+obj.last_modified+'</td>';
+                                html += '<td class="text-center">'+obj.due_date+'</td>';
+                                html += '<td class="text-center">'+obj.status+'</td>';
+                                html += '<td class="text-center">';
+                                    html += '<div class="btn-group btn-group-circle">';
+                                        html += '<a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-id="'+obj.ID+'" data-toggle="modal" onclick="btnView('+obj.ID+')">View</a>';
+                                        html += '<a href="javascript:;" class="btn btn-outlinex green btn-sm btnDone" data-id="'+obj.ID+'" onclick="btnDone('+obj.ID+')">Done</a>';
+                                    html += '</div>';
+                                html += '</td>';
+
+                                $('#tab_actions_assigned #tableDataServicesAssigned tbody #tr_'+obj.ID).html(html);
+                            }
+                            $('#modalView').modal('hide');
+                        } else {
+                            msg = "Error!"
+                        }
+                        l.stop();
+
+                        bootstrapGrowl(msg);
+                    }
+                });
+            }));
+        </script>
+    </body>
+</html>

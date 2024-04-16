@@ -1,0 +1,544 @@
+<?php 
+    $title = "Food Fraud Vulnerability Assessment Library";
+    $site = "ffva-library";
+    $breadcrumbs = '';
+    $sub_breadcrumbs = '';
+
+    if ($sub_breadcrumbs) {
+        $breadcrumbs .= '<li><span>'. $sub_breadcrumbs .'</span><i class="fa fa-angle-right"></i></li>';
+    }
+    $breadcrumbs .= '<li><span>'. $title .'</span></li>';
+
+    include_once ('header.php'); 
+?>
+<style type="text/css">
+    .dt-buttons {
+        margin: unset !important;
+        float: left !important;
+        margin-left: 15px !important;
+    }
+    .table-scrollable .dataTable td>.btn-group, .table-scrollable .dataTable th>.btn-group {
+        position: relative;
+    }
+</style>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="portlet light ">
+                                <div class="portlet-title tabbable-line">
+                                    <div class="caption">
+                                        <i class="icon-doc font-dark"></i>
+                                        <span class="caption-subject font-dark bold uppercase">FFVA Library</span>
+                                    </div>
+                                    <ul class="nav nav-tabs">
+                                        <li class="active">
+                                            <a href="#tabSupplier" data-toggle="tab">Suppliers</a>
+                                        </li>
+                                        <li>
+                                            <a href="#tabIngredients" data-toggle="tab">Ingredients</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="portlet-body">
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="tabSupplier">
+                                            <table class="table table-bordered table-hover" id="tableData_1">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ID#</th>
+                                                        <th>Supplier Name</th>
+
+                                                        <?php
+                                                            if ($FreeAccess != 1) {
+                                                                echo '<th class="text-center">Attached File</th>';
+                                                            }
+                                                        ?>
+                                                        
+                                                        <th class="text-center">Vulnerability</th>
+                                                        <th class="text-center">Date Performed</th>
+                                                        <th class="text-center">Due Date</th>
+                                                        <th style="width: 90px;" class="text-center">Status</th>
+                                                        <th style="width: 85px;"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php
+                                                        $resultSupplier = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE archived = 1 AND deleted = 0 AND type = 1 AND updated = 0 AND user_id = $switch_user_id" );
+                                                        if ( mysqli_num_rows($resultSupplier) > 0 ) {
+                                                            while($rowSupplier = mysqli_fetch_array($resultSupplier)) {
+                                                                $supplier_user_id = $rowSupplier["user_id"];
+                                                                $supplier_reviewed_by = $rowSupplier["reviewed_by"];
+                                                                $supplier_approved_by = $rowSupplier["approved_by"];
+
+                                                                $int_review_assigned_name = '';
+                                                                $int_review_assigned = $rowSupplier["int_review_assigned"];
+                                                                $int_review_status = $rowSupplier["int_review_status"];
+                                                                $int_review_comment = $rowSupplier["int_review_comment"];
+
+                                                                if (!empty($int_review_assigned)) {
+                                                                    $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $int_review_assigned" );
+                                                                    if ( mysqli_num_rows($selectUser) > 0 ) {
+                                                                        $rowUser = mysqli_fetch_array($selectUser);
+                                                                        $int_review_assigned_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                    }
+                                                                }
+
+                                                                $int_verify_assigned_name = '';
+                                                                $int_verify_assigned = $rowSupplier["int_verify_assigned"];
+                                                                $int_verify_status = $rowSupplier["int_verify_status"];
+                                                                $int_verify_comment = $rowSupplier["int_verify_comment"];
+
+                                                                if (!empty($int_verify_assigned)) {
+                                                                    $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $int_verify_assigned" );
+                                                                    if ( mysqli_num_rows($selectUser) > 0 ) {
+                                                                        $rowUser = mysqli_fetch_array($selectUser);
+                                                                        $int_verify_assigned_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                    }
+                                                                }
+
+                                                                $supplier_id = $rowSupplier["ID"];
+                                                                $supplier_company = $rowSupplier["company"];
+
+                                                                // $data_status = $rowSupplier['status'];
+                                                                // $status = "Pending";
+                                                                // if ($data_status == 1) { $status = "Completed"; }
+
+                                                                $status = "Pending";
+                                                                if (!empty($rowSupplier['approved_date'])) { $status = "Completed"; }
+
+                                                                $data_last_modified = $rowSupplier['last_modified'];
+                                                                $data_last_modified = new DateTime($data_last_modified);
+                                                                $data_last_modified = $data_last_modified->format('M d, Y');
+                                                                                                        
+                                                                $due_date = date('Y-m-d', strtotime('+1 year', strtotime($data_last_modified)) );
+                                                                $due_date = new DateTime($due_date);
+                                                                $due_date = $due_date->format('M d, Y');
+
+
+                                                                $likelihood_rate = $rowSupplier["likelihood_rate"];
+                                                                $likelihood_rate_arr = explode(', ', $likelihood_rate);
+
+                                                                $consequence_rate = $rowSupplier["consequence_rate"];
+                                                                $consequence_rate_arr = explode(', ', $consequence_rate);
+
+
+                                                                // Likelihood
+                                                                $index = 0;
+                                                                $count = 0;
+                                                                $sum = 0;
+                                                                $total_likelihood = 0;
+                                                                $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood" );
+                                                                if ( mysqli_num_rows($selectLikelihood) > 0 ) {
+                                                                    while($rowLikelihood = mysqli_fetch_array($selectLikelihood)) {
+                                                                        $likelihood_type_arr = explode(', ', $rowLikelihood["type"]);
+                                                                        if (in_array($rowSupplier["type"], $likelihood_type_arr)) {
+                                                                            if (empty($likelihood_rate_arr[$index])) { $sum += 1; }
+                                                                            else { $sum += $likelihood_rate_arr[$index]; }
+                                                                            
+                                                                            $index++;
+                                                                            $count++;
+                                                                        }
+                                                                    }
+                                                                }
+
+                                                                if (!empty($rowSupplier["likelihood_element_other"])) {
+                                                                    $likelihood_element_other = explode(' | ', $rowSupplier["likelihood_element_other"]);
+                                                                    $likelihood_rate_other = explode(', ', $rowSupplier["likelihood_rate_other"]);
+
+                                                                    $index = 0;
+                                                                    foreach ($likelihood_element_other as $value) {
+                                                                        $sum += $likelihood_rate_other[$index];
+                                                                        $index++;
+                                                                        $count++;
+                                                                    }
+                                                                }
+
+                                                                $total_likelihood = $sum / $count;
+
+
+                                                                // Consequence
+                                                                $index = 0;
+                                                                $count = 0;
+                                                                $sum = 0;
+                                                                $total_consequence = 0;
+                                                                $selectConsequence = mysqli_query( $conn,"SELECT * FROM tbl_ffva_consequence" );
+                                                                if ( mysqli_num_rows($selectConsequence) > 0 ) {
+                                                                    while($rowConsequence = mysqli_fetch_array($selectConsequence)) {
+                                                                        $sum += $consequence_rate_arr[$index];
+                                                                        $index++;
+                                                                        $count++;
+                                                                    }
+                                                                }
+
+                                                                if (!empty($rowSupplier["consequence_element_other"])) {
+                                                                    $consequence_element_other = explode(' | ', $rowSupplier["consequence_element_other"]);
+                                                                    $consequence_rate_other = explode(', ', $rowSupplier["consequence_rate_other"]);
+
+                                                                    $index = 0;
+                                                                    foreach ($consequence_element_other as $value) {
+                                                                        $sum += $consequence_rate_other[$index];
+                                                                        $index++;
+                                                                        $count++;
+                                                                    }
+                                                                }
+
+                                                                $total_consequence = $sum / $count;
+
+
+                                                                // Matrix
+                                                                $plot_x = 1;
+                                                                $plot_y = 1;
+
+                                                                if (round($total_likelihood) > 0) { $plot_x = round($total_likelihood); }
+                                                                if (round($total_consequence) > 0) { $plot_y = round($total_consequence); }
+
+                                                                if ($plot_x == 1 && $plot_y == 1) { $vulnerability = 1; }
+                                                                else if ($plot_x == 1 && $plot_y == 2) { $vulnerability = 1; }
+                                                                else if ($plot_x == 1 && $plot_y == 3) { $vulnerability = 1; }
+                                                                else if ($plot_x == 1 && $plot_y == 4) { $vulnerability = 2; }
+                                                                else if ($plot_x == 1 && $plot_y == 5) { $vulnerability = 2; }
+                                                                else if ($plot_x == 2 && $plot_y == 1) { $vulnerability = 1; }
+                                                                else if ($plot_x == 2 && $plot_y == 2) { $vulnerability = 1; }
+                                                                else if ($plot_x == 2 && $plot_y == 3) { $vulnerability = 2; }
+                                                                else if ($plot_x == 2 && $plot_y == 4) { $vulnerability = 2; }
+                                                                else if ($plot_x == 2 && $plot_y == 5) { $vulnerability = 3; }
+                                                                else if ($plot_x == 3 && $plot_y == 1) { $vulnerability = 2; }
+                                                                else if ($plot_x == 3 && $plot_y == 2) { $vulnerability = 2; }
+                                                                else if ($plot_x == 3 && $plot_y == 3) { $vulnerability = 2; }
+                                                                else if ($plot_x == 3 && $plot_y == 4) { $vulnerability = 3; }
+                                                                else if ($plot_x == 3 && $plot_y == 5) { $vulnerability = 3; }
+                                                                else if ($plot_x == 4 && $plot_y == 1) { $vulnerability = 2; }
+                                                                else if ($plot_x == 4 && $plot_y == 2) { $vulnerability = 2; }
+                                                                else if ($plot_x == 4 && $plot_y == 3) { $vulnerability = 3; }
+                                                                else if ($plot_x == 4 && $plot_y == 4) { $vulnerability = 3; }
+                                                                else if ($plot_x == 4 && $plot_y == 5) { $vulnerability = 3; }
+                                                                else if ($plot_x == 5 && $plot_y == 1) { $vulnerability = 3; }
+                                                                else if ($plot_x == 5 && $plot_y == 2) { $vulnerability = 3; }
+                                                                else if ($plot_x == 5 && $plot_y == 3) { $vulnerability = 3; }
+                                                                else if ($plot_x == 5 && $plot_y == 4) { $vulnerability = 3; }
+                                                                else if ($plot_x == 5 && $plot_y == 5) { $vulnerability = 3; }
+                                                                else { $vulnerability = 0; }
+
+                                                                if ($vulnerability == 1) { $vulnerability_result = "Low Risk"; }
+                                                                else if ($vulnerability == 2) { $vulnerability_result = "Medium Risk"; }
+                                                                else if ($vulnerability == 3) { $vulnerability_result = "High Risk"; }
+                                                                else { $vulnerability_result = ""; }
+                                                                
+                                                                $file_files = $rowSupplier["files"];
+                                                                if(!empty($file_files)) {
+                                                                    $fileExtension = fileExtension($file_files);
+                                                                    $src = $fileExtension['src'];
+                                                                    $embed = $fileExtension['embed'];
+                                                                    $type = $fileExtension['type'];
+                                                                    $file_extension = $fileExtension['file_extension'];
+                                                                    $url = $base_url.'uploads/ffva/';
+                                                                }
+
+                                                                echo '<tr id="tr_'.$supplier_id.'">
+                                                                    <td>'.$supplier_id.'</td>
+                                                                    <td>'.$supplier_company.'</td>';
+
+                                                                    if ($FreeAccess != 1) {
+                                                                        echo '<td class="text-center">';
+                                                                            if(!empty($file_files)) { echo '<a data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link btn-sm">View</a>'; } 
+
+                                                                            if ($supplier_reviewed_by == $current_userID) {
+                                                                                echo '<a href="#modalFile" class="btn btn-link btn-sm" data-toggle="modal" onclick="btnFile('.$supplier_id.', 1)">Upload</a>';
+                                                                            } else if ($supplier_approved_by == $current_userID) {
+                                                                                echo '<a href="#modalFile" class="btn btn-link btn-sm" data-toggle="modal" onclick="btnFile('.$supplier_id.', 2)">Upload</a>';
+                                                                            }
+                                                                        echo '</td>';
+                                                                    }
+
+                                                                    echo '<td class="text-center">'.$vulnerability_result.'</td>
+                                                                    <td class="text-center">'.$data_last_modified.'</td>
+                                                                    <td class="text-center">'.$due_date.'</td>
+                                                                    <td class="text-center">'.$status.'</td>
+                                                                    <td class="text-center">
+                                                                        <div class="btn-group btn-group-circle">
+                                                                            <a href="pdf_ffva?id='.$supplier_id.'&signed=0" class="btn btn-outline dark btn-sm" target="_blank">PDF</a>
+                                                                            <a href="javascript:;" class="btn btn-danger btn-sm" data-toggle="modal" onclick="btnRevert('.$supplier_id.', 1)">Revert</a>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>';
+                                                            }
+                                                        }
+                                                    ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="tab-pane" id="tabIngredients">
+                                            <table class="table table-bordered table-hover" id="tableData_2">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ID#</th>
+                                                        <th>Ingredients Name</th>
+
+                                                        <?php
+                                                            if ($FreeAccess != 1) {
+                                                                echo '<th class="text-center">Attached File</th>';
+                                                            }
+                                                        ?>
+
+                                                        <th class="text-center">Vulnerability</th>
+                                                        <th class="text-center">Date Performed</th>
+                                                        <th class="text-center">Due Date</th>
+                                                        <th style="width: 90px;" class="text-center">Status</th>
+                                                        <th style="width: 85px;"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?php
+                                                        $resultSupplier = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE archived = 1 AND deleted = 0 AND type = 2 AND updated = 0 AND user_id = $switch_user_id" );
+                                                        if ( mysqli_num_rows($resultSupplier) > 0 ) {
+                                                            while($rowSupplier = mysqli_fetch_array($resultSupplier)) {
+                                                                $supplier_user_id = $rowSupplier["user_id"];
+                                                                $supplier_reviewed_by = $rowSupplier["reviewed_by"];
+                                                                $supplier_approved_by = $rowSupplier["approved_by"];
+
+                                                                $int_review_assigned_name = '';
+                                                                $int_review_assigned = $rowSupplier["int_review_assigned"];
+                                                                $int_review_status = $rowSupplier["int_review_status"];
+                                                                $int_review_comment = $rowSupplier["int_review_comment"];
+
+                                                                if (!empty($int_review_assigned)) {
+                                                                    $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $int_review_assigned" );
+                                                                    if ( mysqli_num_rows($selectUser) > 0 ) {
+                                                                        $rowUser = mysqli_fetch_array($selectUser);
+                                                                        $int_review_assigned_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                    }
+                                                                }
+
+                                                                $int_verify_assigned_name = '';
+                                                                $int_verify_assigned = $rowSupplier["int_verify_assigned"];
+                                                                $int_verify_status = $rowSupplier["int_verify_status"];
+                                                                $int_verify_comment = $rowSupplier["int_verify_comment"];
+
+                                                                if (!empty($int_verify_assigned)) {
+                                                                    $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $int_verify_assigned" );
+                                                                    if ( mysqli_num_rows($selectUser) > 0 ) {
+                                                                        $rowUser = mysqli_fetch_array($selectUser);
+                                                                        $int_verify_assigned_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                    }
+                                                                }
+
+                                                                $supplier_id = $rowSupplier["ID"];
+                                                                $supplier_company = $rowSupplier["company"];
+                                                                $supplier_product = $rowSupplier["product"];
+
+                                                                // $data_status = $rowSupplier['status'];
+                                                                // $status = "Pending";
+                                                                // if ($data_status == 1) { $status = "Completed"; }
+
+                                                                $status = "Pending";
+                                                                if (!empty($rowSupplier['approved_date'])) { $status = "Completed"; }
+
+                                                                $data_last_modified = $rowSupplier['last_modified'];
+                                                                $data_last_modified = new DateTime($data_last_modified);
+                                                                $data_last_modified = $data_last_modified->format('M d, Y');
+                                                                                                        
+                                                                $due_date = date('Y-m-d', strtotime('+1 year', strtotime($data_last_modified)) );
+                                                                $due_date = new DateTime($due_date);
+                                                                $due_date = $due_date->format('M d, Y');
+
+
+                                                                $likelihood_rate = $rowSupplier["likelihood_rate"];
+                                                                $likelihood_rate_arr = explode(', ', $likelihood_rate);
+
+                                                                $consequence_rate = $rowSupplier["consequence_rate"];
+                                                                $consequence_rate_arr = explode(', ', $consequence_rate);
+
+
+                                                                // Likelihood
+                                                                $index = 0;
+                                                                $count = 0;
+                                                                $sum = 0;
+                                                                $total_likelihood = 0;
+                                                                $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood" );
+                                                                if ( mysqli_num_rows($selectLikelihood) > 0 ) {
+                                                                    while($rowLikelihood = mysqli_fetch_array($selectLikelihood)) {
+                                                                        $likelihood_type_arr = explode(', ', $rowLikelihood["type"]);
+                                                                        if (in_array($rowSupplier["type"], $likelihood_type_arr)) {
+                                                                            if (empty($likelihood_rate_arr[$index])) { $sum += 1; }
+                                                                            else { $sum += $likelihood_rate_arr[$index]; }
+
+                                                                            $index++;
+                                                                            $count++;
+                                                                        }
+                                                                    }
+                                                                }
+
+                                                                if (!empty($rowSupplier["likelihood_element_other"])) {
+                                                                    $likelihood_element_other = explode(' | ', $rowSupplier["likelihood_element_other"]);
+                                                                    $likelihood_rate_other = explode(', ', $rowSupplier["likelihood_rate_other"]);
+
+                                                                    $index = 0;
+                                                                    foreach ($likelihood_element_other as $value) {
+                                                                        $sum += $likelihood_rate_other[$index];
+                                                                        $index++;
+                                                                        $count++;
+                                                                    }
+                                                                }
+
+                                                                $total_likelihood = $sum / $count;
+
+
+                                                                // Consequence
+                                                                $index = 0;
+                                                                $count = 0;
+                                                                $sum = 0;
+                                                                $total_consequence = 0;
+                                                                $selectConsequence = mysqli_query( $conn,"SELECT * FROM tbl_ffva_consequence" );
+                                                                if ( mysqli_num_rows($selectConsequence) > 0 ) {
+                                                                    while($rowConsequence = mysqli_fetch_array($selectConsequence)) {
+                                                                        $sum += $consequence_rate_arr[$index];
+                                                                        $index++;
+                                                                        $count++;
+                                                                    }
+                                                                }
+
+                                                                if (!empty($rowSupplier["consequence_element_other"])) {
+                                                                    $consequence_element_other = explode(' | ', $rowSupplier["consequence_element_other"]);
+                                                                    $consequence_rate_other = explode(', ', $rowSupplier["consequence_rate_other"]);
+
+                                                                    $index = 0;
+                                                                    foreach ($consequence_element_other as $value) {
+                                                                        $sum += $consequence_rate_other[$index];
+                                                                        $index++;
+                                                                        $count++;
+                                                                    }
+                                                                }
+
+                                                                $total_consequence = $sum / $count;
+
+
+                                                                // Matrix
+                                                                $plot_x = 1;
+                                                                $plot_y = 1;
+
+                                                                if (round($total_likelihood) > 0) { $plot_x = round($total_likelihood); }
+                                                                if (round($total_consequence) > 0) { $plot_y = round($total_consequence); }
+
+                                                                if ($plot_x == 1 && $plot_y == 1) { $vulnerability = 1; }
+                                                                else if ($plot_x == 1 && $plot_y == 2) { $vulnerability = 1; }
+                                                                else if ($plot_x == 1 && $plot_y == 3) { $vulnerability = 1; }
+                                                                else if ($plot_x == 1 && $plot_y == 4) { $vulnerability = 2; }
+                                                                else if ($plot_x == 1 && $plot_y == 5) { $vulnerability = 2; }
+                                                                else if ($plot_x == 2 && $plot_y == 1) { $vulnerability = 1; }
+                                                                else if ($plot_x == 2 && $plot_y == 2) { $vulnerability = 1; }
+                                                                else if ($plot_x == 2 && $plot_y == 3) { $vulnerability = 2; }
+                                                                else if ($plot_x == 2 && $plot_y == 4) { $vulnerability = 2; }
+                                                                else if ($plot_x == 2 && $plot_y == 5) { $vulnerability = 3; }
+                                                                else if ($plot_x == 3 && $plot_y == 1) { $vulnerability = 2; }
+                                                                else if ($plot_x == 3 && $plot_y == 2) { $vulnerability = 2; }
+                                                                else if ($plot_x == 3 && $plot_y == 3) { $vulnerability = 2; }
+                                                                else if ($plot_x == 3 && $plot_y == 4) { $vulnerability = 3; }
+                                                                else if ($plot_x == 3 && $plot_y == 5) { $vulnerability = 3; }
+                                                                else if ($plot_x == 4 && $plot_y == 1) { $vulnerability = 2; }
+                                                                else if ($plot_x == 4 && $plot_y == 2) { $vulnerability = 2; }
+                                                                else if ($plot_x == 4 && $plot_y == 3) { $vulnerability = 3; }
+                                                                else if ($plot_x == 4 && $plot_y == 4) { $vulnerability = 3; }
+                                                                else if ($plot_x == 4 && $plot_y == 5) { $vulnerability = 3; }
+                                                                else if ($plot_x == 5 && $plot_y == 1) { $vulnerability = 3; }
+                                                                else if ($plot_x == 5 && $plot_y == 2) { $vulnerability = 3; }
+                                                                else if ($plot_x == 5 && $plot_y == 3) { $vulnerability = 3; }
+                                                                else if ($plot_x == 5 && $plot_y == 4) { $vulnerability = 3; }
+                                                                else if ($plot_x == 5 && $plot_y == 5) { $vulnerability = 3; }
+                                                                else { $vulnerability = 0; }
+
+                                                                if ($vulnerability == 1) { $vulnerability_result = "Low Risk"; }
+                                                                else if ($vulnerability == 2) { $vulnerability_result = "Medium Risk"; }
+                                                                else if ($vulnerability == 3) { $vulnerability_result = "High Risk"; }
+                                                                else { $vulnerability_result = ""; }
+                                                                
+                                                                $file_files = $rowSupplier["files"];
+                                                                if(!empty($file_files)) {
+                                                                    $fileExtension = fileExtension($file_files);
+                                                                    $src = $fileExtension['src'];
+                                                                    $embed = $fileExtension['embed'];
+                                                                    $type = $fileExtension['type'];
+                                                                    $file_extension = $fileExtension['file_extension'];
+                                                                    $url = $base_url.'uploads/ffva/';
+                                                                }
+
+                                                                echo '<tr id="tr_'.$supplier_id.'">
+                                                                    <td>'.$supplier_id.'</td>
+                                                                    <td>'.$supplier_product.'</td>';
+                                                                    
+                                                                    if ($FreeAccess != 1) {
+                                                                        echo '<td class="text-center">';
+                                                                            if(!empty($file_files)) { echo '<a data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link btn-sm">View</a>'; } 
+
+                                                                            if ($supplier_reviewed_by == $current_userID) {
+                                                                                echo '<a href="#modalFile" class="btn btn-link btn-sm" data-toggle="modal" onclick="btnFile('.$supplier_id.', 1)">Upload</a>';
+                                                                            } else if ($supplier_approved_by == $current_userID) {
+                                                                                echo '<a href="#modalFile" class="btn btn-link btn-sm" data-toggle="modal" onclick="btnFile('.$supplier_id.', 2)">Upload</a>';
+                                                                            }
+                                                                        echo '</td>';
+                                                                    }
+
+                                                                    echo '<td class="text-center">'.$vulnerability_result.'</td>
+                                                                    <td class="text-center">'.$data_last_modified.'</td>
+                                                                    <td class="text-center">'.$due_date.'</td>
+                                                                    <td class="text-center">'.$status.'</td>
+                                                                    <td class="text-center">
+                                                                        <div class="btn-group btn-group-circle">
+                                                                            <a href="pdf_ffva?id='.$supplier_id.'&signed=0" class="btn btn-outline dark btn-sm" target="_blank">PDF</a>
+                                                                            <a href="javascript:;" class="btn btn-danger btn-sm" data-toggle="modal" onclick="btnRevert('.$supplier_id.', 2)">Revert</a>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>';
+                                                            }
+                                                        }
+                                                    ?>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- / END MODAL AREA -->
+                                     
+                    </div><!-- END CONTENT BODY -->
+
+        <?php include_once ('footer.php'); ?>
+
+        <!--[if lt IE 9]>
+        <script type="text/javascript" src="assets/jSignature/flashcanvas.js"></script>
+        <![endif]-->
+        <script src="assets/jSignature/jSignature.min.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#tableData_1, #tableData_2').dataTable( {
+                  "columnDefs": [
+                    { "width": "auto", "targets": 0 }
+                  ]
+                } );
+            } );
+
+            function btnRevert(id, table) {
+                swal({
+                    title: "Are you sure?",
+                    text: "Your item will be reverted!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, confirm!",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "function.php?btnRevert_FFVA="+id,
+                        dataType: "html",
+                        success: function(response){
+                            $('#tableData_'+table+' tbody #tr_'+id).remove();
+                        }
+                    });
+                    swal("Done!", "This item has been reverted.", "success");
+                });
+            }
+        </script>
+    </body>
+</html>

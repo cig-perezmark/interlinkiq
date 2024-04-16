@@ -1,0 +1,226 @@
+body {
+    font-size: .775rem;
+    background-color: #d1d4e6;
+}
+label{
+    font-weight:500;
+}
+.navbar {
+    background: linear-gradient(90deg, #1CB5E0 0%, #000851 100%);
+}
+
+.navbar-brand {
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+    font-size: .925rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 100;
+    padding: 60px 0 0 10px;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+    background: #457fca;
+    background: -webkit-linear-gradient(to right, #5691c8, #457fca);
+    background: linear-gradient(to right, #5691c8, #457fca);
+}
+
+.sidebar-left {
+    position: sticky;
+    top: 0;
+    height: calc(100vh-70px);
+    max-width: 225px;
+}
+
+.sidebar .nav-link {
+    font-weight: 500;
+    font-size: .800rem;
+    text-transform: uppercase;
+}
+
+.sidebar .nav-link .fas.fa-chart-line {
+    font-size: 16px;
+    margin-right: 4px;
+}
+
+.sidebar .nav-link .fas.fa-clipboard-list {
+    font-size: 16px;
+    margin-right: 8.4px;
+}
+
+.sidebar .nav-link .fas.fa-clipboard {
+    font-size: 16px;
+    margin-right: 8.4px;
+}
+
+.sidebar .nav-link .far {
+    font-size: 16px;
+    margin-right: 8.5px;
+}
+
+.sidebar .nav-link:hover .far,
+.sidebar .nav-link:hover .fas{
+    color: lawngreen;
+}
+
+.sidebar-heading {
+    font-weight: 700;
+    font-size: .850rem;
+    text-transform: uppercase;
+}
+
+.card {
+    max-width: 22rem;
+    max-height: 12rem;
+}
+
+.card-header .fas {
+    font-size: 32px;
+    margin-bottom: 5px;
+}
+
+.card-header h6 {
+    font-size: .875rem;
+    margin-bottom: -5px;
+    text-transform: uppercase;
+}
+
+.card-body h3 {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.card-body h6 {
+    font-size: .875rem;
+    font-weight: 400;
+    margin-bottom: -10px;
+}
+
+.card-body .fas {
+    font-size: 12px;
+    margin-right: 4px;
+
+}
+
+.card-body .btn:hover .fas {
+    color: lawngreen;
+}
+
+#addbtn {
+    margin-top: 20px;
+    margin-right: 4px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+#addbtn {
+    font-size: .850rem;
+}
+
+#addbtn .fas {
+    font-size: 13.5px;
+    margin-right: 4px;
+}
+
+#addbtn:hover .fas {
+    color: lawngreen;
+}
+
+#header {
+    color: #A9A9A9;
+    font-size: .850rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.modal-body .form-group {
+    font-weight: 500;
+    font-size: .800rem;
+}
+
+.row .container-fluid {
+    border:1px solid #cecece;
+    background-color: #ffffff;
+    padding-top: 10px;
+    padding-bottom:10px;
+    border-radius: 5px 5px 5px 5px;
+}
+
+.table-striped>tbody>tr:nth-child(odd)>td,
+.table-striped>tbody>tr:nth-child(odd)>th {
+  background-color: #f5f9ff;
+}
+
+.table-striped>tbody>tr:hover:nth-child(even)>td,
+.table-striped>tbody>tr:nth-child(even)>th {
+  background-color: #e3eeff;
+}
+
+.table>tbody>tr>td {
+    vertical-align: middle;
+}
+
+.modal-title {
+    font-size: 1rem;
+    text-transform: uppercase;
+}
+
+#add-modal-body,
+#edit-modal-body {
+    max-height: 60vh;
+    overflow: auto;
+}
+
+.modal-body .fas {
+    font-size: 80px;
+    margin-bottom: 15px;
+    color: #dc3545;
+}
+
+.modal-body h6 {
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.modal-body h5 {
+    font-size: .875rem;
+    text-decoration: underline;
+    text-transform: uppercase;
+}
+
+thead th {
+    color: #A9A9A9;
+    font-size: .700rem;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+tbody td {
+    font-size: .800rem;
+}
+
+.view {
+    font-size: 15px;
+    color: green;
+}
+
+.edit {
+    font-size: 15px;
+    color: orange;
+}
+
+.delete {
+    font-size: 15px;
+    color: red;
+}
+
+.view:hover,
+.edit:hover,
+.delete:hover {
+    color: lawngreen;
+}

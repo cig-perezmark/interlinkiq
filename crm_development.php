@@ -179,11 +179,11 @@
         <div class="col-md-12">
             <!-- BEGIN BORDERED TABLE PORTLET-->
             <ul class="nav nav-tabs">
-                <li class="active">
+                <li>
                     <a href="#list" data-toggle="tab"> Contact List </a>
                 </li>
                 
-                <li>
+                <li  class="active">
                     <a href="#contribution" data-toggle="tab"> My Contribution </a>
                 </li>
                 

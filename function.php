@@ -42336,6 +42336,224 @@
     }
 
 
+    if( isset($_GET['summary']) ) {
+        $ID = $_GET['summary'];
+        $type = $_GET['type'];
+
+        if ($type == 1) {
+            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND user_id = $ID AND status = 1 ORDER BY title" );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $counter = 1;
+                while($rowData = mysqli_fetch_array($selectData)) {
+                    $data_ID = $rowData["ID"];
+                    $data_title = $rowData["title"];
+                    $data_description = $rowData["description"];
+
+                    echo '<tr>
+                        <td>'.$counter++.'</td>
+                        <td>'.$data_title.'</td>
+                        <td>'.$data_description.'</td>
+                    </tr>';
+                }
+            }
+        } else if ($type == 2) {
+            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND user_id = $ID AND status = 0 ORDER BY title" );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $counter = 1;
+                while($rowData = mysqli_fetch_array($selectData)) {
+                    $data_ID = $rowData["ID"];
+                    $data_title = $rowData["title"];
+                    $data_description = $rowData["description"];
+
+                    echo '<tr>
+                        <td>'.$counter++.'</td>
+                        <td>'.$data_title.'</td>
+                        <td>'.$data_description.'</td>
+                    </tr>';
+                }
+            }
+        } else if ($type == 3) {
+            $selectData = mysqli_query( $conn,"SELECT
+                *
+                FROM (
+                    SELECT 
+                    d.ID AS d_ID,
+                    d.title AS d_title,
+                    d.description AS d_description,
+                    e.ID AS e_ID,
+                    e.first_name AS e_first_name
+                    FROM tbl_hr_department AS d
+
+                    LEFT JOIN (
+                        SELECT
+                        *
+                        FROM tbl_hr_employee
+                        WHERE user_id = $ID
+                        AND suspended = 0
+                        AND status = 1
+                    ) AS e
+                    ON FIND_IN_SET(d.ID, REPLACE(e.department_id, ' ', '')) > 0
+
+                    WHERE d.user_id = $ID
+
+                    GROUP BY d.ID
+                    ORDER BY d.title
+                ) AS r
+                WHERE e_ID IS NULL" );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $counter = 1;
+                while($rowData = mysqli_fetch_array($selectData)) {
+                    $d_ID = $rowData["d_ID"];
+                    $d_title = $rowData["d_title"];
+                    $d_description = $rowData["d_description"];
+
+                    echo '<tr>
+                        <td>'.$counter++.'</td>
+                        <td>'.$d_title.'</td>
+                        <td>'.$d_description.'</td>
+                    </tr>';
+                }
+            }
+        } else if ($type == 4) {
+            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND user_id = $ID AND LENGTH(files) = 0 ORDER BY title" );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $counter = 1;
+                while($rowData = mysqli_fetch_array($selectData)) {
+                    $data_ID = $rowData["ID"];
+                    $data_title = $rowData["title"];
+                    $data_description = $rowData["description"];
+
+                    echo '<tr>
+                        <td>'.$counter++.'</td>
+                        <td>'.$data_title.'</td>
+                        <td>'.$data_description.'</td>
+                    </tr>';
+                }
+            }
+        }
+    }
+    if( isset($_GET['summary_JD']) ) {
+        $ID = $_GET['summary_JD'];
+        $type = $_GET['type'];
+
+        if ($type == 1) {
+            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE user_id = $ID AND status = 1 ORDER BY title" );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $counter = 1;
+                while($rowData = mysqli_fetch_array($selectData)) {
+                    $data_ID = $rowData["ID"];
+                    $data_title = $rowData["title"];
+                    $data_description = $rowData["description"];
+
+                    echo '<tr>
+                        <td>'.$counter++.'</td>
+                        <td>'.$data_title.'</td>
+                        <td>'.$data_description.'</td>
+                    </tr>';
+                }
+            }
+        } else if ($type == 2) {
+            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE user_id = $ID AND status = 0 ORDER BY title" );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $counter = 1;
+                while($rowData = mysqli_fetch_array($selectData)) {
+                    $data_ID = $rowData["ID"];
+                    $data_title = $rowData["title"];
+                    $data_description = $rowData["description"];
+
+                    echo '<tr>
+                        <td>'.$counter++.'</td>
+                        <td>'.$data_title.'</td>
+                        <td>'.$data_description.'</td>
+                    </tr>';
+                }
+            }
+        } else if ($type == 3) {
+            $selectData = mysqli_query( $conn,"SELECT
+                *
+                FROM (
+                    SELECT 
+                    jd.ID AS jd_ID,
+                    jd.title AS jd_title,
+                    jd.description AS jd_description,
+                    e.ID AS e_ID,
+                    e.first_name AS e_first_name
+                    FROM tbl_hr_job_description AS jd
+
+                    LEFT JOIN (
+                        SELECT
+                        *
+                        FROM tbl_hr_employee
+                        WHERE user_id = $ID
+                        AND suspended = 0
+                        AND status = 1
+                    ) AS e
+                    ON FIND_IN_SET(jd.ID, REPLACE(e.job_description_id, ' ', '')) > 0
+
+                    WHERE jd.user_id = $ID
+
+                    GROUP BY jd.ID
+                    ORDER BY jd.title
+                ) AS r
+                WHERE e_ID IS NULL" );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $counter = 1;
+                while($rowData = mysqli_fetch_array($selectData)) {
+                    $jd_ID = $rowData["jd_ID"];
+                    $jd_title = $rowData["jd_title"];
+                    $jd_description = $rowData["jd_description"];
+
+                    echo '<tr>
+                        <td>'.$counter++.'</td>
+                        <td>'.$jd_title.'</td>
+                        <td>'.$jd_description.'</td>
+                    </tr>';
+                }
+            }
+        } else if ($type == 4) {
+            $selectData = mysqli_query( $conn,"SELECT
+                *
+                FROM (
+                    SELECT 
+                    jd.ID AS jd_ID,
+                    jd.title AS jd_title,
+                    jd.description AS jd_description,
+                    t.ID AS t_ID,
+                    t.title AS t_title
+                    FROM tbl_hr_job_description AS jd
+
+                    LEFT JOIN (
+                        SELECT
+                        *
+                        FROM tbl_hr_trainings
+                        WHERE user_id = $ID
+                        AND deleted = 0
+                    ) AS t
+                    ON FIND_IN_SET(jd.ID, REPLACE(t.job_description_id, ' ', '')) > 0
+
+                    WHERE jd.user_id = $ID
+
+                    GROUP BY jd.ID
+                    ORDER BY jd.title
+                ) AS r
+                WHERE t_ID IS NULL" );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $counter = 1;
+                while($rowData = mysqli_fetch_array($selectData)) {
+                    $jd_ID = $rowData["jd_ID"];
+                    $jd_title = $rowData["jd_title"];
+                    $jd_description = $rowData["jd_description"];
+
+                    echo '<tr>
+                        <td>'.$counter++.'</td>
+                        <td>'.$jd_title.'</td>
+                        <td>'.$jd_description.'</td>
+                    </tr>';
+                }
+            }
+        }
+    }
+
 
 	if( isset($_GET['counterup']) ) {
 		$page = $_GET['counterup'];
@@ -42365,7 +42583,7 @@
         $statusTotal = 0;
 
         if ($page === "department") {
-	        $selectedDepartmentCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE user_id = $user_id" );
+	        $selectedDepartmentCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND user_id = $user_id" );
 	        if ( mysqli_num_rows($selectedDepartmentCounter) > 0 ) {
 	            while($rowDepartmentCounter = mysqli_fetch_array($selectedDepartmentCounter)) {
 	                $files = $rowDepartmentCounter["files"];
@@ -42378,23 +42596,24 @@
 
 	                if ( $files === "" ) { $statusFiles++; }
 
+                    $HasEmployee = false;
 	                // $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE trainings_id_status <> '' " );
-	                $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee " );
-	                if ( mysqli_num_rows($selectEmployeeCounter) > 0 ) {
-	                    $countDepartmentChecking = 0;
-	                    while($rowEmployeeCounter = mysqli_fetch_array($selectEmployeeCounter)) {
-	                        $rowEmployeeDepartment = $rowEmployeeCounter['department_id'];
-	                        if ($rowEmployeeDepartment == $statusID) {
-	                            $countDepartmentChecking++;
-	                        }
-	                    }
+	                $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1" );
+                    if ( mysqli_num_rows($selectEmployeeCounter) > 0 ) {
+                        $countDepartmentChecking = 0;
+                        while($rowEmployeeCounter = mysqli_fetch_array($selectEmployeeCounter)) {
+                            $rowEmployeeDepartment = $rowEmployeeCounter['department_id'];
 
-	                    if ($countDepartmentChecking > 0) {
-	                        $statusNotYetPerform++;
-	                    }
-	                } else {
-	                    $statusNotYetPerform++;
-	                }
+                            $array_employeeJD = explode(", ", $rowEmployeeDepartment);
+                            if (in_array($rowDepartmentCounter['ID'], $array_employeeJD)) {
+                                $HasEmployee = true;
+                            }
+                        }
+
+                        if ( $HasEmployee == false ) {
+                            $statusNotYetPerform++;
+                        }
+                    }
 	            }
 	        }
 		} else if ($page === "trainings") {
@@ -42484,12 +42703,10 @@
                     // TOTAL JOB DESC. W/NO EMPLOYEE
                     $HasEmployee = false;
                     // $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE trainings_id_status <> '' " );
-                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee" );
+                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1" );
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
-
                             $rowEmployeeJD = $rowEmployee['job_description_id'];
-
 
                             $array_employeeJD = explode(", ", $rowEmployeeJD);
                             if (in_array($rowJDCounter['ID'], $array_employeeJD)) {

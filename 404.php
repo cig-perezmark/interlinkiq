@@ -37,7 +37,11 @@
                     </div>
                     <!-- END CONTENT BODY -->
 
+<<<<<<< Updated upstream
         <?php include_once ('footer.php'); /*com*/ ?>
+=======
+        <?php include_once ('footer.php'); /* just a comment ;) */ ?>
+>>>>>>> Stashed changes
         
     </body>
 </html>

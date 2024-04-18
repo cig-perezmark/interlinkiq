@@ -11,11 +11,6 @@
 
     include_once ('header.php'); 
 ?>
-<<<<<<< Updated upstream
-
-=======
-<!-- comment re -->
->>>>>>> Stashed changes
                     <div class="row">
                         <div class="col-md-12 page-404">
                             <div class="number font-green"> 404 </div>
@@ -23,7 +18,7 @@
                                 <h3>Oops! You're lost.</h3>
                                 <p>
                                     We can not find the page you're looking for.<br/>
-                                    <a href="dashboard"> Return home </a> or try the search bar below..
+                                    <a href="dashboard"> Return home </a> or try the search bar below. 👍
                                 </p>
                                 <form action="#">
                                     <div class="input-group input-medium">
@@ -40,12 +35,6 @@
                         </div>
                     </div>
                     <!-- END CONTENT BODY -->
-
-<<<<<<< Updated upstream
-        <?php include_once ('footer.php'); /*com*/ ?>
-=======
-        <?php include_once ('footer.php'); /* just a comment ;) */ ?>
->>>>>>> Stashed changes
-        
+        <?php include_once ('footer.php');  ?>
     </body>
 </html>

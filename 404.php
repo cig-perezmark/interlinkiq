@@ -11,7 +11,7 @@
 
     include_once ('header.php'); 
 ?>
-
+<!-- comment -->
                     <div class="row">
                         <div class="col-md-12 page-404">
                             <div class="number font-green"> 404 </div>

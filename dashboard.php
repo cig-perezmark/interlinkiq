@@ -248,7 +248,7 @@
                             <div class="col-md-3" style="margin-top: 5px;">
                                 <div class="input-group">
                                     <input class="form-control" id="deliverable_search" type="text" placeholder="Search" />
-                                    <?php if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 163 OR $current_userEmployerID == 27) { ?>
+                                    <?php if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 163 OR $current_userEmployerID == 27 OR $switch_user_id == 464) { ?>
                                         <div class="input-group-btn">
                                             <button type="button" class="btn green dropdown-toggle" data-toggle="dropdown">Action
                                                 <i class="fa fa-angle-down"></i>

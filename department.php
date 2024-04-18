@@ -482,7 +482,6 @@
                                         </div>
                                         <div class="modal-footer">
                                             <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
-                                            <button type="submit" class="btn green ladda-button" name="btnUpdate_HR_Department" id="btnUpdate_HR_Department" data-style="zoom-out"><span class="ladda-label">Submit</span></button>
                                         </div>
                                     </form>
                                 </div>

@@ -37,7 +37,7 @@
                     </div>
                     <!-- END CONTENT BODY -->
 
-        <?php include_once ('footer.php'); ?>
+        <?php include_once ('footer.php'); /*com*/ ?>
         
     </body>
 </html>

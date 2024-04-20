@@ -34,6 +34,7 @@
         </div>
     </div>
 </div>
+<!-- jst comit -->
 <!-- END CONTENT BODY -->
 <?php include_once ('footer.php');  ?>
 </body>

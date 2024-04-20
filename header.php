@@ -1708,6 +1708,7 @@ License: You must have a valid license purchased only from themeforest(the above
                     <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
                     <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
                     <ul class="page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenux page-sidebar-menu-compact" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+                        
                         <li class="nav-item <?php echo $site === "dashboard" ? "active" : ""; ?>">
                             <a href="dashboard" class="nav-link">
                                 <i class="icon-check"></i>
@@ -1725,14 +1726,14 @@ License: You must have a valid license purchased only from themeforest(the above
                         </li>
                         <?php endif?>
                         <?php if($current_client == 0 AND $switch_user_id <> 1106) { ?>
-                            <li class="nav-item <?php echo $site === "tracking" ? "active" : ""; ?>">
+                            <li class="nav-item hide <?php echo $site === "tracking" ? "active" : ""; ?>">
                                 <a href="tracking" class="nav-link">
                                     <i class="icon-target"></i>
                                     <span class="title">Tracking Dashboard</span>
                                     <span class="selected"></span>
                                 </a>
                             </li>
-                            <li class="nav-item <?php echo $site === "app-store" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('app-store', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                            <li class="nav-item hide <?php echo $site === "app-store" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('app-store', $current_userEmployerID, $current_userEmployeeID); } ?>">
                                 <a href="app-store" class="nav-link">
                                     <i class="icon-grid"></i>
                                     <span class="title">App Catalog</span>
@@ -2439,7 +2440,54 @@ License: You must have a valid license purchased only from themeforest(the above
                             <?php endif ?>
                         <?php } ?>
                         
+                        <li class="nav-item <?php echo $site === "forms" ? "active" : ""; ?>">
+                            <a href="forms" class="nav-link">
+                                <i class="icon-docs" style="color: orange !important;"></i>
+                                <span class="title">Forms</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item <?php echo $site === "module" ? "active" : ""; ?>">
+                            <a href="module" class="nav-link">
+                                <i class="icon-social-dropbox" style="color: orange !important;"></i>
+                                <span class="title">Module</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item hide <?php echo $site === "pro_services" ? "active" : ""; ?>">
+                            <a href="pro-services" class="nav-link">
+                                <i class="icon-flag" style="color: orange !important;"></i>
+                                <span class="title">Pro-Serives</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item <?php echo $site === "app-store" ? "active" : ""; ?>">
+                            <a href="https://consultareinc.com/shop/" target="_blank" class="nav-link">
+                                <i class="icon-book-open" style="color: orange !important;"></i>
+                                <span class="title">SOPs</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item <?php echo $site === "app-store" ? "active" : ""; ?>">
+                            <a href="https://consultareinc.com/training-ace/" target="_blank" class="nav-link">
+                                <i class="icon-screen-desktop" style="color: orange !important;"></i>
+                                <span class="title">Training Ace</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                         
+                        <?php
+                            $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $switch_user_id" );
+                            if ( mysqli_num_rows($hasLibrary) == 0 OR $switch_user_id == 163) {
+                                echo '<li class="nav-item '; echo $site === "pricing" ? "active" : ""; echo '">
+                                    <a href="pricing" class="nav-link">
+                                        <i class="icon-tag"></i>
+                                        <span class="title">Pricing</span>
+                                        <span class="selected"></span>
+                                    </a>
+                                </li>';
+                            }
+                        ?>
                         
                         
                         <li class="nav-item hide <?php echo $site === "researchandDev" ? "active" : ""; ?>">

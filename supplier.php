@@ -254,20 +254,185 @@
                                                         <th rowspan="2">Supplier Name</th>
                                                         <th rowspan="2">Category</th>
                                                         <th rowspan="2">Materials/Services</th>
+														<th rowspan="2">Specification File</th>
 														<th rowspan="2">Address</th>
-                                                        <th colspan="3" class="text-center">Contact Details</th>
+                                                        <th colspan="2" class="text-center">Contact Details</th>
                                                         <th rowspan="2" style="width: 100px;" class="text-center">Compliance</th>
                                                         <th rowspan="2" style="width: 100px;" class="text-center">Status</th>
                                                         <th rowspan="2" style="width: 135px;" class="text-center">Action</th>
                                                     </tr>
                                                     <tr>
                                                         <th>Name</th>
-                                                        <th>Address</th>
                                                         <th>Contact Info</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php
+												// 		$result = mysqli_query( $conn,"WITH RECURSIVE cte (s_ID, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
+												// 			(
+												// 			    SELECT
+												// 			    s1.ID AS s_ID,
+												// 			    s1.name AS s_name,
+												// 			    s1.reviewed_due AS s_reviewed_due,
+												// 			    s1.status AS s_status,
+												// 			    s1.material AS s_material,
+												// 			    s1.service AS s_service,
+												// 			    s1.address AS s_address,
+												// 			    s1.category AS s_category,
+												// 			    s1.contact AS s_contact,
+												// 			    s1.document AS s_document,
+												// 			    d1.ID AS d_ID,
+												// 			    d1.type AS d_type,
+												// 			    d1.name AS d_name,
+												// 			    d1.file AS d_file,
+												// 			    d1.file_due AS d_file_due,
+												// 			    CASE 
+												// 			        WHEN 
+												// 			            LENGTH(d1.file) > 0 
+												// 			            AND (STR_TO_DATE(d1.file_due, '%m/%d/%Y') > CURDATE() OR DATE(d1.file_due) > CURDATE())
+												// 			            AND d1.reviewed_by > 0
+												// 			            AND d1.approved_by > 0
+												// 			        THEN 1 
+												// 			        ELSE 0 
+												// 			    END AS d_status,
+												// 			    CASE WHEN d1.ID > 0 THEN 1 ELSE 0 END AS d_count
+
+												// 			    FROM tbl_supplier AS s1
+
+												// 			    LEFT JOIN (
+												// 			        SELECT
+												// 			        * 
+												// 			        FROM tbl_supplier_document 
+												// 			        WHERE type = 0
+												// 			        AND ID IN (
+												// 			            SELECT
+												// 			            MAX(ID)
+												// 			            FROM tbl_supplier_document
+												// 			            WHERE type = 0
+												// 			            GROUP BY name, supplier_id
+												// 			        )
+												// 			    ) AS d1
+												// 			    ON s1.ID = d1.supplier_ID
+												// 			    AND FIND_IN_SET(d1.name, REPLACE(REPLACE(s1.document, ' ', ''), '|',','  )  ) > 0
+												// 			    WHERE s1.page = 1 
+												// 			    AND s1.is_deleted = 0 
+												// 			    AND s1.user_id = $switch_user_id
+															    
+												// 			    UNION ALL
+															    
+															    
+												// 			    SELECT
+												// 			    s2.ID AS s_ID,
+												// 			    s2.name AS s_name,
+												// 			    s2.reviewed_due AS s_reviewed_due,
+												// 			    s2.status AS s_status,
+												// 			    s2.material AS s_material,
+												// 			    s2.service AS s_service,
+												// 			    s2.address AS s_address,
+												// 			    s2.category AS s_category,
+												// 			    s2.contact AS s_contact,
+												// 			    s2.document_other AS s_document,
+												// 			    d2.ID AS d_ID,
+												// 			    d2.type AS d_type,
+												// 			    d2.name AS d_name,
+												// 			    d2.file AS d_file,
+												// 			    d2.file_due AS d_file_due,
+												// 			    CASE 
+												// 			        WHEN 
+												// 			            LENGTH(d2.file) > 0 
+												// 			            AND (STR_TO_DATE(d2.file_due, '%m/%d/%Y') > CURDATE() OR DATE(d2.file_due) > CURDATE())
+												// 			            AND d2.reviewed_by > 0
+												// 			            AND d2.approved_by > 0
+												// 			        THEN 1 
+												// 			        ELSE 0 
+												// 			    END AS d_status,
+												// 			    CASE WHEN d2.ID > 0 THEN 1 ELSE 0 END AS d_count
+
+												// 			    FROM tbl_supplier AS s2
+
+												// 			    LEFT JOIN (
+												// 			        SELECT
+												// 			        * 
+												// 			        FROM tbl_supplier_document 
+												// 			        WHERE type = 1
+												// 			        AND ID IN (
+												// 			            SELECT
+												// 			            MAX(ID)
+												// 			            FROM tbl_supplier_document
+												// 			            WHERE type = 1
+												// 			            GROUP BY name, supplier_id
+												// 			        )
+												// 			    ) AS d2
+												// 			    ON s2.ID = d2.supplier_ID
+												// 			    AND FIND_IN_SET(d2.name, REPLACE(s2.document_other, ' | ', ',')  )   > 0
+												// 			    WHERE s2.page = 1 
+												// 			    AND s2.is_deleted = 0 
+												// 			    AND s2.user_id = $switch_user_id
+												// 			)
+												// 			SELECT
+												// 			s_ID,
+												// 			s_name,
+												// 			s_reviewed_due,
+												// 			s_status,
+												// 			s_material,
+												// 			s_service, 
+												// 			s_address, 
+												// 			s_category,
+												// 			c_name,
+												// 			d_compliance,
+												// 			d_counting,
+												// 			cn.name AS cn_name,
+												// 			cn.address AS cn_address,
+												// 			cn.email AS cn_email,
+												// 			cn.phone AS cn_phone,
+												// 			cn.cell AS cn_cell,
+												// 			cn.fax AS cn_fax
+												// 			FROM (
+												// 			    SELECT 
+												// 			    s_ID, 
+												// 			    s_name, 
+												// 			    s_reviewed_due, 
+												// 			    s_status, 
+												// 				s_material,
+												// 				s_service, 
+												// 				s_address, 
+												// 			    s_contact,
+												// 			    s_category,
+												// 			    c.name AS c_name,
+												// 			    -- s_document, 
+												// 			    -- d_ID, 
+												// 			    -- d_type, 
+												// 			    -- d_name, 
+												// 			    -- d_file, 
+												// 			    -- d_file_due, 
+												// 			    -- d_status,
+												// 			    -- d_count,
+												// 			    SUM(d_status) AS d_compliance,
+												// 			    SUM(d_count) AS d_counting
+												// 			    FROM cte
+
+												// 			    LEFT JOIN (
+												// 			        SELECT
+												// 			        *
+												// 			        FROM tbl_supplier_category
+												// 			        WHERE deleted = 0
+												// 			    ) AS c
+												// 			    ON s_category = c.ID
+
+												// 			    GROUP BY s_ID
+												// 			) AS r
+
+												// 			LEFT JOIN (
+												// 			    SELECT
+												// 			    *
+												// 			    FROM tbl_supplier_contact
+												// 			) AS cn
+												// 			ON FIND_IN_SET(cn.ID, REPLACE(s_contact, ' ', '')) > 0
+
+												// 			GROUP BY s_ID
+
+												// 			ORDER BY s_name" );
+														
 														$result = mysqli_query( $conn,"WITH RECURSIVE cte (s_ID, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
 															(
 															    SELECT
@@ -320,7 +485,6 @@
 															    
 															    UNION ALL
 															    
-															    
 															    SELECT
 															    s2.ID AS s_ID,
 															    s2.name AS s_name,
@@ -370,68 +534,92 @@
 															    AND s2.user_id = $switch_user_id
 															)
 															SELECT
+															m.ID AS m_ID,
+															m.material_name AS m_material_name,
+															m.spec_file AS m_spec_file,
 															s_ID,
 															s_name,
 															s_reviewed_due,
 															s_status,
 															s_material,
-															s_service, 
+															s_service,
 															s_address, 
 															s_category,
 															c_name,
 															d_compliance,
 															d_counting,
-															cn.name AS cn_name,
-															cn.address AS cn_address,
-															cn.email AS cn_email,
-															cn.phone AS cn_phone,
-															cn.cell AS cn_cell,
-															cn.fax AS cn_fax
+															cn_name,
+															cn_address,
+															cn_email,
+															cn_phone,
+															cn_cell,
+															cn_fax
 															FROM (
-															    SELECT 
-															    s_ID, 
-															    s_name, 
-															    s_reviewed_due, 
-															    s_status, 
+																SELECT
+																s_ID,
+																s_name,
+																s_reviewed_due,
+																s_status,
 																s_material,
-																s_service, 
+																s_service,
 																s_address, 
-															    s_contact,
-															    s_category,
-															    c.name AS c_name,
-															    -- s_document, 
-															    -- d_ID, 
-															    -- d_type, 
-															    -- d_name, 
-															    -- d_file, 
-															    -- d_file_due, 
-															    -- d_status,
-															    -- d_count,
-															    SUM(d_status) AS d_compliance,
-															    SUM(d_count) AS d_counting
-															    FROM cte
+																s_category,
+																c_name,
+																d_compliance,
+																d_counting,
+																cn.name AS cn_name,
+																cn.address AS cn_address,
+																cn.email AS cn_email,
+																cn.phone AS cn_phone,
+																cn.cell AS cn_cell,
+																cn.fax AS cn_fax
+																FROM (
+																    SELECT 
+																    s_ID, 
+																    s_name, 
+																    s_reviewed_due, 
+																    s_status, 
+																	s_material,
+																	s_address,
+																	s_service, 
+																    s_contact,
+																    s_category,
+																    c.name AS c_name,
+																    SUM(d_status) AS d_compliance,
+																    SUM(d_count) AS d_counting
+																    FROM cte
 
-															    LEFT JOIN (
-															        SELECT
-															        *
-															        FROM tbl_supplier_category
-															        WHERE deleted = 0
-															    ) AS c
-															    ON s_category = c.ID
+																    LEFT JOIN (
+																        SELECT
+																        *
+																        FROM tbl_supplier_category
+																        WHERE deleted = 0
+																    ) AS c
+																    ON s_category = c.ID
 
-															    GROUP BY s_ID
-															) AS r
+																    GROUP BY s_ID
+																) AS r
+
+																LEFT JOIN (
+																    SELECT
+																    *
+																    FROM tbl_supplier_contact
+																) AS cn
+																ON FIND_IN_SET(cn.ID, REPLACE(s_contact, ' ', '')) > 0
+
+																GROUP BY s_ID
+
+																ORDER BY s_name
+															) AS r2
 
 															LEFT JOIN (
-															    SELECT
-															    *
-															    FROM tbl_supplier_contact
-															) AS cn
-															ON FIND_IN_SET(cn.ID, REPLACE(s_contact, ' ', '')) > 0
+																SELECT
+																*
+																FROM tbl_supplier_material
+																WHERE user_id = $switch_user_id
+															) AS m
 
-															GROUP BY s_ID
-
-															ORDER BY s_name" );
+															ON FIND_IN_SET(m.ID, REPLACE(r2.s_material, ' ', '')) > 0" );
                                                         if ( mysqli_num_rows($result) > 0 ) {
                                                             $table_counter = 1;
                                                             while($row = mysqli_fetch_array($result)) {
@@ -524,17 +712,35 @@
                                                                     // }
                                                                     
                                                                     
-																	if (!empty($material)) {
-																		$material_result = array();
-																		$material_arr = explode(", ", $material);
-																		foreach ($material_arr as $value) {
-																			$selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_supplier_material WHERE ID=$value" );
-                                                                        	if ( mysqli_num_rows($selectMaterial) > 0 ) {
-																				$rowMaterial = mysqli_fetch_array($selectMaterial);
-																				array_push($material_result, $rowMaterial['material_name']);
-																			}
-																		}
-																		$material = implode(', ', $material_result);
+																// 	if (!empty($material)) {
+																// 		$material_result = array();
+																// 		$material_arr = explode(", ", $material);
+																// 		foreach ($material_arr as $value) {
+																// 			$selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_supplier_material WHERE ID=$value" );
+                //                                                         	if ( mysqli_num_rows($selectMaterial) > 0 ) {
+																// 				$rowMaterial = mysqli_fetch_array($selectMaterial);
+																// 				array_push($material_result, $rowMaterial['material_name']);
+																// 			}
+																// 		}
+																// 		$material = implode(', ', $material_result);
+																// 	}
+
+																	$material = '';
+																	if (!empty($row["m_material_name"])) {
+																		$material = '<a href="#modalEditMaterial" data-toggle="modal" class="btnEdit_Material" onclick="btnEdit_Material('.$row["m_ID"].', 2, \'modalEditMaterial\')">'.$row["m_material_name"].'</a>';
+																	}
+
+																	$material_spec = '';
+																	if (!empty($row["m_spec_file"])) {
+																        $spec_file = $row['m_spec_file'];
+																        $fileExtension = fileExtension($spec_file);
+																		$src = $fileExtension['src'];
+																		$embed = $fileExtension['embed'];
+																		$type = $fileExtension['type'];
+																		$file_extension = $fileExtension['file_extension'];
+																	    $url = $base_url.'uploads/supplier/';
+
+																		$material_spec = '<a href="'.$src.$url.rawurlencode($spec_file).$embed.'" data-src="'.$src.$url.rawurlencode($spec_file).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a>';
 																	}
 																}
 																
@@ -555,9 +761,9 @@
 																	<td>'.htmlentities($s_name ?? '').'</td>
 																	<td>'.htmlentities($c_name ?? '').'</td>
 																	<td>'.$material.'</td>
+																	<td class="text-center">'.$material_spec.'</td>
 																	<td>'.$address_arr.'</td>
 																	<td>'.htmlentities($cn_name ?? '').'</td>
-																	<td>'.htmlentities($cn_address ?? '').'</td>
 																	<td class="text-center">
 																		<ul class="list-inline">';
 																		if ($cn_email != "") { echo '<li><a href="mailto:'.$cn_email.'" target="_blank" title="Email"><i class="fa fa-envelope"></i></a></li>'; }
@@ -588,31 +794,207 @@
                                                         <th rowspan="2">Supplier Name</th>
                                                         <th rowspan="2">Category</th>
                                                         <th rowspan="2">Materials/Services</th>
+														<th rowspan="2">Specification File</th>
                                                         <th rowspan="2">Address</th>
-                                                        <th colspan="3" class="text-center">Contact Details</th>
+                                                        <th colspan="2" class="text-center">Contact Details</th>
                                                         <th rowspan="2" style="width: 100px;" class="text-center">Compliance</th>
                                                         <th rowspan="2" style="width: 100px;" class="text-center">Status</th>
                                                         <th rowspan="2" style="width: 135px;" class="text-center">Action</th>
                                                     </tr>
                                                     <tr>
                                                         <th>Name</th>
-                                                        <th>Address</th>
                                                         <th>Contact Info</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php
-														$result = mysqli_query( $conn,"WITH RECURSIVE cte (s_ID, s_user_id, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
+												// 		$result = mysqli_query( $conn,"WITH RECURSIVE cte (s_ID, s_user_id, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
+												// 			(
+												// 			    SELECT
+												// 			    s1.ID AS s_ID,
+												// 			    s1.user_id AS s_user_id,
+												// 			    s1.name AS s_name,
+												// 			    s1.reviewed_due AS s_reviewed_due,
+												// 			    s1.status AS s_status,
+												// 			    s1.material AS s_material,
+												// 			    s1.service AS s_service,
+            //                                                     s1.address AS s_address,
+												// 			    s1.category AS s_category,
+												// 			    s1.contact AS s_contact,
+												// 			    s1.document AS s_document,
+												// 			    d1.ID AS d_ID,
+												// 			    d1.type AS d_type,
+												// 			    d1.name AS d_name,
+												// 			    d1.file AS d_file,
+												// 			    d1.file_due AS d_file_due,
+												// 			    CASE 
+												// 			        WHEN 
+												// 			            LENGTH(d1.file) > 0 
+												// 			            AND (STR_TO_DATE(d1.file_due, '%m/%d/%Y') > CURDATE() OR DATE(d1.file_due) > CURDATE())
+												// 			            AND d1.reviewed_by > 0
+												// 			            AND d1.approved_by > 0
+												// 			        THEN 1 
+												// 			        ELSE 0 
+												// 			    END AS d_status,
+												// 			    CASE WHEN d1.ID > 0 THEN 1 ELSE 0 END AS d_count
+
+												// 			    FROM tbl_supplier AS s1
+
+												// 			    LEFT JOIN (
+												// 			        SELECT
+												// 			        * 
+												// 			        FROM tbl_supplier_document 
+												// 			        WHERE type = 0
+												// 			        AND ID IN (
+												// 			            SELECT
+												// 			            MAX(ID)
+												// 			            FROM tbl_supplier_document
+												// 			            WHERE type = 0
+												// 			            GROUP BY name, supplier_id
+												// 			        )
+												// 			    ) AS d1
+												// 			    ON s1.ID = d1.supplier_ID
+												// 			    AND FIND_IN_SET(d1.name, REPLACE(REPLACE(s1.document, ' ', ''), '|',','  )  ) > 0
+												// 			    WHERE s1.page = 2
+												// 			    AND s1.is_deleted = 0 
+												// 			    AND s1.email = '".$current_userEmail."'
+															    
+												// 			    UNION ALL
+															    
+															    
+												// 			    SELECT
+												// 			    s2.ID AS s_ID,
+												// 			    s2.user_id AS s_user_id,
+												// 			    s2.name AS s_name,
+												// 			    s2.reviewed_due AS s_reviewed_due,
+												// 			    s2.status AS s_status,
+												// 			    s2.material AS s_material,
+												// 			    s2.service AS s_service,
+            //                                                     s2.address AS s_address,
+												// 			    s2.category AS s_category,
+												// 			    s2.contact AS s_contact,
+												// 			    s2.document_other AS s_document,
+												// 			    d2.ID AS d_ID,
+												// 			    d2.type AS d_type,
+												// 			    d2.name AS d_name,
+												// 			    d2.file AS d_file,
+												// 			    d2.file_due AS d_file_due,
+												// 			    CASE 
+												// 			        WHEN 
+												// 			            LENGTH(d2.file) > 0 
+												// 			            AND (STR_TO_DATE(d2.file_due, '%m/%d/%Y') > CURDATE() OR DATE(d2.file_due) > CURDATE())
+												// 			            AND d2.reviewed_by > 0
+												// 			            AND d2.approved_by > 0
+												// 			        THEN 1 
+												// 			        ELSE 0 
+												// 			    END AS d_status,
+												// 			    CASE WHEN d2.ID > 0 THEN 1 ELSE 0 END AS d_count
+
+												// 			    FROM tbl_supplier AS s2
+
+												// 			    LEFT JOIN (
+												// 			        SELECT
+												// 			        * 
+												// 			        FROM tbl_supplier_document 
+												// 			        WHERE type = 1
+												// 			        AND ID IN (
+												// 			            SELECT
+												// 			            MAX(ID)
+												// 			            FROM tbl_supplier_document
+												// 			            WHERE type = 1
+												// 			            GROUP BY name, supplier_id
+												// 			        )
+												// 			    ) AS d2
+												// 			    ON s2.ID = d2.supplier_ID
+												// 			    AND FIND_IN_SET(d2.name, REPLACE(s2.document_other, ' | ', ',')  )   > 0
+												// 			    WHERE s2.page = 2
+												// 			    AND s2.is_deleted = 0 
+												// 			    AND s2.email = '".$current_userEmail."'
+												// 			)
+												// 			SELECT
+												// 			s_ID,
+												// 			s_e_name,
+												// 			s_name,
+												// 			s_reviewed_due,
+												// 			s_status,
+												// 			s_material,
+												// 			s_service, 
+												// 			s_address, 
+												// 			s_category,
+												// 			c_name,
+												// 			d_compliance,
+												// 			d_counting,
+												// 			cn.name AS cn_name,
+												// 			cn.address AS cn_address,
+												// 			cn.email AS cn_email,
+												// 			cn.phone AS cn_phone,
+												// 			cn.cell AS cn_cell,
+												// 			cn.fax AS cn_fax
+												// 			FROM (
+												// 			    SELECT 
+												// 			    s_ID,
+												// 			    s_user_id,
+												// 			    e.businessname AS s_e_name,
+												// 			    s_name, 
+												// 			    s_reviewed_due, 
+												// 			    s_status, 
+												// 				s_material,
+												// 				s_service, 
+												// 				s_address, 
+												// 			    s_contact,
+												// 			    s_category,
+												// 			    c.name AS c_name,
+												// 			    -- s_document, 
+												// 			    -- d_ID, 
+												// 			    -- d_type, 
+												// 			    -- d_name, 
+												// 			    -- d_file, 
+												// 			    -- d_file_due, 
+												// 			    -- d_status,
+												// 			    -- d_count,
+												// 			    SUM(d_status) AS d_compliance,
+												// 			    SUM(d_count) AS d_counting
+												// 			    FROM cte
+
+												// 			    LEFT JOIN (
+												// 			        SELECT
+												// 			        *
+												// 			        FROM tbl_supplier_category
+												// 			        WHERE deleted = 0
+												// 			    ) AS c
+												// 			    ON s_category = c.ID
+															    
+												// 			    LEFT JOIN (
+												// 			        SELECT
+												// 			        *
+												// 			        FROM tblEnterpiseDetails
+												// 			    ) AS e
+												// 			    ON s_user_id = e.users_entities
+															    
+												// 			    GROUP BY s_ID
+												// 			) AS r
+
+												// 			LEFT JOIN (
+												// 			    SELECT
+												// 			    *
+												// 			    FROM tbl_supplier_contact
+												// 			) AS cn
+												// 			ON FIND_IN_SET(cn.ID, REPLACE(s_contact, ' ', '')) > 0
+
+												// 			GROUP BY s_ID
+
+												// 			ORDER BY s_name" );
+															
+														$result = mysqli_query( $conn,"WITH RECURSIVE cte (s_ID, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
 															(
 															    SELECT
 															    s1.ID AS s_ID,
-															    s1.user_id AS s_user_id,
 															    s1.name AS s_name,
 															    s1.reviewed_due AS s_reviewed_due,
 															    s1.status AS s_status,
 															    s1.material AS s_material,
 															    s1.service AS s_service,
-                                                                s1.address AS s_address,
+															    s1.address AS s_address,
 															    s1.category AS s_category,
 															    s1.contact AS s_contact,
 															    s1.document AS s_document,
@@ -655,16 +1037,14 @@
 															    
 															    UNION ALL
 															    
-															    
 															    SELECT
 															    s2.ID AS s_ID,
-															    s2.user_id AS s_user_id,
 															    s2.name AS s_name,
 															    s2.reviewed_due AS s_reviewed_due,
 															    s2.status AS s_status,
 															    s2.material AS s_material,
 															    s2.service AS s_service,
-                                                                s2.address AS s_address,
+															    s2.address AS s_address,
 															    s2.category AS s_category,
 															    s2.contact AS s_contact,
 															    s2.document_other AS s_document,
@@ -706,8 +1086,10 @@
 															    AND s2.email = '".$current_userEmail."'
 															)
 															SELECT
+															m.ID AS m_ID,
+															m.material_name AS m_material_name,
+															m.spec_file AS m_spec_file,
 															s_ID,
-															s_e_name,
 															s_name,
 															s_reviewed_due,
 															s_status,
@@ -718,66 +1100,77 @@
 															c_name,
 															d_compliance,
 															d_counting,
-															cn.name AS cn_name,
-															cn.address AS cn_address,
-															cn.email AS cn_email,
-															cn.phone AS cn_phone,
-															cn.cell AS cn_cell,
-															cn.fax AS cn_fax
+															cn_name,
+															cn_address,
+															cn_email,
+															cn_phone,
+															cn_cell,
+															cn_fax
 															FROM (
-															    SELECT 
-															    s_ID,
-															    s_user_id,
-															    e.businessname AS s_e_name,
-															    s_name, 
-															    s_reviewed_due, 
-															    s_status, 
+																SELECT
+																s_ID,
+																s_name,
+																s_reviewed_due,
+																s_status,
 																s_material,
 																s_service, 
 																s_address, 
-															    s_contact,
-															    s_category,
-															    c.name AS c_name,
-															    -- s_document, 
-															    -- d_ID, 
-															    -- d_type, 
-															    -- d_name, 
-															    -- d_file, 
-															    -- d_file_due, 
-															    -- d_status,
-															    -- d_count,
-															    SUM(d_status) AS d_compliance,
-															    SUM(d_count) AS d_counting
-															    FROM cte
+																s_category,
+																c_name,
+																d_compliance,
+																d_counting,
+																cn.name AS cn_name,
+																cn.address AS cn_address,
+																cn.email AS cn_email,
+																cn.phone AS cn_phone,
+																cn.cell AS cn_cell,
+																cn.fax AS cn_fax
+																FROM (
+																    SELECT 
+																    s_ID, 
+																    s_name, 
+																    s_reviewed_due, 
+																    s_status, 
+																	s_material,
+																	s_service, 
+																	s_address, 
+																    s_contact,
+																    s_category,
+																    c.name AS c_name,
+																    SUM(d_status) AS d_compliance,
+																    SUM(d_count) AS d_counting
+																    FROM cte
 
-															    LEFT JOIN (
-															        SELECT
-															        *
-															        FROM tbl_supplier_category
-															        WHERE deleted = 0
-															    ) AS c
-															    ON s_category = c.ID
-															    
-															    LEFT JOIN (
-															        SELECT
-															        *
-															        FROM tblEnterpiseDetails
-															    ) AS e
-															    ON s_user_id = e.users_entities
-															    
-															    GROUP BY s_ID
-															) AS r
+																    LEFT JOIN (
+																        SELECT
+																        *
+																        FROM tbl_supplier_category
+																        WHERE deleted = 0
+																    ) AS c
+																    ON s_category = c.ID
+
+																    GROUP BY s_ID
+																) AS r
+
+																LEFT JOIN (
+																    SELECT
+																    *
+																    FROM tbl_supplier_contact
+																) AS cn
+																ON FIND_IN_SET(cn.ID, REPLACE(s_contact, ' ', '')) > 0
+
+																GROUP BY s_ID
+
+																ORDER BY s_name
+															) AS r2
 
 															LEFT JOIN (
-															    SELECT
-															    *
-															    FROM tbl_supplier_contact
-															) AS cn
-															ON FIND_IN_SET(cn.ID, REPLACE(s_contact, ' ', '')) > 0
+																SELECT
+																*
+																FROM tbl_supplier_material
+															) AS m
 
-															GROUP BY s_ID
-
-															ORDER BY s_name" );
+															ON FIND_IN_SET(m.ID, REPLACE(r2.s_material, ' ', '')) > 0" );
                                                         if ( mysqli_num_rows($result) > 0 ) {
                                                             $table_counter = 1;
                                                             while($row = mysqli_fetch_array($result)) {
@@ -860,26 +1253,44 @@
                                                                     // 	$material = implode(', ', $material_result);
                                                                     // }
                                                                     
-                                                                    if (!empty($material)) {
-																		$material_result = array();
-																		$material_arr = explode(", ", $material);
-																		foreach ($material_arr as $value) {
-																			// $selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_supplier_material WHERE ID=$value" );
-																			$selectMaterial = mysqli_query( $conn,"SELECT
-																				p.name AS p_name
-																				FROM tbl_supplier_material  AS m
+                //                                                     if (!empty($material)) {
+																// 		$material_result = array();
+																// 		$material_arr = explode(", ", $material);
+																// 		foreach ($material_arr as $value) {
+																// 			// $selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_supplier_material WHERE ID=$value" );
+																// 			$selectMaterial = mysqli_query( $conn,"SELECT
+																// 				p.name AS p_name
+																// 				FROM tbl_supplier_material  AS m
 
-																				LEFT JOIN (
-																					SELECT 
-																				    * 
-																				    FROM tbl_products
-																				) AS p
-																				ON m.material_name = p.ID
-																				WHERE m.ID = $value" );
-																			$rowMaterial = mysqli_fetch_array($selectMaterial);
-																			array_push($material_result, $rowMaterial['p_name']);
-																		}
-																		$material = implode(', ', $material_result);
+																// 				LEFT JOIN (
+																// 					SELECT 
+																// 				    * 
+																// 				    FROM tbl_products
+																// 				) AS p
+																// 				ON m.material_name = p.ID
+																// 				WHERE m.ID = $value" );
+																// 			$rowMaterial = mysqli_fetch_array($selectMaterial);
+																// 			array_push($material_result, $rowMaterial['p_name']);
+																// 		}
+																// 		$material = implode(', ', $material_result);
+																// 	}
+
+																	$material = '';
+																	if (!empty($row["m_material_name"])) {
+																		$material = '<a href="#modalEditMaterial" data-toggle="modal" class="btnEdit_Material" onclick="btnEdit_Material('.$row["m_ID"].', 2, \'modalEditMaterial\')">'.$row["m_material_name"].'</a>';
+																	}
+
+																	$material_spec = '';
+																	if (!empty($row["m_spec_file"])) {
+																        $spec_file = $row['m_spec_file'];
+																        $fileExtension = fileExtension($spec_file);
+																		$src = $fileExtension['src'];
+																		$embed = $fileExtension['embed'];
+																		$type = $fileExtension['type'];
+																		$file_extension = $fileExtension['file_extension'];
+																	    $url = $base_url.'uploads/supplier/';
+
+																		$material_spec = '<a href="'.$src.$url.rawurlencode($spec_file).$embed.'" data-src="'.$src.$url.rawurlencode($spec_file).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a>';
 																	}
 																}
                                                                 
@@ -900,9 +1311,9 @@
 																	<td>'.htmlentities($s_name ?? '').'</td>
 																	<td>'.htmlentities($c_name ?? '').'</td>
 																	<td>'.$material.'</td>
+																	<td class="text-center">'.$material_spec.'</td>
                                                                     <td>'.$address_arr.'</td>
 																	<td>'.htmlentities($cn_name ?? '').'</td>
-																	<td>'.htmlentities($cn_address ?? '').'</td>
 																	<td class="text-center">
 																		<ul class="list-inline">';
 																		if ($cn_email != "") { echo '<li><a href="mailto:'.$cn_email.'" target="_blank" title="Email"><i class="fa fa-envelope"></i></a></li>'; }
@@ -1531,7 +1942,7 @@
                                                                         <option value="0">Pending</option>
                                                                         <option value="1">Approved</option>
                                                                         <option value="2">Non-Approved</option>
-                                                                        <option value="3">Emergency Use Only</option>
+                                                                        <option value="3">Emergency Used Only</option>
                                                                         <option value="4">Do Not Use</option>
                                                                     </select>
                                                                 </div>
@@ -1569,6 +1980,15 @@
 																		<option value="7">Once Per Three Months (Quarterly)</option>
 																		<option value="8">Once Per Six Months (Bi-Annual)</option>
 																		<option value="5">Once Per Year</option>
+																	</select>
+																</div>
+															</div>
+															<div class="col-md-3">
+																<div class="form-group">
+																	<label class="control-label">Organic Supplier?</label>
+																	<select class="form-control" name="organic">
+																		<option value="0">No</option>
+																		<option value="1">Yes</option>
 																	</select>
 																</div>
 															</div>
@@ -2604,11 +3024,12 @@
 
 				if (client == 0) {
                     var country = $('#tabBasic_'+modal+' select[name="supplier_countries"]').val();
+					var organic = $('#tabBasic_'+modal+' select[name="organic"]').val();
                     if (id == 13 || id == 22 || id == 25) { id = id; }
                     else { id = 0; }
                     $.ajax({
                         type: "GET",
-                        url: "function.php?modalView_Supplier_Industry="+id+"&c="+country,
+                        url: "function.php?modalView_Supplier_Industry="+id+"&c="+country+"&o="+organic,
                         dataType: "html",                  
                         success: function(data){       
                             $('#tabDocuments_'+modal+' .mt-checkbox-list').html(data);
@@ -3108,9 +3529,9 @@
                                 html += '<td>'+obj.supplier_name+'</td>';
                                 html += '<td>'+obj.category+'</td>';
                                 html += '<td>'+obj.material+'</td>';
+                                html += '<td></td>';
                                 html += '<td>'+obj.address+'</td>';
                                 html += '<td>'+obj.contact_name+'</td>';
-                                html += '<td>'+obj.contact_address+'</td>';
                                 html += '<td class="text-center">'+obj.contact_info+'</td>';
                                 html += '<td class="text-center">'+obj.compliance+'%</td>';
                                 html += '<td class="text-center">'+obj.status+'</td>';
@@ -3195,9 +3616,9 @@
                             var html = '<td>'+obj.supplier_name+'</td>';
                             html += '<td>'+obj.category+'</td>';
                             html += '<td>'+obj.material+'</td>';
+                            html += '<td></td>';
                             html += '<td>'+obj.address+'</td>';
                             html += '<td>'+obj.contact_name+'</td>';
-                            html += '<td>'+obj.contact_address+'</td>';
                             html += '<td class="text-center">'+obj.contact_info+'</td>';
                             html += '<td class="text-center">'+obj.compliance+'%</td>';
                             html += '<td class="text-center">'+obj.status+'</td>';

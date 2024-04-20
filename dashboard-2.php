@@ -171,8 +171,7 @@
                         }
                         
                         if($switch_user_id == 253 AND $switch_user_id == 1) { $newUser = 1; }
-                        // if($switch_user_id == 423) { $newUser = 0; }
-                        $newUser = 0;
+                        if($switch_user_id == 423) { $newUser = 0; }
                     ?>
                     
                     <?php if($current_client == 0) { ?>

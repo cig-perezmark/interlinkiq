@@ -1,6 +1,6 @@
 <?php 
-    $title = "Compliance Dashboard";
-    $site = "dashboard";
+    $title = "Pricing";
+    $site = "pricing";
     $breadcrumbs = '';
     $sub_breadcrumbs = '';
 
@@ -170,7 +170,9 @@
                             }
                         }
                         
-                        if($switch_user_id == 253 AND $switch_user_id == 1) { $newUser = 1; }
+                        // if($switch_user_id == 253 AND $switch_user_id == 1) { $newUser = 1; }
+                        // if($switch_user_id == 423) { $newUser = 0; }
+                        $newUser = 1;
                     ?>
                     
                     <?php if($current_client == 0) { ?>
@@ -210,1154 +212,42 @@
                     <?php } ?>
 
                     <?php
-                        if($current_client == 0) {
-                            // $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site' AND (user_id = $switch_user_id OR user_id = $current_userEmployerID OR user_id = 163)");
-                            $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site'");
-                            while ($row = mysqli_fetch_assoc($result)) {
-                                $type_id = $row["type"];
-                                $file_title = $row["file_title"];
-                                $video_url = $row["youtube_link"];
+                        // if($current_client == 0) {
+                        //     // $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site' AND (user_id = $switch_user_id OR user_id = $current_userEmployerID OR user_id = 163)");
+                        //     $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site'");
+                        //     while ($row = mysqli_fetch_assoc($result)) {
+                        //         $type_id = $row["type"];
+                        //         $file_title = $row["file_title"];
+                        //         $video_url = $row["youtube_link"];
                                 
-                                $file_upload = $row["file_upload"];
-                                if (!empty($file_upload)) {
-                    	            $fileExtension = fileExtension($file_upload);
-                    				$src = $fileExtension['src'];
-                    				$embed = $fileExtension['embed'];
-                    				$type = $fileExtension['type'];
-                    				$file_extension = $fileExtension['file_extension'];
-                    	            $url = $base_url.'uploads/instruction/';
+                        //         $file_upload = $row["file_upload"];
+                        //         if (!empty($file_upload)) {
+                    	   //         $fileExtension = fileExtension($file_upload);
+                    				// $src = $fileExtension['src'];
+                    				// $embed = $fileExtension['embed'];
+                    				// $type = $fileExtension['type'];
+                    				// $file_extension = $fileExtension['file_extension'];
+                    	   //         $url = $base_url.'uploads/instruction/';
                     
-                            		$file_url = $src.$url.rawurlencode($file_upload).$embed;
-                                }
+                        //     		$file_url = $src.$url.rawurlencode($file_upload).$embed;
+                        //         }
                                 
-                                if ($type_id == 0) {
-                            		echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i> '.$file_title.'</a>';
-                            	} else {
-                            		echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><i class="fa fa-youtube"></i> '.$file_title.'</a>';
-                            	}
-                            }
+                        //         if ($type_id == 0) {
+                        //     		echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i> '.$file_title.'</a>';
+                        //     	} else {
+                        //     		echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><i class="fa fa-youtube"></i> '.$file_title.'</a>';
+                        //     	}
+                        //     }
                             
-                            if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163) {
-                                echo ' <a data-toggle="modal" data-target="#modalInstruction" class="btn btn-circle btn-success btn-xs" onclick="btnInstruction()">Add New Instruction</a>';
-                            }
-                        }
+                        //     if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $switch_user_id == 163) {
+                        //         echo ' <a data-toggle="modal" data-target="#modalInstruction" class="btn btn-circle btn-success btn-xs" onclick="btnInstruction()">Add New Instruction</a>';
+                        //     }
+                        // }
                     ?>
-
-                    <?php if($newUser == 0) { ?>
-                        <div class="row">
-                            <div class="col-md-3" style="margin-top: 5px;">
-                                <div class="input-group">
-                                    <input class="form-control" id="deliverable_search" type="text" placeholder="Search" />
-                                    <?php if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 163 OR $current_userEmployerID == 27) { ?>
-                                        <div class="input-group-btn">
-                                            <button type="button" class="btn green dropdown-toggle" data-toggle="dropdown">Action
-                                                <i class="fa fa-angle-down"></i>
-                                            </button>
-                                            <ul class="dropdown-menu pull-right">
-                                                <li>
-                                                    <a href="#modalArea" data-toggle="modal"> Add New </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    <?php } ?>
-                                </div>
-                                
-                                <div id="jstreeContainer">
-                                    <div id="jstreeAjax"></div>
-                                    <div id="jstree_HTML"></div>
-                                    <div class="hide" id="jstree_PHP">
-                                        <ul>
-                                            <?php
-                                                // function tree_item($parent_id) {
-                                                //     global $conn;
-                                                //     $output = '';
-    
-                                                //     $resultTreeItem = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE deleted = 0 AND parent_id = $parent_id" );
-                                                //     if ( mysqli_num_rows($resultTreeItem) > 0 ) {
-                                                //         $output .= '<ul>';
-                                                //             while($rowTreeItem = mysqli_fetch_array($resultTreeItem)) {
-                                                //                 $item_ID = $rowTreeItem["ID"];
-                                                //                 $item_name = $rowTreeItem["name"];
-                                                //                 $item_parent_id = $rowTreeItem["parent_id"];
-                                                //                 $item_child_id = $rowTreeItem["child_id"];
-    
-                                                //                 $item_child = false;
-                                                //                 if (!empty($rowTreeItem["child_id"])) { $item_child = true; }
-    
-                                                //                 $output .= '<li>'.$item_ID .' '. $item_name;
-    
-                                                //                     if (!empty($item_child_id)) {
-                                                //                         $output .= tree_item($item_ID);
-                                                //                     }
-    
-                                                //                 $output .= '</li>';
-                                                //             }
-                                                //         $output .= '</ul>';
-                                                //     }
-    
-                                                //     return $output;
-                                                // }
-    
-                                                // $resultTree = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE parent_id = 0 AND deleted = 0 AND user_id = $current_userEmployerID" );
-                                                // if ($collabUser == 1 AND !isset($_COOKIE['switchAccount'])) { $resultTree = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE deleted = 0 AND collaborator_id <> ''" ); }
-                                            
-                                                // if ( mysqli_num_rows($resultTree) > 0 ) {
-                                                //     while($rowTree = mysqli_fetch_array($resultTree)) {
-                                                //         $library_ID = $rowTree["ID"];
-                                                //         $library_name = $rowTree["name"];
-                                                //         $library_collaborator_id = $rowTree["collaborator_id"];
-    
-                                                //         $library_child = false;
-                                                //         if (!empty($rowTree["child_id"])) { $library_child = true; }
-    
-                                                //         $array_name_id = explode(", ", $library_name);
-                                                //         if ( count($array_name_id) == 4 ) {
-                                                //             $data_name = array();
-    
-                                                //             $selectType = mysqli_query($conn,"SELECT * FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'");
-                                                //             if ( mysqli_num_rows($selectType) > 0 ) {
-                                                //                 while($rowType = mysqli_fetch_array($selectType)) {
-                                                //                     array_push($data_name, $rowType["name"]);
-                                                //                 }
-                                                //             }
-    
-                                                //             $selectCategory = mysqli_query($conn,"SELECT * FROM tbl_library_category WHERE ID = '".$array_name_id[1]."'");
-                                                //             if ( mysqli_num_rows($selectCategory) > 0 ) {
-                                                //                 while($rowCategory = mysqli_fetch_array($selectCategory)) {
-                                                //                     array_push($data_name, $rowCategory["name"]);
-                                                //                 }
-                                                //             }
-    
-                                                //             $selectScope = mysqli_query($conn,"SELECT * FROM tbl_library_scope WHERE ID = '".$array_name_id[2]."'");
-                                                //             if ( mysqli_num_rows($selectScope) > 0 ) {
-                                                //                 while($rowScope = mysqli_fetch_array($selectScope)) {
-                                                //                     array_push($data_name, $rowScope["name"]);
-                                                //                 }
-                                                //             }
-    
-                                                //             $selectModule = mysqli_query($conn,"SELECT * FROM tbl_library_module WHERE ID = '".$array_name_id[3]."'");
-                                                //             if ( mysqli_num_rows($selectModule) > 0 ) {
-                                                //                 while($rowModule = mysqli_fetch_array($selectModule)) {
-                                                //                     array_push($data_name, $rowModule["name"]);
-                                                //                 }
-                                                //             }
-    
-                                                //             $library_name = implode(" - ",$data_name);
-                                                //         }
-    
-                                                //         echo '<li>'.$library_name;
-    
-                                                //             if ($library_child == true) {
-                                                //                 echo tree_item($library_ID);
-                                                //             }
-    
-                                                //         echo '</li>';
-                                                //     }
-                                                // }
-                                            ?>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <button id="btnTree" type="button" class="btn btn-sm btn-primary hide" style="margin-top:10px;">View All</button>
-                            </div>
-                            
-                            <?php
-                                if (empty($_GET['d']) AND ($current_userID == 3111 OR  $switch_user_id == 550111 OR $current_client == 1) ) {
-                            ?>
-                                    <div class="left" style="display: flex; flex-direction: column-reverse;">
-                                        <div class="table">
-                                            <h3 class="table-title">Compliance Breakdown</h3>
-                                            <table id="reportable">
-                                                <tbody>                                       
-                                                    <?php 
-                                                        // $show_reportsummary=mysqli_query($conn,"select t1.child_id as chd2, t1.collaborator_id, t1.ID, t1.name, count(distinct(t1.child_id)) as count_child, count(file_id) as file_count
-                                                        // , count(t1.no_upload_flag) as 'count_no_upload', count(t1.expired_flag) as 'count_expired', sum(coalesce(t1.30_days,0)) as 'count_30_days', sum(coalesce(t1.90_days,0)) as 'count_90_days'
-                                                        // , t1.count_actions, t1.sum_compliant,  round(avg(t1.child_percentage_compliance),2) as 'child_percentage_compliance'
-                                                        // FROM(
-                                                        // SELECT t1.child_id as chd2, t1.collaborator_id, t1.ID, t1.name, child.name as child_name, child.id as child_id, t2.ID as file_id
-                                                        // , case when count(t2.ID)=0 then 1 end as 'no_upload_flag' 
-                                                        // , case when t2.due_date<CURRENT_TIMESTAMP then 1 end as 'expired_flag' 
-                                                        // , case when DATEDIFF(t2.due_date, CURRENT_TIMESTAMP)>0 and DATEDIFF(t2.due_date, CURRENT_TIMESTAMP)<=30 then 1 end as '30_days'
-                                                        // , case when DATEDIFF(t2.due_date, CURRENT_TIMESTAMP)>30 and DATEDIFF(t2.due_date, CURRENT_TIMESTAMP)<=90 then 1 end as '90_days'    
-                                                        // , t3.sum_compliant, t3.count_actions, COALESCE(t3.percentage_compliance,0) as 'child_percentage_compliance'
-                                                        // FROM tbl_library t1
-                                                        // left join (
-                                                        // select * from tbl_library 
-                                                        // where 1=1
-                                                        // and parent_id<>0
-                                                        // and deleted=0
-                                                        // )child on t1.ID=child.parent_id
-                                                        // left join tbl_library_file t2
-                                                        // on child.ID=t2.library_id
-                                                        // left join (
-                                                        // select t1.library_id, count(id) as count_actions, sum(compliant) as sum_compliant, case when count(id)>0 then (sum(compliant)/count(id))*100 end as 'percentage_compliance'
-                                                        // from tbl_library_compliance t1
-                                                        // group by t1.library_id
-                                                        // )t3 on child.ID=t3.library_id
-                                                        // WHERE 1=1
-                                                        // and t1.deleted=0
-                                                        // and t1.parent_id=0
-                                                        // and t1.user_id=$current_userEmployerID
-                                                        // group by t1.ID, t1.name, child.name, child.id, t2.id, t1.child_id, t1.collaborator_id
-                                                        // order by 1 
-                                                        // ) t1
-                                                        // WHERE 1=1
-                                                        // group by t1.id, t1.name  ");
-    
-                                                        // $total_uploaded=0;
-                                                        // $total_compliance=0;
-                                                        // while ($rowTree = mysqli_fetch_array($show_reportsummary)) {
-        
-                                                        //     $library_ID = $rowTree["ID"];
-                                                        //     $library_name = $rowTree["name"];
-                                                        //     $library_collaborator_id = $rowTree["collaborator_id"];
-                                                        //     $count_expired = $rowTree["count_expired"];
-                                                        //     $count_1_30days =  $rowTree["count_30_days"];
-                                                        //     $count_30_90days = $rowTree["count_90_days"];
-                                                        //     $count_no_upload = $rowTree["count_no_upload"];
-                                                        //     $percentage_compliance = $rowTree["child_percentage_compliance"];
-                                                        //     $count_child=$rowTree["count_child"];
-        
-                                                        //     $total_uploaded += $count_no_upload;
-                                                        //     $total_compliance += $percentage_compliance;
-        
-                                                        //     $library_child = false;
-                                                        //     if (!empty($rowTree["chd2"])) { $library_child = true; }
-        
-                                                        //     $array_name_id = explode(", ", $library_name);
-                                                        //     if ( count($array_name_id) == 4 ) {
-                                                        //         $data_name = array();
-        
-                                                        //         $selectType = mysqli_query($conn,"SELECT * FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'");
-                                                        //         if ( mysqli_num_rows($selectType) > 0 ) {
-                                                        //             while($rowType = mysqli_fetch_array($selectType)) {
-                                                        //                 array_push($data_name, $rowType["name"]);
-                                                        //             }
-                                                        //         }
-        
-                                                        //         $selectCategory = mysqli_query($conn,"SELECT * FROM tbl_library_category WHERE ID = '".$array_name_id[1]."'");
-                                                        //         if ( mysqli_num_rows($selectCategory) > 0 ) {
-                                                        //             while($rowCategory = mysqli_fetch_array($selectCategory)) {
-                                                        //                 array_push($data_name, $rowCategory["name"]);
-                                                        //             }
-                                                        //         }
-        
-                                                        //         $selectScope = mysqli_query($conn,"SELECT * FROM tbl_library_scope WHERE ID = '".$array_name_id[2]."'");
-                                                        //         if ( mysqli_num_rows($selectScope) > 0 ) {
-                                                        //             while($rowScope = mysqli_fetch_array($selectScope)) {
-                                                        //                 array_push($data_name, $rowScope["name"]);
-                                                        //             }
-                                                        //         }
-        
-                                                        //         $selectModule = mysqli_query($conn,"SELECT * FROM tbl_library_module WHERE ID = '".$array_name_id[3]."'");
-                                                        //         if ( mysqli_num_rows($selectModule) > 0 ) {
-                                                        //             while($rowModule = mysqli_fetch_array($selectModule)) {
-                                                        //                 array_push($data_name, $rowModule["name"]);
-                                                        //             }
-                                                        //         }
-        
-                                                        //         $library_name = implode(" - ",$data_name);
-                                                        //     }
-                                                        //     $display = false;
-                                                        //     if($collabUser == 1 AND !isset($_COOKIE['switchAccount'])) {
-                                                        //         if (!empty($library_collaborator_id)) {
-                                                        //             $collab = json_decode($library_collaborator_id, true);
-                                                        //             foreach ($collab as $key => $value) {
-                                                        //                 if ($current_userEmployerID == $key) {
-                                                        //                     if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
-                                                        //                         $display = true;
-        
-                                                        //                         break;
-                                                        //                     }
-                                                        //                 }
-                                                        //             }
-                                                        //         }
-                                                        //     } else {
-                                                        //         $display = true;
-                                                        //     }
-        
-                                                        //     if ($display == true) {
-                                                        //         echo '<tr>
-                                                        //             <td onClick="btnLoadDashboard('.$library_ID.')">'.$library_name.'</td>
-                                                        //             <td class="centertd">'.$percentage_compliance.'%</td>
-                                                        //             <td class="centertd">'.$count_no_upload.'</td>
-                                                        //             <td class="centertd">'.$count_expired.'</td>
-                                                        //             <td class="centertd">'.$count_1_30days.'</td>
-                                                        //             <td class="centertd">'.$count_30_90days.'</td>
-                                                        //         </tr>';
-                                                        //     }
-                                                        // }
-                                                        
-                                                        
-                                                        $selectDashboard = mysqli_query($conn, "SELECT 
-                                                        *
-                                                        FROM (
-                                                            SELECT
-                                                            t1.ID AS mainID,
-                                                            t1.parent_id AS parentID,
-                                                            t1.collaborator_id AS parentCollab,
-                                                            t1.name AS parentName,
-                                                            COUNT(t2.ID) AS childRow,
-                                                            COALESCE(c.count_ID, 0) AS complyRow,
-                                                            COALESCE(c.sum_compliant, 0) as complySum,
-                                                            COALESCE(c.percent_compliant, 0) as complyPercentage,
-                                                            COALESCE(f.count_ID, 0) AS fileRow,
-                                                            COALESCE(f.expired_files, 0) AS fileExpire,
-                                                            COALESCE(f.expired_files30, 0) AS fileExpire30,
-                                                            COALESCE(f.expired_files90, 0) AS fileExpire90
-                                                            FROM tbl_library AS t1 
-                                                            
-                                                            LEFT JOIN (
-                                                                SELECT * FROM tbl_library WHERE deleted = 0 AND parent_id <> 0
-                                                            ) AS t2 
-                                                            ON t1.ID = t2.parent_id
-                                                            
-                                                            LEFT JOIN (
-                                                                SELECT
-                                                                ID,
-                                                                library_id,
-                                                                action_items,
-                                                                COUNT(ID) AS count_ID, 
-                                                                SUM(compliant) as sum_compliant,
-                                                                CASE WHEN COUNT(ID) = SUM(compliant = 1) THEN 100 ELSE 0 END AS percent_compliant 
-                                                                FROM tbl_library_compliance 
-                                                                WHERE deleted = 0
-                                                                AND parent_id = 0
-                                                                GROUP BY library_id
-                                                            ) AS c 
-                                                            ON t1.ID = c.library_id
-                                                            
-                                                            LEFT JOIN (
-                                                                SELECT
-                                                                ID,
-                                                                library_id,
-                                                                COUNT(ID) AS count_ID,
-                                                                COUNT(CASE WHEN due_date < CURDATE() THEN 1 END) AS expired_files,
-                                                                CASE WHEN DATEDIFF(CURDATE(), DATE_SUB(due_date, INTERVAL 30 DAY)) >= 0 AND DATEDIFF(CURDATE(), DATE_SUB(due_date, INTERVAL 30 DAY)) <= 30 THEN 1 ELSE 0 END AS expired_files30,
-                                                                CASE WHEN DATEDIFF(CURDATE(), DATE_SUB(due_date, INTERVAL 30 DAY)) >= 60 AND DATEDIFF(CURDATE(), DATE_SUB(due_date, INTERVAL 90 DAY)) <= 30 THEN 1 ELSE 0 END AS expired_files90
-                                                                FROM tbl_library_file
-                                                                WHERE deleted = 0
-                                                                GROUP BY library_id
-                                                            ) AS f
-                                                            ON t1.ID = f.library_id
-                                                            
-                                                            WHERE t1.deleted = 0
-                                                            -- AND t1.parent_id = 0
-                                                            AND t1.user_id = $switch_user_id
-                                                            GROUP BY t1.ID
-                                                        ) AS r");
-                                                        if (mysqli_num_rows($selectDashboard) > 0) {
-                                                            $file_uploaded = 0;
-                                                            $compliance_count = 0;
-                                                            $compliance_overall = 0;
-                                                            $compliance_average = 0;
-                                                            while($rowDashboard = mysqli_fetch_array($selectDashboard)) {
-                                                                $dashboard_ID = $rowDashboard["mainID"];
-                                                                $dashboard_parentID = $rowDashboard["parentID"];
-                                                                $dashboard_complyRow = $rowDashboard["complyRow"];
-                                                                $dashboard_complySum = $rowDashboard["complySum"];
-                                                                $dashboard_complyPercentage = $rowDashboard["complyPercentage"];
-                                                                $dashboard_fileRow = $rowDashboard["fileRow"];
-                                                                $dashboard_fileExpire = $rowDashboard["fileExpire"];
-                                                                $dashboard_fileExpire30 = $rowDashboard["fileExpire30"];
-                                                                $dashboard_fileExpire90 = $rowDashboard["fileExpire90"];
                     
-                                                                if ($dashboard_parentID == 0) {
-                                                                    // $dashboard_result = array();
-                                                                    // $data_output = array (
-                                                                    //     'compliance' => $dashboard_complyPercentage,
-                                                                    //     'file_count' => $dashboard_fileRow,
-                                                                    //     'file_expired' => $dashboard_fileExpire,
-                                                                    //     'file_expired30' => $dashboard_fileExpire30,
-                                                                    //     'file_expired90' => $dashboard_fileExpire90
-                                                                    // );
-                                                                    // array_push($dashboard_result, $data_output);
-                        
-                                                                    $dashboard_name = $rowDashboard["parentName"];
-                                                                    $array_name_id = explode(", ", $dashboard_name);
-                                                                    if ( count($array_name_id) == 4 ) {
-                                                                        $data_name = array();
-                        
-                                                                        $selectType = mysqli_query($conn,"SELECT * FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'");
-                                                                        if ( mysqli_num_rows($selectType) > 0 ) {
-                                                                            while($rowType = mysqli_fetch_array($selectType)) {
-                                                                                array_push($data_name, $rowType["name"]);
-                                                                            }
-                                                                        }
-                        
-                                                                        $selectCategory = mysqli_query($conn,"SELECT * FROM tbl_library_category WHERE ID = '".$array_name_id[1]."'");
-                                                                        if ( mysqli_num_rows($selectCategory) > 0 ) {
-                                                                            while($rowCategory = mysqli_fetch_array($selectCategory)) {
-                                                                                array_push($data_name, $rowCategory["name"]);
-                                                                            }
-                                                                        }
-                        
-                                                                        $selectScope = mysqli_query($conn,"SELECT * FROM tbl_library_scope WHERE ID = '".$array_name_id[2]."'");
-                                                                        if ( mysqli_num_rows($selectScope) > 0 ) {
-                                                                            while($rowScope = mysqli_fetch_array($selectScope)) {
-                                                                                array_push($data_name, $rowScope["name"]);
-                                                                            }
-                                                                        }
-                        
-                                                                        $selectModule = mysqli_query($conn,"SELECT * FROM tbl_library_module WHERE ID = '".$array_name_id[3]."'");
-                                                                        if ( mysqli_num_rows($selectModule) > 0 ) {
-                                                                            while($rowModule = mysqli_fetch_array($selectModule)) {
-                                                                                array_push($data_name, $rowModule["name"]);
-                                                                            }
-                                                                        }
-                        
-                                                                        $dashboard_name = implode(" - ",$data_name);
-                                                                    }
-                                
-                                                                    // $dashboard_result = dashboardChild($dashboard_ID, $current_userEmployerID, $dashboard_result);
-                        
-                                                                    // $compliance_average = 0;
-                                                                    // $compliance_total = array_reduce($dashboard_result, function($carry, $item) {
-                                                                    //     return $carry + intval($item["compliance"]);
-                                                                    // }, 0);
-                                                                    // if (count($dashboard_result) > 0) { $compliance_average = $compliance_total / count($dashboard_result); }
-                                                                    // $compliance_overall += $compliance_average;
-                        
-                                                                    // $file_total = array_reduce($dashboard_result, function($carry, $item) {
-                                                                    //     return $carry + intval($item["file_count"]);
-                                                                    // }, 0);
-                                                                    // $file_uploaded += $file_total;
-                        
-                                                                    // $file_total_expired = array_reduce($dashboard_result, function($carry, $item) {
-                                                                    //     return $carry + intval($item["file_expired"]);
-                                                                    // }, 0);
-                        
-                                                                    // $file_total_expired30 = array_reduce($dashboard_result, function($carry, $item) {
-                                                                    //     return $carry + intval($item["file_expired30"]);
-                                                                    // }, 0);
-                        
-                                                                    // $file_total_expired90 = array_reduce($dashboard_result, function($carry, $item) {
-                                                                    //     return $carry + intval($item["file_expired90"]);
-                                                                    // }, 0);
-                                                                    
-                                                                    
-                                                                    
-                                                                    $selectCompliance = mysqli_query( $conn, "WITH RECURSIVE cte (mainID, parentID, parentCollab, parentName) AS
-                                                                        (
-                                                                            SELECT 
-                                                                                t1.ID AS mainID,
-                                                                                t1.parent_id AS parentID,
-                                                                                t1.collaborator_id AS parentCollab,
-                                                                                t1.name AS parentName
-                                                                            FROM tbl_library AS t1
-                                                                            WHERE t1.deleted = 0 AND t1.user_id = $switch_user_id AND t1.parent_id = 0 AND t1.ID = $dashboard_ID
-                                                                            
-                                                                            UNION ALL
-                                                                            
-                                                                            SELECT 
-                                                                                t2.ID AS mainID,
-                                                                                t2.parent_id AS parentID,
-                                                                                t2.collaborator_id AS parentCollab,
-                                                                                t2.name AS parentName
-                                                                            FROM tbl_library AS t2
-                                                                            JOIN cte ON cte.mainID = t2.parent_id
-                                                                            WHERE t2.deleted = 0 AND t2.user_id = $switch_user_id
-                                                                        )
-                                                                        SELECT 
-                                                                        mainID, parentID, parentCollab, parentName,
-                                                                        CASE WHEN COUNT(mainID) > 0 THEN SUM(percent_compliant) / COUNT(mainID) END AS compliantPercentage
-                                                                        FROM cte
-                
-                                                                        LEFT JOIN (
-                                                                        SELECT
-                                                                            ID,
-                                                                            library_id,
-                                                                            action_items,
-                                                                            COUNT(ID) AS count_ID, 
-                                                                            SUM(compliant) as sum_compliant,
-                                                                            CASE WHEN COUNT(ID) = SUM(compliant = 1) THEN 100 ELSE 0 END AS percent_compliant 
-                                                                            FROM tbl_library_compliance 
-                                                                            WHERE deleted = 0
-                                                                            AND parent_id = 0
-                                                                            GROUP BY library_id
-                                                                        ) AS c 
-                                                                        ON cte.mainID = c.library_id" );
-                                                                    if ( mysqli_num_rows($selectCompliance) > 0 ) {
-                                                                        $rowCompliance = mysqli_fetch_array($selectCompliance);
-                                                                        $compliance_average = number_format(floatval($rowCompliance["compliantPercentage"]), 2);
-                                                                    }
-                                                                    $compliance_count++;
-                                                                    $compliance_overall += $compliance_average;
-        
-                                                                    $selectFileCount = mysqli_query( $conn,"WITH RECURSIVE cte (mainID, parentID, parentCollab, parentName) AS
-                                                                        (
-                                                                            SELECT 
-                                                                                t1.ID AS mainID,
-                                                                                t1.parent_id AS parentID,
-                                                                                t1.collaborator_id AS parentCollab,
-                                                                                t1.name AS parentName
-                                                                            FROM tbl_library AS t1
-                                                                            WHERE t1.deleted = 0 AND t1.user_id = $switch_user_id AND t1.parent_id = 0 AND t1.ID = $dashboard_ID
-                                                                            
-                                                                            UNION ALL
-                                                                            
-                                                                            SELECT 
-                                                                                t2.ID AS mainID,
-                                                                                t2.parent_id AS parentID,
-                                                                                t2.collaborator_id AS parentCollab,
-                                                                                t2.name AS parentName
-                                                                            FROM tbl_library AS t2
-                                                                            JOIN cte ON cte.mainID = t2.parent_id
-                                                                            WHERE t2.deleted = 0 AND t2.user_id = $switch_user_id
-                                                                        )
-                                                                        SELECT 
-                                                                        COUNT(mainID) AS fileCount, mainID, parentID, parentCollab, parentName
-                                                                        FROM cte
-                
-                                                                        LEFT JOIN (
-                                                                            SELECT library_id, files, name, last_modified, due_date FROM tbl_library_file WHERE deleted = 0
-                                                                        ) AS f
-                                                                        ON cte.mainID = f.library_id
-                                                                        WHERE f.name IS NOT NULL");
-                                                                    if ( mysqli_num_rows($selectFileCount) > 0 ) {
-                                                                        $rowFile = mysqli_fetch_array($selectFileCount);
-                                                                        $file_total = $rowFile["fileCount"];
-                                                                    }
-                                                                    $file_uploaded += $file_total;
-                
-                                                                    $selectFileCountExpired = mysqli_query( $conn,"WITH RECURSIVE cte (mainID, parentID, parentCollab, parentName) AS
-                                                                        (
-                                                                            SELECT 
-                                                                                t1.ID AS mainID,
-                                                                                t1.parent_id AS parentID,
-                                                                                t1.collaborator_id AS parentCollab,
-                                                                                t1.name AS parentName
-                                                                            FROM tbl_library AS t1
-                                                                            WHERE t1.deleted = 0 AND t1.user_id = $switch_user_id AND t1.parent_id = 0 AND t1.ID = $dashboard_ID
-                                                                            
-                                                                            UNION ALL
-                                                                            
-                                                                            SELECT 
-                                                                                t2.ID AS mainID,
-                                                                                t2.parent_id AS parentID,
-                                                                                t2.collaborator_id AS parentCollab,
-                                                                                t2.name AS parentName
-                                                                            FROM tbl_library AS t2
-                                                                            JOIN cte ON cte.mainID = t2.parent_id
-                                                                            WHERE t2.deleted = 0 AND t2.user_id = $switch_user_id
-                                                                        )
-                                                                        SELECT 
-                                                                        COUNT(mainID) AS fileCount, mainID, parentID, parentCollab, parentName
-                                                                        FROM cte
-                
-                                                                        LEFT JOIN (
-                                                                            SELECT library_id, files, name, last_modified, due_date FROM tbl_library_file WHERE deleted = 0 AND due_date < CURDATE()
-                                                                        ) AS f
-                                                                        ON cte.mainID = f.library_id
-                                                                        WHERE f.name IS NOT NULL");
-                                                                    if ( mysqli_num_rows($selectFileCountExpired) > 0 ) {
-                                                                        $rowFileExpired = mysqli_fetch_array($selectFileCountExpired);
-                                                                        $file_total_expired = $rowFileExpired["fileCount"];
-                                                                    }
-                
-                                                                    $selectFileCountExpired30 = mysqli_query( $conn,"WITH RECURSIVE cte (mainID, parentID, parentCollab, parentName) AS
-                                                                        (
-                                                                            SELECT 
-                                                                                t1.ID AS mainID,
-                                                                                t1.parent_id AS parentID,
-                                                                                t1.collaborator_id AS parentCollab,
-                                                                                t1.name AS parentName
-                                                                            FROM tbl_library AS t1
-                                                                            WHERE t1.deleted = 0 AND t1.user_id = $switch_user_id AND t1.parent_id = 0 AND t1.ID = $dashboard_ID
-                                                                            
-                                                                            UNION ALL
-                                                                            
-                                                                            SELECT 
-                                                                                t2.ID AS mainID,
-                                                                                t2.parent_id AS parentID,
-                                                                                t2.collaborator_id AS parentCollab,
-                                                                                t2.name AS parentName
-                                                                            FROM tbl_library AS t2
-                                                                            JOIN cte ON cte.mainID = t2.parent_id
-                                                                            WHERE t2.deleted = 0 AND t2.user_id = $switch_user_id
-                                                                        )
-                                                                        SELECT 
-                                                                        COUNT(mainID) AS fileCount, mainID, parentID, parentCollab, parentName
-                                                                        FROM cte
-                
-                                                                        LEFT JOIN (
-                                                                            SELECT library_id, files, name, last_modified, due_date FROM tbl_library_file WHERE deleted = 0 AND DATEDIFF(CURDATE(), DATE_SUB(due_date, INTERVAL 30 DAY)) >= 0 AND DATEDIFF(CURDATE(), DATE_SUB(due_date, INTERVAL 30 DAY)) <= 30
-                                                                        ) AS f
-                                                                        ON cte.mainID = f.library_id
-                                                                        WHERE f.name IS NOT NULL");
-                                                                    if ( mysqli_num_rows($selectFileCountExpired30) > 0 ) {
-                                                                        $rowFileExpired30 = mysqli_fetch_array($selectFileCountExpired30);
-                                                                        $file_total_expired30 = $rowFileExpired30["fileCount"];
-                                                                    }
-                
-                                                                    $selectFileCountExpired90 = mysqli_query( $conn,"WITH RECURSIVE cte (mainID, parentID, parentCollab, parentName) AS
-                                                                        (
-                                                                            SELECT 
-                                                                                t1.ID AS mainID,
-                                                                                t1.parent_id AS parentID,
-                                                                                t1.collaborator_id AS parentCollab,
-                                                                                t1.name AS parentName
-                                                                            FROM tbl_library AS t1
-                                                                            WHERE t1.deleted = 0 AND t1.user_id = $switch_user_id AND t1.parent_id = 0 AND t1.ID = $dashboard_ID
-                                                                            
-                                                                            UNION ALL
-                                                                            
-                                                                            SELECT 
-                                                                                t2.ID AS mainID,
-                                                                                t2.parent_id AS parentID,
-                                                                                t2.collaborator_id AS parentCollab,
-                                                                                t2.name AS parentName
-                                                                            FROM tbl_library AS t2
-                                                                            JOIN cte ON cte.mainID = t2.parent_id
-                                                                            WHERE t2.deleted = 0 AND t2.user_id = $switch_user_id
-                                                                        )
-                                                                        SELECT 
-                                                                        COUNT(mainID) AS fileCount, mainID, parentID, parentCollab, parentName
-                                                                        FROM cte
-                
-                                                                        LEFT JOIN (
-                                                                            SELECT library_id, files, name, last_modified, due_date FROM tbl_library_file WHERE deleted = 0 AND DATEDIFF(CURDATE(), DATE_SUB(due_date, INTERVAL 30 DAY)) >= 0 AND DATEDIFF(CURDATE(), DATE_SUB(due_date, INTERVAL 30 DAY)) <= 30
-                                                                        ) AS f
-                                                                        ON cte.mainID = f.library_id
-                                                                        WHERE f.name IS NOT NULL");
-                                                                    if ( mysqli_num_rows($selectFileCountExpired90) > 0 ) {
-                                                                        $rowFileExpired90 = mysqli_fetch_array($selectFileCountExpired90);
-                                                                        $file_total_expired90 = $rowFileExpired90["fileCount"];
-                                                                    }
-                                                                    
-                                                                    echo '<tr>
-                                                                        <td href="#modalReport" data-toggle="modal" onClick="btnReport('.$dashboard_ID.')">'.$dashboard_name.'</td>
-                                                                        <td class="text-center" href="#modalComplianceList" data-toggle="modal" onclick="btnComplianceList('.$dashboard_ID.')">'.$compliance_average.'%</td>
-                                                                        <td class="text-center" href="#modalFileUploads" data-toggle="modal" onclick="btnFileUploads('.$dashboard_ID.', 1)">'.$file_total.'</td>
-                                                                        <td class="text-center" href="#modalFileUploads" data-toggle="modal" onclick="btnFileUploads('.$dashboard_ID.', 2)">'.$file_total_expired.'</td>
-                                                                        <td class="text-center" href="#modalFileUploads" data-toggle="modal" onclick="btnFileUploads('.$dashboard_ID.', 3)">'.$file_total_expired30.'</td>
-                                                                        <td class="text-center" href="#modalFileUploads" data-toggle="modal" onclick="btnFileUploads('.$dashboard_ID.', 4)">'.$file_total_expired90.'</td>
-                                                                    </tr>';
-                                                                }
-                                                            }
-                                                        }
-                                                    ?>
-                                                </tbody>
-                                                <thead>
-                                                    <tr class="header">
-                                                        <th>Item</th>
-                                                        <th>Compliance %</th>
-                                                        <th><?php echo $file_uploaded; ?> File Upload</th>
-                                                        <th>EXPIRED</th>
-                                                        <th>1-30 DAYS</th>
-                                                        <th>30-90 DAYS</th>
-                                                    </tr>
-                                                </thead>
-                                            </table>
-                                            
-                                            <h3 class="table-title">Enterprise</h3>
-                                            <table class="reportable">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Items</th>
-                                                        <th class="text-center">File Upload</th>
-                                                        <th class="text-center">EXPIRED</th>
-                                                        <th class="text-center">1-30 DAYS</th>
-                                                        <th class="text-center">30-90 DAYS</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php
-                					                    $selectEnterprise = mysqli_query( $conn,"WITH RECURSIVE cte (type, item, total_uploaded, sum_expired, sum_expired30, sum_expired90) AS
-                                                            (
-                                                                SELECT
-                                                                type,
-                                                            	CASE
-                                                            		WHEN type = 1 THEN 'Regulatory'
-                                                            		WHEN type = 2 THEN 'Other'
-                                                            		WHEN type = 3 THEN 'Certification'
-                                                            		WHEN type = 4 THEN 'Accreditation'
-                                                            	END AS item,
-                                                            	COUNT(*) AS total_uploaded,
-                                                            	COALESCE(SUM(expired), 0) AS sum_expired,
-                                                            	COALESCE(SUM(expired30), 0) AS sum_expired30,
-                                                            	COALESCE(SUM(expired90), 0) AS sum_expired90
-                                                            	FROM (
-                                                            		SELECT
-                                                            	    table_entities AS type,
-                                                            		CASE 
-                                                            		    WHEN
-                                                            		    	expiry_date IS NULL
-                                                            		        OR LENGTH(expiry_date) = 0 
-                                                            		        OR DATE(expiry_date) < CURDATE()
-                                                            		    THEN 1
-                                                            		    ELSE 0
-                                                            		END AS expired,
-                                                            		CASE 
-                                                            		    WHEN
-                                                            		    	expiry_date IS NOT NULL
-                                                            		        AND LENGTH(expiry_date) > 0
-		                                                                    AND expiry_date BETWEEN CURDATE() AND CURDATE() - INTERVAL 30 DAY
-                                                            		    THEN 1 
-                                                            		    ELSE 0 
-                                                            		END AS expired30,
-                                                            		CASE 
-                                                            		    WHEN
-                                                            		    	expiry_date IS NOT NULL
-                                                            		        AND LENGTH(expiry_date) > 0
-		                                                                    AND expiry_date BETWEEN CURDATE() - INTERVAL 31 DAY AND CURDATE() - INTERVAL 90 DAY
-                                                            		    THEN 1
-                                                            		    ELSE 0
-                                                            		END AS expired90
-                                                            
-                                                            		FROM tblFacilityDetails_registration 
-                                                            
-                                                            		WHERE ownedby = $switch_user_id
-                                                            		AND table_entities != 2
-                                                            	) AS o1
-                                                            
-                                                            	GROUP BY o1.type
-                                                                
-                                                                UNION ALL
-                                                                
-                                                                SELECT
-                                                                0 AS type,
-                                                            	'Record' AS item,
-                                                            	COUNT(*) AS total_uploaded,
-                                                            	COALESCE(SUM(expired), 0) AS sum_expired,
-                                                            	COALESCE(SUM(expired30), 0) AS sum_expired30,
-                                                            	COALESCE(SUM(expired90), 0) AS sum_expired90
-                                                            	FROM (
-                                                            		SELECT
-                                                            		CASE 
-                                                            		    WHEN
-                                                            		    	DocumentDueDate IS NULL
-                                                            		        OR LENGTH(DocumentDueDate) = 0 
-                                                            		        OR DATE(DocumentDueDate) < CURDATE()
-                                                            		    THEN 1
-                                                            		    ELSE 0
-                                                            		END AS expired,
-                                                            		CASE 
-                                                            		    WHEN
-                                                            		    	DocumentDueDate IS NOT NULL
-                                                            		        AND LENGTH(DocumentDueDate) > 0
-		                                                                    AND DocumentDueDate BETWEEN CURDATE() AND CURDATE() - INTERVAL 30 DAY
-                                                            		    THEN 1 
-                                                            		    ELSE 0 
-                                                            		END AS expired30,
-                                                            		CASE 
-                                                            		    WHEN
-                                                            		    	DocumentDueDate IS NOT NULL
-                                                            		        AND LENGTH(DocumentDueDate) > 0
-		                                                                    AND DocumentDueDate BETWEEN CURDATE() - INTERVAL 31 DAY AND CURDATE() - INTERVAL 90 DAY
-                                                            		    THEN 1
-                                                            		    ELSE 0
-                                                            		END AS expired90
-                                                            		FROM tblEnterpiseDetails_Records
-                                                            
-                                                            		WHERE user_cookies = $switch_user_id
-                                                            	) AS o2
-                                                            )
-                                                            SELECT 
-                                                            type, item, total_uploaded, sum_expired, sum_expired30, sum_expired90
-                                                            FROM cte
-                                                            
-                                                            ORDER BY cte.item" );
-                					                    if ( mysqli_num_rows($selectEnterprise) > 0 ) {
-                					                    	while($rowEnterprise = mysqli_fetch_array($selectEnterprise)) {
-                					                    	    
-                					                    	    echo '<tr>
-                                                                    <td>'.$rowEnterprise["item"].'</td>
-                                                                    <td class="text-center" href="#modalFileUploadOther" data-toggle="modal" onclick="btnFileUploadOther('.$rowEnterprise["type"].', 1, 1)">'.$rowEnterprise["total_uploaded"].'</td>
-                                                                    <td class="text-center" href="#modalFileUploadOther" data-toggle="modal" onclick="btnFileUploadOther('.$rowEnterprise["type"].', 1, 2)">'.$rowEnterprise["sum_expired"].'</td>
-                                                                    <td class="text-center" href="#modalFileUploadOther" data-toggle="modal" onclick="btnFileUploadOther('.$rowEnterprise["type"].', 1, 3)">'.$rowEnterprise["sum_expired30"].'</td>
-                                                                    <td class="text-center" href="#modalFileUploadOther" data-toggle="modal" onclick="btnFileUploadOther('.$rowEnterprise["type"].', 1, 4)">'.$rowEnterprise["sum_expired90"].'</td>
-                                                                </tr>';
-                					                    	}
-                		                            	}
-                                                    ?>
-                                                </tbody>
-                                            </table>
-                                            
-                                            <h3 class="table-title">Facility</h3>
-                                            <table class="reportable">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Items</th>
-                                                        <th class="text-center">File Upload</th>
-                                                        <th class="text-center">EXPIRED</th>
-                                                        <th class="text-center">1-30 DAYS</th>
-                                                        <th class="text-center">30-90 DAYS</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php
-                					                    $selectFacility = mysqli_query( $conn,"WITH RECURSIVE cte (type, item, total_uploaded, sum_expired, sum_expired30, sum_expired90) AS
-                                                            (
-                                                            	SELECT
-                                                                1 AS type,
-                                                            	'Accreditation' AS item,
-                                                            	COUNT(*) AS total_uploaded,
-                                                            	COALESCE(SUM(expired), 0) AS sum_expired,
-                                                            	COALESCE(SUM(expired30), 0) AS sum_expired30,
-                                                            	COALESCE(SUM(expired90), 0) AS sum_expired90
-                                                            	FROM (
-                                                            		SELECT
-                                                            		CASE 
-                                                            		    WHEN
-                                                            		    	Expiration_Date_Type_Accreditation IS NULL
-                                                            		        OR LENGTH(Expiration_Date_Type_Accreditation) = 0 
-                                                            		        OR DATE(Expiration_Date_Type_Accreditation) < CURDATE()
-                                                            		    THEN 1
-                                                            		    ELSE 0
-                                                            		END AS expired,
-                                                            		CASE 
-                                                            		    WHEN
-                                                            		    	Expiration_Date_Type_Accreditation IS NOT NULL
-                                                            		        AND LENGTH(Expiration_Date_Type_Accreditation) > 0
-		                                                                    AND Expiration_Date_Type_Accreditation BETWEEN CURDATE() AND CURDATE() - INTERVAL 30 DAY
-                                                            		    THEN 1 
-                                                            		    ELSE 0 
-                                                            		END AS expired30,
-                                                            		CASE 
-                                                            		    WHEN
-                                                            		    	Expiration_Date_Type_Accreditation IS NOT NULL
-                                                            		        AND LENGTH(Expiration_Date_Type_Accreditation) > 0
-		                                                                    AND Expiration_Date_Type_Accreditation BETWEEN CURDATE() - INTERVAL 31 DAY AND CURDATE() - INTERVAL 90 DAY
-                                                            		    THEN 1
-                                                            		    ELSE 0
-                                                            		END AS expired90
-                                                            		FROM tblFacilityDetails_Accreditation
-                                                            
-                                                            		WHERE user_cookies = $switch_user_id
-                                                            	) a
-                                                            
-                                                            	UNION ALL
-                                                            
-                                                            	SELECT
-                                                                2 AS type,
-                                                            	'Certification' AS item,
-                                                            	COUNT(*) AS total_uploaded,
-                                                            	COALESCE(SUM(expired), 0) AS sum_expired,
-                                                            	COALESCE(SUM(expired30), 0) AS sum_expired30,
-                                                            	COALESCE(SUM(expired90), 0) AS sum_expired90
-                                                            	FROM (
-                                                            		SELECT
-                                                            		CASE 
-                                                            		    WHEN
-                                                            		    	Expiration_Date_Certification IS NULL
-                                                            		        OR LENGTH(Expiration_Date_Certification) = 0 
-                                                            		        OR DATE(Expiration_Date_Certification) < CURDATE()
-                                                            		    THEN 1
-                                                            		    ELSE 0
-                                                            		END AS expired,
-                                                            		CASE 
-                                                            		    WHEN
-                                                            		    	Expiration_Date_Certification IS NOT NULL
-                                                            		        AND LENGTH(Expiration_Date_Certification) > 0
-		                                                                    AND Expiration_Date_Certification BETWEEN CURDATE() AND CURDATE() - INTERVAL 30 DAY
-                                                            		    THEN 1 
-                                                            		    ELSE 0 
-                                                            		END AS expired30,
-                                                            		CASE 
-                                                            		    WHEN
-                                                            		    	Expiration_Date_Certification IS NOT NULL
-                                                            		        AND LENGTH(Expiration_Date_Certification) > 0
-		                                                                    AND Expiration_Date_Certification BETWEEN CURDATE() - INTERVAL 31 DAY AND CURDATE() - INTERVAL 90 DAY
-                                                            		    THEN 1
-                                                            		    ELSE 0
-                                                            		END AS expired90
-                                                            		FROM tblFacilityDetails_Certification
-                                                            
-                                                            		WHERE user_cookies = $switch_user_id
-                                                            	) c
-                                                            
-                                                            	UNION ALL
-                                                            
-                                                            	SELECT
-                                                                3 AS type,
-                                                                'Permits' AS item,
-                                                                COUNT(*) AS total_uploaded,
-                                                                COALESCE(SUM(expired), 0) AS sum_expired,
-                                                                COALESCE(SUM(expired30), 0) AS sum_expired30,
-                                                                COALESCE(SUM(expired90), 0) AS sum_expired90
-                                                                FROM (
-                                                                	SELECT
-                                                                	CASE 
-                                                                	    WHEN
-                                                                	    	Expiration_Date IS NULL
-                                                                	        OR LENGTH(Expiration_Date) = 0 
-                                                                	        OR DATE(Expiration_Date) < CURDATE()
-                                                                	    THEN 1
-                                                                	    ELSE 0
-                                                                	END AS expired,
-                                                                	CASE 
-                                                                	    WHEN
-                                                                	    	Expiration_Date IS NOT NULL
-                                                                	        AND LENGTH(Expiration_Date) > 0
-		                                                                    AND Expiration_Date BETWEEN CURDATE() AND CURDATE() - INTERVAL 30 DAY
-                                                                	    THEN 1 
-                                                                	    ELSE 0 
-                                                                	END AS expired30,
-                                                                	CASE 
-                                                                	    WHEN
-                                                                	    	Expiration_Date IS NOT NULL
-                                                                	        AND LENGTH(Expiration_Date) > 0
-		                                                                    AND Expiration_Date BETWEEN CURDATE() - INTERVAL 31 DAY AND CURDATE() - INTERVAL 90 DAY
-                                                                	    THEN 1
-                                                                	    ELSE 0
-                                                                	END AS expired90
-                                                                	FROM tblFacilityDetails_Permits
-                                                                
-                                                                	WHERE user_cookies = $switch_user_id
-                                                                ) p
-                                                            
-                                                            	UNION ALL
-                                                                
-                                                                SELECT
-                                                                4 AS type,
-                                                                'Regulatory' AS item,
-                                                                COUNT(*) AS total_uploaded,
-                                                                COALESCE(SUM(expired), 0) AS sum_expired,
-                                                                COALESCE(SUM(expired30), 0) AS sum_expired30,
-                                                                COALESCE(SUM(expired90), 0) AS sum_expired90
-                                                                FROM (
-                                                                	SELECT
-                                                                	CASE 
-                                                                	    WHEN
-                                                                	    	expiry_date IS NULL
-                                                                	        OR LENGTH(expiry_date) = 0 
-                                                                	        OR DATE(expiry_date) < CURDATE()
-                                                                	    THEN 1
-                                                                	    ELSE 0
-                                                                	END AS expired,
-                                                                	CASE 
-                                                                	    WHEN
-                                                                	    	expiry_date IS NOT NULL
-                                                                	        AND LENGTH(expiry_date) > 0
-		                                                                    AND expiry_date BETWEEN CURDATE() AND CURDATE() - INTERVAL 30 DAY
-                                                                	    THEN 1 
-                                                                	    ELSE 0 
-                                                                	END AS expired30,
-                                                                	CASE 
-                                                                	    WHEN
-                                                                	    	expiry_date IS NOT NULL
-                                                                	        AND LENGTH(expiry_date) > 0
-		                                                                    AND expiry_date BETWEEN CURDATE() - INTERVAL 31 DAY AND CURDATE() - INTERVAL 90 DAY
-                                                                	    THEN 1
-                                                                	    ELSE 0
-                                                                	END AS expired90
-                                                                	FROM tblFacilityDetails_registration
-                                                                
-                                                                	WHERE ownedby = $switch_user_id
-                                                                	AND table_entities = 2
-                                                                ) r
-                                                            )
-                                                            SELECT 
-                                                            type, item, total_uploaded, sum_expired, sum_expired30, sum_expired90
-                                                            FROM cte
-                                                            
-                                                            ORDER BY cte.item" );
-                					                    if ( mysqli_num_rows($selectFacility) > 0 ) {
-                					                    	while($rowFacility = mysqli_fetch_array($selectFacility)) {
-                					                    	    
-                					                    	    echo '<tr>
-                                                                    <td>'.$rowFacility["item"].'</td>
-                                                                    <td class="text-center" href="#modalFileUploadOther" data-toggle="modal" onclick="btnFileUploadOther('.$rowFacility["type"].', 2, 1)">'.$rowFacility["total_uploaded"].'</td>
-                                                                    <td class="text-center" href="#modalFileUploadOther" data-toggle="modal" onclick="btnFileUploadOther('.$rowFacility["type"].', 2, 2)">'.$rowFacility["sum_expired"].'</td>
-                                                                    <td class="text-center" href="#modalFileUploadOther" data-toggle="modal" onclick="btnFileUploadOther('.$rowFacility["type"].', 2, 3)">'.$rowFacility["sum_expired30"].'</td>
-                                                                    <td class="text-center" href="#modalFileUploadOther" data-toggle="modal" onclick="btnFileUploadOther('.$rowFacility["type"].', 2, 4)">'.$rowFacility["sum_expired90"].'</td>
-                                                                </tr>';
-                					                    	}
-                		                            	}
-                                                    ?>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <?php
-                                            $percentage = number_format($compliance_overall / $compliance_count, 2);
-                                            if($percentage > 95){ $color = "#006400"; }
-                                            elseif ($percentage < 95 AND $percentage > 74 ){ $color = "#FF8C00"; }
-                                            else{ $color = "#CD5C5C"; }
-                                        ?>
-                                        <div style="width:100%; height:270px; text-align:center; border:solid white 1px; padding:20px; background-color:#dde0e3;">
-                                            <div class="piereporting animate" style="--p:<?php echo $percentage; ?>;--c:<?php echo $color; ?>"> <?php echo $percentage; ?>%</div>
-                                            <h5>Overall Compliance %</h5>
-                                            <br/>
-                                            <ul class="Legend">
-                                                <?php
-                                                    if ($current_client == 1) {
-                                                        echo '<li class="Legend-item">
-                                                            <span class="Legend-colorBox" style="background-color: #006400;"></span>
-                                                            <span class="Legend-label">On-Track</span>
-                                                        </li>
-                                                        <li class="Legend-item">
-                                                            <span class="Legend-colorBox" style="background-color: #FF8C00;"></span>
-                                                            <span class="Legend-label">At-Risk</span>
-                                                        </li>
-                                                        <li class="Legend-item">
-                                                            <span class="Legend-colorBox" style="background-color: #CD5C5C;"></span>
-                                                            <span class="Legend-label">Off-Track</span>
-                                                        </li>';
-                                                    } else {
-                                                        echo '<li class="Legend-item">
-                                                            <span class="Legend-colorBox" style="background-color: #006400;"></span>
-                                                            <span class="Legend-label">Good</span>
-                                                        </li>
-                                                        <li class="Legend-item">
-                                                            <span class="Legend-colorBox" style="background-color: #FF8C00;"></span>
-                                                            <span class="Legend-label">Moderate</span>
-                                                        </li>
-                                                        <li class="Legend-item">
-                                                            <span class="Legend-colorBox" style="background-color: #CD5C5C;"></span>
-                                                            <span class="Legend-label">Alarming</span>
-                                                        </li>';
-                                                    }
-                                                ?>
-                                            </ul>
-                                        </div>
-                                    </div>
-    
-                                    <style>
-                                        /*Piechart styling for overall compliance percentage*/
-                                        @property --p{
-                                            syntax: '<number>';
-                                            inherits: true;
-                                            initial-value: 0;
-                                        }
-    
-                                        .piereporting {
-                                            --p:20;
-                                            --b:22px;
-                                            --c:darkred;
-                                            --w:150px;
-    
-                                            width:var(--w);
-                                            aspect-ratio:1;
-                                            position:relative;
-                                            display:inline-grid;
-                                            margin:5px;
-                                            place-content:center;
-                                            font-size:25px;
-                                            font-weight:bold;
-                                            font-family:sans-serif;
-                                        }
-                                        .piereporting:before,
-                                        .piereporting:after {
-                                            content:"";
-                                            position:absolute;
-                                            border-radius:50%;
-                                        }
-                                        .piereporting:before {
-                                            inset:0;
-                                            background:
-                                            radial-gradient(farthest-side,var(--c) 98%,#0000) top/var(--b) var(--b) no-repeat,
-                                            conic-gradient(var(--c) calc(var(--p)*1%),#0000 0);
-                                            -webkit-mask:radial-gradient(farthest-side,#0000 calc(99% - var(--b)),#000 calc(100% - var(--b)));
-                                            mask:radial-gradient(farthest-side,#0000 calc(99% - var(--b)),#000 calc(100% - var(--b)));
-                                        }
-                                        .piereporting:after {
-                                            inset:calc(50% - var(--b)/2);
-                                            background:var(--c);
-                                            transform:rotate(calc(var(--p)*3.6deg)) translateY(calc(50% - var(--w)/2));
-                                        }
-                                        .animate {
-                                            animation:p 1s .5s both;
-                                        }
-                                        .no-round:before {
-                                            background-size:0 0,auto;
-                                        }
-                                        .no-round:after {
-                                            content:none;
-                                        }
-                                        @keyframes p {
-                                            from{--p:0}
-                                        }
-                                        /*End of piechart styling*/
-    
-                                        * {
-                                            box-sizing:border-box;
-                                        }
-    
-    
-                                        .left, .right {
-                                            position:relative;
-                                            float:left;
-                                            width:50%;
-                                            min-width:600px;
-                                            margin:auto;
-                                            padding:20px;
-                                            margin-left:50px;
-                                        }
-    
-                                        .chart, .legend, .titles {
-                                            margin:auto;
-                                        }
-    
-                                        .chart {
-                                            margin-top:-60px;
-                                            border-top:1px solid black;
-                                            border-left:1px solid black;
-                                            height:450px;
-                                            width:300px;
-                                            transform: rotate(-90deg);
-                                        }
-    
-                                        .bar {
-                                            background:#66C0CC;
-                                            margin-top:10px;
-                                            /*animation: height 0.8s ease;*/
-                                            padding:10px;
-                                        }
-    
-                                        .x-axis {
-                                            margin-top:-30px;
-                                            padding-bottom:10px;
-                                        }
-    
-                                        .legend {
-                                            clear:both;
-                                            color:#66C0CC;
-                                            width:450px;
-                                            div {
-                                                float:left;
-                                                margin-left:10px;
-                                            }
-                                        }
-    
-                                        .titles {
-                                            clear:both;
-                                            width:450px;
-                                            margin-top:-60px;
-                                            div {
-                                                float:left;
-                                                margin-left:10px;
-                                            }
-                                        }
-    
-                                        @keyframes height {
-                                            0% {width:0;}
-                                        }
-    
-                                        /*Legend Styling*/
-                                        .Legend-colorBox {
-                                            width: 1.5rem;
-                                            height: 1.5rem;
-                                            display: inline-block;
-                                            background-color: blue;
-                                        }
-                                        .Legend-item{
-                                            display:inline;
-                                            margin-left:30px;
-                                        }
-                                    </style>
-                            <?php } ?>
-                            
-                            <div class="col-md-9" id="dashboardData" style="min-height: 300px;">
-                                <div class="panel-group accordion" id="parent"></div>
-                            </div>
-                            
-                        </div>
-                    <?php } ?>
-
                     <!-- Item Section -->
                     <div class="modal fade" id="modalArea" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalArea">
                                     <div class="modal-header">
@@ -1459,13 +349,84 @@
                                                     </select>
                                                     <input type="text" class="form-control hide module_others" name="module_others" placeholder="Leave Blank or Enter Module / Section Name" style="margin-top: 15px;" />
                                                 </div>
+                                            </div>
+                                            <div class="form-group '; echo $switch_user_id == 464 ? '':'hide'; echo '">
+                                                <label class="col-md-3 control-label">Reviewer</label>
+                                                <div class="col-md-8">
+                                                    <select class="form-control mt-multiselect" name="reviewer">
+                                                        <option value="">Select</option>';
+                                                        $selectEmployeee = mysqli_query( $conn,"SELECT 
+                                                            u.ID AS u_ID,
+                                                            e.ID AS e_ID,
+                                                            e.first_name AS e_first_name,
+                                                            e.last_name AS e_last_name
+                                                            FROM tbl_hr_employee AS e
+
+                                                            INNER JOIN (
+                                                                SELECT
+                                                                *
+                                                                FROM tbl_user
+                                                            ) AS u
+                                                            ON e.ID = u.employee_id
+
+                                                            WHERE e.suspended = 0 
+                                                            AND e.status = 1 
+                                                            AND e.user_id = $switch_user_id 
+
+                                                            ORDER BY e.first_name" );
+                                                        if ( mysqli_num_rows($selectEmployeee) > 0 ) {
+                                                            while($rowEmployee = mysqli_fetch_array($selectEmployeee)) {
+                                                                $emp_ID = $rowEmployee["u_ID"];
+                                                                $emp_name = $rowEmployee["e_first_name"] .' '. $rowEmployee["e_last_name"];
+
+                                                                echo '<option value="'.$emp_ID.'">'.$emp_name.'</option>';
+                                                            }
+                                                        }
+                                                    echo '</select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group '; echo $switch_user_id == 464 ? '':'hide'; echo '">
+                                                <label class="col-md-3 control-label">Approver</label>
+                                                <div class="col-md-8">
+                                                    <select class="form-control mt-multiselect" name="approver">
+                                                        <option value="">Select</option>';
+                                                        $selectEmployeee = mysqli_query( $conn,"SELECT 
+                                                            u.ID AS u_ID,
+                                                            e.ID AS e_ID,
+                                                            e.first_name AS e_first_name,
+                                                            e.last_name AS e_last_name
+                                                            FROM tbl_hr_employee AS e
+
+                                                            INNER JOIN (
+                                                                SELECT
+                                                                *
+                                                                FROM tbl_user
+                                                            ) AS u
+                                                            ON e.ID = u.employee_id
+
+                                                            WHERE e.suspended = 0 
+                                                            AND e.status = 1 
+                                                            AND e.user_id = $switch_user_id 
+
+                                                            ORDER BY e.first_name" );
+                                                        if ( mysqli_num_rows($selectEmployeee) > 0 ) {
+                                                            while($rowEmployee = mysqli_fetch_array($selectEmployeee)) {
+                                                                $emp_ID = $rowEmployee["u_ID"];
+                                                                $emp_name = $rowEmployee["e_first_name"] .' '. $rowEmployee["e_last_name"];
+
+                                                                echo '<option value="'.$emp_ID.'">'.$emp_name.'</option>';
+                                                            }
+                                                        }
+                                                    echo '</select>
+                                                </div>
                                             </div>';
                                         ?>
                                         
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Description</label>
                                             <div class="col-md-8">
-                                                <textarea class="form-control" name="description"></textarea>
+                                                <textarea class="form-control summernote" name="description" onkeyup="description_count('Area')"></textarea>
+                                                <span class="words_count label label-sm label-info hide"><span class="textcount">0</span></span>
                                             </div>
                                         </div>
                                     </div>
@@ -1478,7 +439,7 @@
                         </div>
                     </div>
                     <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalEdit">
                                     <div class="modal-header">
@@ -1489,6 +450,22 @@
                                     <div class="modal-footer">
                                         <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
                                         <button type="submit" class="btn green ladda-button" name="btnUpdate_Area" id="btnUpdate_Area" data-style="zoom-out"><span class="ladda-label">Save Changes</span></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="modalChanges" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalChanges">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title">Description</h4>
+                                    </div>
+                                    <div class="modal-body"></div>
+                                    <div class="modal-footer">
+                                        <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
                                     </div>
                                 </form>
                             </div>
@@ -2291,21 +1268,7 @@
             var current_userEmployerID = '<?php echo $current_userEmployerID; ?>';
             $(document).ready(function(){
                 var collabUser = '<?php echo $collabUser; ?>';
-                $.ajax({
-                    async: true,
-                    type: 'GET',
-                    url: 'function.php?jstree_HTML2='+collabUser,
-                    dataType: 'json',
-                    success: function (json) {
-                        // alert(json);
-                        createJSTree(json);
-                    },
-
-                    error: function (xhr, ajaxOptions, thrownError) {
-                        // alert(xhr.status);
-                        // alert(thrownError);
-                    }
-                });
+                widget_summernote();
 
                 function createJSTree(jsondata) {            
                     $('#jstreeAjax').jstree({
@@ -2507,6 +1470,9 @@
                 }();
                 jQuery(document).ready(function(){ComponentsBootstrapTagsinput.init()});
             }
+            function widget_summernote() {
+                $('.summernote').summernote();
+            }
             function selectedItem(id, parent_id) {
                 // $('#item_'+id).parents('.panel-collapse').collapse('show');
                 // $('#item_'+id).collapse('show');
@@ -2604,6 +1570,75 @@
             <?php } ?>
             
             // Item Section
+            function description_count(modal){
+                const areatextarea = $('.modal'+modal+' textarea');
+                const areatext = $('.modal'+modal+' textarea').val().length;
+                const textcount = $('.modal'+modal+' .textcount');
+                const wordcount = $('.modal'+modal+' .words_count');
+                textcount.html(areatext);
+            }
+            function btnChangesView(id) {
+                $.ajax({
+                    type: "GET",
+                    url: "function.php?modalChanges_Area="+id,
+                    dataType: "html",
+                    success: function(data){
+                        $("#modalChanges .modal-body").html(data);
+                    }
+                });
+            }
+            $(".modalChanges").on('submit',(function(e) {
+                e.preventDefault();
+
+                formObj = $(this);
+                if (!formObj.validate().form()) return false;
+
+                var formData = new FormData(this);
+                formData.append('btnComment_changes',true);
+
+                var l = Ladda.create(document.querySelector('#btnComment_changes'));
+                l.start();
+
+                $.ajax({
+                    url: "function.php",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData:false,
+                    cache: false,
+                    success: function(response) {
+                        if ($.trim(response)) {
+                            msg = "Sucessfully Save!";
+                            $('#modalChanges').modal('hide');
+                        } else {
+                            msg = "Error!"
+                        }
+                        l.stop();
+
+                        bootstrapGrowl(msg);
+                    }
+                });
+            }));
+            function btnChangesAccept(id) {
+                $.ajax({
+                    type: "GET",
+                    url: "function.php?modalChangesAccept_Area="+id,
+                    dataType: "html",
+                    success: function(data){
+                        alert('Accepted');
+                    }
+                });
+            }
+            function btnChangesReject(id) {
+                $.ajax({
+                    type: "GET",
+                    url: "function.php?modalChangesReject_Area="+id,
+                    dataType: "html",
+                    success: function(data){
+                        alert('Rejected');
+                    }
+                });
+            }
             $(".modalArea").on('submit',(function(e) {
                 e.preventDefault();
 
@@ -2804,6 +1839,8 @@
                     dataType: "html",
                     success: function(data){
                         $("#modalEdit .modal-body").html(data);
+                        selectMulti();
+                        widget_summernote();
                     }
                 });
             }
@@ -2918,6 +1955,8 @@
                                             html += '<ul class="list-inline muted h6">';
                                                 html += '<li><a href="#modalReport" class="btnReport font-white" data-toggle="modal" onclick="btnReport('+obj.ID+')"><i class="fa fa-table"></i> Report</a></li>';
                                                 html += '<li><a href="#modalCollaborator" class="btnCollaborator font-white" data-toggle="modal" onclick="btnCollaborator('+obj.ID+')"><i class="fa fa-cogs"></i> Collaborator</a></li>';
+                                                html += '<li><i class="fa fa-list-ol"></i> Compliance 0%</li>';
+                                                html += '<li><i class="fa fa-calendar-check-o"></i> Annual Review 0%</li></ul>';
                                             html += '</ul>';
                                         html += '</div>';
                                         html += '<div class="col-md-2">';
@@ -2934,7 +1973,7 @@
                                                         <?php if ($_COOKIE['client'] == 0) { ?>
                                                             html += '<li><a href="#modalAttached" class="btnAttached" data-toggle="modal" onclick="btnAttached('+obj.item_id+')">Attach File</a></li>';
                                                         <?php } ?>
-                                                        
+
                                                         html += '<li><a href="#modalCompliance" class="btnCompliance" data-toggle="modal" onclick="btnCompliance('+obj.item_id+')">Add Compliance</a></li>';
                                                         html += '<li><a href="#modalComment" class="btnComment" data-toggle="modal" onclick="btnComment('+obj.item_id+')">Add Comments</a></li>';
 
@@ -2957,18 +1996,22 @@
                                             html += '<div class="tabbable-line tabbable tabbable-tabdrop">';
                                                 html += '<ul class="nav nav-tabs">';
                                                     html += '<li class="active"><a href="#tabDescription_'+obj.item_id+'" data-toggle="tab" aria-expanded="true">Description</a></li>';
-                                                    html += '<li class=""><a href="#tabFiles_'+obj.item_id+'" data-toggle="tab" aria-expanded="true">Files</a></li>';
-
+                                                    
                                                     <?php if ($_COOKIE['client'] == 0) { ?>
-                                                        html += '<li class=""><a href="#tabComments_'+obj.item_id+'" data-toggle="tab" aria-expanded="false">Comments</a></li>';
+                                                        html += '<li class=""><a href="#tabFiles_'+obj.item_id+'" data-toggle="tab" aria-expanded="true">Files</a></li>';
                                                     <?php } ?>
                                                     
+                                                    html += '<li class=""><a href="#tabComments_'+obj.item_id+'" data-toggle="tab" aria-expanded="false">Comments</a></li>';
                                                     html += '<li class="hide"><a href="#tabHistory_'+obj.item_id+'" data-toggle="tab" aria-expanded="false">History</a></li>';
                                                     html += '<li class=""><a href="#tabCompliance_'+obj.item_id+'" data-toggle="tab" aria-expanded="false">Compliance</a></li>';
                                                     html += '<li class=""><a href="#tabReview_'+obj.item_id+'" data-toggle="tab" aria-expanded="false">Annual Review</a></li>';
                                                     html += '<li class=""><a href="#tabTemplate_'+obj.item_id+'" data-toggle="tab" aria-expanded="false">Templates</a></li>';
-                                                    html += '<li class=""><a href="#tabReferences_'+obj.item_id+'" data-toggle="tab" aria-expanded="false">References</a></li>';
-                                                    html += '<li class=""><a href="#tabVideo_'+obj.ID+'" data-toggle="tab" aria-expanded="false">Video</a></li>';
+                                                    
+                                                    <?php if ($_COOKIE['client'] == 0) { ?>
+                                                        html += '<li class=""><a href="#tabReferences_'+obj.item_id+'" data-toggle="tab" aria-expanded="false">References</a></li>';
+                                                        html += '<li class=""><a href="#tabVideo_'+obj.ID+'" data-toggle="tab" aria-expanded="false">Video</a></li>';
+                                                    <?php } ?>
+
                                                     html += '<li class=""><a href="#tabTask_'+obj.ID+'" data-toggle="tab" aria-expanded="false">Task</a></li>';
                                                 html += '</ul>';
                                                 html += '<div class="tab-content">';
@@ -2982,7 +2025,7 @@
                                                             html += '<a href="#modalAttached" class="btn btn-circle btn-success btnAttached" data-toggle="modal" onclick="btnAttached('+obj.item_id+')" style="margin: 15px;">Attach File</a>';
                                                         html += '</div>';
                                                     <?php } ?>
-                                                    
+
                                                     html += '<div class="tab-pane" id="tabComments_'+obj.item_id+'">';
                                                         html += '<div class="mt-actions"></div>';
                                                         html += '<a href="#modalComment" class="btn btn-circle btn-success btnComment" data-toggle="modal" onclick="btnComment('+obj.item_id+')" style="margin: 15px;">Add Comment</a>';
@@ -3045,7 +2088,7 @@
                                                             html += '<a href="#modalVideo" class="btn btn-circle btn-success" data-toggle="modal" onclick="btnVideo('+obj.ID+')" style="margin: 15px;">Add Video</a>';
                                                         html += '</div>';
                                                     <?php } ?>
-                                                    
+
                                                     html += '<div class="tab-pane" id="tabTask_'+obj.ID+'">';
                                                         html += '<div class="mt-actions"></div>';
                                                         html += '<a href="#modalTask" class="btn btn-circle btn-success" data-toggle="modal" onclick="btnTask('+obj.ID+')" style="margin: 15px;">Add Task</a>';
@@ -3817,6 +2860,28 @@
             }
 
             // Annual Review Section
+            function btnAnnualReviewTemplate(id) {
+                swal({
+                    title: "Are you sure?",
+                    text: "Please confirm if you want to apply the Annual Review Template on this folder and sub-folder!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-success",
+                    confirmButtonText: "Yes, confirm it!",
+                    closeOnConfirm: false
+                },
+                function(){
+                    $.ajax({
+                        type: "GET",
+                        url: "function.php?AnnualReviewTemplate="+id,
+                        dataType: "html",
+                        success: function(response){
+                            console.log(response);
+                        }
+                    });
+                    swal("Accepted!", "Data is confirmed", "success");
+                });
+            }
             function btnReview(id) {
                 $.ajax({
                     type: "GET",
@@ -4679,11 +3744,11 @@
             }
 
             // Video Section
-            function selectType(id) {
-                console.log(id);
+            function selectType(id, modal) {
+                // console.log(id);
                 $('.selVideo').addClass('hide');
-                if (id == 0) { $('#selFile').removeClass('hide'); }
-                else { $('#selURL').removeClass('hide'); }
+                if (id == 0) { $('#selFile_'+modal).removeClass('hide'); }
+                else { $('#selURL_'+modal).removeClass('hide'); }
             }
             function btnVideo(id) {
                 $.ajax({

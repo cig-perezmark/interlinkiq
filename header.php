@@ -1784,42 +1784,50 @@ License: You must have a valid license purchased only from themeforest(the above
                 <!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
                 <!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
                 <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-                <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
-                <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-                <ul class="page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenux page-sidebar-menu-compact" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
-                    <li class="nav-item <?php echo $site === "dashboard" ? "active" : ""; ?>">
-                        <a href="dashboard" class="nav-link">
-                            <i class="icon-check"></i>
-                            <span class="title">Compliance</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <?php if($_COOKIE['ID'] == 456 || $_COOKIE['ID'] == 1210 || $_COOKIE['ID'] == 42):?>
-                    <li class="nav-item">
-                        <a href="custom_crm.php" class="nav-link nav-toggle">
-                            <i class="icon-users"></i>
-                            <span class="title">CRM <?php if($_COOKIE['ID'] == 456 || $_COOKIE['ID'] == 42)echo '<i class="font-yellow" style="font-size: 12px; margin-left:4px"> ( Customize )</i>';?></span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <?php endif?>
-                    <?php if($current_client == 0 AND $switch_user_id <> 1106) { ?>
-                    <li class="nav-item <?php echo $site === "tracking" ? "active" : ""; ?>">
-                        <a href="tracking" class="nav-link">
-                            <i class="icon-target"></i>
-                            <span class="title">Tracking Dashboard</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item <?php echo $site === "app-store" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('app-store', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="app-store" class="nav-link">
-                            <i class="icon-grid"></i>
-                            <span class="title">App Catalog</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-
-                    <?php
+                <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+                <div class="page-sidebar navbar-collapse collapse">
+                    <!-- BEGIN SIDEBAR MENU -->
+                    <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
+                    <!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
+                    <!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
+                    <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+                    <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
+                    <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+                    <ul class="page-sidebar-menu  page-header-fixed page-sidebar-menu-hover-submenux page-sidebar-menu-compact" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200">
+                        
+                        <li class="nav-item <?php echo $site === "dashboard" ? "active" : ""; ?>">
+                            <a href="dashboard" class="nav-link">
+                                <i class="icon-check"></i>
+                                <span class="title">Compliance</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <?php if($_COOKIE['ID'] == 456 || $_COOKIE['ID'] == 1210 || $_COOKIE['ID'] == 42):?>
+                        <li class="nav-item">
+                            <a href="custom_crm.php" class="nav-link nav-toggle">
+                                <i class="icon-users"></i>
+                                <span class="title">CRM <?php if($_COOKIE['ID'] == 456 || $_COOKIE['ID'] == 42)echo '<i class="font-yellow" style="font-size: 12px; margin-left:4px"> ( Customize )</i>';?></span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <?php endif?>
+                        <?php if($current_client == 0 AND $switch_user_id <> 1106) { ?>
+                            <li class="nav-item hide <?php echo $site === "tracking" ? "active" : ""; ?>">
+                                <a href="tracking" class="nav-link">
+                                    <i class="icon-target"></i>
+                                    <span class="title">Tracking Dashboard</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                            <li class="nav-item hide <?php echo $site === "app-store" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('app-store', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                <a href="app-store" class="nav-link">
+                                    <i class="icon-grid"></i>
+                                    <span class="title">App Catalog</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                            
+                            <?php
                                 if ($current_userEmployerID == 464) {
                                     echo '<li class="nav-item ">
                                         <a href="form-owned" class="nav-link">
@@ -2512,25 +2520,120 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <span class="title">Testing And Verification</span>
                                 </a>
                             </li>
-                            <?php endif; ?>
-                        </ul>
-                    </li>
-                    <?php endif ?>
-                    <?php } ?>
-
-
-
-
-                    <li class="nav-item hide <?php echo $site === "researchandDev" ? "active" : ""; ?>">
-                        <a href="researchandDev" class="nav-link">
-                            <i class="icon-puzzle"></i>
-                            <span class="title">R and D</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-
-                    <?php if($user_id == 185 || $user_id == 34 || $user_id == 42 || $user_id == 35 || $user_id== 88 || $user_id== 95 || $user_id== 228 || $user_id== 208): ?>
-                    <li class="nav-item <?php echo $site === "Task_Tracker" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { // echo menu('Task_Tracker', $current_userEmployerID, $current_userEmployeeID); 
+                        <?php endif; ?>
+                        <?php $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseEmployees = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
+                            <?php if($switch_user_id == 34 || $switch_user_id == 19): ?>
+                                <li class="nav-item hide <?php echo $site === "Legal_Expert" || $site === "Critical_Operation" || $site === "Types_Of_Crisis" ? "active open start" : "";  ?>" id="menuCMAA">
+                                    <a href="javascript:;" class="nav-link nav-toggle">
+                                        <i class="icon-graph"></i>
+                                        <span class="title">Crisis Management</span>
+                                        <span class="selected"></span>
+                                        <span class="arrow <?php echo $site === "Legal_Expert" || $site === "Critical_Operation" || $site === "Types_Of_Crisis" ? "open" : ""; ?>"></span>
+                                    </a>
+                                    <ul class="sub-menu">
+                                        <li class="nav-item <?php echo $site === "Legal_Expert" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('Legal_Expert', $current_userEmployerID, $current_userEmployeeID); }?>">
+                                            <a href="Legal_Expert" class="nav-link ">
+                                                <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                <span class="title">Legal & Expert</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item <?php echo $site === "Critical_Operation" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('Critical_Operation', $current_userEmployerID, $current_userEmployeeID); }?> ?>">
+                                            <a href="Critical_Operation" class="nav-link ">
+                                                <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                <span class="title">Critical Operation</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item <?php echo $site === "Types_Of_Crisis" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('Types_Of_Crisis', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                            <a href="Types_Of_Crisis" class="nav-link ">
+                                                <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                <span class="title">Types Of Crisis</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item <?php echo $site === "crisis_incidents" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('crisis_incidents', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                            <a href="crisis_incidents" class="nav-link ">
+                                                <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                <span class="title">Crisis Incidents</span>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item <?php echo $site === "crisis_annual_review" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('crisis_annual_review', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                            <a href="crisis_annual_review" class="nav-link ">
+                                                <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                <span class="title">Annual Review</span>
+                                            </a>
+                                        </li>
+                                        <?php if($user_id == 185): ?>
+                                            <li class="nav-item <?php echo $site === "crisis_testing_verification" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('crisis_testing_verification', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                                <a href="crisis_testing_verification" class="nav-link ">
+                                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                    <span class="title">Testing And Verification</span>
+                                                </a>
+                                            </li>
+                                        <?php endif; ?>
+                                    </ul>
+                                </li>
+                            <?php endif ?>
+                        <?php } ?>
+                        
+                        <li class="nav-item <?php echo $site === "forms" ? "active" : ""; ?>">
+                            <a href="forms" class="nav-link">
+                                <i class="icon-docs" style="color: orange !important;"></i>
+                                <span class="title">Forms</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item <?php echo $site === "module" ? "active" : ""; ?>">
+                            <a href="module" class="nav-link">
+                                <i class="icon-social-dropbox" style="color: orange !important;"></i>
+                                <span class="title">Module</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item hide <?php echo $site === "pro_services" ? "active" : ""; ?>">
+                            <a href="pro-services" class="nav-link">
+                                <i class="icon-flag" style="color: orange !important;"></i>
+                                <span class="title">Pro-Serives</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item <?php echo $site === "app-store" ? "active" : ""; ?>">
+                            <a href="https://consultareinc.com/shop/" target="_blank" class="nav-link">
+                                <i class="icon-book-open" style="color: orange !important;"></i>
+                                <span class="title">SOPs</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item <?php echo $site === "app-store" ? "active" : ""; ?>">
+                            <a href="https://consultareinc.com/training-ace/" target="_blank" class="nav-link">
+                                <i class="icon-screen-desktop" style="color: orange !important;"></i>
+                                <span class="title">Training Ace</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        
+                        <?php
+                            $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $switch_user_id" );
+                            if ( mysqli_num_rows($hasLibrary) == 0 OR $switch_user_id == 163) {
+                                echo '<li class="nav-item '; echo $site === "pricing" ? "active" : ""; echo '">
+                                    <a href="pricing" class="nav-link">
+                                        <i class="icon-tag"></i>
+                                        <span class="title">Pricing</span>
+                                        <span class="selected"></span>
+                                    </a>
+                                </li>';
+                            }
+                        ?>
+                        
+                        
+                        <li class="nav-item hide <?php echo $site === "researchandDev" ? "active" : ""; ?>">
+                            <a href="researchandDev" class="nav-link">
+                                <i class="icon-puzzle"></i>
+                                <span class="title">R and D</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        
+                        <?php if($user_id == 185 || $user_id == 34 || $user_id == 42 || $user_id == 35 || $user_id== 88 || $user_id== 95 || $user_id== 228 || $user_id== 208): ?>
+                            <li class="nav-item <?php echo $site === "Task_Tracker" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { // echo menu('Task_Tracker', $current_userEmployerID, $current_userEmployeeID); 
                             } ?>">
                         <a href="Task_Tracker" class="nav-link">
                             <i class="icon-earphones-alt"></i>

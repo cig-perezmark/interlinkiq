@@ -132,14 +132,14 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item active"><a class="nav-link" style="font-size:14px !important;" href="/">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" style="font-size:14px !important;" href="//consultareinc.com/shop">SOPKing</a></li>
-                        <li class="nav-item"><a class="nav-link" style="font-size:14px !important;" href="management_services">Services</a></li>
-                        <li class="nav-item"><a class="nav-link" style="font-size:14px !important;" href="directory">Directory</a></li>
-                        <li class="nav-item"><a class="nav-link" style="font-size:14px !important;" href="//www.youtube.com/@AllAboutCompliance/videos">Vlog</a></li>
-                        <li class="nav-item"><a class="nav-link" style="font-size:14px !important;" href="forum/index">Forum</a></li>
-                        <li class="nav-item"><a class="nav-link" style="font-size:14px !important;" href="specialist">Specialist</a></li>
+                        <li class="nav-item d-none"><a class="nav-link" style="font-size:14px !important;" href="//consultareinc.com/shop">SOPKing</a></li>
+                        <li class="nav-item d-none"><a class="nav-link" style="font-size:14px !important;" href="management_services">Services</a></li>
+                        <li class="nav-item d-none"><a class="nav-link" style="font-size:14px !important;" href="directory">Directory</a></li>
+                        <li class="nav-item d-none"><a class="nav-link" style="font-size:14px !important;" href="//www.youtube.com/@AllAboutCompliance/videos">Vlog</a></li>
+                        <li class="nav-item d-none"><a class="nav-link" style="font-size:14px !important;" href="forum/index">Forum</a></li>
+                        <li class="nav-item d-none"><a class="nav-link" style="font-size:14px !important;" href="specialist">Specialist</a></li>
                         <li class="nav-item d-none"><a class="nav-link" style="font-size:14px !important;" href="marketplace">Marketplace</a></li>
-                        <li class="nav-item"><a class="nav-link" style="font-size:14px !important;" href="grant">Grant Services</a></li>
+                        <li class="nav-item d-none"><a class="nav-link" style="font-size:14px !important;" href="grant">Grant Services</a></li>
                         <li class="nav-item"><a class="nav-link" style="font-size:14px !important;" href="contact">Contact</a></li>
                         <!--<li class="nav-item"><a class="nav-link" style="font-size:14px !important;" href="login">Login</a></li>-->
                         <!--<li class="nav-item"><a class="nav-link" style="font-size:14px !important;" href="login"><i class="fa fa-sign-in"  aria-hidden="true"></i> Login</a></li>-->
@@ -249,7 +249,7 @@
         <section class="creative_feature_area">
 
             <div class="container">
-                <div class="c_feature_box">
+                <div class="c_feature_box" style="background: transparent;">
 
                 
                     <div class="row">
@@ -257,7 +257,7 @@
                             <div id="button-holder" style="width:100%;float:left;margin-top: -30vh;text-align:center;"><a class="bg_btn" href="login">Free Access</a></div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row d-none">
                         <div class="col-lg-4">
                             <div class="c_box_item">
                                 <a href="#"><h4><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Free Listing and Tools</h4></a>
@@ -332,7 +332,7 @@
         <!--================End Industries Area =================-->
 
         <!--================Our Service Area =================-->
-        <section class="service_area">
+        <section class="service_area d-none">
             <div class="container">
                 <div class="center_title" >
                     <h2 style="color:#232d37;">Main Services</h2>
@@ -442,7 +442,7 @@
 
 
         <!--================Project Area =================-->
-        <section class="project_area">
+        <section class="project_area d-none">
             <div class="container">
                 <div class="project_inner">
                     <div class="center_title">
@@ -458,7 +458,7 @@
 
 
         <!--================Latest News Area =================-->
-        <section class="latest_news_area p_100">
+        <section class="latest_news_area p_100 d-none">
             <div class="container">
                 <div class="b_center_title">
                     <h2>Latest News</h2>
@@ -553,7 +553,7 @@
                                     <li><a href="https://consultareinc.com/" target="_blank"><i class="fa fa-angle-double-right" aria-hidden="true"></i>Consultare Inc. Group</a></li>
                                     <li><a href="https://consultareinc.com/training-ace/" target="_blank"><i class="fa fa-angle-double-right" aria-hidden="true"></i>Training Ace</a></li>
                                     <li><a href="https://consultareinc.com/shop/" target="_blank"><i class="fa fa-angle-double-right" aria-hidden="true"></i>SOPKing</a></li>
-                                    <li><a href="https://interlinkiq.com/" target="_blank"><i class="fa fa-angle-double-right" aria-hidden="true"></i>InterlinkIQ</a></li>
+                                    <li><a class="d-none" href="https://interlinkiq.com/" target="_blank"><i class="fa fa-angle-double-right" aria-hidden="true"></i>InterlinkIQ</a></li>
                                     <li><a href="https://itblaster.net/" target="_blank"><i class="fa fa-angle-double-right" aria-hidden="true"></i>IT Blaster</a></li>
                                 </ul>
                             </aside>
@@ -564,9 +564,9 @@
                                     <h3>Link Categories</h3>
                                 </div>
                                  <ul style="width: auto;">
-                                    <li><a href="#"><i class="fa fa-angle-double-right" aria-hidden="true"></i>Home</a></li>
-                                    <li><a href="directory"><i class="fa fa-angle-double-right" aria-hidden="true"></i>Directory</a></li>
-                                    <li><a href="blog_posts_table"><i class="fa fa-angle-double-right" aria-hidden="true"></i>Blog</a></li>
+                                    <li><a class="d-none" href="#"><i class="fa fa-angle-double-right" aria-hidden="true"></i>Home</a></li>
+                                    <li><a class="d-none" href="directory"><i class="fa fa-angle-double-right" aria-hidden="true"></i>Directory</a></li>
+                                    <li><a class="d-none" href="blog_posts_table"><i class="fa fa-angle-double-right" aria-hidden="true"></i>Blog</a></li>
                                     <li><a href="terms_of_services/Terms%20of%20Service.pdf"><i class="fa fa-angle-double-right" aria-hidden="true"></i>Terms of Service</a></li>
                                 </ul>
                             </aside>

@@ -18383,7 +18383,7 @@
                                     <option value="0" '; echo $row["status"] == 0 ? 'SELECTED':''; echo '>Pending</option>
                                     <option value="1" '; echo $row["status"] == 1 ? 'SELECTED':'';  echo '>Approved</option>
                                     <option value="2" '; echo $row["status"] == 2 ? 'SELECTED':'';  echo '>Non-Approved</option>
-                                    <option value="3" '; echo $row["status"] == 3 ? 'SELECTED':'';  echo '>Emergency Use Only</option>
+                                    <option value="3" '; echo $row["status"] == 3 ? 'SELECTED':'';  echo '>Emergency Used Only</option>
                                     <option value="4" '; echo $row["status"] == 4 ? 'SELECTED':'';  echo '>Do Not Use</option>
                                 </select>
                             </div>
@@ -18409,6 +18409,15 @@
                                     <option value="7" '; echo $frequency == 7 ? 'SELECTED':''; echo '>Once Per Three Months (Quarterly)</option>
                                     <option value="8" '; echo $frequency == 8 ? 'SELECTED':''; echo '>Once Per Six Months (Bi-Annual)</option>
                                     <option value="5" '; echo $frequency == 5 ? 'SELECTED':''; echo '>Once Per Year</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label">Organic Supplier?</label>
+                                <select class="form-control" name="organic" '; echo $page == 1 ? '':'readonly'; echo '>
+                                    <option value="0" '; echo $row["organic"] == 0 ? 'SELECTED':''; echo '>No</option>
+                                    <option value="1" '; echo $row["organic"] == 1 ? 'SELECTED':''; echo '>Yes</option>
                                 </select>
                             </div>
                         </div>
@@ -18557,10 +18566,10 @@
                         </div>
                     </div>
 
-                    <h4>
+                    <p>
                         Regulatory License Number
                         <a href="#modalNewRegulatory" data-toggle="modal" class="btn btn-xs btn-primary" onclick="btnNew_Regulatory(1, 2)"><i class="fa fa-plus"></i> ADD</a>
-                    </h4>
+                    </p>
 
                     <table class="table table-bordered table-hover" id="tableData_Regulatory_2">
                         <thead>
@@ -20643,11 +20652,12 @@
 	if( isset($_GET['modalView_Supplier_Industry']) ) {
 		$id = $_GET['modalView_Supplier_Industry'];
 		$c = $_GET['c'];
+        $o = $_GET['o'];
 
-		$selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE country IS NULL ORDER BY name" );
-		if ($c != "US") {
-			$selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
-		}
+		$selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE country IS NULL AND organic = $o ORDER BY name" );
+        if ($c != "US") {
+            $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE organic = $o ORDER BY name" );
+        }
         if ( mysqli_num_rows($selectRequirement) > 0 ) {
             while($row = mysqli_fetch_array($selectRequirement)) {
             	$industry = array();
@@ -20919,6 +20929,7 @@
         $supplier_status = $_POST['supplier_status'];
         // $supplier_notification = $_POST['supplier_notification'];
         $nda = $_POST['nda'];
+        $organic = $_POST['organic'];
         $supplier_notification = 0;
         $supplier_date = date('Y-m-d');
 
@@ -21050,8 +21061,8 @@
         $reviewed_date = !empty($reviewed_validity[0]) ? $reviewed_validity[0] : '';
         $reviewed_due = !empty($reviewed_validity[1]) ? $reviewed_validity[1] : '';
 
-        $sql = "INSERT INTO tbl_supplier (user_id, portal_user, page, name, vendor_code, address, phone, fax, email, website, category, industry, regulatory, contact, document, document_other, material, service, audit, audit_report, audit_certificate, audit_action, audit_filesize, audit_file_history, reviewed_by, reviewed_date, reviewed_due, status, notification, nda, frequency, frequency_custom, last_modified)
-        VALUES ('$user_id', '$portal_user', '1', '$supplier_name',  '$vendor_code','$supplier_address', '$supplier_phone', '$supplier_fax', '$supplier_email', '$supplier_website', '$supplier_category', '$supplier_industry', '$regulatory', '$contact', '$document_name', '$document_other_name', '$material', '$service', '$audit', '$audit_report', '$audit_certificate', '$audit_action', '$audit_filesize', '$audit_file_history', '$reviewed_by', '$reviewed_date', '$reviewed_due', '$supplier_status', '$supplier_notification', '$nda', '$supplier_frequency', '$supplier_frequency_custom', '$supplier_date')";
+        $sql = "INSERT INTO tbl_supplier (user_id, portal_user, page, name, vendor_code, address, phone, fax, email, website, category, industry, regulatory, contact, document, document_other, material, service, audit, audit_report, audit_certificate, audit_action, audit_filesize, audit_file_history, reviewed_by, reviewed_date, reviewed_due, status, notification, nda, organic, frequency, frequency_custom, last_modified)
+        VALUES ('$user_id', '$portal_user', '1', '$supplier_name',  '$vendor_code','$supplier_address', '$supplier_phone', '$supplier_fax', '$supplier_email', '$supplier_website', '$supplier_category', '$supplier_industry', '$regulatory', '$contact', '$document_name', '$document_other_name', '$material', '$service', '$audit', '$audit_report', '$audit_certificate', '$audit_action', '$audit_filesize', '$audit_file_history', '$reviewed_by', '$reviewed_date', '$reviewed_due', '$supplier_status', '$supplier_notification', '$nda', '$organic', '$supplier_frequency', '$supplier_frequency_custom', '$supplier_date')";
         if (mysqli_query($conn, $sql)) {
             $last_id = mysqli_insert_id($conn);
 
@@ -21739,6 +21750,7 @@
         $supplier_status = $_POST['supplier_status'];
         $supplier_notification = $_POST['supplier_notification'];
         $nda = $_POST['nda'];
+        $organic = $_POST['organic'];
         $date = date('Y-m-d');
 
         $supplier_frequency = $_POST['supplier_frequency'];
@@ -21907,7 +21919,7 @@
         }
         $temp_document = json_encode($temp_docs);
 
-        mysqli_query( $conn,"UPDATE tbl_supplier set name='". $supplier_name ."', vendor_code='".$vendor_code."', address='". $supplier_address ."', phone='". $supplier_phone ."', fax='". $supplier_fax ."', email='". $supplier_email ."', website='". $supplier_website ."', category='". $supplier_category ."', industry='". $supplier_industry ."', regulatory='". $regulatory ."', contact='". $contact ."', document='". $document_name ."', document_other='". $document_other_name ."', material='". $material ."', service='". $service ."', audit='". $audit ."', audit_report='". $audit_report ."', audit_certificate='". $audit_certificate ."', audit_action='". $audit_action ."', audit_filesize='". $audit_filesize ."', audit_file_history='". $audit_file_history ."', reviewed_by='". $reviewed_by ."', reviewed_date='". $reviewed_date ."', reviewed_due='". $reviewed_due ."', status='". $supplier_status ."', notification='". $supplier_notification ."', nda='". $nda ."', frequency='". $supplier_frequency ."', frequency_custom='". $supplier_frequency_custom ."' WHERE ID='". $ID ."'" );
+        mysqli_query( $conn,"UPDATE tbl_supplier set name='". $supplier_name ."', vendor_code='".$vendor_code."', address='". $supplier_address ."', phone='". $supplier_phone ."', fax='". $supplier_fax ."', email='". $supplier_email ."', website='". $supplier_website ."', category='". $supplier_category ."', industry='". $supplier_industry ."', regulatory='". $regulatory ."', contact='". $contact ."', document='". $document_name ."', document_other='". $document_other_name ."', material='". $material ."', service='". $service ."', audit='". $audit ."', audit_report='". $audit_report ."', audit_certificate='". $audit_certificate ."', audit_action='". $audit_action ."', audit_filesize='". $audit_filesize ."', audit_file_history='". $audit_file_history ."', reviewed_by='". $reviewed_by ."', reviewed_date='". $reviewed_date ."', reviewed_due='". $reviewed_due ."', status='". $supplier_status ."', notification='". $supplier_notification ."', nda='". $nda ."', organic='". $organic ."', frequency='". $supplier_frequency ."', frequency_custom='". $supplier_frequency_custom ."' WHERE ID='". $ID ."'" );
         
         if (!mysqli_error($conn)) {
             $selectData = mysqli_query( $conn,'SELECT * FROM tbl_supplier WHERE ID="'. $ID .'" ORDER BY ID LIMIT 1' );
@@ -42336,6 +42348,224 @@
     }
 
 
+    if( isset($_GET['summary']) ) {
+        $ID = $_GET['summary'];
+        $type = $_GET['type'];
+
+        if ($type == 1) {
+            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND user_id = $ID AND status = 1 ORDER BY title" );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $counter = 1;
+                while($rowData = mysqli_fetch_array($selectData)) {
+                    $data_ID = $rowData["ID"];
+                    $data_title = $rowData["title"];
+                    $data_description = $rowData["description"];
+
+                    echo '<tr>
+                        <td>'.$counter++.'</td>
+                        <td>'.$data_title.'</td>
+                        <td>'.$data_description.'</td>
+                    </tr>';
+                }
+            }
+        } else if ($type == 2) {
+            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND user_id = $ID AND status = 0 ORDER BY title" );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $counter = 1;
+                while($rowData = mysqli_fetch_array($selectData)) {
+                    $data_ID = $rowData["ID"];
+                    $data_title = $rowData["title"];
+                    $data_description = $rowData["description"];
+
+                    echo '<tr>
+                        <td>'.$counter++.'</td>
+                        <td>'.$data_title.'</td>
+                        <td>'.$data_description.'</td>
+                    </tr>';
+                }
+            }
+        } else if ($type == 3) {
+            $selectData = mysqli_query( $conn,"SELECT
+                *
+                FROM (
+                    SELECT 
+                    d.ID AS d_ID,
+                    d.title AS d_title,
+                    d.description AS d_description,
+                    e.ID AS e_ID,
+                    e.first_name AS e_first_name
+                    FROM tbl_hr_department AS d
+
+                    LEFT JOIN (
+                        SELECT
+                        *
+                        FROM tbl_hr_employee
+                        WHERE user_id = $ID
+                        AND suspended = 0
+                        AND status = 1
+                    ) AS e
+                    ON FIND_IN_SET(d.ID, REPLACE(e.department_id, ' ', '')) > 0
+
+                    WHERE d.user_id = $ID
+
+                    GROUP BY d.ID
+                    ORDER BY d.title
+                ) AS r
+                WHERE e_ID IS NULL" );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $counter = 1;
+                while($rowData = mysqli_fetch_array($selectData)) {
+                    $d_ID = $rowData["d_ID"];
+                    $d_title = $rowData["d_title"];
+                    $d_description = $rowData["d_description"];
+
+                    echo '<tr>
+                        <td>'.$counter++.'</td>
+                        <td>'.$d_title.'</td>
+                        <td>'.$d_description.'</td>
+                    </tr>';
+                }
+            }
+        } else if ($type == 4) {
+            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND user_id = $ID AND LENGTH(files) = 0 ORDER BY title" );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $counter = 1;
+                while($rowData = mysqli_fetch_array($selectData)) {
+                    $data_ID = $rowData["ID"];
+                    $data_title = $rowData["title"];
+                    $data_description = $rowData["description"];
+
+                    echo '<tr>
+                        <td>'.$counter++.'</td>
+                        <td>'.$data_title.'</td>
+                        <td>'.$data_description.'</td>
+                    </tr>';
+                }
+            }
+        }
+    }
+    if( isset($_GET['summary_JD']) ) {
+        $ID = $_GET['summary_JD'];
+        $type = $_GET['type'];
+
+        if ($type == 1) {
+            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE user_id = $ID AND status = 1 ORDER BY title" );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $counter = 1;
+                while($rowData = mysqli_fetch_array($selectData)) {
+                    $data_ID = $rowData["ID"];
+                    $data_title = $rowData["title"];
+                    $data_description = $rowData["description"];
+
+                    echo '<tr>
+                        <td>'.$counter++.'</td>
+                        <td>'.$data_title.'</td>
+                        <td>'.$data_description.'</td>
+                    </tr>';
+                }
+            }
+        } else if ($type == 2) {
+            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE user_id = $ID AND status = 0 ORDER BY title" );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $counter = 1;
+                while($rowData = mysqli_fetch_array($selectData)) {
+                    $data_ID = $rowData["ID"];
+                    $data_title = $rowData["title"];
+                    $data_description = $rowData["description"];
+
+                    echo '<tr>
+                        <td>'.$counter++.'</td>
+                        <td>'.$data_title.'</td>
+                        <td>'.$data_description.'</td>
+                    </tr>';
+                }
+            }
+        } else if ($type == 3) {
+            $selectData = mysqli_query( $conn,"SELECT
+                *
+                FROM (
+                    SELECT 
+                    jd.ID AS jd_ID,
+                    jd.title AS jd_title,
+                    jd.description AS jd_description,
+                    e.ID AS e_ID,
+                    e.first_name AS e_first_name
+                    FROM tbl_hr_job_description AS jd
+
+                    LEFT JOIN (
+                        SELECT
+                        *
+                        FROM tbl_hr_employee
+                        WHERE user_id = $ID
+                        AND suspended = 0
+                        AND status = 1
+                    ) AS e
+                    ON FIND_IN_SET(jd.ID, REPLACE(e.job_description_id, ' ', '')) > 0
+
+                    WHERE jd.user_id = $ID
+
+                    GROUP BY jd.ID
+                    ORDER BY jd.title
+                ) AS r
+                WHERE e_ID IS NULL" );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $counter = 1;
+                while($rowData = mysqli_fetch_array($selectData)) {
+                    $jd_ID = $rowData["jd_ID"];
+                    $jd_title = $rowData["jd_title"];
+                    $jd_description = $rowData["jd_description"];
+
+                    echo '<tr>
+                        <td>'.$counter++.'</td>
+                        <td>'.$jd_title.'</td>
+                        <td>'.$jd_description.'</td>
+                    </tr>';
+                }
+            }
+        } else if ($type == 4) {
+            $selectData = mysqli_query( $conn,"SELECT
+                *
+                FROM (
+                    SELECT 
+                    jd.ID AS jd_ID,
+                    jd.title AS jd_title,
+                    jd.description AS jd_description,
+                    t.ID AS t_ID,
+                    t.title AS t_title
+                    FROM tbl_hr_job_description AS jd
+
+                    LEFT JOIN (
+                        SELECT
+                        *
+                        FROM tbl_hr_trainings
+                        WHERE user_id = $ID
+                        AND deleted = 0
+                    ) AS t
+                    ON FIND_IN_SET(jd.ID, REPLACE(t.job_description_id, ' ', '')) > 0
+
+                    WHERE jd.user_id = $ID
+
+                    GROUP BY jd.ID
+                    ORDER BY jd.title
+                ) AS r
+                WHERE t_ID IS NULL" );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $counter = 1;
+                while($rowData = mysqli_fetch_array($selectData)) {
+                    $jd_ID = $rowData["jd_ID"];
+                    $jd_title = $rowData["jd_title"];
+                    $jd_description = $rowData["jd_description"];
+
+                    echo '<tr>
+                        <td>'.$counter++.'</td>
+                        <td>'.$jd_title.'</td>
+                        <td>'.$jd_description.'</td>
+                    </tr>';
+                }
+            }
+        }
+    }
+
 
 	if( isset($_GET['counterup']) ) {
 		$page = $_GET['counterup'];
@@ -42365,7 +42595,7 @@
         $statusTotal = 0;
 
         if ($page === "department") {
-	        $selectedDepartmentCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE user_id = $user_id" );
+	        $selectedDepartmentCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND user_id = $user_id" );
 	        if ( mysqli_num_rows($selectedDepartmentCounter) > 0 ) {
 	            while($rowDepartmentCounter = mysqli_fetch_array($selectedDepartmentCounter)) {
 	                $files = $rowDepartmentCounter["files"];
@@ -42378,23 +42608,24 @@
 
 	                if ( $files === "" ) { $statusFiles++; }
 
+                    $HasEmployee = false;
 	                // $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE trainings_id_status <> '' " );
-	                $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee " );
-	                if ( mysqli_num_rows($selectEmployeeCounter) > 0 ) {
-	                    $countDepartmentChecking = 0;
-	                    while($rowEmployeeCounter = mysqli_fetch_array($selectEmployeeCounter)) {
-	                        $rowEmployeeDepartment = $rowEmployeeCounter['department_id'];
-	                        if ($rowEmployeeDepartment == $statusID) {
-	                            $countDepartmentChecking++;
-	                        }
-	                    }
+	                $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1" );
+                    if ( mysqli_num_rows($selectEmployeeCounter) > 0 ) {
+                        $countDepartmentChecking = 0;
+                        while($rowEmployeeCounter = mysqli_fetch_array($selectEmployeeCounter)) {
+                            $rowEmployeeDepartment = $rowEmployeeCounter['department_id'];
 
-	                    if ($countDepartmentChecking > 0) {
-	                        $statusNotYetPerform++;
-	                    }
-	                } else {
-	                    $statusNotYetPerform++;
-	                }
+                            $array_employeeJD = explode(", ", $rowEmployeeDepartment);
+                            if (in_array($rowDepartmentCounter['ID'], $array_employeeJD)) {
+                                $HasEmployee = true;
+                            }
+                        }
+
+                        if ( $HasEmployee == false ) {
+                            $statusNotYetPerform++;
+                        }
+                    }
 	            }
 	        }
 		} else if ($page === "trainings") {
@@ -42484,12 +42715,10 @@
                     // TOTAL JOB DESC. W/NO EMPLOYEE
                     $HasEmployee = false;
                     // $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE trainings_id_status <> '' " );
-                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee" );
+                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1" );
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
-
                             $rowEmployeeJD = $rowEmployee['job_description_id'];
-
 
                             $array_employeeJD = explode(", ", $rowEmployeeJD);
                             if (in_array($rowJDCounter['ID'], $array_employeeJD)) {
@@ -44721,7 +44950,7 @@
                                                 <li><a href="javascript:;" class="btnDelete" data-id="'. $item_ID .'" onclick="btnDelete('. $item_ID .')">Delete</a></li>
                                                 <li><a href="#modalReport" class="btnReport" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnReport('. $item_ID .')">Report</a></li>';
                                         
-		                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 163 OR $current_userEmployerID == 27 OR $current_userID == 475) {
+		                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464) {
 		                                        	$output .= '<li><a href="#modalClone" data-toggle="modal" onclick="btnClone('. $item_ID .')">Clone</a></li>';
 		                                        }
 
@@ -44966,8 +45195,15 @@
             $user_id = employerID($portal_user);
         }
 
-        $current_userEmployerID = $user_id;
-		$current_userID = $_COOKIE['ID'];
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
+            $current_userEmployerID = $user_id;
+            $current_userID = $user_id;
+        } else {
+            $current_userEmployerID = $user_id;
+            $current_userID = $_COOKIE['ID'];
+        }
 		
 		// $selectData = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID = $id AND deleted = 0 AND user_id = $user_id" );
         $selectData = mysqli_query( $conn,"SELECT
@@ -45115,7 +45351,7 @@
                                         echo '<li><a href="javascript:;" class="btnDelete" data-id="'. $library_ID .'" onclick="btnDelete('. $library_ID .')">Delete</a></li>
                                         <li><a href="#modalReport" class="btnReport" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnReport('. $library_ID .')">Report</a></li>';
                                         
-                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 163 OR $current_userEmployerID == 27 OR $current_userID == 475) {
+                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464) {
                                         	echo '<li><a href="#modalClone" data-toggle="modal" onclick="btnClone('. $library_ID .')">Clone</a></li>';
                                         }
                                         
@@ -48057,8 +48293,16 @@
         $current_userEmployeeID = employeeID($user_id);
         $current_userEmployerID = employerID($user_id);
 
-		$resultTree = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE parent_id = 0 AND deleted = 0 AND user_id = $current_userEmployerID" );
-	    if ($collabUser == 1 AND !isset($_COOKIE['switchAccount'])) { $resultTree = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE deleted = 0 AND collaborator_id <> ''" ); }
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) > 0 ) {
+            $resultTree = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE parent_id = 0 AND deleted = 0 AND user_id = $current_userEmployerID" );
+            if ($collabUser == 1 AND !isset($_COOKIE['switchAccount'])) { $resultTree = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE deleted = 0 AND collaborator_id <> ''" ); }
+        } else {
+            $resultTree = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID = 116706101" );
+            $current_userEmployeeID = employeeID(163);
+            $current_userEmployerID = employerID(163);
+            $collabUser = 0;
+        }
 
 	    if ( mysqli_num_rows($resultTree) > 0 ) {
 	        while($rowTree = mysqli_fetch_array($resultTree)) {
@@ -48184,9 +48428,18 @@
         $current_userEmployeeID = employeeID($portal_user);
         $current_userEmployerID = employerID($portal_user);
 
-		$resultTree = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE parent_id = 0 AND deleted = 0 AND user_id = $user_id" );
-	    if ($collabUser == 1 AND !isset($_COOKIE['switchAccount'])) { $resultTree = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE deleted = 0 AND collaborator_id <> '' AND user_id = $user_id" ); }
-	    if ($current_userEmployerID == 27) { $resultTree = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE parent_id = 0 AND deleted = 0 AND user_id = $user_id" ); }
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) > 0 ) {
+            $resultTree = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE parent_id = 0 AND deleted = 0 AND user_id = $user_id" );
+            if ($collabUser == 1 AND !isset($_COOKIE['switchAccount'])) { $resultTree = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE deleted = 0 AND collaborator_id <> '' AND user_id = $user_id" ); }
+            if ($current_userEmployerID == 27) { $resultTree = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE parent_id = 0 AND deleted = 0 AND user_id = $user_id" ); }
+        } else {
+            $resultTree = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID = 116706101" );
+            $user_id = 163;
+            $current_userEmployeeID = employeeID($user_id);
+            $current_userEmployerID = employerID($user_id);
+            $collabUser = 0;
+        }
 
 		$result = array();
 	    if ( mysqli_num_rows($resultTree) > 0 ) {
@@ -48955,8 +49208,18 @@
 		}
 
 		$description = addslashes($_POST['description']);
-        $reviewer = $_POST['reviewer'];
-        $approver = $_POST['approver'];
+
+
+        $reviewer = 0;
+        if (!empty($_POST['reviewer'])) {
+            $reviewer = $_POST['reviewer'];
+        }
+
+        $approver = 0;
+        if (!empty($_POST['approver'])) {
+            $approver = $_POST['approver'];
+        }
+        
 		$due_date = "0000-00-00";
 		$last_modified = date('Y-m-d');
 
@@ -49046,7 +49309,9 @@
 				// Update History Data
 				actionHistory($data_ID, 1, 0, $data_ID);
 			}
-		}
+		} else {
+            echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+        }
 		mysqli_close($conn);
 	}
 	if( isset($_POST['btnUpdate_Area']) ) {
@@ -49100,25 +49365,29 @@
 
         $description = addslashes($_POST['description']);
         $description_tmp = addslashes($_POST['description_tmp']);
-        if ($description <> $description_tmp) {
-            $arr_tmp = array();
-            $selectDesc = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID=$ID" );
-            $rowDesc = mysqli_fetch_array($selectDesc);
-            if (!empty($rowDesc["description_tmp"])) {
-                $arr_tmp = json_decode($rowDesc["description_tmp"],true);
+        if ($user_id == 464) {
+            if ($description <> $description_tmp) {
+                $arr_tmp = array();
+                $selectDesc = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID=$ID" );
+                $rowDesc = mysqli_fetch_array($selectDesc);
+                if (!empty($rowDesc["description_tmp"])) {
+                    $arr_tmp = json_decode($rowDesc["description_tmp"],true);
+                }
+
+                $desc_tmp = array (
+                    'reviewed'   =>  0,
+                    'approved'   =>  0,
+                    'description'  =>  addslashes($description),
+                    'comment'  =>  ''
+                );
+                array_push($arr_tmp, $desc_tmp);
+                $description = json_encode($arr_tmp, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
+
+                mysqli_query( $conn,"UPDATE tbl_library set description_reviewed = 0, description_approved = 0, description_tmp = '".$description."' WHERE ID = $ID" );
             }
-
-            $desc_tmp = array (
-                'reviewed'   =>  0,
-                'approved'   =>  0,
-                'description'  =>  addslashes($description),
-                'comment'  =>  ''
-            );
-            array_push($arr_tmp, $desc_tmp);
-            $description = json_encode($arr_tmp, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
-
-
-            mysqli_query( $conn,"UPDATE tbl_library set description_reviewed = 0, description_approved = 0, description_tmp = '".$description."' WHERE ID = $ID" );
+        } else {
+            mysqli_query( $conn,"UPDATE tbl_library set description_reviewed = 0, description_approved = 0, description = '".$description."' WHERE ID = $ID" );
+            $description_tmp = $description;
         }
 		
 		if (!mysqli_error($conn)) {
@@ -54378,7 +54647,7 @@
                 <select class="form-control mt-multiselect btn btn-default" name="user" required>
                 	<option value="">Select</option>';
 
-		            if ($portal_user == 1 OR $portal_user == 2 OR $portal_user == 19 OR $portal_user == 163 OR $current_userEmployerID == 27) {
+		            if ($portal_user == 1 OR $portal_user == 2 OR $portal_user == 19 OR $portal_user == 163 OR $current_userEmployerID == 27 OR $user_id == 464) {
                 		$selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = 0 AND is_verified = 1 AND is_active = 1" );
                 		if ($current_client == 1) { $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = 0 AND is_verified = 1 AND is_active = 1 AND client = 1" ); }
 

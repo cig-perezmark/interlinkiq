@@ -13,7 +13,7 @@
 ?>
 
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-3" onclick="summary(<?php echo $switch_user_id; ?>, 1)" href="#modalSummary" data-toggle="modal">
                             <div class="dashboard-stat2 counterup_1">
                                 <div class="display" style="position: relative;">
                                     <div class="number">
@@ -32,7 +32,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3" onclick="summary(<?php echo $switch_user_id; ?>, 2)" href="#modalSummary" data-toggle="modal">
                             <div class="dashboard-stat2 counterup_2">
                                 <div class="display" style="position: relative;">
                                     <div class="number">
@@ -51,7 +51,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3" onclick="summary(<?php echo $switch_user_id; ?>, 3)" href="#modalSummary" data-toggle="modal">
                             <div class="dashboard-stat2 counterup_3">
                                 <div class="display" style="position: relative;">
                                     <div class="number">
@@ -70,7 +70,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-3" onclick="summary(<?php echo $switch_user_id; ?>, 4)" href="#modalSummary" data-toggle="modal">
                             <div class="dashboard-stat2 counterup_4">
                                 <div class="display" style="position: relative;">
                                     <div class="number">
@@ -460,6 +460,33 @@
                             </div>
                         </div>
 
+                        <div class="modal fade bs-modal-lg" id="modalSummary" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <form method="post" enctype="multipart/form-data" class="form-horizontal modalSummary">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                            <h4 class="modal-title">Summary</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <table class="table table-bordered table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 50px;">Nos</th>
+                                                        <th>Department Name</th>
+                                                        <th>Description</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div><!-- END CONTENT BODY --> 
 
         <?php include_once ('footer.php'); ?>
@@ -542,6 +569,16 @@
                 }
             });
 
+            function summary(id, type) {
+                $.ajax({
+                    type: "GET",
+                    url: "function.php?summary="+id+"&type="+type,
+                    dataType: "html",
+                    success: function(data){
+                        $("#modalSummary .modal-body table tbody").html(data);
+                    }
+                });
+            }
             function btnReset(view) {
                 $('#'+view+' form')[0].reset();
             }

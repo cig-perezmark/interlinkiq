@@ -157,7 +157,7 @@
                                                                                             </a>
                                                                                         </div>
                                                                                         <div class="col-xs-4">
-                                                                                            <a class="task-add" onclick="show_trend()">
+                                                                                            <a class="task-add" data-toggle="modal" data-target="#show_trend">
                                                                                                 <i class="fa fa-line-chart"></i>
                                                                                             </a>
                                                                                         </div>
@@ -266,12 +266,42 @@
 
                     </form>        
                     </div><!-- END CONTENT BODY -->
+                    
+                    <!-- Modal -->
+                    <div class="modal fade" id="show_trend" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog"  style="width:1100px">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Trend Analysis</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12"  style="width: 100%; overflow-x: auto;">
+                                    <div id="chartdiv5" style="width: 1200px"></div>
+                                </div>
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
         <?php include_once ('footer.php'); ?>
         <style>
             #chartdiv {
               width: 100%;
               height: 200px;
+              z-index:999;
+            }
+            #chartdiv5 {
+              width: 100%;
+              height: 400px;
               z-index:999;
             }
         </style>
@@ -284,6 +314,7 @@
         <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
         <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
         <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+
         <script>
             $(document).ready(function(){
                 $('#assign_modal').on('show.bs.modal', function (e) {
@@ -361,6 +392,150 @@
             
             }); // end am5.ready()
         </script>
-
+    <script>
+        am5.ready(function() {
+        
+        
+        // Create root element
+        // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+        var root = am5.Root.new("chartdiv5");
+        
+        
+        // Set themes
+        // https://www.amcharts.com/docs/v5/concepts/themes/
+        root.setThemes([
+          am5themes_Animated.new(root)
+        ]);
+        
+        
+        // Create chart
+        // https://www.amcharts.com/docs/v5/charts/xy-chart/
+        var chart = root.container.children.push(am5xy.XYChart.new(root, {
+          panX: false,
+          panY: false,
+          paddingLeft: 0,
+          wheelX: "panX",
+          wheelY: "zoomX",
+          layout: root.verticalLayout
+        }));
+        
+        
+        // Add legend
+        // https://www.amcharts.com/docs/v5/charts/xy-chart/legend-xy-series/
+        var legend = chart.children.push(
+          am5.Legend.new(root, {
+            centerX: am5.p50,
+            x: am5.p50
+          })
+        );
+        
+        var data = [{
+          "year": "I received food safety training\nbefore they allow me to work.",
+          "s_agree": 10,
+          "agree": 7,
+          "disagree": 2,
+          "s_disagree": 1
+        }, {
+          "year": "I appreciate when a co-worker\npoints out to me if I am doing something\nthat could affect food safety in a bad way",
+          "s_agree": 8,
+          "agree": 12,
+          "disagree": 1,
+          "s_disagree": 0
+        },
+        {
+          "year": "I am comfortable stopping \n the line whenever I see something that might \n harm the quality and safety of the food we make. ",
+          "s_agree": 11,
+          "agree": 12,
+          "disagree": 2,
+          "s_disagree": 2
+        },
+        {
+          "year": "I think my supervisor always puts\nfood safety ahead of production.",
+          "s_agree": 9,
+          "agree": 5,
+          "disagree": 4,
+          "s_disagree": 1
+        }]
+        
+        
+        // Create axes
+        // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
+        var xRenderer = am5xy.AxisRendererX.new(root, {
+          cellStartLocation: 0.1,
+          cellEndLocation: 0.9,
+          minorGridEnabled: true
+        })
+        
+        var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
+          categoryField: "year",
+          renderer: xRenderer,
+          tooltip: am5.Tooltip.new(root, {})
+        }));
+        
+        xRenderer.grid.template.setAll({
+          location: 1
+        })
+        
+        xAxis.data.setAll(data);
+        
+        var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+          renderer: am5xy.AxisRendererY.new(root, {
+            strokeOpacity: 0.1
+          })
+        }));
+        
+        
+        // Add series
+        // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+        function makeSeries(name, fieldName) {
+          var series = chart.series.push(am5xy.ColumnSeries.new(root, {
+            name: name,
+            xAxis: xAxis,
+            yAxis: yAxis,
+            valueYField: fieldName,
+            categoryXField: "year"
+          }));
+        
+          series.columns.template.setAll({
+            tooltipText: "{name}, {categoryX}:{valueY}",
+            width: am5.percent(90),
+            tooltipY: 0,
+            strokeOpacity: 0
+          });
+        
+          series.data.setAll(data);
+        
+          // Make stuff animate on load
+          // https://www.amcharts.com/docs/v5/concepts/animations/
+          series.appear();
+        
+          series.bullets.push(function () {
+            return am5.Bullet.new(root, {
+              locationY: 0,
+              sprite: am5.Label.new(root, {
+                text: "{valueY}",
+                fill: root.interfaceColors.get("alternativeText"),
+                centerY: 0,
+                centerX: am5.p50,
+                populateText: true
+              })
+            });
+          });
+        
+          legend.data.push(series);
+        }
+        
+        makeSeries("Strongly Agree", "s_agree");
+        makeSeries("Agree", "agree");
+        makeSeries("Disagree", "disagree");
+        makeSeries("Strongly Disagree", "s_disagree");
+        
+        
+        // Make stuff animate on load
+        // https://www.amcharts.com/docs/v5/concepts/animations/
+        chart.appear(1000, 100);
+        
+        }); // end am5.ready()
+        </script>
     </body>
 </html>

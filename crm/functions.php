@@ -2572,7 +2572,9 @@
                         <td class="text-center">
                             <div class="clearfix">
                                 <div class="btn-group btn-group-solid">
-                                    <a class="btn btn-sm blue tooltips edit-assigned-task" data-id="' . $result['taskid'] . '" data-toggle="modal" href="#modalEditTaskForm"><i class="bi bi-activity"></i> View</a>
+                                    <a class="btn btn-sm red tooltips edit-assigned-task" data-id="' . $result['taskid'] . '" data-toggle="modal" href="#modalEditTaskForm"><i class="bi bi-activity"></i> Notes</a>
+                                    <a class="btn btn-sm green tooltips edit-assigned-task" data-id="' . $result['taskid'] . '" data-toggle="modal" href="#modalEditTaskForm"><i class="bi bi-activity"></i> View Contact</a>
+                                    <a class="btn btn-sm blue tooltips edit-assigned-task" data-id="' . $result['taskid'] . '" data-toggle="modal" href="#modalEditTaskForm"><i class="bi bi-activity"></i> View Task</a>
                                 </div>
                             </div>
                         </td>
@@ -2641,7 +2643,8 @@
                                 <td> '.$status.' </td>
                                 <td> '.$remaining_weeks.' Weeks</td>
                                 <td class="text-center"> 
-                                    <a class="btn blue btn-sm campaignDetails" data-toggle="modal" href="#modalCampaignDetails" data-id="'.$Campaign_Id.'">View</a> 
+                                    <a class="btn green btn-sm campaignDetails" data-toggle="modal" href="#modalCampaignDetails" data-id="'.$Campaign_Id.'">View Contact</a> 
+                                    <a class="btn blue btn-sm campaignDetails" data-toggle="modal" href="#modalCampaignDetails" data-id="'.$Campaign_Id.'">View Campaign</a> 
                                 </td>
                             </tr>
                 ';

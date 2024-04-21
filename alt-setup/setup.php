@@ -34,7 +34,7 @@ if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") {
  * @return null|string Returns null if it is an empty or not a string at all, otherwise, the string itself.
  */
 function val_str($var) {
-    return isset($var) && is_string($var) && empty($var) ? null : $data;
+    return isset($var) && is_string($var) && empty($var) ? null : $var;
 }
 
 /**

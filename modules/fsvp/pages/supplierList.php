@@ -169,7 +169,14 @@ function yesNoRadio() {
                     <div class="col-md-12">
                         <div class="form-group">
                             <label for="">Find supplier </label>
-                            <select name="" id="" class="form-control"></select>
+                            <select name="" id="" class="multi-select">
+                                <?php
+                                    $suppliers = getSuppliersByUser($conn, $switch_user_id);
+                                    foreach($suppliers as $supplier) {
+                                        echo '<option value="'.$supplier['id'].'">'.$supplier['name'].'</option>';
+                                    }
+                                ?>
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-12">

@@ -1,7 +1,6 @@
 <?php
     include_once __DIR__ . '/../../header.php';
-
-
+    include_once __DIR__ .'/utils.php';
 ?>
 <link href="assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
 <link href="assets/global/plugins/jquery-notific8/jquery.notific8.min.css" rel="stylesheet" type="text/css" />
@@ -75,7 +74,12 @@ textarea {
     </div>
 </div>
 <?php include __DIR__ . '/../../footer.php'; ?>
+<script>
+var baseUrl = 'fsvp?api&';
+</script>
+<!-- <script src="modules/fsvp/js/functions.js"></script> -->
 
 <script>
+// fetchSuppliers();
 $('#tableSupplierList').DataTable();
 </script>

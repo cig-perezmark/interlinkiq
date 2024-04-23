@@ -169,7 +169,8 @@ function yesNoRadio() {
                     <div class="col-md-12">
                         <div class="form-group">
                             <label for="">Find supplier </label>
-                            <select name="" id="" class="multi-select">
+                            <select name="" id="" class="supplierdd">
+                                <option value="" selected disabled>Select supplier name</option>
                                 <?php
                                     $suppliers = getSuppliersByUser($conn, $switch_user_id);
                                     foreach($suppliers as $supplier) {
@@ -179,54 +180,109 @@ function yesNoRadio() {
                             </select>
                         </div>
                     </div>
+                    <div class="col-md-12 margin-bottom-20 hidex">
+                        <div>
+                            <strong>Food imported:</strong>
+                            <hr>
+                            <p class="help-block" id="materialListHelpBlock">Please select a supplier first.</p>
+                        </div>
+                        <div class="mls-grid" id="materialListSelection"></div>
+                    </div>
+                </div>
+                <!-- <div class=" row hide">
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        <label for="">Supplier Agreement</label>
+                                        <div class="checkFileUpload">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <input type="checkbox">
+                                                    <span></span>
+                                                </span>
+                                                <input type="file" class="form-control" multiple>
+                                            </div>
+                                            <button class="btn btn-danger">
+                                                <i class="fa fa-close"></i> Remove
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="form-group">
+                                        <label for="">FSVP Compliance Statement</label>
+                                        <div class="checkFileUpload">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <input type="checkbox">
+                                                    <span></span>
+                                                </span>
+                                                <input type="file" class="form-control" disabled>
+                                            </div>
+                                            <button class="btn btn-danger" disabled>
+                                                <i class="fa fa-close"></i> Remove
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div> -->
+                <div class="row margin-bottom-20">
                     <div class="col-md-12">
-                        <h5><strong>Food imported:</strong></h5>
+                        Supplier Agreement
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group row">
-                            <label for="" class="col-form-label col-md-2">Select</label>
-                            <div class="col-md-10">
-                                <select name="" id="" class="form-control"></select>
-                            </div>
+                    <div class="col-md-5">
+                        <div class="mt-radio-inline">
+                            <label class="mt-radio mt-radio-outline">
+                                <input type="radio" name="optionsRadios" id="optionsRadios4" value="option1"> Yes
+                                <span></span>
+                            </label>
+                            <label class="mt-radio mt-radio-outline">
+                                <input type="radio" name="optionsRadios" id="optionsRadios5" value="option2"> No
+                                <span></span>
+                            </label>
+                            <span>|</span>
+                            <label class="mt-radio mt-radio-outline">
+                                <a href="#"> <i class="fa fa-upload"></i> Upload file(s)</a>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="filesArrayDisplay">
+                            --
+                            <!-- <div class="fileArrayItem">
+                                <a href="#"> Upload file(s)</a>
+                                <button type="button" class="btn btn-xs btn-default removeFileButton"><i class="fa fa-close"></i></button>
+                            </div> -->
                         </div>
                     </div>
                 </div>
-                <hr>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Supplier Agreement</label>
-                            <div class="mt-radio-inline">
-                                <label class="mt-radio mt-radio-outline">
-                                    <input type="radio" name="optionsRadios" id="optionsRadios4" value="option1"> Yes
-                                    <span></span>
-                                </label>
-                                <label class="mt-radio mt-radio-outline">
-                                    <input type="radio" name="optionsRadios" id="optionsRadios5" value="option2"> No
-                                    <span></span>
-                                </label>
+                <div class="row margin-bottom-20">
+                    <div class="col-md-12">
+                        FSVP Compliance Statement
+                    </div>
+                    <div class="col-md-5">
+                        <div class="mt-radio-inline">
+                            <label class="mt-radio mt-radio-outline">
+                                <input type="radio" name="optionsRadios" id="optionsRadios4" value="option1"> Yes
+                                <span></span>
+                            </label>
+                            <label class="mt-radio mt-radio-outline">
+                                <input type="radio" name="optionsRadios" id="optionsRadios5" value="option2"> No
+                                <span></span>
+                            </label>
+                            <span>|</span>
+                            <label class="mt-radio mt-radio-outline">
+                                <a href="#"> <i class="fa fa-upload"></i> Upload file(s)</a>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="filesArrayDisplay">
+                            <div class="fileArrayItem">
+                                <a href="#"> Upload file(s)</a>
+                                <button type="button" class="btn btn-xs btn-default removeFileButton"><i class="fa fa-close"></i></button>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6"></div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>FSVP Compliance Statement</label>
-                            <div class="mt-radio-inline">
-                                <label class="mt-radio mt-radio-outline">
-                                    <input type="radio" name="optionsRadios" id="optionsRadios4" value="option1"> Yes
-                                    <span></span>
-                                </label>
-                                <label class="mt-radio mt-radio-outline">
-                                    <input type="radio" name="optionsRadios" id="optionsRadios5" value="option2"> No
-                                    <span></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6"></div>
                 </div>
             </div>
             <div class="modal-footer">

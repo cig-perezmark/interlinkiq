@@ -58,20 +58,25 @@ hr {
 .filesArrayDisplay {
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
     gap: 10px;
     padding: 10px 0;
 }
 
 .fileArrayItem {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    /* justify-content: space-between; */
     gap: 1rem;
+}
+
+.fileArrayName {
+    flex-grow: 1;
+    display: inline-flex;
+    gap: .5rem;
 }
 
 .removeFileButton {
     border: none !important;
-    /* padding: 0; */
 }
 
 .mls-grid {
@@ -129,53 +134,8 @@ var baseUrl = 'fsvp?api&';
 
 <script>
 // fetchSuppliers();
-$('#tableSupplierList').DataTable();
+// $('#tableSupplierList').DataTable();
 </script>
 
 <script>
-initMultiSelect($('.supplierdd'), {
-    onChange: function(option, checked, select) {
-        // alert('Changed option ' + $(option).val() + '.');
-
-        $.ajax({
-            url: baseUrl + "getProductsBySupplier=" + $(option).val(),
-            type: "GET",
-            contentType: false,
-            processData: false,
-            success: function({
-                materials
-            }) {
-                if (materials && Array.isArray(materials)) {
-                    const mList = $('#materialListSelection');
-                    mList.html('');
-
-                    if (!materials.length) {
-                        $('#materialListHelpBlock').text('No materials found.');
-                        return;
-                    } else {
-                        $('#materialListHelpBlock').text('Tick on the checkboxes to select.');
-                    }
-
-                    materials.forEach((m) => {
-                        const substr = m.description.substring(0, 32);
-
-                        mList.append(`
-                            <label class="mt-checkbox mt-checkbox-outline "> ${m.name}
-                                <p title="${m.description}" class="small text-muted" style="padding: 0; margin:0;">${(m.description.length > 32 ? substr + '...' : m.description) || ''}</p>
-                                <input type="checkbox" value="${m.id}" name="food_imported[]"">
-                                <span></span>
-                            </label>
-                        `);
-                    })
-                }
-            },
-            error: function() {
-                bootstrapGrowl('Error!');
-            },
-            complete: function() {
-                // l.stop();
-            }
-        });
-    }
-})
 </script>

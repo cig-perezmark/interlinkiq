@@ -9,6 +9,7 @@
 
 .fileArrayDates {
     width: 180px !important;
+    flex-shrink: 0;
 }
 </style>
 
@@ -185,7 +186,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-md-12">
                         <div class="mt-radio-inline">
                             <span class="mt-radio mt-radio-outline mtCheckUploadFileLink" style="padding-left: 0;">
                                 <a href="javascript:void(0)" onclick="$('#assa').click()"> <i class="fa fa-upload"></i> Upload file(s) </a>
@@ -199,6 +200,7 @@
                                     <span class="fileArrayName">File Name</span>
                                     <div class="fileArrayDates">Document Date</div>
                                     <div class="fileArrayDates">Expiration Date</div>
+                                    <div class="fileArrayDates">Note</div>
                                 </div>
                             </div>
                         </div>
@@ -218,7 +220,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-md-12">
                         <div class="mt-radio-inline">
                             <span class="mt-radio mt-radio-outline mtCheckUploadFileLink" style="padding-left: 0;">
                                 <a href="javascript:void(0)" onclick="$('#ascsf').click()"> <i class="fa fa-upload"></i> Upload file </a>
@@ -232,6 +234,7 @@
                                     <span class="fileArrayName">File Name</span>
                                     <div class="fileArrayDates">Document Date</div>
                                     <div class="fileArrayDates">Expiration Date</div>
+                                    <div class="fileArrayDates">Note</div>
                                 </div>
                             </div>
                         </div>

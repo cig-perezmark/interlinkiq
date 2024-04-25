@@ -21,9 +21,9 @@ $('.asFileUpload').change(function() {
                 <a href="#" target="_blank"></a> 
                 <button type="button" data-id="${fileId}" data-name="${this.dataset.name}" class="btn btn-xs btn-default removeFileButton"><i class="fa fa-close"></i></button>
             </span>
-            <input class="form-control fileArrayDates" type="date" required>
-            <input class="form-control fileArrayDates" type="date" required>
-            <input class="form-control fileArrayDates" type="text" placeholder="Add note">
+            <input class="form-control fileArrayDates" type="date" data-name="date" data-fileinfoid="${fileId}" required>
+            <input class="form-control fileArrayDates" type="date" data-name="exp" data-fileinfoid="${fileId}" required>
+            <input class="form-control fileArrayDates" type="text" data-name="note" data-fileinfoid="${fileId}" placeholder="Add note">
         `;
 
         const anchor = item.querySelector('a');
@@ -75,7 +75,7 @@ $('#newSupplierForm').submit(function(e) {
     }
 
     if(form.compliance_statement.value == '1' && !Object.values(newSupplierFiles.compliance_statement).length) {
-        return showError('Please upload supplier agreement document(s).');
+        return showError('Please upload a compliance statement document.');
     }
     
     // remove error if valid
@@ -90,12 +90,18 @@ $('#newSupplierForm').submit(function(e) {
     const btn = form.querySelector('[type=submit]');
 
     // prepare files
-    Object.values(newSupplierFiles.compliance_statement).forEach(f => {
-        formData.append('compliance_statement_file', f)
+    Object.entries(newSupplierFiles.compliance_statement).forEach(([id, f]) => {
+        formData.append('csf_date', $(`input[data-name="date"][data-fileinfoid="${id}"]`).val());
+        formData.append('csf_exp', $(`input[data-name="exp"][data-fileinfoid="${id}"]`).val());
+        formData.append('csf_note', $(`input[data-name="note"][data-fileinfoid="${id}"]`).val());
+        formData.append('compliance_statement_file', f);
     });
 
-    Object.values(newSupplierFiles.supplier_agreement).forEach(f => {
-        formData.append('supplier_agreement_file[]', f)
+    Object.entries(newSupplierFiles.supplier_agreement).forEach(([id, f]) => {
+        formData.append('saf_date[]', $(`input[data-name="date"][data-fileinfoid="${id}"]`).val());
+        formData.append('saf_exp[]', $(`input[data-name="exp"][data-fileinfoid="${id}"]`).val());
+        formData.append('saf_note[]', $(`input[data-name="note"][data-fileinfoid="${id}"]`).val());
+        formData.append('supplier_agreement_file[]', f);
     });
 
     var l = Ladda.create(btn);
@@ -107,8 +113,24 @@ $('#newSupplierForm').submit(function(e) {
         contentType: false,
         processData: false,
         data: formData,
-        success: function(response) {
-            console.log(response)
+        success: function({data, message}) {
+            if(data) {
+                const sa = !data.supplier_agreement ? 'No' : data.supplier_agreement.map((x) => `<a href="${x.path}">${x.name}</a>`).join(' ');
+                const cs = !data.compliance_statement ? 'No' : data.compliance_statement.map((x) => `<a href="${x.path}">${x.name}</a>`).join(' ');
+                
+                supplierTable.dt.row.add([
+                    data.name,
+                    data.food_imported.map((x) => x.name).join(', '),
+                    data.address,
+                    '',
+                    sa,
+                    cs,
+                    '',
+                ]).draw();
+            }
+
+            $('#modalNewSupplier').modal('hide');
+            bootstrapGrowl(message || 'Saved!');
         },
         error: function() {
             bootstrapGrowl('Error!');
@@ -140,6 +162,37 @@ function showError(message = "Unable to proceed submit action.") {
             newSupplierErrorDisplay = null;
         }, 5000)
     })
+}
+
+function initSuppliers() {
+    $.ajax({
+        url: baseUrl + "suppliersByUser",
+        type: "GET",
+        contentType: false,
+        processData: false,
+        success: function({data}) {
+            if(data) {
+                supplierTable.dt.clear().draw();
+                data.forEach((d) => {
+                    const sa = !d.supplier_agreement ? 'No' : d.supplier_agreement.map((x) => `<a href="${x.path}">${x.name}</a>`).join(' ');
+                    const cs = !d.compliance_statement ? 'No' : d.compliance_statement.map((x) => `<a href="${x.path}">${x.name}</a>`).join(' ');
+                    
+                    supplierTable.dt.row.add([
+                        d.name,
+                        d.food_imported.map((x) => x.name).join(', '),
+                        d.address,
+                        '',
+                        sa,
+                        cs,
+                        '',
+                    ]).draw();
+                })
+            }
+        },
+        error: function() {
+            bootstrapGrowl('Error fetching records!');
+        },
+    });
 }
 
 initMultiSelect($('.supplierdd'), {
@@ -191,4 +244,5 @@ initMultiSelect($('.supplierdd'), {
 
 $(document).ready(function() {
     supplierTable = initDataTable('#tableSupplierList')
+    initSuppliers();
 });

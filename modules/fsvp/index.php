@@ -59,20 +59,27 @@ hr {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 15px;
     padding: 10px 0;
 }
 
 .fileArrayItem {
     display: inline-flex;
     align-items: center;
-    gap: 1rem;
+    gap: 15px;
 }
 
 .fileArrayName {
     flex-grow: 1;
     display: inline-flex;
     gap: .5rem;
+}
+
+.fileArrayName a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 220px;
 }
 
 .removeFileButton {

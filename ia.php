@@ -108,12 +108,12 @@
                                                                         if ($switch_user_id == 163) {
                                                                             echo '<a href="'.$base_url.'ia-form?t=3&i='.$ia_ID.'" class="btn btn-xs dark m-0" title="Edit" target="_blank"><i class="fa fa-pencil"></i></a>
                                                                             <a href="'.$base_url.'ia-form?t=4&i='.$ia_ID.'" class="btn btn-xs btn-success m-0" title="View" target="_blank"><i class="fa fa-search"></i></a>
-                                                                            <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteIA(this, '.$ia_ID.')" title="Delete"><i class="fa fa-trash"></i></a>
+                                                                            <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteIA(this, '.$ia_ID.')" title="Move to Archive"><i class="fa fa-archive"></i></a>
                                                                             <a href="#modalClone" data-toggle="modal"" class="btn btn-xs btn-info m-0" onclick="btnCloneIA('.$ia_ID.')" title="Clone"><i class="fa fa-clone"></i></a>';
                                                                         } else {
                                                                             echo '<a href="'.$base_url.'ia-form?t=3&i='.$ia_ID.'" class="btn btn-xs dark m-0" title="Edit" target="_blank"><i class="fa fa-pencil"></i></a>
                                                                             <a href="'.$base_url.'ia-form?t=4&i='.$ia_ID.'" class="btn btn-xs btn-success m-0" title="View" target="_blank"><i class="fa fa-search"></i></a>
-                                                                            <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteIA(this, '.$ia_ID.')" title="Delete"><i class="fa fa-trash"></i></a>
+                                                                            <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteIA(this, '.$ia_ID.')" title="Move to Archive"><i class="fa fa-archive"></i></a>
                                                                             <a href="'.$base_url.'ia-form?t=1&i='.$ia_ID.'" class="btn btn-xs btn-info m-0" title="Generate Form" target="_blank"><i class="fa fa-file-text-o"></i></a>';
                                                                             
                                                                             if ($current_userID == 55 || $current_userID == 177 || $current_userID == 43 ) {
@@ -186,7 +186,7 @@
                                                                     <td class="text-center">
                                                                         <a href="'.$base_url.'ia-form?t=2&i='.$form_ID.'" class="btn btn-xs dark m-0" title="Generate Form" target="_blank"><i class="fa fa-pencil"></i></a>
                                                                         <a href="'.$base_url.'pdf_dom?id='.$form_ID.'" class="btn btn-xs btn-success m-0" title="PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
-                                                                        <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteForm(this, '.$form_ID.')" title="Delete"><i class="fa fa-trash"></i></a>
+                                                                        <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteForm(this, '.$form_ID.')" title="Move to Archive"><i class="fa fa-archive"></i></a>
                                                                         <a href="javascript:;" class="btn btn-xs btn-info m-0" onclick="btnCloseForm(this, '.$form_ID.')" title="Close"><i class="fa fa-check"></i></a>
                                                                     </td>
                                                                 </tr>';
@@ -252,7 +252,7 @@
                                                                     <td>'.$form_audit_scope.'</td>
                                                                     <td class="text-center">
                                                                         <a href="'.$base_url.'pdf_dom?id='.$form_ID.'" class="btn btn-xs btn-success m-0" title="PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
-                                                                        <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteForm(this, '.$form_ID.')" title="Delete"><i class="fa fa-trash"></i></a>
+                                                                        <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteForm(this, '.$form_ID.')" title="Move to Archive"><i class="fa fa-archive"></i></a>
                                                                     </td>
                                                                 </tr>';
                                                             }
@@ -1142,7 +1142,7 @@
                             // $(e).parent().parent().remove();
 
                             var view = '<a href="pdf_dom?id='+row+'" class="btn btn-xs btn-success m-0" title="PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a>';
-                            view += ' <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteForm(this, '+row+')" title="Delete"><i class="fa fa-trash"></i></a>';
+                            view += ' <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteForm(this, '+row+')" title="Move to Archive"><i class="fa fa-archive"></i></a>';
 
                             $('#tableDataOpen tbody #tr_'+row+' td').last().html(view);
                             $('#tableDataOpen tbody #tr_'+row).appendTo('#tableDataClose tbody');

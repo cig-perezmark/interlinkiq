@@ -1492,6 +1492,31 @@
 
                         if ($user_id == 27) {
                             $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = 0 AND client = 1 AND is_verified = 1 AND is_active = 1 ORDER BY first_name" );
+                        } else if ($user_id == 464) {
+                            $selectUser = mysqli_query( $conn,"SELECT 
+                                u.ID AS ID,
+                                u.first_name AS first_name,
+                                u.last_name AS last_name,
+                                u.email AS u_email,
+                                s.ID AS s_ID,
+                                s.name AS s_name
+                                FROM tbl_user AS u
+
+                                INNER JOIN (
+                                    SELECT
+                                    *
+                                    FROM tbl_supplier
+                                    WHERE is_deleted = 0
+                                    AND page = 2
+                                    AND user_id = $user_id
+                                ) AS s
+                                ON u.email = s.email
+
+                                WHERE u.employee_id = 0 
+                                AND u.is_verified = 1 
+                                AND u.is_active = 1 
+
+                                ORDER BY u.first_name" );
                         } else {
                             $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = 0 AND is_verified = 1 AND is_active = 1 ORDER BY first_name" );
                         }
@@ -18260,7 +18285,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="control-label">Country</label>
-                                <select class="form-control '; echo $page == 2 ? 'hide':''; echo '" name="supplier_countries" onchange="changeCountry(2)" required>
+                                <select class="form-control '; echo $page == 2 ? 'hide':''; echo '" name="supplier_countries" onchange="changeCountry(2, '.$id.')" required>
                                     <option value="US" '; echo  $address_arr[0] == "US" ? 'SELECTED':''; echo '>United States of America</option>';
                                     
                                     $selectCountry = mysqli_query( $conn,"SELECT * FROM countries WHERE iso2 <> 'US'" );
@@ -18279,7 +18304,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="control-label">Industry</label>
-                                <select class="form-control '; echo $page == 2 ? 'hide':''; echo '" name="supplier_industry" onchange="changeIndustry(this.value, 2)">
+                                <select class="form-control '; echo $page == 2 ? 'hide':''; echo '" name="supplier_industry" onchange="changeIndustry(this.value, 2, '.$id.')">
                                     <option value="">Select</option>';
 
                                     $selectIndustry = mysqli_query( $conn,"SELECT * FROM tbl_supplier_industry WHERE deleted = 0 AND FIND_IN_SET($current_client, REPLACE(client, ' ', '')) ORDER BY name" );
@@ -18415,7 +18440,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="control-label">Organic Supplier?</label>
-                                <select class="form-control" name="organic" '; echo $page == 1 ? '':'readonly'; echo '>
+                                <select class="form-control" name="organic" onchange="changeCountry(2, '.$id.')" '; echo $page == 1 ? '':'readonly'; echo '>
                                     <option value="0" '; echo $row["organic"] == 0 ? 'SELECTED':''; echo '>No</option>
                                     <option value="1" '; echo $row["organic"] == 1 ? 'SELECTED':''; echo '>Yes</option>
                                 </select>
@@ -18701,7 +18726,7 @@
                 <div class="tab-pane '; echo $page == 2 ? 'active':''; echo '" id="tabDocuments_2">
                     <div class="mt-checkbox-list">';
                         
-                        $selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
+                        $selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE organic = 0 ORDER BY name" );
                         if ( mysqli_num_rows($selectRequirement2) > 0 ) {
                             while($rowReq = mysqli_fetch_array($selectRequirement2)) {
                                 echo '<label class="mt-checkbox mt-checkbox-outline '; echo $current_client == 0 ? '':'hide'; echo '"> '.$rowReq["name"].'
@@ -20653,36 +20678,48 @@
 		$id = $_GET['modalView_Supplier_Industry'];
 		$c = $_GET['c'];
         $o = $_GET['o'];
+        $m = $_GET['m'];
+        $s = $_GET['s'];
 
-		$selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE country IS NULL AND organic = $o ORDER BY name" );
-        if ($c != "US") {
-            $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE organic = $o ORDER BY name" );
-        }
-        if ( mysqli_num_rows($selectRequirement) > 0 ) {
-            while($row = mysqli_fetch_array($selectRequirement)) {
+        $country = '';
+        if ($c == "US") {  $country = ' AND country IS NULL '; }
+
+        $organic = '';
+        if ($o == 0) {  $organic = ' AND organic = 0 '; }
+
+        if ($m == 1) { $s = 0; }
+
+        $selectData = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE LENGTH(name) > 0 $country $organic ORDER BY name" );
+        
+        // $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE country IS NULL AND organic = $o ORDER BY name" );
+        // if ($c != "US") {
+        //     $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE organic = $o ORDER BY name" );
+        // }
+        if ( mysqli_num_rows($selectData) > 0 ) {
+            while($row = mysqli_fetch_array($selectData)) {
             	$industry = array();
             	$country = array();
             	if (!empty( $row["industry_id"])) { $industry = explode(", ", $row["industry_id"]); }
             	if (!empty( $row["country"])) { $country = explode(", ", $row["country"]); }
 
                 if ($c != "US") {
-                	if (in_array($id, $country)) {
-		                echo '<label class="mt-checkbox mt-checkbox-outline"> '.$row["name"].'
-		                    <input type="checkbox" value="'.$row["ID"].'" name="document[]" name="document[]" onchange="checked_Requirement(this, 1, 0, 0)" />
-		                    <span></span>
-		                </label>';
-	                }
+                    if (in_array($id, $country)) {
+                        echo '<label class="mt-checkbox mt-checkbox-outline"> '.$row["name"].'
+                            <input type="checkbox" value="'.$row["ID"].'" name="document[]" name="document[]" onchange="checked_Requirement(this, '.$m.', '.$s.', 0)" />
+                            <span></span>
+                        </label>';
+                    }
                 }
                 if (in_array($id, $industry)) {
-	                echo '<label class="mt-checkbox mt-checkbox-outline"> '.$row["name"].'
-	                    <input type="checkbox" value="'.$row["ID"].'" name="document[]" name="document[]" onchange="checked_Requirement(this, 1, 0, 0)" />
-	                    <span></span>
-	                </label>';
+                    echo '<label class="mt-checkbox mt-checkbox-outline"> '.$row["name"].'
+                        <input type="checkbox" value="'.$row["ID"].'" name="document[]" name="document[]" onchange="checked_Requirement(this, '.$m.', '.$s.', 0)" />
+                        <span></span>
+                    </label>';
                 } else if ($id == 0) {
-	                echo '<label class="mt-checkbox mt-checkbox-outline"> '.$row["name"].'
-	                    <input type="checkbox" value="'.$row["ID"].'" name="document[]" name="document[]" onchange="checked_Requirement(this, 1, 0, 0)" />
-	                    <span></span>
-	                </label>';
+                    echo '<label class="mt-checkbox mt-checkbox-outline"> '.$row["name"].'
+                        <input type="checkbox" value="'.$row["ID"].'" name="document[]" name="document[]" onchange="checked_Requirement(this, '.$m.', '.$s.', 0)" />
+                        <span></span>
+                    </label>';
                 }
             }
         }
@@ -28659,12 +28696,12 @@
                     if ($user_id == 1 OR $user_id == 163) {
                         $data .= '<a href="'.$base_url.'ia-form?t=3&i='.$last_id.'" class="btn btn-xs dark m-0" title="Edit" target="_blank"><i class="fa fa-pencil"></i></a>
                         <a href="'.$base_url.'ia-form?t=4&amp;i='.$last_id.'" class="btn btn-xs btn-success m-0" title="View" target="_blank"><i class="fa fa-search"></i></a>
-                        <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteIA(this, '.$last_id.')" title="Delete"><i class="fa fa-trash"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteIA(this, '.$last_id.')" title="Move to Archive"><i class="fa fa-archive"></i></a>
                         <a href="#modalClone" data-toggle="modal"" class="btn btn-xs btn-info m-0" onclick="btnCloneIA('.$last_id.')" title="Clone"><i class="fa fa-clone"></i></a>';
                     } else {
                         $data .= '<a href="'.$base_url.'ia-form?t=3&i='.$last_id.'" class="btn btn-xs dark m-0" title="Edit" target="_blank"><i class="fa fa-pencil"></i></a>
                         <a href="'.$base_url.'ia-form?t=4&amp;i='.$last_id.'" class="btn btn-xs btn-success m-0" title="View" target="_blank"><i class="fa fa-search"></i></a>
-                        <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteIA(this, '.$last_id.')" title="Delete"><i class="fa fa-trash"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteIA(this, '.$last_id.')" title="Move to Archive"><i class="fa fa-archive"></i></a>
                         <a href="'.$base_url.'ia-form?t=1&i='.$last_id.'" class="btn btn-xs btn-info m-0" title="Generate Form" target="_blank"><i class="fa fa-file-text-o"></i></a>';
                     }
 
@@ -28718,12 +28755,12 @@
 		        if ($user_id == 1 OR $user_id == 163) {
                     $data .= '<a href="#modalEdit" data-toggle="modal" class="btn btn-xs dark m-0" onclick="btnEditIA('.$ID.', 2)" title="Edit"><i class="fa fa-pencil"></i></a>
                     <a href="'.$base_url.'ia-form?t=4&amp;i='.$ID.'" class="btn btn-xs btn-success m-0" title="View" target="_blank"><i class="fa fa-search"></i></a>
-                    <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteIA(this, '.$ID.')" title="Delete"><i class="fa fa-trash"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteIA(this, '.$ID.')" title="Move to Archive"><i class="fa fa-archive"></i></a>
                     <a href="#modalClone" data-toggle="modal"" class="btn btn-xs btn-info m-0" onclick="btnCloneIA('.$ID.')" title="Clone"><i class="fa fa-clone"></i></a>';
                 } else {
                     $data .= '<a href="#modalEdit" data-toggle="modal" class="btn btn-xs dark m-0" onclick="btnEditIA('.$ID.', 2)" title="Edit"><i class="fa fa-pencil"></i></a>
                     <a href="'.$base_url.'ia-form?t=4&amp;i='.$ID.'" class="btn btn-xs btn-success m-0" title="View" target="_blank"><i class="fa fa-search"></i></a>
-                    <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteIA(this, '.$ID.')" title="Delete"><i class="fa fa-trash"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteIA(this, '.$ID.')" title="Move to Archive"><i class="fa fa-archive"></i></a>
                     <a href="#modalGenerate" data-toggle="modal" class="btn btn-xs btn-info m-0" onclick="btnGenerate('.$ID.')" title="Generate Form"><i class="fa fa-file-text-o"></i></a>';
                 }
 
@@ -29042,7 +29079,7 @@
                         <td class="text-center">
                             <a href="#modalEditForm" data-toggle="modal" class="btn btn-xs dark m-0" onclick="btnEditForm('.$last_id.')" title="Edit"><i class="fa fa-pencil"></i></a>
                             <a href="'.$base_url.'pdf_dom?id='.$last_id.'" class="btn btn-xs btn-success m-0" title="PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
-                            <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteForm(this, '.$last_id.')" title="Delete"><i class="fa fa-trash"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteForm(this, '.$last_id.')" title="Move to Archive"><i class="fa fa-archive"></i></a>
                             <a href="javascript:;" class="btn btn-xs btn-info m-0" onclick="btnCloseForm(this, '.$last_id.')" title="Close"><i class="fa fa-check"></i></a>
                         </td>
                     </tr>';
@@ -29327,7 +29364,7 @@
 		        <td class="text-center">
 		            <a href="#modalEditForm" data-toggle="modal" class="btn btn-xs dark m-0" onclick="btnEditForm('.$ID.')" title="Edit"><i class="fa fa-pencil"></i></a>
 		            <a href="'.$base_url.'pdf_dom?id='.$ID.'" class="btn btn-xs btn-success m-0" title="PDF" target="_blank"><i class="fa fa-file-pdf-o"></i></a>
-		            <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteForm(this, '.$ID.')" title="Delete"><i class="fa fa-trash"></i></a>
+		            <a href="javascript:;" class="btn btn-xs btn-danger m-0" onclick="btnDeleteForm(this, '.$ID.')" title="Move to Archive"><i class="fa fa-archive"></i></a>
 		            <a href="javascript:;" class="btn btn-xs btn-info m-0" onclick="btnCloseForm(this, '.$ID.')" title="Close"><i class="fa fa-check"></i></a>
 		        </td>';
 
@@ -44550,6 +44587,7 @@
 
 					// Update Data
 					mysqli_query( $conn,"UPDATE tbl_menu set name='". $module_path ."', type='". $module_type ."', collab='". $module_collab ."', icon='". $module_icon ."', url='". $module_path ."', description='". $module_label ."' WHERE ID='". $data_id ."'" );
+                    mysqli_query( $conn,"UPDATE tblPlugins set menu_id=$data_id WHERE plugin_id=$ID" );
 		        } else {
 
 		        	// Insert New
@@ -44814,6 +44852,111 @@
 	}
 
 
+    // PRICING PAGE
+    if( isset($_GET['modalPricing']) ) {
+        $frequency = $_GET['modalPricing'];
+
+        if ($frequency == 1) {
+            echo '<div class=row>
+                <div class="col-md-5 col-md-offset-1">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input type="text" class="form-control daterange" name="daterange" />
+                            <span class="input-group-btn">
+                                <button class="btn default date-range-toggle" type="button">
+                                    <i class="fa fa-calendar"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <input type=button id=generate_report_btn class="btn btn-primary btn-sm" onclick="btnGenerate(this)" value="Generate Report">
+                </div>
+            </div>
+            <div class=row>
+                <div class="col-md-12">
+                    <div class="table-responsive"><table id="main" class="mt-1 table table-borderedx table-sm table-condensed" style="width: calc(100% - 100px);"></table></div>
+                </div>
+            </div>
+            <div class=row>
+                <div class="col-md-12">
+                    <table id=legend class="table table-borderless">
+                     <thead>
+                        <tr>
+                           <th colspan=2 class=text-left>Legend:</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr>
+                           <td style="width:35px;height:35px;background-color:#16a085";></td>
+                           <td class=ps-3>Performed - All is well</td>
+                        </tr>
+                        <tr>
+                           <td style="width:35px;height:35px;background-color:#e59866";></td>
+                           <td class=ps-3>Encountered Issue</td>
+                        </tr>
+                     </tbody>
+                  </table>
+                </div>
+            </div>';
+        }
+    }
+    if( isset($_POST['btnSave_Pricing']) ) {
+        $name = addslashes($_POST['name']);
+
+        $files = $_FILES['file']['name'];
+        if (!empty($files)) {
+            $path = 'uploads/pricing/';
+            $tmp = $_FILES['file']['tmp_name'];
+            $files = rand(1000,1000000) . ' - ' . $files;
+            $path = $path.$files;
+            move_uploaded_file($tmp,$path);
+        }
+
+        $sql = "INSERT INTO tbl_pricing (name, file)
+        VALUES ('$name', '$files')";
+        if (mysqli_query($conn, $sql)) {
+            $last_id = mysqli_insert_id($conn);
+
+            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_pricing WHERE ID = $last_id" );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $rowData = mysqli_fetch_array($selectData);
+                $data_ID = $rowData['ID'];
+                $data_name = stripcslashes($rowData['name']);
+
+                $data_file = $rowData['file'];
+                $fileExtension = fileExtension($data_file);
+                $src = $fileExtension['src'];
+                $embed = $fileExtension['embed'];
+                $type = $fileExtension['type'];
+                $file_extension = $fileExtension['file_extension'];
+                $url = $base_url.'uploads/pricing/';
+                
+                $data = '<div class="col-md-2 margin-bottom-15" id="div_'.$data_ID.'">
+                    <a href="javascript:;" class="btn btn-danger" onclick="btnDelete('.$data_ID.')" style="position: absolute; z-index: 2;"><i class="fa fa-trash"></i></a>
+                    <a data-src="'.$src.$url.rawurlencode($data_file).$embed.'" data-fancybox data-type="'.$type.'" class="modalView">
+                        <img src="uploads/bgBlue.png" class="img-thumbnail" />
+                        <div class="cover">
+                            <h3 class="font-white">'.$data_name.'</h3>
+                        </div>
+                    </a>
+                </div>';
+
+                $output = array(
+                    "data" => $data
+                );
+            }
+        }
+        echo json_encode($output);
+    }
+    if( isset($_GET['btnDelete_Pricing']) ) {
+        $id = $_GET['btnDelete_Pricing'];
+
+        mysqli_query($conn,"UPDATE tbl_pricing set deleted = 1 WHERE ID = $id");
+    }
+
+
     // DASHBOARD PAGE
     function itemChild($parent_id, $child_id) {
         global $conn;
@@ -44834,15 +44977,23 @@
             $portal_user = $_COOKIE['ID'];
             $user_id = employerID($portal_user);
         }
+
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
+        }
+
         $current_userEmployerID = $user_id;
 
 
         // $resultItem = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE deleted = 0 AND parent_id = $parent_id" );
         $resultItem = mysqli_query( $conn,"SELECT
             l.ID AS l_ID,
+            l.portal_user AS l_portal_user,
             l.parent_id AS l_parent_id,
             l.child_id AS l_child_id,
             l.type AS l_type,
+            l.free_access AS l_free_access,
             l.reason AS l_reason,
             l.name AS l_name,
             l.description AS l_description,
@@ -44887,98 +45038,113 @@
                 $array_child_id = explode(", ", $child_id);
                 if (in_array($item_ID, $array_child_id)) {
 
-                    if ($type == 1) {
-                        $panelBG = "bg-blue-chambray bg-font-blue-chambray"; //Program
-                    } else if ($type == 2) {
-                        $panelBG = "bg-blue-dark bg-font-blue-dark"; //Policy
-                    } else if ($type == 3) {
-                        $panelBG = "bg-blue-steel bg-font-blue-steel"; //Procedure
-                    } else if ($type == 4) {
-                        $panelBG = "bg-green-dark bg-font-green-dark"; //Training
-                    } else if ($type == 5) {
-                        $panelBG = "bg-green-jungle bg-font-green-jungle"; //Form
+                    $displayLibrary = false;
+                    if (mysqli_num_rows($hasLibrary) == 0) {
+                        if ($rowItem["l_portal_user"] == $portal_user OR $rowItem["l_portal_user"] == 163) {
+                            if ($rowItem["l_free_access"] == 1) {
+                                $displayLibrary = true;
+                            }
+                        }
+                    } else {
+                        if ($rowItem["l_free_access"] == 0) {
+                            $displayLibrary = true;
+                        }
                     }
 
-                    // $rowExpired = filesExpired($item_ID, $new_child_id, 0);
-                    // $rowExpired30 = filesExpiredNear($item_ID, $new_child_id, 0, 0, 30);
-                    // $rowExpired90 = filesExpiredNear($item_ID, $new_child_id, 0, 31, 90);
-                    $totalCompliance = countCompliance($item_ID);
+                    if ($displayLibrary == true) {
+                        if ($type == 1) {
+                            $panelBG = "bg-blue-chambray bg-font-blue-chambray"; //Program
+                        } else if ($type == 2) {
+                            $panelBG = "bg-blue-dark bg-font-blue-dark"; //Policy
+                        } else if ($type == 3) {
+                            $panelBG = "bg-blue-steel bg-font-blue-steel"; //Procedure
+                        } else if ($type == 4) {
+                            $panelBG = "bg-green-dark bg-font-green-dark"; //Training
+                        } else if ($type == 5) {
+                            $panelBG = "bg-green-jungle bg-font-green-jungle"; //Form
+                        }
 
-                    $output .= '<div class="panel panel-default panel_'. $item_ID .'">
-                        <div class="panel-heading '. $panelBG .'">
-                            <div class="row">
-                                <div class="col-md-10">
-                                    <h4 class="panel-title bold">
-		                            	<a class="accordion-toggle font-white" data-toggle="collapse" data-parent="#parent'. $parent_id .'" onclick="selectedAccordion('. $item_ID .')" href="#item_'. $item_ID .'">'. htmlentities($rowItem["l_name"] ?? '');
-		                            		if (!empty($reason)) {
-		                            			$output .= '<i class="fa fa-warning font-red itemWarning" style="margin-left: 5px;"></i>';
+                        // $rowExpired = filesExpired($item_ID, $new_child_id, 0);
+                        // $rowExpired30 = filesExpiredNear($item_ID, $new_child_id, 0, 0, 30);
+                        // $rowExpired90 = filesExpiredNear($item_ID, $new_child_id, 0, 31, 90);
+                        $totalCompliance = countCompliance($item_ID);
 
-		                            			if ($current_userEmployerID == $user_id) {
-		                            				$output .= '<span class="remark_action itemWarning" style="margin-left: 10px;">
-		                            					<i type="button" class="btn btn-sm font-white" onclick="btnDeleteAction(1, 1, '.$item_ID.')">Accept</i> |
-							                  			<i type="button" class="btn btn-sm font-white" onclick="btnDeleteAction(0, 1, '.$item_ID.')">Reject</i>
-							                  		</span>';
-		                            			}
-		                            		}
-		                            	$output .= '</a>
-		                            </h4>
-                                    <ul class="list-inline muted h6">';
-                                        // <li><i class="fa fa-calendar-check-o"></i> Compliance (0%)</li>
-                                        // <li><i class="fa fa-calendar-times-o"></i> Expires ('. $rowExpired .')</li>
-                                        // <li><i class="fa fa-hourglass-1"></i> 1-30 Days ('. $rowExpired30 .')</li>
-                                        // <li><i class="fa fa-hourglass-2"></i> 30-90 Days ('. $rowExpired90 .')</li>
-                                        $output .= '<li><a href="#modalReport" class="btnReport font-white" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnReport('. $item_ID .')"><i class="fa fa-table"></i> Report</a></li>
-                                        <li><a href="#modalCollaborator" class="btnCollaborator font-white" data-toggle="modal" onclick="btnCollaborator('. $item_ID .')"><i class="fa fa-cogs"></i> Collaborator</a></li>
-                                        <li><i class="fa fa-list-ol"></i> Compliance '.$totalCompliance.'%</li>
-                                        <li><i class="fa fa-calendar-check-o"></i> Annual Review '.$review.'%</li>';
+                        $output .= '<div class="panel panel-default panel_'. $item_ID .'">
+                            <div class="panel-heading '. $panelBG .'">
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <h4 class="panel-title bold">
+    		                            	<a class="accordion-toggle font-white" data-toggle="collapse" data-parent="#parent'. $parent_id .'" onclick="selectedAccordion('. $item_ID .')" href="#item_'. $item_ID .'">'. htmlentities($rowItem["l_name"] ?? '');
+    		                            		if (!empty($reason)) {
+    		                            			$output .= '<i class="fa fa-warning font-red itemWarning" style="margin-left: 5px;"></i>';
 
-                                        // if ($rowDocs > 0) { $output .= '<li><i class="fa fa-file-o"></i> Docs ('. $rowDocs .')</li>'; }
-                                        // if ($rowProgram > 0) { $output .= '<li><i class="fa fa-folder-open-o"></i> Programs ('. $rowProgram .')</li>'; }
-                                        // if ($rowPolicy > 0) { $output .= '<li><i class="fa fa-file-text-o"></i> Policy ('. $rowPolicy .')</li>'; }
-                                        // if ($rowProcedure > 0) { $output .= '<li><i class="fa fa-file-powerpoint-o"></i> Programs ('. $rowProcedure .')</li>'; }
-                                        // if ($rowTraining > 0) { $output .= '<li><i class="fa fa-flag-o"></i> Trainings ('. $rowTraining .')</li>'; }
-                                        // if ($rowForm > 0) { $output .= '<li><i class="fa fa-edit"></i> Forms ('. $rowForm .')</li>'; }
+    		                            			if ($current_userEmployerID == $user_id) {
+    		                            				$output .= '<span class="remark_action itemWarning" style="margin-left: 10px;">
+    		                            					<i type="button" class="btn btn-sm font-white" onclick="btnDeleteAction(1, 1, '.$item_ID.')">Accept</i> |
+    							                  			<i type="button" class="btn btn-sm font-white" onclick="btnDeleteAction(0, 1, '.$item_ID.')">Reject</i>
+    							                  		</span>';
+    		                            			}
+    		                            		}
+    		                            	$output .= '</a>
+    		                            </h4>
+                                        <ul class="list-inline muted h6">';
+                                            // <li><i class="fa fa-calendar-check-o"></i> Compliance (0%)</li>
+                                            // <li><i class="fa fa-calendar-times-o"></i> Expires ('. $rowExpired .')</li>
+                                            // <li><i class="fa fa-hourglass-1"></i> 1-30 Days ('. $rowExpired30 .')</li>
+                                            // <li><i class="fa fa-hourglass-2"></i> 30-90 Days ('. $rowExpired90 .')</li>
+                                            $output .= '<li><a href="#modalReport" class="btnReport font-white" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnReport('. $item_ID .')"><i class="fa fa-table"></i> Report</a></li>
+                                            <li><a href="#modalCollaborator" class="btnCollaborator font-white" data-toggle="modal" onclick="btnCollaborator('. $item_ID .')"><i class="fa fa-cogs"></i> Collaborator</a></li>
+                                            <li><i class="fa fa-list-ol"></i> Compliance '.$totalCompliance.'%</li>
+                                            <li><i class="fa fa-calendar-check-o"></i> Annual Review '.$review.'%</li>';
 
-                                    $output .= '</ul>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="actions pull-right">
-                                        <div class="btn-group">
-                                            <a class="btn white btn-outlinex btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">Select Action <i class="fa fa-angle-down"></i></a>
-                                            <ul class="dropdown-menu pull-right">
-                                                <li><a href="#modalEdit_SubItem" class="btnEdit_SubItem" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnEdit_SubItem('. $item_ID .')">Edit</a></li>
-                                                <li><a href="javascript:;" class="btnDelete" data-id="'. $item_ID .'" onclick="btnDelete('. $item_ID .')">Delete</a></li>
-                                                <li><a href="#modalReport" class="btnReport" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnReport('. $item_ID .')">Report</a></li>';
-                                        
-		                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464) {
-		                                        	$output .= '<li><a href="#modalClone" data-toggle="modal" onclick="btnClone('. $item_ID .')">Clone</a></li>';
-		                                        }
+                                            // if ($rowDocs > 0) { $output .= '<li><i class="fa fa-file-o"></i> Docs ('. $rowDocs .')</li>'; }
+                                            // if ($rowProgram > 0) { $output .= '<li><i class="fa fa-folder-open-o"></i> Programs ('. $rowProgram .')</li>'; }
+                                            // if ($rowPolicy > 0) { $output .= '<li><i class="fa fa-file-text-o"></i> Policy ('. $rowPolicy .')</li>'; }
+                                            // if ($rowProcedure > 0) { $output .= '<li><i class="fa fa-file-powerpoint-o"></i> Programs ('. $rowProcedure .')</li>'; }
+                                            // if ($rowTraining > 0) { $output .= '<li><i class="fa fa-flag-o"></i> Trainings ('. $rowTraining .')</li>'; }
+                                            // if ($rowForm > 0) { $output .= '<li><i class="fa fa-edit"></i> Forms ('. $rowForm .')</li>'; }
 
-                                                $output .= '<li class="divider"> </li>';
+                                        $output .= '</ul>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="actions pull-right">
+                                            <div class="btn-group">
+                                                <a class="btn white btn-outlinex btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">Select Action <i class="fa fa-angle-down"></i></a>
+                                                <ul class="dropdown-menu pull-right">
+                                                    <li><a href="#modalEdit_SubItem" class="btnEdit_SubItem" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnEdit_SubItem('. $item_ID .')">Edit</a></li>
+                                                    <li><a href="javascript:;" class="btnDelete" data-id="'. $item_ID .'" onclick="btnDelete('. $item_ID .')">Delete</a></li>
+                                                    <li><a href="#modalReport" class="btnReport" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnReport('. $item_ID .')">Report</a></li>';
+                                            
+    		                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464) {
+    		                                        	$output .= '<li><a href="#modalClone" data-toggle="modal" onclick="btnClone('. $item_ID .')">Clone</a></li>';
+    		                                        }
 
-		                                        if ($current_client == 0) {
-	                                                $output .= '<li><a href="#modalAttached" class="btnAttached" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnAttached('. $item_ID .')">Attach File</a></li>';
-	                                            }
-                                                
-                                                $output .= '<li><a href="#modalCompliance" class="btnCompliance" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnCompliance('. $item_ID .')">Add Compliance</a></li>
-                                                <li><a href="#modalComment" class="btnComment" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnComment('. $item_ID .')">Add Comment</a></li>
-                                                <li><a href="javascript:;" onclick="btnAnnualReviewTemplate('. $item_ID .')">Add Annual Review Template</a></li>
+                                                    $output .= '<li class="divider"> </li>';
 
-                                                <li class="divider"> </li>
-                                                
-                                                <li><a href="#modalSubItem" class="btnSubItem" data-id="'. $item_ID .'" data-type="1" data-toggle="modal" onclick="btnSubItem('. $item_ID .', 1)">Add Programs</a></li>
-                                                <li><a href="#modalSubItem" class="btnSubItem" data-id="'. $item_ID .'" data-type="2" data-toggle="modal" onclick="btnSubItem('. $item_ID .', 2)">Add Policy</a></li>
-                                                <li><a href="#modalSubItem" class="btnSubItem" data-id="'. $item_ID .'" data-type="3" data-toggle="modal" onclick="btnSubItem('. $item_ID .', 3)">Add Procedure</a></li>
-                                                <li><a href="#modalSubItem" class="btnSubItem" data-id="'. $item_ID .'" data-type="5" data-toggle="modal" onclick="btnSubItem('. $item_ID .', 5)">Add Form</a></li>
-                                                <li><a href="#modalSubItem" class="btnSubItem" data-id="'. $item_ID .'" data-type="4" data-toggle="modal" onclick="btnSubItem('. $item_ID .', 4)">Add Training</a></li>
-                                            </ul>
+    		                                        if ($current_client == 0) {
+    	                                                $output .= '<li><a href="#modalAttached" class="btnAttached" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnAttached('. $item_ID .')">Attach File</a></li>';
+    	                                            }
+                                                    
+                                                    $output .= '<li><a href="#modalCompliance" class="btnCompliance" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnCompliance('. $item_ID .')">Add Compliance</a></li>
+                                                    <li><a href="#modalComment" class="btnComment" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnComment('. $item_ID .')">Add Comment</a></li>
+                                                    <li><a href="javascript:;" onclick="btnAnnualReviewTemplate('. $item_ID .')">Add Annual Review Template</a></li>
+
+                                                    <li class="divider"> </li>
+                                                    
+                                                    <li><a href="#modalSubItem" class="btnSubItem" data-id="'. $item_ID .'" data-type="1" data-toggle="modal" onclick="btnSubItem('. $item_ID .', 1)">Add Programs</a></li>
+                                                    <li><a href="#modalSubItem" class="btnSubItem" data-id="'. $item_ID .'" data-type="2" data-toggle="modal" onclick="btnSubItem('. $item_ID .', 2)">Add Policy</a></li>
+                                                    <li><a href="#modalSubItem" class="btnSubItem" data-id="'. $item_ID .'" data-type="3" data-toggle="modal" onclick="btnSubItem('. $item_ID .', 3)">Add Procedure</a></li>
+                                                    <li><a href="#modalSubItem" class="btnSubItem" data-id="'. $item_ID .'" data-type="5" data-toggle="modal" onclick="btnSubItem('. $item_ID .', 5)">Add Form</a></li>
+                                                    <li><a href="#modalSubItem" class="btnSubItem" data-id="'. $item_ID .'" data-type="4" data-toggle="modal" onclick="btnSubItem('. $item_ID .', 4)">Add Training</a></li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div id="item_'. $item_ID .'" class="panel-collapse collapse"></div>
-                    </div>';
+                            <div id="item_'. $item_ID .'" class="panel-collapse collapse"></div>
+                        </div>';
+                    }
                 }
             }
         }
@@ -45497,46 +45663,59 @@
                                                         $file_due = $file_due->format('M d, Y');
                                                     }
 
-                                                    echo '<div class="mt-action mt-action-'. $file_ID .'">
-                                                        <div class="mt-action-body">
-                                                            <div class="mt-action-row">
-                                                                <div class="mt-action-info">
-                                                                    <div class="mt-action-icon">
-                                                                        <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                                    $displayLibrary = false;
+                                                    if (mysqli_num_rows($hasLibrary) == 0) {
+                                                        if ($rowFiles["free_access"] == 1) {
+                                                            $displayLibrary = true;
+                                                        }
+                                                    } else {
+                                                        if ($rowFiles["free_access"] == 0) {
+                                                            $displayLibrary = true;
+                                                        }
+                                                    }
+
+                                                    if ($displayLibrary == true) {
+                                                        echo '<div class="mt-action mt-action-'. $file_ID .'">
+                                                            <div class="mt-action-body">
+                                                                <div class="mt-action-row">
+                                                                    <div class="mt-action-info">
+                                                                        <div class="mt-action-icon">
+                                                                            <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                                                        </div>
+                                                                        <div class="mt-action-details" style="vertical-align: middle;">
+                                                                            <span class="mt-action-author">'. $file_name;
+
+    																			if (!empty($file_reason)) {
+    																				echo '<i class="fa fa-warning font-red itemWarning" style="margin-left: 5px;"></i>';
+
+    																				if ($current_userEmployerID == $user_id) {
+    																					echo '<span class="remark_action itemWarning" style="margin-left: 10px;">
+    																						<i type="button" class="btn btn-sm font-dark" onclick="btnDeleteAction(1, 2, '.$file_ID.')">Accept</i> |
+    																						<i type="button" class="btn btn-sm font-dark" onclick="btnDeleteAction(0, 2, '.$file_ID.')">Reject</i>
+    																					</span>';
+    																				}
+    																			}
+
+                                                                            echo '</span>
+                                                                            <p class="mt-action-desc">
+                                                                            	<span class="font-dark">'. htmlentities($file_comment ?? '') .'</span><br>
+                                                                            	Uploaded by: '. $file_user .'
+                                                                            </p>
+                                                                        </div>
                                                                     </div>
-                                                                    <div class="mt-action-details" style="vertical-align: middle;">
-                                                                        <span class="mt-action-author">'. $file_name;
-
-																			if (!empty($file_reason)) {
-																				echo '<i class="fa fa-warning font-red itemWarning" style="margin-left: 5px;"></i>';
-
-																				if ($current_userEmployerID == $user_id) {
-																					echo '<span class="remark_action itemWarning" style="margin-left: 10px;">
-																						<i type="button" class="btn btn-sm font-dark" onclick="btnDeleteAction(1, 2, '.$file_ID.')">Accept</i> |
-																						<i type="button" class="btn btn-sm font-dark" onclick="btnDeleteAction(0, 2, '.$file_ID.')">Reject</i>
-																					</span>';
-																				}
-																			}
-
-                                                                        echo '</span>
-                                                                        <p class="mt-action-desc">
-                                                                        	<span class="font-dark">'. htmlentities($file_comment ?? '') .'</span><br>
-                                                                        	Uploaded by: '. $file_user .'
-                                                                        </p>
+                                                                    <div class="mt-action-datetime">
+                                                                        <span class="mt-action-date">'. $file_due .'</span>
                                                                     </div>
-                                                                </div>
-                                                                <div class="mt-action-datetime">
-                                                                    <span class="mt-action-date">'. $file_due .'</span>
-                                                                </div>
-                                                                <div class="mt-action-buttons">
-                                                                    <div class="btn-group btn-group-circle">
-                                                                    	<a href="#modalAttachedEdit" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnAttachedEdit('. $file_ID .')">Edit</a>
-                                                                    	<a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnDeleteFile('. $file_ID .')">Delete</a>
+                                                                    <div class="mt-action-buttons">
+                                                                        <div class="btn-group btn-group-circle">
+                                                                        	<a href="#modalAttachedEdit" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnAttachedEdit('. $file_ID .')">Edit</a>
+                                                                        	<a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnDeleteFile('. $file_ID .')">Delete</a>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </div>';
+                                                        </div>';
+                                                    }
                                                 }
                                             }
                                         echo '</div>
@@ -45877,24 +46056,37 @@
                                                                 $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                                                             }
 
-                                                            echo '<tr id="tr_'. $compliance_ID .'">
-                                                                <td class="text-center"><input type="checkbox" class="make-switch" name="status" data-on-text="Yes" data-off-text="No" data-on-color="success" onchange="changedStatus(this, '.$compliance_ID.', '. $library_ID .')" data-off-color="danger" '; echo $compliance_compliant === "1" ? "checked" : "";  echo ' readonly /></td>
-                                                                <td>'. htmlentities($rowComplinace["requirements"] ?? '') .'</td>
-                                                                <td>'. htmlentities($rowComplinace["action_items"] ?? '') .'</td>
-                                                                <td>'. $frequency .'</td>
-                                                                <td class="text-center">'.$files.'</td>
-                                                                <td>
-                                                                    <div class="btn-group btn-group-circle">
-                                                                        <a href="#modalComplianceEdit" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnComplianceEdit('. $compliance_ID .')">Edit</a>
-                                                                        <a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnComplianceDelete('. $compliance_ID .')">Delete</a>';
+                                                            $displayLibrary = false;
+                                                            if (mysqli_num_rows($hasLibrary) == 0) {
+                                                                if ($rowComplinace["free_access"] == 1) {
+                                                                    $displayLibrary = true;
+                                                                }
+                                                            } else {
+                                                                if ($rowComplinace["free_access"] == 0) {
+                                                                    $displayLibrary = true;
+                                                                }
+                                                            }
 
-														                if ($compliance_compliant == 0) {
-														                	echo '<a href="#modalComplianceMore" type="button" class="btn blue btn-sm" data-toggle="modal" onclick="btnComplianceMore('.$compliance_ID.')">Action</a>';
-														                }
+                                                            if ($displayLibrary == true) {
+                                                                echo '<tr id="tr_'. $compliance_ID .'">
+                                                                    <td class="text-center"><input type="checkbox" class="make-switch" name="status" data-on-text="Yes" data-off-text="No" data-on-color="success" onchange="changedStatus(this, '.$compliance_ID.', '. $library_ID .')" data-off-color="danger" '; echo $compliance_compliant === "1" ? "checked" : "";  echo ' readonly /></td>
+                                                                    <td>'. htmlentities($rowComplinace["requirements"] ?? '') .'</td>
+                                                                    <td>'. htmlentities($rowComplinace["action_items"] ?? '') .'</td>
+                                                                    <td>'. $frequency .'</td>
+                                                                    <td class="text-center">'.$files.'</td>
+                                                                    <td>
+                                                                        <div class="btn-group btn-group-circle">
+                                                                            <a href="#modalComplianceEdit" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnComplianceEdit('. $compliance_ID .')">Edit</a>
+                                                                            <a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnComplianceDelete('. $compliance_ID .')">Delete</a>';
 
-                                                                    echo '</div>
-                                                                </td>
-                                                            </tr>';
+    														                if ($compliance_compliant == 0) {
+    														                	echo '<a href="#modalComplianceMore" type="button" class="btn blue btn-sm" data-toggle="modal" onclick="btnComplianceMore('.$compliance_ID.')">Action</a>';
+    														                }
+
+                                                                        echo '</div>
+                                                                    </td>
+                                                                </tr>';
+                                                            }
 
 		                                                    if (!empty($compliance_child_id)) {
 		                                                    	$array_child_id = explode(", ", $compliance_child_id);
@@ -45948,34 +46140,47 @@
 						                                                    $compliance_last_modified = new DateTime($compliance_last_modified);
 						                                                    $compliance_last_modified = $compliance_last_modified->format('M d, Y');
 
-				                                                            echo '<tr id="tr_'. $compliance_ID .'" class="child_'.$compliance_parent_id.'">
-				                                                                <td style="border: 0;"></td>
-				                                                                <td colspan="2">
-																					<strong>'.$compliance_user.'</strong> <i>('.$ctype[$compliance_type].')</i><br>';
+                                                                            $displayLibrary = false;
+                                                                            if (mysqli_num_rows($hasLibrary) == 0) {
+                                                                                if ($rowComplinaceItem["free_access"] == 1) {
+                                                                                    $displayLibrary = true;
+                                                                                }
+                                                                            } else {
+                                                                                if ($rowComplinaceItem["free_access"] == 0) {
+                                                                                    $displayLibrary = true;
+                                                                                }
+                                                                            }
 
-																					if (!empty($compliance_comment)) { echo '<span class="text-muted">'.htmlentities($compliance_comment ?? '').'</span><br>'; }
-																					
-																					echo '<div class="remark_action">';
-																						if (!empty($compliance_remark)) {
-																							if ($compliance_remark == "1") { echo '<span class="text-success">Accepted</span>'; }
-																							else { echo '<span class="text-danger">'.htmlentities($compliance_remark ?? '').'</span>'; }
-																						} else {
-																							echo '<a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnComplianceAccept('. $compliance_ID .')">Accept</a> |
-					                                                                		<a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnComplianceReject('. $compliance_ID .')">Reject</a>';
-																						}
-																					echo '</div>';
-																					
-																				echo '</td>
-				                                                                <td>Date: <b>'. $compliance_last_modified .'</b></td>
-				                                                                <td class="text-center">'.$files.'</td>
-				                                                                <td>
-				                                                                    <div class="btn-group btn-group-circle">
-				                                                                        <a href="#modalComplianceMoreEdit" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnComplianceMoreEdit('. $compliance_ID .')">Edit</a>
-				                                                                        <a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnComplianceDelete('. $compliance_ID .')">Delete</a>
-				                                                                    </div>
-				                                                                </td>
-				                                                            </tr>';
-				                                                        }
+                                                                            if ($displayLibrary == true) {
+    				                                                            echo '<tr id="tr_'. $compliance_ID .'" class="child_'.$compliance_parent_id.'">
+    				                                                                <td style="border: 0;"></td>
+    				                                                                <td colspan="2">
+    																					<strong>'.$compliance_user.'</strong> <i>('.$ctype[$compliance_type].')</i><br>';
+
+    																					if (!empty($compliance_comment)) { echo '<span class="text-muted">'.htmlentities($compliance_comment ?? '').'</span><br>'; }
+    																					
+    																					echo '<div class="remark_action">';
+    																						if (!empty($compliance_remark)) {
+    																							if ($compliance_remark == "1") { echo '<span class="text-success">Accepted</span>'; }
+    																							else { echo '<span class="text-danger">'.htmlentities($compliance_remark ?? '').'</span>'; }
+    																						} else {
+    																							echo '<a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnComplianceAccept('. $compliance_ID .')">Accept</a> |
+    					                                                                		<a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnComplianceReject('. $compliance_ID .')">Reject</a>';
+    																						}
+    																					echo '</div>';
+    																					
+    																				echo '</td>
+    				                                                                <td>Date: <b>'. $compliance_last_modified .'</b></td>
+    				                                                                <td class="text-center">'.$files.'</td>
+    				                                                                <td>
+    				                                                                    <div class="btn-group btn-group-circle">
+    				                                                                        <a href="#modalComplianceMoreEdit" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnComplianceMoreEdit('. $compliance_ID .')">Edit</a>
+    				                                                                        <a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnComplianceDelete('. $compliance_ID .')">Delete</a>
+    				                                                                    </div>
+    				                                                                </td>
+    				                                                            </tr>';
+    				                                                        }
+                                                                        }
 				                                                    }
 				                                                }
 				                                            }
@@ -46079,23 +46284,36 @@
                                                                 $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                                                             }
 
-		                                                    echo '<tr id="tr_'.$review_ID.'">
-																<td class="text-center"><input type="checkbox" class="make-switch" name="status" data-on-text="Yes" data-off-text="No" data-on-color="success" onchange="changedStatus(this, 1, 1)" data-off-color="danger" '; echo $review_compliant == 1 ? 'checked':''; echo ' readonly /></td>
-																<td>'.htmlentities($review_requirements ?? '').'</td>
-																<td>'.htmlentities($review_action_items ?? '').'</td>
-																<td class="text-center">'.$files.'</td>
-																<td>
-														            <div class="btn-group btn-group-circle">
-														                <a href="#modalReviewEdit" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnReviewEdit('.$review_ID.')">Edit</a>
-														                <a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnReviewDelete('.$review_ID.', '.$library_ID.')">Delete</a>';
+                                                            $displayLibrary = false;
+                                                            if (mysqli_num_rows($hasLibrary) == 0) {
+                                                                if ($rowReview["free_access"] == 1) {
+                                                                    $displayLibrary = true;
+                                                                }
+                                                            } else {
+                                                                if ($rowReview["free_access"] == 0) {
+                                                                    $displayLibrary = true;
+                                                                }
+                                                            }
 
-														                if ($review_compliant == 0) {
-														                	echo '<a href="#modalReviewAction" type="button" class="btn blue btn-sm" data-toggle="modal" onclick="btnReviewAction('.$review_ID.')">Review</a>';
-														                }
+                                                            if ($displayLibrary == true) {
+    		                                                    echo '<tr id="tr_'.$review_ID.'">
+    																<td class="text-center"><input type="checkbox" class="make-switch" name="status" data-on-text="Yes" data-off-text="No" data-on-color="success" onchange="changedStatus(this, 1, 1)" data-off-color="danger" '; echo $review_compliant == 1 ? 'checked':''; echo ' readonly /></td>
+    																<td>'.htmlentities($review_requirements ?? '').'</td>
+    																<td>'.htmlentities($review_action_items ?? '').'</td>
+    																<td class="text-center">'.$files.'</td>
+    																<td>
+    														            <div class="btn-group btn-group-circle">
+    														                <a href="#modalReviewEdit" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnReviewEdit('.$review_ID.')">Edit</a>
+    														                <a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnReviewDelete('.$review_ID.', '.$library_ID.')">Delete</a>';
 
-														            echo '</div>
-														        </td>
-															</tr>';
+    														                if ($review_compliant == 0) {
+    														                	echo '<a href="#modalReviewAction" type="button" class="btn blue btn-sm" data-toggle="modal" onclick="btnReviewAction('.$review_ID.')">Review</a>';
+    														                }
+
+    														            echo '</div>
+    														        </td>
+    															</tr>';
+                                                            }
 
 		                                                    if (!empty($review_child_id)) {
 		                                                    	$array_child_id = explode(", ", $review_child_id);
@@ -46170,37 +46388,50 @@
                                                                                 $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                                                                             }
 
-																			echo '<tr id="tr_'. $review_ID .'" class="child_'.$review_parent_id.'">
-																				<td style="border: 0;"></td>
-																				<td colspan="2">
-																					<b>'.$review_name.'</b> <i>('.$rtype[$review_type].')</i> | '.$review_last_modified.'<br>';
+                                                                            $displayLibrary = false;
+                                                                            if (mysqli_num_rows($hasLibrary) == 0) {
+                                                                                if ($rowReviewItem["free_access"] == 1) {
+                                                                                    $displayLibrary = true;
+                                                                                }
+                                                                            } else {
+                                                                                if ($rowReviewItem["free_access"] == 0) {
+                                                                                    $displayLibrary = true;
+                                                                                }
+                                                                            }
 
-																					if (!empty($review_title)) { echo '<span class="text-muted">'.htmlentities($review_title ?? '').'</span><br>'; }
-																					if (!empty($review_comment)) { echo '<span class="text-muted">'.htmlentities($review_comment ?? '').'</span><br>'; }
-																					
-																					echo '<div class="remark_action">';
-																						if (!empty($review_remark)) {
-																							if ($review_remark == "1") { echo '<span class="text-success">Accepted!</span>'; }
-																							else { echo '<span class="text-danger">'.htmlentities($review_remark ?? '').'</span>'; }
-																						} else {
-																							echo '<a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnReviewAccept('. $review_ID .')">Accept</a> |
-					                                                                		<a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnReviewReject('. $review_ID .')">Reject</a>';
-																						}
-																					echo '</div>
-																				</td>
-																				<td class="text-center">'.$files.'</td>
-																				<td>
-																		            <div class="btn-group btn-group-circle">
-																		                <a href="#modalReviewActionEdit" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnReviewActionEdit('.$review_ID.')">Edit</a>
-																		                <a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnReviewDelete('.$review_ID.', '.$library_ID.')">Delete</a>';
+                                                                            if ($displayLibrary == true) {
+    																			echo '<tr id="tr_'. $review_ID .'" class="child_'.$review_parent_id.'">
+    																				<td style="border: 0;"></td>
+    																				<td colspan="2">
+    																					<b>'.$review_name.'</b> <i>('.$rtype[$review_type].')</i> | '.$review_last_modified.'<br>';
 
-																		                if ($review_compliant == 0) {
-																		                	echo '<a href="#modalReviewMore" type="button" class="btn blue btn-sm" data-toggle="modal" onclick="btnReviewMore('.$review_ID.')">Action</a>';
-																		                }
-																		            
-																		            echo '</div>
-																		        </td>
-																			</tr>';
+    																					if (!empty($review_title)) { echo '<span class="text-muted">'.htmlentities($review_title ?? '').'</span><br>'; }
+    																					if (!empty($review_comment)) { echo '<span class="text-muted">'.htmlentities($review_comment ?? '').'</span><br>'; }
+    																					
+    																					echo '<div class="remark_action">';
+    																						if (!empty($review_remark)) {
+    																							if ($review_remark == "1") { echo '<span class="text-success">Accepted!</span>'; }
+    																							else { echo '<span class="text-danger">'.htmlentities($review_remark ?? '').'</span>'; }
+    																						} else {
+    																							echo '<a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnReviewAccept('. $review_ID .')">Accept</a> |
+    					                                                                		<a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnReviewReject('. $review_ID .')">Reject</a>';
+    																						}
+    																					echo '</div>
+    																				</td>
+    																				<td class="text-center">'.$files.'</td>
+    																				<td>
+    																		            <div class="btn-group btn-group-circle">
+    																		                <a href="#modalReviewActionEdit" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnReviewActionEdit('.$review_ID.')">Edit</a>
+    																		                <a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnReviewDelete('.$review_ID.', '.$library_ID.')">Delete</a>';
+
+    																		                if ($review_compliant == 0) {
+    																		                	echo '<a href="#modalReviewMore" type="button" class="btn blue btn-sm" data-toggle="modal" onclick="btnReviewMore('.$review_ID.')">Action</a>';
+    																		                }
+    																		            
+    																		            echo '</div>
+    																		        </td>
+    																			</tr>';
+                                                                            }
 
 																			if (!empty($review_child_id)) {
     					                                                    	$array_child_id = explode(", ", $review_child_id);
@@ -46274,32 +46505,45 @@
                                                                                                 }
                                                                                             }
 
-    																						echo '<tr id="tr_'. $review_ID .'" class="child_'.$review_parent_id.' child_action_'.$review_parent_id_action.'">
-    																							<td style="border: 0;"></td>
-    																							<td colspan="2">
-    																								<b>'.$review_name.'</b> <i>('.$rtype[$review_type].')</i> | '.$review_last_modified.'<br>';
+                                                                                            $displayLibrary = false;
+                                                                                            if (mysqli_num_rows($hasLibrary) == 0) {
+                                                                                                if ($rowReviewItem["free_access"] == 1) {
+                                                                                                    $displayLibrary = true;
+                                                                                                }
+                                                                                            } else {
+                                                                                                if ($rowReviewItem["free_access"] == 0) {
+                                                                                                    $displayLibrary = true;
+                                                                                                }
+                                                                                            }
 
-    																								if (!empty($review_title)) { echo '<span class="text-muted">'.htmlentities($review_title ?? '').'</span><br>'; }
-    																								if (!empty($review_comment)) { echo '<span class="text-muted">'.htmlentities($review_comment ?? '').'</span><br>'; }
-    																								
-    																								echo '<div class="remark_action">';
-    																									if (!empty($review_remark)) {
-    																										if ($review_remark == "1") { echo '<span class="text-success">Accepted!</span>'; }
-    																										else { echo '<span class="text-danger">'.htmlentities($review_remark ?? '').'</span>'; }
-    																									} else {
-    																										echo '<a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnReviewAccept('. $review_ID .')">Accept</a> |
-    								                                                                		<a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnReviewReject('. $review_ID .')">Reject</a>';
-    																									}
-    																								echo '</div>
-    																							</td>
-    																							<td class="text-center">'.$files.'</td>
-    																							<td>
-    																					            <div class="btn-group btn-group-circle">
-    																					                <a href="#modalReviewMoreEdit" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnReviewMoreEdit('.$review_ID.')">Edit</a>
-    																					                <a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnReviewDelete('.$review_ID.', '.$library_ID.')">Delete</a>
-    																								</div>
-    																					        </td>
-    																						</tr>';
+                                                                                            if ($displayLibrary == true) {
+        																						echo '<tr id="tr_'. $review_ID .'" class="child_'.$review_parent_id.' child_action_'.$review_parent_id_action.'">
+        																							<td style="border: 0;"></td>
+        																							<td colspan="2">
+        																								<b>'.$review_name.'</b> <i>('.$rtype[$review_type].')</i> | '.$review_last_modified.'<br>';
+
+        																								if (!empty($review_title)) { echo '<span class="text-muted">'.htmlentities($review_title ?? '').'</span><br>'; }
+        																								if (!empty($review_comment)) { echo '<span class="text-muted">'.htmlentities($review_comment ?? '').'</span><br>'; }
+        																								
+        																								echo '<div class="remark_action">';
+        																									if (!empty($review_remark)) {
+        																										if ($review_remark == "1") { echo '<span class="text-success">Accepted!</span>'; }
+        																										else { echo '<span class="text-danger">'.htmlentities($review_remark ?? '').'</span>'; }
+        																									} else {
+        																										echo '<a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnReviewAccept('. $review_ID .')">Accept</a> |
+        								                                                                		<a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnReviewReject('. $review_ID .')">Reject</a>';
+        																									}
+        																								echo '</div>
+        																							</td>
+        																							<td class="text-center">'.$files.'</td>
+        																							<td>
+        																					            <div class="btn-group btn-group-circle">
+        																					                <a href="#modalReviewMoreEdit" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnReviewMoreEdit('.$review_ID.')">Edit</a>
+        																					                <a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnReviewDelete('.$review_ID.', '.$library_ID.')">Delete</a>
+        																								</div>
+        																					        </td>
+        																						</tr>';
+                                                                                            }
     														                            }
     														                        }
     														                    }
@@ -46374,32 +46618,45 @@
                                                     $template_last_modified = new DateTime($template_last_modified);
                                                     $template_last_modified = $template_last_modified->format('M d, Y');
 
-                                    				echo '<div class="mt-action mt-action-'. $template_ID .'">
-                                                        <div class="mt-action-body">
-                                                            <div class="mt-action-row">
-                                                                <div class="mt-action-info">
-                                                                    <div class="mt-action-icon">
-                                                                        <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                                    $displayLibrary = false;
+                                                    if (mysqli_num_rows($hasLibrary) == 0) {
+                                                        if ($rowTemplate["free_access"] == 1) {
+                                                            $displayLibrary = true;
+                                                        }
+                                                    } else {
+                                                        if ($rowTemplate["free_access"] == 0) {
+                                                            $displayLibrary = true;
+                                                        }
+                                                    }
+
+                                                    if ($displayLibrary == true) {
+                                        				echo '<div class="mt-action mt-action-'. $template_ID .'">
+                                                            <div class="mt-action-body">
+                                                                <div class="mt-action-row">
+                                                                    <div class="mt-action-info">
+                                                                        <div class="mt-action-icon">
+                                                                            <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                                                        </div>
+                                                                        <div class="mt-action-details" style="vertical-align: middle;">
+                                                                            <p class="mt-action-desc">
+                                                                            	<span class="font-dark">'. htmlentities($template_description ?? '') .'</span><br>
+                                                                            	Uploaded by: '. $template_name .'
+                                                                            </p>
+                                                                        </div>
                                                                     </div>
-                                                                    <div class="mt-action-details" style="vertical-align: middle;">
-                                                                        <p class="mt-action-desc">
-                                                                        	<span class="font-dark">'. htmlentities($template_description ?? '') .'</span><br>
-                                                                        	Uploaded by: '. $template_name .'
-                                                                        </p>
+                                                                    <div class="mt-action-datetime">
+                                                                        <span class="mt-action-date">'. $template_last_modified .'</span>
                                                                     </div>
-                                                                </div>
-                                                                <div class="mt-action-datetime">
-                                                                    <span class="mt-action-date">'. $template_last_modified .'</span>
-                                                                </div>
-                                                                <div class="mt-action-buttons">
-                                                                    <div class="btn-group btn-group-circle">
-                                                                    	<a href="#modalTemplateEdit" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnTemplateEdit('. $template_ID .')">Edit</a>
-                                                                    	<a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnTemplateDelete('. $template_ID .', '. $library_ID .')">Delete</a>
+                                                                    <div class="mt-action-buttons">
+                                                                        <div class="btn-group btn-group-circle">
+                                                                        	<a href="#modalTemplateEdit" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnTemplateEdit('. $template_ID .')">Edit</a>
+                                                                        	<a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnTemplateDelete('. $template_ID .', '. $library_ID .')">Delete</a>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </div>';
+                                                        </div>';
+                                                    }
                                                 }
                                             }
 
@@ -46460,33 +46717,46 @@
 	                                                    $ref_last_modified = new DateTime($ref_last_modified);
 	                                                    $ref_last_modified = $ref_last_modified->format('M d, Y');
 
-	                                    				echo '<div class="mt-action mt-action-'. $ref_ID .'">
-	                                                        <div class="mt-action-body">
-	                                                            <div class="mt-action-row">
-	                                                                <div class="mt-action-info">
-	                                                                    <div class="mt-action-icon">
-                                                                            <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
-	                                                                    </div>
-	                                                                    <div class="mt-action-details" style="vertical-align: middle;">
-	                                                                        <p class="mt-action-desc">
-	                                                                        	<span class="font-dark">'. htmlentities($ref_description ?? '') .'</span><br>
-	                                                                        	Uploaded by: '. $ref_name .'
-	                                                                        </p>
-	                                                                    </div>
-	                                                                </div>
-	                                                                <div class="mt-action-datetime">
-	                                                                    <span class="mt-action-date">'. $ref_last_modified .'</span>
-	                                                                </div>
-	                                                                <div class="mt-action-buttons">
-	                                                                    <div class="btn-group btn-group-circle">
-	                                                                    	<a href="#modalRefEdit" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnRefEdit('. $ref_ID .')">Edit</a>
-	                                                                    	<a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnRefDelete('. $ref_ID .', '. $library_ID .')">Delete</a>
-	                                                                    </div>
-	                                                                </div>
-	                                                            </div>
-	                                                        </div>
-	                                                    </div>';
-	                                                }
+                                                        $displayLibrary = false;
+                                                        if (mysqli_num_rows($hasLibrary) == 0) {
+                                                            if ($rowReferences["free_access"] == 1) {
+                                                                $displayLibrary = true;
+                                                            }
+                                                        } else {
+                                                            if ($rowReferences["free_access"] == 0) {
+                                                                $displayLibrary = true;
+                                                            }
+                                                        }
+
+                                                        if ($displayLibrary == true) {
+    	                                    				echo '<div class="mt-action mt-action-'. $ref_ID .'">
+    	                                                        <div class="mt-action-body">
+    	                                                            <div class="mt-action-row">
+    	                                                                <div class="mt-action-info">
+    	                                                                    <div class="mt-action-icon">
+                                                                                <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+    	                                                                    </div>
+    	                                                                    <div class="mt-action-details" style="vertical-align: middle;">
+    	                                                                        <p class="mt-action-desc">
+    	                                                                        	<span class="font-dark">'. htmlentities($ref_description ?? '') .'</span><br>
+    	                                                                        	Uploaded by: '. $ref_name .'
+    	                                                                        </p>
+    	                                                                    </div>
+    	                                                                </div>
+    	                                                                <div class="mt-action-datetime">
+    	                                                                    <span class="mt-action-date">'. $ref_last_modified .'</span>
+    	                                                                </div>
+    	                                                                <div class="mt-action-buttons">
+    	                                                                    <div class="btn-group btn-group-circle">
+    	                                                                    	<a href="#modalRefEdit" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnRefEdit('. $ref_ID .')">Edit</a>
+    	                                                                    	<a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnRefDelete('. $ref_ID .', '. $library_ID .')">Delete</a>
+    	                                                                    </div>
+    	                                                                </div>
+    	                                                            </div>
+    	                                                        </div>
+    	                                                    </div>';
+    	                                                }
+                                                    }
 	                                            }
 
 	                                    	echo '</div>
@@ -46523,39 +46793,52 @@
 	                                                    $video_last_modified = new DateTime($video_last_modified);
 	                                                    $video_last_modified = $video_last_modified->format('M d, Y');
 
-	                                    				echo '<div class="mt-action mt-action-'. $video_ID .'">
-	                                                        <div class="mt-action-body">
-	                                                            <div class="mt-action-row">
-	                                                                <div class="mt-action-info">
-	                                                                    <div class="mt-action-icon">';
+                                                        $displayLibrary = false;
+                                                        if (mysqli_num_rows($hasLibrary) == 0) {
+                                                            if ($rowVideo["free_access"] == 1) {
+                                                                $displayLibrary = true;
+                                                            }
+                                                        } else {
+                                                            if ($rowVideo["free_access"] == 0) {
+                                                                $displayLibrary = true;
+                                                            }
+                                                        }
 
-	                                                                    	if ($video_type == 0) {
-	                                                                    		echo '<a href="'.$src.$url.rawurlencode($video_files).$embed.'" data-src="'.$src.$url.rawurlencode($video_files).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i></a>';
-	                                                                    	} else {
-	                                                                    		echo '<a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><i class="fa fa-youtube"></i></a>';
-	                                                                    	}
-	                                                                        
-	                                                                    echo '</div>
-	                                                                    <div class="mt-action-details" style="vertical-align: middle;">
-	                                                                        <p class="mt-action-desc">
-	                                                                        	<span class="font-dark">'. htmlentities($video_description ?? '') .'</span><br>
-	                                                                        	Uploaded by: '. $video_name .'
-	                                                                        </p>
-	                                                                    </div>
-	                                                                </div>
-	                                                                <div class="mt-action-datetime">
-	                                                                    <span class="mt-action-date">'. $video_last_modified .'</span>
-	                                                                </div>
-	                                                                <div class="mt-action-buttons">
-	                                                                    <div class="btn-group btn-group-circle">
-	                                                                    	<a href="#modalVideoEdit" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnVideoEdit('. $video_ID .')">Edit</a>
-	                                                                    	<a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnVideoDelete('. $video_ID .', '. $library_ID .')">Delete</a>
-	                                                                    </div>
-	                                                                </div>
-	                                                            </div>
-	                                                        </div>
-	                                                    </div>';
-	                                                }
+                                                        if ($displayLibrary == true) {
+    	                                    				echo '<div class="mt-action mt-action-'. $video_ID .'">
+    	                                                        <div class="mt-action-body">
+    	                                                            <div class="mt-action-row">
+    	                                                                <div class="mt-action-info">
+    	                                                                    <div class="mt-action-icon">';
+
+    	                                                                    	if ($video_type == 0) {
+    	                                                                    		echo '<a href="'.$src.$url.rawurlencode($video_files).$embed.'" data-src="'.$src.$url.rawurlencode($video_files).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i></a>';
+    	                                                                    	} else {
+    	                                                                    		echo '<a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><i class="fa fa-youtube"></i></a>';
+    	                                                                    	}
+    	                                                                        
+    	                                                                    echo '</div>
+    	                                                                    <div class="mt-action-details" style="vertical-align: middle;">
+    	                                                                        <p class="mt-action-desc">
+    	                                                                        	<span class="font-dark">'. htmlentities($video_description ?? '') .'</span><br>
+    	                                                                        	Uploaded by: '. $video_name .'
+    	                                                                        </p>
+    	                                                                    </div>
+    	                                                                </div>
+    	                                                                <div class="mt-action-datetime">
+    	                                                                    <span class="mt-action-date">'. $video_last_modified .'</span>
+    	                                                                </div>
+    	                                                                <div class="mt-action-buttons">
+    	                                                                    <div class="btn-group btn-group-circle">
+    	                                                                    	<a href="#modalVideoEdit" type="button" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnVideoEdit('. $video_ID .')">Edit</a>
+    	                                                                    	<a href="javascript:;" type="button" class="btn red btn-sm" onclick="btnVideoDelete('. $video_ID .', '. $library_ID .')">Delete</a>
+    	                                                                    </div>
+    	                                                                </div>
+    	                                                            </div>
+    	                                                        </div>
+    	                                                    </div>';
+    	                                                }
+                                                    }
 	                                            }
 
 	                                    	echo '</div>
@@ -46694,6 +46977,11 @@
 			$user_id = employerID($portal_user);
 		}
 
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
+        }
+
         $current_userEmployerID = employerID($portal_user);
 		$current_userID = $_COOKIE['ID'];
 
@@ -46828,7 +47116,12 @@
                             </div>
                             <div class="tab-pane" id="tabFiles_'. $library_ID .'">
                                 <div class="mt-actions">';
-                                    $resultFiles = mysqli_query( $conn,"SELECT * FROM tbl_library_file WHERE deleted = 0 AND library_id = $library_ID ORDER BY ID DESC" );
+
+                                    $sql_file = '';
+                                    if (mysqli_num_rows($hasLibrary) == 0) {
+                                        $sql_file = ' AND user_id = '.$portal_user;
+                                    }
+                                    $resultFiles = mysqli_query( $conn,"SELECT * FROM tbl_library_file WHERE deleted = 0 AND library_id = $library_ID $sql_file ORDER BY ID DESC" );
                                     if ( mysqli_num_rows($resultFiles) > 0 ) {
                                         while($rowFiles = mysqli_fetch_array($resultFiles)) {
                                             $file_ID = $rowFiles["ID"];
@@ -46930,7 +47223,11 @@
 	                        <div class="tab-pane" id="tabComments_'. $library_ID .'">
                             	<div class="mt-actions">';
 
-                            		$resultComment = mysqli_query( $conn,"SELECT * FROM tbl_library_comment WHERE deleted = 0 AND library_id = $library_ID ORDER BY ID DESC" );
+                                    $sql_comment = '';
+                                    if (mysqli_num_rows($hasLibrary) == 0) {
+                                        $sql_comment = ' AND user_id = '.$portal_user;
+                                    }
+                            		$resultComment = mysqli_query( $conn,"SELECT * FROM tbl_library_comment WHERE deleted = 0 AND library_id = $library_ID $sql_comment ORDER BY ID DESC" );
                                     if ( mysqli_num_rows($resultComment) > 0 ) {
                                         while($rowComment = mysqli_fetch_array($resultComment)) {
                                         	$comment_ID = $rowComment["ID"];
@@ -47155,8 +47452,12 @@
                                         </thead>
                                         <tbody>';
 
+                                            $sql_compliant = '';
+                                            if (mysqli_num_rows($hasLibrary) == 0) {
+                                                $sql_compliant = ' AND user_id = '.$portal_user;
+                                            }
                                             $compliant = 0;
-                                            $resultCompliance = mysqli_query( $conn,"SELECT * FROM tbl_library_compliance WHERE parent_id = 0 AND deleted = 0 AND library_id = $library_ID " );
+                                            $resultCompliance = mysqli_query( $conn,"SELECT * FROM tbl_library_compliance WHERE parent_id = 0 AND deleted = 0 AND library_id = $library_ID $sql_compliant" );
                                             if ( mysqli_num_rows($resultCompliance) > 0 ) {
                                                 $compliant_count = 0;
                                                 $compliant_completed = 0;
@@ -47394,7 +47695,11 @@
                                         </thead>
                                         <tbody>';
 
-											$resultReview= mysqli_query( $conn,"SELECT * FROM tbl_library_review WHERE parent_id = 0 AND is_deleted = 0 AND library_id = $library_ID " );
+                                            $sql_review = '';
+                                            if (mysqli_num_rows($hasLibrary) == 0) {
+                                                $sql_review = ' AND user_id = '.$portal_user;
+                                            }
+											$resultReview= mysqli_query( $conn,"SELECT * FROM tbl_library_review WHERE parent_id = 0 AND is_deleted = 0 AND library_id = $library_ID $sql_review" );
                                             if ( mysqli_num_rows($resultReview) > 0 ) {
                                                 while($rowReview = mysqli_fetch_array($resultReview)) {
                                                 	$review_ID = $rowReview["ID"];
@@ -47797,7 +48102,11 @@
 	                            echo '<div class="tab-pane" id="tabReferences_'. $library_ID .'">
 	                            	<div class="mt-actions">';
 
-	                            		$selectReferences = mysqli_query( $conn,"SELECT * FROM tbl_library_references WHERE is_deleted = 0 AND library_id = $library_ID ORDER BY ID DESC" );
+                                        $sql_ref = '';
+                                        if (mysqli_num_rows($hasLibrary) == 0) {
+                                            $sql_ref = ' AND user_id = '.$portal_user;
+                                        }
+	                            		$selectReferences = mysqli_query( $conn,"SELECT * FROM tbl_library_references WHERE is_deleted = 0 AND library_id = $library_ID $sql_ref ORDER BY ID DESC" );
 	                                    if ( mysqli_num_rows($selectReferences) > 0 ) {
 	                                        while($rowReferences = mysqli_fetch_array($selectReferences)) {
 	                                            $ref_ID = $rowReferences["ID"];
@@ -47881,7 +48190,11 @@
 	                            <div class="tab-pane" id="tabVideo_'. $library_ID .'">
 	                            	<div class="mt-actions">';
 
-	                            		$selectVideo = mysqli_query( $conn,"SELECT * FROM tbl_library_video WHERE is_deleted = 0 AND library_id = $library_ID ORDER BY ID DESC" );
+                                        $sql_video = '';
+                                        if (mysqli_num_rows($hasLibrary) == 0) {
+                                            $sql_video = ' AND user_id = '.$portal_user;
+                                        }
+	                            		$selectVideo = mysqli_query( $conn,"SELECT * FROM tbl_library_video WHERE is_deleted = 0 AND library_id = $library_ID $sql_video ORDER BY ID DESC" );
 	                                    if ( mysqli_num_rows($selectVideo) > 0 ) {
 	                                        while($rowVideo = mysqli_fetch_array($selectVideo)) {
 	                                            $video_ID = $rowVideo["ID"];
@@ -48488,13 +48801,15 @@
                 //         -- WHERE f.name IS NOT NULL
                 //         ORDER BY mainID, parentID" );
                 // } else {
-                $selectFile = mysqli_query( $conn,"WITH RECURSIVE cte (mainID, parentID, childIDs, type, parentCollab, parentName) AS
+                $selectFile = mysqli_query( $conn,"WITH RECURSIVE cte (mainID, portal_userID, parentID, childIDs, type, free_access, parentCollab, parentName) AS
                     (
                         SELECT 
                             t1.ID AS mainID,
+                            t1.portal_user AS portal_userID,
                             t1.parent_id AS parentID,
                             t1.child_id AS childIDs,
                             t1.type AS type,
+                            t1.free_access AS free_access,
                             t1.collaborator_id AS parentCollab,
                             t1.name AS parentName
                         FROM tbl_library AS t1
@@ -48504,9 +48819,11 @@
                         
                         SELECT 
                             t2.ID AS mainID,
+                            t2.portal_user AS portal_userID,
                             t2.parent_id AS parentID,
                             t2.child_id AS childIDs,
                             t2.type AS type,
+                            t2.free_access AS free_access,
                             t2.collaborator_id AS parentCollab,
                             t2.name AS parentName
                         FROM tbl_library AS t2
@@ -48514,7 +48831,7 @@
                         WHERE t2.deleted = 0 AND t2.user_id = $user_id
                     )
                     SELECT 
-                    mainID, parentID, childIDs, type, parentCollab, parentName,
+                    mainID, portal_userID, parentID, childIDs, type, free_access, parentCollab, parentName,
                     fileID, files, name
                     FROM cte
 
@@ -48550,138 +48867,151 @@
 			            $item_child = false;
 			            if (!empty($childIDs)) { $item_child = true; }
 
-                        if ($collabUser == 1) {
-                            if (!empty($library_collaborator_id)) {
-                                $collab = json_decode($library_collaborator_id, true);
-                                foreach ($collab as $key => $value) {
-                                    if ($current_userEmployerID == $key) {
-                                        if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
-                                            if (!in_array($mainID, $list_array)) {
-                                                array_push($list_array, $mainID);
-
-                                                $array_name_id = explode(", ", $parentName);
-                                                // if ( count($array_name_id) == 4 AND $type_id == 0 ) {
-                                                if ( count($array_name_id) == 4 ) {
-                                                    $data_name = array();
-
-                                                    $selectType = mysqli_query($conn,"SELECT * FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'");
-                                                    if ( mysqli_num_rows($selectType) > 0 ) {
-                                                        while($rowType = mysqli_fetch_array($selectType)) {
-                                                            array_push($data_name, $rowType["name"]);
-                                                        }
-                                                    }
-
-                                                    $selectCategory = mysqli_query($conn,"SELECT * FROM tbl_library_category WHERE ID = '".$array_name_id[1]."'");
-                                                    if ( mysqli_num_rows($selectCategory) > 0 ) {
-                                                        while($rowCategory = mysqli_fetch_array($selectCategory)) {
-                                                            array_push($data_name, $rowCategory["name"]);
-                                                        }
-                                                    }
-
-                                                    $selectScope = mysqli_query($conn,"SELECT * FROM tbl_library_scope WHERE ID = '".$array_name_id[2]."'");
-                                                    if ( mysqli_num_rows($selectScope) > 0 ) {
-                                                        while($rowScope = mysqli_fetch_array($selectScope)) {
-                                                            array_push($data_name, $rowScope["name"]);
-                                                        }
-                                                    }
-
-                                                    $selectModule = mysqli_query($conn,"SELECT * FROM tbl_library_module WHERE ID = '".$array_name_id[3]."'");
-                                                    if ( mysqli_num_rows($selectModule) > 0 ) {
-                                                        while($rowModule = mysqli_fetch_array($selectModule)) {
-                                                            array_push($data_name, $rowModule["name"]);
-                                                        }
-                                                    }
-
-                                                    $parentName = implode(" - ",$data_name);
-                                                }
-
-                                                if($parentID == 0) { $parentID = '#'; }
-
-                                                $output = array(
-                                                    "id" => $mainID,
-                                                    "parent" => $parentID,
-                                                    "state" => 'close',
-                                                    "text" => htmlentities($parentName ?? '')
-                                                );
-                                                array_push($result, $output);
-                                            }
-                                            // if (!empty($file_name)) {
-                                            //     $output = array(
-                                            //         // "id" => $file_ID,
-                                            //         "id" => $mainID.'_'.$file_ID,
-                                            //         "parent" => $mainID,
-                                            //         "state" => 'close',
-                                            //         "text" => htmlentities($file_name ?? ''),
-                                            //         "type" => 'file'
-                                            //     );
-                                            //     array_push($result, $output);
-                                            // }
-                                        }
-                                    }
-                                }
+                        $displayLibrary = false;
+                        if (mysqli_num_rows($hasLibrary) == 0) {
+                            if ($rowFile["portal_userID"] == $portal_user OR $rowFile["portal_userID"] == 163) {
+                                $displayLibrary = true;
                             }
                         } else {
-                            if (!in_array($mainID, $list_array)) {
-                                array_push($list_array, $mainID);
-
-                                $array_name_id = explode(", ", $parentName);
-                                if ( count($array_name_id) == 4 AND $type_id == 0 ) {
-                                    $data_name = array();
-
-                                    $selectType = mysqli_query($conn,"SELECT * FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'");
-                                    if ( mysqli_num_rows($selectType) > 0 ) {
-                                        while($rowType = mysqli_fetch_array($selectType)) {
-                                            array_push($data_name, $rowType["name"]);
-                                        }
-                                    }
-
-                                    $selectCategory = mysqli_query($conn,"SELECT * FROM tbl_library_category WHERE ID = '".$array_name_id[1]."'");
-                                    if ( mysqli_num_rows($selectCategory) > 0 ) {
-                                        while($rowCategory = mysqli_fetch_array($selectCategory)) {
-                                            array_push($data_name, $rowCategory["name"]);
-                                        }
-                                    }
-
-                                    $selectScope = mysqli_query($conn,"SELECT * FROM tbl_library_scope WHERE ID = '".$array_name_id[2]."'");
-                                    if ( mysqli_num_rows($selectScope) > 0 ) {
-                                        while($rowScope = mysqli_fetch_array($selectScope)) {
-                                            array_push($data_name, $rowScope["name"]);
-                                        }
-                                    }
-
-                                    $selectModule = mysqli_query($conn,"SELECT * FROM tbl_library_module WHERE ID = '".$array_name_id[3]."'");
-                                    if ( mysqli_num_rows($selectModule) > 0 ) {
-                                        while($rowModule = mysqli_fetch_array($selectModule)) {
-                                            array_push($data_name, $rowModule["name"]);
-                                        }
-                                    }
-
-                                    $parentName = implode(" - ",$data_name);
-                                }
-
-                                if($parentID == 0) { $parentID = '#'; }
-
-                                $output = array(
-                                    "id" => $mainID,
-                                    "parent" => $parentID,
-                                    "state" => 'close',
-                                    "text" => htmlentities($parentName ?? '')
-                                );
-                                array_push($result, $output);
+                            if ($rowFile["free_access"] == 0) {
+                                $displayLibrary = true;
                             }
-                            // if (!empty($file_name)) {
-                            //     // if (!in_array($file_ID, $list_array)) {
-                            //     //     array_push($list_array, $file_ID);
-                            //         $output = array(
-                            //             "id" => $mainID.'_'.$file_ID,
-                            //             "parent" => $mainID,
-                            //             "state" => 'close',
-                            //             "text" => htmlentities($file_name ?? ''),
-                            //             "type" => 'file'
-                            //         );
-                            //         array_push($result, $output);
-                            //     // }
-                            // }
+                        }
+
+                        if ($displayLibrary == true) {
+                            if ($collabUser == 1) {
+                                if (!empty($library_collaborator_id)) {
+                                    $collab = json_decode($library_collaborator_id, true);
+                                    foreach ($collab as $key => $value) {
+                                        if ($current_userEmployerID == $key) {
+                                            if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
+                                                if (!in_array($mainID, $list_array)) {
+                                                    array_push($list_array, $mainID);
+
+                                                    $array_name_id = explode(", ", $parentName);
+                                                    // if ( count($array_name_id) == 4 AND $type_id == 0 ) {
+                                                    if ( count($array_name_id) == 4 ) {
+                                                        $data_name = array();
+
+                                                        $selectType = mysqli_query($conn,"SELECT * FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'");
+                                                        if ( mysqli_num_rows($selectType) > 0 ) {
+                                                            while($rowType = mysqli_fetch_array($selectType)) {
+                                                                array_push($data_name, $rowType["name"]);
+                                                            }
+                                                        }
+
+                                                        $selectCategory = mysqli_query($conn,"SELECT * FROM tbl_library_category WHERE ID = '".$array_name_id[1]."'");
+                                                        if ( mysqli_num_rows($selectCategory) > 0 ) {
+                                                            while($rowCategory = mysqli_fetch_array($selectCategory)) {
+                                                                array_push($data_name, $rowCategory["name"]);
+                                                            }
+                                                        }
+
+                                                        $selectScope = mysqli_query($conn,"SELECT * FROM tbl_library_scope WHERE ID = '".$array_name_id[2]."'");
+                                                        if ( mysqli_num_rows($selectScope) > 0 ) {
+                                                            while($rowScope = mysqli_fetch_array($selectScope)) {
+                                                                array_push($data_name, $rowScope["name"]);
+                                                            }
+                                                        }
+
+                                                        $selectModule = mysqli_query($conn,"SELECT * FROM tbl_library_module WHERE ID = '".$array_name_id[3]."'");
+                                                        if ( mysqli_num_rows($selectModule) > 0 ) {
+                                                            while($rowModule = mysqli_fetch_array($selectModule)) {
+                                                                array_push($data_name, $rowModule["name"]);
+                                                            }
+                                                        }
+
+                                                        $parentName = implode(" - ",$data_name);
+                                                    }
+
+                                                    if($parentID == 0) { $parentID = '#'; }
+
+                                                    $output = array(
+                                                        "id" => $mainID,
+                                                        "parent" => $parentID,
+                                                        "state" => 'close',
+                                                        "text" => htmlentities($parentName ?? '')
+                                                    );
+                                                    array_push($result, $output);
+                                                }
+                                                // if (!empty($file_name)) {
+                                                //     $output = array(
+                                                //         // "id" => $file_ID,
+                                                //         "id" => $mainID.'_'.$file_ID,
+                                                //         "parent" => $mainID,
+                                                //         "state" => 'close',
+                                                //         "text" => htmlentities($file_name ?? ''),
+                                                //         "type" => 'file'
+                                                //     );
+                                                //     array_push($result, $output);
+                                                // }
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (!in_array($mainID, $list_array)) {
+                                    array_push($list_array, $mainID);
+
+                                    $array_name_id = explode(", ", $parentName);
+                                    if ( count($array_name_id) == 4 AND $type_id == 0 ) {
+                                        $data_name = array();
+
+                                        $selectType = mysqli_query($conn,"SELECT * FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'");
+                                        if ( mysqli_num_rows($selectType) > 0 ) {
+                                            while($rowType = mysqli_fetch_array($selectType)) {
+                                                array_push($data_name, $rowType["name"]);
+                                            }
+                                        }
+
+                                        $selectCategory = mysqli_query($conn,"SELECT * FROM tbl_library_category WHERE ID = '".$array_name_id[1]."'");
+                                        if ( mysqli_num_rows($selectCategory) > 0 ) {
+                                            while($rowCategory = mysqli_fetch_array($selectCategory)) {
+                                                array_push($data_name, $rowCategory["name"]);
+                                            }
+                                        }
+
+                                        $selectScope = mysqli_query($conn,"SELECT * FROM tbl_library_scope WHERE ID = '".$array_name_id[2]."'");
+                                        if ( mysqli_num_rows($selectScope) > 0 ) {
+                                            while($rowScope = mysqli_fetch_array($selectScope)) {
+                                                array_push($data_name, $rowScope["name"]);
+                                            }
+                                        }
+
+                                        $selectModule = mysqli_query($conn,"SELECT * FROM tbl_library_module WHERE ID = '".$array_name_id[3]."'");
+                                        if ( mysqli_num_rows($selectModule) > 0 ) {
+                                            while($rowModule = mysqli_fetch_array($selectModule)) {
+                                                array_push($data_name, $rowModule["name"]);
+                                            }
+                                        }
+
+                                        $parentName = implode(" - ",$data_name);
+                                    }
+
+                                    if($parentID == 0) { $parentID = '#'; }
+
+                                    $output = array(
+                                        "id" => $mainID,
+                                        "parent" => $parentID,
+                                        "state" => 'close',
+                                        "text" => htmlentities($parentName ?? '')
+                                    );
+                                    array_push($result, $output);
+                                }
+                                // if (!empty($file_name)) {
+                                //     // if (!in_array($file_ID, $list_array)) {
+                                //     //     array_push($list_array, $file_ID);
+                                //         $output = array(
+                                //             "id" => $mainID.'_'.$file_ID,
+                                //             "parent" => $mainID,
+                                //             "state" => 'close',
+                                //             "text" => htmlentities($file_name ?? ''),
+                                //             "type" => 'file'
+                                //         );
+                                //         array_push($result, $output);
+                                //     // }
+                                // }
+                            }
                         }
 			         }
 				}
@@ -49207,6 +49537,11 @@
 			$user_id = employerID($portal_user);
 		}
 
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
+        }
+
 		$description = addslashes($_POST['description']);
 
 
@@ -49316,6 +49651,15 @@
 	}
 	if( isset($_POST['btnUpdate_Area']) ) {
 		$ID = $_POST['ID'];
+
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
 
 		$type = $_POST['type'];
 		if ($type == 16 AND !empty($_POST['type_others'])) {
@@ -49441,6 +49785,13 @@
 			$user_id = employerID($portal_user);
 		}
 
+        $free_access = 0;
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
+            $free_access = 1;
+        }
+
 		$parent_id = $_POST['parent_id'];
 		$type = $_POST['type'];
 		$name = addslashes($_POST['name']);
@@ -49448,8 +49799,8 @@
 		$due_date = $_POST['due_date'];
 		$last_modified = date('Y-m-d');
 
-		$sql = "INSERT INTO tbl_library (user_id, portal_user, parent_id, type, name, description, due_date, last_modified)
-		VALUES ('$user_id', '$portal_user', '$parent_id', '$type', '$name', '$description', '$due_date', '$last_modified')";
+        $sql = "INSERT INTO tbl_library (user_id, portal_user, parent_id, type, free_access, name, description, due_date, last_modified)
+        VALUES ('$user_id', '$portal_user', '$parent_id', '$type', '$free_access', '$name', '$description', '$due_date', '$last_modified')";
 		
 		//->>>>>>>  START Brandon Auto service log for creating subitem <<<<<<<<-
         
@@ -49839,6 +50190,15 @@
 		$mail = php_mailer($to, $user, $subject, $body);
 	}
 	if( isset($_POST['btnSave_Attached']) ) {
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
     	$current_userID = $_COOKIE['ID'];
 		$parent_id = $_POST['parent_id'];
 		$name = addslashes($_POST['name']);
@@ -49846,6 +50206,13 @@
 		$last_modified = $_POST['last_modified'];
 		$due_date = $_POST['due_date'];
         $arr_item = array();
+
+        $free_access = 0;
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
+            $free_access = 1;
+        }
 
         $filetype = $_POST['filetype'];
         if ($filetype == 1) {
@@ -49872,8 +50239,8 @@
         array_push($arr_item, $output);
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
-        $sql = "INSERT INTO tbl_library_file (user_id, library_id, files, filetype, filesize, file_history, name, comment, due_date, last_modified)
-        VALUES ('$current_userID', '$parent_id', '$files', '$filetype', '$filesize', '$file_history', '$name', '$comment', '$due_date', '$last_modified')";
+        $sql = "INSERT INTO tbl_library_file (user_id, library_id, free_access, files, filetype, filesize, file_history, name, comment, due_date, last_modified)
+        VALUES ('$current_userID', '$parent_id', '$free_access', '$files', '$filetype', '$filesize', '$file_history', '$name', '$comment', '$due_date', '$last_modified')";
 	
 		//->>>>>>>  START Brandon Auto service log for uploading file to dashboard <<<<<<<<-
         
@@ -50756,6 +51123,11 @@
             $user_id = employerID($portal_user);
         }
 
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
+        }
+
 		mysqli_query( $conn,"UPDATE tbl_library_compliance SET remark = '1', remark_user = '". $current_userID ."' WHERE ID='". $id ."'" );
 
 		$selectData = mysqli_query( $conn,'SELECT * FROM tbl_library_compliance WHERE ID="'. $id .'"' );
@@ -50842,6 +51214,13 @@
             $user_id = employerID($portal_user);
         }
 
+        $free_access = 0;
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
+            $free_access = 1;
+        }
+
     	$current_userID = $_COOKIE['ID'];
 		$parent_id = $_POST['parent_id'];
 		$action_items = addslashes($_POST['action_items']);
@@ -50887,8 +51266,8 @@
         array_push($arr_item, $output);
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
-		$sql = "INSERT INTO tbl_library_compliance (user_id, library_id, action_items, requirements, frequency, files, filetype, filesize, file_history, schedule, last_modified)
-        VALUES ('$current_userID', '$parent_id', '$action_items', '$requirements', '$frequency', '$files', '$filetype', '$filesize', '$file_history', '$frequency_id', '$last_modified')";
+		$sql = "INSERT INTO tbl_library_compliance (user_id, library_id, free_access, action_items, requirements, frequency, files, filetype, filesize, file_history, schedule, last_modified)
+        VALUES ('$current_userID', '$parent_id', '$free_access', '$action_items', '$requirements', '$frequency', '$files', '$filetype', '$filesize', '$file_history', '$frequency_id', '$last_modified')";
         
 		//->>>>>>>  START Brandon Auto service log for adding compliance in dashboard <<<<<<<<-
 				
@@ -51059,6 +51438,8 @@
 					"frequency" => $frequency,
 					"files" => $files
 				);
+
+                    $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $last_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
 
 				// Update History Data
 				actionHistory($parent_id, 1, 3, $last_id);
@@ -51231,6 +51612,13 @@
             $user_id = employerID($portal_user);
         }
 
+        $free_access = 0;
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
+            $free_access = 1;
+        }
+
     	$current_userID = $_COOKIE['ID'];
 		$library_id = $_POST['library_id'];
 		$type = $_POST['type'];
@@ -51252,8 +51640,8 @@
             $files = $_POST['fileurl'];
         }
 
-		$sql = "INSERT INTO tbl_library_compliance (user_id, library_id, comment, files, filetype, type, parent_id, last_modified)
-		VALUES ('$current_userID', '$library_id', '$comment', '$files', '$filetype', '$type', '$ID', '$last_modified')";
+		$sql = "INSERT INTO tbl_library_compliance (user_id, library_id, free_access, comment, files, filetype, type, parent_id, last_modified)
+		VALUES ('$current_userID', '$library_id', '$free_access', '$comment', '$files', '$filetype', '$type', '$ID', '$last_modified')";
 		
 		if (mysqli_query($conn, $sql)) {
 			$last_id = mysqli_insert_id($conn);
@@ -51358,6 +51746,9 @@
                         $body .= 'InterlinkIQ.com Team<br>
                         Consultare Inc.';
                     }
+
+                    $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $last_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+
                     php_mailer_1($to, $user, $subject, $body, $from, $name);
                 }
 
@@ -51390,6 +51781,11 @@
         else {
             $portal_user = $_COOKIE['ID'];
             $user_id = employerID($portal_user);
+        }
+
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
         }
 
     	$current_userID = $_COOKIE['ID'];
@@ -51511,6 +51907,11 @@
         else {
             $portal_user = $_COOKIE['ID'];
             $user_id = employerID($portal_user);
+        }
+
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
         }
 
         $selectData = mysqli_query( $conn,"WITH RECURSIVE cte (mainID, parentID, childIDs, type, parentCollab, parentName) AS
@@ -52009,6 +52410,22 @@
 		actionHistory($data_library_id, 5, 4, $id);
 	}
 	if( isset($_POST['btnSave_Review']) ) {
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
+        $free_access = 0;
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
+            $free_access = 1;
+        }
+
     	$current_userID = $_COOKIE['ID'];
 		$parent_id = $_POST['parent_id'];
 		$requirements = addslashes($_POST['requirements']);
@@ -52041,8 +52458,8 @@
         array_push($arr_item, $output);
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
-        $sql = "INSERT INTO tbl_library_review (user_id, library_id, action_items, requirements, files, filetype, filesize, file_history, last_modified)
-        VALUES ('$current_userID', '$parent_id', '$action_items', '$requirements', '$files', '$filetype', '$filesize', '$file_history', '$last_modified')";
+        $sql = "INSERT INTO tbl_library_review (user_id, library_id, free_access, action_items, requirements, files, filetype, filesize, file_history, last_modified)
+        VALUES ('$current_userID', '$parent_id', '$free_access', '$action_items', '$requirements', '$files', '$filetype', '$filesize', '$file_history', '$last_modified')";
 		
 		//->>>>>>>  START Brandon Auto service log for creating annual review in dashboard<<<<<<<<-
         
@@ -52266,6 +52683,22 @@
 		mysqli_close($conn);
 	}
 	if( isset($_POST['btnSaveAction_Review']) ) {
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
+        $free_access = 0;
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
+            $free_access = 1;
+        }
+
     	$current_userID = $_COOKIE['ID'];
 		$ID = $_POST['ID'];
 		$library_id = $_POST['library_id'];
@@ -52301,8 +52734,8 @@
         array_push($arr_item, $output);
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
-        $sql = "INSERT INTO tbl_library_review (user_id, library_id, compliant, title, template, comment, type, parent_id, files, filetype, filesize, file_history, last_modified)
-        VALUES ('$current_userID', '$library_id', '$compliant', '$title', '2', '$comment', '$type', '$ID', '$files', '$filetype', '$filesize', '$file_history', '$last_modified')";
+        $sql = "INSERT INTO tbl_library_review (user_id, library_id, free_access, compliant, title, template, comment, type, parent_id, files, filetype, filesize, file_history, last_modified)
+        VALUES ('$current_userID', '$library_id', '$free_access', '$compliant', '$title', '2', '$comment', '$type', '$ID', '$files', '$filetype', '$filesize', '$file_history', '$last_modified')";
 		
 		if (mysqli_query($conn, $sql)) {
 			$last_id = mysqli_insert_id($conn);
@@ -52521,6 +52954,22 @@
 		mysqli_close($conn);
 	}
 	if( isset($_POST['btnSaveMore_Review']) ) {
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
+        $free_access = 0;
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
+            $free_access = 1;
+        }
+
     	$current_userID = $_COOKIE['ID'];
 		$ID = $_POST['ID'];
 		$library_id = $_POST['library_id'];
@@ -52556,8 +53005,8 @@
         array_push($arr_item, $output);
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
-        $sql = "INSERT INTO tbl_library_review (user_id, library_id, compliant, title, template, comment, type, parent_id, files, filetype, filesize, file_history, last_modified)
-        VALUES ('$current_userID', '$library_id', '0', '$title', '2', '$comment', '$type', '$ID', '$files', '$filetype', '$filesize', '$file_history', '$last_modified')";
+        $sql = "INSERT INTO tbl_library_review (user_id, library_id, free_access, compliant, title, template, comment, type, parent_id, files, filetype, filesize, file_history, last_modified)
+        VALUES ('$current_userID', '$library_id', '$free_access', '0', '$title', '2', '$comment', '$type', '$ID', '$files', '$filetype', '$filesize', '$file_history', '$last_modified')";
         
 		if (mysqli_query($conn, $sql)) {
 			$last_id = mysqli_insert_id($conn);
@@ -52895,6 +53344,22 @@
 		actionHistory($data_library_id, 3, 5, $id);
 	}
 	if( isset($_POST['btnSave_Template']) ) {
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
+        $free_access = 0;
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
+            $free_access = 1;
+        }
+
     	$current_userID = $_COOKIE['ID'];
 		$parent_id = $_POST['parent_id'];
 		$description = addslashes($_POST['description']);
@@ -52926,8 +53391,8 @@
         array_push($arr_item, $output);
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
-        $sql = "INSERT INTO tbl_library_template (user_id, library_id, files, filetype, filesize, file_history, description, last_modified)
-        VALUES ('$current_userID', '$parent_id', '$files', '$filetype', '$filesize', '$file_history', '$description', '$last_modified')";
+        $sql = "INSERT INTO tbl_library_template (user_id, library_id, free_access, files, filetype, filesize, file_history, description, last_modified)
+        VALUES ('$current_userID', '$parent_id', '$free_access', '$files', '$filetype', '$filesize', '$file_history', '$description', '$last_modified')";
         
 		//->>>>>>>  START Brandon Auto service log for uploading template <<<<<<<<-
         
@@ -52954,17 +53419,13 @@
 			$companyname = $rowComment["company_code"];
 		}
 
-
 		$finaldescription = $files;
 		$sql_subitem_autolog = "INSERT INTO tbl_service_logs_draft (`user_id`, `description`,`action`, `comment`, `account`, `minute` , `task_date`) 
 		VALUES ('$current_userID', '$finaldescription','$action','$comment','$companyname','$minutes','$datenow')";
 
 		mysqli_query($conn, $sql_subitem_autolog);
 
-
 		//->>>>>>> END Brandon Auto service log for  uploading template <<<<<<<<-
-
-
 		
 		if (mysqli_query($conn, $sql)) {
 			$last_id = mysqli_insert_id($conn);
@@ -53274,6 +53735,22 @@
 		actionHistory($data_library_id, 3, 6, $id);
 	}
 	if( isset($_POST['btnSave_Ref']) ) {
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
+        $free_access = 0;
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
+            $free_access = 1;
+        }
+
     	$current_userID = $_COOKIE['ID'];
 		$parent_id = $_POST['parent_id'];
 		$description = addslashes($_POST['description']);
@@ -53305,8 +53782,8 @@
         array_push($arr_item, $output);
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
-        $sql = "INSERT INTO tbl_library_references (user_id, library_id, files, filetype, filesize, file_history, description, last_modified)
-        VALUES ('$current_userID', '$parent_id', '$files', '$filetype', '$filesize', '$file_history', '$description', '$last_modified')";
+        $sql = "INSERT INTO tbl_library_references (user_id, library_id, free_access, files, filetype, filesize, file_history, description, last_modified)
+        VALUES ('$current_userID', '$parent_id', '$free_access', '$files', '$filetype', '$filesize', '$file_history', '$description', '$last_modified')";
 		
 		//->>>>>>>  START Brandon Auto service log for uploading ref document <<<<<<<<-
         
@@ -53649,6 +54126,22 @@
 		actionHistory($data_library_id, 3, 7, $id);
 	}
 	if( isset($_POST['btnSave_Video']) ) {
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
+        $free_access = 0;
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
+            $free_access = 1;
+        }
+
     	$current_userID = $_COOKIE['ID'];
 		$parent_id = $_POST['parent_id'];
 		$description = addslashes($_POST['description']);
@@ -53680,8 +54173,8 @@
         array_push($arr_item, $output);
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
-        $sql = "INSERT INTO tbl_library_video (user_id, library_id, files, type, filesize, file_history, url, description, last_modified)
-        VALUES ('$current_userID', '$parent_id', '$files', '$type', '$filesize', '$file_history', '$youtube', '$description', '$last_modified')";
+        $sql = "INSERT INTO tbl_library_video (user_id, library_id, free_access, files, type, filesize, file_history, url, description, last_modified)
+        VALUES ('$current_userID', '$parent_id', '$free_access', '$files', '$type', '$filesize', '$file_history', '$youtube', '$description', '$last_modified')";
         
 		//->>>>>>>  START Brandon Auto service log for uploading video <<<<<<<<-
         
@@ -53863,6 +54356,13 @@
 			$user_id = employerID($portal_user);
 		}
 
+        $free_access = 0;
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
+            $free_access = 1;
+        }
+
 		$selectDashboard = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID = $id" );
 		if ( mysqli_num_rows($selectDashboard) > 0 ) {
 			$rowDashboard = mysqli_fetch_array($selectDashboard);
@@ -53983,6 +54483,11 @@
 			$portal_user = $_COOKIE['ID'];
 			$user_id = employerID($portal_user);
 		}
+
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
+        }
 
 		// $selectData = mysqli_query( $conn,"SELECT * FROM tbl_MyProject_Services WHERE MyPro_id = $id" );
         $selectData = mysqli_query( $conn,"SELECT
@@ -54144,6 +54649,11 @@
             $user_id = employerID($portal_user);
         }
 
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
+        }
+
     	$current_userID = $_COOKIE['ID'];
 		$parent_id = $_POST['parent_id'];
 		$name = addslashes($_POST['name']);
@@ -54303,6 +54813,11 @@
         else {
             $portal_user = $_COOKIE['ID'];
             $user_id = employerID($portal_user);
+        }
+
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
         }
 
 		$ID = $_POST['ID'];

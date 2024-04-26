@@ -403,7 +403,7 @@ if (isset($_POST['update_campaign'])) {
     $Auto_Send_Status = mysqli_real_escape_string($conn,$_POST['Auto_Send_Status']);
     
     
-    $sql = "UPDATE tbl_Customer_Relationship_Campaign set Campaign_Name = '$Campaign_Name',Campaign_Recipients = '$Campaign_Recipients',Campaign_Subject = '$Campaign_Subject',Campaign_body = '$Campaign_body',Frequency = '$Frequency',Auto_Send_Status = '$Auto_Send_Status' where Campaign_Id = '$ID' ";
+    $sql = "UPDATE tbl_Customer_Relationship_Campaign set Campaign_Name = '$Campaign_Name',Campaign_Recipients = '$Campaign_Recipients',Campaign_Subject = '$Campaign_Subject',Campaign_body = '$Campaign_body',Auto_Send_Status = '$Auto_Send_Status' where Campaign_Id = '$ID' ";
     if(mysqli_query($conn, $sql)){
         echo '<script> window.location.href = "../customer_relationship_View.php?view_id='.$crm_ids.'#campaign";</script>';
     }

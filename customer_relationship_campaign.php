@@ -64,7 +64,7 @@ if (isset($_POST['btncampaign_submit'])) {
     
     	$mail = php_mailer($from, $to, $user, $subject, $body);
     	
-        $sql = "INSERT INTO tbl_Customer_Relationship_Campaign(Campaign_from,Campaign_Name,Campaign_Recipients,Campaign_Subject,Campaign_body,Campaign_Status,Target_Date,crm_ids,Campaign_added,Auto_Send_Status,userID) VALUES ('$from','$Campaign_Name','$Campaign_Recipients','$Campaign_Subject','$Campaign_body','$Campaign_Status','$Target_Date','$crm_ids','$today',1,'$userID')";
+        $sql = "INSERT INTO tbl_Customer_Relationship_Campaign(Campaign_from,Campaign_Name,Campaign_Recipients,Campaign_Subject,Campaign_body,Campaign_Status,Target_Date,crm_ids,Campaign_added,Auto_Send_Status,userID) VALUES ('$from','$Campaign_Name','$Campaign_Recipients','$Campaign_Subject',$Campaign_body','$Campaign_Status','$Target_Date','$crm_ids','$today',1,'$userID')";
         if(mysqli_query($conn, $sql)){
             $last_insert_id = mysqli_insert_id($conn);
             $action = 'Send new Campaign';
@@ -87,7 +87,6 @@ if (isset($_POST['btncampaign_submit'])) {
         $Campaign_Subject = mysqli_real_escape_string($conn,$_POST['Campaign_Subject']);
         $Campaign_body = mysqli_real_escape_string($conn,$_POST['Campaign_body']);
         $Campaign_Name = mysqli_real_escape_string($conn,$_POST['Campaign_Name']);
-        $Frequency = mysqli_real_escape_string($conn,$_POST['Frequency']);
         $date_default_tx = new DateTime(null, new DateTimeZone(date_default_timezone_get()));
         $date_default_tx->setTimeZone(new DateTimeZone('America/Chicago'));
         $today = $date_default_tx->format('Y-m-d h:i:s');
@@ -100,7 +99,7 @@ if (isset($_POST['btncampaign_submit'])) {
     
     	$mail = php_mailer($from, $to, $user, $subject, $body);
     	
-        $sql = "INSERT INTO tbl_Customer_Relationship_Campaign(Campaign_from,Campaign_Name,Campaign_Recipients,Campaign_Subject,Campaign_body,Frequency,date_execute,Campaign_Status,crm_ids,Campaign_added,Auto_Send_Status,userID) VALUES ('$from','$Campaign_Name','$Campaign_Recipients','$Campaign_Subject','$Campaign_body','$Frequency','$today','$Campaign_Status','$crm_ids','$today',1,'$userID')";
+        $sql = "INSERT INTO tbl_Customer_Relationship_Campaign(Campaign_from,Campaign_Name,Campaign_Recipients,Campaign_Subject,Campaign_body,date_execute,Campaign_Status,crm_ids,Campaign_added,Auto_Send_Status,userID) VALUES ('$from','$Campaign_Name','$Campaign_Recipients','$Campaign_Subject','$Campaign_body','$today','$Campaign_Status','$crm_ids','$today',1,'$userID')";
         if(mysqli_query($conn, $sql)){
             $last_insert_id = mysqli_insert_id($conn);
             $action = 'Send new Campaign'; // Enclose the string in single quotes

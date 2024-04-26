@@ -1291,25 +1291,25 @@ error_reporting(0);
                                 </div>
                             </div>
                             <br>
-                            <div class="row">
-                                <div class="form-group">
-                                    <div class="col-md-6">
-                                        <label>Frequency </label>
+                <!--            <div class="row">-->
+                <!--                <div class="form-group">-->
+                <!--                    <div class="col-md-6">-->
+                <!--                        <label>Frequency </label>-->
                                         <!--<input type="number" class="form-control" type="text" name="Frequency" placeholder="No. of Days">-->
-                                        <select class="form-control" name="Frequency">
-        									<option value="1">Once Per Day</option>
-        									<option value="2">Once Per Week</option>
-        									<option value="3">On the 1st and 15th of the Month</option>
-        									<option value="4" selected="">Once Per Month</option>
-        									<option value="6">Once Per Two Months (Every Other Month)</option>
-        									<option value="7">Once Per Three Months (Quarterly)</option>
-        									<option value="8">Once Per Six Months (Bi-Annual)</option>
-        									<option value="5">Once Per Year</option>
-        								</select>
-                                    </div>
-                                </div>
-                            </div>
-                           <br>
+                <!--                        <select class="form-control" name="Frequency">-->
+        								<!--	<option value="1">Once Per Day</option>-->
+        								<!--	<option value="2">Once Per Week</option>-->
+        								<!--	<option value="3">On the 1st and 15th of the Month</option>-->
+        								<!--	<option value="4" selected="">Once Per Month</option>-->
+        								<!--	<option value="6">Once Per Two Months (Every Other Month)</option>-->
+        								<!--	<option value="7">Once Per Three Months (Quarterly)</option>-->
+        								<!--	<option value="8">Once Per Six Months (Bi-Annual)</option>-->
+        								<!--	<option value="5">Once Per Year</option>-->
+        								<!--</select>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <!--            </div>-->
+                <!--           <br>-->
                             
                         </div>
                         <div class="modal-footer" style="margin-top:10px;">

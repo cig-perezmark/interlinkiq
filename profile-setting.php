@@ -48,6 +48,9 @@
                                                     <li>
                                                         <a href="#tabPrivacy" data-toggle="tab">Privacy Settings</a>
                                                     </li>
+                                                    <li>
+                                                        <a href="#tabFiles" data-toggle="tab">Files</a>
+                                                    </li>
                                                 </ul>
                                             </div>
                                             <div class="portlet-body">
@@ -509,6 +512,63 @@
                                                     </div>
                                                     <!--END OTHER DETAILS TAB-->
                                                     
+                                                    <div class="tab-pane" id="tabFiles">
+                                                        <div class="table-scrollable">
+                                                            <table class="table table-bordered table-hover">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th style="width: 80px;" class="text-center">File</th>
+                                                                        <th>File Name</th>
+                                                                        <th>Description</th>
+                                                                        <th>Review Due Date</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+
+                                                                    <?php
+                                                                        $selectFile = mysqli_query( $conn,"SELECT * FROM tbl_hr_file WHERE deleted = 0 AND user_id = $switch_user_id AND employee_id = $current_userEmployeeID ORDER BY due_date DESC" );
+                                                                        if ( mysqli_num_rows($selectFile) > 0 ) {
+                                                                            while($rowFile = mysqli_fetch_array($selectFile)) {
+                                                                                $file_ID = $rowFile["ID"];
+                                                                                $file_name = $rowFile["filename"];
+                                                                                $file_description = $rowFile["description"];
+                                                                                $file_status = $rowFile["status"];
+                                                                                $file_reviewed_by = $rowFile["reviewed_by"];
+
+                                                                                $filetype = $rowFile['filetype'];
+                                                                                $files = $rowFile["files"];
+                                                                                $type = 'iframe';
+                                                                                if ($filetype == 1) {
+                                                                                    $fileExtension = fileExtension($files);
+                                                                                    $src = $fileExtension['src'];
+                                                                                    $embed = $fileExtension['embed'];
+                                                                                    $type = $fileExtension['type'];
+                                                                                    $file_extension = $fileExtension['file_extension'];
+                                                                                    $url = $base_url.'uploads/hr/';
+
+                                                                                    $files = $src.$url.rawurlencode($files).$embed;
+                                                                                } else if ($filetype == 3) {
+                                                                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                                                }
+
+                                                                                $file_due_date = $rowFile["due_date"];
+                                                                                $file_due_date = new DateTime($file_due_date);
+                                                                                $file_due_date = $file_due_date->format('M d, Y');
+
+                                                                                echo '<tr id="tr_'.$file_ID.'">
+                                                                                    <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p></td>
+                                                                                    <td >'. $file_name .'</td>
+                                                                                    <td >'. $file_description .'</td>
+                                                                                    <td >'. $file_due_date .'</td>
+                                                                                </tr>';
+                                                                            }
+                                                                        }
+                                                                    ?>
+
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

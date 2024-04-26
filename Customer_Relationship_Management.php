@@ -1809,24 +1809,24 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                 </div>
                             </div>
                             <br>
-                            <div class="row">
-                                <div class="form-group">
-                                    <div class="col-md-6">
-                                        <label>Frequency </label>
-                                        <select class="form-control mt-multiselect btn btn-default" name="frequency" id="campaign-frequency" required>
-        									<option value="1">Once Per Day</option>
-        									<option value="2">Once Per Week</option>
-        									<option value="3">On the 1st and 15th of the Month</option>
-        									<option value="4" selected="">Once Per Month</option>
-        									<option value="6">Once Per Two Months (Every Other Month)</option>
-        									<option value="7">Once Per Three Months (Quarterly)</option>
-        									<option value="8">Once Per Six Months (Bi-Annual)</option>
-        									<option value="5">Once Per Year</option>
-        								</select>
-                                    </div>
-                                </div>
-                            </div>
-                           <br>
+                <!--            <div class="row">-->
+                <!--                <div class="form-group">-->
+                <!--                    <div class="col-md-6">-->
+                <!--                        <label>Frequency </label>-->
+                <!--                        <select class="form-control mt-multiselect btn btn-default" name="frequency" id="campaign-frequency" required>-->
+        								<!--	<option value="1">Once Per Day</option>-->
+        								<!--	<option value="2">Once Per Week</option>-->
+        								<!--	<option value="3">On the 1st and 15th of the Month</option>-->
+        								<!--	<option value="4" selected="">Once Per Month</option>-->
+        								<!--	<option value="6">Once Per Two Months (Every Other Month)</option>-->
+        								<!--	<option value="7">Once Per Three Months (Quarterly)</option>-->
+        								<!--	<option value="8">Once Per Six Months (Bi-Annual)</option>-->
+        								<!--	<option value="5">Once Per Year</option>-->
+        								<!--</select>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <!--            </div>-->
+                <!--           <br>-->
                         </div>
                         <div class="modal-footer" style="margin-top:10px;">
                             <button type="submit" id="sendCampaignMessage" class="btn btn-info">Send</button>

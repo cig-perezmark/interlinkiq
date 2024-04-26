@@ -444,7 +444,7 @@ class Haccp {
                             <b>Description</b> <br>
                             '. $arr['description'] .' has been returned by the reviewer for revision. <br><br>
                             <b>Comment</b> <br>
-                            '. isEmpty($arr['comment']) ? '(None)' : $arr['comment'] .' <br><br>
+                            '. (isEmpty($arr['comment']) ? '(None)' : $arr['comment']) .' <br><br>
                             '. $this->emailBtn($action) .'
                         ',
                         $emailInfo['enterprise_email'], 

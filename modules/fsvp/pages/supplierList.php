@@ -11,6 +11,11 @@
     width: 180px !important;
     flex-shrink: 0;
 }
+
+td,
+th {
+    white-space: normal !important;
+}
 </style>
 
 <div class="d-flex margin-bottom-20" style="justify-content: end;">
@@ -25,11 +30,11 @@
         <tr>
             <th>Supplier Name</th>
             <th>Food Imported</th>
-            <th>Address</th>
-            <th>Evaluation Date</th>
-            <th>Supplier Agreement</th>
-            <th>FSVP Compliance Statement</th>
-            <th data-nosort="true"></th>
+            <th style="width: 220px;">Address</th>
+            <th style="width: 100px">Evaluation Date</th>
+            <th style="max-width: 80px">Supplier Agreement</th>
+            <th style="max-width: 80px;">FSVP Compliance Statement</th>
+            <th class="text-center">Actions</th>
         </tr>
     </thead>
     <tbody></tbody>

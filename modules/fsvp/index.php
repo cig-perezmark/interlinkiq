@@ -91,6 +91,15 @@ hr {
     grid-template-columns: 1fr 1fr 1fr;
     margin-top: 1rem;
 }
+
+.icon-margin-right {
+    margin-right: .5rem;
+}
+
+.d-flex.center {
+    align-items: center;
+    justify-content: center;
+}
 </style>
 
 <div class="row">

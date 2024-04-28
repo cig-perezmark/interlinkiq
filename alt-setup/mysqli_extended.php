@@ -159,7 +159,7 @@ class mysqli_extended extends mysqli implements CRUD {
 
                     $result[] = $rowData;
                 }
-                // $this->query->close();
+                $this->query->close();
                 $this->query_closed = true;
             }
 
@@ -214,7 +214,7 @@ class mysqli_extended extends mysqli implements CRUD {
 
                     $result = $rowData;
                 }
-                // $this->query->close();
+                $this->query->close();
                 $this->query_closed = true;
             }
 

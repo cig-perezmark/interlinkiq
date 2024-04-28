@@ -164,6 +164,12 @@ function showError(message = "Unable to proceed submit action.") {
     })
 }
 
+// truncrate string into desired maximum length
+function trunc(str, length = 12) {
+    const newStr = str.slice(0, length);
+    return newStr + (str.length > length ? '...' : '');
+}
+
 function initSuppliers() {
     $.ajax({
         url: baseUrl + "suppliersByUser",
@@ -174,8 +180,8 @@ function initSuppliers() {
             if(data) {
                 supplierTable.dt.clear().draw();
                 data.forEach((d) => {
-                    const sa = !d.supplier_agreement ? 'No' : d.supplier_agreement.map((x) => `<a href="${x.path}">${x.name}</a>`).join(' ');
-                    const cs = !d.compliance_statement ? 'No' : d.compliance_statement.map((x) => `<a href="${x.path}">${x.name}</a>`).join(' ');
+                    const sa = !d.supplier_agreement || !d.supplier_agreement.length ? 'No' : `<a href="#" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View ${d.supplier_agreement.length > 1 ? `(${d.supplier_agreement.length})` : ''}</a>`;
+                    const cs = !d.compliance_statement ? 'No' : `<a href="#" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View </a>`;
                     
                     supplierTable.dt.row.add([
                         d.name,
@@ -184,9 +190,19 @@ function initSuppliers() {
                         '',
                         sa,
                         cs,
-                        '',
-                    ]).draw();
+                        `
+                            <div class="d-flex center">
+                                <button title="Evaluation form" type="button" class="btn green-soft btn-circle btn-sm"> <i class="icon-margin-rightx fa fa-edit"></i> Form</button>
+                                <span>|</span>
+                                <button type="button" class="btn-link">View</button>
+                                <span>|</span>
+                                <button type="button" class="btn-link">Update</button>
+                            </div>
+                        `,
+                    ])
                 })
+
+                supplierTable.dt.draw();
             }
         },
         error: function() {
@@ -243,6 +259,23 @@ initMultiSelect($('.supplierdd'), {
 })
 
 $(document).ready(function() {
-    supplierTable = initDataTable('#tableSupplierList')
+    supplierTable = initDataTable('#tableSupplierList', {
+        columnDefs: [{
+            orderable: false,
+            targets: [-1],
+        },
+        {
+            searchable: false,
+            targets: [-1],
+        },
+        {
+            className: "dt-right",
+        },
+        {
+            className: "text-center",
+            targets: [4,5] 
+        },
+    ]
+    })
     initSuppliers();
 });

@@ -23,20 +23,17 @@ function getSupplierList($conn, $userId) {
 
     $data = [];
     foreach ($list as $d) {
-        $arr = explode(" | ", $d["address"]);
-        $add = [];
-        array_push($add, htmlentities(trim($arr[1])));
-        array_push($add, htmlentities(trim($arr[2])));
-        array_push($add, htmlentities(trim($arr[3])));
-        array_push($add, trim($arr[0]));
-        array_push($add, trim($arr[4]));
+        [$a1, $a2, $a3, $a4, $a5] = preg_split("/\||,/", $d["address"]);
+        $address = implode(', ', array_filter(array_map(function ($a) {
+            return htmlentities(trim($a));
+        }, [ $a2, $a3, $a4, $a1, $a5 ]), function($a) { return !empty($a); }));
 
         $mIds = implode(', ', json_decode($d['food_imported']));
         $materialData = $conn->select("tbl_supplier_material", "material_name AS name, ID as id", "ID in ($mIds)")->fetchAll();
         
         $saFiles = json_decode($d['sa_files'] ?? '[]');
         $data[] = [
-            'address' => implode(', ', $add),
+            'address' => $address,
             'name' => $d['name'],
             'id' => $d['id'],
             'food_imported' => $materialData,

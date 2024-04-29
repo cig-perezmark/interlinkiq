@@ -6,9 +6,12 @@ define("IMAGE_PATH", "images/");
 define("SESSION_NAME", clean_data("Alex Polo"));
 define("SESSION_POSITION", clean_data("Encoder"));
 
-$tbl_products = "temp_products";
-$tbl_raw_materials = "temp_raw_materials";
-$tbl_suppliers = "temp_suppliers";
+// $tbl_products = "temp_products";
+// $tbl_raw_materials = "temp_raw_materials";
+// $tbl_suppliers = "temp_suppliers";
+$tbl_products = "tbl_products";
+$tbl_raw_materials = "tbl_supplier_material";
+$tbl_suppliers = "tbl_supplier";
 
 if (isset($_POST['get_raw_materials_and_packagings'])) {
 
@@ -19,7 +22,8 @@ if (isset($_POST['get_raw_materials_and_packagings'])) {
    echo json_encode($result);
 } else if (isset($_POST['get_products'])) {
 
-   $sql = "SELECT * FROM $tbl_products WHERE deleted IS NULL";
+//   $sql = "SELECT * FROM $tbl_products WHERE deleted IS NULL";
+   $sql = "SELECT * FROM $tbl_products WHERE deleted 0";
 
    $query = $conn->query($sql);
    echo json_encode([

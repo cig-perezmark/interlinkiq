@@ -1711,7 +1711,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                 </li>
                                 <li class="divider"> </li>
                                 <?php
-                                        if ($current_userID == 34 || $current_userID == 163 || $current_userEmployerID == 27) {
+                                        if ($current_userID == 34 || $current_userID == 163 || $current_userEmployerID == 27 || $current_userEmployerID == 464) {
                                             if ($current_userEmployeeID == 0 || ($current_userEmployeeID > 0 && $current_userAdminAccess == 1)) {
                                                 echo '<li><a href="sidebar"><i class="icon-login"></i> Sidebar Setting</a></li>';
                                             }
@@ -2561,8 +2561,8 @@ License: You must have a valid license purchased only from themeforest(the above
                             if ( mysqli_num_rows($hasLibrary) == 0 OR $switch_user_id == 163) {
                                 echo '<li class="nav-item '; echo $site === "pricing" ? "active" : ""; echo '">
                                     <a href="pricing" class="nav-link">
-                                        <i class="icon-tag"></i>
-                                        <span class="title">Pricing</span>
+                                        <i class="icon-tag" style="color: #ffff00;"></i>
+                                        <span class="title" style="color: #ffff00; font-weight: bold;">Pricing</span>
                                         <span class="selected"></span>
                                     </a>
                                 </li>';

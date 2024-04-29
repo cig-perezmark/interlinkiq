@@ -572,7 +572,7 @@
                                                                             $result = mysqli_query($conn, $query);
                                                                             while($rows = mysqli_fetch_array($result)) {
                                                                                 if(!empty($rows['facility_category'])){ 
-                                                                                    echo $rows['facility_category'];echo ', ';
+                                                                                    echo htmlentities($rows['facility_category']); echo ', ';
                                                                                 } else{ echo '';}
                                                                             }
                                                                         ?>

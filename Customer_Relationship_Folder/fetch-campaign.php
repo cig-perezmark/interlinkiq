@@ -47,20 +47,7 @@
             <br>
             <div class="row">
                 <div class="form-group">
-                <div class="col-md-6">
-                        <label>Frequency</label>
-                        <select class="form-control" name="Frequency">
-							<option value="1" '; echo $row['Frequency'] == 1 ? 'selected': ' '; echo '>Once Per Day</option>
-							<option value="2" '; echo $row['Frequency'] == 2 ? 'selected': ''; echo '>Once Per Week</option>
-							<option value="3" '; echo $row['Frequency'] == 3 ? 'selected': ''; echo '>On the 1st and 15th of the Month</option>
-							<option value="4" '; echo $row['Frequency'] == 4 ? 'selected': ''; echo '>Once Per Month</option>
-							<option value="6" '; echo $row['Frequency'] == 6 ? 'selected': ''; echo '>Once Per Two Months (Every Other Month)</option>
-							<option value="7" '; echo $row['Frequency'] == 7 ? 'selected': ''; echo '>Once Per Three Months (Quarterly)</option>
-							<option value="8" '; echo $row['Frequency'] == 8 ? 'selected': ''; echo '>Once Per Six Months (Bi-Annual)</option>
-							<option value="5" '; echo $row['Frequency'] == 5 ? 'selected': ''; echo '>Once Per Year</option>
-						</select>
-                    </div>
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <label>Auto Email</label>
                         <select class="form-control" name="Auto_Send_Status">
                             <option value="0"'; if($row['Auto_Send_Status']==0){echo 'selected';}else{echo '';} echo' >Stop</option>
@@ -76,6 +63,20 @@
     	}
 
 ?>
+
+      <!--          <div class="col-md-6">-->
+      <!--                  <label>Frequency</label>-->
+      <!--                  <select class="form-control" name="Frequency">-->
+						<!--	<option value="1" '; echo $row['Frequency'] == 1 ? 'selected': ' '; echo '>Once Per Day</option>-->
+						<!--	<option value="2" '; echo $row['Frequency'] == 2 ? 'selected': ''; echo '>Once Per Week</option>-->
+						<!--	<option value="3" '; echo $row['Frequency'] == 3 ? 'selected': ''; echo '>On the 1st and 15th of the Month</option>-->
+						<!--	<option value="4" '; echo $row['Frequency'] == 4 ? 'selected': ''; echo '>Once Per Month</option>-->
+						<!--	<option value="6" '; echo $row['Frequency'] == 6 ? 'selected': ''; echo '>Once Per Two Months (Every Other Month)</option>-->
+						<!--	<option value="7" '; echo $row['Frequency'] == 7 ? 'selected': ''; echo '>Once Per Three Months (Quarterly)</option>-->
+						<!--	<option value="8" '; echo $row['Frequency'] == 8 ? 'selected': ''; echo '>Once Per Six Months (Bi-Annual)</option>-->
+						<!--	<option value="5" '; echo $row['Frequency'] == 5 ? 'selected': ''; echo '>Once Per Year</option>-->
+						<!--</select>-->
+      <!--              </div>-->
 
 <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
       <script>

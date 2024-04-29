@@ -1175,7 +1175,7 @@
                                                             $table_counter = 1;
                                                             while($row = mysqli_fetch_array($result)) {
 																$s_ID = $row["s_ID"];
-																$s_name = $row["s_e_name"];
+																$s_name = $row["s_name"];
 																$s_reviewed_due = $row["s_reviewed_due"];
 
 																$s_category = $row["s_category"];
@@ -1986,7 +1986,7 @@
 															<div class="col-md-3">
 																<div class="form-group">
 																	<label class="control-label">Organic Supplier?</label>
-																	<select class="form-control" name="organic">
+																	<select class="form-control" name="organic" onchange="changeCountry(1)">
 																		<option value="0">No</option>
 																		<option value="1">Yes</option>
 																	</select>
@@ -2167,7 +2167,7 @@
                                                     <div class="tab-pane" id="tabDocuments_1">
                                                         <div class="mt-checkbox-list">
                                                             <?php
-                                                                $selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
+                                                                $selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE organic = 0 ORDER BY name" );
                                                                 if ( mysqli_num_rows($selectRequirement2) > 0 ) {
                                                                     while($row = mysqli_fetch_array($selectRequirement2)) {
                                                                         echo '<label class="mt-checkbox mt-checkbox-outline '; echo $current_client == 0 ? '':'hide'; echo '"> '.$row["name"].'
@@ -2874,7 +2874,7 @@
                     ]
                 });
 
-                changeIndustry(0, 1);
+                // changeIndustry(0, 1);
 
                 widget_tagInput();
                 widget_formRepeater();
@@ -3019,28 +3019,30 @@
                     $('.tabService').addClass('hide');
                 }
             }
-            function changeIndustry(id, modal) {
-				var client = '<?php echo $current_client; ?>';
+            function changeIndustry(id, modal, source) {
+				// var client = '<?php echo $current_client; ?>';
 
-				if (client == 0) {
-                    var country = $('#tabBasic_'+modal+' select[name="supplier_countries"]').val();
+				if (current_client == 0) {
+					var country = $('#tabBasic_'+modal+' select[name="supplier_countries"]').val();
 					var organic = $('#tabBasic_'+modal+' select[name="organic"]').val();
-                    if (id == 13 || id == 22 || id == 25) { id = id; }
-                    else { id = 0; }
-                    $.ajax({
-                        type: "GET",
-                        url: "function.php?modalView_Supplier_Industry="+id+"&c="+country+"&o="+organic,
-                        dataType: "html",                  
-                        success: function(data){       
-                            $('#tabDocuments_'+modal+' .mt-checkbox-list').html(data);
-                            $('#tableData_Requirement_'+modal+' tbody').html('');
-                        }
-                    });
+
+					if (id == 13 || id == 22 || id == 25) { id = id; }
+					else { id = 0; }
+					
+					$.ajax({
+						type: "GET",
+						url: "function.php?modalView_Supplier_Industry="+id+"&c="+country+"&o="+organic+"&m="+modal+"&s="+source,
+						dataType: "html",
+						success: function(data){
+							$('#tabDocuments_'+modal+' .mt-checkbox-list').html(data);
+							$('#tableData_Requirement_'+modal+' tbody').html('');
+						}
+					});
 				}
             }
-            function changeCountry(modal) {
+            function changeCountry(modal, source) {
                 var industry = $('#tabBasic_'+modal+' select[name="supplier_countries"]').val();
-                changeIndustry(industry, modal);
+                changeIndustry(industry, modal, source);
             }
             function changeFile(e, val) {
                 // if (val != '') {

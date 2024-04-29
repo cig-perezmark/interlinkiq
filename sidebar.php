@@ -37,7 +37,7 @@
                                         </thead>
                                         <tbody>
                                             <?php
-                                                if ($current_userEmployerID == 27) {
+                                                if ($current_userEmployerID == 27 OR $current_userEmployerID == 464) {
                                                     $selectMenu = mysqli_query( $conn,"SELECT
                                                         m.ID AS ID,
                                                         m.description AS description
@@ -56,7 +56,7 @@
                                                         ON ms.menu_ID = m.ID
 
                                                         WHERE deleted = 0
-                                                        AND ms.user_id = 27
+                                                        AND ms.user_id = $current_userEmployerID
 
                                                         ORDER BY m.description");
                                                 } else {
@@ -70,7 +70,7 @@
                                                         echo '<tr id="tr_'.$menu_ID.'">
                                                             <td>'.$menu_description.'</td>
                                                             <td class="text-center">';
-                                                                if ($current_userEmployerID == 27) {
+                                                                if ($current_userEmployerID == 27 OR $current_userEmployerID == 464) {
                                                                     echo '<a href="#modalView" class="btn btn-outline dark btn-sm btn-circle" data-toggle="modal" onclick="btnView('. $menu_ID .')">View</a>';
                                                                 } else {
                                                                     echo '<div class="btn-group btn-group-circle">

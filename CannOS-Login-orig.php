@@ -1,8 +1,8 @@
 <?php include_once 'database_iiq.php'; ?>
 <?php
-    // echo '<script>
-    //     window.location.href = "/login";
-    // </script>';
+    echo '<script>
+        window.location.href = "/login";
+    </script>';
 	if(isset($_COOKIE['ID'])) {
 		// $url='profile';
 		// $url=$_SERVER['HTTP_REFERER'];

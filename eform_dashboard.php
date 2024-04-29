@@ -130,19 +130,21 @@
                                                                     ?>
                                                                     <li class="mt-list-item">
                                                                         <div class="list-todo-icon bg-white">
-                                                                            <i class="fa fa-file"></i>
+                                                                            <?php if($_COOKIE['ID'] == 481): ?>
+                                                                                <a href="#" data-toggle="modal" data-target="#collab_modal"><i class="fa fa-file" ></i></a>
+                                                                            <?php endif; ?>
                                                                         </div>
                                                                         <div class="list-todo-item grey">
-                                                                            <a class="list-toggle-container font-white" data-toggle="collapse" href="#task-<?= $eforms_row['PK_id'] ?>" aria-expanded="false">
+                                                                            <a class="list-toggle-container font-white" data-toggle="collapse" href="#task-<?= $row['id'].'_'.$eforms_row['PK_id'] ?>" aria-expanded="false">
                                                                                 <div class="list-toggle done uppercase">
                                                                                     <div class="list-toggle-title bold"><?= $eforms_row['afl_form_name'] ?>	</div>
                                                                                     <!--<div class="badge badge-default pull-right bold">3</div>-->
                                                                                 </div>
                                                                             </a>
-                                                                            <div class="task-list panel-collapse collapse" id="task-<?= $eforms_row['PK_id'] ?>" aria-expanded="false">
+                                                                            <div class="task-list panel-collapse collapse" id="task-<?= $row['id'].'_'.$eforms_row['PK_id'] ?>" aria-expanded="false">
                                                                                 
                                                                                 <div class="task-content">
-                                                                                    <div id="chartdiv" style="width: 100%"></div>
+                                                                                    <div id="chartdiv_<?= $row['id'].'_'.$eforms_row['PK_id'] ?>" style="width: 100%"></div>
                                                                                 </div>
                                                                                 <div class="task-footer bg-grey">
                                                                                     <div class="row">
@@ -166,7 +168,67 @@
                                                                             </div>
                                                                         </div>
                                                                     </li>
-                                                                    
+                                                                    <style>
+                                                                        #chartdiv_<?= $row['id'].'_'.$eforms_row['PK_id'] ?> {
+                                                                          width: 100%;
+                                                                          height: 200px;
+                                                                          z-index:999;
+                                                                        }
+                                                                    </style>
+                                                                    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+                                                                    <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+                                                                    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+                                                                    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+                                                                    <script>
+                                                                        am5.ready(function() {
+            
+                                                                            // Create root element
+                                                                            // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+                                                                            var root = am5.Root.new("chartdiv_<?= $row['id'].'_'.$eforms_row['PK_id'] ?>");
+                                                                            
+                                                                            // Set themes
+                                                                            // https://www.amcharts.com/docs/v5/concepts/themes/
+                                                                            root.setThemes([
+                                                                              am5themes_Animated.new(root)
+                                                                            ]);
+                                                                            
+                                                                            // Create chart
+                                                                            // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
+                                                                            var chart = root.container.children.push(
+                                                                              am5percent.PieChart.new(root, {
+                                                                                endAngle: 270
+                                                                              })
+                                                                            );
+                                                                            
+                                                                            // Create series
+                                                                            // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
+                                                                            var series = chart.series.push(
+                                                                              am5percent.PieSeries.new(root, {
+                                                                                valueField: "value",
+                                                                                categoryField: "category",
+                                                                                endAngle: 270
+                                                                              })
+                                                                            );
+                                                                            
+                                                                            series.states.create("hidden", {
+                                                                              endAngle: -90
+                                                                            });
+                                                                            
+                                                                            // Set data
+                                                                            // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
+                                                                            series.data.setAll([
+                                                                              {
+                                                                              category: "Not Performed",
+                                                                              value: <?= $total_not_perform ?>
+                                                                            }, {
+                                                                              category: "Performed",
+                                                                              value: <?= $count ?>
+                                                                            }]);
+                                                                            
+                                                                            series.appear(1000, 100);
+                                                                            
+                                                                            }); // end am5.ready()
+                                                                    </script>
                                                                     <?php endforeach; ?>
                                                                 </ul>
                                                             </div>
@@ -291,6 +353,123 @@
                         </div>
                       </div>
                     </div>
+                    
+                    <form method="POST" id="kpi_reviewer_form">
+                        <!-- Modal -->
+                        <div class="modal fade" id="collab_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Add Collaborator</h5>
+                              </div>
+                              <div class="modal-body">
+                                  <div class="row">
+                                      <div class="col-md-12">
+                                            <label>Collaborator Type</label>
+                                            <select name="collab_type" class="form-control" id="select_collab_type">
+                                                <option>-- Please Select --</option>
+                                                <option value="performer">Performer</option>
+                                                <option value="reviewer">Reviewer</option>
+                                            </select>
+                                      </div>
+                                  </div>
+                                  <div id="performer_type" style="display:none;margin-top:15px">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label>Collaborator Name</label>
+                                                <select name="employee_id_performer" class="form-control" >
+                                                    <option>-- Please Select --</option>
+                                                    <?php
+                                                        $result_employee = mysqli_query($conn,"SELECT * FROM `tbl_hr_employee` WHERE user_id = ".$_COOKIE['user_company_id']." AND status != 0 AND type_id = 1");
+                                                        foreach($result_employee as $rows):
+                                                            $employee = mysqli_query($conn,"SELECT * FROM `tbl_user` WHERE employee_id = '" . $rows['ID'] . "' ");
+                                                            foreach($employee as $employee_rows):
+                                                    ?>
+                                                    <option value="<?= $employee_rows['employee_id'] ?>"><?= $employee_rows['first_name'] .' '.$employee_rows['last_name'] ?></option>
+                                                    <?php endforeach; endforeach;?>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-top:15px">
+                                            <div class="col-md-12">
+                                                <label>Frequency</label>
+                                                <select name="performer_frequency" class="form-control">
+                                                    <option value="Daily">Daily</option>
+                                                    <option value="Weekly">Weekly</option>
+                                                    <option value="Monthly">Monthly</option>
+                                                    <option value="Quarterly">Quarterly</option>
+                                                    <option value="Annualy">Annualy</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                  </div>
+                                <div id="reviewer_type" style="display:none;margin-top:15px">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <label>Collaborator Name</label>
+                                            <select name="employee_id" class="form-control">
+                                                <option>-- Please Select --</option>
+                                                <?php
+                                                    $result2 = mysqli_query($conn,"SELECT * FROM `tbl_hr_employee` WHERE user_id = ".$_COOKIE['user_company_id']." AND status != 0 AND type_id = 1");
+                                                    foreach($result2 as $rows):
+                                                        $employee2 = mysqli_query($conn,"SELECT * FROM `tbl_user` WHERE employee_id = '" . $rows['ID'] . "' ");
+                                                        foreach($employee2 as $employee_rows):
+                                                ?>
+                                                <option value="<?= $employee_rows['employee_id'] ?>"><?= $employee_rows['first_name'] .' '.$employee_rows['last_name'] ?></option>
+                                                <?php endforeach; endforeach;?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-top:15px">
+                                        <div class="col-md-12">
+                                            <label>Frequency</label>
+                                            <select name="frequency" class="form-control">
+                                                <option>-- Please Select --</option>
+                                                <option value="1">Daily</option>
+                                                <option value="2">Weekly</option>
+                                                <option value="3">Monthly</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-top:15px">
+                                        <div class="col-md-6">
+                                            <label>From</label>
+                                            <input name="time_from" type="time" class="form-control">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>To</label>
+                                            <input name="time_to" type="time" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-top:15px">
+                                        <div class="col-md-12">
+                                            <label>Reviewer Position</label>
+                                            <select name="reviewer" class="form-control">
+                                                <option>-- Please Select --</option>
+                                                <option value="1">Primary</option>
+                                                <option value="2">Subtitute</option>
+                                                <option value="3">Alternate</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-top:15px">
+                                        <div class="col-md-12">
+                                            <label>Action Items <span style="color:green;cursor:pointer;font-size:14px" id="add-action-item">+</span></label>
+                                            <div id="action-items-container">
+                                                <input type="text" class="form-control" name="action_items[]">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" id="save_kpi_reviewer">Update</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        </form>
 
         <?php include_once ('footer.php'); ?>
         <style>
@@ -317,6 +496,39 @@
 
         <script>
             $(document).ready(function(){
+                 // Get references to the divs
+                var performerDiv = $('#performer_type');
+                var reviewerDiv = $('#reviewer_type');
+                
+                // Add change event listener to the select element
+                $('#select_collab_type').change(function() {
+                    // Get the selected option value
+                    var selectedValue = $(this).val();
+                    
+                    // Hide both divs
+                    performerDiv.hide();
+                    reviewerDiv.hide();
+                    
+                    // Show the selected div based on the option value
+                    if (selectedValue === 'performer') {
+                        performerDiv.show();
+                    } else if (selectedValue === 'reviewer') {
+                        reviewerDiv.show();
+                    }
+                });
+            
+                // Get the container where action items will be appended
+                var actionItemsContainer = $('#action-items-container');
+                
+                // Add click event listener to the add button
+                $('#add-action-item').click(function() {
+                    // Create a new input element
+                    var newInput = $('<input type="text" class="form-control mt-2" name="action_items[]">');
+                    
+                    // Append the new input element to the container
+                    actionItemsContainer.append(newInput);
+                });
+        
                 $('#assign_modal').on('show.bs.modal', function (e) {
                     var id = $(e.relatedTarget).attr('data_id'); // Get the id from data-id attribute
                     $('#row_id_input').val(id); // Set the value of input field
@@ -343,54 +555,6 @@
               document.cookie = `enterprise_logo=${enterpriseLogo}; user_company_id=${id};  ${expires}; path=/`;
               document.cookie = `user_company_id=${id}; ${expires}; path=/`;
              }
-            am5.ready(function() {
-            
-            // Create root element
-            // https://www.amcharts.com/docs/v5/getting-started/#Root_element
-            var root = am5.Root.new("chartdiv");
-            
-            // Set themes
-            // https://www.amcharts.com/docs/v5/concepts/themes/
-            root.setThemes([
-              am5themes_Animated.new(root)
-            ]);
-            
-            // Create chart
-            // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
-            var chart = root.container.children.push(
-              am5percent.PieChart.new(root, {
-                endAngle: 270
-              })
-            );
-            
-            // Create series
-            // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
-            var series = chart.series.push(
-              am5percent.PieSeries.new(root, {
-                valueField: "value",
-                categoryField: "category",
-                endAngle: 270
-              })
-            );
-            
-            series.states.create("hidden", {
-              endAngle: -90
-            });
-            
-            // Set data
-            // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
-            series.data.setAll([
-              {
-              category: "Not Performed",
-              value: <?= $total_not_perform ?>
-            }, {
-              category: "Performed",
-              value: <?= $count ?>
-            }]);
-            
-            series.appear(1000, 100);
-            
-            }); // end am5.ready()
         </script>
     <script>
         am5.ready(function() {

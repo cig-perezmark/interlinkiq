@@ -21,7 +21,7 @@ $(() => {
   let product_selection;
   let so_open_datatable;
   let so_done_datatable;
-  // let prod_open_datatable;
+   let prod_open_datatable;
   // let prod_done_datatable;
 
   $(document).on("click", "#add_so_btn", function () {
@@ -48,7 +48,7 @@ $(() => {
       success: function (response) {
         product_selection = response;
         const div = response.map(
-          (item) => `<option value=${item.id}>${item.product_name}</option>`
+          (item) => `<option value=${item.ID}>${item.name}</option>`
         );
         div.unshift("<option value=''>Select Product</option>");
         $("#product_select").html(div);
@@ -193,14 +193,14 @@ $(() => {
   $(document).on("change", "#product_select", function () {
     const id = $(this).val();
     const elem = product_selection.filter((item) => {
-      return item.id == id;
+      return item.ID == id;
     })[0];
 
     if (!elem) return;
 
-    const div = `<tr id=${elem.id}>
-                  <th><input type=text class=form-control name=name value='${elem.product_name}' disabled></th>
-                  <th><input type=text class=form-control name=description value='${elem.product_description}' disabled></th>
+    const div = `<tr id=${elem.ID}>
+                  <th><input type=text class=form-control name=name value='${elem.name}' disabled></th>
+                  <th><input type=text class=form-control name=description value='${elem.description}' disabled></th>
                   <th><input type=text class="form-control text-center" name=quantity value=0></th>
                   <th><input type=text class="form-control text-center" name=uom value='${elem.uom}' readonly></th>
                   <th><input type=text class="form-control text-center" name=unit_price value='${elem.unit_price}' readonly></th>

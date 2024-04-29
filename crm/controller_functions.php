@@ -1325,7 +1325,6 @@
         } 
         if ($action == 'campaign') {
             $campaign_name = isset($_POST['name']) ? $_POST['name'] : '';
-            $frequency = isset($_POST['frequency']) ? $_POST['frequency'] : '';
             $subject = isset($_POST['subject']) ? $_POST['subject'] : '';
             $body = isset($_POST['body']) ? $_POST['body'] : '';
             $userID = isset($_COOKIE['ID']) ? $_COOKIE['ID'] : 0;
@@ -1347,15 +1346,14 @@
                         Campaign_body, 
                         Campaign_Status,
                         crm_ids, 
-                        Auto_Send_Status,  
-                        Frequency,
+                        Auto_Send_Status,
                         userID) 
-                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
             $stmt = mysqli_prepare($conn, $sql);
         
             if ($stmt) {
-                mysqli_stmt_bind_param($stmt, 'sssssiiiii',
+                mysqli_stmt_bind_param($stmt, 'sssssiiii',
                     $from,
                     $campaign_name,
                     $data['account_email'],
@@ -1364,7 +1362,6 @@
                     $campaign_status,
                     $data['crm_id'],
                     $send_status,
-                    $frequency,
                     $userID
                 );
                 if (!mysqli_stmt_execute($stmt)) {

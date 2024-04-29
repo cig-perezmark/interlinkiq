@@ -5,6 +5,7 @@ let newSupplierFiles = {
 let newSupplierFileCounter = 0;
 let newSupplierErrorDisplay = null;
 let supplierTable = null;
+let suppliersData = {};
 
 $('.asFileUpload').change(function() {
     const files = this.files;
@@ -115,18 +116,7 @@ $('#newSupplierForm').submit(function(e) {
         data: formData,
         success: function({data, message}) {
             if(data) {
-                const sa = !data.supplier_agreement ? 'No' : data.supplier_agreement.map((x) => `<a href="${x.path}">${x.name}</a>`).join(' ');
-                const cs = !data.compliance_statement ? 'No' : data.compliance_statement.map((x) => `<a href="${x.path}">${x.name}</a>`).join(' ');
-                
-                supplierTable.dt.row.add([
-                    data.name,
-                    data.food_imported.map((x) => x.name).join(', '),
-                    data.address,
-                    '',
-                    sa,
-                    cs,
-                    '',
-                ]).draw();
+                renderDTRow(data).draw()
             }
 
             $('#modalNewSupplier').modal('hide');
@@ -179,36 +169,41 @@ function initSuppliers() {
         success: function({data}) {
             if(data) {
                 supplierTable.dt.clear().draw();
-                data.forEach((d) => {
-                    const sa = !d.supplier_agreement || !d.supplier_agreement.length ? 'No' : `<a href="#" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View ${d.supplier_agreement.length > 1 ? `(${d.supplier_agreement.length})` : ''}</a>`;
-                    const cs = !d.compliance_statement ? 'No' : `<a href="#" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View </a>`;
-                    
-                    supplierTable.dt.row.add([
-                        d.name,
-                        d.food_imported.map((x) => x.name).join(', '),
-                        d.address,
-                        '',
-                        sa,
-                        cs,
-                        `
-                            <div class="d-flex center">
-                                <button title="Evaluation form" type="button" class="btn green-soft btn-circle btn-sm"> <i class="icon-margin-rightx fa fa-edit"></i> Form</button>
-                                <span>|</span>
-                                <button type="button" class="btn-link">View</button>
-                                <span>|</span>
-                                <button type="button" class="btn-link">Update</button>
-                            </div>
-                        `,
-                    ])
-                })
-
+                data.forEach((d) => renderDTRow(d));
                 supplierTable.dt.draw();
+                fancyBoxes();      
             }
         },
         error: function() {
             bootstrapGrowl('Error fetching records!');
         },
     });
+}
+
+function renderDTRow(d) {
+    // save to local storage
+    suppliersData[d.id] = d;
+    const no = `<span style="font-weight:600;">No</span>`;
+    const sa = !d.supplier_agreement || !d.supplier_agreement.length ? no : `<a href="javascript:void(0)" data-opensafile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View ${d.supplier_agreement.length > 1 ? `(${d.supplier_agreement.length})` : ''}</a>`;
+    const cs = !d.compliance_statement ?  no : `<a href="javascript:void(0)" data-opencsfile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View </a>`;
+    
+    supplierTable.dt.row.add([
+        d.name,
+        d.food_imported.map((x) => x.name).join(', '),
+        d.address,
+        '',
+        sa,
+        cs,
+        `
+            <div class="d-flex center">
+                <button title="Evaluation form" type="button" class="btn green-soft btn-circle btn-sm" data-openevalform=""> <i class="icon-margin-rightx fa fa-edit"></i> Form</button>
+                <span>|</span>
+                <button type="button" class="btn-link">Open</button>
+              
+            </div>
+        `,
+    ]);
+    return supplierTable.dt;
 }
 
 initMultiSelect($('.supplierdd'), {
@@ -278,4 +273,8 @@ $(document).ready(function() {
     ]
     })
     initSuppliers();
+
+    $('#tableSupplierList').on('click', '[data-openevalform]', function() {
+        $('#modalEvaluationForm').modal('show')
+    })
 });

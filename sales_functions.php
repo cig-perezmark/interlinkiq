@@ -2,6 +2,34 @@
 	error_reporting(E_ALL);
    include_once 'database_iiq.php';
 
+   function employerID($ID) {
+      global $conn;
+
+      $selectUser = mysqli_query( $conn,"SELECT * from tbl_user WHERE ID = $ID" );
+        $rowUser = mysqli_fetch_array($selectUser);
+        $current_userEmployeeID = $rowUser['employee_id'];
+
+        $current_userEmployerID = $ID;
+        if ($current_userEmployeeID > 0) {
+            // $selectEmployer = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND ID=$current_userEmployeeID" );
+            $selectEmployer = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID=$current_userEmployeeID" );
+            if ( mysqli_num_rows($selectEmployer) > 0 ) {
+                $rowEmployer = mysqli_fetch_array($selectEmployer);
+                $current_userEmployerID = $rowEmployer["user_id"];
+            }
+        }
+
+        return $current_userEmployerID;
+   }
+   if (!empty($_COOKIE['switchAccount'])) {
+      $portal_user = $_COOKIE['ID'];
+      $user_id = $_COOKIE['switchAccount'];
+   }
+   else {
+      $portal_user = $_COOKIE['ID'];
+      $user_id = employerID($portal_user);
+   }
+
    // AVAILABILITY 
    define("IN_STOCK","In Stock");
    define("NOT_AVAILABLE","Not Available");
@@ -13,7 +41,7 @@
    define("INGREDIENTS_ORDERED","Ingredients Ordered");
    define("CANCELLED","Cancelled");
 
-   $tbl_products = "temp_products";
+   $tbl_products = "tbl_products";
    $tbl_sales_order = "temp_sales_order";
    $tbl_sales_order_products = "temp_sales_order_products";
    $tbl_sales_order_products_raw_materials = "temp_sales_order_products_raw_materials";
@@ -38,7 +66,7 @@
    
    }else if(isset($_POST['get_product_selection'])){
 
-      $sql = "SELECT * FROM $tbl_products";
+      $sql = "SELECT * FROM $tbl_products WHERE deleted = 0 AND user_id = $user_id ORDER BY name";
       $query = $conn->query($sql);
       $result = $query->fetch_all(MYSQLI_ASSOC);
       echo json_encode($result);   

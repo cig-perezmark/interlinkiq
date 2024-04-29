@@ -25,11 +25,11 @@
         <!-- <hr> -->
         <form>
             <div class="row">
-                <?= create_el(9, "Product Name", '<input type="text" class="form-control" name="product_name" disabled>'); ?>
-                <?= create_el(3, "Product Code", '<input type="text" class="form-control" name="product_description" disabled>'); ?>
+                <?= create_el(9, "Product Name", '<input type="text" class="form-control" name="name" disabled>'); ?>
+                <?= create_el(3, "Product Code", '<input type="text" class="form-control" name="code" disabled>'); ?>
             </div>
             <div class="row">
-                <?= create_el(12, "Product Description", '<input type=text class=form-control name="product_description" disabled>'); ?>
+                <?= create_el(12, "Product Description", '<input type=text class=form-control name="description" disabled>'); ?>
             </div>
         </form>
         <div class="row">

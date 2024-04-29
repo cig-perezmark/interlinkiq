@@ -27,43 +27,43 @@
 
 <div class=container-fluid>
    <div class=row>
-      <div id="production_tab" class="tab-pane">      
-   <ul class="nav nav-tabs">
-      <li><a data-toggle="tab" href="#production_open">Open</a></li>
-      <li><a data-toggle="tab" href="#production_done">Done</a></li>
-   </ul>
-
-   <div class="tab-content">
-      <div id="production_open" class="tab-pane fade">
-         <div class="row">
-            <div class="col-lg-6">
-               <h3 class=product_title>Production Open</h3>
-            </div>
-         </div>
-         <div class="row mt12">
-            <div class="col-12">
-               <div class="panel panel-default">
-                  <div class="panel-body"><table class="main_table table table-bordered"></table></div>
-               </div> 
-            </div>
-         </div>
-      </div>
-      <div id="production_done" class="tab-pane fade">
-         <div class="row">
-            <div class="col-lg-6">
-               <h3 class=product_title>Production Done</h3>
-            </div>
-         </div>
-         <div class="row mt12">
-            <div class="col-12">
-               <div class="panel panel-default">
-                  <div class="panel-body"><table class="main_table table table-bordered"></table></div>
-               </div> 
-            </div>
-         </div>
-      </div>
-   </div>     
-</div>
+        <div id="production_tab" class="tab-pane">      
+           <ul class="nav nav-tabs">
+              <li><a data-toggle="tab" href="#production_open">Open</a></li>
+              <li><a data-toggle="tab" href="#production_done">Done</a></li>
+           </ul>
+        
+           <div class="tab-content">
+              <div id="production_open" class="tab-pane fade">
+                 <div class="row">
+                    <div class="col-lg-6">
+                       <h3 class=product_title>Production Open</h3>
+                    </div>
+                 </div>
+                 <div class="row mt12">
+                    <div class="col-12">
+                       <div class="panel panel-default">
+                          <div class="panel-body"><table class="main_table table table-bordered"></table></div>
+                       </div> 
+                    </div>
+                 </div>
+              </div>
+              <div id="production_done" class="tab-pane fade">
+                 <div class="row">
+                    <div class="col-lg-6">
+                       <h3 class=product_title>Production Done</h3>
+                    </div>
+                 </div>
+                 <div class="row mt12">
+                    <div class="col-12">
+                       <div class="panel panel-default">
+                          <div class="panel-body"><table class="main_table table table-bordered"></table></div>
+                       </div> 
+                    </div>
+                 </div>
+              </div>
+           </div>     
+        </div>
    </div>
 </div>
 <?php include_once("modals_production.php"); ?>            

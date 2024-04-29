@@ -21,24 +21,36 @@
 .table-scrollable .dataTable th>.btn-group {
     position: relative;
 }
+
 .btn-category {
     width: 100%;
-    font-weight: 600; 
-    display: flex; 
-    align-items: center; 
+    font-weight: 600;
+    display: flex;
+    align-items: center;
     justify-content: space-between;
     border-top: none;
     border-left: none;
     border-right: none;
 }
+
 .filtermenu {
     overflow-y: auto;
     overflow-x: hidden;
     max-height: 250px;
 }
-.filter .filtermenu, .filter [data-other] { display: none; }
-.filter:has(.showmenu:checked) .filtermenu { display: block; }
-.filter:has([value=others]:checked) [data-other] { display: block; }
+
+.filter .filtermenu,
+.filter [data-other] {
+    display: none;
+}
+
+.filter:has(.showmenu:checked) .filtermenu {
+    display: block;
+}
+
+.filter:has([value=others]:checked) [data-other] {
+    display: block;
+}
 </style>
 
 <div class="row">
@@ -473,7 +485,7 @@ $(document).ready(function() {
     // Emjay script ends here
 
     $.fn.modal.Constructor.prototype.enforceFocus = function() {};
-    
+
     $('#modalView, #modalViewFile').on('hide.bs.modal', function() {
         $(this).find('.modal-body').html('');
     })
@@ -506,8 +518,7 @@ $(document).ready(function() {
         ],
         pageLength: 15,
         pagingType: "bootstrap_full_number",
-        columnDefs: [
-            {
+        columnDefs: [{
                 orderable: false,
                 targets: [-1],
             },
@@ -550,8 +561,8 @@ $(document).ready(function() {
             }
         }, ],
     });
-    
-    
+
+
     recordDT.buttons().containers().appendTo('#customCon');
 
     fancyBoxes();
@@ -601,25 +612,25 @@ function btnView(id, freeaccess) {
 
 function viewLaboratoryRecords(el, id = null, freeaccess = null) {
     // reset search
-    recordDT.column(0).search('').draw(); 
+    recordDT.column(0).search('').draw();
     $('[data-labname]').removeClass('bold');
     $('#currentLabNameDisplay').text('')
     // search
     id && recordDT.column(0).search('search_me@' + id).draw();
-    if(el.dataset.labname) {
+    if (el.dataset.labname) {
         el.classList.add('bold');
         $('#currentLabNameDisplay').text(' - ' + el.dataset.labname)
     }
 }
 
 function otherFilterChangeEvt(el) {
-    if(!el.checked) {
+    if (!el.checked) {
         $(el).closest('.filter').find('[data-other]').val("");
     }
 }
 
 function createActionBtns(id) {
-    if(!freeAccess) {
+    if (!freeAccess) {
         return `
             <div class="btn-group btn-group-circle">
                 <a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit(${id})">Edit</a>
@@ -632,18 +643,18 @@ function createActionBtns(id) {
 }
 
 function fetchRecords(formData = null) {
-    if(isFetching) {
+    if (isFetching) {
         console.log('Already fetching...');
         return;
     }
-    
+
     isFetching = true;
     formData = formData || new FormData();
     formData.append('fetch_coa', true);
-    
+
     var l = Ladda.create(document.querySelector('.filterBtns'));
     l.start();
-    
+
     $.ajax({
         method: "POST",
         url: "coa-function.php",
@@ -651,9 +662,13 @@ function fetchRecords(formData = null) {
         processData: false,
         contentType: false,
         timeout: 6000000,
-        success: function({data, categories, analysis_types}) {
+        success: function({
+            data,
+            categories,
+            analysis_types
+        }) {
             recordDT.clear().draw();
-            if(data) {
+            if (data) {
                 data.forEach((d) => {
                     recordDT.row.add([
                         d.product_name,
@@ -663,16 +678,16 @@ function fetchRecords(formData = null) {
                     ]).draw();
                 })
             }
-            
+
             let dropdownSelect = $('#categorySelect');
             let listContainer = $('#categoriesFilter');
             listContainer.html('');
             dropdownSelect.html('');
             dropdownSelect.append('<option value="" selected disabled>Select category</option>');
-            
+
             categories && categories.forEach((c) => {
-                if(c.name.trim() == '') return;
-                
+                if (c.name.trim() == '') return;
+
                 // writing the filters
                 listContainer.append(`
                     <label class="mt-checkbox mt-checkbox-outline"> 
@@ -683,21 +698,21 @@ function fetchRecords(formData = null) {
                         <span></span>
                     </label>
                 `);
-                
+
                 // populating the dropdown
                 dropdownSelect.append(`<option value="${c.id}" ${c.name.trim() == '' ? 'disabled' : ''}>${c.name.trim() == '' ? '(empty)' : c.name}</option>`)
             });
             dropdownSelect.append('<option value="others">Others</option>');
-            
+
             listContainer = $('#analysisTypesFilter');
             listContainer.html('');
             dropdownSelect = $('#analysisTypeSelect');
             dropdownSelect.html('');
             dropdownSelect.append('<option value="" selected disabled>Select category</option>');
-            
+
             analysis_types && analysis_types.forEach((c) => {
-                if(c.name.trim() == '') return;
-                    
+                if (c.name.trim() == '') return;
+
                 listContainer.append(`
                     <label class="mt-checkbox mt-checkbox-outline"> 
                         <div style="width:100%; display:flex; justify-content:space-between;">
@@ -707,7 +722,7 @@ function fetchRecords(formData = null) {
                         <span></span>
                     </label>
                 `);
-                
+
                 // populating the dropdown
                 dropdownSelect.append(`<option value="${c.id}" ${c.name.trim() == '' ? 'disabled' : ''}>${c.name.trim() == '' ? '(empty)' : c.name}</option>`)
             });
@@ -721,7 +736,7 @@ function fetchRecords(formData = null) {
 }
 
 function catOnChange(el) {
-    if(el.value == 'others') {
+    if (el.value == 'others') {
         $(el).closest('.form-group').find('[name=other_category]').removeClass('hide').attr('required', true);
     } else {
         $(el).closest('.form-group').find('[name=other_category]').addClass('hide').val('').removeAttr('required');
@@ -729,7 +744,7 @@ function catOnChange(el) {
 }
 
 function toaOnchangeEvt(el) {
-    if(el.value == 'others') {
+    if (el.value == 'others') {
         $(el).closest('.form-group').find('[name=other_analysis_type]').removeClass('hide').attr('required', true);
     } else {
         $(el).closest('.form-group').find('[name=other_analysis_type]').addClass('hide').val('').removeAttr('required');
@@ -778,8 +793,8 @@ $(".modalNew").on('submit', (function(e) {
 
             bootstrapGrowl(msg);
         },
-         error: function() {
-            bootstrapGrowl('Error!');  
+        error: function() {
+            bootstrapGrowl('Error!');
         },
         complete: function() {
             l.stop();
@@ -822,15 +837,15 @@ $(".modalUpdate").on('submit', (function(e) {
                 fetchRecords();
                 $('#modalView').modal('hide');
                 e.target.reset();
-                
+
             } else {
                 msg = "Error!"
             }
-            
+
             bootstrapGrowl(msg);
         },
         error: function() {
-            bootstrapGrowl('Error!');  
+            bootstrapGrowl('Error!');
         },
         complete: function() {
             l.stop();
@@ -838,12 +853,12 @@ $(".modalUpdate").on('submit', (function(e) {
     });
 }));
 $('#filterRecords').on('submit', function(e) {
-   e.preventDefault();
-   const formData = new FormData(e.target);
-   fetchRecords(formData);
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    fetchRecords(formData);
 });
 $('#filterRecords').on('reset', function(e) {
-   fetchRecords();
+    fetchRecords();
 });
 </script>
 </body>

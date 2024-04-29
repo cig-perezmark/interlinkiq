@@ -32,6 +32,74 @@ textarea {
     padding: 0;
     inset: 5px 5px auto auto;
 }
+
+.checkFileUpload {
+    display: flex;
+    width: 100%;
+    gap: 2rem;
+}
+
+.checkFileUpload .input-group {
+    flex: 1 0 auto;
+}
+
+.checkFileUpload input.form-control {
+    height: inherit;
+}
+
+.mt-radio {
+    margin-bottom: 0;
+}
+
+hr {
+    margin: 0.5rem 0 !important;
+}
+
+.filesArrayDisplay {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 10px 0;
+}
+
+.fileArrayItem {
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.fileArrayName {
+    flex-grow: 1;
+    display: inline-flex;
+    gap: .5rem;
+}
+
+.fileArrayName a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 220px;
+}
+
+.removeFileButton {
+    border: none !important;
+}
+
+.mls-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    margin-top: 1rem;
+}
+
+.icon-margin-right {
+    margin-right: .5rem;
+}
+
+.d-flex.center {
+    align-items: center;
+    justify-content: center;
+}
 </style>
 
 <div class="row">
@@ -74,6 +142,7 @@ textarea {
     </div>
 </div>
 <?php include __DIR__ . '/../../footer.php'; ?>
+<script src="modules/js/utils.js"></script>
 <script>
 var baseUrl = 'fsvp?api&';
 </script>
@@ -81,5 +150,8 @@ var baseUrl = 'fsvp?api&';
 
 <script>
 // fetchSuppliers();
-$('#tableSupplierList').DataTable();
+// $('#tableSupplierList').DataTable();
+</script>
+
+<script>
 </script>

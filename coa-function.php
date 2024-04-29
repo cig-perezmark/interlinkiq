@@ -158,20 +158,20 @@ try {
 				}
 			}
 ?>
-            <input type="hidden" name="id" value="<?= $data['id'] ?>" />
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label class="control-label">Product/Item Name</label>
-                        <input type="type" class="form-control" name="product" placeholder="Enter product/item name" value="<?= $data['product_name'] ?>" required />
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label class="control-label">Category</label>
-                        <select class="form-control" name="category" onchange="catOnChange(this)" required>
-                            <option value="" disabled>Select category</option>
-                            <?php 
+<input type="hidden" name="id" value="<?= $data['id'] ?>" />
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label class="control-label">Product/Item Name</label>
+            <input type="type" class="form-control" name="product" placeholder="Enter product/item name" value="<?= $data['product_name'] ?>" required />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label class="control-label">Category</label>
+            <select class="form-control" name="category" onchange="catOnChange(this)" required>
+                <option value="" disabled>Select category</option>
+                <?php 
                                 $isPreset = false;
                                 foreach($categories ?? [] as $c) {
                                     $selected = '';
@@ -182,19 +182,19 @@ try {
                                     echo '<option value="'.$c['id'].'" '.$selected.' '. (empty($c['name']) ? 'disabled' : '' ) .'>'.(empty($c['name']) ? '(empty)' : $c['name']).'</option>'; 
                                 }
                             ?>
-                            <option value="others" <?= empty($isPreset) ? 'selected' : '' ?>>Others</option>
-                        </select>
-                        <input type="text" name="other_category" class="form-control margin-top-15 <?= !empty($isPreset) ? 'hide' : '' ?>" value="<?= empty($isPreset) ? $data['category_name'] : '' ?>"  placeholder="Others (please specify)" />
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label class="control-label">Type of Analysis</label>
-                        <select class="form-control" name="analysis_type" onchange="toaOnchangeEvt(this)" required>
-                            <option value="" disabled>Select category</option>
-                            <?php 
+                <option value="others" <?= empty($isPreset) ? 'selected' : '' ?>>Others</option>
+            </select>
+            <input type="text" name="other_category" class="form-control margin-top-15 <?= !empty($isPreset) ? 'hide' : '' ?>" value="<?= empty($isPreset) ? $data['category_name'] : '' ?>" placeholder="Others (please specify)" />
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label class="control-label">Type of Analysis</label>
+            <select class="form-control" name="analysis_type" onchange="toaOnchangeEvt(this)" required>
+                <option value="" disabled>Select category</option>
+                <?php 
                                 $isPreset = false;
                                 foreach($analysisTypes ?? [] as $c) {
                                     $selected = '';
@@ -205,102 +205,102 @@ try {
                                     echo '<option value="'.$c['id'].'" '.$selected.' '. (empty($c['name']) ? 'disabled' : '' ) .'>'.(empty($c['name']) ? '(empty)' : $c['name']).'</option>'; 
                                 }
                             ?>
-                            <option value="others" <?= empty($isPreset) ? 'selected' : '' ?>>Others</option>
-                        </select>
-                        <input type="text" name="other_analysis_type" class="form-control margin-top-15  <?= !empty($isPreset) ? 'hide' : '' ?>" value="<?= empty($isPreset) ? $data['analysis_type_name'] : '' ?>" placeholder="Others (please specify)" />
+                <option value="others" <?= empty($isPreset) ? 'selected' : '' ?>>Others</option>
+            </select>
+            <input type="text" name="other_analysis_type" class="form-control margin-top-15  <?= !empty($isPreset) ? 'hide' : '' ?>" value="<?= empty($isPreset) ? $data['analysis_type_name'] : '' ?>" placeholder="Others (please specify)" />
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label class="control-label">Laboratory Type</label>
+            <select class="form-control" name="laboratory_type" required>
+                <option value="" disabled>Select type</option>
+                <option value="in-house" <?= $data['laboratory_type'] == 'in-house' ? 'selected' : '' ?>>In house</option>
+                <option value="third-party" <?= $data['laboratory_type'] == 'third-party' ? 'selected' : '' ?>>Third Party</option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="control-label">Upload Document</label>
+            <select class="form-control <?= !empty($data_files) ? 'hide' : '' ?>" name="filetype" onchange="changeType(this)" required>
+                <option value="" selected disabled>Select option</option>
+                <option value="1">Manual Upload</option>
+                <option value="3">Google Drive URL</option>
+            </select>
+            <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
+            <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
+            <p class="<?= empty($data_files) ? 'hide' : '' ?>" style="margin: 0;"><a href="<?= $data_files ?>" data-src="<?= $data_files ?>" data-fancybox data-type="iframe" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="form-group">
+            <label class="ccontrol-label">Document Date</label>
+            <input class="form-control" type="date" name="file_date" value="<?= $data['files_date'] ?>" required />
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label>Frequency of Collection</label>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mt-radio-list">
+                        <label class="mt-radio mt-radio-outline"> Daily
+                            <input type="radio" value="0" name="frequency" <?= $data['frequency'] == '0' ? 'checked' : '' ?> />
+                            <span></span>
+                        </label>
+                        <label class="mt-radio mt-radio-outline"> Weekly
+                            <input type="radio" value="1" name="frequency" <?= $data['frequency'] == '1' ? 'checked' : '' ?> />
+                            <span></span>
+                        </label>
+                        <label class="mt-radio mt-radio-outline"> Monthly
+                            <input type="radio" value="2" name="frequency" <?= $data['frequency'] == '2' ? 'checked' : '' ?> />
+                            <span></span>
+                        </label>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="form-group">
-                        <label class="control-label">Laboratory Type</label>
-                        <select class="form-control" name="laboratory_type" required>
-                            <option value="" disabled>Select type</option>
-                            <option value="in-house" <?= $data['laboratory_type'] == 'in-house' ? 'selected' : '' ?>>In house</option>
-                            <option value="third-party" <?= $data['laboratory_type'] == 'third-party' ? 'selected' : '' ?>>Third Party</option>
-                        </select>
+                    <div class="mt-radio-list">
+                        <label class="mt-radio mt-radio-outline"> Quarterly
+                            <input type="radio" value="3" name="frequency" <?= $data['frequency'] == '3' ? 'checked' : '' ?> />
+                            <span></span>
+                        </label>
+                        <label class="mt-radio mt-radio-outline"> Biannual
+                            <input type="radio" value="4" name="frequency" <?= $data['frequency'] == '4' ? 'checked' : '' ?> />
+                            <span></span>
+                        </label>
+                        <label class="mt-radio mt-radio-outline"> Annually
+                            <input type="radio" value="5" name="frequency" <?= $data['frequency'] == '5' ? 'checked' : '' ?> />
+                            <span></span>
+                        </label>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label class="control-label">Upload Document</label>
-                        <select class="form-control <?= !empty($data_files) ? 'hide' : '' ?>" name="filetype" onchange="changeType(this)" required>
-                            <option value="" selected disabled>Select option</option>
-                            <option value="1">Manual Upload</option>
-                            <option value="3">Google Drive URL</option>
-                        </select>
-                        <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
-                        <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                        <p class="<?= empty($data_files) ? 'hide' : '' ?>" style="margin: 0;"><a href="<?= $data_files ?>" data-src="<?= $data_files ?>" data-fancybox data-type="iframe" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <div class="form-group">
-                        <label class="ccontrol-label">Document Date</label>
-                        <input class="form-control" type="date" name="file_date" value="<?= $data['files_date'] ?>" required />
-                    </div>
-                </div>
+            <label>Others</label>
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <input type="radio" value="6" name="frequency" <?= $data['frequency'] == '6' ? 'checked' : '' ?> />
+                    <span></span>
+                </span>
+                <input class="form-control " type="text" name="frequency_other" value="<?= $data['frequency_other'] ?>" placeholder="Please specify">
             </div>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Frequency of Collection</label>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mt-radio-list">
-                                    <label class="mt-radio mt-radio-outline"> Daily
-                                        <input type="radio" value="0" name="frequency" <?= $data['frequency'] == '0' ? 'checked' : '' ?> />
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-radio mt-radio-outline"> Weekly
-                                        <input type="radio" value="1" name="frequency" <?= $data['frequency'] == '1' ? 'checked' : '' ?> />
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-radio mt-radio-outline"> Monthly
-                                        <input type="radio" value="2" name="frequency" <?= $data['frequency'] == '2' ? 'checked' : '' ?> />
-                                        <span></span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mt-radio-list">
-                                    <label class="mt-radio mt-radio-outline"> Quarterly
-                                        <input type="radio" value="3" name="frequency" <?= $data['frequency'] == '3' ? 'checked' : '' ?> />
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-radio mt-radio-outline"> Biannual
-                                        <input type="radio" value="4" name="frequency" <?= $data['frequency'] == '4' ? 'checked' : '' ?> />
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-radio mt-radio-outline"> Annually
-                                        <input type="radio" value="5" name="frequency" <?= $data['frequency'] == '5' ? 'checked' : '' ?> />
-                                        <span></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <label>Others</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">
-                                <input type="radio" value="6" name="frequency" <?= $data['frequency'] == '6' ? 'checked' : '' ?> />
-                                <span></span>
-                            </span>
-                            <input class="form-control " type="text" name="frequency_other" value="<?= $data['frequency_other'] ?>" placeholder="Please specify">
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-8">
-                    <div class="form-group">
-                        <label class="control-label">Received By</label>
-                        <input class="form-control" type="text" name="received" required placeholder="Enter received by" value="<?= $data['received_by'] ?>" />
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label">Comment/Notes</label>
-                        <textarea class="form-control" name="notes" placeholder="Write some comment or notes here" required><?= $data['notes'] ?></textarea>
-                    </div>
-                </div>
-            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="form-group">
+            <label class="control-label">Received By</label>
+            <input class="form-control" type="text" name="received" required placeholder="Enter received by" value="<?= $data['received_by'] ?>" />
+        </div>
+        <div class="form-group">
+            <label class="control-label">Comment/Notes</label>
+            <textarea class="form-control" name="notes" placeholder="Write some comment or notes here" required><?= $data['notes'] ?></textarea>
+        </div>
+    </div>
+</div>
 <?php
         }
     }
@@ -476,47 +476,47 @@ try {
             
             
 ?>
-            <div class="row">
-                <div class="col-md-6"><?= $fileView ?></div>
-                <div class="col-md-6">
-                    <table class="table table-bordered table-hover">
-                        <tbody>
-                            <tr>
-                                <td>Product/Item Name</td>
-                                <td><strong><?= strip_tags($data['product_name']) ?></strong></td>
-                            </tr>
-                            <tr>
-                                <td>Category</td>
-                                <td><strong><?= strip_tags($data['category_name']) ?></strong></td>
-                            </tr>
-                            <tr>
-                                <td>Type of Analysis</td>
-                                <td><strong><?= strip_tags($data['analysis_type_name']) ?></strong></td>
-                            </tr>
-                            <tr>
-                                <td>Laboratory Type</td>
-                                <td><strong><?= match($data['laboratory_type']) { 'in-house' => 'In house', 'third-party' => 'Third Party', default => '' }; ?></strong></td>
-                            </tr>
-                            <tr>
-                                <td>Frequency of Collection</td>
-                                <td><strong><?= $frequency ?></strong></td>
-                            </tr>
-                            <tr>
-                                <td>Document Date</td>
-                                <td><strong><?= strip_tags($data['files_date']) ?></strong></td>
-                            </tr>
-                            <tr>
-                                <td>Received By</td>
-                                <td><strong><?= strip_tags($data['received_by']) ?></strong></td>
-                            </tr>
-                            <tr>
-                                <td>Notes</td>
-                                <td><strong><?= strip_tags($data['notes']) ?></strong></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+<div class="row">
+    <div class="col-md-6"><?= $fileView ?></div>
+    <div class="col-md-6">
+        <table class="table table-bordered table-hover">
+            <tbody>
+                <tr>
+                    <td>Product/Item Name</td>
+                    <td><strong><?= strip_tags($data['product_name']) ?></strong></td>
+                </tr>
+                <tr>
+                    <td>Category</td>
+                    <td><strong><?= strip_tags($data['category_name']) ?></strong></td>
+                </tr>
+                <tr>
+                    <td>Type of Analysis</td>
+                    <td><strong><?= strip_tags($data['analysis_type_name']) ?></strong></td>
+                </tr>
+                <tr>
+                    <td>Laboratory Type</td>
+                    <td><strong><?= match($data['laboratory_type']) { 'in-house' => 'In house', 'third-party' => 'Third Party', default => '' }; ?></strong></td>
+                </tr>
+                <tr>
+                    <td>Frequency of Collection</td>
+                    <td><strong><?= $frequency ?></strong></td>
+                </tr>
+                <tr>
+                    <td>Document Date</td>
+                    <td><strong><?= strip_tags($data['files_date']) ?></strong></td>
+                </tr>
+                <tr>
+                    <td>Received By</td>
+                    <td><strong><?= strip_tags($data['received_by']) ?></strong></td>
+                </tr>
+                <tr>
+                    <td>Notes</td>
+                    <td><strong><?= strip_tags($data['notes']) ?></strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 <?php
         }
     }

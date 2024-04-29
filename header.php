@@ -1833,79 +1833,79 @@ License: You must have a valid license purchased only from themeforest(the above
                                 }
                             ?>
 
-                        <li class="nav-item">
-                            <a href="javascript:;" class="nav-link nav-toggle">
-                                <i class="icon-support" style="color: #ffff00;"></i>
-                                <span class="title" style="color: #ffff00; font-weight: bold;">Risk Assessment</span>
-                                <span class="selected"></span>
-                                <span class="arrow"></span>
-                            </a>
-                            <ul class="sub-menu">
-                                <li class="nav-item">
-                                    <a href="survey" class="nav-link " target="_blank" onclick="myfunction(<?= $current_userEmployerID; ?>)">
-                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                        <span class="title">Qualification Survey</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="e-forms/Sanitary_controller/Sanitary/gmp_food_v" class="nav-link " target="_blank" onclick="set_newCookie(<?= $switch_user_id; ?>)">
-                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                        <span class="title">Food and Beverage</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                    <li class="nav-item">
+                        <a href="javascript:;" class="nav-link nav-toggle">
+                            <i class="icon-support" style="color: #ffff00;"></i>
+                            <span class="title" style="color: #ffff00; font-weight: bold;">Risk Assessment</span>
+                            <span class="selected"></span>
+                            <span class="arrow"></span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li class="nav-item">
+                                <a href="survey" class="nav-link " target="_blank" onclick="myfunction(<?= $current_userEmployerID; ?>)">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">Qualification Survey</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="e-forms/Sanitary_controller/Sanitary/gmp_food_v" class="nav-link " target="_blank" onclick="set_newCookie(<?= $switch_user_id; ?>)">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">Food and Beverage</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
 
-                        <?php } ?>
+                    <?php } ?>
 
-                        <li class="nav-item <?php echo $site === "enterprise-info" ? "active open start" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('enterprise-info', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                            <a href="javascript:;" class="nav-link nav-toggle">
-                                <i class="icon-layers"></i>
-                                <span class="title">Enterprise</span>
-                                <span class="selected"></span>
-                                <span class="arrow <?php echo $site === "enterprise-info" ? "open" : ""; ?>"></span>
-                            </a>
-                            <ul class="sub-menu">
-                                <li class="nav-item <?php echo $site === "enterprise-info" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('enterprise-info', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                    <a href="enterprise-info" class="nav-link ">
-                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                        <span class="title">Organization </span>
-                                    </a>
-                                </li>
+                    <li class="nav-item <?php echo $site === "enterprise-info" ? "active open start" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('enterprise-info', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                        <a href="javascript:;" class="nav-link nav-toggle">
+                            <i class="icon-layers"></i>
+                            <span class="title">Enterprise</span>
+                            <span class="selected"></span>
+                            <span class="arrow <?php echo $site === "enterprise-info" ? "open" : ""; ?>"></span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li class="nav-item <?php echo $site === "enterprise-info" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('enterprise-info', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                <a href="enterprise-info" class="nav-link ">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">Organization </span>
+                                </a>
+                            </li>
 
-                                <?php if($user_id==19 OR $user_id==1 OR $user_id==481 OR $user_id==963): ?>
-                                <li class="nav-item <?php echo $site === "insurance_info" ? "active " : ""; 
+                            <?php if($user_id==19 OR $user_id==1 OR $user_id==481 OR $user_id==963): ?>
+                            <li class="nav-item <?php echo $site === "insurance_info" ? "active " : ""; 
                                  //if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('insurance_info', $current_userEmployerID, $current_userEmployeeID); } 
                                  ?>
                                  ">
-                                    <!--<a href="insurance_info" class="nav-link ">-->
-                                    <a href="risk_and_liabilities" class="nav-link ">
-                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                        <span class="title">Risk And Liabilities</span>
-                                    </a>
-                                </li>
-                                <?php endif; ?>
-                                <li class="nav-item hide hidden <?php echo $site === "enterprise-info-subscription" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('enterprise-info-subscription', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                    <a href="#" class="nav-link ">
-                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                        <span class="title">Subscription </span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                                <!--<a href="insurance_info" class="nav-link ">-->
+                                <a href="risk_and_liabilities" class="nav-link ">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">Risk And Liabilities</span>
+                                </a>
+                            </li>
+                            <?php endif; ?>
+                            <li class="nav-item hide hidden <?php echo $site === "enterprise-info-subscription" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('enterprise-info-subscription', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                <a href="#" class="nav-link ">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">Subscription </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
 
-                        <?php
+                    <?php
                             // if ($current_userEmployeeID == 0 OR isset($_COOKIE['switchAccount'])) {
                             $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseOperation = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
-                        <li class="nav-item hide <?php echo $site === "facility-info" ? "active open start" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('enterprise-info-subscription', $current_userEmployerID, $current_userEmployeeID); } ?>" id="menuFacility">
-                            <a href="javascript:;" class="nav-link nav-toggle">
-                                <i class="icon-layers"></i>
-                                <span class="title">Facility</span>
-                                <span class="selected"></span>
-                                <span class="arrow <?php echo $site === "facility-info" ? "open" : ""; ?>"></span>
-                            </a>
-                            <ul class="sub-menu">
-                                <?php
+                    <li class="nav-item hide <?php echo $site === "facility-info" ? "active open start" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('enterprise-info-subscription', $current_userEmployerID, $current_userEmployeeID); } ?>" id="menuFacility">
+                        <a href="javascript:;" class="nav-link nav-toggle">
+                            <i class="icon-layers"></i>
+                            <span class="title">Facility</span>
+                            <span class="selected"></span>
+                            <span class="arrow <?php echo $site === "facility-info" ? "open" : ""; ?>"></span>
+                        </a>
+                        <ul class="sub-menu">
+                            <?php
                                         $queryFacility = mysqli_query( $conn,"SELECT * FROM tblFacilityDetails where users_entities = $switch_user_id " );
                                         if ( mysqli_num_rows($queryFacility) > 0 ) {
                                             while($rowFacility = mysqli_fetch_array($queryFacility)) {
@@ -1918,142 +1918,142 @@ License: You must have a valid license purchased only from themeforest(the above
                                             }
                                         }
                                     ?>
-                            </ul>
-                        </li>
-                        <?php 
+                        </ul>
+                    </li>
+                    <?php 
                             }
                             // }
                         ?>
 
-                        <?php $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseEmployees = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
-                        <li class="nav-item hide <?php echo $site === "employee" || $site === "job-description" || $site === "trainings" || $site === "department" || $site === "quiz" || $site === "training-requirements" ? "active open start" : ""; ?>" id="menuHR">
-                            <a href="javascript:;" class="nav-link nav-toggle">
-                                <i class="icon-user-female"></i>
-                                <span class="title">Human Resources</span>
-                                <span class="selected"></span>
-                                <span class="arrow <?php echo $site === "employee" || $site === "job-description" || $site === "trainings" || $site === "department" || $site === "quiz" || $site === "training-requirements" ? "open" : ""; ?>"></span>
-                            </a>
-                            <ul class="sub-menu">
-                                <li class="nav-item <?php echo $site === "department" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('department', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                    <a href="department" class="nav-link ">
-                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                        <span class="title">Department</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item <?php echo $site === "job-description" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('job-description', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                    <a href="job-description" class="nav-link ">
-                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                        <span class="title">Job Description</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item <?php echo $site === "employee" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('employee', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                    <a href="employee" class="nav-link ">
-                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                        <span class="title">Employee Roster</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item <?php echo $site === "trainings" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('trainings', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                    <a href="trainings" class="nav-link ">
-                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                        <span class="title">Trainings</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item <?php echo $site === "quiz" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('quiz', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                    <a href="quiz" class="nav-link ">
-                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                        <span class="title">Comprehension Quiz</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item <?php echo $site === "training-requirements" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('training-requirements', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                    <a href="training-requirements" class="nav-link ">
-                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                        <span class="title">Training Requirements</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <?php } ?>
+                    <?php $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseEmployees = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
+                    <li class="nav-item hide <?php echo $site === "employee" || $site === "job-description" || $site === "trainings" || $site === "department" || $site === "quiz" || $site === "training-requirements" ? "active open start" : ""; ?>" id="menuHR">
+                        <a href="javascript:;" class="nav-link nav-toggle">
+                            <i class="icon-user-female"></i>
+                            <span class="title">Human Resources</span>
+                            <span class="selected"></span>
+                            <span class="arrow <?php echo $site === "employee" || $site === "job-description" || $site === "trainings" || $site === "department" || $site === "quiz" || $site === "training-requirements" ? "open" : ""; ?>"></span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li class="nav-item <?php echo $site === "department" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('department', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                <a href="department" class="nav-link ">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">Department</span>
+                                </a>
+                            </li>
+                            <li class="nav-item <?php echo $site === "job-description" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('job-description', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                <a href="job-description" class="nav-link ">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">Job Description</span>
+                                </a>
+                            </li>
+                            <li class="nav-item <?php echo $site === "employee" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('employee', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                <a href="employee" class="nav-link ">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">Employee Roster</span>
+                                </a>
+                            </li>
+                            <li class="nav-item <?php echo $site === "trainings" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('trainings', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                <a href="trainings" class="nav-link ">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">Trainings</span>
+                                </a>
+                            </li>
+                            <li class="nav-item <?php echo $site === "quiz" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('quiz', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                <a href="quiz" class="nav-link ">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">Comprehension Quiz</span>
+                                </a>
+                            </li>
+                            <li class="nav-item <?php echo $site === "training-requirements" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('training-requirements', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                                <a href="training-requirements" class="nav-link ">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">Training Requirements</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <?php } ?>
 
-                        <?php $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseProducts = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
-                        <li class="nav-item <?php echo $site === "products" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('products', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                            <a href="products" class="nav-link">
-                                <i class="icon-social-dropbox"></i>
-                                <span class="title">Products</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <?php } ?>
+                    <?php $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseProducts = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
+                    <li class="nav-item <?php echo $site === "products" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('products', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                        <a href="products" class="nav-link">
+                            <i class="icon-social-dropbox"></i>
+                            <span class="title">Products</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <?php } ?>
 
-                        <?php if($current_userEmployerID == 256 || $current_userEmployerID == 254 || $user_id == 1 || $user_id == 2 || $user_id == 19 || $user_id == 117 || $user_id == 348 || $user_id == 163): ?>
-                        <li class="nav-item <?php echo $site === "services" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('services', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                            <a href="services" class="nav-link">
-                                <i class="icon-list"></i>
-                                <span class="title">Services</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <?php endif ?>
+                    <?php if($current_userEmployerID == 256 || $current_userEmployerID == 254 || $user_id == 1 || $user_id == 2 || $user_id == 19 || $user_id == 117 || $user_id == 348 || $user_id == 163): ?>
+                    <li class="nav-item <?php echo $site === "services" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('services', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                        <a href="services" class="nav-link">
+                            <i class="icon-list"></i>
+                            <span class="title">Services</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <?php endif ?>
 
-                        <li class="nav-item <?php echo $site === "customer" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('customer', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                            <a href="customer" class="nav-link">
-                                <i class="icon-users"></i>
-                                <span class="title">Customer</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item <?php echo $site === "supplier" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('supplier', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                            <a href="supplier" class="nav-link">
-                                <i class="icon-basket-loaded"></i>
-                                <span class="title">Supplier</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
+                    <li class="nav-item <?php echo $site === "customer" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('customer', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                        <a href="customer" class="nav-link">
+                            <i class="icon-users"></i>
+                            <span class="title">Customer</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item <?php echo $site === "supplier" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('supplier', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                        <a href="supplier" class="nav-link">
+                            <i class="icon-basket-loaded"></i>
+                            <span class="title">Supplier</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
 
-                        <?php if($switch_user_id == 34) { ?>
-                        <li class="nav-item <?php echo $site === "Directory_Dashboard" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('Directory_Dashboard', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                            <a href="Directory_Dashboard" class="nav-link">
-                                <i class="icon-layers"></i>
-                                <span class="title">Directory</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <?php } ?>
+                    <?php if($switch_user_id == 34) { ?>
+                    <li class="nav-item <?php echo $site === "Directory_Dashboard" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('Directory_Dashboard', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                        <a href="Directory_Dashboard" class="nav-link">
+                            <i class="icon-layers"></i>
+                            <span class="title">Directory</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <?php } ?>
 
-                        <?php if($current_client == 0 AND ($switch_user_id == 1 OR $switch_user_id == 34 OR $switch_user_id == 163)) { ?>
-                        <li class="nav-item <?php echo $site === "listing" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('listing', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                            <a href="listing" class="nav-link">
-                                <i class="icon-briefcase"></i>
-                                <span class="title">Listing</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <?php } ?>
+                    <?php if($current_client == 0 AND ($switch_user_id == 1 OR $switch_user_id == 34 OR $switch_user_id == 163)) { ?>
+                    <li class="nav-item <?php echo $site === "listing" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('listing', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                        <a href="listing" class="nav-link">
+                            <i class="icon-briefcase"></i>
+                            <span class="title">Listing</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <?php } ?>
 
-                        <?php if($current_userEmployeeID == 0 OR $current_userID == 95 OR $current_userID == 42 OR $current_userID == 88) { ?>
-                        <li class="nav-item <?php echo $site === "job-ticket" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('job-ticket', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                            <a href="job-ticket" class="nav-link">
-                                <i class="icon-earphones-alt"></i>
-                                <span class="title">Job Ticket Tracker</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <?php } else { ?>
-                        <li class="nav-item <?php echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "active open start" : ""; ?>">
-                            <a href="javascript:;" class="nav-link nav-toggle">
-                                <i class="icon-earphones"></i>
-                                <span class="title">Job Ticket Tracker</span>
-                                <span class="selected"></span>
-                                <span class="arrow <?php echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "open" : ""; ?>"></span>
-                            </a>
-                            <ul class="sub-menu">
-                                <li class="nav-item <?php echo $site === "job-ticket-request" ? "active" : ""; ?>">
-                                    <a href="job-ticket-request" class="nav-link ">
-                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                        <span class="title">Request</span>
-                                        <span class="selected"></span>
-                                    </a>
-                                </li>
-                                <?php
+                    <?php if($current_userEmployeeID == 0 OR $current_userID == 95 OR $current_userID == 42 OR $current_userID == 88) { ?>
+                    <li class="nav-item <?php echo $site === "job-ticket" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('job-ticket', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                        <a href="job-ticket" class="nav-link">
+                            <i class="icon-earphones-alt"></i>
+                            <span class="title">Job Ticket Tracker</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <?php } else { ?>
+                    <li class="nav-item <?php echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "active open start" : ""; ?>">
+                        <a href="javascript:;" class="nav-link nav-toggle">
+                            <i class="icon-earphones"></i>
+                            <span class="title">Job Ticket Tracker</span>
+                            <span class="selected"></span>
+                            <span class="arrow <?php echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "open" : ""; ?>"></span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li class="nav-item <?php echo $site === "job-ticket-request" ? "active" : ""; ?>">
+                                <a href="job-ticket-request" class="nav-link ">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">Request</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                            <?php
                                         echo '<li class="nav-item '; $site === "job-ticket-service" ? "active" : ""; echo '">
                                             <a href="job-ticket-service" class="nav-link ">
                                                 <i class="fa fa-minus" style="font-size: 10px;"></i>
@@ -2063,12 +2063,12 @@ License: You must have a valid license purchased only from themeforest(the above
                                         </li>';
                                     ?>
 
-                            </ul>
-                        </li>
-                        <?php } ?>
+                        </ul>
+                    </li>
+                    <?php } ?>
 
 
-                        <?php
+                    <?php
                             // Sidebar Menu
                             function sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID) {
                                 global $conn;
@@ -2315,105 +2315,105 @@ License: You must have a valid license purchased only from themeforest(the above
                                 </li>';
                             }
                         ?>
-                        <?php if($_COOKIE['ID'] == 481 OR $switch_user_id == 163 OR $_COOKIE['ID'] == 1167 OR $_COOKIE['ID'] == 117  ): ?>
-                        <li class="nav-item">
-                            <a href="glp_dashboard" class="nav-link" disabled>
-                                <i class="icon-graph"></i>
-                                <span class="title">GLP</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="eform_dashboard" class="nav-link" disabled>
-                                <i class="icon-graph"></i>
-                                <span class="title">E-Form Dashboard</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <?php endif; ?>
-                        <?php if($_COOKIE['ID'] == 481 OR $switch_user_id == 163 OR $_COOKIE['ID'] == 1167 OR $_COOKIE['ID'] == 117 ): ?>
-                        <li class="nav-item">
-                            <a href="equipment_register" class="nav-link" disabled>
-                                <i class="icon-graph"></i>
-                                <span class="title">Equipment Calibration</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <?php endif; ?>
-                        <li class="nav-item hide <?php echo $site === "form-owned" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('form-owned', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                            <a href="form-owned" class="nav-link" disabled>
-                                <i class="icon-graph"></i>
-                                <span class="title">E-Forms</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item hide <?php echo $site === "archive" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('archive', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                            <a href="archive" class="nav-link">
-                                <i class="icon-folder-alt"></i>
-                                <span class="title">Archive</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item hide <?php echo $site === "ffva" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('ffva', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                            <a href="ffva" class="nav-link">
-                                <i class="icon-doc"></i>
-                                <span class="title">FFVA Module</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
+                    <?php if($_COOKIE['ID'] == 481 OR $switch_user_id == 163 OR $_COOKIE['ID'] == 1167 OR $_COOKIE['ID'] == 117  ): ?>
+                    <li class="nav-item">
+                        <a href="glp_dashboard" class="nav-link" disabled>
+                            <i class="icon-graph"></i>
+                            <span class="title">GLP</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="eform_dashboard" class="nav-link" disabled>
+                            <i class="icon-graph"></i>
+                            <span class="title">E-Form Dashboard</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+                    <?php if($_COOKIE['ID'] == 481 OR $switch_user_id == 163 OR $_COOKIE['ID'] == 1167 OR $_COOKIE['ID'] == 117 ): ?>
+                    <li class="nav-item">
+                        <a href="equipment_register" class="nav-link" disabled>
+                            <i class="icon-graph"></i>
+                            <span class="title">Equipment Calibration</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+                    <li class="nav-item hide <?php echo $site === "form-owned" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('form-owned', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                        <a href="form-owned" class="nav-link" disabled>
+                            <i class="icon-graph"></i>
+                            <span class="title">E-Forms</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item hide <?php echo $site === "archive" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('archive', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                        <a href="archive" class="nav-link">
+                            <i class="icon-folder-alt"></i>
+                            <span class="title">Archive</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item hide <?php echo $site === "ffva" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('ffva', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                        <a href="ffva" class="nav-link">
+                            <i class="icon-doc"></i>
+                            <span class="title">FFVA Module</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
 
-                        <!--247 - Scandic-->
-                        <!--324 - Tom Sonchai-->
-                        <!--34 -Consultare-->
-                        <!--19 - Quincy-->
+                    <!--247 - Scandic-->
+                    <!--324 - Tom Sonchai-->
+                    <!--34 -Consultare-->
+                    <!--19 - Quincy-->
 
-                        <?php if($current_userEmployerID == 247 || $current_userEmployerID == 34 || $user_id == 34): ?>
-                        <li class="nav-item hide <?php echo $site === "meeting_minutes" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('meeting_minutes', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                            <a href="meeting_minutes.php" class="nav-link">
-                                <i class="icon-clock"></i>
-                                <span class="title">Meeting Minutes</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <?php  endif;?>
-                        <?php if($current_userEmployerID == 254 || $current_userEmployerID == 247 || $current_userEmployerID == 34 || $user_id == 34 || $user_id == 1 || $user_id == 185 || $user_id == 19 || $user_id == 155 || $user_id == 308 || $user_id == 189 || $user_id == 337): ?>
-                        <li class="nav-item hide <?php echo $site === "MyPro" ? "active" : ""; ?>">
-                            <a href="MyPro" class="nav-link">
-                                <i class="icon-earphones-alt"></i>
-                                <span class="title">My Pro.</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <?php  endif;?>
-                        <?php if($current_client == 1 || $current_userID == 42 || $current_userID == 693 || $current_userID == 88 || $current_userID == 667 || $current_userID == 748 || $current_userID == 149 || $current_userID == 943 || $current_userID == 153 || $current_userID == 41 || $current_userID == 154 || $current_userID == 43 || $current_userID == 387 || $current_userID == 54 || $current_userID == 55): ?>
-                        <li class="nav-item <?php echo $site === "MyPro" ? "active" : ""; ?>">
-                            <a href="test_MyPro" class="nav-link">
-                                <i class="icon-earphones-alt"></i>
-                                <span class="title">My Pro (New)</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <?php  endif;?>
-                        <?php if($current_client == 1): ?>
-                        <li class="nav-item <?php echo $site === "EMP" ? "active" : ""; ?>">
-                            <a href="emp_bgl_dashboard_development" class="nav-link" style="color:yellow">
-                                <i class="icon-earphones-alt"></i>
-                                <span class="title">EMP</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <?php  endif;?>
-                        <?php if($current_userEmployerID == 247 || $current_userEmployerID == 324 || $switch_user_id == 34 || $current_userEmployeeID == 34): ?>
-                        <li class="nav-item hide <?php echo $site === "Customer_Relationship_Management" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('Customer_Relationship_Management', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                            <a href="Customer_Relationship_Management" class="nav-link">
-                                <i class="icon-users"></i>
-                                <span class="title">Contacts Relationship Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <?php endif ?>
-                        <?php if($user_id == 185 || $user_id == 34 || $user_id == 42 || $user_id == 35 || $user_id == 55 || $user_id == 54 || $user_id == 41 || $user_id == 32 || $user_id == 109): ?>
-                        <li class="nav-item hide <?php echo $site === "Internal_Audit" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { // echo menu('Internal_Audit', $current_userEmployerID, $current_userEmployeeID); 
+                    <?php if($current_userEmployerID == 247 || $current_userEmployerID == 34 || $user_id == 34): ?>
+                    <li class="nav-item hide <?php echo $site === "meeting_minutes" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('meeting_minutes', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                        <a href="meeting_minutes.php" class="nav-link">
+                            <i class="icon-clock"></i>
+                            <span class="title">Meeting Minutes</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <?php  endif;?>
+                    <?php if($current_userEmployerID == 254 || $current_userEmployerID == 247 || $current_userEmployerID == 34 || $user_id == 34 || $user_id == 1 || $user_id == 185 || $user_id == 19 || $user_id == 155 || $user_id == 308 || $user_id == 189 || $user_id == 337): ?>
+                    <li class="nav-item hide <?php echo $site === "MyPro" ? "active" : ""; ?>">
+                        <a href="MyPro" class="nav-link">
+                            <i class="icon-earphones-alt"></i>
+                            <span class="title">My Pro.</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <?php  endif;?>
+                    <?php if($current_client == 1 || $current_userID == 42 || $current_userID == 693 || $current_userID == 88 || $current_userID == 667 || $current_userID == 748 || $current_userID == 149 || $current_userID == 943 || $current_userID == 153 || $current_userID == 41 || $current_userID == 154 || $current_userID == 43 || $current_userID == 387 || $current_userID == 54 || $current_userID == 55): ?>
+                    <li class="nav-item <?php echo $site === "MyPro" ? "active" : ""; ?>">
+                        <a href="test_MyPro" class="nav-link">
+                            <i class="icon-earphones-alt"></i>
+                            <span class="title">My Pro (New)</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <?php  endif;?>
+                    <?php if($current_client == 1): ?>
+                    <li class="nav-item <?php echo $site === "EMP" ? "active" : ""; ?>">
+                        <a href="emp_bgl_dashboard_development" class="nav-link" style="color:yellow">
+                            <i class="icon-earphones-alt"></i>
+                            <span class="title">EMP</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <?php  endif;?>
+                    <?php if($current_userEmployerID == 247 || $current_userEmployerID == 324 || $switch_user_id == 34 || $current_userEmployeeID == 34): ?>
+                    <li class="nav-item hide <?php echo $site === "Customer_Relationship_Management" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('Customer_Relationship_Management', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                        <a href="Customer_Relationship_Management" class="nav-link">
+                            <i class="icon-users"></i>
+                            <span class="title">Contacts Relationship Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <?php endif ?>
+                    <?php if($user_id == 185 || $user_id == 34 || $user_id == 42 || $user_id == 35 || $user_id == 55 || $user_id == 54 || $user_id == 41 || $user_id == 32 || $user_id == 109): ?>
+                    <li class="nav-item hide <?php echo $site === "Internal_Audit" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { // echo menu('Internal_Audit', $current_userEmployerID, $current_userEmployeeID); 
                             } ?>">
                         <a href="Internal_Audit" class="nav-link">
                             <i class="icon-layers"></i>
@@ -2581,172 +2581,172 @@ License: You must have a valid license purchased only from themeforest(the above
                     <?php if($user_id == 185 || $user_id == 34 || $user_id == 42 || $user_id == 35 || $user_id== 88 || $user_id== 95 || $user_id== 228 || $user_id== 208): ?>
                     <li class="nav-item <?php echo $site === "Task_Tracker" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { // echo menu('Task_Tracker', $current_userEmployerID, $current_userEmployeeID); 
                             } ?>">
-                                    <a href="Task_Tracker" class="nav-link">
-                                        <i class="icon-earphones-alt"></i>
-                                        <span class="title">Task Tracker</span>
-                                        <span class="selected"></span>
-                                    </a>
-                                </li>
-                                <?php endif; ?>
+                        <a href="Task_Tracker" class="nav-link">
+                            <i class="icon-earphones-alt"></i>
+                            <span class="title">Task Tracker</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
 
-                                <?php if($user_id == 34): ?>
-                                <li class="nav-item <?php echo $site === "pto_request" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('pto_requestt', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                                    <a href="pto_request" class="nav-link">
-                                        <i class="icon-social-dropbox"></i>
-                                        <span class="title">PTO Request</span>
-                                        <span class="selected"></span>
-                                    </a>
-                                </li>
-                                <?php endif ?>
+                    <?php if($user_id == 34): ?>
+                    <li class="nav-item <?php echo $site === "pto_request" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('pto_requestt', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                        <a href="pto_request" class="nav-link">
+                            <i class="icon-social-dropbox"></i>
+                            <span class="title">PTO Request</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <?php endif ?>
 
-                                <?php
+                    <?php
                             $query = mysqli_query( $conn,"SELECT * FROM tbl_GetApps left join tbl_appstore on app_id = apps_entities where appType = 'IA' and users_entities = $switch_user_id " );
                             if ( mysqli_num_rows($query) > 0 ) {                             
                                 while($row = mysqli_fetch_array($query)) {
                         ?>
-                                <li class="nav-item hide">
-                                    <a href="<?php echo $row['app_url']; ?>" target="_blank" class="nav-link">
-                                        <i class="icon-layers"></i>
-                                        <span class="title"><?php echo $row['application_name']; ?></span>
-                                        <span class="selected"></span>
-                                    </a>
-                                </li>
-                                <?php }} ?>
-                            </ul>
-                            <!-- END SIDEBAR MENU -->
-                </div>
-                <!-- END SIDEBAR -->
+                    <li class="nav-item hide">
+                        <a href="<?php echo $row['app_url']; ?>" target="_blank" class="nav-link">
+                            <i class="icon-layers"></i>
+                            <span class="title"><?php echo $row['application_name']; ?></span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <?php }} ?>
+                </ul>
+                <!-- END SIDEBAR MENU -->
             </div>
             <!-- END SIDEBAR -->
-            <!-- BEGIN CONTENT -->
-            <div class="page-content-wrapper">
-                <!-- BEGIN CONTENT BODY -->
-                <div class="page-content">
-                    <!-- BEGIN PAGE HEADER-->
-                    <!-- BEGIN THEME PANEL -->
-                    <div class="theme-panel hide">
-                        <div class="toggler tooltips" data-container="body" data-placement="left" data-html="true" data-original-title="Click to open advance theme customizer panel">
-                            <i class="icon-settings"></i>
+        </div>
+        <!-- END SIDEBAR -->
+        <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <!-- BEGIN CONTENT BODY -->
+            <div class="page-content">
+                <!-- BEGIN PAGE HEADER-->
+                <!-- BEGIN THEME PANEL -->
+                <div class="theme-panel hide">
+                    <div class="toggler tooltips" data-container="body" data-placement="left" data-html="true" data-original-title="Click to open advance theme customizer panel">
+                        <i class="icon-settings"></i>
+                    </div>
+                    <div class="toggler-close">
+                        <i class="icon-close"></i>
+                    </div>
+                    <div class="theme-options">
+                        <div class="theme-option theme-colors clearfix">
+                            <span>THEME COLOR</span>
+                            <ul>
+                                <li class="color-default current tooltips" data-style="default" data-container="body" data-original-title="Default"> </li>
+                                <li class="color-grey tooltips" data-style="grey" data-container="body" data-original-title="Grey"> </li>
+                                <li class="color-blue tooltips" data-style="blue" data-container="body" data-original-title="Blue"> </li>
+                                <li class="color-dark tooltips" data-style="dark" data-container="body" data-original-title="Dark"> </li>
+                                <li class="color-light tooltips" data-style="light" data-container="body" data-original-title="Light"> </li>
+                            </ul>
                         </div>
-                        <div class="toggler-close">
-                            <i class="icon-close"></i>
+                        <div class="theme-option">
+                            <span> Theme Style </span>
+                            <select class="layout-style-option form-control input-small">
+                                <option value="square" selected="selected">Square corners</option>
+                                <option value="rounded">Rounded corners</option>
+                            </select>
                         </div>
-                        <div class="theme-options">
-                            <div class="theme-option theme-colors clearfix">
-                                <span>THEME COLOR</span>
-                                <ul>
-                                    <li class="color-default current tooltips" data-style="default" data-container="body" data-original-title="Default"> </li>
-                                    <li class="color-grey tooltips" data-style="grey" data-container="body" data-original-title="Grey"> </li>
-                                    <li class="color-blue tooltips" data-style="blue" data-container="body" data-original-title="Blue"> </li>
-                                    <li class="color-dark tooltips" data-style="dark" data-container="body" data-original-title="Dark"> </li>
-                                    <li class="color-light tooltips" data-style="light" data-container="body" data-original-title="Light"> </li>
-                                </ul>
-                            </div>
-                            <div class="theme-option">
-                                <span> Theme Style </span>
-                                <select class="layout-style-option form-control input-small">
-                                    <option value="square" selected="selected">Square corners</option>
-                                    <option value="rounded">Rounded corners</option>
-                                </select>
-                            </div>
-                            <div class="theme-option">
-                                <span> Layout </span>
-                                <select class="layout-option form-control input-small">
-                                    <option value="fluid" selected="selected">Fluid</option>
-                                    <option value="boxed">Boxed</option>
-                                </select>
-                            </div>
-                            <div class="theme-option">
-                                <span> Header </span>
-                                <select class="page-header-option form-control input-small">
-                                    <option value="fixed" selected="selected">Fixed</option>
-                                    <option value="default">Default</option>
-                                </select>
-                            </div>
-                            <div class="theme-option">
-                                <span> Top Dropdown</span>
-                                <select class="page-header-top-dropdown-style-option form-control input-small">
-                                    <option value="light" selected="selected">Light</option>
-                                    <option value="dark">Dark</option>
-                                </select>
-                            </div>
-                            <div class="theme-option">
-                                <span> Sidebar Mode</span>
-                                <select class="sidebar-option form-control input-small">
-                                    <option value="fixed">Fixed</option>
-                                    <option value="default" selected="selected">Default</option>
-                                </select>
-                            </div>
-                            <div class="theme-option">
-                                <span> Sidebar Style</span>
-                                <select class="sidebar-style-option form-control input-small">
-                                    <option value="default" selected="selected">Default</option>
-                                    <option value="compact">Compact</option>
-                                </select>
-                            </div>
-                            <div class="theme-option">
-                                <span> Sidebar Menu </span>
-                                <select class="sidebar-menu-option form-control input-small">
-                                    <option value="accordion" selected="selected">Accordion</option>
-                                    <option value="hover">Hover</option>
-                                </select>
-                            </div>
-                            <div class="theme-option">
-                                <span> Sidebar Position </span>
-                                <select class="sidebar-pos-option form-control input-small">
-                                    <option value="left" selected="selected">Left</option>
-                                    <option value="right">Right</option>
-                                </select>
-                            </div>
-                            <div class="theme-option">
-                                <span> Footer </span>
-                                <select class="page-footer-option form-control input-small">
-                                    <option value="fixed">Fixed</option>
-                                    <option value="default" selected="selected">Default</option>
-                                </select>
-                            </div>
+                        <div class="theme-option">
+                            <span> Layout </span>
+                            <select class="layout-option form-control input-small">
+                                <option value="fluid" selected="selected">Fluid</option>
+                                <option value="boxed">Boxed</option>
+                            </select>
+                        </div>
+                        <div class="theme-option">
+                            <span> Header </span>
+                            <select class="page-header-option form-control input-small">
+                                <option value="fixed" selected="selected">Fixed</option>
+                                <option value="default">Default</option>
+                            </select>
+                        </div>
+                        <div class="theme-option">
+                            <span> Top Dropdown</span>
+                            <select class="page-header-top-dropdown-style-option form-control input-small">
+                                <option value="light" selected="selected">Light</option>
+                                <option value="dark">Dark</option>
+                            </select>
+                        </div>
+                        <div class="theme-option">
+                            <span> Sidebar Mode</span>
+                            <select class="sidebar-option form-control input-small">
+                                <option value="fixed">Fixed</option>
+                                <option value="default" selected="selected">Default</option>
+                            </select>
+                        </div>
+                        <div class="theme-option">
+                            <span> Sidebar Style</span>
+                            <select class="sidebar-style-option form-control input-small">
+                                <option value="default" selected="selected">Default</option>
+                                <option value="compact">Compact</option>
+                            </select>
+                        </div>
+                        <div class="theme-option">
+                            <span> Sidebar Menu </span>
+                            <select class="sidebar-menu-option form-control input-small">
+                                <option value="accordion" selected="selected">Accordion</option>
+                                <option value="hover">Hover</option>
+                            </select>
+                        </div>
+                        <div class="theme-option">
+                            <span> Sidebar Position </span>
+                            <select class="sidebar-pos-option form-control input-small">
+                                <option value="left" selected="selected">Left</option>
+                                <option value="right">Right</option>
+                            </select>
+                        </div>
+                        <div class="theme-option">
+                            <span> Footer </span>
+                            <select class="page-footer-option form-control input-small">
+                                <option value="fixed">Fixed</option>
+                                <option value="default" selected="selected">Default</option>
+                            </select>
                         </div>
                     </div>
-                    <!-- END THEME PANEL -->
+                </div>
+                <!-- END THEME PANEL -->
 
-                    <h1 class="page-title"><?php echo $title; ?></h1>
-                    <!--<input type='text' id='secondsRemaining' value='' readonly>-->
-                    <!--<a href='#' class='60Left btn btn-default'>60 Secs Left</a>-->
-                    <!--<a href='#' class='0Left btn btn-default'>Timed Out</a>-->
-                    <!--<a href='#' class='1440Left btn btn-default'>Reset</a>-->
-                    <div class="page-bar">
-                        <ul class="page-breadcrumb">
-                            <li>
-                                <i class="icon-home"></i>
-                                <a href="<?php 
+                <h1 class="page-title"><?php echo $title; ?></h1>
+                <!--<input type='text' id='secondsRemaining' value='' readonly>-->
+                <!--<a href='#' class='60Left btn btn-default'>60 Secs Left</a>-->
+                <!--<a href='#' class='0Left btn btn-default'>Timed Out</a>-->
+                <!--<a href='#' class='1440Left btn btn-default'>Reset</a>-->
+                <div class="page-bar">
+                    <ul class="page-breadcrumb">
+                        <li>
+                            <i class="icon-home"></i>
+                            <a href="<?php 
                                     $uri = $_SERVER['REQUEST_URI'];
                                     $baseURI = explode('?', $uri)[0];
                                     echo $baseURI;
                                 ?>">Home</a>
-                                <i class="fa fa-angle-right"></i>
-                            </li>
-                            <?php echo $breadcrumbs; ?>
-                        </ul>
-                        <div class="page-toolbar <?php if ($site == '404' OR $site == '505' OR $site == 'dashboard') { echo 'hide'; } else if (!isset($_COOKIE['switchAccount'])) { if ($current_userEmployeeID > '0' AND $current_userAdminAccess == 0 AND $current_userID <> 532) { echo 'hide'; } } ?>">
-                            <!--<div class="page-toolbar <?php //if ($site == '404' OR $site == '505' OR $site == 'dashboard' OR $current_userEmployeeID > '0') { echo 'hide'; } ?>">-->
-                            <a href="#modalCollab" data-toggle="modal" class="btn btn-success btn-fit-height">
-                                Collaborator <i class="icon-settings"></i>
-                            </a>
-                        </div>
+                            <i class="fa fa-angle-right"></i>
+                        </li>
+                        <?php echo $breadcrumbs; ?>
+                    </ul>
+                    <div class="page-toolbar <?php if ($site == '404' OR $site == '505' OR $site == 'dashboard') { echo 'hide'; } else if (!isset($_COOKIE['switchAccount'])) { if ($current_userEmployeeID > '0' AND $current_userAdminAccess == 0 AND $current_userID <> 532) { echo 'hide'; } } ?>">
+                        <!--<div class="page-toolbar <?php //if ($site == '404' OR $site == '505' OR $site == 'dashboard' OR $current_userEmployeeID > '0') { echo 'hide'; } ?>">-->
+                        <a href="#modalCollab" data-toggle="modal" class="btn btn-success btn-fit-height">
+                            Collaborator <i class="icon-settings"></i>
+                        </a>
                     </div>
-                    <!-- END PAGE HEADER-->
+                </div>
+                <!-- END PAGE HEADER-->
 
-                    <!--Emjay Modal Start-->
-                    <form action="controller.php" method="POST">
-                        <div class="modal fade" id="request_pto" tabindex="-1" role="dialog" aria-hidden="true">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <form method="post" enctype="multipart/form-data" class="modalForm">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                            <h4 class="modal-title">Request PTO
-                                                (Remaining Leave:
-                                                <?php 
+                <!--Emjay Modal Start-->
+                <form action="controller.php" method="POST">
+                    <div class="modal fade" id="request_pto" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <form method="post" enctype="multipart/form-data" class="modalForm">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title">Request PTO
+                                            (Remaining Leave:
+                                            <?php 
                                                     $selectOtherEmployee = mysqli_query( $conn,"SELECT * FROM others_employee_details WHERE employee_id = $current_userEmployeeID" );
                                         			if ( mysqli_num_rows($selectOtherEmployee) > 0 ) {
                                         				$rowOtherEmployee = mysqli_fetch_array($selectOtherEmployee);
@@ -2755,142 +2755,142 @@ License: You must have a valid license purchased only from themeforest(the above
                                                         echo '<input type="hidden" name="remaining_leave" value="'.$total_leave.'" >';
                                         			}
                                                 ?>
-                                                )
-                                            </h4>
-                                        </div>
+                                            )
+                                        </h4>
+                                    </div>
 
-                                        <div class="modal-body">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <label>Type of Leave</label>
-                                                    <select class="form-control" name="leave_type">
-                                                        <?php
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Type of Leave</label>
+                                                <select class="form-control" name="leave_type">
+                                                    <?php
                                                     $sql = "SELECT * FROM leave_types WHERE leave_id != 0" ; 
                                                     $result = mysqli_query ($conn, $sql);
                                                     if($result):
                                                     foreach($result as $rows):
                                                     ?>
-                                                        <option value="<?= $rows['leave_id'] ?>"><?= $rows['leave_name'] ?></option>
-                                                        <?php endforeach; endif ?>
-                                                    </select>
-                                                </div>
-                                                <!--<div class="col-md-6">-->
-                                                <!--    <label>Leave Count</label>-->
-                                                <!--    <input type="text" name="leave_count" class="form-control">-->
-                                                <input type="hidden" name="payeeid" value="<?= $user_id ?>">
-                                                <!--</div>-->
+                                                    <option value="<?= $rows['leave_id'] ?>"><?= $rows['leave_name'] ?></option>
+                                                    <?php endforeach; endif ?>
+                                                </select>
                                             </div>
-                                            <div class="row" style="margin-top:15px">
-                                                <div class="col-md-6">
-                                                    <label>Start Date</label>
-                                                    <input type="date" id="fromDate" name="start_date" class="form-control">
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label>End Date</label>
-                                                    <input type="date" id="toDate" name="end_date" class="form-control">
-                                                </div>
+                                            <!--<div class="col-md-6">-->
+                                            <!--    <label>Leave Count</label>-->
+                                            <!--    <input type="text" name="leave_count" class="form-control">-->
+                                            <input type="hidden" name="payeeid" value="<?= $user_id ?>">
+                                            <!--</div>-->
+                                        </div>
+                                        <div class="row" style="margin-top:15px">
+                                            <div class="col-md-6">
+                                                <label>Start Date</label>
+                                                <input type="date" id="fromDate" name="start_date" class="form-control">
                                             </div>
-                                            <div class="row" style="margin-top:15px">
-                                                <div class="col-md-6">
-                                                    <label>Note</label>
-                                                    <textarea class="form-control" name="note" row="3"></textarea>
-                                                </div>
-                                                <?php if($_COOKIE['ID'] == 108): ?>
-                                                <div class="col-md-6">
-                                                    <label>Attachment(Optional)</label>
-                                                    <input type="file" class="form-control">
-                                                </div>
-                                                <?php endif; ?>
+                                            <div class="col-md-6">
+                                                <label>End Date</label>
+                                                <input type="date" id="toDate" name="end_date" class="form-control">
                                             </div>
                                         </div>
-                                        <div class="modal-footer">
-                                            <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
-                                            <button type="submit" class="btn btn-success" name="save_pto"><span id="save_pto">Save</span></button>
+                                        <div class="row" style="margin-top:15px">
+                                            <div class="col-md-6">
+                                                <label>Note</label>
+                                                <textarea class="form-control" name="note" row="3"></textarea>
+                                            </div>
+                                            <?php if($_COOKIE['ID'] == 108): ?>
+                                            <div class="col-md-6">
+                                                <label>Attachment(Optional)</label>
+                                                <input type="file" class="form-control">
+                                            </div>
+                                            <?php endif; ?>
                                         </div>
-                                    </form>
-                                </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
+                                        <button type="submit" class="btn btn-success" name="save_pto"><span id="save_pto">Save</span></button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="modal fade" id="generate_pto" tabindex="-1" role="dialog" aria-hidden="true">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <form action="controller_extract.php" method="post" enctype="multipart/form-data" class="modalForm">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        </div>
-
-                                        <div class="modal-body">
-                                            <div class="row" style="margin-top:15px">
-                                                <div class="col-md-6">
-                                                    <label>Start Date</label>
-                                                    <input type="date" name="start_date" class="form-control">
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <label>End Date</label>
-                                                    <input type="date" name="end_date" class="form-control">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
-                                            <button type="submit" class="btn btn-success" name="generate_pto"><span id="save_pto">Generate</span></button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Export Modal -->
-                        <div class="modal fade" id="modal_export" tabindex="-1" role="dialog" aria-labelledby="exportModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
+                    <div class="modal fade" id="generate_pto" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <form action="controller_extract.php" method="post" enctype="multipart/form-data" class="modalForm">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exportModalLabel">Export Data</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                                     </div>
+
                                     <div class="modal-body">
-                                        <form method="POST" action="export.php">
-                                            <div class="form-group">
-                                                <label for="fromDate">From Date</label>
-                                                <input type="date" class="form-control" id="fromDate" name="fromDate" required>
+                                        <div class="row" style="margin-top:15px">
+                                            <div class="col-md-6">
+                                                <label>Start Date</label>
+                                                <input type="date" name="start_date" class="form-control">
                                             </div>
-                                            <div class="form-group">
-                                                <label for="toDate">To Date</label>
-                                                <input type="date" class="form-control" id="toDate" name="toDate" required>
+                                            <div class="col-md-6">
+                                                <label>End Date</label>
+                                                <input type="date" name="end_date" class="form-control">
                                             </div>
-                                            <button type="submit" class="btn btn-primary">Export</button>
-                                        </form>
+                                        </div>
                                     </div>
+                                    <div class="modal-footer">
+                                        <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
+                                        <button type="submit" class="btn btn-success" name="generate_pto"><span id="save_pto">Generate</span></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Export Modal -->
+                    <div class="modal fade" id="modal_export" tabindex="-1" role="dialog" aria-labelledby="exportModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exportModalLabel">Export Data</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="POST" action="export.php">
+                                        <div class="form-group">
+                                            <label for="fromDate">From Date</label>
+                                            <input type="date" class="form-control" id="fromDate" name="fromDate" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="toDate">To Date</label>
+                                            <input type="date" class="form-control" id="toDate" name="toDate" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Export</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!--Emjay Modal End-->
+                    <!--Emjay Modal End-->
 
-                        <script>
-                        function myfunction(id) {
-                            const d = new Date();
-                            d.setTime(d.getTime() + (1 * 24 * 60 * 60 * 1000));
-                            let expires = "expires=" + d.toUTCString();
-                            document.cookie = 'user_company_id' + "=" + id + ";" + expires + ";path=/";
+                    <script>
+                    function myfunction(id) {
+                        const d = new Date();
+                        d.setTime(d.getTime() + (1 * 24 * 60 * 60 * 1000));
+                        let expires = "expires=" + d.toUTCString();
+                        document.cookie = 'user_company_id' + "=" + id + ";" + expires + ";path=/";
+                    }
+                    const fromDateInput = document.getElementById('fromDate');
+                    const toDateInput = document.getElementById('toDate');
+
+                    fromDateInput.addEventListener('change', function() {
+                        // Get the selected date from the first input
+                        const fromDateValue = new Date(this.value);
+
+                        // Set the minimum selectable date for the second input
+                        toDateInput.min = this.value;
+
+                        // Check if the selected date is valid in the second input
+                        const toDateValue = new Date(toDateInput.value);
+                        if (fromDateValue > toDateValue) {
+                            toDateInput.value = this.value; // Reset the second input if the selected date is less than the first input
                         }
-                        const fromDateInput = document.getElementById('fromDate');
-                        const toDateInput = document.getElementById('toDate');
-
-                        fromDateInput.addEventListener('change', function() {
-                            // Get the selected date from the first input
-                            const fromDateValue = new Date(this.value);
-
-                            // Set the minimum selectable date for the second input
-                            toDateInput.min = this.value;
-
-                            // Check if the selected date is valid in the second input
-                            const toDateValue = new Date(toDateInput.value);
-                            if (fromDateValue > toDateValue) {
-                                toDateInput.value = this.value; // Reset the second input if the selected date is less than the first input
-                            }
-                        });
-                        </script>
+                    });
+                    </script>

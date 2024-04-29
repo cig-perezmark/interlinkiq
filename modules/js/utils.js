@@ -58,6 +58,7 @@ function initDataTable(el, options = {}) {
                     className: "dt-right",
                 },
             ],
+            order: [],
             ...options,
             // dom: 'lBfrtip',
             // buttons: [{

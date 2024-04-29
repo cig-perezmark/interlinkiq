@@ -10,7 +10,7 @@
     <a href="#" class="btn btn-default">History</a>
 </div>
 
-<table class="table table-bordered table-hover" id="tableSupplierList">
+<table class="table table-bordered table-hover" id="tableFSVPTeamRoster">
     <thead>
         <tr>
             <th>Name</th>
@@ -19,7 +19,7 @@
             <th>Email</th>
             <th>Primary</th>
             <th>Alternate</th>
-            <th data-nosort="true">Actions</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody></tbody>
@@ -56,7 +56,7 @@
 
 <div class="modal fade in" id="modalAddMember" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
-        <form class="modal-content" role="form" id="newSupplierForm">
+        <form class="modal-content" role="form" id="newMemberForm">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                 <h4 class="modal-title">Add member</h4>
@@ -65,10 +65,61 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="">Search employee</label>
-                            <select name="" id="employeeSearchDd" class="form-control">
+                            <label for="employeeSearchDd">Search employee</label>
+                            <select name="employee" id="employeeSearchDd" class="form-control">
                                 <option value="" selected disabled>Type employee name</option>
                             </select>
+                        </div>
+                    </div>
+                    <h5 class="col-md-12 margin-bottom-20"><strong>Employee Details:</strong></h5>
+                    <div class="col-md-3">
+                        <img src="https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image" alt="User" data-avatar>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="form-group row">
+                            <label class="col-form-label col-md-4">Name</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" data-name readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-form-label col-md-4">Title / Position</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" data-title readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-form-label col-md-4">Email Address</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" data-email readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-form-label col-md-4">Phone</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" data-phone readonly>
+                            </div>
+                        </div>
+                        <div class="form-group row margin-top-30">
+                            <label class="col-form-label col-md-4 bold">Member Type?</label>
+                            <div class="col-md-8">
+                                <div class="mt-radio-list" style="padding: 0;">
+                                    <label class="mt-radio not-this mt-radio-outline"> Primary
+                                        <input type="radio" value="primary" name="member_type" checked>
+                                        <span></span>
+                                    </label>
+                                    <label class="mt-radio not-this mt-radio-outline"> Alternate
+                                        <input type="radio" value="alternate" name="member_type">
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="alert alert-danger alert-dismissable" id="modalNewMemberError" style="display: none;">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+                            <strong>Error!</strong> <span id="modalNewMemberErrorMessage"></span>
                         </div>
                     </div>
                 </div>

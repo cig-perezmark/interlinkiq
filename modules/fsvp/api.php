@@ -3,6 +3,7 @@
 include_once __DIR__ ."/utils.php";
 // include_once __DIR__ ."/../../alt-setup/setup.php";
 
+// note: no filter for foreign suppliers yet
 // fetching supplier for dropdown
 if(isset($_GET["getProductsBySupplier"]) && !empty($_GET["getProductsBySupplier"])) {
     $materials = $conn->select("tbl_supplier", "material", ["ID" => $_GET["getProductsBySupplier"]])->fetchAssoc();
@@ -25,15 +26,13 @@ if(isset($_GET["newSupplierToList"])) {
         
         $supplierId = $_POST["supplier"];
         $supplierData = $conn->select("tbl_supplier", "address, name", ["ID" => $supplierId])->fetchAssoc(function ($d) {
-            $arr = explode(" | ", $d["address"]);
-            $add = [];
-            array_push($add, htmlentities(trim($arr[1])));
-            array_push($add, htmlentities(trim($arr[2])));
-            array_push($add, htmlentities(trim($arr[3])));
-            array_push($add, trim($arr[0]));
-            array_push($add, trim($arr[4]));
+            [$a1, $a2, $a3, $a4, $a5] = preg_split("/\||,/", $d["address"]);
+            $address = implode(', ', array_filter(array_map(function ($a) {
+                return htmlentities(trim($a));
+            }, [ $a2, $a3, $a4, $a1, $a5 ]), function($a) { return !empty($a); }));
+            
             return [
-                'address' => implode(", ", $add),
+                'address' => $address,
                 'name' => $d['name']
             ];
         });
@@ -106,4 +105,56 @@ if(isset($_GET['suppliersByUser'])) {
     send_response([
         'data' => getSupplierList($conn, $user_id),
     ]);
+}
+
+if(isset($_POST['search-employee'])) {
+    try {
+        $myEmployees = [];
+        $search = mysqli_real_escape_string($conn, $_POST['search-employee']);
+        // $result = $conn->query("SELECT 
+        //     p.ID AS id,
+        //     p.image,
+        //     p.code,
+        //     p.name,
+        //     p.description,
+        //     c.name AS category
+        //     FROM tbl_products AS p
+        //     LEFT JOIN tbl_products_category AS c ON p.category = c.ID
+        //     WHERE p.user_id=$user_id ANzD (p.code like '%$search%' OR p.name like '%$search%') AND p.deleted=0 AND NOT JSON_CONTAINS(CAST('{$_POST['products']}' AS JSON), CAST(p.ID AS CHAR))");
+
+        // store result ids
+        $employeeIds = [];
+
+        $result = $conn->execute("SELECT CONCAT(TRIM(first_name), ' ', TRIM(last_name)) AS name, ID as id, email, job_description_id 
+            FROM tbl_hr_employee WHERE user_id = ? AND (first_name LIKE '%$search%' OR last_name LIKE '%$search%') AND status = 1 
+            ORDER BY first_name ASC
+        ", $user_id)->fetchAll(function($d) use($employeeIds) {
+            $employeeIds[] = $d["id"];
+            return $d;
+        });
+
+        $userAvatars = [];
+        if(count($employeeIds) > 0) {
+            $employeeIds = implode(',', $employeeIds);
+            $conn->execute("SELECT ui.avatar, u.employee_id AS id FROM tbl_user_info ui JOIN tbl_user u ON u.ID = ui.user_id WHERE u.employee_id IN (?)", $employeeIds)
+                ->fetchAll(function($data) use(&$userAvatars) {
+                    $userAvatars[$data['id']] = $data["avatar"];
+                    return $data;
+                });
+        } 
+
+        $roster = [];
+        foreach($result as $row) {
+            $row['avatar'] = $userAvatars[$row['id']] ?? 'https://via.placeholder.com/150x150/EFEFEF/AAAAAA.png?text=no+image';
+            $roster[] = $row;
+        }
+        
+        return send_response([
+            'results' => $roster,
+            'count' => count($roster),
+        ]);
+    } catch(Throwable $e) {
+        http_response_code(500);
+        return $e->getMessage();
+    }
 }

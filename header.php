@@ -2313,6 +2313,13 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <span class="selected"></span>
                                     </a>
                                 </li>';
+                                echo '<li class="nav-item ">
+                                    <a href="fsvp" class="nav-link">
+                                        <i class="icon-graph"></i>
+                                        <span class="title">FSVP</span>
+                                        <span class="selected"></span>
+                                    </a>
+                                </li>';
                             }
                         ?>
                     <?php if($_COOKIE['ID'] == 481 OR $switch_user_id == 163 OR $_COOKIE['ID'] == 1167 OR $_COOKIE['ID'] == 117  ): ?>

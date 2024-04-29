@@ -36,8 +36,16 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="">Find importer </label>
-                            <select name="" id="" class="form-control"></select>
+                            <label for="">Importer </label>
+                            <select name="" id="importerdd" class="form-control">
+                                <option value="" selected disabled>Select importer</option>
+                                <?php
+                                    $suppliers = getSuppliersByUser($conn, $switch_user_id);
+                                    foreach($suppliers as $supplier) {
+                                        echo '<option value="'.$supplier['id'].'">'.$supplier['name'].'</option>';
+                                    }
+                                ?>
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -46,22 +54,24 @@
                             <input type="date" class="form-control">
                         </div>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="">DUNS No.</label>
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" placeholder="Enter DUNS number">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="">FDA Registration No.</label>
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" placeholder="Enter FDA Registration number">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="">Supplier</label>
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" placeholder="Enter supplier">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -132,3 +142,5 @@
         </form>
     </div>
 </div>
+
+<script defer src="modules/fsvp/js/importerList.js"></script>

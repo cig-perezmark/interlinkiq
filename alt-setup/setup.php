@@ -82,4 +82,67 @@ function send_response($data, $code = 200, $headers = []) {
 		echo $e->getMessage();
 	}
 }
+
+/**
+ * Returns upload directory, if not exists, eventually creates it.
+ * 
+ * @param string $dir
+ */
+function getUploadsDir($dir) {
+    $base = 'uploads' . DIRECTORY_SEPARATOR;
+
+    if (!$dir) {
+        throw new Exception('Directory path is required.');
+    }
+
+    $folderPath = $base . str_replace('/', DIRECTORY_SEPARATOR, $dir);
+
+    if (!file_exists($folderPath)) {
+        // Create the folder 
+        mkdir($folderPath, 0777, true);
+    }
+
+    return $folderPath;
+}
+
+/**
+ * Uploading files
+ */
+function uploadFile($path, $file, $newFilename = null) {
+    if (!is_dir($path)) {
+        throw new Exception("Destination path is not a valid directory.");
+    }
+
+    if(is_array($file['tmp_name'])) {
+        $filenameArr = [];
+        $fileCount = count($file['tmp_name']);
+
+        for ($i = 0; $i < $fileCount; $i++) {
+            if (!is_uploaded_file($file["tmp_name"][$i]) || $file["error"][$i] !== UPLOAD_ERR_OK) {
+                throw new Exception("Upload failed with error code " . $file["error"]);
+            }
+            
+            $filename = uniqid() . ' - ' . basename(htmlentities($file["name"][$i]));
+            $uploadFile = rtrim($path, '\\') . '\\' . $filename;
+            if (move_uploaded_file($file["tmp_name"][$i], $uploadFile)) {
+                $filenameArr[] = $filename;
+            }
+        }
+        return $filenameArr;
+    } else {
+        if (!is_uploaded_file($file["tmp_name"]) || $file["error"] !== UPLOAD_ERR_OK) {
+            throw new Exception("Upload failed with error code " . $file["error"]);
+        }
+        
+        $filename = $newFilename ?? uniqid() . ' - ' . basename(htmlentities($file["name"]));
+        $uploadFile = rtrim($path, '\\') . '\\' . $filename;
+    
+        if (move_uploaded_file($file["tmp_name"], $uploadFile)) {
+            return $filename;
+        }
+    }
+
+    throw new Exception("Failed to move uploaded file.");
+}
+
 ?>

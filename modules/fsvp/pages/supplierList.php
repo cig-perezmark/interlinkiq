@@ -1,3 +1,23 @@
+<style>
+.supplierlist-check .mtCheckUploadFileLink {
+    display: none;
+}
+
+.supplierlist-check:has(input[value="1"]:checked) .mtCheckUploadFileLink {
+    display: block !important;
+}
+
+.fileArrayDates {
+    width: 180px !important;
+    flex-shrink: 0;
+}
+
+td,
+th {
+    white-space: normal !important;
+}
+</style>
+
 <div class="d-flex margin-bottom-20" style="justify-content: end;">
     <a href="#modalNewSupplier" data-toggle="modal" class="btn green">
         <i class="fa fa-plus"></i>
@@ -10,31 +30,15 @@
         <tr>
             <th>Supplier Name</th>
             <th>Food Imported</th>
-            <th>Address</th>
-            <th>Evaluation Date</th>
-            <th>Supplier Agreement</th>
-            <th>FSVP Compliance Statement</th>
-            <th data-nosort="true"></th>
+            <th style="width: 220px;">Address</th>
+            <th style="width: 100px">Evaluation Date</th>
+            <th style="max-width: 80px">Supplier Agreement</th>
+            <th style="max-width: 80px;">FSVP Compliance Statement</th>
+            <th class="text-center">Actions</th>
         </tr>
     </thead>
     <tbody></tbody>
 </table>
-
-<?php 
-
-function yesNoRadio() {
-    echo '<div class="mt-radio-list" style="padding: 0;">
-        <label class="mt-radio mt-radio-outline">
-            <input type="radio" name="optionsRadios" id="optionsRadios25" value="option1" checked=""> Yes
-            <span></span>
-        </label>
-        <label class="mt-radio mt-radio-outline">
-            <input type="radio" name="optionsRadios" id="optionsRadios26" value="option2" checked=""> No
-            <span></span>
-        </label>
-    </div>';
-}
-?>
 
 <!-- modal -->
 <div class="modal fade in" id="modalEvaluationForm" role="dialog" aria-hidden="true">
@@ -119,23 +123,7 @@ function yesNoRadio() {
                                         <th>Approval Date</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <textarea name="" id="" class="form-control"></textarea>
-                                        </td>
-                                        <td><?= yesNoRadio(); ?></td>
-                                        <td><?= yesNoRadio(); ?></td>
-                                        <td><?= yesNoRadio(); ?></td>
-                                        <td><?= yesNoRadio(); ?></td>
-                                        <td><?= yesNoRadio(); ?></td>
-                                        <td>
-                                            <textarea name="" id="" class="form-control"></textarea>
-                                        </td>
-                                        <td><input type="date" name="" id="" class="form-control"></td>
-                                        <td><input type="date" name="" id="" class="form-control"></td>
-                                    </tr>
-                                </tbody>
+                                <tbody></tbody>
                             </table>
                         </div>
 
@@ -159,17 +147,18 @@ function yesNoRadio() {
 
 <div class="modal fade in" id="modalNewSupplier" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <form class="modal-content" role="form">
+        <form class="modal-content" role="form" id="newSupplierForm">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                 <h4 class="modal-title">New Supplier Form</h4>
             </div>
             <div class="modal-body form-body">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12 margin-bottom-20">
                         <div class="form-group">
-                            <label for="">Find supplier </label>
-                            <select name="" id="" class="multi-select">
+                            <label for="findSupplierDd">Find supplier </label>
+                            <select name="supplier" id="findSupplierDd" class="supplierdd">
+                                <option value="" selected disabled>Select supplier name</option>
                                 <?php
                                     $suppliers = getSuppliersByUser($conn, $switch_user_id);
                                     foreach($suppliers as $supplier) {
@@ -179,60 +168,94 @@ function yesNoRadio() {
                             </select>
                         </div>
                     </div>
+                    <div class="col-md-12 margin-bottom-20">
+                        <div>
+                            <strong>Food imported:</strong>
+                            <hr>
+                            <p class="help-block" id="materialListHelpBlock">Please select a supplier first.</p>
+                        </div>
+                        <div class="mls-grid" id="materialListSelection"></div>
+                    </div>
+                </div>
+                <div class="row margin-bottom-20 supplierlist-check">
+                    <div class="col-md-12"> Supplier Agreement </div>
+                    <div class="col-md-3">
+                        <div class="mt-radio-inline">
+                            <label class="mt-radio mt-radio-outline">
+                                <input type="radio" name="supplier_agreement" value="1"> Yes
+                                <span></span>
+                            </label>
+                            <label class="mt-radio mt-radio-outline">
+                                <input type="radio" name="supplier_agreement" value="0"> No
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
                     <div class="col-md-12">
-                        <h5><strong>Food imported:</strong></h5>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group row">
-                            <label for="" class="col-form-label col-md-2">Select</label>
-                            <div class="col-md-10">
-                                <select name="" id="" class="form-control"></select>
+                        <div class="mt-radio-inline">
+                            <span class="mt-radio mt-radio-outline mtCheckUploadFileLink" style="padding-left: 0;">
+                                <a href="javascript:void(0)" onclick="$('#assa').click()"> <i class="fa fa-upload"></i> Upload file(s) </a>
+                                <input type="file" class="d-none asFileUpload" data-name="supplier_agreement" id="assa" multiple>
+                            </span>
+                        </div>
+                        <div class="mtCheckUploadFileLink">
+                            <hr>
+                            <div class="filesArrayDisplay">
+                                <div class="fileArrayItem">
+                                    <span class="fileArrayName">File Name</span>
+                                    <div class="fileArrayDates">Document Date</div>
+                                    <div class="fileArrayDates">Expiration Date</div>
+                                    <div class="fileArrayDates">Note</div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <hr>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Supplier Agreement</label>
-                            <div class="mt-radio-inline">
-                                <label class="mt-radio mt-radio-outline">
-                                    <input type="radio" name="optionsRadios" id="optionsRadios4" value="option1"> Yes
-                                    <span></span>
-                                </label>
-                                <label class="mt-radio mt-radio-outline">
-                                    <input type="radio" name="optionsRadios" id="optionsRadios5" value="option2"> No
-                                    <span></span>
-                                </label>
+                <div class="row margin-bottom-20 supplierlist-check">
+                    <div class="col-md-12"> FSVP Compliance Statement </div>
+                    <div class="col-md-3">
+                        <div class="mt-radio-inline">
+                            <label class="mt-radio mt-radio-outline">
+                                <input type="radio" name="compliance_statement" value="1"> Yes
+                                <span></span>
+                            </label>
+                            <label class="mt-radio mt-radio-outline">
+                                <input type="radio" name="compliance_statement" value="0"> No
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="mt-radio-inline">
+                            <span class="mt-radio mt-radio-outline mtCheckUploadFileLink" style="padding-left: 0;">
+                                <a href="javascript:void(0)" onclick="$('#ascsf').click()"> <i class="fa fa-upload"></i> Upload file </a>
+                                <input type="file" class="d-none asFileUpload" data-name="compliance_statement" id="ascsf">
+                            </span>
+                        </div>
+                        <div class="mtCheckUploadFileLink">
+                            <hr>
+                            <div class="filesArrayDisplay">
+                                <div class="fileArrayItem">
+                                    <span class="fileArrayName">File Name</span>
+                                    <div class="fileArrayDates">Document Date</div>
+                                    <div class="fileArrayDates">Expiration Date</div>
+                                    <div class="fileArrayDates">Note</div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6"></div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>FSVP Compliance Statement</label>
-                            <div class="mt-radio-inline">
-                                <label class="mt-radio mt-radio-outline">
-                                    <input type="radio" name="optionsRadios" id="optionsRadios4" value="option1"> Yes
-                                    <span></span>
-                                </label>
-                                <label class="mt-radio mt-radio-outline">
-                                    <input type="radio" name="optionsRadios" id="optionsRadios5" value="option2"> No
-                                    <span></span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6"></div>
+                <div class="alert alert-danger alert-dismissable" id="modalNewSupplierError" style="display: none;">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+                    <strong>Error!</strong> <span id="modalNewSupplierMessage"></span>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                <button type="button" class="btn green saveSigns-btn">Submit </button>
+                <button type="submit" class="btn green">Submit </button>
             </div>
         </form>
     </div>
 </div>
+
+<script defer src="modules/fsvp/js/supplierlist.js"></script>

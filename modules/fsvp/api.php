@@ -110,19 +110,7 @@ if(isset($_GET['suppliersByUser'])) {
 // searching employee
 if(isset($_POST['search-employee'])) {
     try {
-        $myEmployees = [];
         $search = mysqli_real_escape_string($conn, $_POST['search-employee']);
-        // $result = $conn->query("SELECT 
-        //     p.ID AS id,
-        //     p.image,
-        //     p.code,
-        //     p.name,
-        //     p.description,
-        //     c.name AS category
-        //     FROM tbl_products AS p
-        //     LEFT JOIN tbl_products_category AS c ON p.category = c.ID
-        //     WHERE p.user_id=$user_id ANzD (p.code like '%$search%' OR p.name like '%$search%') AND p.deleted=0 AND NOT JSON_CONTAINS(CAST('{$_POST['products']}' AS JSON), CAST(p.ID AS CHAR))");
-
         // store result ids
         $employeeIds = [];
         $jdIds = [];
@@ -131,43 +119,29 @@ if(isset($_POST['search-employee'])) {
             FROM tbl_hr_employee WHERE user_id = ? AND (first_name LIKE '%$search%' OR last_name LIKE '%$search%') AND status = 1 
             ORDER BY first_name ASC
         ", $user_id)->fetchAll(function($d) use(&$employeeIds, &$jdIds) {
-            $employeeIds[] = $d["id"];
             $jds = explode(', ', $d["jd"]);
-            $jdIds[] = $jds[0];
             $d['jd'] = $jds[0];
+
+            if(!in_array($jds[0], $jdIds))  {
+                $jdIds[] = $jds[0];
+            }
+
+            if(!in_array($d['id'], $employeeIds)) {
+                $employeeIds[] = $d["id"];
+            }
+
             return $d;
         });
 
-        $userAvatars = [];
-        $jds = [];
-        if(count($employeeIds) > 0) {
-            $employeeIds = implode(',', $employeeIds);
-            $conn->execute("SELECT ui.avatar, ui.mobile, u.employee_id AS eid FROM tbl_user_info ui JOIN tbl_user u ON u.ID = ui.user_id WHERE u.employee_id IN ($employeeIds)")
-                ->fetchAll(function($data) use(&$userAvatars) {
-                    $userAvatars[$data['eid']] = [
-                        'avatar'=> 'uploads\\avatar\\' . $data['avatar'],
-                        'mobile' => $data['mobile'],
-                        'eid' => $data['eid'],
-                    ];
-                    return $data;
-                });
-
-                // send_response($userAvatars);
-
-            // fetching job descriptions
-            $jdIds = implode(',', array_filter(array_map(function($x) {return intval($x) ?? null;}, $jdIds), function($x) {return $x;}));
-            $conn->execute("SELECT title, ID FROM tbl_hr_job_description WHERE ID IN ($jdIds)")
-                ->fetchAll(function($data) use(&$jds) {
-                    $jds[$data['ID']] = trim($data['title']);
-                    return $data;
-                });
-        } 
+        $info = getEmployeesInfo($conn, $employeeIds, $jdIds);
+        $employeeInfo = $info['employees_info'];
+        $jds = $info['job_descriptions'];
 
         $roster = [];
         foreach($result as $row) {
-            $row['avatar'] = $userAvatars[$row['id']] ?? 'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image';
-            $avatar = !empty($userAvatars[$row['id']]) ? $userAvatars[$row['id']]['avatar'] ?? null : null;
-            $phone = !empty($userAvatars[$row['id']]) ? $userAvatars[$row['id']]['mobile'] ?? null : null;
+            $row['avatar'] = $employeeInfo[$row['id']] ?? 'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image';
+            $avatar = !empty($employeeInfo[$row['id']]) ? $employeeInfo[$row['id']]['avatar'] ?? null : null;
+            $phone = !empty($employeeInfo[$row['id']]) ? $employeeInfo[$row['id']]['mobile'] ?? null : null;
             $roster[] = [
                 'id' => $row['id'],
                 'avatar'=> $avatar ?? 'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image',
@@ -218,7 +192,57 @@ if(isset($_GET['newFSVPTeamMember'])) {
 // initializing fsvp team table
 if(isset($_GET['getFSVPRoster'])) {
     try {
-        // $data = $conn->execute("SELECT *");
+        $empIds = [];
+        $jdIds = [];
+        $members = $conn->execute("SELECT 
+                    tr.id, 
+                    tr.type,
+                    tr.employee_id,
+                    he.email, 
+                    he.job_description_id as jd,
+                    CONCAT(TRIM(he.first_name), ' ', TRIM(he.last_name)) AS name
+                FROM tbl_fsvp_team_roster tr
+                LEFT JOIN tbl_hr_employee he ON he.ID = tr.employee_id 
+                WHERE tr.user_id = ? AND tr.deleted_at IS NULL 
+                ORDER BY tr.created_at DESC
+            ", $user_id)->fetchAll(function($d) use(&$empIds, &$jdIds) {
+                $jds = explode(', ', $d["jd"]);
+                $d['jd'] = $jds[0];
+
+                if(!in_array($jds[0], $jdIds))  {
+                    $jdIds[] = $jds[0];
+                }
+
+                if(!in_array($d['id'], $empIds)) {
+                    $empIds[] = $d["employee_id"];
+                }
+                
+                return $d;
+            });
+            
+        $info = getEmployeesInfo($conn, $empIds, $jdIds);
+        $employeeInfo = $info['employees_info'];
+        $jds = $info['job_descriptions'];
+
+        $roster = [];
+        foreach($members as $row) {
+            $row['avatar'] = $employeeInfo[$row['id']] ?? 'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image';
+            $avatar = !empty($employeeInfo[$row['id']]) ? $employeeInfo[$row['id']]['avatar'] ?? null : null;
+            $phone = !empty($employeeInfo[$row['id']]) ? $employeeInfo[$row['id']]['mobile'] ?? null : null;
+            $roster[] = [
+                'id' => $row['id'],
+                'avatar'=> $avatar ?? 'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image',
+                'name' => $row['name'],
+                'email'=> $row['email'],
+                'type'=> $row['type'],
+                'phone'=> $phone ?? '',
+                'position'=> $jds[$row['jd']] ?? '',
+            ];
+        }
+            
+        send_response([
+            'data' => $roster,
+        ]);
     } catch(Throwable $e) {
         http_response_code(500);
         echo $e->getMessage();

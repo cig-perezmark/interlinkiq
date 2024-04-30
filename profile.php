@@ -888,7 +888,7 @@
                                                     <div class="task-content">
                                                         <?php if($_COOKIE['ID']== 185 || $_COOKIE['ID']== 95 || $_COOKIE['ID']== 42 || $_COOKIE['ID']== 88 || $_COOKIE['ID']== 35 || $_COOKIE['ID']== 228 || $_COOKIE['ID']== 208 || $_COOKIE['ID']== 43 || $_COOKIE['ID']== 38): ?>
                                                         <!--Marketing-->
-                                                        <div class="row">
+                                                        <div class="row hide">
                                                             <div class="col-md-3">
                                                                 <div class="dashboard-stat2 counterup_1">
                                                                     <div class="display" style="position: relative;">
@@ -940,7 +940,7 @@
                                                         </div>
                                                         
                                                         <!--Category-->
-                                                        <div class="row">
+                                                        <div class="row hide">
                                                             <div class="col-md-3">
                                                                 <div class="dashboard-stat2 counterup_1">
                                                                     <div class="display" style="position: relative;">
@@ -995,7 +995,7 @@
                                                         </div>
                                                         
                                                         <!--Call Summary-->
-                                                        <div class="row">
+                                                        <div class="row hide">
                                                             <div class="col-md-3">
                                                                 <div class="dashboard-stat2 counterup_1">
                                                                     <div class="display" style="position: relative;">

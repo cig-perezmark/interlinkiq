@@ -33,6 +33,30 @@
 		
 		
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if(isset($_POST['save_kpi_reviewer'])){
+            if($_POST['collab_type'] == "performer"){
+                echo "test";
+                // $record_data = array(
+                //     'performer_id' => $this->input->post('employee_id_performer'),
+                //     'performer_frequency' => $this->input->post('performer_frequency'),
+                //     'form_code' => 'fscs'
+                // );
+                // $PK_id = $this->queries->insert($record_data, 'kpi_performer', true);
+                // if($PK_id){
+                //     echo '1';
+                // }
+            }
+        }
+        if(isset($_POST['save_form_desc'])){
+            // Update tbl_forms_owned table
+            $id = $_POST['eforms_id'];
+            $form_desc = $_POST['form_desc'];
+            $update_query = "UPDATE tbl_afia_forms_list SET form_desc = '$form_desc'  WHERE PK_id = $id";
+            $update_result = mysqli_query($e_connection, $update_query);
+            if($update_result){
+                header('Location: ' . $_SERVER["HTTP_REFERER"]);
+             }
+        }
         if(isset($_POST['save_category'])){
             $category_name = $_POST['category_name'];
             $label_color = $_POST['label_color'];

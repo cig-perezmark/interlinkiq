@@ -127,11 +127,30 @@
                                                                         $eforms = "SELECT * FROM tbl_afia_forms_list WHERE PK_id = {$forms_row['form_id']}";
                                                                         $eforms_result = mysqli_query($e_connection,$eforms);
                                                                         $eforms_row = mysqli_fetch_assoc($eforms_result);
+                                                                        
+                                                                        $performer_count = 0;
+                                                                        // Construct your SQL query
+                                                                        $count_performer = "SELECT COUNT(*) as count FROM kpi_performer WHERE form_code = '{$eforms_row['afl_form_code']}'";
+                                                                        
+                                                                        // Execute the query
+                                                                        $count_result = mysqli_query($e_connection, $count_performer);
+                                                                        
+                                                                        if($count_result){
+                                                                            if (mysqli_num_rows($count_result) > 0) {
+                                                                                // Output data of each row
+                                                                                $row_count_result = mysqli_fetch_assoc($count_result);
+                                                                                $performer_count = $row_count_result["count"];
+                                                                            } else {
+                                                                                echo "0 results";
+                                                                            }
+                                                                        }
+                                                                        
                                                                     ?>
                                                                     <li class="mt-list-item">
                                                                         <div class="list-todo-icon bg-white">
                                                                             <?php if($_COOKIE['ID'] == 481): ?>
                                                                                 <a href="#" data-toggle="modal" data-target="#collab_modal"><i class="fa fa-file" ></i></a>
+                                                                                <a href="#" eforms_id="<?= $eforms_row['PK_id'] ?>" class="open-modal" data-toggle="modal" data-target="#form_desc"><i class="fa fa-pencil" ></i></a>
                                                                             <?php endif; ?>
                                                                         </div>
                                                                         <div class="list-todo-item grey">
@@ -145,6 +164,9 @@
                                                                                 
                                                                                 <div class="task-content">
                                                                                     <div id="chartdiv_<?= $row['id'].'_'.$eforms_row['PK_id'] ?>" style="width: 100%"></div>
+                                                                                    <div class="form_desc" style="padding:10px">
+                                                                                        <label eforms_id="<?= $eforms_row['PK_id'] ?>" contenteditable><?= $eforms_row['form_desc'] ?></label>
+                                                                                    </div>
                                                                                 </div>
                                                                                 <div class="task-footer bg-grey">
                                                                                     <div class="row">
@@ -470,7 +492,35 @@
                           </div>
                         </div>
                         </form>
-
+                        
+                        <form action="controller.php" method="POST">
+                        <!-- Modal -->
+                        <div class="modal fade" id="form_desc" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Add Form Description</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                <input type="hidden" id="eforms_id_input" name="eforms_id">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>Form Description</label>
+                                        <textarea class="form-control" name="form_desc"></textarea>
+                                    </div>
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" name="save_form_desc">Update</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        </form>
         <?php include_once ('footer.php'); ?>
         <style>
             #chartdiv {
@@ -495,7 +545,72 @@
         <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
 
         <script>
+        // Add event listener to the button
+          // Select all elements with the class 'open-modal'
+          var modalTriggers = document.querySelectorAll('.open-modal');
+        
+          // Loop through each modal trigger
+          modalTriggers.forEach(function(trigger) {
+            // Add event listener to each trigger
+            trigger.addEventListener('click', function() {
+              // Retrieve eforms_id value for this specific trigger
+              var eforms_id = this.getAttribute('eforms_id');
+              // Assign eforms_id value to the input field inside the modal
+              document.getElementById('eforms_id_input').value = eforms_id;
+            });
+          });
             $(document).ready(function(){
+                $('#save_kpi_reviewer').click(function(e) {
+                    e.preventDefault(); // Prevent the default button click behavior
+                        
+                    // Serialize form data
+                    var formData = new FormData($('#kpi_reviewer_form')[0]);
+                    formData.append('save_kpi_reviewer', '1'); // Add the form submission key dynamically
+            
+                    $.ajax({
+                        url: 'controller',
+                        method: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(res) {
+                            // Close the modal
+                            $('#collab_modal').modal('hide');
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Cheers!',
+                                    text: 'Performer Successfully Added',
+                                    padding: '4em',
+                                    showConfirmButton: false,
+                                    timer: 1000
+                                });
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle errors or display messages as needed
+                        }
+                    });
+                });
+                $('label[contenteditable]').on('input', function() {
+                    var newValue = $(this).text(); // Get the new value of the label
+                    var eformsId = $(this).attr('eforms_id'); // Get the eforms_id
+            
+                    // Send an AJAX request to update the database
+                    $.ajax({
+                        url: 'controller.php', // Your PHP script to update the database
+                        method: 'POST',
+                        data: {
+                            save_form_desc:1,
+                            eforms_id: eformsId,
+                            form_desc: newValue
+                        },
+                        success: function(response) {
+                            console.log('Database updated successfully!');
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error updating database:', error);
+                        }
+                    });
+                });
                  // Get references to the divs
                 var performerDiv = $('#performer_type');
                 var reviewerDiv = $('#reviewer_type');
@@ -599,7 +714,7 @@
           "agree": 7,
           "disagree": 2,
           "s_disagree": 1
-        }, {
+        }, {        
           "year": "I appreciate when a co-worker\npoints out to me if I am doing something\nthat could affect food safety in a bad way",
           "s_agree": 8,
           "agree": 12,

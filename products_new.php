@@ -603,6 +603,89 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Ingredients</label>
+                                                                    <select class="form-control" name="ingredient">
+                                                                        <option value="0">Select Material</option>
+                                                                        <?php
+                                                                            $selectData = mysqli_query( $conn,"SELECT 
+                                                                                s.ID AS s_ID,
+                                                                                s.name AS s_name,
+                                                                                m.ID AS m_ID,
+                                                                                m.material_name AS m_material_name
+                                                                                FROM tbl_supplier AS s
+
+                                                                                INNER JOIN (
+                                                                                    SELECT
+                                                                                    *
+                                                                                    FROM tbl_supplier_material
+                                                                                    WHERE user_id = $switch_user_id
+                                                                                ) AS m
+                                                                                ON FIND_IN_SET(m.ID, REPLACE(s.material, ' ', '')) > 0
+
+                                                                                WHERE s.is_deleted = 0
+                                                                                AND s.page = 1
+                                                                                AND s.user_id = $switch_user_id
+
+                                                                                ORDER BY m.material_name" );
+                                                                            if ( mysqli_num_rows($selectData) > 0 ) {
+                                                                                while($row = mysqli_fetch_array($selectData)) {
+                                                                                    $data_image = $row['image'];
+
+                                                                                    echo '<option value="'.$row['m_ID'].'">'.htmlentities($row['m_material_name']).' - ('.htmlentities($row['s_name']).')</option>';
+                                                                                }
+                                                                            }
+                                                                        ?>
+                                                                    </select>
+                                                                </div>
+                                                                <table class="table table-bordered table-hover" id="tblIngredient">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Ingredient</th>
+                                                                            <th>Supplier</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Packaging Details</label>
+                                                                    <select class="form-control" name="packaging">
+                                                                        <option value="0">Select Material</option>
+                                                                        <option value=""></option>
+                                                                        <option value=""></option>
+                                                                        <option value=""></option>
+                                                                    </select>
+                                                                </div>
+                                                                <table class="table table-bordered table-hover" id="tblPackaging">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Ingredient</th>
+                                                                            <th>Supplier</th>
+                                                                            <th>Action</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                            <td></td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                     <div class="tab-pane" id="tabProductDescription">
                                                         <h4><strong>Product Description, including Important Food Safety Characteristics</strong></h4>

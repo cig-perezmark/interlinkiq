@@ -52,3 +52,34 @@ function getSupplierList($conn, $userId) {
 
     return $data;
 }
+
+function getEmployeesInfo($conn, $employeeIds, $jdIds) {
+    if(count($employeeIds) == 0)
+        return;
+    
+    $userAvatars = [];
+    $jds = [];
+    $employeeIds = implode(',', $employeeIds);
+    $conn->execute("SELECT ui.avatar, ui.mobile, u.employee_id AS eid FROM tbl_user_info ui JOIN tbl_user u ON u.ID = ui.user_id WHERE u.employee_id IN ($employeeIds)")
+        ->fetchAll(function($data) use(&$userAvatars) {
+            $userAvatars[$data['eid']] = [
+                'avatar'=> 'uploads\\avatar\\' . $data['avatar'],
+                'mobile' => $data['mobile'],
+                'eid' => $data['eid'],
+            ];
+            return $data;
+        });
+
+    // fetching job descriptions
+    $jdIds = implode(',', array_filter(array_map(function($x) {return intval($x) ?? null;}, $jdIds), function($x) {return $x;}));
+    $conn->execute("SELECT title, ID FROM tbl_hr_job_description WHERE ID IN ($jdIds)")
+        ->fetchAll(function($data) use(&$jds) {
+            $jds[$data['ID']] = trim($data['title']);
+            return $data;
+        });
+
+    return [
+        'job_descriptions'=> $jds,
+        'employees_info'=> $userAvatars,
+    ];
+}

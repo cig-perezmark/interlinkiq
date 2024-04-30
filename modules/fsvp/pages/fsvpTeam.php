@@ -1,3 +1,38 @@
+<style>
+[data-avatar] {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    object-position: center;
+    border: 1px solid #ddd;
+}
+
+.fsvp-trmt {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+#tableFSVPTeamRoster .fsvp-trmt input[type=radio],
+#tableFSVPTeamRoster.for-display .fsvp-trmt i {
+    display: inline-block;
+}
+
+#tableFSVPTeamRoster.for-display .fsvp-trmt input[type=radio],
+#tableFSVPTeamRoster .fsvp-trmt i {
+    display: none;
+}
+
+#tableFSVPTeamRoster.for-display .fsvp-trmt i.fa {
+    display: none;
+}
+
+#tableFSVPTeamRoster.for-display .fsvp-trmt:has(input:checked) i.fa {
+    display: inline;
+}
+</style>
+
 <div class="alert alert-danger">
     <strong>Important:</strong> The FSVP Team Roster needs verification.
 </div>
@@ -10,15 +45,15 @@
     <a href="#" class="btn btn-default">History</a>
 </div>
 
-<table class="table table-bordered table-hover" id="tableFSVPTeamRoster">
+<table class="table table-bordered table-hover for-display" id="tableFSVPTeamRoster">
     <thead>
         <tr>
             <th>Name</th>
             <th>Title / Position</th>
             <th>Phone </th>
             <th>Email</th>
-            <th>Primary</th>
-            <th>Alternate</th>
+            <th class="text-center" style="width: 75px;">Primary</th>
+            <th class="text-center" style="width: 75px;">Alternate</th>
             <th>Actions</th>
         </tr>
     </thead>

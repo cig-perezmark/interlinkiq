@@ -33,6 +33,20 @@
 		
 		
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if(isset($_POST['save_kpi_reviewer'])){
+            if($_POST['collab_type'] == "performer"){
+                echo "test";
+                // $record_data = array(
+                //     'performer_id' => $this->input->post('employee_id_performer'),
+                //     'performer_frequency' => $this->input->post('performer_frequency'),
+                //     'form_code' => 'fscs'
+                // );
+                // $PK_id = $this->queries->insert($record_data, 'kpi_performer', true);
+                // if($PK_id){
+                //     echo '1';
+                // }
+            }
+        }
         if(isset($_POST['save_form_desc'])){
             // Update tbl_forms_owned table
             $id = $_POST['eforms_id'];

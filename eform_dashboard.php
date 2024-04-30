@@ -127,12 +127,30 @@
                                                                         $eforms = "SELECT * FROM tbl_afia_forms_list WHERE PK_id = {$forms_row['form_id']}";
                                                                         $eforms_result = mysqli_query($e_connection,$eforms);
                                                                         $eforms_row = mysqli_fetch_assoc($eforms_result);
+                                                                        
+                                                                        $performer_count = 0;
+                                                                        // Construct your SQL query
+                                                                        $count_performer = "SELECT COUNT(*) as count FROM kpi_performer WHERE form_code = '{$eforms_row['afl_form_code']}'";
+                                                                        
+                                                                        // Execute the query
+                                                                        $count_result = mysqli_query($e_connection, $count_performer);
+                                                                        
+                                                                        if($count_result){
+                                                                            if (mysqli_num_rows($count_result) > 0) {
+                                                                                // Output data of each row
+                                                                                $row_count_result = mysqli_fetch_assoc($count_result);
+                                                                                $performer_count = $row_count_result["count"];
+                                                                            } else {
+                                                                                echo "0 results";
+                                                                            }
+                                                                        }
+                                                                        
                                                                     ?>
                                                                     <li class="mt-list-item">
                                                                         <div class="list-todo-icon bg-white">
                                                                             <?php if($_COOKIE['ID'] == 481): ?>
                                                                                 <a href="#" data-toggle="modal" data-target="#collab_modal"><i class="fa fa-file" ></i></a>
-                                                                                <a href="#" eforms_id="<?= $eforms_row['PK_id'] ?>" class="open-modal" data-toggle="modal" data-target="#form_desc"><i class="fa fa-plus" ></i></a>
+                                                                                <a href="#" eforms_id="<?= $eforms_row['PK_id'] ?>" class="open-modal" data-toggle="modal" data-target="#form_desc"><i class="fa fa-pencil" ></i></a>
                                                                             <?php endif; ?>
                                                                         </div>
                                                                         <div class="list-todo-item grey">
@@ -542,6 +560,36 @@
             });
           });
             $(document).ready(function(){
+                $('#save_kpi_reviewer').click(function(e) {
+                    e.preventDefault(); // Prevent the default button click behavior
+                        
+                    // Serialize form data
+                    var formData = new FormData($('#kpi_reviewer_form')[0]);
+                    formData.append('save_kpi_reviewer', '1'); // Add the form submission key dynamically
+            
+                    $.ajax({
+                        url: 'controller',
+                        method: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(res) {
+                            // Close the modal
+                            $('#collab_modal').modal('hide');
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Cheers!',
+                                    text: 'Performer Successfully Added',
+                                    padding: '4em',
+                                    showConfirmButton: false,
+                                    timer: 1000
+                                });
+                        },
+                        error: function(xhr, status, error) {
+                            // Handle errors or display messages as needed
+                        }
+                    });
+                });
                 $('label[contenteditable]').on('input', function() {
                     var newValue = $(this).text(); // Get the new value of the label
                     var eformsId = $(this).attr('eforms_id'); // Get the eforms_id

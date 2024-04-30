@@ -322,6 +322,7 @@
                                     <tr>
                                         <td style="width: 60px;">#</td>
                                         <td>Form Name</td>
+                                        <td>Description</td>
                                         <td class="text-center" style="width: 205px;">Action</td>
                                     </tr>
                                 </thead>
@@ -344,6 +345,7 @@
                                                 echo '<tr '.$style.'>
                                                      <td>'.$form_counting++.'</td>
                                                      <td>'.$row['afl_form_name'].'</td>
+                                                     <td  eforms_id="'.$row['PK_id'].'" contenteditable oninput="change_Description(this)">'.$row['form_desc'].'</td>
                                                      <td class="text-center"> 
                                                         <a href="/e-forms/forms/interlink/'.$row['afl_form_code'].'" onclick="myfunction('.$current_userEmployerID.')" target="_blank" class="btn green btn-outline">View</a>';
                                                         
@@ -668,20 +670,32 @@
     	
         <script src="assets/global/plugins/bootstrap-select/js/bootstrap-select.min.js" type="text/javascript"></script>
         <script> 
+            function change_Description(label) {
+                var newValue = label.textContent; // Get the new value of the label
+                var eformsId = label.getAttribute('eforms_id'); // Get the eforms_id
             
+                // Send an AJAX request to update the database
+                $.ajax({
+                    url: 'controller.php', // Your PHP script to update the database
+                    method: 'POST',
+                    data: {
+                        save_form_desc: 1,
+                        eforms_id: eformsId,
+                        form_desc: newValue
+                    },
+                    success: function(response) {
+                        console.log('Database updated successfully!');
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error updating database:', error);
+                    }
+                });
+            }
             $(document).ready(function() {
-                // $('#tableComply, #tableModule, #tableSOP, #tableProServices, #tableProServices, #tableProServices, #tableProServices').dataTable( {
-                //   "columnDefs": [
-                //     { "width": "auto" }
-                //   ]
-                // } );
-                
-                // $('#tableComply, #tableModule, #tableSOP, #tableProServices, #tablepricing, #tableForms').dataTable();
-
                 $('#tableForms').dataTable({
                     paging: false
                 });
-            } );
+            });
             
             
             // modal_new_pricing

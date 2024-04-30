@@ -5,6 +5,7 @@ let fsvpTeamTable = null;
 $(document).ready(function() {
     initMemberSearch();
     fsvpTeamTable = initDataTable($('#tableFSVPTeamRoster'))
+    fetchTeamRoster();
 });
 
 // modal hide event hook 
@@ -133,8 +134,16 @@ function renderDTRow(d) {
         d.position,
         d.phone,
         d.email,
-        ``,
-        ``,
+        `   <div class="fsvp-trmt">
+                <input type="radio" name="fsvptrmt-${d.id}" value="primary" ${d.type == 'primary' ? 'checked' : ''} />
+                <i class="fa fa-check-square font-blue" style="margin-top:4px;"></i>
+            </div>
+        `,
+        `   <div class="fsvp-trmt">
+                <input type="radio" name="fsvptrmt-${d.id}" value="alternate" ${d.type == 'alternate' ? 'checked' : ''} />
+                <i class="fa fa-check-square font-blue" style="margin-top:4px;"></i>
+            </div>
+        `,
         `
             <div class="d-flex center">
                 <button type="button" class="btn-link">Remove</button>

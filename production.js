@@ -371,7 +371,7 @@ $(() => {
       success: function (response) {
         $("#view_product_modal").modal("hide");
         if (response.type == "success") {
-          so_open_datatable.ajax.reload();
+        //   so_open_datatable.ajax.reload();
           prod_open_datatable.ajax.reload();
         } else {
           alert(response.message);
@@ -520,7 +520,7 @@ $(() => {
       success: function (response) {
         $("#view_processes_modal").modal("hide");
         if (response.type == "success") {
-          so_open_datatable.ajax.reload();
+        //   so_open_datatable.ajax.reload();
           prod_open_datatable.ajax.reload();
         } else {
           alert(response.message);

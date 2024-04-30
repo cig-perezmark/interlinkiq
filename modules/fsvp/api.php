@@ -107,6 +107,7 @@ if(isset($_GET['suppliersByUser'])) {
     ]);
 }
 
+// searching employee
 if(isset($_POST['search-employee'])) {
     try {
         $myEmployees = [];
@@ -124,29 +125,57 @@ if(isset($_POST['search-employee'])) {
 
         // store result ids
         $employeeIds = [];
+        $jdIds = [];
 
-        $result = $conn->execute("SELECT CONCAT(TRIM(first_name), ' ', TRIM(last_name)) AS name, ID as id, email, job_description_id 
+        $result = $conn->execute("SELECT CONCAT(TRIM(first_name), ' ', TRIM(last_name)) AS name, ID as id, email, job_description_id as jd 
             FROM tbl_hr_employee WHERE user_id = ? AND (first_name LIKE '%$search%' OR last_name LIKE '%$search%') AND status = 1 
             ORDER BY first_name ASC
-        ", $user_id)->fetchAll(function($d) use($employeeIds) {
+        ", $user_id)->fetchAll(function($d) use(&$employeeIds, &$jdIds) {
             $employeeIds[] = $d["id"];
+            $jds = explode(', ', $d["jd"]);
+            $jdIds[] = $jds[0];
+            $d['jd'] = $jds[0];
             return $d;
         });
 
         $userAvatars = [];
+        $jds = [];
         if(count($employeeIds) > 0) {
             $employeeIds = implode(',', $employeeIds);
-            $conn->execute("SELECT ui.avatar, u.employee_id AS id FROM tbl_user_info ui JOIN tbl_user u ON u.ID = ui.user_id WHERE u.employee_id IN (?)", $employeeIds)
+            $conn->execute("SELECT ui.avatar, ui.mobile, u.employee_id AS eid FROM tbl_user_info ui JOIN tbl_user u ON u.ID = ui.user_id WHERE u.employee_id IN ($employeeIds)")
                 ->fetchAll(function($data) use(&$userAvatars) {
-                    $userAvatars[$data['id']] = $data["avatar"];
+                    $userAvatars[$data['eid']] = [
+                        'avatar'=> 'uploads\\avatar\\' . $data['avatar'],
+                        'mobile' => $data['mobile'],
+                        'eid' => $data['eid'],
+                    ];
+                    return $data;
+                });
+
+                // send_response($userAvatars);
+
+            // fetching job descriptions
+            $jdIds = implode(',', array_filter(array_map(function($x) {return intval($x) ?? null;}, $jdIds), function($x) {return $x;}));
+            $conn->execute("SELECT title, ID FROM tbl_hr_job_description WHERE ID IN ($jdIds)")
+                ->fetchAll(function($data) use(&$jds) {
+                    $jds[$data['ID']] = trim($data['title']);
                     return $data;
                 });
         } 
 
         $roster = [];
         foreach($result as $row) {
-            $row['avatar'] = $userAvatars[$row['id']] ?? 'https://via.placeholder.com/150x150/EFEFEF/AAAAAA.png?text=no+image';
-            $roster[] = $row;
+            $row['avatar'] = $userAvatars[$row['id']] ?? 'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image';
+            $avatar = !empty($userAvatars[$row['id']]) ? $userAvatars[$row['id']]['avatar'] ?? null : null;
+            $phone = !empty($userAvatars[$row['id']]) ? $userAvatars[$row['id']]['mobile'] ?? null : null;
+            $roster[] = [
+                'id' => $row['id'],
+                'avatar'=> $avatar ?? 'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image',
+                'name' => $row['name'],
+                'email'=> $row['email'],
+                'phone'=> $phone ?? '',
+                'position'=> $jds[$row['jd']] ?? '',
+            ];
         }
         
         return send_response([
@@ -156,5 +185,42 @@ if(isset($_POST['search-employee'])) {
     } catch(Throwable $e) {
         http_response_code(500);
         return $e->getMessage();
+    }
+}
+
+// adding team roster
+if(isset($_GET['newFSVPTeamMember'])) {
+    try {
+        $conn->begin_transaction();
+
+        $employee = $_POST['employee'];
+        $conn->insert('tbl_fsvp_team_roster', [
+            'employee_id'=> $employee,
+            'type'=> $_POST['member_type'] ?? 'primary',
+            'user_id' => $user_id,
+            'portal_user' => $portal_user,
+        ]);
+
+        $id  = $conn->getInsertId();
+    
+        $conn->commit();
+        send_response([
+            'message' => 'Successfully saved!',
+            'id' => $id,
+        ]);
+    } catch(Throwable $e) {
+        $conn->rollback();
+        http_response_code(500);
+        echo $e->getMessage();
+    }
+}
+
+// initializing fsvp team table
+if(isset($_GET['getFSVPRoster'])) {
+    try {
+        // $data = $conn->execute("SELECT *");
+    } catch(Throwable $e) {
+        http_response_code(500);
+        echo $e->getMessage();
     }
 }

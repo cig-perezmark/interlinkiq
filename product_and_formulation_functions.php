@@ -15,7 +15,13 @@ $tbl_suppliers = "tbl_supplier";
 
 if (isset($_POST['get_raw_materials_and_packagings'])) {
 
-   $sql = "SELECT a.id AS id,raw_materials,supplier_name,price_per_unit,uom,material_type FROM $tbl_raw_materials a LEFT JOIN $tbl_suppliers b ON a.supplier_id=b.id";
+   $sql = "SELECT a.id AS id, a.material_name AS raw_materials,
+            b.name AS supplier_name,
+            a.material_ppu AS price_per_unit,
+            a.material_oum AS uom,
+            material_type 
+        FROM $tbl_raw_materials a 
+        LEFT JOIN $tbl_suppliers b ON a.supplier_id=b.id";
 
    $query = $conn->query($sql);
    $result = $query->fetch_all(MYSQLI_ASSOC);

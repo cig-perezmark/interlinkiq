@@ -47,7 +47,7 @@ textarea {
     height: inherit;
 }
 
-.mt-radio {
+.mt-radio:not(.not-this) {
     margin-bottom: 0;
 }
 

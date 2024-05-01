@@ -143,8 +143,10 @@ hr {
 </div>
 <?php include __DIR__ . '/../../footer.php'; ?>
 <script src="modules/js/utils.js"></script>
+<script src="modules/js/init.js"></script>
 <script>
 var baseUrl = 'fsvp?api&';
+Init.baseUrl = 'fsvp?api&';
 </script>
 <!-- <script src="modules/fsvp/js/functions.js"></script> -->
 

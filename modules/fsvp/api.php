@@ -248,3 +248,9 @@ if(isset($_GET['getFSVPRoster'])) {
         echo $e->getMessage();
     }
 }
+
+if(isset($_GET['updateFSVPTeamRoster'])) {
+    $updates = json_decode($_POST['updates'] ?? '[]', true);
+
+    send_response($updates);
+}

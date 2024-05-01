@@ -38,11 +38,23 @@
 </div>
 
 <div class="d-flex margin-bottom-20" style="justify-content: space-between;">
-    <a href="#modalAddMember" data-toggle="modal" class="btn green">
+    <a href="#modalAddMember" data-toggle="modal" class="btn green" id="addMemberBtn">
         <i class="fa fa-plus"></i>
         Member
     </a>
-    <a href="#" class="btn btn-default">History</a>
+    <span></span>
+    <div>
+        <label role="button" class="btn blue-dark" style="margin-right: .5rem;">
+            <i class="fa fa-refresh icon-margin-right"></i>
+            <span>Update roster</span>
+            <input type="checkbox" id="updateRosterToggle" class="hide">
+        </label>
+        <button type="button" class="btn default">
+            <i class="fa fa-history icon-margin-right"></i>
+            History
+        </button>
+    </div>
+
 </div>
 
 <table class="table table-bordered table-hover for-display" id="tableFSVPTeamRoster">
@@ -54,13 +66,13 @@
             <th>Email</th>
             <th class="text-center" style="width: 75px;">Primary</th>
             <th class="text-center" style="width: 75px;">Alternate</th>
-            <th>Actions</th>
+            <th class="text-center" style="width: 80px;">Action</th>
         </tr>
     </thead>
     <tbody></tbody>
 </table>
-<hr>
-<div class="row">
+<!-- <hr> -->
+<div class="row hide">
     <div class="col-md-12">
         <h4>
             <strong>Verification</strong>

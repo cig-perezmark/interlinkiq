@@ -44,11 +44,15 @@
     </a>
     <span></span>
     <div>
-        <label role="button" class="btn blue-dark" style="margin-right: .5rem;">
+        <label role="button" class="btn blue-dark" style="margin-right: .5rem;" for="updateRosterToggle">
             <i class="fa fa-refresh icon-margin-right"></i>
-            <span>Update roster</span>
+            <span class="btnLabel">Update roster</span>
             <input type="checkbox" id="updateRosterToggle" class="hide">
         </label>
+        <button type="button" class="btn default hide" id="cancelUpdateBtn" style="margin-right: .5rem;">
+            <i class="fa fa-close icon-margin-right"></i>
+            Cancel
+        </button>
         <button type="button" class="btn default">
             <i class="fa fa-history icon-margin-right"></i>
             History

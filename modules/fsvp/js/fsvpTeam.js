@@ -1,6 +1,6 @@
 jQuery(function() {
     const newMemberForm = $('#newMemberForm');
-    const fsvpTeamTable = Init.dataTable($('#tableFSVPTeamRoster'));
+    const fsvpTeamTable = Init.dataTable($('#tableFSVPTeamRoster'), {paging: false});
     const actionColumnDT = fsvpTeamTable.dt.column(6);
     let newMemberModalErrorTimeout = null;
     let changeData = {};
@@ -8,6 +8,8 @@ jQuery(function() {
     fetchTeamRoster(fsvpTeamTable.dt);
     initMemberSearch(newMemberForm);
     actionColumnDT.visible(false)
+
+    $('.esign').eSign();
     
     // modal hide event hook 
     $('#modalAddMember').on('hidden.bs.modal', function() {

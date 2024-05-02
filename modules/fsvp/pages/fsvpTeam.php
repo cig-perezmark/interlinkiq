@@ -13,6 +13,9 @@
     justify-content: center;
 }
 
+.underline {
+    text-decoration: underline;
+}
 
 #tableFSVPTeamRoster .fsvp-trmt input[type=radio],
 #tableFSVPTeamRoster.for-display .fsvp-trmt i {
@@ -33,8 +36,10 @@
 }
 </style>
 
-<div class="alert alert-danger">
-    <strong>Important:</strong> The FSVP Team Roster needs verification.
+<div class="alert alert-info">
+    <strong>Important:</strong>
+    <span id="fsvpNoteMessage">The FSVP Team Roster needs review.</span>
+    <a href="#modalVerification" data-toggle="modal" class="small underline"><i id="fsvpBtnText">Review now</i></a>
 </div>
 
 <div class="d-flex margin-bottom-20" style="justify-content: space-between;">
@@ -53,7 +58,7 @@
             <i class="fa fa-close icon-margin-right"></i>
             Cancel
         </button>
-        <button type="button" class="btn default">
+        <button type="button" class="btn default" data-toggle="modal" data-target="#modalHistory">
             <i class="fa fa-history icon-margin-right"></i>
             History
         </button>
@@ -104,7 +109,6 @@
 </div>
 
 <!-- modal -->
-
 <div class="modal fade in" id="modalAddMember" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <form class="modal-content" role="form" id="newMemberForm">
@@ -180,6 +184,79 @@
                 <button type="submit" class="btn green">Submit </button>
             </div>
         </form>
+    </div>
+</div>
+<div class="modal fade in" id="modalHistory" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">History</h4>
+            </div>
+            <div class="modal-body form-body">
+                <p class="text-muted">
+                    No change history yet.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                <button type="button" class="btn green hide">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade in" id="modalVerification" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Verification</h4>
+            </div>
+            <div class="modal-body form-body">
+                <div class="row">
+                    <div class="col-md-12 margin-bottom-20">
+                        <h5><strong>Reviewed by</strong></h5>
+                        <hr>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label for=""><br>Reviewer's Name</label>
+                            <input type="text" class="form-control" placeholder="Enter reviewer's name">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Date</label>
+                            <input type="date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="esign"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 margin-bottom-20">
+                        <h5><strong>Approved by</strong></h5>
+                        <hr>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group">
+                            <label for=""><br>Approver's Name</label>
+                            <input type="text" class="form-control" placeholder="Enter approver's name">
+                        </div>
+                        <div class="form-group">
+                            <label for="">Date</label>
+                            <input type="date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="esign"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                <button type="button" class="btn green">Submit</button>
+            </div>
+        </div>
     </div>
 </div>
 

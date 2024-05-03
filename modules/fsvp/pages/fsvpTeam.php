@@ -34,6 +34,28 @@
 #tableFSVPTeamRoster.for-display .fsvp-trmt:has(input:checked) i.fa {
     display: inline;
 }
+
+.vfsvptrnavtab:has(input[type=radio]:checked) {
+    font-weight: bold;
+}
+
+.vfsvptrnavtab:hover {
+    text-decoration: underline;
+}
+
+.vfsvptr [data-sign] {
+    display: none;
+    align-items: center;
+    flex-direction: column;
+}
+
+.vfsvptr:has([name="vfsvptrnavtab"][value="review"]:checked) [data-sign=review] {
+    display: flex !important;
+}
+
+.vfsvptr:has([name="vfsvptrnavtab"][value="approve"]:checked) [data-sign=approve] {
+    display: flex !important;
+}
 </style>
 
 <div class="alert alert-info">
@@ -210,46 +232,43 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">Verification</h4>
+                <h4 class="modal-title">Verification of the FSVP Team Roster</h4>
             </div>
-            <div class="modal-body form-body">
-                <div class="row">
-                    <div class="col-md-12 margin-bottom-20">
-                        <h5><strong>Reviewed by</strong></h5>
-                        <hr>
+            <div class="modal-body form-body vfsvptr">
+                <h5>
+                    <label class="vfsvptrnavtab margin-right-10">
+                        Review
+                        <input type="radio" name="vfsvptrnavtab" value="review" class="hide" checked>
+                    </label>
+                    <label class="vfsvptrnavtab">
+                        Approve
+                        <input type="radio" name="vfsvptrnavtab" value="approve" class="hide">
+                    </label>
+                </h5>
+                <hr>
+                <div data-sign="review">
+                    <div class="form-group">
+                        <label for=""><br>Reviewer's Name</label>
+                        <input type="text" class="form-control" placeholder="Enter reviewer's name">
                     </div>
-                    <div class="col-md-5">
-                        <div class="form-group">
-                            <label for=""><br>Reviewer's Name</label>
-                            <input type="text" class="form-control" placeholder="Enter reviewer's name">
-                        </div>
-                        <div class="form-group">
-                            <label for="">Date</label>
-                            <input type="date" class="form-control">
-                        </div>
+                    <div class="form-group">
+                        <label for="">Date</label>
+                        <input type="date" class="form-control">
                     </div>
-                    <div class="col-md-7">
-                        <div class="esign"></div>
-                    </div>
+                    <h5 class="margin-bottom-20"><strong>Signature</strong></h5>
+                    <div style="width: 300px !important;" class="esign"></div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12 margin-bottom-20">
-                        <h5><strong>Approved by</strong></h5>
-                        <hr>
+                <div data-sign="approve">
+                    <div class="form-group">
+                        <label for=""><br>Approver's Name</label>
+                        <input type="text" class="form-control" placeholder="Enter approver's name">
                     </div>
-                    <div class="col-md-5">
-                        <div class="form-group">
-                            <label for=""><br>Approver's Name</label>
-                            <input type="text" class="form-control" placeholder="Enter approver's name">
-                        </div>
-                        <div class="form-group">
-                            <label for="">Date</label>
-                            <input type="date" class="form-control">
-                        </div>
+                    <div class="form-group">
+                        <label for="">Date</label>
+                        <input type="date" class="form-control">
                     </div>
-                    <div class="col-md-7">
-                        <div class="esign"></div>
-                    </div>
+                    <h5 class="margin-bottom-20"><strong>Signature</strong></h5>
+                    <div style="width: 300px !important;" class="esign"></div>
                 </div>
             </div>
             <div class="modal-footer">

@@ -252,6 +252,7 @@ if(isset($_GET['getFSVPRoster'])) {
     }
 }
 
+// updating fsvp team table
 if(isset($_GET['updateFSVPTeamRoster'])) {
     try {
         $updates = json_decode($_POST['updates'] ?? '[]', true);
@@ -296,4 +297,30 @@ if(isset($_GET['updateFSVPTeamRoster'])) {
         http_response_code(500);
         echo $e->getMessage();
     }
+}
+
+// fetching fsvpqi employees
+if(isset($_GET['getFSVPQIs'])) {
+    $fsvpId = fsvpqiJDId($conn, $user_id);
+    $result = $conn->select('tbl_hr_employee', "ID AS id, CONCAT(TRIM(first_name), ' ', TRIM(last_name)) AS name, job_description_id", "user_id = $user_id AND status = 1")->fetchAll(function ($data) use($fsvpId) {
+        $jds = array_map(function($d) { return intval($d); }, explode(', ', $data['job_description_id']));
+
+        if(in_array($fsvpId, $jds)){
+            unset($data['job_description_id']);
+            return $data;
+        }
+
+        return null;
+    });
+
+    $employees = [];
+    foreach($result as $row) {
+        if(isset($row) && !empty($row)) {
+            $employees[] = $row;   
+        }
+    }
+        
+    send_response([
+        'result' => $employees,
+    ]);
 }

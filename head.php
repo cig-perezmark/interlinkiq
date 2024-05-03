@@ -81,14 +81,11 @@
 				<nav id="navbar" class="navbar">
 					<ul>
 						<li><a class="<?php echo $site === "home" ? "active" : ""; ?>" href="/">Home</a></li>
-						<li><a class="" href="//consultareinc.com/shop">SOPKing</a></li>
-						<li><a class="<?php echo $site === "services" ? "active" : ""; ?>" href="management_services">Services</a></li>
-						<li><a class="<?php echo $site === "directory" ? "active" : ""; ?>" href="directory">Directory</a></li>
-						<li><a class="<?php echo $site === "blog" ? "active" : ""; ?>" href="blog_posts_table">Blog</a></li>
-						<li><a class="<?php echo $site === "forum" ? "active" : ""; ?>" href="forum/index">Forum</a></li>
-						<li><a class="<?php echo $site === "specialist" ? "active" : ""; ?>" href="specialist">Specialist</a></li>
+						<li class="d-none"><a class="<?php echo $site === "services" ? "active" : ""; ?>" href="management_services">Services</a></li>
+						<li class="d-none"><a class="<?php echo $site === "forum" ? "active" : ""; ?>" href="forum/index">Forum</a></li>
+						<li class="d-none"><a class="<?php echo $site === "specialist" ? "active" : ""; ?>" href="specialist">Specialist</a></li>
 						<li class="d-none"><a class="<?php if($site == "marketplace" OR $site == "marketplace-view") { echo 'active'; } ?>" href="marketplace">Marketplace</a></li>
-						<li class=""><a class="" href="grant">Grant Services</a></li>
+						<li class="d-none"><a class="" href="grant">Grant Services</a></li>
 						<li><a class="<?php if($site == "contact") { echo 'active'; } ?>" href="contact">Contact</a></li>
 						<?php 
 							// if(isset($_SESSION['unique_id'])) {

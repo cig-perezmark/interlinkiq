@@ -97,7 +97,17 @@
 							</div>
 						</div><!-- End footer info column-->
 
-						<div class="col-md-3 offset-md-3 footer-links">
+						<div class="col-md-3 footer-links">
+							<h4>Sites</h4>
+							<ul>
+								<li><a href="//consultareinc.com/">Consultare Inc. Group</a></li>
+								<li><a href="//consultareinc.com/training-ace/">Training Ace</a></li>
+								<li><a href="//consultareinc.com/shop/">SOPKing</a></li>
+								<li><a href="//itblaster.net/">IT Blaster</a></li>
+							</ul>
+						</div><!-- End footer links column-->
+
+						<div class="col-md-3 footer-links">
 							<h4>Link Categories</h4>
 							<ul>
 								<li><a href="/">Home</a></li>

@@ -1819,10 +1819,10 @@ License: You must have a valid license purchased only from themeforest(the above
                             <span class="title">App Catalog</span>
                             <span class="selected"></span>
                         </a>
-                    </li>
+                    </li> 
 
                     <?php
-                                if ($current_userEmployerID == 464) {
+                                if ($current_userEmployerID == 46400 OR $switch_user_id == 464) {
                                     echo '<li class="nav-item ">
                                         <a href="form-owned" class="nav-link">
                                             <i class="icon-graph"></i>
@@ -2028,6 +2028,15 @@ License: You must have a valid license purchased only from themeforest(the above
                         </a>
                     </li>
                     <?php } ?>
+                    <?php if($_COOKIE['ID'] == 481): ?>
+                        <li class="nav-item">
+                            <a href="eform_dashboard" class="nav-link" disabled>
+                                <i class="icon-graph"></i>
+                                <span class="title">E-Form Dashboard</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                    <?php endif; ?>
 
                     <?php if($current_userEmployeeID == 0 OR $current_userID == 95 OR $current_userID == 42 OR $current_userID == 88) { ?>
                     <li class="nav-item <?php echo $site === "job-ticket" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('job-ticket', $current_userEmployerID, $current_userEmployeeID); } ?>">
@@ -2284,7 +2293,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             
                             
                             
-                            if ($current_userEmployerID == 464) {
+                            if ($current_userEmployerID == 464000 OR $switch_user_id == 464) {
                                 echo '<li class="nav-item ">
                                     <a href="inventory" class="nav-link">
                                         <i class="icon-graph"></i>
@@ -2322,7 +2331,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                 </li>';
                             }
                         ?>
-                    <?php if($_COOKIE['ID'] == 481 OR $switch_user_id == 163 OR $_COOKIE['ID'] == 1167 OR $_COOKIE['ID'] == 117  ): ?>
+                    <?php if($_COOKIE['ID'] == 48100 OR $switch_user_id == 163 OR $_COOKIE['ID'] == 1167 OR $_COOKIE['ID'] == 117 OR $switch_user_id == 464 ): ?>
                     <li class="nav-item">
                         <a href="glp_dashboard" class="nav-link" disabled>
                             <i class="icon-graph"></i>
@@ -2330,15 +2339,8 @@ License: You must have a valid license purchased only from themeforest(the above
                             <span class="selected"></span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="eform_dashboard" class="nav-link" disabled>
-                            <i class="icon-graph"></i>
-                            <span class="title">E-Form Dashboard</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
                     <?php endif; ?>
-                    <?php if($_COOKIE['ID'] == 481 OR $switch_user_id == 163 OR $_COOKIE['ID'] == 1167 OR $_COOKIE['ID'] == 117 ): ?>
+                    <?php if($_COOKIE['ID'] == 48100 OR $switch_user_id == 163 OR $_COOKIE['ID'] == 1167 OR $_COOKIE['ID'] == 117 OR $switch_user_id == 464 ): ?>
                     <li class="nav-item">
                         <a href="equipment_register" class="nav-link" disabled>
                             <i class="icon-graph"></i>
@@ -2465,7 +2467,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         </a>
                     </li>
                     <?php endif ?>
-                    <?php if($_COOKIE['ID'] == 481): ?>
+                    <?php if($_COOKIE['ID'] == 48100 OR $switch_user_id == 464): ?>
                     <li class="nav-item <?php echo $site === "emp_dashboard" ? "active" : ""; ?>">
                         <a href="emp_dashboard" class="nav-link">
                             <i class="icon-target"></i>

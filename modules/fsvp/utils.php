@@ -83,3 +83,8 @@ function getEmployeesInfo($conn, $employeeIds, $jdIds) {
         'employees_info'=> $userAvatars,
     ];
 }
+
+function fsvpqiJDId($conn, $user_id) {
+    $result = $conn->execute("SELECT ID FROM tbl_hr_job_description WHERE title LIKE '%fsvpqi%' AND status = 1 AND user_id = ? LIMIT 1", $user_id)->fetchAssoc();
+    return $result['ID'];
+} 

@@ -12,6 +12,7 @@
     include_once ('database_forms.php'); 
     include_once ('header.php'); 
 ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <?php
     $performer_count = 0;
     // Construct your SQL query
@@ -144,7 +145,6 @@
                                                                                 echo "0 results";
                                                                             }
                                                                         }
-                                                                        
                                                                     ?>
                                                                     <li class="mt-list-item">
                                                                         <div class="list-todo-icon bg-white">
@@ -574,16 +574,17 @@
                         processData: false,
                         contentType: false,
                         success: function(res) {
+                            console.log(res)
                             // Close the modal
-                            $('#collab_modal').modal('hide');
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Cheers!',
-                                    text: 'Performer Successfully Added',
-                                    padding: '4em',
-                                    showConfirmButton: false,
-                                    timer: 1000
-                                });
+                            // $('#collab_modal').modal('hide');
+                            // Swal.fire({
+                            //     icon: 'success',
+                            //     title: 'Cheers!',
+                            //     text: 'Performer Successfully Added',
+                            //     padding: '4em',
+                            //     showConfirmButton: false,
+                            //     timer: 1000
+                            // });
                         },
                         error: function(xhr, status, error) {
                             // Handle errors or display messages as needed

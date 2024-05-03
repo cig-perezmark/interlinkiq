@@ -647,7 +647,7 @@
 																	0 => 'Pending',
 																	1 => 'Approved',
 																	2 => 'Non Approved',
-																	3 => 'Emergency Use Only',
+																	3 => 'Emergency Used Only / Spot Purchasing',
 																	4 => 'Do Not Use'
 																);
 
@@ -1198,7 +1198,7 @@
 																	0 => 'Pending',
 																	1 => 'Approved',
 																	2 => 'Non Approved',
-																	3 => 'Emergency Use Only',
+																	3 => 'Emergency Used Only / Spot Purchasing',
 																	4 => 'Do Not Use'
 																);
 
@@ -1457,7 +1457,7 @@
 																	0 => 'Pending',
 																	1 => 'Approved',
 																	2 => 'Non Approved',
-																	3 => 'Emergency Use Only',
+																	3 => 'Emergency Used Only / Spot Purchasing',
 																	4 => 'Do Not Use'
 																);
 
@@ -1942,7 +1942,7 @@
                                                                         <option value="0">Pending</option>
                                                                         <option value="1">Approved</option>
                                                                         <option value="2">Non-Approved</option>
-                                                                        <option value="3">Emergency Used Only</option>
+                                                                        <option value="3">Emergency Used Only / Spot Purchasing</option>
                                                                         <option value="4">Do Not Use</option>
                                                                     </select>
                                                                 </div>
@@ -2325,6 +2325,14 @@
 																<div class="form-group">
 																	<label class="control-label">Comments / Notes</label>
 																	<input class="form-control" type="text" name="audit_action_note" />
+																</div>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-md-3">
+																<div class="form-group">
+																	<label class="control-label">Audit Score</label>
+																	<input class="form-control" type="text" name="audit_score" />
 																</div>
 															</div>
 														</div>

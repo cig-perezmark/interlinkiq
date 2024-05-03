@@ -66,7 +66,7 @@ class mysqli_extended extends mysqli implements CRUD {
      * @throws Exception If an error occurs during query preparation, parameter
      *                   binding, or statement execution.
      */
-    public function execute(string $query, ...$args) {
+    public function execute(string $query) {
         try {
             if (!$this->query_closed) {
                 $this->query->close();
@@ -79,20 +79,21 @@ class mysqli_extended extends mysqli implements CRUD {
             }
 
             // Bind parameters
-            if (!empty($args)) {
-                $types = '';
-                $args_ref = [];
-
-                foreach ($args as $arg) {
-                    if (is_array($arg)) {
-                        foreach ($arg as &$a) {
-                            $types .= $this->_gettype($a);
-                            $args_ref[] = &$a;
-                        }
-                    } else {
-                        $types .= $this->_gettype($arg);
-                        $args_ref[] = &$arg;
-                    }
+            if (func_num_args() > 1) {
+                $x = func_get_args();
+                $args = array_slice($x, 1);
+				$types = '';
+                $args_ref = array();
+                foreach ($args as $k => &$arg) {
+					if (is_array($args[$k])) {
+						foreach ($args[$k] as $j => &$a) {
+							$types .= $this->_gettype($args[$k][$j]);
+							$args_ref[] = &$a;
+						}
+					} else {
+	                	$types .= $this->_gettype($args[$k]);
+	                    $args_ref[] = &$arg;
+					}
                 }
 
                 array_unshift($args_ref, $types);

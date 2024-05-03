@@ -18408,7 +18408,7 @@
                                     <option value="0" '; echo $row["status"] == 0 ? 'SELECTED':''; echo '>Pending</option>
                                     <option value="1" '; echo $row["status"] == 1 ? 'SELECTED':'';  echo '>Approved</option>
                                     <option value="2" '; echo $row["status"] == 2 ? 'SELECTED':'';  echo '>Non-Approved</option>
-                                    <option value="3" '; echo $row["status"] == 3 ? 'SELECTED':'';  echo '>Emergency Used Only</option>
+                                    <option value="3" '; echo $row["status"] == 3 ? 'SELECTED':'';  echo '>Emergency Used Only / Spot Purchasing</option>
                                     <option value="4" '; echo $row["status"] == 4 ? 'SELECTED':'';  echo '>Do Not Use</option>
                                 </select>
                             </div>
@@ -21098,8 +21098,10 @@
         $reviewed_date = !empty($reviewed_validity[0]) ? $reviewed_validity[0] : '';
         $reviewed_due = !empty($reviewed_validity[1]) ? $reviewed_validity[1] : '';
 
-        $sql = "INSERT INTO tbl_supplier (user_id, portal_user, page, name, vendor_code, address, phone, fax, email, website, category, industry, regulatory, contact, document, document_other, material, service, audit, audit_report, audit_certificate, audit_action, audit_filesize, audit_file_history, reviewed_by, reviewed_date, reviewed_due, status, notification, nda, organic, frequency, frequency_custom, last_modified)
-        VALUES ('$user_id', '$portal_user', '1', '$supplier_name',  '$vendor_code','$supplier_address', '$supplier_phone', '$supplier_fax', '$supplier_email', '$supplier_website', '$supplier_category', '$supplier_industry', '$regulatory', '$contact', '$document_name', '$document_other_name', '$material', '$service', '$audit', '$audit_report', '$audit_certificate', '$audit_action', '$audit_filesize', '$audit_file_history', '$reviewed_by', '$reviewed_date', '$reviewed_due', '$supplier_status', '$supplier_notification', '$nda', '$organic', '$supplier_frequency', '$supplier_frequency_custom', '$supplier_date')";
+        $audit_score = $_POST['audit_score'];
+
+        $sql = "INSERT INTO tbl_supplier (user_id, portal_user, page, name, vendor_code, address, phone, fax, email, website, category, industry, regulatory, contact, document, document_other, material, service, audit, audit_report, audit_certificate, audit_action, audit_filesize, audit_file_history, audit_score, reviewed_by, reviewed_date, reviewed_due, status, notification, nda, organic, frequency, frequency_custom, last_modified)
+        VALUES ('$user_id', '$portal_user', '1', '$supplier_name',  '$vendor_code','$supplier_address', '$supplier_phone', '$supplier_fax', '$supplier_email', '$supplier_website', '$supplier_category', '$supplier_industry', '$regulatory', '$contact', '$document_name', '$document_other_name', '$material', '$service', '$audit', '$audit_report', '$audit_certificate', '$audit_action', '$audit_filesize', '$audit_file_history', '$audit_score', '$reviewed_by', '$reviewed_date', '$reviewed_due', '$supplier_status', '$supplier_notification', '$nda', '$organic', '$supplier_frequency', '$supplier_frequency_custom', '$supplier_date')";
         if (mysqli_query($conn, $sql)) {
             $last_id = mysqli_insert_id($conn);
 
@@ -21932,6 +21934,8 @@
         $reviewed_date = !empty($reviewed_validity[0]) ? $reviewed_validity[0] : '';
         $reviewed_due = !empty($reviewed_validity[1]) ? $reviewed_validity[1] : '';
 
+        $audit_score = $_POST['audit_score'];
+
         // Temporary Data
         $temp_docs = array();
         $selectDataTemp_Docs = mysqli_query( $conn,"SELECT * FROM tbl_supplier_document WHERE supplier_id = $ID" );
@@ -21956,7 +21960,7 @@
         }
         $temp_document = json_encode($temp_docs);
 
-        mysqli_query( $conn,"UPDATE tbl_supplier set name='". $supplier_name ."', vendor_code='".$vendor_code."', address='". $supplier_address ."', phone='". $supplier_phone ."', fax='". $supplier_fax ."', email='". $supplier_email ."', website='". $supplier_website ."', category='". $supplier_category ."', industry='". $supplier_industry ."', regulatory='". $regulatory ."', contact='". $contact ."', document='". $document_name ."', document_other='". $document_other_name ."', material='". $material ."', service='". $service ."', audit='". $audit ."', audit_report='". $audit_report ."', audit_certificate='". $audit_certificate ."', audit_action='". $audit_action ."', audit_filesize='". $audit_filesize ."', audit_file_history='". $audit_file_history ."', reviewed_by='". $reviewed_by ."', reviewed_date='". $reviewed_date ."', reviewed_due='". $reviewed_due ."', status='". $supplier_status ."', notification='". $supplier_notification ."', nda='". $nda ."', organic='". $organic ."', frequency='". $supplier_frequency ."', frequency_custom='". $supplier_frequency_custom ."' WHERE ID='". $ID ."'" );
+        mysqli_query( $conn,"UPDATE tbl_supplier set name='". $supplier_name ."', vendor_code='".$vendor_code."', address='". $supplier_address ."', phone='". $supplier_phone ."', fax='". $supplier_fax ."', email='". $supplier_email ."', website='". $supplier_website ."', category='". $supplier_category ."', industry='". $supplier_industry ."', regulatory='". $regulatory ."', contact='". $contact ."', document='". $document_name ."', document_other='". $document_other_name ."', material='". $material ."', service='". $service ."', audit='". $audit ."', audit_report='". $audit_report ."', audit_certificate='". $audit_certificate ."', audit_action='". $audit_action ."', audit_filesize='". $audit_filesize ."', audit_file_history='". $audit_file_history ."', audit_score='". $audit_score ."', reviewed_by='". $reviewed_by ."', reviewed_date='". $reviewed_date ."', reviewed_due='". $reviewed_due ."', status='". $supplier_status ."', notification='". $supplier_notification ."', nda='". $nda ."', organic='". $organic ."', frequency='". $supplier_frequency ."', frequency_custom='". $supplier_frequency_custom ."' WHERE ID='". $ID ."'" );
         
         if (!mysqli_error($conn)) {
             $selectData = mysqli_query( $conn,'SELECT * FROM tbl_supplier WHERE ID="'. $ID .'" ORDER BY ID LIMIT 1' );

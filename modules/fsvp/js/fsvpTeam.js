@@ -1,12 +1,15 @@
 jQuery(function() {
     const newMemberForm = $('#newMemberForm');
-    const fsvpTeamTable = Init.dataTable($('#tableFSVPTeamRoster'));
+    const fsvpTeamTable = Init.dataTable($('#tableFSVPTeamRoster'), {paging: false});
     const actionColumnDT = fsvpTeamTable.dt.column(6);
     let newMemberModalErrorTimeout = null;
+    let changeData = {};
     
     fetchTeamRoster(fsvpTeamTable.dt);
     initMemberSearch(newMemberForm);
     actionColumnDT.visible(false)
+
+    $('.esign').eSign();
     
     // modal hide event hook 
     $('#modalAddMember').on('hidden.bs.modal', function() {
@@ -72,16 +75,100 @@ jQuery(function() {
 
     // toggle update to table
     $('#updateRosterToggle').change(function() {
-        const label = $(this).closest('label');
-        $('#tableFSVPTeamRoster')[this.checked ? 'removeClass' : 'addClass']('for-display');
-        $('#addMemberBtn')[this.checked ? 'addClass' : 'removeClass']('hide');
-        label.removeClass('blue blue-dark').addClass(this.checked ? 'blue' : 'blue-dark');
-        label.find('span').text(this.checked ? 'Save changes' : 'Update roster')
-        label.find('i').removeClass('fa-refresh fa-check').addClass(this.checked ? 'fa-check' : 'fa-refresh')
-        actionColumnDT.visible(this.checked)
+        const procBtn = (btn = this) => {
+            const label = $(btn).closest('label');
+            $('#tableFSVPTeamRoster')[btn.checked ? 'removeClass' : 'addClass']('for-display');
+            $('#addMemberBtn')[btn.checked ? 'addClass' : 'removeClass']('hide');
+            label.removeClass('blue blue-dark').addClass(btn.checked ? 'blue' : 'blue-dark');
+            label.find('span.btnLabel').text(btn.checked ? 'Save changes' : 'Update roster')
+            label.find('i').removeClass('fa-refresh fa-check').addClass(btn.checked ? 'fa-check' : 'fa-refresh')
+            actionColumnDT.visible(btn.checked);
+            $('#cancelUpdateBtn')[btn.checked ? 'removeClass' : 'addClass']('hide');
+        }
+        
+        var btn = this;
+        if (!this.checked && Object.entries(changeData).length) {
+            // var l = Ladda.create(this.closest('label'));
+            // l.start();
+
+            const data = new FormData();
+            data.append('updates', JSON.stringify(changeData));
+
+            $.ajax({
+                url: Init.baseUrl + "updateFSVPTeamRoster",
+                type: "POST",
+                contentType: false,
+                processData: false,
+                data,
+                success: function({message}) {
+                    if(message) {
+                        bootstrapGrowl(message || 'Updated successfully!');
+                    }
+                    changeData = {}; // reset
+                    procBtn();
+                },
+                error: function(err) {
+                    console.error(err)
+                    bootstrapGrowl('Unable to complete action.');
+                },
+                complete: function() {
+                    // l.stop();
+                    // setTimeout(() => {
+                    //     procBtn(btn);
+                    // }, 2000)
+                }
+            });
+            
+            return;
+        }
+
+        procBtn(this);
     });
 
+    // cancel updates
+    $('#cancelUpdateBtn').click(function() {
+        $('#updateRosterToggle').prop('checked', false).trigger('change');
+        fetchTeamRoster(fsvpTeamTable.dt);
+    });
 
+    // remove event
+    $('#tableFSVPTeamRoster').on('click', 'button[data-removebtn]', function(e) {
+        const id = this.dataset.removebtn;
+        const name = this.dataset.name;
+        const tr =  $(this).parents('tr');
+
+        if(!id) return;
+
+        swal(
+            {
+                title: `Remove "${name}" from the team roster?`,
+                type: "warning",
+                allowOutsideClick: false,
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonClass: "btn red",
+                cancelButtonClass: "btn default",
+                closeOnConfirm: true,
+                closeOnCancel: true,
+                confirmButtonText: "Confirm action",
+                cancelButtonText: "Cancel",
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                   fsvpTeamTable.dt.row(tr).remove().draw();
+                   changeData[id] = {remove: true}; 
+                }
+            }
+        );
+    });
+
+    // switching member types
+    $('#tableFSVPTeamRoster').on('change', '.fsvp-trmt input[type=radio]', function(e) {
+        const id = this.dataset.id || null;
+        if(this.checked && id) {
+            changeData[id] = {type: this.value};
+        }
+    });
 });
 
 function fetchTeamRoster(dt) {
@@ -121,7 +208,7 @@ function renderDTRow(dt, d) {
             </div>
         `,
         `   <div class="d-flex center">
-                <button type="button" class="btn-link font-red">
+                <button type="button" class="btn-link font-red" data-removebtn="${d.id}" data-name="${d.name}">
                     <i class="fa fa-trash-o icon-margin-right font-red"></i>
                     Remove
                 </button>

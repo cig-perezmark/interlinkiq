@@ -170,7 +170,7 @@
                                                         $switch_logo = $rowEnterprise["BrandLogos"];
 
                                                         echo '<div class="mt-action">
-                                                            <div class="mt-action-img"><img src="'.$base_url.'companyDetailsFolder/'.$switch_logo.'" style="width: 39px; height: 39px; object-fit: cover; object-position: center; border: 1px solid #ccc;"></div>
+                                                            <div class="mt-action-img"><img src="'.$base_url.'companyDetailsFolder/'.$switch_logo.'" style="width: 39px; height: 39px; object-fit: contain; object-position: center; border: 1px solid #ccc;"></div>
                                                             <div class="mt-action-body">
                                                                 <div class="mt-action-row">
                                                                     <div class="mt-action-info ">
@@ -249,7 +249,7 @@
                                                         $switch_logo = $rowSupplier["e_BrandLogos"];
                                                         
                                                         echo '<div class="mt-action">
-                                                            <div class="mt-action-img"><img src="'.$base_url.'companyDetailsFolder/'.$switch_logo.'" style="width: 39px; height: 39px; object-fit: cover; object-position: center;"></div>
+                                                            <div class="mt-action-img"><img src="'.$base_url.'companyDetailsFolder/'.$switch_logo.'" style="width: 39px; height: 39px; object-fit: contain; object-position: center;"></div>
                                                             <div class="mt-action-body">
                                                                 <div class="mt-action-row">
                                                                     <div class="mt-action-info ">

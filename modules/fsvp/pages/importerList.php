@@ -9,7 +9,7 @@
     </a>
 </div>
 
-<table class="table table-bordered table-hover" id="tableSupplierList">
+<table class="table table-bordered table-hover" id="tableImporterList">
     <thead>
         <tr>
             <th>Supplier Name</th>
@@ -18,7 +18,7 @@
             <th>Evaluation Date</th>
             <th>Supplier Agreement</th>
             <th>FSVP Compliance Statement</th>
-            <th data-nosort="true"></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody></tbody>

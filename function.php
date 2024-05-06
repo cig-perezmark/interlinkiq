@@ -535,7 +535,11 @@
     			unset($_COOKIE['client']);
     	    	setcookie('client', '', time() - 3600, '/'); // empty value and old timestamp
         		echo '<script>window.location.href = "CannOS-Login"</script>';
-        	} else {
+        	} else if ($_COOKIE['client'] == 2)  {
+                unset($_COOKIE['client']);
+                setcookie('client', '', time() - 3600, '/'); // empty value and old timestamp
+                echo '<script>window.location.href = "FoodSafety360"</script>';
+            } else {
     			unset($_COOKIE['client']);
     	    	setcookie('client', '', time() - 3600, '/'); // empty value and old timestamp
         		echo '<script>window.location.href = "login"</script>';
@@ -614,7 +618,7 @@
 		$exist = false;
 		$message = 'Email Address is already exist. Please try again!<br>If you need some help, please click <a href="#modalService" data-toggle="modal"><strong>here</strong></a>';
 
-		$selectEmail = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE client = $client AND email = '".$email."'");
+		$selectEmail = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE email = '".$email."'");
 		if ( mysqli_num_rows($selectEmail) > 0 ) { $exist = true; }
 
 		if ($exist == false) {
@@ -792,7 +796,7 @@
 		$exist = false;
 		$message = 'Email Address is already exist. Please try again!';
 
-		$selectEmail = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE client = $client AND email = '".$email."'");
+		$selectEmail = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE email = '".$email."'");
 		if ( mysqli_num_rows($selectEmail) > 0 ) { $exist = true; }
 
 		if ($exist == false) {
@@ -931,6 +935,185 @@
 		);
 		echo json_encode($output);
 	}
+
+
+    // FOOD SAFETY 360
+    if( isset($_POST['btnSignIn_FS360']) ) {
+        $client = $_POST['client'];
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);
+        $exist = false;
+        $exist_email = false;
+        $exist_username = false;
+        $isPasswordCorrect = false;
+        $message = 'Incorrect details. Please try again!<br>If you need some help, please click <a href="#modalService" data-toggle="modal"><strong>here</strong></a>';
+
+        $selectEmail = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE client = $client AND is_active = 1 AND email = '". $email ."'" );
+        if ( mysqli_num_rows($selectEmail) > 0 ) {
+            while($rowUser = mysqli_fetch_array($selectEmail)) {
+                $ID = $rowUser['ID'];
+                $first_name = $rowUser['first_name'];
+                $last_name = $rowUser['last_name'];
+                $password_verify = $rowUser['password'];
+                $client = $rowUser['client'];
+                $is_verified = $rowUser['is_verified'];
+                $is_active = $rowUser['is_active'];
+                $employee_id = $rowUser['employee_id'];
+
+                $driver_license = '';
+                $selectUserInfo = mysqli_query( $conn,"SELECT * FROM tbl_user_info WHERE user_id = $ID" );
+                if ( mysqli_num_rows($selectUserInfo) > 0 ) {
+                    $rowUserInfo = mysqli_fetch_array($selectUserInfo);
+                    $driver_license = $rowUserInfo['driver_license'];
+                }
+
+                $isPasswordCorrect = password_verify($password, $password_verify);
+                if ($isPasswordCorrect == true) {
+                    if ($is_active == 1 and $is_verified == 1) {
+                        $exist = true;
+                        $message = "Log In successfully";
+
+                        setcookie('ID', $ID, time() + (86400 * 1), "/");  // 86400 = 1 day
+                        setcookie('first_name', $first_name, time() + (86400 * 1), "/");  // 86400 = 1 day
+                        setcookie('last_name', $last_name, time() + (86400 * 1), "/");  // 86400 = 1 day
+                        setcookie('employee_id', $employee_id, time() + (86400 * 1), "/");  // 86400 = 1 day
+                        setcookie('client', $client, time() + (86400 * 1), "/");  // 86400 = 1 day
+                        setcookie('driver_license', $driver_license, time() + (86400 * 1), "/");  // 86400 = 1 day
+                    } else if ($is_active == 1 and $is_verified == 0) {
+                        $message = 'Please check your email to verify this account!<br>If you need some help, please click <a href="#modalService" data-toggle="modal"><strong>here</strong></a>';
+                    }
+                }
+            }
+        }
+
+        unset($_COOKIE['locked']);
+        setcookie('locked', '', time() - 3600, '/'); // empty value and old timestamp
+
+        $output = array(
+            'message' => $message,
+            'password' => $isPasswordCorrect,
+            'exist' => $exist
+        );
+        echo json_encode($output);
+    }
+    if( isset($_POST['btnSignUp_FS360']) ) {
+        $ID = $_POST['ID'];
+        if (empty($ID)) { $ID = 0; }
+        
+        $client = $_POST['client'];
+        $first_name = addslashes($_POST['first_name']);
+        $last_name = addslashes($_POST['last_name']);
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);
+        $exist = false;
+        $message = 'Email Address is already exist. Please try again!<br>If you need some help, please click <a href="#modalService" data-toggle="modal"><strong>here</strong></a>';
+
+        $selectEmail = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE email = '".$email."'");
+        if ( mysqli_num_rows($selectEmail) > 0 ) { $exist = true; }
+
+        if ($exist == false) {
+            $sql = "INSERT INTO tbl_user (employee_id, first_name, last_name, email, password, client)
+            VALUES ( '$ID', '$first_name', '$last_name', '$email', '$password_hash', '$client')";
+            if (mysqli_query($conn, $sql)) {
+                // $last_id = mysqli_insert_id($conn);
+
+                // $to = $email;
+                // $user = $first_name .' '. $last_name;
+                // $subject = 'Welcome to InterlinkIQ.com';
+                // $body = 'Hi '. $first_name .', please click <a href="'. $base_url .'login?c=1&i='. $last_id .'">here</a> to confirm your account';
+                
+                // $mail = php_mailer($to, $user, $subject, $body);
+                // $message = 'Registration success. Please check your email for validation.';
+                $message = 'Welcome to InterlinkIQ Community! Please log in to your account.';
+            }
+            // else {
+            //     $message = "Error: " . $sql . "<br>" . mysqli_error($conn);
+            // }
+        }
+        $output = array(
+            'exist' => $exist,
+            'message' => $message
+        );
+        echo json_encode($output);
+    }
+    if( isset($_POST['btnReset_FS360']) ) {
+        $email = $_POST['email'];
+        $random = rand(1000,1000000);
+        $exist = false;
+
+        $selectEmail = mysqli_query( $conn,'SELECT * FROM tbl_user WHERE is_active = 1 AND email="'. $email .'"' );
+        if ( mysqli_num_rows($selectEmail) > 0 ) {
+            while($rowUser = mysqli_fetch_array($selectEmail)) {
+                $ID = $rowUser['ID'];
+
+                mysqli_query( $conn,"UPDATE tbl_user set verification_code='". $random ."' WHERE ID='". $ID ."'" );
+
+                $to = $rowUser['email'];
+                $user = $rowUser['first_name'] .' '. $rowUser['last_name'];
+                $subject = 'Reset your password';
+                $body = 'Hi '.$user.',<br><br>
+
+                We received a request that you want to update your password. You can do this by selecting the button below. You will be asked to enter your verification code, and then you can update your password.<br><br>
+
+                Your verification code is <b>'.$random.'</b>.<br><br>
+
+                <a href="'. $base_url .'FoodSafety360?p=1&i='. $ID .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">Update Password</a>';
+
+                $mail = php_mailer($to, $user, $subject, $body);
+
+                $message = 'Please check your email to reset your password.';
+                $exist = true;
+            }
+        } else {
+            $message = 'Email Address does not exist. Please try again! If you need some help, please click <a href="#modalService" data-toggle="modal"><strong>here</strong></a>';
+        }
+        $output = array(
+            'exist' => $exist,
+            'message' => $message
+        );
+        echo json_encode($output);
+    }
+    if( isset($_POST['btnResetPassword_FS360']) ) {
+        $ID = $_POST['ID'];
+        $code = $_POST['code'];
+        $password = $_POST['npassword'];
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);
+        $exist = false;
+        $message = 'Verification Code is Incorrect. Please try again! If you need some help, please click <a href="#modalService" data-toggle="modal"><strong>here</strong></a>';
+
+        $selectUser = mysqli_query( $conn,'SELECT * FROM tbl_user WHERE verification_code IS NOT NULL AND is_active = 1 AND ID="'. $ID .'"' );
+        if ( mysqli_num_rows($selectUser) > 0 ) {
+            while($rowUser = mysqli_fetch_array($selectUser)) {
+                $verification_code = $rowUser['verification_code'];
+
+                if ($verification_code == $code) {
+                    mysqli_query( $conn,"UPDATE tbl_user set password='". $password_hash ."' WHERE ID='". $ID ."'" );
+
+                    $to = $rowUser['email'];
+                    $user = $rowUser['first_name'] .' '. $rowUser['last_name'];
+                    $subject = 'Password Updated!';
+                    $body = 'Hi '.$user.',<br><br>
+
+                    Please login your account using your new password!<br><br>
+
+                    <a href="'. $base_url .'FoodSafety360" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">Login Here</a>';
+
+                    $mail = php_mailer($to, $user, $subject, $body);
+
+                    $exist = true;
+                    $message = 'Password Updated! Kindly login with your updated details.';
+                }
+            }
+        }
+
+        $output = array(
+            'exist' => $exist,
+            'message' => $message
+        );
+        echo json_encode($output);
+    }
 
 
 	// COLLABORATION
@@ -1843,7 +2026,9 @@
 			$client_url = 'login';
 			if ($client == 1) {
 				$client_url = 'CannOS-Login';
-			}
+			} else if ($client == 2) {
+                $client_url = 'FoodSafety360';
+            }
         }
 
 		echo '<input class="form-control" type="hidden" name="ID" value="'. $row['ID'] .'" />
@@ -2450,7 +2635,9 @@
 				$client_url = 'login';
 				if ($client == 1) {
 					$client_url = 'CannOS-Login';
-				}
+				} else if ($client == 2) {
+                    $client_url = 'FoodSafety360';
+                }
 
                 $selectEnterprise = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE users_entities = $user_id" );
                 if ( mysqli_num_rows($selectEnterprise) > 0 ) {
@@ -2495,7 +2682,19 @@
                         Should you need assistance, kindly email <a href="mailto:CannOS@begreenlegal.com" target="_blank">CannOS@begreenlegal.com</a><br><br>
 
                         Cann OS Team';
-                	} else {
+                	} elseif ($_COOKIE['client'] == 2) {
+                        $subject = 'Welcome to Food Safety 360!';
+                        $body = 'Hi '. $data_first_name .',<br><br>
+
+                        Your employer, '.$data_company.',<br><br>
+
+                        invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">FoodSafety360</a> to connect with your assigned duties, work, and tasks. 
+                        If you experience difficulties opening the website, kindly use this link instead <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">'. $base_url . $client_url .'?r=1&i='. $last_id .'</a><br><br>
+
+                        Should you need assistance, kindly email <a href="mailto:foodsafety360r@gmail.com" target="_blank">foodsafety360r@gmail.com</a><br><br>
+
+                        Cann OS Team';
+                    } else {
 						$subject = 'You are invited!';
 						$body = 'Hi '. $data_first_name .',<br><br>
 
@@ -2586,7 +2785,9 @@
 					$client_url = 'login';
 					if ($client == 1) {
 						$client_url = 'CannOS-Login';
-					}
+					} else if ($client == 2) {
+                        $client_url = 'FoodSafety360';
+                    }
 
 					$position = array();
 					$jd = $rowData["job_description_id"];
@@ -2646,7 +2847,19 @@
                             Should you need assistance, kindly email <a href="mailto:CannOS@begreenlegal.com" target="_blank">CannOS@begreenlegal.com</a><br><br>
 
                             Cann OS Team';
-                    	} else {
+                    	} else if ($_COOKIE['client'] == 2) {
+                            $subject = 'Welcome to Cann OS!';
+                            $body = 'Hi '. $data_first_name .',<br><br>
+
+                            Your employer, '.$data_company.',<br><br>
+
+                            invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">Food Safety 360</a> to connect with your assigned duties, work, and tasks. 
+                            If you experience difficulties opening the website, kindly use this link instead <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">'. $base_url . $client_url .'?r=1&i='. $last_id .'</a><br><br>
+
+                            Should you need assistance, kindly email <a href="mailto:foodsafety360r@gmail.com" target="_blank">foodsafety360r@gmail.com</a><br><br>
+
+                            Cann OS Team';
+                        } else {
 							$subject = 'You are invited!';
 							$body = 'Hi '. $data_first_name .',<br><br>
 
@@ -2912,6 +3125,10 @@
                     $from = 'CannOS@begreenlegal.com';
                     $name = 'BeGreenLegal';
                     $body .= 'Cann OS Team';
+                } else if ($_COOKIE['client'] == 2) {
+                    $from = 'foodsafety360r@gmail.com';
+                    $name = 'FoodSafety360';
+                    $body .= 'Food Safety Procedure';
                 } else {
                     $from = 'services@interlinkiq.com';
                     $name = 'InterlinkIQ';
@@ -3957,7 +4174,11 @@
 					            <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
                             </div>
                             <div class="col-md-4">
-                                <input class="form-control" type="text" name="language" placeholder="Language" required />
+                                <select class="form-control" name="language" required="">
+                                    <option value="0">English</option>
+                                    <option value="1">Spanish</option>
+                                    <option value="2">Arabic</option>
+                                </select>
                             </div>
                             <div class="col-md-2 text-right">
                                 <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
@@ -4124,6 +4345,29 @@
                             	<div data-repeater-list="document">';
 
 				                    if (!empty($output_file)) {
+                                        echo '<div class="mt-repeater-item mt-repeater-item-hide row" data-repeater-item>
+                                            <div class="col-md-6">
+                                                <select class="form-control" name="filetype" onchange="changeType(this)" required>
+                                                    <option value="0">Select option</option>
+                                                    <option value="1">Manual Upload</option>
+                                                    <option value="2">Youtube URL</option>
+                                                    <option value="3">Google Drive URL</option>
+                                                </select>
+                                                <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
+                                                <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
+                                            </div>
+                                            <div class="col-md-4">
+                                                <select class="form-control" name="language" required="">
+                                                    <option value="0">English</option>
+                                                    <option value="1">Spanish</option>
+                                                    <option value="2">Arabic</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-2 text-right">
+                                                <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
+                                            </div>
+                                        </div>';
+
 		                                foreach ($output_file as $key => $value) {
 		                                    $file_lang = $value['file_lang'];
 
@@ -4161,7 +4405,11 @@
                                                     <p class="'; echo !empty($file_doc) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$file_doc.'" data-src="'.$file_doc.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
 		                                        </div>
 		                                        <div class="col-md-4">
-		                                            <input class="form-control" type="text" name="language" placeholder="Language" value="'.$file_lang.'" required />
+                                                    <select class="form-control" name="language" required="">
+                                                        <option value="0" '; echo $file_lang == 0 ? 'SELECTED':''; echo '>English</option>
+                                                        <option value="1" '; echo $file_lang == 1 ? 'SELECTED':''; echo '>Spanish</option>
+                                                        <option value="2" '; echo $file_lang == 2 ? 'SELECTED':''; echo '>Arabic</option>
+                                                    </select>
 		                                        </div>
 		                                        <div class="col-md-2 text-right">
 		                                            <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
@@ -4181,7 +4429,11 @@
 									            <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
 	                                        </div>
 	                                        <div class="col-md-4">
-	                                            <input class="form-control" type="text" name="language" placeholder="Language" required />
+                                                <select class="form-control" name="language" required="">
+                                                    <option value="0">English</option>
+                                                    <option value="1">Spanish</option>
+                                                    <option value="2">Arabic</option>
+                                                </select>
 	                                        </div>
 	                                        <div class="col-md-2 text-right">
 	                                            <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
@@ -4968,9 +5220,11 @@
                         $filetype = addslashes($_POST['document'][$i]['filetype']);
 
                         if ($filetype == 0) {
-                            $filetype = addslashes($_POST['document'][$i]['file_doctype_temp']);
-                            $file_docs = addslashes($_POST['document'][$i]['file_doc_temp']);
-                            $filesize = 0;
+                            if (isset($_POST['document'][$i]['file_doctype_temp']) OR isset($_POST['document'][$i]['file_doc_temp'])) {
+                                $filetype = addslashes($_POST['document'][$i]['file_doctype_temp']);
+                                $file_docs = addslashes($_POST['document'][$i]['file_doc_temp']);
+                                $filesize = 0;
+                            }
                         } else if ($filetype == 1) {
                             $files = implode('*', $_FILES['document']['name'][$i]);
                             $filesize = implode('*', $_FILES['document']['size'][$i]);
@@ -4983,20 +5237,22 @@
                             $filesize = 0;
                         }
 
-                        $output = array (
-                            'type'  =>  $filetype,
-                            'name' =>  $files,
-                            'size' =>  $filesize,
-                            'date' =>  $local_date
-                        );
-                        array_push($arr_item, $output);;
+                        if (!empty($file_docs)) {
+                            $output = array (
+                                'type'  =>  $filetype,
+                                'name' =>  $files,
+                                'size' =>  $filesize,
+                                'date' =>  $local_date
+                            );
+                            array_push($arr_item, $output);;
 
-                        $file_data = array (
-                            'file_type' => $filetype,
-                            'file_doc' => $file_docs,
-                            'file_lang' => $language
-                        );
-                        array_push( $arr_file, $file_data );
+                            $file_data = array (
+                                'file_type' => $filetype,
+                                'file_doc' => $file_docs,
+                                'file_lang' => $language
+                            );
+                            array_push( $arr_file, $file_data );
+                        }
                     }
                     $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
                     $file_docs = json_encode($arr_file);
@@ -15861,7 +16117,15 @@
 
 						Cann OS Team<br>
 						BeGreen Legal';
-					} else {
+					} else if ($_COOKIE['client'] == 2) {
+                        $subject = 'Welcome to Food Safety 360!';
+                        $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'CannOS-Login" target="_blank">FoodSafety360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'CannOS-Login" target="_blank">https://interlinkiq.com/FoodSafety360</a>.<br><br>
+
+                        Should you need assistance, kindly email <a href="mailto:foodsafety360r@gmail.com" target="_blank">foodsafety360r@gmail.com.<br><br>
+
+                        Food Safety 360<br>
+                        BeGreen Legal';
+                    } else {
 		    			$subject = 'You are invited!';
 		    			$body = 'Hi '.$user.',<br><br>
 		    
@@ -15963,7 +16227,17 @@
                             
                                         Cann OS Team<br>
                                         BeGreenLegal';
-									} else {
+									} else if ($_COOKIE['client'] == 2) {
+                                        $subject = 'Welcome to Cann OS!';
+                                        $body = 'Hi '.$user.',<br><br>
+                            
+                                        Your supplier FoodSafety360, invites you to <a href="'.$base_url.'FoodSafety360" target="_blank">Food Safety 360</a> to connect and manage your Food Safety operation(s).<br><br>
+
+                                        Should you need assistance, kindly email <a href="mailto:foodsafety360r@gmail.com">foodsafety360r@gmail.com.</a><br><br>
+                            
+                                        Cann OS Team<br>
+                                        BeGreenLegal';
+                                    } else {
 		                    			$body = 'Hi '.$user.',<br><br>
 		                    
 		                    			Your supplier, '.$data_company.', invites you to <a href="'. $base_url .'" target="_blank">InterlinkIQ.com</a> to connect and share documents to comply with Customers\' Supplier Approval Program Requirements.<br><br>
@@ -21550,6 +21824,13 @@
 
                         Cann OS Team<br>
                         BeGreen Legal';
+                    } else if ($_COOKIE['client'] == 2) {
+                        $subject = 'Welcome to Cann OS!';
+                        $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'FoodSafety360" target="_blank">Food Safe</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'FoodSafety360" target="_blank">https://interlinkiq.com/FoodSafety360</a>.<br><br>
+
+                        Should you need assistance, kindly email <a href="mailto:foodsafety360r@gmail.com" target="_blank">nnelson@begreenlegal.com</a>.<br><br>
+
+                        FoodSafety360 Team';
                     } else {
                         $subject = $data_company.' Customer Invitation via InterlinkIQ.com';
                         $body = 'Hi '.$user.',<br><br>
@@ -21646,6 +21927,14 @@
                                         $body = 'Be Green Legal, invites you to join <a href="'.$base_url.'CannOS-Login" target="_blank">Cann OS</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'CannOS-Login" target="_blank">https://interlinkiq.com/CannOS-Login</a>.<br><br>
 
                                         Should you need assistance, kindly email <a href="mailto:nnelson@begreenlegal.com" target="_blank">nnelson@begreenlegal.com</a>.<br><br>
+
+                                        Cann OS Team<br>
+                                        BeGreen Legal';
+                                    } else if ($_COOKIE['client'] == 2) {
+                                        $subject = 'Welcome to Cann OS!';
+                                        $body = 'Food Safety, invites you to join <a href="'.$base_url.'FoodSafety360" target="_blank">Food Safe</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'FoodSafety360" target="_blank">https://interlinkiq.com/FoodSafety360</a>.<br><br>
+
+                                        Should you need assistance, kindly email <a href="mailto:foodsafety360r@gmail.com" target="_blank">foodsafety360r@gmail.com</a>.<br><br>
 
                                         Cann OS Team<br>
                                         BeGreen Legal';
@@ -22567,7 +22856,10 @@
                     if (!empty($requirement_email)) {
                         $to = $supplier_email;
                         $user = $supplier_name;
-                        $subject = $data_company.' Supplier Invitation via '; $subject .= $_COOKIE['client'] == 1 ? 'CannOS.':'InterlinkIQ.com.';;
+                        $subject = $data_company.' Supplier Invitation via ';
+                        if ($_COOKIE['client'] == 1) { $data_company.'CannOS.'; } 
+                        else if ($_COOKIE['client'] == 2) { $data_company.'Food Safety 360.'; } 
+                        else { $data_company.'InterlinkIQ.com.'; }
                         $body = 'Hi '.$user.' Food Safety Team,<br><br>';
 
                         if ($user_id == 254) {
@@ -41081,6 +41373,10 @@
                                 $from = 'CannOS@begreenlegal.com';
                                 $name = 'BeGreenLegal';
                                 $body .= '<br><br>Cann OS Team';
+                            } else if ($_COOKIE['client'] == 2) {
+                                $from = 'foodsafety360r@gmail.com';
+                                $name = 'FoodSafety360';
+                                $body .= '<br><br>FoodSafety360';
                             } else {
                                 $from = 'services@interlinkiq.com';
                                 $name = 'InterlinkIQ';
@@ -41122,6 +41418,10 @@
                         $from = 'CannOS@begreenlegal.com';
                         $name = 'BeGreenLegal';
                         $body .= '<br><br>Cann OS Team';
+                    } else if ($_COOKIE['client'] == 2) {
+                        $from = 'foodsafety360r@gmail.com';
+                        $name = 'FoodSafety360';
+                        $body .= '<br><br>FoodSafety360';
                     } else {
                         $from = 'services@interlinkiq.com';
                         $name = 'InterlinkIQ';
@@ -44110,6 +44410,10 @@
                                             $from = 'CannOS@begreenlegal.com';
                                             $name = 'BeGreenLegal';
                                             $body .= 'Cann OS Team';
+                                        } else if ($_COOKIE['client'] == 2) {
+                                            $from = 'foodsafety360r@gmail.com';
+                                            $name = 'FoodSafety360';
+                                            $body .= '<br><br>FoodSafety360';
                                         } else {
                                             $from = 'services@interlinkiq.com';
                                             $name = 'InterlinkIQ';
@@ -45761,7 +46065,7 @@
 		                                                    <div class="mt-action-row">
 		                                                        <div class="mt-action-info">
 		                                                            <div class="mt-action-icon">
-		                                                            	<img class="img-circle" src="'. $comment_avatar .'" alt="'.$comment_name.'" style="width: 40px; height: 40px; object-fit: cover;"/>
+		                                                            	<img class="img-circle" src="'. $comment_avatar .'" alt="'.$comment_name.'" style="width: 40px; height: 40px; object-fit: contain;"/>
 		                                                            </div>
 		                                                            <div class="mt-action-details" style="vertical-align: middle;">
 		                                                                <p class="mt-action-desc">
@@ -47264,7 +47568,7 @@
                                                     <div class="mt-action-row">
                                                         <div class="mt-action-info">
                                                             <div class="mt-action-icon">
-                                                            	<img class="img-circle" src="'. $comment_avatar .'" alt="'.$comment_name.'" style="width: 40px; height: 40px; object-fit: cover;"/>
+                                                            	<img class="img-circle" src="'. $comment_avatar .'" alt="'.$comment_name.'" style="width: 40px; height: 40px; object-fit: contain;"/>
                                                             </div>
                                                             <div class="mt-action-details" style="vertical-align: middle;">
                                                                 <p class="mt-action-desc">
@@ -50000,7 +50304,6 @@
                 <select class="form-control" name="filetype" onchange="changeType(this)" required>
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
-                    <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
@@ -50087,7 +50390,6 @@
                 <select class="form-control '; echo !empty($files) ? 'hide':''; echo '" name="filetype" onchange="changeType(this)" required>
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
-                    <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
@@ -50765,6 +51067,7 @@
 						<a href="'. $base_url .'dashboard?d='. $parent_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
 		    
                         if ($_COOKIE['client'] == 1) { $body .= '<br><br>Cann OS Team'; }
+                        else if ($_COOKIE['client'] == 2) { $body .= '<br><br>FoodSafety360 Team'; }
                         
 		    			php_mailer_1($to, $user, $subject, $body, $from, $sender);
 					}
@@ -50861,7 +51164,6 @@
                 <select class="form-control" name="filetype" onchange="changeType(this)" required>
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
-                    <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
@@ -50977,7 +51279,6 @@
                 <select class="form-control '; echo !empty($files) ? 'hide':''; echo '" name="filetype" onchange="changeType(this)" required>
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
-                    <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
@@ -51015,7 +51316,6 @@
                 <select class="form-control" name="filetype" onchange="changeType(this)" required>
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
-                    <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
@@ -51078,7 +51378,6 @@
                 <select class="form-control '; echo !empty($files) ? 'hide':''; echo '" name="filetype" onchange="changeType(this)" required>
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
-                    <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
@@ -51185,6 +51484,10 @@
                 $from = 'CannOS@begreenlegal.com';
                 $name = 'BeGreenLegal';
                 $body .= 'Cann OS Team';
+            } else if ($_COOKIE['client'] == 2) {
+                $from = 'foodsafety360r@gmail.com';
+                $name = 'Food Safety 360';
+                $body .= 'Food Safety 360';
             } else {
                 $from = 'services@interlinkiq.com';
                 $name = 'InterlinkIQ';
@@ -51424,6 +51727,10 @@
                         $from = 'CannOS@begreenlegal.com';
                         $name = 'BeGreenLegal';
                         $body .= 'Cann OS Team';
+                    } else if ($_COOKIE['client'] == 2) {
+                        $from = 'foodsafety360r@gmail.com';
+                        $name = 'Food Safety 360';
+                        $body .= 'Food Safety 360';
                     } else {
                         $from = 'services@interlinkiq.com';
                         $name = 'InterlinkIQ';
@@ -51744,6 +52051,10 @@
                         $from = 'CannOS@begreenlegal.com';
                         $name = 'BeGreenLegal';
                         $body .= 'Cann OS Team';
+                    } else if ($_COOKIE['client'] == 2) {
+                        $from = 'foodsafety360r@gmail.com';
+                        $name = 'Food Safety 360';
+                        $body .= 'Food Safety 360';
                     } else {
                         $from = 'services@interlinkiq.com';
                         $name = 'InterlinkIQ';
@@ -51984,7 +52295,6 @@
                 <select class="form-control" name="filetype" onchange="changeType(this)" required>
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
-                    <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
@@ -52061,7 +52371,6 @@
                 <select class="form-control '; echo !empty($files) ? 'hide':''; echo '" name="filetype" onchange="changeType(this)" required>
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
-                    <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
@@ -52115,7 +52424,6 @@
                 <select class="form-control" name="filetype" onchange="changeType(this)" required>
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
-                    <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
@@ -52200,7 +52508,6 @@
                 <select class="form-control '; echo !empty($files) ? 'hide':''; echo '" name="filetype" onchange="changeType(this)" required>
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
-                    <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
@@ -52260,7 +52567,6 @@
                 <select class="form-control" name="filetype" onchange="changeType(this)" required>
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
-                    <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
@@ -52350,7 +52656,6 @@
                 <select class="form-control '; echo !empty($files) ? 'hide':''; echo '" name="filetype" onchange="changeType(this)" required>
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
-                    <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
@@ -53250,7 +53555,6 @@
                 <select class="form-control" name="filetype" onchange="changeType(this)" required>
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
-                    <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
@@ -53311,7 +53615,6 @@
                 <select class="form-control '; echo !empty($files) ? 'hide':''; echo '" name="filetype" onchange="changeType(this)" required>
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
-                    <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
@@ -54745,7 +55048,11 @@
                             $from = 'CannOS@begreenlegal.com';
                             $name = 'BeGreenLegal';
                             $body .= 'Cann OS Team';
-                        } else {
+                        }  else if ($_COOKIE['client'] == 2) {
+                            $from = 'foodsafety360r@gmail.com';
+                            $name = 'Food Safety 360';
+                            $body .= 'Food Safety 360';
+                        }else {
                             $from = 'services@interlinkiq.com';
                             $name = 'InterlinkIQ';
                             $body .= 'InterlinkIQ.com Team<br>
@@ -54911,6 +55218,10 @@
                         $from = 'CannOS@begreenlegal.com';
                         $name = 'BeGreenLegal';
                         $body .= 'Cann OS Team';
+                    } else if ($_COOKIE['client'] == 2) {
+                        $from = 'foodsafety360r@gmail.com';
+                        $name = 'Food Safety 360';
+                        $body .= 'Food Safety 360';
                     } else {
                         $from = 'services@interlinkiq.com';
                         $name = 'InterlinkIQ';

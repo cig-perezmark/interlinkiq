@@ -263,13 +263,9 @@ th {
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">New Supplier Form</h4>
+                <h4 class="modal-title">View</h4>
             </div>
-            <div class="modal-body form-body">
-                <p class="text-muted">
-                    Window for viewing files...
-                </p>
-            </div>
+            <div class="modal-body"></div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
                 <button type="button" class="btn green">Submit </button>

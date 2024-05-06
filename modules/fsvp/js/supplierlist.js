@@ -29,9 +29,58 @@ jQuery(function() {
     });
 
     initSuppliers();
+    
+    initMultiSelect($('.supplierdd'), {
+        onChange: function(option, checked, select) {
+            const mList = $('#materialListSelection');
+            mList.html('');
+            mList.append(`<div class="stat-loading"> <img src="assets/global/img/loading.gif" alt="loading"> </div>`);
+            $('#materialListHelpBlock').addClass('d-none');
+
+            $.ajax({
+                url: baseUrl + "getProductsBySupplier=" + $(option).val(),
+                type: "GET",
+                contentType: false,
+                processData: false,
+                success: function({materials}) {
+                    if (materials && Array.isArray(materials)) {
+                        if (!materials.length) {
+                            $('#materialListHelpBlock').text('No materials found.');
+                            return;
+                        } else {
+                            $('#materialListHelpBlock').text('Tick on the checkboxes to select.');
+                        }
+
+                        materials.forEach((m) => {
+                            const substr = m.description.substring(0, 32);
+
+                            mList.append(`
+                                <label class="mt-checkbox mt-checkbox-outline "> ${m.name}
+                                    <p title="${m.description}" class="small text-muted" style="padding: 0; margin:0;">${(m.description.length > 32 ? substr + '...' : m.description) || ''}</p>
+                                    <input type="checkbox" value="${m.id}" name="food_imported[]"">
+                                    <span></span>
+                                </label>
+                            `);
+                        });
+                    }
+                },
+                error: function() {
+                    bootstrapGrowl('Error!');
+                },
+                complete: function() {
+                    mList.find('.stat-loading').remove();
+                    $('#materialListHelpBlock').removeClass('d-none');
+                }
+            });
+        }
+    });
 
     $('#tableSupplierList').on('click', '[data-openevalform]', function() {
         $('#modalEvaluationForm').modal('show')
+    });
+
+    $('#tableSupplierList').on('click', '[data-opensafile]', function() {
+        viewFile(suppliersData, this.dataset.opensafile, 'supplier_agreement');
     });
 
     $('.asFileUpload').change(function() {
@@ -158,50 +207,6 @@ jQuery(function() {
         });
     });
 
-    initMultiSelect($('.supplierdd'), {
-        onChange: function(option, checked, select) {
-            const mList = $('#materialListSelection');
-            mList.html('');
-            mList.append(`<div class="stat-loading"> <img src="assets/global/img/loading.gif" alt="loading"> </div>`);
-            $('#materialListHelpBlock').addClass('d-none');
-
-            $.ajax({
-                url: baseUrl + "getProductsBySupplier=" + $(option).val(),
-                type: "GET",
-                contentType: false,
-                processData: false,
-                success: function({materials}) {
-                    if (materials && Array.isArray(materials)) {
-                        if (!materials.length) {
-                            $('#materialListHelpBlock').text('No materials found.');
-                            return;
-                        } else {
-                            $('#materialListHelpBlock').text('Tick on the checkboxes to select.');
-                        }
-
-                        materials.forEach((m) => {
-                            const substr = m.description.substring(0, 32);
-
-                            mList.append(`
-                                <label class="mt-checkbox mt-checkbox-outline "> ${m.name}
-                                    <p title="${m.description}" class="small text-muted" style="padding: 0; margin:0;">${(m.description.length > 32 ? substr + '...' : m.description) || ''}</p>
-                                    <input type="checkbox" value="${m.id}" name="food_imported[]"">
-                                    <span></span>
-                                </label>
-                            `);
-                        });
-                    }
-                },
-                error: function() {
-                    bootstrapGrowl('Error!');
-                },
-                complete: function() {
-                    mList.find('.stat-loading').remove();
-                    $('#materialListHelpBlock').removeClass('d-none');
-                }
-            });
-        }
-    });
 
     function initSuppliers() {
         $.ajax({
@@ -227,7 +232,7 @@ jQuery(function() {
         // save to local storage
         suppliersData[d.id] = d;
         const no = `<span style="font-weight:600;">No</span>`;
-        const sa = !d.supplier_agreement || !d.supplier_agreement.length ? no : `<a href="#modalViewFiles" data-toggle="modal" data-opensafile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View ${d.supplier_agreement.length > 1 ? `(${d.supplier_agreement.length})` : ''}</a>`;
+        const sa = !d.supplier_agreement || !d.supplier_agreement.length ? no : `<a href="javascript:void(0)" data-opensafile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View ${d.supplier_agreement.length > 1 ? `(${d.supplier_agreement.length})` : ''}</a>`;
         const cs = !d.compliance_statement ?  no : `<a href="javascript:void(0)" data-opencsfile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View </a>`;
         
         supplierTable.dt.row.add([
@@ -277,4 +282,16 @@ jQuery(function() {
 function trunc(str, length = 12) {
     const newStr = str.slice(0, length);
     return newStr + (str.length > length ? '...' : '');
+}
+
+// viewing files
+function viewFile(data, id, fileType) {
+    const fileData= data[id][fileType]
+
+    if(!fileData) {
+        bootstrapGrowl('File(s) not found.')
+        return;
+    }
+
+    console.log(fileData)
 }

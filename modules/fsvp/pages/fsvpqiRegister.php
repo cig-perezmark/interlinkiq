@@ -8,6 +8,15 @@
 .checkFileUpload .input-group {
     flex: 1 0 auto;
 }
+
+.frfUplDoc .row {
+    display: none;
+    margin-bottom: 20px;
+}
+
+.frfUplDoc:has(input:checked) .row {
+    display: block;
+}
 </style>
 
 <?php 
@@ -33,7 +42,7 @@ function yesNoRadio() {
     </a>
 </div>
 
-<table class="table table-bordered table-hover" id="tableSupplierList">
+<table class="table table-bordered table-hover" id="tableFSVPQI">
     <thead>
         <tr>
             <th>Name</th>
@@ -59,102 +68,184 @@ function yesNoRadio() {
             </div>
             <div class="modal-body form-body">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <div class="form-group">
-                            <label for="">Select </label>
-                            <select name="" id="" class="form-control"></select>
+                            <label for="fsvpqiSelect">Select </label>
+                            <select name="" id="fsvpqiSelect" class="form-control">
+                                <option value="" selected disabled>Select FSVPQI</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="">Position </label>
-                            <input type="text" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-12">
+                    <div class="col-md-7">
                         <div class="form-group">
                             <label for="">Course / Education / Seminars </label>
-                            <textarea name="" id="" class="form-control"></textarea>
+                            <textarea name="" id="" class="form-control" placeholder="Course / Education / Seminars"></textarea>
                         </div>
                     </div>
                 </div>
-                <hr>
-                <div class="help-block">Note: Upload necessary document(s) if applicable.</div>
+                <h5 class="margin-bottom-20"><strong>**Certifications</strong></h5>
                 <div class="row">
-                    <div class="col-md-9">
-                        <div class="form-group">
-                            <label for="">PCQI Certified </label>
-                            <div class="checkFileUpload">
-                                <div class="input-group">
-                                    <span class="input-group-addon">
-                                        <input type="checkbox">
-                                        <span></span>
-                                    </span>
+                    <div class="col-md-12 frfUplDoc">
+                        <label class="mt-checkbox mt-checkbox-outline">
+                            <input type="checkbox"> PCQI Certified
+                            <span></span>
+                        </label>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Upload document</label>
                                     <input type="file" class="form-control">
                                 </div>
-                                <button class="btn btn-danger">
-                                    <i class="fa fa-close"></i> Remove
-                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Document date</label>
+                                    <input type="date" name="" id="" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Expiration date</label>
+                                    <input type="date" name="" id="" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Comment</label>
+                                    <input type="text" name="" id="" class="form-control" placeholder="(Optional)">
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="">Food Quality Auditing </label>
-                            <div class="checkFileUpload">
-                                <div class="input-group">
-                                    <span class="input-group-addon">
-                                        <input type="checkbox">
-                                        <span></span>
-                                    </span>
+                    </div>
+
+                    <div class="col-md-12 frfUplDoc">
+                        <label class="mt-checkbox mt-checkbox-outline">
+                            <input type="checkbox"> Food Quality Auditing
+                            <span></span>
+                        </label>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Upload document</label>
                                     <input type="file" class="form-control">
                                 </div>
-                                <button class="btn btn-danger">
-                                    <i class="fa fa-close"></i> Remove
-                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Document date</label>
+                                    <input type="date" name="" id="" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Expiration date</label>
+                                    <input type="date" name="" id="" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Comment</label>
+                                    <input type="text" name="" id="" class="form-control" placeholder="(Optional)">
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="">HACCP Training </label>
-                            <div class="checkFileUpload">
-                                <div class="input-group">
-                                    <span class="input-group-addon">
-                                        <input type="checkbox">
-                                        <span></span>
-                                    </span>
+                    </div>
+
+                    <div class="col-md-12 frfUplDoc">
+                        <label class="mt-checkbox mt-checkbox-outline">
+                            <input type="checkbox"> HACCP Training
+                            <span></span>
+                        </label>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Upload document</label>
                                     <input type="file" class="form-control">
                                 </div>
-                                <button class="btn btn-danger">
-                                    <i class="fa fa-close"></i> Remove
-                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Document date</label>
+                                    <input type="date" name="" id="" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Expiration date</label>
+                                    <input type="date" name="" id="" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Comment</label>
+                                    <input type="text" name="" id="" class="form-control" placeholder="(Optional)">
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="">Food Safety Training Certificate </label>
-                            <div class="checkFileUpload">
-                                <div class="input-group">
-                                    <span class="input-group-addon">
-                                        <input type="checkbox">
-                                        <span></span>
-                                    </span>
+                    </div>
+
+                    <div class="col-md-12 frfUplDoc">
+                        <label class="mt-checkbox mt-checkbox-outline">
+                            <input type="checkbox"> Food Safety Training Certificate
+                            <span></span>
+                        </label>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Upload document</label>
                                     <input type="file" class="form-control">
                                 </div>
-                                <button class="btn btn-danger">
-                                    <i class="fa fa-close"></i> Remove
-                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Document date</label>
+                                    <input type="date" name="" id="" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Expiration date</label>
+                                    <input type="date" name="" id="" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Comment</label>
+                                    <input type="text" name="" id="" class="form-control" placeholder="(Optional)">
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="">GFSI Certificate </label>
-                            <div class="checkFileUpload">
-                                <div class="input-group">
-                                    <span class="input-group-addon">
-                                        <input type="checkbox">
-                                        <span></span>
-                                    </span>
+                    </div>
+
+                    <div class="col-md-12 frfUplDoc">
+                        <label class="mt-checkbox mt-checkbox-outline">
+                            <input type="checkbox"> GFSI Certificate
+                            <span></span>
+                        </label>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Upload document</label>
                                     <input type="file" class="form-control">
                                 </div>
-                                <button class="btn btn-danger">
-                                    <i class="fa fa-close"></i> Remove
-                                </button>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Document date</label>
+                                    <input type="date" name="" id="" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Expiration date</label>
+                                    <input type="date" name="" id="" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">Comment</label>
+                                    <input type="text" name="" id="" class="form-control" placeholder="(Optional)">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -167,3 +258,5 @@ function yesNoRadio() {
         </form>
     </div>
 </div>
+
+<script defer src="modules/fsvp/js/fsvpqi.js"></script>

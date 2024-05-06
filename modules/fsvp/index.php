@@ -144,6 +144,8 @@ hr {
 <?php include __DIR__ . '/../../footer.php'; ?>
 <script src="modules/js/utils.js"></script>
 <script src="modules/js/init.js"></script>
+<script src="assets/jSignature/jSignature.min.js"></script>
+<script src="assets/esign.js"></script>
 <script>
 var baseUrl = 'fsvp?api&';
 Init.baseUrl = 'fsvp?api&';

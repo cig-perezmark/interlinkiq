@@ -13,6 +13,9 @@
     justify-content: center;
 }
 
+.underline {
+    text-decoration: underline;
+}
 
 #tableFSVPTeamRoster .fsvp-trmt input[type=radio],
 #tableFSVPTeamRoster.for-display .fsvp-trmt i {
@@ -31,10 +34,34 @@
 #tableFSVPTeamRoster.for-display .fsvp-trmt:has(input:checked) i.fa {
     display: inline;
 }
+
+.vfsvptrnavtab:has(input[type=radio]:checked) {
+    font-weight: bold;
+}
+
+.vfsvptrnavtab:hover {
+    text-decoration: underline;
+}
+
+.vfsvptr [data-sign] {
+    display: none;
+    align-items: center;
+    flex-direction: column;
+}
+
+.vfsvptr:has([name="vfsvptrnavtab"][value="review"]:checked) [data-sign=review] {
+    display: flex !important;
+}
+
+.vfsvptr:has([name="vfsvptrnavtab"][value="approve"]:checked) [data-sign=approve] {
+    display: flex !important;
+}
 </style>
 
-<div class="alert alert-danger">
-    <strong>Important:</strong> The FSVP Team Roster needs verification.
+<div class="alert alert-info">
+    <strong>Important:</strong>
+    <span id="fsvpNoteMessage">The FSVP Team Roster needs review.</span>
+    <a href="#modalVerification" data-toggle="modal" class="small underline"><i id="fsvpBtnText">Review now</i></a>
 </div>
 
 <div class="d-flex margin-bottom-20" style="justify-content: space-between;">
@@ -44,12 +71,16 @@
     </a>
     <span></span>
     <div>
-        <label role="button" class="btn blue-dark" style="margin-right: .5rem;">
+        <label role="button" class="btn blue-dark" style="margin-right: .5rem;" for="updateRosterToggle">
             <i class="fa fa-refresh icon-margin-right"></i>
-            <span>Update roster</span>
+            <span class="btnLabel">Update roster</span>
             <input type="checkbox" id="updateRosterToggle" class="hide">
         </label>
-        <button type="button" class="btn default">
+        <button type="button" class="btn default hide" id="cancelUpdateBtn" style="margin-right: .5rem;">
+            <i class="fa fa-close icon-margin-right"></i>
+            Cancel
+        </button>
+        <button type="button" class="btn default" data-toggle="modal" data-target="#modalHistory">
             <i class="fa fa-history icon-margin-right"></i>
             History
         </button>
@@ -100,7 +131,6 @@
 </div>
 
 <!-- modal -->
-
 <div class="modal fade in" id="modalAddMember" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <form class="modal-content" role="form" id="newMemberForm">
@@ -176,6 +206,76 @@
                 <button type="submit" class="btn green">Submit </button>
             </div>
         </form>
+    </div>
+</div>
+<div class="modal fade in" id="modalHistory" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">History</h4>
+            </div>
+            <div class="modal-body form-body">
+                <p class="text-muted">
+                    No change history yet.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                <button type="button" class="btn green hide">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade in" id="modalVerification" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Verification of the FSVP Team Roster</h4>
+            </div>
+            <div class="modal-body form-body vfsvptr">
+                <h5>
+                    <label class="vfsvptrnavtab margin-right-10">
+                        Review
+                        <input type="radio" name="vfsvptrnavtab" value="review" class="hide" checked>
+                    </label>
+                    <label class="vfsvptrnavtab">
+                        Approve
+                        <input type="radio" name="vfsvptrnavtab" value="approve" class="hide">
+                    </label>
+                </h5>
+                <hr>
+                <div data-sign="review">
+                    <div class="form-group">
+                        <label for=""><br>Reviewer's Name</label>
+                        <input type="text" class="form-control" placeholder="Enter reviewer's name">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Date</label>
+                        <input type="date" class="form-control">
+                    </div>
+                    <h5 class="margin-bottom-20"><strong>Signature</strong></h5>
+                    <div style="width: 300px !important;" class="esign"></div>
+                </div>
+                <div data-sign="approve">
+                    <div class="form-group">
+                        <label for=""><br>Approver's Name</label>
+                        <input type="text" class="form-control" placeholder="Enter approver's name">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Date</label>
+                        <input type="date" class="form-control">
+                    </div>
+                    <h5 class="margin-bottom-20"><strong>Signature</strong></h5>
+                    <div style="width: 300px !important;" class="esign"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                <button type="button" class="btn green">Submit</button>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -3,6 +3,9 @@
 include_once __DIR__ ."/utils.php";
 // include_once __DIR__ ."/../../alt-setup/setup.php";
 
+date_default_timezone_set('America/Chicago');
+$currentTimestamp = date('Y-m-d H:i:s');
+
 // note: no filter for foreign suppliers yet
 // fetching supplier for dropdown
 if(isset($_GET["getProductsBySupplier"]) && !empty($_GET["getProductsBySupplier"])) {
@@ -247,4 +250,77 @@ if(isset($_GET['getFSVPRoster'])) {
         http_response_code(500);
         echo $e->getMessage();
     }
+}
+
+// updating fsvp team table
+if(isset($_GET['updateFSVPTeamRoster'])) {
+    try {
+        $updates = json_decode($_POST['updates'] ?? '[]', true);
+    
+        $forRemoval = [];
+        $toAlternate = [];
+        $toPrimary = [];
+        foreach($updates as $id => $d) {
+            if(isset($d['remove']) && $d['remove'] == true) {
+                $forRemoval[] = $id;
+            } else if(isset($d['type'])) {
+                if($d['type'] == 'alternate')
+                    $toAlternate[] = $id;
+                else if($d['type'] == 'primary')
+                    $toPrimary[] = $id;
+            }
+        }
+
+        $conn->begin_transaction();
+
+        if(count($forRemoval) > 0) {
+            $forRemoval = implode(',', $forRemoval);
+            $conn->execute("UPDATE tbl_fsvp_team_roster SET deleted_at = ? WHERE id IN ($forRemoval)", $currentTimestamp);
+        }
+
+        if(count($toPrimary) > 0) {
+            $toPrimary = implode(",", $toPrimary);
+            $conn->execute("UPDATE tbl_fsvp_team_roster SET type = 'primary' WHERE id IN ($toPrimary)");
+        }
+
+        if(count($toAlternate) > 0) {
+            $toAlternate = implode(",", $toAlternate);
+            $conn->execute("UPDATE tbl_fsvp_team_roster SET type = 'alternate' WHERE id IN ($toAlternate)");
+        }
+
+        $conn->commit();
+        send_response([
+            'message' => 'Saved successfully!',
+        ]);
+    } catch(Throwable $e) {
+        $conn->rollback();
+        http_response_code(500);
+        echo $e->getMessage();
+    }
+}
+
+// fetching fsvpqi employees
+if(isset($_GET['getFSVPQIs'])) {
+    $fsvpId = fsvpqiJDId($conn, $user_id);
+    $result = $conn->select('tbl_hr_employee', "ID AS id, CONCAT(TRIM(first_name), ' ', TRIM(last_name)) AS name, job_description_id", "user_id = $user_id AND status = 1")->fetchAll(function ($data) use($fsvpId) {
+        $jds = array_map(function($d) { return intval($d); }, explode(', ', $data['job_description_id']));
+
+        if(in_array($fsvpId, $jds)){
+            unset($data['job_description_id']);
+            return $data;
+        }
+
+        return null;
+    });
+
+    $employees = [];
+    foreach($result as $row) {
+        if(isset($row) && !empty($row)) {
+            $employees[] = $row;   
+        }
+    }
+        
+    send_response([
+        'result' => $employees,
+    ]);
 }

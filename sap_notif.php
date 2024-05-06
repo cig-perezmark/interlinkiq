@@ -435,13 +435,13 @@
                             InterlinkIQ.com Team<br><br>
                             Consultare Inc.';
 
-                            if ($mail_sent > 0) {
-                                php_mailer_2($to, $user, $subject, $body, $rowUser_email, $rowUser_name);
-                                $mail_sent++;
-                            } else {
+                            // if ($mail_sent > 0) {
+                            //     php_mailer_2($to, $user, $subject, $body, $rowUser_email, $rowUser_name);
+                            //     $mail_sent++;
+                            // } else {
                                 php_mailer_1($to, $user, $subject, $body, $rowUser_email, $rowUser_name);
-                                $mail_sent++;
-                            }
+                            //     $mail_sent++;
+                            // }
 
                             // echo $to .'<br>';
                             // echo $user .'<br>';
@@ -459,7 +459,8 @@
     // $result_campaign = mysqli_query( $conn,"SELECT * FROM tbl_Customer_Relationship_Campaign WHERE Campaign_Status = 2 and Auto_Send_Status = 1 AND Frequency <> '' AND Frequency IS NOT NULL" );
     // $result_campaign = mysqli_query( $conn,"SELECT * FROM tbl_Customer_Relationship_Campaign WHERE Campaign_Status = 2 AND userID = 38 AND Auto_Send_Status = 1 AND Frequency <> '' AND Frequency IS NOT NULL" );
     // $result_campaign = mysqli_query( $conn,"SELECT * FROM tbl_Customer_Relationship_Campaign WHERE Campaign_Status = 2 AND Auto_Send_Status = 1 AND Frequency = 8" );
-    $result_campaign = mysqli_query( $conn,"SELECT * FROM tbl_Customer_Relationship_Campaign WHERE Campaign_Status = 2 and Auto_Send_Status = 1 AND Frequency > 0 AND Frequency <= 8" );
+    // $result_campaign = mysqli_query( $conn,"SELECT * FROM tbl_Customer_Relationship_Campaign WHERE Campaign_Status = 2 and Auto_Send_Status = 1 AND Frequency > 0 AND Frequency <= 8" );
+    $result_campaign = mysqli_query( $conn,"SELECT * FROM tbl_Customer_Relationship_Campaign WHERE Campaign_Status = 2 and Auto_Send_Status = 1 AND Frequency BETWEEN 1 AND 8" );
     if ( mysqli_num_rows($result_campaign) > 0 ) {
         $mail_sent = 0;
         while($row = mysqli_fetch_array($result_campaign)) {
@@ -589,13 +590,13 @@
                 $subject = $row['Campaign_Subject'];
                 $body = 'Hi '.$account_name.',<br><br>'.$row['Campaign_body'];
 
-                if ($mail_sent > 0) {
-                    php_mailer_2($to, $user, $subject, $body, $rowUser_email, $rowUser_name);
-                    $mail_sent++;
-                } else {
+                // if ($mail_sent > 0) {
+                //     php_mailer_2($to, $user, $subject, $body, $rowUser_email, $rowUser_name);
+                //     $mail_sent++;
+                // } else {
                     php_mailer_1($to, $user, $subject, $body, $rowUser_email, $rowUser_name);
-                    $mail_sent++;
-                }
+                //     $mail_sent++;
+                // }
             }
         }
     }
@@ -649,13 +650,13 @@
                     Kindly go to My profile Page and tap Change Password';
                 }
 
-                if ($mail_sent > 0) {
-                    php_mailer_2($to, $user, $subject, $body, $from_email, $from_user);
-                    $mail_sent++;
-                } else {
+                // if ($mail_sent > 0) {
+                //     php_mailer_2($to, $user, $subject, $body, $from_email, $from_user);
+                //     $mail_sent++;
+                // } else {
                     php_mailer_1($to, $user, $subject, $body, $from_email, $from_user);
-                    $mail_sent++;
-                }
+                //     $mail_sent++;
+                // }
             }
         }
     }
@@ -780,13 +781,13 @@
                                 Consultare Inc.';
                             }
 
-                            if ($mail_sent > 0) {
-                                php_mailer_2($to, $user, $subject, $body, $from, $name);
-                                $mail_sent++;
-                            } else {
+                            // if ($mail_sent > 0) {
+                            //     php_mailer_2($to, $user, $subject, $body, $from, $name);
+                            //     $mail_sent++;
+                            // } else {
                                 php_mailer_1($to, $user, $subject, $body, $from, $name);
-                                $mail_sent++;
-                            }
+                            //     $mail_sent++;
+                            // }
                         }
                     }
                 }
@@ -914,13 +915,13 @@
                                 Consultare Inc.';
                             }
 
-                            if ($mail_sent > 0) {
-                                php_mailer_2($to, $user, $subject, $body, $from, $name);
-                                $mail_sent++;
-                            } else {
+                            // if ($mail_sent > 0) {
+                            //     php_mailer_2($to, $user, $subject, $body, $from, $name);
+                            //     $mail_sent++;
+                            // } else {
                                 php_mailer_1($to, $user, $subject, $body, $from, $name);
-                                $mail_sent++;
-                            }
+                            //     $mail_sent++;
+                            // }
                         }
                     }
                 }
@@ -1048,13 +1049,13 @@
                                 Consultare Inc.';
                             }
 
-                            if ($mail_sent > 0) {
-                                php_mailer_2($to, $user, $subject, $body, $from, $name);
-                                $mail_sent++;
-                            } else {
+                            // if ($mail_sent > 0) {
+                            //     php_mailer_2($to, $user, $subject, $body, $from, $name);
+                            //     $mail_sent++;
+                            // } else {
                                 php_mailer_1($to, $user, $subject, $body, $from, $name);
-                                $mail_sent++;
-                            }
+                            //     $mail_sent++;
+                            // }
                         }
                     }
                 }
@@ -1099,13 +1100,13 @@
                         Consultare Inc.';
                     }
 
-                    if ($mail_sent > 0) {
-                        php_mailer_2($to, $user, $subject, $body, $from, $name);
-                        $mail_sent++;
-                    } else {
+                    // if ($mail_sent > 0) {
+                    //     php_mailer_2($to, $user, $subject, $body, $from, $name);
+                    //     $mail_sent++;
+                    // } else {
                         php_mailer_1($to, $user, $subject, $body, $from, $name);
-                        $mail_sent++;
-                    }
+                    //     $mail_sent++;
+                    // }
                 }
             }
         }
@@ -1145,13 +1146,13 @@
 
                     <a href="'. $base_url .'customer_relationship_View.php?view_id='.$crm_ids.'#tasks" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
 
-                    if ($mail_sent > 0) {
-                        php_mailer_2($Assigned_to, '', $subject, $body, $from_email, $from_user);
-                        $mail_sent++;
-                    } else {
+                    // if ($mail_sent > 0) {
+                    //     php_mailer_2($Assigned_to, '', $subject, $body, $from_email, $from_user);
+                    //     $mail_sent++;
+                    // } else {
                         php_mailer_1($Assigned_to, '', $subject, $body, $from_email, $from_user);
-                        $mail_sent++;
-                    }
+                    //     $mail_sent++;
+                    // }
                 }
             }
         }
@@ -1537,13 +1538,13 @@
                         Consultare Inc.';
                     }
 
-                    if ($mail_sent > 0) {
-                        php_mailer_2($to, $user, $subject, $body, $from, $name);
-                        $mail_sent++;
-                    } else {
+                    // if ($mail_sent > 0) {
+                    //     php_mailer_2($to, $user, $subject, $body, $from, $name);
+                    //     $mail_sent++;
+                    // } else {
                         php_mailer_1($to, $user, $subject, $body, $from, $name);
-                        $mail_sent++;
-                    }
+                    //     $mail_sent++;
+                    // }
                 }
             }
         }
@@ -1607,13 +1608,13 @@
                     Consultare Inc.';
                 }
 
-                if ($mail_sent > 0) {
-                    php_mailer_2($to, $user, $subject, $body, $from, $name);
-                    $mail_sent++;
-                } else {
+                // if ($mail_sent > 0) {
+                //     php_mailer_2($to, $user, $subject, $body, $from, $name);
+                //     $mail_sent++;
+                // } else {
                     php_mailer_1($to, $user, $subject, $body, $from, $name);
-                    $mail_sent++;
-                }
+                //     $mail_sent++;
+                // }
             }
         }
         
@@ -1672,13 +1673,13 @@
                     Consultare Inc.';
                 }
 
-                if ($mail_sent > 0) {
-                    php_mailer_2($to, $user, $subject, $body, $from, $name);
-                    $mail_sent++;
-                } else {
+                // if ($mail_sent > 0) {
+                //     php_mailer_2($to, $user, $subject, $body, $from, $name);
+                //     $mail_sent++;
+                // } else {
                     php_mailer_1($to, $user, $subject, $body, $from, $name);
-                    $mail_sent++;
-                }
+                //     $mail_sent++;
+                // }
             }
         }
         
@@ -1745,13 +1746,13 @@
                     Consultare Inc.';
                 }
 
-                if ($mail_sent > 0) {
-                    php_mailer_2($to, $user, $subject, $body, $from, $name);
-                    $mail_sent++;
-                } else {
+                // if ($mail_sent > 0) {
+                //     php_mailer_2($to, $user, $subject, $body, $from, $name);
+                //     $mail_sent++;
+                // } else {
                     php_mailer_1($to, $user, $subject, $body, $from, $name);
-                    $mail_sent++;
-                }
+                //     $mail_sent++;
+                // }
             }
         }
         
@@ -1814,13 +1815,13 @@
                     Consultare Inc.';
                 }
 
-                if ($mail_sent > 0) {
-                    php_mailer_2($to, $user, $subject, $body, $from, $name);
-                    $mail_sent++;
-                } else {
+                // if ($mail_sent > 0) {
+                //     php_mailer_2($to, $user, $subject, $body, $from, $name);
+                //     $mail_sent++;
+                // } else {
                     php_mailer_1($to, $user, $subject, $body, $from, $name);
-                    $mail_sent++;
-                }
+                //     $mail_sent++;
+                // }
             }
         }
         
@@ -1881,13 +1882,13 @@
                     Consultare Inc.';
                 }
 
-                if ($mail_sent > 0) {
-                    php_mailer_2($to, $user, $subject, $body, $from, $name);
-                    $mail_sent++;
-                } else {
+                // if ($mail_sent > 0) {
+                //     php_mailer_2($to, $user, $subject, $body, $from, $name);
+                //     $mail_sent++;
+                // } else {
                     php_mailer_1($to, $user, $subject, $body, $from, $name);
-                    $mail_sent++;
-                }
+                //     $mail_sent++;
+                // }
             }
         }
         
@@ -1946,13 +1947,13 @@
                     Consultare Inc.';
                 }
 
-                if ($mail_sent > 0) {
-                    php_mailer_2($to, $user, $subject, $body, $from, $name);
-                    $mail_sent++;
-                } else {
+                // if ($mail_sent > 0) {
+                //     php_mailer_2($to, $user, $subject, $body, $from, $name);
+                //     $mail_sent++;
+                // } else {
                     php_mailer_1($to, $user, $subject, $body, $from, $name);
-                    $mail_sent++;
-                }
+                //     $mail_sent++;
+                // }
             }
         }
         
@@ -2017,13 +2018,13 @@
                     Consultare Inc.';
                 }
 
-                if ($mail_sent > 0) {
-                    php_mailer_2($to, $user, $subject, $body, $from, $name);
-                    $mail_sent++;
-                } else {
+                // if ($mail_sent > 0) {
+                //     php_mailer_2($to, $user, $subject, $body, $from, $name);
+                //     $mail_sent++;
+                // } else {
                     php_mailer_1($to, $user, $subject, $body, $from, $name);
-                    $mail_sent++;
-                }
+                //     $mail_sent++;
+                // }
             }
         }
         
@@ -2086,13 +2087,13 @@
                     Consultare Inc.';
                 }
 
-                if ($mail_sent > 0) {
-                    php_mailer_2($to, $user, $subject, $body, $from, $name);
-                    $mail_sent++;
-                } else {
+                // if ($mail_sent > 0) {
+                //     php_mailer_2($to, $user, $subject, $body, $from, $name);
+                //     $mail_sent++;
+                // } else {
                     php_mailer_1($to, $user, $subject, $body, $from, $name);
-                    $mail_sent++;
-                }
+                //     $mail_sent++;
+                // }
             }
         }
         
@@ -2155,13 +2156,13 @@
                     Consultare Inc.';
                 }
 
-                if ($mail_sent > 0) {
-                    php_mailer_2($to, $user, $subject, $body, $from, $name);
-                    $mail_sent++;
-                } else {
+                // if ($mail_sent > 0) {
+                //     php_mailer_2($to, $user, $subject, $body, $from, $name);
+                //     $mail_sent++;
+                // } else {
                     php_mailer_1($to, $user, $subject, $body, $from, $name);
-                    $mail_sent++;
-                }
+                //     $mail_sent++;
+                // }
             }
         }
         
@@ -2229,13 +2230,13 @@
                     Consultare Inc.';
                 }
 
-                if ($mail_sent > 0) {
-                    php_mailer_2($to, $user, $subject, $body, $from, $name);
-                    $mail_sent++;
-                } else {
+                // if ($mail_sent > 0) {
+                //     php_mailer_2($to, $user, $subject, $body, $from, $name);
+                //     $mail_sent++;
+                // } else {
                     php_mailer_1($to, $user, $subject, $body, $from, $name);
-                    $mail_sent++;
-                }
+                //     $mail_sent++;
+                // }
             }
         }
 

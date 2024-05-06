@@ -815,6 +815,17 @@ License: You must have a valid license purchased only from themeforest(the above
                                     echo '<a href="dashboard"><img src="assets/img/Canna-OS-Logo_gear.png" height="60px" alt="logo" /></a>';
                                 }
                                 
+                            } else if ($current_client == 2) {
+                                if ($switch_user_id == 1360) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="/companyDetailsFolder/252423%20-%20FoodSafety%20360%20V1%20with%20register%20logo.png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="/companyDetailsFolder/252423%20-%20FoodSafety%20360%20V1%20with%20register%20logo.png" height="60px" alt="logo" /></a>';
+                                }
+                                
                             } else {
                                 if (isset($_COOKIE['switchAccount'])) {
                                     echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';

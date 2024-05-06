@@ -12,6 +12,13 @@
     include_once ('header.php'); 
 ?>
 
+<style type="text/css">
+    /*REPEATER*/
+    .mt-repeater > div > .mt-repeater-item-hide:first-child {
+        display: none;
+    }
+</style>
+
                     <div class="row">
                         <div class="col-md-3">
                             <div class="dashboard-stat2 counterup_1">

@@ -248,6 +248,13 @@
                                 <div class="portlet-body">
                                     <div class="tab-content">
                                         <div class="tab-pane active" id="tab_actions_sent">
+											<select class="form-control margin-bottom-15" id="filterSent">
+												<option value="">Select</option>
+												<option value="1">Foreign Supplier</option>
+												<option value="2">Local Supplier</option>
+												<option value="3">Contract Service Provider</option>
+												<option value="4">Contract Manufacturer</option>
+											</select>
                                             <table class="table table-bordered table-hover" id="tableData_1">
                                                 <thead>
                                                     <tr>
@@ -256,6 +263,7 @@
                                                         <th rowspan="2">Materials/Services</th>
 														<th rowspan="2">Specification File</th>
 														<th rowspan="2">Address</th>
+														<th rowspan="2" class="hide">Country</th>
                                                         <th colspan="2" class="text-center">Contact Details</th>
                                                         <th rowspan="2" style="width: 100px;" class="text-center">Compliance</th>
                                                         <th rowspan="2" style="width: 100px;" class="text-center">Status</th>
@@ -755,6 +763,7 @@
 													            array_push($address_array, htmlentities($address_arr[3]));
 													            array_push($address_array, $address_arr[0]);
 													            array_push($address_array, $address_arr[4]);
+													            $address_arr_country = $address_arr[0];
 													            $address_arr = implode(", ", $address_array);
 
 																echo '<tr id="tr_'.$s_ID.'">
@@ -763,6 +772,7 @@
 																	<td>'.$material.'</td>
 																	<td class="text-center">'.$material_spec.'</td>
 																	<td>'.$address_arr.'</td>
+																	<td class="hide">'.$address_arr_country.'</td>
 																	<td>'.htmlentities($cn_name ?? '').'</td>
 																	<td class="text-center">
 																		<ul class="list-inline">';
@@ -788,6 +798,13 @@
                                             </table>
                                         </div>
                                         <div class="tab-pane" id="tab_actions_received">
+											<select class="form-control margin-bottom-15" id="filterReceived">
+												<option value="">Select</option>
+												<option value="1">Foreign Supplier</option>
+												<option value="2">Local Supplier</option>
+												<option value="3">Contract Service Provider</option>
+												<option value="4">Contract Manufacturer</option>
+											</select>
                                             <table class="table table-bordered table-hover" id="tableData_2">
                                                 <thead>
                                                     <tr>
@@ -796,6 +813,7 @@
                                                         <th rowspan="2">Materials/Services</th>
 														<th rowspan="2">Specification File</th>
                                                         <th rowspan="2">Address</th>
+														<th rowspan="2" class="hide">Country</th>
                                                         <th colspan="2" class="text-center">Contact Details</th>
                                                         <th rowspan="2" style="width: 100px;" class="text-center">Compliance</th>
                                                         <th rowspan="2" style="width: 100px;" class="text-center">Status</th>
@@ -1305,6 +1323,7 @@
                                                                 array_push($address_array, htmlentities($address_arr[3]));
                                                                 array_push($address_array, $address_arr[0]);
                                                                 array_push($address_array, $address_arr[4]);
+													            $address_arr_country = $address_arr[0];
                                                                 $address_arr = implode(", ", $address_array);
 																
 																echo '<tr id="tr_'.$s_ID.'">
@@ -1313,6 +1332,7 @@
 																	<td>'.$material.'</td>
 																	<td class="text-center">'.$material_spec.'</td>
                                                                     <td>'.$address_arr.'</td>
+                                                                    <td class="hide">'.$address_arr_country.'</td>
 																	<td>'.htmlentities($cn_name ?? '').'</td>
 																	<td class="text-center">
 																		<ul class="list-inline">';
@@ -2850,7 +2870,7 @@
                 if(window.location.href.indexOf('#new') != -1) {
                     $('#modalNew').modal('show');
                 }
-                $('#tableData_1, #tableData_2, #tableData_req').DataTable({
+                $('#tableData_req').DataTable({
 			        dom: 'lBfrtip',
 			        lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
                     buttons: [
@@ -2881,6 +2901,114 @@
                         'colvis'
                     ]
                 });
+
+				var tableData_1 = $('#tableData_1').DataTable({
+			        dom: 'lBfrtip',
+			        lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+			        buttons: [
+			            {
+			                extend: 'print',
+			                exportOptions: {
+			                    columns: ':visible'
+			                }
+			            },
+			            {
+			                extend: 'pdf',
+			                exportOptions: {
+			                    columns: ':visible'
+			                }
+			            },
+			            {
+			                extend: 'csv',
+			                exportOptions: {
+			                    columns: ':visible'
+			                }
+			            },
+			            {
+			                extend: 'excel',
+			                exportOptions: {
+			                    columns: ':visible'
+			                }
+			            },
+			            'colvis'
+			        ]
+			    });
+				$("#filterSent").on('change', function() {
+				    //filter by selected value on second column
+				    if ($(this).val() == 1) {
+				    	// tableData_1.column(5).search('US').draw();
+				    	// tableData_1.column(5).search('US' ? '^' + 'US'  + '$' : '', true, false).draw();
+				    	tableData_1.column(5).search('^(?!US$)', true).draw();
+				    	tableData_1.column(1).search('').draw();
+				    } else if ($(this).val() == 2) {
+				    	tableData_1.column(5).search('US').draw();
+				    	tableData_1.column(1).search('').draw();
+				    } else if ($(this).val() == 3) {
+				    	tableData_1.column(5).search('').draw();
+				    	tableData_1.column(1).search('Services').draw();
+				    } else if ($(this).val() == 4) {
+				    	tableData_1.column(5).search('').draw();
+				    	tableData_1.column(1).search('Co-Manufacturer').draw();
+				    } else {
+				    	tableData_1.column(5).search('').draw();
+				    	tableData_1.column(1).search('').draw();
+				    }
+				});
+				$("#tableData_1_filter.dataTables_filter").append($("#filterSent"));
+
+				var tableData_2 = $('#tableData_2').DataTable({
+			        dom: 'lBfrtip',
+			        lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+			        buttons: [
+			            {
+			                extend: 'print',
+			                exportOptions: {
+			                    columns: ':visible'
+			                }
+			            },
+			            {
+			                extend: 'pdf',
+			                exportOptions: {
+			                    columns: ':visible'
+			                }
+			            },
+			            {
+			                extend: 'csv',
+			                exportOptions: {
+			                    columns: ':visible'
+			                }
+			            },
+			            {
+			                extend: 'excel',
+			                exportOptions: {
+			                    columns: ':visible'
+			                }
+			            },
+			            'colvis'
+			        ]
+			    });
+				$("#filterReceived").on('change', function() {
+				    //filter by selected value on second column
+				    if ($(this).val() == 1) {
+				    	// tableData_1.column(5).search('US').draw();
+				    	// tableData_1.column(5).search('US' ? '^' + 'US'  + '$' : '', true, false).draw();
+				    	tableData_2.column(5).search('^(?!US$)', true).draw();
+				    	tableData_2.column(1).search('').draw();
+				    } else if ($(this).val() == 2) {
+				    	tableData_2.column(5).search('US').draw();
+				    	tableData_2.column(1).search('').draw();
+				    } else if ($(this).val() == 3) {
+				    	tableData_2.column(5).search('').draw();
+				    	tableData_2.column(1).search('Services').draw();
+				    } else if ($(this).val() == 4) {
+				    	tableData_2.column(5).search('').draw();
+				    	tableData_2.column(1).search('Co-Manufacturer').draw();
+				    } else {
+				    	tableData_2.column(5).search('').draw();
+				    	tableData_2.column(1).search('').draw();
+				    }
+				});
+				$("#tableData_2_filter.dataTables_filter").append($("#filterReceived"));
 
                 // changeIndustry(0, 1);
 
@@ -3541,6 +3669,7 @@
                                 html += '<td>'+obj.material+'</td>';
                                 html += '<td></td>';
                                 html += '<td>'+obj.address+'</td>';
+                                html += '<td class="hide"></td>';
                                 html += '<td>'+obj.contact_name+'</td>';
                                 html += '<td class="text-center">'+obj.contact_info+'</td>';
                                 html += '<td class="text-center">'+obj.compliance+'%</td>';
@@ -3628,6 +3757,7 @@
                             html += '<td>'+obj.material+'</td>';
                             html += '<td></td>';
                             html += '<td>'+obj.address+'</td>';
+                            html += '<td class="hide"></td>';
                             html += '<td>'+obj.contact_name+'</td>';
                             html += '<td class="text-center">'+obj.contact_info+'</td>';
                             html += '<td class="text-center">'+obj.compliance+'%</td>';

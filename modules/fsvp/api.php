@@ -52,29 +52,46 @@ if(isset($_GET["newSupplierToList"])) {
         ]);
 
         $id = $conn->getInsertId();
+        $filesRecords = [];
+        $params = [];
 
         // process uploads
         $csFile = null;
         $uploadPath = getUploadsDir('fsvp/supplier_lists');
         if($_POST['compliance_statement'] == 1 && ($csFile = uploadFile($uploadPath, $_FILES['compliance_statement_file']))) {
-            $conn->update("tbl_fsvp_suppliers", [ "cs_file" => $csFile], "id = $id");
             $csFile = [
-                "path" => $uploadPath . '\\' . $csFile,
-                "name" => $file, 
+                "filename" => $csFile,
+                "path" => $uploadPath,
+                "document_date" => $_POST['csf_date'] ?? null,
+                "expiration_date" => $_POST["csf_exp"] ?? null,
+                "note" => $_POST["csf_note"] ?? null,
             ];
+
+            $params[] = '(?,?,?,?,?,?,?)';
+            $filesRecords = [$id, 'supplier-list:compliance-statement', ...array_values($csFile)];
         }
 
         $saFiles = null;
         if($_POST['supplier_agreement'] == 1) {
-            $saFiles = [];
+            $saFiles = [];            
             $files = uploadFile($uploadPath, $_FILES['supplier_agreement_file']);
-            $conn->update("tbl_fsvp_suppliers", [ "sa_files" => json_encode($files)], "id = $id");
-            foreach($files as $file) {
-                $saFiles[] = [
-                    "path" => $uploadPath . '\\' . $file,
-                    "name" => $file, 
+            foreach($files as $index => $file) {
+                $info = [
+                    "filename" => $file,
+                    "path" => $uploadPath,
+                    "document_date" => $_POST['saf_date'][$index] ?? null,
+                    "expiration_date" => $_POST["saf_exp"][$index] ?? null,
+                    "note" => $_POST["saf_note"][$index] ?? null,
                 ];
+
+                $saFiles[] = $info;
+                $params[] = '(?,?,?,?,?,?,?)';
+                $filesRecords = array_merge($filesRecords, [$id, 'supplier-list:supplier-agreement', ...array_values($info)]);
             }
+        }
+        
+        if(count($filesRecords) > 0  && count($params) > 0) {
+            $conn->execute("INSERT tbl_fsvp_files(record_id, record_type, filename, path, document_date, expiration_date, note) VALUES ". implode(',', $params), $filesRecords);
         }
         
         // food imported names

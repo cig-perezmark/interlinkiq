@@ -69,3 +69,5 @@ database_iiq.php
 
 # local development environment
 local-dev.php
+
+vendor/*

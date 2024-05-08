@@ -184,9 +184,13 @@ function fetchTeamRoster(dt) {
                 dt.draw();
                 // fancyBoxes();      
             }
+
+            if(!data.length) {
+                bootstrapGrowl('No items to display.')
+            }
         },
         error: function() {
-            bootstrapGrowl('Error fetching records!');
+            bootstrapGrowl('Error fetching records!', 'error');
         },
     });
 }

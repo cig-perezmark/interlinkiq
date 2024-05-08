@@ -229,7 +229,9 @@
                                                                 ON FIND_IN_SET(j.ID, REPLACE(t.job_description_id, ' ', ''))
                                                                 WHERE j.status = 1
                                                                 AND j.user_id = $switch_user_id
-                                                                GROUP BY j.ID" );
+                                                                GROUP BY j.ID
+
+                                                                ORDER BY j.title" );
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 $table_counter = 1;
                                                                 while($row = mysqli_fetch_array($result)) {
@@ -322,7 +324,9 @@
                                                                 ON FIND_IN_SET(j.ID, REPLACE(t.job_description_id, ' ', ''))
                                                                 WHERE j.status = 0
                                                                 AND j.user_id = $switch_user_id
-                                                                GROUP BY j.ID" );
+                                                                GROUP BY j.ID
+
+                                                                ORDER BY j.title" );
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 $table_counter = 1;
                                                                 while($row = mysqli_fetch_array($result)) {

@@ -2577,6 +2577,7 @@ License: You must have a valid license purchased only from themeforest(the above
                     </li>
 
                     <?php
+                        if($current_client == 0) {
                             $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $switch_user_id" );
                             if ( mysqli_num_rows($hasLibrary) == 0 OR $switch_user_id == 163) {
                                 echo '<li class="nav-item '; echo $site === "pricing" ? "active" : ""; echo '">
@@ -2587,7 +2588,8 @@ License: You must have a valid license purchased only from themeforest(the above
                                     </a>
                                 </li>';
                             }
-                        ?>
+                        }
+                    ?>
 
 
                     <li class="nav-item hide <?php echo $site === "researchandDev" ? "active" : ""; ?>">

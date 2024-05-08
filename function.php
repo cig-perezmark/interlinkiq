@@ -3482,7 +3482,9 @@
             WHERE j.status = $status
             AND FIND_IN_SET($id, REPLACE(j.department_id, ' ', ''))
             AND j.user_id = $user_id
-            GROUP BY j.ID" );
+            GROUP BY j.ID
+
+            ORDER BY j.title" );
         if ( mysqli_num_rows($result) > 0 ) {
             $table_counter = 1;
             while($row = mysqli_fetch_array($result)) {
@@ -3674,7 +3676,7 @@
                                     </thead>
                                     <tbody>';
                                         
-                                        $selectTrainings = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE status = 1 AND deleted = 0 AND user_id = $user_id" );
+                                        $selectTrainings = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE status = 1 AND deleted = 0 AND user_id = $user_id ORDER BY title" );
                                         if ( mysqli_num_rows($selectTrainings) > 0 ) {
                                             $countTraining = 0;
                                             $counting = 1;
@@ -3757,7 +3759,7 @@
                                     </thead>
                                     <tbody>';
 
-                                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id AND job_description_id IN ($ID)" );
+                                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id AND job_description_id IN ($ID) ORDER BY first_name" );
                                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                             $counting = 1;
                                             while($rowEmployee = mysqli_fetch_array($selectEmployee)) {

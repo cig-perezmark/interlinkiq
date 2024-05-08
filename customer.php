@@ -2144,9 +2144,9 @@
             function widget_dates() {
                 $('#tableData_Requirement_2 tbody .daterange').daterangepicker({
                     ranges: {
-                        'Today': [moment().subtract(1, 'day'), moment().subtract(1, 'day')],
-                        'One Month': [moment().subtract(1, 'day'), moment().add(1, 'month')],
-                        'One Year': [moment().subtract(1, 'day'), moment().add(1, 'year')]
+                        'Today': [moment(), moment()],
+                        'One Month': [moment(), moment().add(1, 'month').subtract(1, 'day')],
+                        'One Year': [moment(), moment().add(1, 'year').subtract(1, 'day')]
                     },
                     "autoApply": true,
                     "showDropdowns": true,
@@ -2162,9 +2162,9 @@
             function widget_date(id, modal) {
                 $('#tableData_Requirement_'+modal+' tbody .tr_'+id+' .daterange').daterangepicker({
                     ranges: {
-                        'Today': [moment().subtract(1, 'day'), moment().subtract(1, 'day')],
-                        'One Month': [moment().subtract(1, 'day'), moment().add(1, 'month')],
-                        'One Year': [moment().subtract(1, 'day'), moment().add(1, 'year')]
+                        'Today': [moment(), moment()],
+                        'One Month': [moment(), moment().add(1, 'month').subtract(1, 'day')],
+                        'One Year': [moment(), moment().add(1, 'year').subtract(1, 'day')]
                     },
                     "autoApply": true,
                     "showDropdowns": true,
@@ -2179,9 +2179,9 @@
             function widget_date_other(id, modal) {
                 $('#tableData_Requirement_'+modal+' tbody .tr_other_'+id+' .daterange').daterangepicker({
                     ranges: {
-                        'Today': [moment().subtract(1, 'day'), moment().subtract(1, 'day')],
-                        'One Month': [moment().subtract(1, 'day'), moment().add(1, 'month')],
-                        'One Year': [moment().subtract(1, 'day'), moment().add(1, 'year')]
+                        'Today': [moment(), moment()],
+                        'One Month': [moment(), moment().add(1, 'month').subtract(1, 'day')],
+                        'One Year': [moment(), moment().add(1, 'year').subtract(1, 'day')]
                     },
                     "autoApply": true,
                     "showDropdowns": true,
@@ -2205,9 +2205,9 @@
             function widget_dates_product(e) {
                 $('#modal'+e+'Product .daterange').daterangepicker({
                     ranges: {
-                        'Today': [moment().subtract(1, 'day'), moment().subtract(1, 'day')],
-                        'One Month': [moment().subtract(1, 'day'), moment().add(1, 'month')],
-                        'One Year': [moment().subtract(1, 'day'), moment().add(1, 'year')]
+                        'Today': [moment(), moment()],
+                        'One Month': [moment(), moment().add(1, 'month').subtract(1, 'day')],
+                        'One Year': [moment(), moment().add(1, 'year').subtract(1, 'day')]
                     },
                     "autoApply": true,
                     "showDropdowns": true,
@@ -2223,9 +2223,9 @@
             function widget_date_audit() {
                 $('.daterange_audit').daterangepicker({
                     ranges: {
-                        'Today': [moment().subtract(1, 'day'), moment().subtract(1, 'day')],
-                        'One Month': [moment().subtract(1, 'day'), moment().add(1, 'month')],
-                        'One Year': [moment().subtract(1, 'day'), moment().add(1, 'year')]
+                        'Today': [moment(), moment()],
+                        'One Month': [moment(), moment().add(1, 'month').subtract(1, 'day')],
+                        'One Year': [moment(), moment().add(1, 'year').subtract(1, 'day')]
                     },
                     "autoApply": true,
                     "showDropdowns": true,
@@ -2252,9 +2252,9 @@
 
                                         $(this).find('.daterange').daterangepicker({
                                             ranges: {
-                                                'Today': [moment().subtract(1, 'day'), moment().subtract(1, 'day')],
-                                                'One Month': [moment().subtract(1, 'day'), moment().add(1, 'month')],
-                                                'One Year': [moment().subtract(1, 'day'), moment().add(1, 'year')]
+                                                'Today': [moment(), moment()],
+                                                'One Month': [moment(), moment().add(1, 'month').subtract(1, 'day')],
+                                                'One Year': [moment(), moment().add(1, 'year').subtract(1, 'day')]
                                             },
                                             "autoApply": true,
                                             "showDropdowns": true,

@@ -1028,7 +1028,7 @@
             function btnDeleteIA(e, row) {
                 swal({
                     title: "Are you sure?",
-                    text: "Your item will be deleted!",
+                    text: "Your item will be archived!",
                     type: "warning",
                     showCancelButton: true,
                     confirmButtonClass: "btn-danger",
@@ -1043,7 +1043,7 @@
                             $(e).parent().parent().remove();
                         }
                     });
-                    swal("Done!", "This item has been deleted.", "success");
+                    swal("Done!", "This item has been archived.", "success");
                 });
             }
             function btnCloneIA(id) {
@@ -1469,8 +1469,8 @@
                 var formData = new FormData(this);
                 formData.append('btnClone_IA',true);
 
-                // var l = Ladda.create(document.querySelector('#btnClone_IA'));
-                // l.start();
+                var l = Ladda.create(document.querySelector('#btnClone_IA'));
+                l.start();
 
                 $.ajax({
                     url: "function.php",
@@ -1487,7 +1487,7 @@
                         } else {
                             msg = "Error!"
                         }
-                        // l.stop();
+                        l.stop();
 
                         bootstrapGrowl(msg);
                     }

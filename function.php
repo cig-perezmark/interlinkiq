@@ -24531,7 +24531,7 @@
                         <option value="2">Egg</option>
                         <option value="3">Fish (e.g., bass, flounder, cod)</option>
                         <option value="4">Crustacean shellfish (e.g., crab, lobster, shrimp)</option>
-                        <option value="5">Tree nuts (e.g., almonds, walnuts, peca)</option>
+                        <option value="5">Tree nuts (e.g., almonds, walnuts, pecans)</option>
                         <option value="6">Peanuts</option>
                         <option value="7">Wheat</option>
                         <option value="8">Soybeans</option>
@@ -24740,7 +24740,7 @@
                         <option value="2" '; echo in_array(2, $allergen) ? 'SELECTED' : ''; echo '>Egg</option>
                         <option value="3" '; echo in_array(3, $allergen) ? 'SELECTED' : ''; echo '>Fish (e.g., bass, flounder, cod)</option>
                         <option value="4" '; echo in_array(4, $allergen) ? 'SELECTED' : ''; echo '>Crustacean shellfish (e.g., crab, lobster, shrimp)</option>
-                        <option value="5" '; echo in_array(5, $allergen) ? 'SELECTED' : ''; echo '>Tree nuts (e.g., almonds, walnuts, peca)</option>
+                        <option value="5" '; echo in_array(5, $allergen) ? 'SELECTED' : ''; echo '>Tree nuts (e.g., almonds, walnuts, pecans)</option>
                         <option value="6" '; echo in_array(6, $allergen) ? 'SELECTED' : ''; echo '>Peanuts</option>
                         <option value="7" '; echo in_array(7, $allergen) ? 'SELECTED' : ''; echo '>Wheat</option>
                         <option value="8" '; echo in_array(8, $allergen) ? 'SELECTED' : ''; echo '>Soybeans</option>
@@ -29140,32 +29140,38 @@
                 $format_ID_new_arr_data = implode(' | ', $format_ID_new_arr);
 
                 // Select and Clone Sheet
-                $sheet_output_arr = array();
-                $sheet_ID_arr = array();
-                $sheet_ID_new_arr = array();
-                $selectSheet = mysqli_query( $conn,"SELECT * FROM tbl_ia_sheet WHERE deleted = 0 AND timestamp_id = $i_timestamp_id");
-                if ( mysqli_num_rows($selectSheet) > 0 ) {
-                    while($rowSheet = mysqli_fetch_array($selectSheet)) {
-                        $sheet_ID = $rowSheet['ID'];
+                if (!empty($ia_sheet_id)) {
+                    $ia_sheet_id_arr = explode(" | ", $ia_sheet_id);
 
-                        $sql_format = "INSERT INTO tbl_ia_sheet (user_id, portal_user, timestamp_id, name)
-                        SELECT '$user', '$user', '$timestamp_id_new', name
-                        FROM tbl_ia_sheet
-                        WHERE deleted = 0 AND ID = $sheet_ID";
-                        if (mysqli_query($conn, $sql_format)) {
-                            $last_id_sheet = mysqli_insert_id($conn);
+                    $sheet_output_arr = array();
+                    $sheet_ID_arr = array();
+                    $sheet_ID_new_arr = array();
+                    $selectSheet = mysqli_query( $conn,"SELECT * FROM tbl_ia_sheet WHERE deleted = 0 AND timestamp_id = $i_timestamp_id");
+                    if ( mysqli_num_rows($selectSheet) > 0 ) {
+                        while($rowSheet = mysqli_fetch_array($selectSheet)) {
+                            $sheet_ID = $rowSheet['ID'];
 
-                            $output_sheet = array (
-                                'old' => $sheet_ID,
-                                'new' => $last_id_sheet
-                            );
-                            array_push($sheet_output_arr, $output_sheet);
-                            array_push($sheet_ID_arr, $sheet_ID);
-                            array_push($sheet_ID_new_arr, $last_id_sheet);
+                            if (in_array($sheet_ID, $ia_sheet_id_arr)) {
+                                $sql_format = "INSERT INTO tbl_ia_sheet (user_id, portal_user, timestamp_id, name)
+                                SELECT '$user', '$user', '$timestamp_id_new', name
+                                FROM tbl_ia_sheet
+                                WHERE deleted = 0 AND ID = $sheet_ID";
+                                if (mysqli_query($conn, $sql_format)) {
+                                    $last_id_sheet = mysqli_insert_id($conn);
+
+                                    $output_sheet = array (
+                                        'old' => $sheet_ID,
+                                        'new' => $last_id_sheet
+                                    );
+                                    array_push($sheet_output_arr, $output_sheet);
+                                    array_push($sheet_ID_arr, $sheet_ID);
+                                    array_push($sheet_ID_new_arr, $last_id_sheet);
+                                }
+                            }
                         }
                     }
+                    $sheet_ID_new_arr_data = implode(' | ', $sheet_ID_new_arr);
                 }
-                $sheet_ID_new_arr_data = implode(' | ', $sheet_ID_new_arr);
 
                 // Select and Clone IA
                 $sql_ia = "INSERT INTO tbl_ia (user_id, portal_user, timestamp_id, title, description, sheet_id, last_modified, is_generated)
@@ -32778,7 +32784,7 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <div class="mt-checkbox-list">
-                                    <label class="mt-checkbox mt-checkbox-outline"> Tree nuts (e.g., almonds, walnuts, pecas)
+                                    <label class="mt-checkbox mt-checkbox-outline"> Tree nuts (e.g., almonds, walnuts, pecans)
                                         <input type="checkbox" value="5" name="allergen[]" '; echo in_array(5, $allergen) ? 'checked' : ''; echo '/>
                                         <span></span>
                                     </label>
@@ -44135,6 +44141,9 @@
 		                	$output_file = json_decode($data_files,true);
 		                	foreach ($output_file as $key => $value) {
 		                        $file_lang = $value['file_lang'];
+                                if ($file_lang == "0") { $file_lang = 'English'; }
+                                if ($file_lang == "1") { $file_lang = 'Spanish'; }
+                                if ($file_lang == "2") { $file_lang = 'Arabic'; }
 
 		                        echo '<li><a href="#tab_'.$key.'" data-toggle="tab">'.$file_lang.'</a></li>';
 		                    }

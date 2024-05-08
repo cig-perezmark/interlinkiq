@@ -75,7 +75,8 @@ function taskFormValidationInit() {
                     $('#advSearchAlert').find('.close').click();
                     $('#newTask').modal('hide');
                     destroyTaskForm();
-                    toastr['success'](data.success, "Added successfully");
+                    // toastr['success'](data.success, "Added successfully");
+                    bootstrapGrowl('Added successfully!');
                      console.log('testing');
                 }
                 else if(data.error) {

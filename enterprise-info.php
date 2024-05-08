@@ -1705,7 +1705,7 @@
                                                                 <div class="row">
                                                                     <div class="form-group">
                                                                         <div class="col-md-12">
-                                                                            <label class="control-label"><strong>Legal Namesss:<i style="color:orange;" title="This input box is required!!!">*</i></strong></label>
+                                                                            <label class="control-label"><strong>Legal Name:<i style="color:orange;" title="This input box is required!!!">*</i></strong></label>
                                                                             <input type="" class="form-control" name="LegalNameNew" value="<?php echo $rowDataSupplier['name']; ?>" required> 
                                                                         </div>
                                                                     </div>

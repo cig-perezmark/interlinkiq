@@ -672,7 +672,7 @@
                                                             <div class="col-md-4">
                                                                 <div class="form-group">
                                                                     <div class="mt-checkbox-list">
-                                                                        <label class="mt-checkbox mt-checkbox-outline"> Tree nuts (e.g., almonds, walnuts, pecas)
+                                                                        <label class="mt-checkbox mt-checkbox-outline"> Tree nuts (e.g., almonds, walnuts, pecans)
                                                                             <input type="checkbox" value="5" name="allergen[]">
                                                                             <span></span>
                                                                         </label>

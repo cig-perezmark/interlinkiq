@@ -1540,11 +1540,17 @@
                                                     foreach ($type_arr as $value) {
                                                         if ($value > 0) {
                                                             if ($value == 1 OR $value == 3 OR $value == 4) {
-                                                                if (in_array($label_arr[$i], $include_arr)) {
-                                                                    foreach($data_arr as $key => $val) {
-                                                                        if ($label_arr[$i] == $val['ID']) {
-                                                                            echo '<td>'.$val['content'].'</td>';
-                                                                        }
+                                                                if (in_array($label_arr[$i], array_column($data_arr, 'ID'))) {;
+                                                                    $targetId = $label_arr[$i];
+                                                                    
+                                                                    // Create an associative array with "ID" as keys and "content" as values
+                                                                    $idToContentMap = array_column($data_arr, 'content', 'ID');
+                                                                    
+                                                                    if (isset($idToContentMap[$targetId])) {
+                                                                        $content = $idToContentMap[$targetId];
+                                                                        echo '<td>'.$content.'</td>';
+                                                                    } else {
+                                                                        echo '<td></td>';
                                                                     }
                                                                 } else {
                                                                     echo '<td></td>';
@@ -1559,6 +1565,17 @@
                                                                 } else {
                                                                     echo '<td colspan="'.count($radio_arr).'"></td>';
                                                                 }
+                                                                
+                                                                
+                                                                // if (in_array($label_arr[$i], array_column($data_arr, 'ID'))) {;
+                                                                //     foreach ($radio_arr as $r) {
+                                                                //         echo '<td><input type="radio" class="m-0 radio_'.$data_ID.'_'.$label_arr[$i].'" value="'.$r.'" name="radio_'.$data_ID.'_'.$label_arr[$i].'" /></td>';
+                                                                //     }
+                                                                // } else {
+                                                                //     echo '<td colspan="'.count($radio_arr).'"></td>';
+                                                                // }
+                                                                
+                                                                // echo '<td colspan="'.count($radio_arr).'">'.$value.' -- '.$i.' -- '.$label_arr[$i].'</td>';
                                                             }
                                                             $i++;
                                                         }

@@ -870,7 +870,7 @@
 
     $final_name = $row["product"];
     if ($likelihood_type == 1) { $final_name = $row["company"]; }
-	header('Content-Type: application/vnd.ms-excel ');
+    header('Content-Type: application/vnd.ms-excel');
 	header('Content-Disposition: attachment; filename='.$row["code"].'-'.$final_name.'-'.$prepared_date.'.xls');
 	echo $html;
 ?>

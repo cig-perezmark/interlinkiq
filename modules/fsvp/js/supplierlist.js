@@ -292,6 +292,9 @@ function viewFile(data, id, fileType) {
         bootstrapGrowl('File(s) not found.')
         return;
     }
-
+    
     console.log(fileData)
+    $('.file-viewer').attr('src', fileData[0].path +'\\' +fileData[0].filename);
+    $('.view-anchor').attr('data-src', fileData[0].path +'\\' +fileData[0].filename);
+    $('#modalViewFiles').modal('show')
 }

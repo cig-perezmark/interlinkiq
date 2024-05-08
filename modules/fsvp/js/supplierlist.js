@@ -195,18 +195,18 @@ jQuery(function() {
                     renderDTRow(data).draw();
                 }
 
+                $(form.supplier).val('').trigger('change');
                 $('#modalNewSupplier').modal('hide');
                 bootstrapGrowl(message || 'Saved!');
             },
             error: function() {
-                bootstrapGrowl('Error!');
+                bootstrapGrowl('Error!', 'danger');
             },
             complete: function() {
                 l.stop();
             }
         });
     });
-
 
     function initSuppliers() {
         $.ajax({

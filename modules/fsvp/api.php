@@ -42,6 +42,7 @@ if(isset($_GET["newSupplierToList"])) {
 
         $foodImported = json_encode($_POST['food_imported'] ?? []);
 
+        // initializing record
         $conn->execute("INSERT INTO tbl_fsvp_suppliers (user_id, portal_user, supplier_id, food_imported, supplier_agreement, compliance_statement) VALUE (?,?,?,?,?,?)", [
             $user_id,
             $portal_user,
@@ -90,6 +91,7 @@ if(isset($_GET["newSupplierToList"])) {
             }
         }
         
+        // saving file upload records
         if(count($filesRecords) > 0  && count($params) > 0) {
             $conn->execute("INSERT tbl_fsvp_files(record_id, record_type, filename, path, document_date, expiration_date, note) VALUES ". implode(',', $params), $filesRecords);
         }

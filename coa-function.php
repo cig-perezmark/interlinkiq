@@ -84,11 +84,6 @@ try {
         );
         array_push($arr_item, $output);
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
-    
-    // 	$assigned_to_id = '';
-    // 	if (!empty($_POST['assigned_to_id'])) {
-    // 		$assigned_to_id = implode(", ",$_POST['assigned_to_id']);
-    // 	}
     	
     	$sql = 'INSERT INTO `tbl_coa`(`user_id`, `portal_user`, `product_name`, `category`, `analysis_type`, `laboratory_type`, `files`, `filetype`, `filesize`, `file_history`, `files_date`, `frequency`, `frequency_other`, `received_by`, `notes`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
     	$conn->execute($sql, array(

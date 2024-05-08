@@ -16,6 +16,11 @@ td,
 th {
     white-space: normal !important;
 }
+
+.file-viewer {
+    width: 100%;
+    height: 28rem;
+}
 </style>
 
 <div class="d-flex margin-bottom-20" style="justify-content: end;">
@@ -263,12 +268,69 @@ th {
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">View</h4>
+                <h4 class="modal-title">View: Supplier Agreement</h4>
             </div>
-            <div class="modal-body"></div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group row">
+                            <label class="col-form-label col-md-2 bold">Filename</label>
+                            <div class="col-md-8">
+                                <span>sample.text</span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-form-label col-md-2 bold">Document date</label>
+                            <div class="col-md-8">
+                                <span>sample.text</span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-form-label col-md-2 bold">Expiration date</label>
+                            <div class="col-md-8">
+                                <span>sample.text</span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-form-label col-md-2 bold">Note</label>
+                            <div class="col-md-8">
+                                <span>sample.text</span>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-form-label col-md-2 bold">Upload date</label>
+                            <div class="col-md-8">
+                                <span>sample.text</span>
+                            </div>
+                        </div>
+                        <div class="row margin-bottom-20">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-8">
+                                <a href="javascript:void(0)" data-fancybox data-src="" class="btn btn-link view-anchor">
+                                    View file
+                                    <i class="fa fa-external-link" style="margin-left: .5rem;"></i>
+                                </a>|
+                                <button type="button" class="btn btn-link">
+                                    Update
+                                </button>|
+                                <button type="button" class="btn btn-link text-danger">
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="font-style:italic; font-weight:bold; margin-bottom:0.5rem;">
+                        Preview
+                    </div>
+                    <div class="col-md-7">
+                        <iframe src="#" frameborder="0" class="file-viewer"></iframe>
+                    </div>
+
+                </div>
+            </div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                <button type="button" class="btn green">Submit </button>
+                <button type="button" class="btn green hide">Submit </button>
             </div>
         </div>
     </div>

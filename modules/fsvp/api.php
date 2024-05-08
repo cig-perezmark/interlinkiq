@@ -117,7 +117,7 @@ if(isset($_GET["newSupplierToList"])) {
         $conn->rollback();
         send_response([
             "info"=> $e->getMessage(),
-            "message" => 'Error occured',
+            "message" => 'Error occured.',
         ], 500);
     }
 }
@@ -242,24 +242,27 @@ if(isset($_GET['getFSVPRoster'])) {
                 return $d;
             });
             
-        $info = getEmployeesInfo($conn, $empIds, $jdIds);
-        $employeeInfo = $info['employees_info'];
-        $jds = $info['job_descriptions'];
-
         $roster = [];
-        foreach($members as $row) {
-            $row['avatar'] = $employeeInfo[$row['id']] ?? 'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image';
-            $avatar = !empty($employeeInfo[$row['id']]) ? $employeeInfo[$row['id']]['avatar'] ?? null : null;
-            $phone = !empty($employeeInfo[$row['id']]) ? $employeeInfo[$row['id']]['mobile'] ?? null : null;
-            $roster[] = [
-                'id' => $row['id'],
-                'avatar'=> $avatar ?? 'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image',
-                'name' => $row['name'],
-                'email'=> $row['email'],
-                'type'=> $row['type'],
-                'phone'=> $phone ?? '',
-                'position'=> $jds[$row['jd']] ?? '',
-            ];
+        $info = getEmployeesInfo($conn, $empIds, $jdIds);
+
+        if($info) {
+            $employeeInfo = $info['employees_info'];
+            $jds = $info['job_descriptions'];
+    
+            foreach($members as $row) {
+                $row['avatar'] = $employeeInfo[$row['id']] ?? 'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image';
+                $avatar = !empty($employeeInfo[$row['id']]) ? $employeeInfo[$row['id']]['avatar'] ?? null : null;
+                $phone = !empty($employeeInfo[$row['id']]) ? $employeeInfo[$row['id']]['mobile'] ?? null : null;
+                $roster[] = [
+                    'id' => $row['id'],
+                    'avatar'=> $avatar ?? 'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image',
+                    'name' => $row['name'],
+                    'email'=> $row['email'],
+                    'type'=> $row['type'],
+                    'phone'=> $phone ?? '',
+                    'position'=> $jds[$row['jd']] ?? '',
+                ];
+            }
         }
             
         send_response([

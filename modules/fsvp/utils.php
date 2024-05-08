@@ -13,7 +13,7 @@ function getRealFileName($fileName) {
 }
 
 function getSupplierList($conn, $userId) {
-    $uploadPath = getUploadsDir('fsvp/supplier_lists');
+    $recordType = 'supplier-list:';
 
     $list = $conn->execute("SELECT fs.*, s.name, s.address FROM tbl_fsvp_suppliers fs 
         JOIN tbl_supplier s ON s.ID = fs.supplier_id
@@ -30,23 +30,42 @@ function getSupplierList($conn, $userId) {
 
         $mIds = implode(', ', json_decode($d['food_imported']));
         $materialData = $conn->select("tbl_supplier_material", "material_name AS name, ID as id", "ID in ($mIds)")->fetchAll();
+
+        // fetching stored files
+        $mFiles = $conn->select("tbl_fsvp_files","*", "deleted_at IS NULL AND record_type LIKE '$recordType%' AND record_id = " . $d['id'])->fetchAll();
+
+        $saFiles = [];
+        $csFile = [];
+
+        if(count($mFiles) > 0) {
+            foreach ($mFiles as $mFile) {
+                $fileData = $mFile;
+
+                // removing unwanted data
+                unset(
+                    $fileData['record_id'],
+                    $fileData['record_type'],
+                    $fileData['deleted_at'],
+                    $fileData['created_at'],
+                    $fileData['updated_at'],
+                );
+
+                if($mFile['record_type'] == 'supplier-list:supplier-agreement') {
+                    $saFiles[] = $fileData;
+                } else if($mFile['record_type'] == 'supplier-list:compliance-statement') {
+                    $csFile[] = $fileData;
+                }
+            }
+        }
         
-        $saFiles = json_decode($d['sa_files'] ?? '[]');
         $data[] = [
             'address' => $address,
             'name' => $d['name'],
             'id' => $d['id'],
             'food_imported' => $materialData,
-            'compliance_statement' => !empty($d['cs_file']) ? [
-                'path' =>  $uploadPath . '\\' . $d['cs_file'],
-                'name' => getRealFileName($d['cs_file']),
-            ] : null,
-            'supplier_agreement' => array_map(function ($d) use($uploadPath) {
-                return [
-                    'path' =>  $uploadPath . '\\' . $d,
-                    'name' => getRealFileName($d),
-                ];
-            }, $saFiles),
+            'compliance_statement' => $csFile,
+            'supplier_agreement' => $saFiles,
+            'files' => $mFiles,
         ];
     }
 

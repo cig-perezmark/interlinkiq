@@ -9,8 +9,9 @@ jQuery(function() {
     let supplierTable = null;
     let suppliersData = {};
 
-    supplierTable = initDataTable('#tableSupplierList', {
-        columnDefs: [{
+    supplierTable = Init.dataTable('#tableSupplierList', {
+        columnDefs: [
+            {
                 orderable: false,
                 targets: [-1],
             },
@@ -24,6 +25,10 @@ jQuery(function() {
             {
                 className: "text-center",
                 targets: [4,5] 
+            },
+            {
+                visible: false,
+                targets: [2] 
             },
         ]
     });
@@ -305,7 +310,7 @@ jQuery(function() {
         // save to local storage
         suppliersData[d.id] = d;
         const no = `<span style="font-weight:600;">No</span>`;
-        const sa = !d.supplier_agreement || !d.supplier_agreement.length ? no : `<a href="javascript:void(0)" data-opensafile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View ${d.supplier_agreement.length > 1 ? `(${d.supplier_agreement.length})` : ''}</a>`;
+        const sa = !d.supplier_agreement || !d.supplier_agreement.length ? no : `<a href="javascript:void(0)" data-opensafile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View</a>`;
         const cs = !d.compliance_statement || !d.compliance_statement.length ?  no : `<a href="javascript:void(0)" data-opencsfile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View </a>`;
         
         supplierTable.dt.row.add([

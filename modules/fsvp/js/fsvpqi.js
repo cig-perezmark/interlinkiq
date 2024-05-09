@@ -1,6 +1,24 @@
 jQuery(function() {
-    const tableFSVPQI = Init.dataTable($('#tableFSVPQI'));
     const alert = Init.createAlert($('#fsvpqiRegForm .modal-body'));
+    const tableFSVPQI = Init.dataTable($('#tableFSVPQI'), {
+        columnDefs:  [
+            {
+                orderable: false,
+                targets: [-1],
+            },
+            {
+                searchable: false,
+                targets: [-1],
+            },
+            {
+                className: "dt-right",
+            },
+            {
+                visible: false,
+                targets: [1]
+            }
+        ]
+    });
     
     Init.multiSelect($('#fsvpqiSelect'));
     populateFSVPQISelect();
@@ -14,9 +32,14 @@ jQuery(function() {
             if(alert.isShowing()) {
                 alert.hide();
             }
-            
-            alert.setContent(`<strong>Error</strong> An FSVPQI is required.`).show();
+
+            alert.setContent(`<strong>Error!</strong> An FSVPQI is required.`).show();
         }
+    });
+
+    $('.frfUplDoc').on('change', '.mt-checkbox input[type=checkbox]', function() {
+        const parent = $(this).closest('.frfUplDoc');
+        parent.find('input.form-control:not([data-note])').prop('required', this.checked);
     });
 });
 
@@ -31,7 +54,7 @@ function populateFSVPQISelect() {
                 let options = [{
                     label: 'No data available.',
                     title: 'No data available.',
-                    vaue: '',
+                    value: '',
                     selected: true,
                     disabled: true,
                 }];
@@ -40,7 +63,7 @@ function populateFSVPQISelect() {
                     options = [{
                         label: 'Select FSVPQI',
                         title: 'Select FSVPQI',
-                        vaue: '',
+                        value: '',
                         selected: true,
                         disabled: true,
                     }];

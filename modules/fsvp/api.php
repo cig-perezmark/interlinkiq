@@ -42,6 +42,7 @@ if(isset($_GET["newSupplierToList"])) {
 
         $foodImported = json_encode($_POST['food_imported'] ?? []);
 
+        // initializing record
         $conn->execute("INSERT INTO tbl_fsvp_suppliers (user_id, portal_user, supplier_id, food_imported, supplier_agreement, compliance_statement) VALUE (?,?,?,?,?,?)", [
             $user_id,
             $portal_user,
@@ -52,29 +53,53 @@ if(isset($_GET["newSupplierToList"])) {
         ]);
 
         $id = $conn->getInsertId();
+        $filesRecords = [];
+        $params = [];
 
         // process uploads
         $csFile = null;
         $uploadPath = getUploadsDir('fsvp/supplier_lists');
         if($_POST['compliance_statement'] == 1 && ($csFile = uploadFile($uploadPath, $_FILES['compliance_statement_file']))) {
-            $conn->update("tbl_fsvp_suppliers", [ "cs_file" => $csFile], "id = $id");
             $csFile = [
-                "path" => $uploadPath . '\\' . $csFile,
-                "name" => $file, 
+                "filename" => $csFile,
+                "path" => $uploadPath,
+                "document_date" => $_POST['csf_date'] ?? null,
+                "expiration_date" => $_POST["csf_exp"] ?? null,
+                "note" => $_POST["csf_note"] ?? null,
+                "uploaded_at" => $currentTimestamp,
             ];
+
+            $params[] = '(?,?,?,?,?,?,?,?)';
+            $filesRecords = [$id, 'supplier-list:compliance-statement', ...array_values($csFile)];
+            $csFile = prepareFileInfo($csFile);
         }
 
         $saFiles = null;
+        $saFileToBeReturned = null;
         if($_POST['supplier_agreement'] == 1) {
-            $saFiles = [];
+            $saFileToBeReturned = [];
+            $saFiles = [];            
             $files = uploadFile($uploadPath, $_FILES['supplier_agreement_file']);
-            $conn->update("tbl_fsvp_suppliers", [ "sa_files" => json_encode($files)], "id = $id");
-            foreach($files as $file) {
-                $saFiles[] = [
-                    "path" => $uploadPath . '\\' . $file,
-                    "name" => $file, 
+            foreach($files as $index => $file) {
+                $info = [
+                    "filename" => $file,
+                    "path" => $uploadPath,
+                    "document_date" => $_POST['saf_date'][$index] ?? null,
+                    "expiration_date" => $_POST["saf_exp"][$index] ?? null,
+                    "note" => $_POST["saf_note"][$index] ?? null,
+                    "uploaded_at" => $currentTimestamp,
                 ];
+
+                $saFiles[] = $info;
+                $params[] = '(?,?,?,?,?,?,?,?)';
+                $filesRecords = array_merge($filesRecords, [$id, 'supplier-list:supplier-agreement', ...array_values($info)]);
+                $saFileToBeReturned[] = prepareFileInfo($info);
             }
+        }
+        
+        // saving file upload records
+        if(count($filesRecords) > 0  && count($params) > 0) {
+            $conn->execute("INSERT tbl_fsvp_files(record_id, record_type, filename, path, document_date, expiration_date, note, uploaded_at) VALUES ". implode(',', $params), $filesRecords);
         }
         
         // food imported names
@@ -98,7 +123,7 @@ if(isset($_GET["newSupplierToList"])) {
         $conn->rollback();
         send_response([
             "info"=> $e->getMessage(),
-            "message" => 'Error occured',
+            "message" => 'Error occured.',
         ], 500);
     }
 }
@@ -223,24 +248,27 @@ if(isset($_GET['getFSVPRoster'])) {
                 return $d;
             });
             
-        $info = getEmployeesInfo($conn, $empIds, $jdIds);
-        $employeeInfo = $info['employees_info'];
-        $jds = $info['job_descriptions'];
-
         $roster = [];
-        foreach($members as $row) {
-            $row['avatar'] = $employeeInfo[$row['id']] ?? 'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image';
-            $avatar = !empty($employeeInfo[$row['id']]) ? $employeeInfo[$row['id']]['avatar'] ?? null : null;
-            $phone = !empty($employeeInfo[$row['id']]) ? $employeeInfo[$row['id']]['mobile'] ?? null : null;
-            $roster[] = [
-                'id' => $row['id'],
-                'avatar'=> $avatar ?? 'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image',
-                'name' => $row['name'],
-                'email'=> $row['email'],
-                'type'=> $row['type'],
-                'phone'=> $phone ?? '',
-                'position'=> $jds[$row['jd']] ?? '',
-            ];
+        $info = getEmployeesInfo($conn, $empIds, $jdIds);
+
+        if($info) {
+            $employeeInfo = $info['employees_info'];
+            $jds = $info['job_descriptions'];
+    
+            foreach($members as $row) {
+                $row['avatar'] = $employeeInfo[$row['id']] ?? 'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image';
+                $avatar = !empty($employeeInfo[$row['id']]) ? $employeeInfo[$row['id']]['avatar'] ?? null : null;
+                $phone = !empty($employeeInfo[$row['id']]) ? $employeeInfo[$row['id']]['mobile'] ?? null : null;
+                $roster[] = [
+                    'id' => $row['id'],
+                    'avatar'=> $avatar ?? 'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image',
+                    'name' => $row['name'],
+                    'email'=> $row['email'],
+                    'type'=> $row['type'],
+                    'phone'=> $phone ?? '',
+                    'position'=> $jds[$row['jd']] ?? '',
+                ];
+            }
         }
             
         send_response([

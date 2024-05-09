@@ -17,10 +17,10 @@
 ?>
 <style type="text/css">
 /* DataTable*/
-.table-scrollable .dataTable td>.btn-group,
+/* .table-scrollable .dataTable td>.btn-group,
 .table-scrollable .dataTable th>.btn-group {
     position: relative;
-}
+} */
 
 .btn-category {
     width: 100%;
@@ -50,6 +50,15 @@
 
 .filter:has([value=others]:checked) [data-other] {
     display: block;
+}
+
+.dt-buttons {
+    display: flex;
+    align-items: center;
+}
+
+table {
+    width: 100% !important;
 }
 </style>
 
@@ -158,19 +167,17 @@
                 </div>
             </div>
             <div class="portlet-body">
-                <div class="table-responsivex" style="border: 0;">
-                    <table class="table table-bordered table-hover" id="tableData">
-                        <thead>
-                            <tr>
-                                <th>Product/Item Name</th>
-                                <th>Document Date</th>
-                                <th>Received By</th>
-                                <th data-orderable="false" style="min-width: 135px;">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
+                <table class="table table-bordered table-hover" id="tableData">
+                    <thead>
+                        <tr>
+                            <th>Product/Item Name</th>
+                            <th>Document Date</th>
+                            <th>Received By</th>
+                            <th data-orderable="false" style="min-width: 135px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -492,32 +499,11 @@ $(document).ready(function() {
 
     $('.select2').select2();
     recordDT = $('#tableData').DataTable({
-        language: {
-            aria: {
-                sortAscending: ": activate to sort column ascending",
-                sortDescending: ": activate to sort column descending",
-            },
-            emptyTable: "No data available",
-            info: "Showing _START_ to _END_ of _TOTAL_ records",
-            infoEmpty: "No records found",
-            infoFiltered: "(filtered from _MAX_ total records)",
-            lengthMenu: "Show _MENU_",
-            search: "Search:",
-            zeroRecords: "No matching records found",
-            paginate: {
-                previous: "Prev",
-                next: "Next",
-                last: "Last",
-                first: "First",
-            },
-        },
-        bStateSave: false,
         lengthMenu: [
             [5, 15, 20, -1],
             [5, 15, 20, "All"],
         ],
         pageLength: 15,
-        pagingType: "bootstrap_full_number",
         columnDefs: [{
                 orderable: false,
                 targets: [-1],
@@ -526,40 +512,39 @@ $(document).ready(function() {
                 searchable: false,
                 targets: [-1],
             },
-            {
-                className: "dt-right",
-            },
         ],
         dom: 'lBfrtip',
         buttons: [{
-            extend: 'excel',
-            className: 'btn btn-secondary',
-            text: 'Excel',
-            title: 'COA Records',
-            filename: 'COA_Records',
-            attr: {
-                'data-bs-toggle': "tooltip",
-                'data-bs-placement': "top",
-                'title': "Convert to Excel  file"
+                extend: 'excel',
+                className: 'btn btn-secondary',
+                text: 'Excel',
+                title: 'COA Records',
+                filename: 'COA_Records',
+                attr: {
+                    'data-bs-toggle': "tooltip",
+                    'data-bs-placement': "top",
+                    'title': "Convert to Excel  file"
+                },
+                exportOptions: {
+                    columns: ':visible:not(:last-child)'
+                }
+            }, {
+                extend: 'pdf',
+                className: 'btn btn-secondary',
+                text: 'PDF',
+                title: 'COA Records',
+                filename: 'COA_Records',
+                attr: {
+                    'data-bs-toggle': "tooltip",
+                    'data-bs-placement': "top",
+                    'title': "Download as PDF"
+                },
+                exportOptions: {
+                    columns: ':visible:not(:last-child)'
+                }
             },
-            exportOptions: {
-                columns: ':visible:not(:last-child)'
-            }
-        }, {
-            extend: 'pdf',
-            className: 'btn btn-secondary',
-            text: 'PDF',
-            title: 'COA Records',
-            filename: 'COA_Records',
-            attr: {
-                'data-bs-toggle': "tooltip",
-                'data-bs-placement': "top",
-                'title': "Download as PDF"
-            },
-            exportOptions: {
-                columns: ':visible:not(:last-child)'
-            }
-        }, ],
+            'colvis'
+        ],
     });
 
 

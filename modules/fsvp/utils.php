@@ -13,7 +13,7 @@ function getRealFileName($fileName) {
 }
 
 function getSupplierList($conn, $userId) {
-    $uploadPath = getUploadsDir('fsvp/supplier_lists');
+    $recordType = 'supplier-list:';
 
     $list = $conn->execute("SELECT fs.*, s.name, s.address FROM tbl_fsvp_suppliers fs 
         JOIN tbl_supplier s ON s.ID = fs.supplier_id
@@ -30,23 +30,32 @@ function getSupplierList($conn, $userId) {
 
         $mIds = implode(', ', json_decode($d['food_imported']));
         $materialData = $conn->select("tbl_supplier_material", "material_name AS name, ID as id", "ID in ($mIds)")->fetchAll();
+
+        // fetching stored files
+        $mFiles = $conn->select("tbl_fsvp_files","*", "deleted_at IS NULL AND record_type LIKE '$recordType%' AND record_id = " . $d['id'])->fetchAll();
+
+        $saFiles = [];
+        $csFile = [];
+
+        if(count($mFiles) > 0) {
+            foreach ($mFiles as $mFile) {
+                $fileData = prepareFileInfo($mFile);
+                
+                if($mFile['record_type'] == 'supplier-list:supplier-agreement') {
+                    $saFiles[] = $fileData;
+                } else if($mFile['record_type'] == 'supplier-list:compliance-statement') {
+                    $csFile[] = $fileData;
+                }
+            }
+        }
         
-        $saFiles = json_decode($d['sa_files'] ?? '[]');
         $data[] = [
             'address' => $address,
             'name' => $d['name'],
             'id' => $d['id'],
             'food_imported' => $materialData,
-            'compliance_statement' => !empty($d['cs_file']) ? [
-                'path' =>  $uploadPath . '\\' . $d['cs_file'],
-                'name' => getRealFileName($d['cs_file']),
-            ] : null,
-            'supplier_agreement' => array_map(function ($d) use($uploadPath) {
-                return [
-                    'path' =>  $uploadPath . '\\' . $d,
-                    'name' => getRealFileName($d),
-                ];
-            }, $saFiles),
+            'compliance_statement' => $csFile,
+            'supplier_agreement' => $saFiles,
         ];
     }
 
@@ -88,3 +97,41 @@ function fsvpqiJDId($conn, $user_id) {
     $result = $conn->execute("SELECT ID FROM tbl_hr_job_description WHERE title LIKE '%fsvpqi%' AND status = 1 AND user_id = ? LIMIT 1", $user_id)->fetchAssoc();
     return $result['ID'];
 } 
+
+function embedFileUrl($file, $url) {
+    global $pageUrl;
+    $extension = pathinfo($file, PATHINFO_EXTENSION);
+
+    if (
+        (strtolower($extension) == "doc" || strtolower($extension) == "docx") ||
+        (strtolower($extension) == "ppt" || strtolower($extension) == "pptx") || 
+        (strtolower($extension) == "xls" || strtolower($extension) == "xlsb" || strtolower($extension) == "xlsm" || strtolower($extension) == "xlsx" OR strtolower($extension) == "csv" OR strtolower($extension) == "xlsx")
+    ) {
+        $src = 'https://view.officeapps.live.com/op/embed.aspx?src=';
+        $embed = '&embedded=true&isIframe=true';
+        
+        return $src.$pageUrl.'/'.$url.'/'.rawurlencode($file).$embed;
+        // return [
+        //     'isIframe' => true,
+        //     'url' => $src.$url.rawurlencode($file).$embed,
+        // ];
+    }
+
+    return $url.'/'.rawurlencode($file);
+}
+
+function prepareFileInfo($data) {
+    $filename = explode(' - ', $data['filename']);
+    unset($filename[0]);
+    $filename = implode(' - ', $filename);
+
+    return [
+        'id' => $data['id'],
+        'filename' => $filename,
+        'src' => embedFileUrl($data['filename'], $data['path']),
+        'note' => empty($data['note']) ? '(none)': $data['note'],
+        'document_date' => $data['document_date'],
+        'expiration_date' => $data['expiration_date'],
+        'upload_date' => date('Y-m-d', strtotime($data['uploaded_at'])),
+    ];
+}

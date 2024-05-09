@@ -21,6 +21,21 @@ th {
     width: 100%;
     height: 28rem;
 }
+
+#viewFileInfoForm.is-update [data-view-info]:not([data-view-info="upload_date"]),
+#viewFileInfoForm.is-update .vfbtns {
+    display: none !important;
+}
+
+#viewFileInfoForm .form-control,
+#viewFileInfoForm .vfupdt {
+    display: none;
+}
+
+#viewFileInfoForm.is-update .form-control,
+#viewFileInfoForm.is-update .vfupdt {
+    display: block !important;
+}
 </style>
 
 <div class="d-flex margin-bottom-20" style="justify-content: end;">
@@ -268,69 +283,98 @@ th {
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">View: Supplier Agreement</h4>
+                <h4 class="modal-title">Viewing: <span id="viewFileTitle"></span></h4>
             </div>
             <div class="modal-body">
                 <div class="row">
+                    <div class="col-md-7">
+                        <p><strong>File list:</strong></p>
+                        <div class="mt-element-list">
+                            <div class="mt-list-container list-simple ext-1">
+                                <ul id="viewFileList"></ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5" style="border-left: 1px solid #eee">
+                        <p><strong>Preview</strong></p>
+                        <iframe src="#" frameborder="0" class="file-viewer"></iframe>
+                    </div>
+                    <div class="col-md-12" style="margin: 1rem 0 2rem 0;">
+                        <hr>
+                    </div>
+                </div>
+                <form class="row" role="form" id="viewFileInfoForm">
                     <div class="col-md-12">
                         <div class="form-group row">
-                            <label class="col-form-label col-md-2 bold">Filename</label>
-                            <div class="col-md-8">
-                                <span>sample.text</span>
+                            <label class="col-form-label col-md-2 bold">File</label>
+                            <div class="col-md-7">
+                                <span data-view-info="filename"></span>
+                                <input type="file" name="file" class="form-control">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-form-label col-md-2 bold">Document date</label>
-                            <div class="col-md-8">
-                                <span>sample.text</span>
+                            <div class="col-md-7">
+                                <span data-view-info="document_date"></span>
+                                <input type="date" name="document_date" class="form-control">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-form-label col-md-2 bold">Expiration date</label>
-                            <div class="col-md-8">
-                                <span>sample.text</span>
+                            <div class="col-md-7">
+                                <span data-view-info="expiration_date"></span>
+                                <input type="date" name="expiration_date" class="form-control">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-form-label col-md-2 bold">Note</label>
-                            <div class="col-md-8">
-                                <span>sample.text</span>
+                            <div class="col-md-7">
+                                <span data-view-info="note"></span>
+                                <textarea name="note" class="form-control" placeholder="Add note (optional)"></textarea>
                             </div>
                         </div>
-                        <div class="form-group row">
+                        <div class="form-group row" data-view-info>
                             <label class="col-form-label col-md-2 bold">Upload date</label>
                             <div class="col-md-8">
-                                <span>sample.text</span>
+                                <span data-view-info="upload_date"></span>
                             </div>
                         </div>
                         <div class="row margin-bottom-20">
                             <div class="col-md-2"></div>
-                            <div class="col-md-8">
-                                <a href="javascript:void(0)" data-fancybox data-src="" class="btn btn-link view-anchor">
-                                    View file
-                                    <i class="fa fa-external-link" style="margin-left: .5rem;"></i>
-                                </a>|
-                                <button type="button" class="btn btn-link">
-                                    Update
-                                </button>|
-                                <button type="button" class="btn btn-link text-danger">
-                                    Remove
-                                </button>
+                            <div class="col-md-8 vfbtns">
+                                <div style="display:flex;gap:.75rem;">
+                                    <a href="javascript:void(0)" data-fancybox data-src="" class="btn btn-sm btn-circle default view-anchor">
+                                        <i class="fa fa-external-link icon-margin-right"></i>
+                                        View file
+                                    </a>
+                                    <button type="button" class="btn btn-sm default btn-circle" id="vfUpdateBtn">
+                                        <i class="fa fa-edit icon-margin-right font-blue"></i>
+                                        Update
+                                    </button>
+                                    <button type="button" class="btn btn-sm default text-danger btn-circle" id="vfRemoveBtn">
+                                        <i class="fa fa-close icon-margin-right font-red"></i>
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-8 vfupdt">
+                                <div style="display:flex;gap:.75rem;">
+                                    <button type="button" class="btn btn-sm default btn-circle">
+                                        <i class="fa fa-check icon-margin-right font-green"></i>
+                                        Save changes
+                                    </button>
+                                    <button type="button" class="btn btn-sm default text-danger btn-circle" id="vfCancelBtn">
+                                        <i class="fa fa-close icon-margin-right"></i>
+                                        Cancel
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12" style="font-style:italic; font-weight:bold; margin-bottom:0.5rem;">
-                        Preview
-                    </div>
-                    <div class="col-md-7">
-                        <iframe src="#" frameborder="0" class="file-viewer"></iframe>
-                    </div>
-
-                </div>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                <button type="button" class="btn green hide">Submit </button>
             </div>
         </div>
     </div>

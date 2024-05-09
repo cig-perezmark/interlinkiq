@@ -83,6 +83,10 @@ jQuery(function() {
         viewFile(suppliersData, this.dataset.opensafile, 'supplier_agreement');
     });
 
+    $('#tableSupplierList').on('click', '[data-opencsfile]', function() {
+        viewFile(suppliersData, this.dataset.opencsfile, 'compliance_statement');
+    });
+
     $('.asFileUpload').change(function() {
         const files = this.files;
         const arrDisplay = $(this).closest('.supplierlist-check').find('.filesArrayDisplay');
@@ -208,6 +212,60 @@ jQuery(function() {
         });
     });
 
+    // viewing individual files while modal popped out
+    $('#viewFileList').on('click', '.viewFileAnchor', function() {
+        try {
+            if(this.closest('.mt-list-item').classList.contains('done')) {
+                // disable click repeat on the item itself
+                return;
+            }
+            
+            // cancelling the form
+            $('#vfCancelBtn').click();
+            
+            const fileData= suppliersData[this.dataset.id][this.dataset.type][this.dataset.index];
+            $('#viewFileList .done').removeClass('done');
+            this.closest('.mt-list-item').classList.add('done');
+            showFileInfo(fileData);
+        } catch(err) {
+            console.error(err)
+        }
+    });
+
+    // file modal buttons
+    $('#vfUpdateBtn').click(function() {
+        $('#viewFileInfoForm').toggleClass('is-update');
+    });
+
+    $('#vfCancelBtn').click(function() {
+        $('#viewFileInfoForm').removeClass('is-update');
+    });
+
+    $('#vfRemoveBtn').click(function() {
+        swal(
+            {
+                title: `Do you really wish to remove this file?`,
+                type: "warning",
+                allowOutsideClick: false,
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonClass: "btn red",
+                cancelButtonClass: "btn default",
+                closeOnConfirm: true,
+                closeOnCancel: true,
+                confirmButtonText: "Yes",
+                cancelButtonText: "Cancel",
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+          
+                    console.log('file removed')
+                }
+            }
+        );
+    });
+    // end of file modal buttons
+
     function initSuppliers() {
         $.ajax({
             url: baseUrl + "suppliersByUser",
@@ -293,8 +351,52 @@ function viewFile(data, id, fileType) {
         return;
     }
     
-    console.log(fileData)
-    $('.file-viewer').attr('src', fileData[0].path +'\\' +fileData[0].filename);
-    $('.view-anchor').attr('data-src', fileData[0].path +'\\' +fileData[0].filename);
+    let label = 'Unknown';
+    switch(fileType) {
+        case 'supplier_agreement': label = 'Supplier Agreement'; break;
+        case 'compliance_statement': label = 'Compliance Statement'; break;
+    }
+    
+    $('#viewFileTitle').text(label)
+
+    const fileListContainer = $('#viewFileList');
+    fileListContainer.html('')
+    fileData.forEach((f, i) => {
+        fileListContainer.append(`
+            <li class="mt-list-item">
+                <div class="list-item-content" style="padding: 0;">
+                    <h5 style="margin: 0;">
+                        <a class="viewFileAnchor" href="javascript:void(0)" data-type="${fileType}" data-id="${id}" data-index="${i}">${f.filename}</a>
+                    </h5>
+                </div>
+            </li>
+        `);
+    })
+
+    $('#viewFileList .mt-list-item:first-child .viewFileAnchor').click();
     $('#modalViewFiles').modal('show')
+}
+
+function showFileInfo(fileInfo) {
+    try {
+        const fileInfoForm = document.querySelector('#viewFileInfoForm');
+
+        // input fields
+        fileInfoForm.note.value = fileInfo.note;
+        fileInfoForm.document_date.value = fileInfo.document_date;
+        fileInfoForm.expiration_date.value = fileInfo.expiration_date;
+
+        // info display
+        $(fileInfoForm).find('[data-view-info=filename]').text(fileInfo.filename);
+        $(fileInfoForm).find('[data-view-info=document_date]').text(fileInfo.document_date);
+        $(fileInfoForm).find('[data-view-info=expiration_date]').text(fileInfo.expiration_date);
+        $(fileInfoForm).find('[data-view-info=note]').text(fileInfo.note);
+        $(fileInfoForm).find('[data-view-info=upload_date]').text(fileInfo.upload_date);
+
+        $('.file-viewer').attr('src', fileInfo.src);
+        $('.view-anchor').attr('data-src', fileInfo.src);   
+    } catch(err) {
+        console.error(err)
+        bootstrapGrowl('Error reading data.', 'error')
+    }
 }

@@ -50,6 +50,8 @@ function getSupplierList($conn, $userId) {
                     $fileData['updated_at'],
                 );
 
+                $fileData['uploaded_at'] = date('Y-m-d', strtotime($fileData['uploaded_at'])); 
+
                 if($mFile['record_type'] == 'supplier-list:supplier-agreement') {
                     $saFiles[] = $fileData;
                 } else if($mFile['record_type'] == 'supplier-list:compliance-statement') {

@@ -66,9 +66,10 @@ if(isset($_GET["newSupplierToList"])) {
                 "document_date" => $_POST['csf_date'] ?? null,
                 "expiration_date" => $_POST["csf_exp"] ?? null,
                 "note" => $_POST["csf_note"] ?? null,
+                "uploaded_at" => $currentTimestamp,
             ];
 
-            $params[] = '(?,?,?,?,?,?,?)';
+            $params[] = '(?,?,?,?,?,?,?,?)';
             $filesRecords = [$id, 'supplier-list:compliance-statement', ...array_values($csFile)];
         }
 
@@ -83,17 +84,18 @@ if(isset($_GET["newSupplierToList"])) {
                     "document_date" => $_POST['saf_date'][$index] ?? null,
                     "expiration_date" => $_POST["saf_exp"][$index] ?? null,
                     "note" => $_POST["saf_note"][$index] ?? null,
+                    "uploaded_at" => $currentTimestamp,
                 ];
 
                 $saFiles[] = $info;
-                $params[] = '(?,?,?,?,?,?,?)';
+                $params[] = '(?,?,?,?,?,?,?,?)';
                 $filesRecords = array_merge($filesRecords, [$id, 'supplier-list:supplier-agreement', ...array_values($info)]);
             }
         }
         
         // saving file upload records
         if(count($filesRecords) > 0  && count($params) > 0) {
-            $conn->execute("INSERT tbl_fsvp_files(record_id, record_type, filename, path, document_date, expiration_date, note) VALUES ". implode(',', $params), $filesRecords);
+            $conn->execute("INSERT tbl_fsvp_files(record_id, record_type, filename, path, document_date, expiration_date, note, uploaded_at) VALUES ". implode(',', $params), $filesRecords);
         }
         
         // food imported names

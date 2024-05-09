@@ -77,7 +77,7 @@ function populateFSVPQISelect() {
                     });
                 }
 
-                $('#fsvpqiSelectHelpBlock').html(!result.length ? `Please specify the FSVPQI(s) in the <a href="/employee" target="_blank">Employee Roster</a> module.` : '');
+                $('#fsvpqiSelectHelpBlock').html(!result.length ? `Please assign FSVPQI(s) in the <a href="/employee" target="_blank">Employee Roster</a> module.` : '');
                 $('#fsvpqiSelect').multiselect('dataprovider', options);
             }
         },

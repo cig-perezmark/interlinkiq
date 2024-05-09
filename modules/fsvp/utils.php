@@ -95,7 +95,7 @@ function getEmployeesInfo($conn, $employeeIds, $jdIds) {
 
 function fsvpqiJDId($conn, $user_id) {
     $result = $conn->execute("SELECT ID FROM tbl_hr_job_description WHERE title LIKE '%fsvpqi%' AND status = 1 AND user_id = ? LIMIT 1", $user_id)->fetchAssoc();
-    return $result['ID'];
+    return count($result) > 0 ? $result['ID'] : null;
 } 
 
 function embedFileUrl($file, $url) {

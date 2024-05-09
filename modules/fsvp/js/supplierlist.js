@@ -76,7 +76,7 @@ jQuery(function() {
     });
 
     $('#tableSupplierList').on('click', '[data-openevalform]', function() {
-        $('#modalEvaluationForm').modal('show')
+        openEvaluationForm(suppliersData[this.dataset.openevalform]);
     });
 
     $('#tableSupplierList').on('click', '[data-opensafile]', function() {
@@ -266,6 +266,21 @@ jQuery(function() {
     });
     // end of file modal buttons
 
+    $('#modalViewFiles').on('hidden.bs.modal', function() {
+        const fileInfoForm = document.querySelector('#viewFileInfoForm');
+
+        // input fields
+        fileInfoForm.note.value = '';
+        fileInfoForm.document_date.value = '';
+        fileInfoForm.expiration_date.value = '';
+
+        // info display
+        $(fileInfoForm).find('span[data-view-info=filename]').text('');
+
+        $('.file-viewer').attr('src', 'about:blank');
+        $('.view-anchor').attr('data-src', 'about:blank');
+    })
+
     function initSuppliers() {
         $.ajax({
             url: baseUrl + "suppliersByUser",
@@ -302,10 +317,9 @@ jQuery(function() {
             cs,
             `
                 <div class="d-flex center">
-                    <button title="Evaluation form" type="button" class="btn green-soft btn-circle btn-sm" data-openevalform=""> <i class="icon-margin-rightx fa fa-edit"></i> Form</button>
+                    <button title="Evaluation form" type="button" class="btn green-soft btn-circle btn-sm" data-openevalform="${d.id}"> <i class="icon-margin-rightx fa fa-edit"></i> Form</button>
                     <span>|</span>
                     <button type="button" class="btn-link">Open</button>
-                
                 </div>
             `,
         ]);
@@ -377,6 +391,7 @@ function viewFile(data, id, fileType) {
     $('#modalViewFiles').modal('show')
 }
 
+// showing individual file info
 function showFileInfo(fileInfo) {
     try {
         const fileInfoForm = document.querySelector('#viewFileInfoForm');
@@ -394,9 +409,22 @@ function showFileInfo(fileInfo) {
         $(fileInfoForm).find('[data-view-info=upload_date]').text(fileInfo.upload_date);
 
         $('.file-viewer').attr('src', fileInfo.src);
-        $('.view-anchor').attr('data-src', fileInfo.src);   
+        $('.view-anchor').attr('data-src', fileInfo.src);
     } catch(err) {
         console.error(err)
         bootstrapGrowl('Error reading data.', 'error')
     }
+}
+
+// opening the evaluation form
+function openEvaluationForm(data) {
+    if(!data) {
+        bootstrapGrowl('Error reading data.', 'error');
+        return;
+    }
+
+    $('#effsaddress').val(data.address || '')
+    $('#effsname').val(data.name || '')
+    
+    $('#modalEvaluationForm').modal('show');
 }

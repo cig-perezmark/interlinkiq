@@ -72,6 +72,18 @@ th {
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
+                            <label for="effsname">Foreign Supplier Name</label>
+                            <input type="text" class="form-control bg-white" id="effsname" placeholder="Enter foreign supplier name" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="effsaddress">Address</label>
+                            <input type="text" class="form-control bg-white" id="effsaddress" placeholder="Enter supplier address" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
                             <label for="">Importer Name</label>
                             <input type="text" class="form-control" placeholder="Enter importer name">
                         </div>
@@ -80,18 +92,6 @@ th {
                         <div class="form-group">
                             <label for="">Address</label>
                             <input type="text" class="form-control" placeholder="Enter importer address">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="">Foreign Supplier Name</label>
-                            <input type="text" class="form-control" placeholder="Enter foreign supplier name">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="">Address</label>
-                            <input type="text" class="form-control" placeholder="Enter supplier address">
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -297,7 +297,7 @@ th {
                     </div>
                     <div class="col-md-5" style="border-left: 1px solid #eee">
                         <p><strong>Preview</strong></p>
-                        <iframe src="#" frameborder="0" class="file-viewer"></iframe>
+                        <iframe src="about:blank" frameborder="0" class="file-viewer"></iframe>
                     </div>
                     <div class="col-md-12" style="margin: 1rem 0 2rem 0;">
                         <hr>

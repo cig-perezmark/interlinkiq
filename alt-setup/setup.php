@@ -123,7 +123,7 @@ function uploadFile($path, $file, $newFilename = null) {
             }
             
             $filename = uniqid() . ' - ' . basename(htmlentities($file["name"][$i]));
-            $uploadFile = rtrim($path, '\\') . '\\' . $filename;
+            $uploadFile = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $filename;
             if (move_uploaded_file($file["tmp_name"][$i], $uploadFile)) {
                 $filenameArr[] = $filename;
             }
@@ -135,7 +135,7 @@ function uploadFile($path, $file, $newFilename = null) {
         }
         
         $filename = $newFilename ?? uniqid() . ' - ' . basename(htmlentities($file["name"]));
-        $uploadFile = rtrim($path, '\\') . '\\' . $filename;
+        $uploadFile = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $filename;
     
         if (move_uploaded_file($file["tmp_name"], $uploadFile)) {
             return $filename;

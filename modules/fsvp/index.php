@@ -100,20 +100,8 @@ hr {
     align-items: center;
     justify-content: center;
 }
-
-.dt-buttons {
-    margin: 0 !important;
-    float: left !important;
-}
-
-.dt-buttons:not(:first-child) {
-    margin: 0 0 0 0.5rem !important;
-}
-
-table.dataTable {
-    width: 100% !important;
-}
 </style>
+<link rel="stylesheet" href="modules/Init.style.css">
 
 <div class="row">
     <div class="col-md-12">

@@ -139,3 +139,7 @@ function prepareFileInfo($data) {
         'upload_date' => date('Y-m-d', strtotime($data['uploaded_at'])),
     ];
 }
+
+function saveFSVPQICertificate($data, $fileName) {
+
+}

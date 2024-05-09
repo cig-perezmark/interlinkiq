@@ -343,7 +343,7 @@ th {
                             <div class="col-md-2"></div>
                             <div class="col-md-8 vfbtns">
                                 <div style="display:flex;gap:.75rem;">
-                                    <a href="javascript:void(0)" data-fancybox data-src="" class="btn btn-sm btn-circle default view-anchor">
+                                    <a href="javascript:void(0)" data-fancybox data-src="" data-type="iframe" class="btn btn-sm btn-circle default view-anchor">
                                         <i class="fa fa-external-link icon-margin-right"></i>
                                         View file
                                     </a>

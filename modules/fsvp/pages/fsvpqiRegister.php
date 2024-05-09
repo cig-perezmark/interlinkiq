@@ -68,7 +68,7 @@ function yesNoRadio() {
             </div>
             <div class="modal-body form-body">
                 <div class="row">
-                    <div class="col-md-5">
+                    <div class="col-md-7">
                         <div class="form-group">
                             <label for="fsvpqiSelect">Select FSVQI</label>
                             <select name="fsvpqi" id="fsvpqiSelect" class="form-control">
@@ -77,7 +77,7 @@ function yesNoRadio() {
                             <small class="help-block" id="fsvpqiSelectHelpBlock"></small>
                         </div>
                     </div>
-                    <div class="col-md-7">
+                    <div class="col-md-12">
                         <div class="form-group">
                             <label for="">Course / Education / Seminars </label>
                             <textarea name="" id="" class="form-control" placeholder="Course / Education / Seminars"></textarea>

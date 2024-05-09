@@ -3,7 +3,7 @@
         <i class="fa fa-plus"></i>
         New Importer
     </a>
-    <a href="#modalCBPFiling" data-toggle="modal" class="btn green">
+    <a href="#modalCBPFiling" data-toggle="modal" class="btn green hide">
         <i class="fa fa-plus"></i>
         CBP Filing Form
     </a>
@@ -12,7 +12,7 @@
 <table class="table table-bordered table-hover" id="tableImporterList">
     <thead>
         <tr>
-            <th>Supplier Name</th>
+            <th>Importer Name</th>
             <th>Food Imported</th>
             <th>Address</th>
             <th>Evaluation Date</th>
@@ -74,10 +74,11 @@
                             <input type="text" class="form-control" placeholder="Enter supplier">
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="">Products</label>
-                            <input type="text" class="form-control">
+                    <div class="col-md-12 margin-bottom-20">
+                        <div>
+                            <strong>Product(s):</strong>
+                            <hr>
+                            <p class="help-block" id="materialListHelpBlock">Select product(s).</p>
                         </div>
                     </div>
 

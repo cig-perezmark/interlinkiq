@@ -34,7 +34,27 @@ jQuery(function() {
             }
 
             alert.setContent(`<strong>Error!</strong> An FSVPQI is required.`).show();
+            // return;
         }
+
+        const data = new FormData(form); 
+
+        $.ajax({
+            url: Init.baseUrl + "newFSVPQI",
+            type: "POST",
+            contentType: false,
+            processData: false,
+            data,
+            success: function({result}) {
+                // 
+            },
+            error: function() {
+                bootstrapGrowl('Error saving data.');
+            },
+            complete: function() {
+                // 
+            }
+        });
     });
 
     $('.frfUplDoc').on('change', '.mt-checkbox input[type=checkbox]', function() {

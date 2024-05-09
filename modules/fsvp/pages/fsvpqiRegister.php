@@ -61,7 +61,7 @@ function yesNoRadio() {
 <!-- modal -->
 <div class="modal fade in" id="modalFSVPQIReg" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <form class="modal-content" role="form">
+        <form class="modal-content" role="form" id="fsvpqiRegForm">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                 <h4 class="modal-title">FSVPQI Register Form</h4>
@@ -70,10 +70,11 @@ function yesNoRadio() {
                 <div class="row">
                     <div class="col-md-5">
                         <div class="form-group">
-                            <label for="fsvpqiSelect">Select </label>
-                            <select name="" id="fsvpqiSelect" class="form-control">
+                            <label for="fsvpqiSelect">Select FSVQI</label>
+                            <select name="fsvpqi" id="fsvpqiSelect" class="form-control">
                                 <option value="" selected disabled>Select FSVPQI</option>
                             </select>
+                            <small class="help-block" id="fsvpqiSelectHelpBlock"></small>
                         </div>
                     </div>
                     <div class="col-md-7">
@@ -87,32 +88,32 @@ function yesNoRadio() {
                 <div class="row">
                     <div class="col-md-12 frfUplDoc">
                         <label class="mt-checkbox mt-checkbox-outline">
-                            <input type="checkbox"> PCQI Certified
+                            <input type="checkbox" value="true" name="c_pcqi_certified"> PCQI Certified
                             <span></span>
                         </label>
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Upload document</label>
-                                    <input type="file" class="form-control">
+                                    <label>Upload document</label>
+                                    <input type="file" class="form-control" name="c_pcqi_certified-file">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Document date</label>
-                                    <input type="date" name="" id="" class="form-control">
+                                    <label>Document date</label>
+                                    <input type="date" name="c_pcqi_certified-document_date" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Expiration date</label>
-                                    <input type="date" name="" id="" class="form-control">
+                                    <label>Expiration date</label>
+                                    <input type="date" name="c_pcqi_certified-expiration_date" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Comment</label>
-                                    <input type="text" name="" id="" class="form-control" placeholder="(Optional)">
+                                    <label>Comment</label>
+                                    <input type="text" name="c_pcqi_certified-note" class="form-control" placeholder="(Optional)" data-note>
                                 </div>
                             </div>
                         </div>
@@ -120,32 +121,32 @@ function yesNoRadio() {
 
                     <div class="col-md-12 frfUplDoc">
                         <label class="mt-checkbox mt-checkbox-outline">
-                            <input type="checkbox"> Food Quality Auditing
+                            <input type="checkbox" value="true" name="c_food_quality_auditing"> Food Quality Auditing
                             <span></span>
                         </label>
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Upload document</label>
-                                    <input type="file" class="form-control">
+                                    <label>Upload document</label>
+                                    <input type="file" class="form-control" name="c_food_quality_auditing-file">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Document date</label>
-                                    <input type="date" name="" id="" class="form-control">
+                                    <label>Document date</label>
+                                    <input type="date" name="c_food_quality_auditing-document_date" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Expiration date</label>
-                                    <input type="date" name="" id="" class="form-control">
+                                    <label>Expiration date</label>
+                                    <input type="date" name="c_food_quality_auditing-expiration_date" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Comment</label>
-                                    <input type="text" name="" id="" class="form-control" placeholder="(Optional)">
+                                    <label>Comment</label>
+                                    <input type="text" name="c_food_quality_auditing-note" class="form-control" placeholder="(Optional)" data-note>
                                 </div>
                             </div>
                         </div>
@@ -153,32 +154,32 @@ function yesNoRadio() {
 
                     <div class="col-md-12 frfUplDoc">
                         <label class="mt-checkbox mt-checkbox-outline">
-                            <input type="checkbox"> HACCP Training
+                            <input type="checkbox" value="true" name="c_haccp_training"> HACCP Training
                             <span></span>
                         </label>
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Upload document</label>
-                                    <input type="file" class="form-control">
+                                    <label>Upload document</label>
+                                    <input type="file" class="form-control" name="c_haccp_training-file">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Document date</label>
-                                    <input type="date" name="" id="" class="form-control">
+                                    <label>Document date</label>
+                                    <input type="date" name="c_haccp_training-document_date" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Expiration date</label>
-                                    <input type="date" name="" id="" class="form-control">
+                                    <label>Expiration date</label>
+                                    <input type="date" name="c_haccp_training-expiration_date" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Comment</label>
-                                    <input type="text" name="" id="" class="form-control" placeholder="(Optional)">
+                                    <label>Comment</label>
+                                    <input type="text" name="c_haccp_training-note" class="form-control" placeholder="(Optional)" data-note>
                                 </div>
                             </div>
                         </div>
@@ -186,32 +187,32 @@ function yesNoRadio() {
 
                     <div class="col-md-12 frfUplDoc">
                         <label class="mt-checkbox mt-checkbox-outline">
-                            <input type="checkbox"> Food Safety Training Certificate
+                            <input type="checkbox" value="true" name="c_fs_training_certificate"> Food Safety Training Certificate
                             <span></span>
                         </label>
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Upload document</label>
-                                    <input type="file" class="form-control">
+                                    <label>Upload document</label>
+                                    <input type="file" class="form-control" name="c_fs_training_certificate-file">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Document date</label>
-                                    <input type="date" name="" id="" class="form-control">
+                                    <label>Document date</label>
+                                    <input type="date" name="c_fs_training_certificate-document_date" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Expiration date</label>
-                                    <input type="date" name="" id="" class="form-control">
+                                    <label>Expiration date</label>
+                                    <input type="date" name="c_fs_training_certificate-expiration_date" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Comment</label>
-                                    <input type="text" name="" id="" class="form-control" placeholder="(Optional)">
+                                    <label>Comment</label>
+                                    <input type="text" name="c_fs_training_certificate-note" class="form-control" placeholder="(Optional)" data-note>
                                 </div>
                             </div>
                         </div>
@@ -219,32 +220,32 @@ function yesNoRadio() {
 
                     <div class="col-md-12 frfUplDoc">
                         <label class="mt-checkbox mt-checkbox-outline">
-                            <input type="checkbox"> GFSI Certificate
+                            <input type="checkbox" value="true" name="c_gfsi_certificate"> GFSI Certificate
                             <span></span>
                         </label>
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Upload document</label>
-                                    <input type="file" class="form-control">
+                                    <label>Upload document</label>
+                                    <input type="file" class="form-control" name="c_gfsi_certificate-file">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Document date</label>
-                                    <input type="date" name="" id="" class="form-control">
+                                    <label>Document date</label>
+                                    <input type="date" name="c_gfsi_certificate-document_date" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Expiration date</label>
-                                    <input type="date" name="" id="" class="form-control">
+                                    <label>Expiration date</label>
+                                    <input type="date" name="c_gfsi_certificate-expiration_date" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <label for="">Comment</label>
-                                    <input type="text" name="" id="" class="form-control" placeholder="(Optional)">
+                                    <label>Comment</label>
+                                    <input type="text" name="c_gfsi_certificate-note" class="form-control" placeholder="(Optional)" data-note>
                                 </div>
                             </div>
                         </div>
@@ -253,7 +254,7 @@ function yesNoRadio() {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                <button type="button" class="btn green saveSigns-btn">Submit </button>
+                <button type="submit" class="btn green saveSigns-btn">Submit </button>
             </div>
         </form>
     </div>

@@ -291,7 +291,7 @@ jQuery(function() {
         suppliersData[d.id] = d;
         const no = `<span style="font-weight:600;">No</span>`;
         const sa = !d.supplier_agreement || !d.supplier_agreement.length ? no : `<a href="javascript:void(0)" data-opensafile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View ${d.supplier_agreement.length > 1 ? `(${d.supplier_agreement.length})` : ''}</a>`;
-        const cs = !d.compliance_statement ?  no : `<a href="javascript:void(0)" data-opencsfile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View </a>`;
+        const cs = !d.compliance_statement || !d.compliance_statement.length ?  no : `<a href="javascript:void(0)" data-opencsfile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View </a>`;
         
         supplierTable.dt.row.add([
             d.name,
@@ -356,7 +356,7 @@ function viewFile(data, id, fileType) {
         case 'supplier_agreement': label = 'Supplier Agreement'; break;
         case 'compliance_statement': label = 'Compliance Statement'; break;
     }
-    
+
     $('#viewFileTitle').text(label)
 
     const fileListContainer = $('#viewFileList');

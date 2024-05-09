@@ -225,7 +225,7 @@ th {
                                     <span class="fileArrayName">File Name</span>
                                     <div class="fileArrayDates">Document Date</div>
                                     <div class="fileArrayDates">Expiration Date</div>
-                                    <div class="fileArrayDates">Note</div>
+                                    <div class="fileArrayDates">Comment</div>
                                 </div>
                             </div>
                         </div>
@@ -259,7 +259,7 @@ th {
                                     <span class="fileArrayName">File Name</span>
                                     <div class="fileArrayDates">Document Date</div>
                                     <div class="fileArrayDates">Expiration Date</div>
-                                    <div class="fileArrayDates">Note</div>
+                                    <div class="fileArrayDates">Comment</div>
                                 </div>
                             </div>
                         </div>

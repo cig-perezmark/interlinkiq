@@ -53,6 +53,7 @@ if(isset($_GET["newSupplierToList"])) {
         ]);
 
         $id = $conn->getInsertId();
+        $fileInsertQuery = "INSERT tbl_fsvp_files(record_id, record_type, filename, path, document_date, expiration_date, note, uploaded_at) VALUES (?,?,?,?,?,?,?,?)";
         $filesRecords = [];
         $params = [];
 
@@ -69,15 +70,13 @@ if(isset($_GET["newSupplierToList"])) {
                 "uploaded_at" => $currentTimestamp,
             ];
 
-            $params[] = '(?,?,?,?,?,?,?,?)';
-            $filesRecords = [$id, 'supplier-list:compliance-statement', ...array_values($csFile)];
+            $conn->execute($fileInsertQuery, [$id, 'supplier-list:compliance-statement', ...array_values($csFile)]);
+            $csFile['id'] = $conn->getInsertId();
             $csFile = prepareFileInfo($csFile);
         }
 
         $saFiles = null;
-        $saFileToBeReturned = null;
         if($_POST['supplier_agreement'] == 1) {
-            $saFileToBeReturned = [];
             $saFiles = [];            
             $files = uploadFile($uploadPath, $_FILES['supplier_agreement_file']);
             foreach($files as $index => $file) {
@@ -89,17 +88,11 @@ if(isset($_GET["newSupplierToList"])) {
                     "note" => $_POST["saf_note"][$index] ?? null,
                     "uploaded_at" => $currentTimestamp,
                 ];
-
-                $saFiles[] = $info;
-                $params[] = '(?,?,?,?,?,?,?,?)';
-                $filesRecords = array_merge($filesRecords, [$id, 'supplier-list:supplier-agreement', ...array_values($info)]);
-                $saFileToBeReturned[] = prepareFileInfo($info);
+                
+                $conn->execute($fileInsertQuery, [$id, 'supplier-list:supplier-agreement', ...array_values($info)]);
+                $info['id'] = $conn->getInsertId();
+                $saFiles[] = prepareFileInfo($info);
             }
-        }
-        
-        // saving file upload records
-        if(count($filesRecords) > 0  && count($params) > 0) {
-            $conn->execute("INSERT tbl_fsvp_files(record_id, record_type, filename, path, document_date, expiration_date, note, uploaded_at) VALUES ". implode(',', $params), $filesRecords);
         }
         
         // food imported names

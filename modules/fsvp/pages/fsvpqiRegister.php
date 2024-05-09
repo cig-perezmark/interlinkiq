@@ -79,8 +79,8 @@ function yesNoRadio() {
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="">Course / Education / Seminars </label>
-                            <textarea name="" id="" class="form-control" placeholder="Course / Education / Seminars"></textarea>
+                            <label for="regces">Course / Education / Seminars </label>
+                            <textarea name="ces" id="regces" class="form-control" placeholder="Course / Education / Seminars"></textarea>
                         </div>
                     </div>
                 </div>

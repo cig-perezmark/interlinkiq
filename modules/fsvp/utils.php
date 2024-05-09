@@ -39,19 +39,8 @@ function getSupplierList($conn, $userId) {
 
         if(count($mFiles) > 0) {
             foreach ($mFiles as $mFile) {
-                $fileData = $mFile;
-
-                // removing unwanted data
-                unset(
-                    $fileData['record_id'],
-                    $fileData['record_type'],
-                    $fileData['deleted_at'],
-                    $fileData['created_at'],
-                    $fileData['updated_at'],
-                );
-
-                $fileData['uploaded_at'] = date('Y-m-d', strtotime($fileData['uploaded_at'])); 
-
+                $fileData = prepareFileInfo($mFile);
+                
                 if($mFile['record_type'] == 'supplier-list:supplier-agreement') {
                     $saFiles[] = $fileData;
                 } else if($mFile['record_type'] == 'supplier-list:compliance-statement') {
@@ -67,7 +56,6 @@ function getSupplierList($conn, $userId) {
             'food_imported' => $materialData,
             'compliance_statement' => $csFile,
             'supplier_agreement' => $saFiles,
-            'files' => $mFiles,
         ];
     }
 
@@ -109,3 +97,41 @@ function fsvpqiJDId($conn, $user_id) {
     $result = $conn->execute("SELECT ID FROM tbl_hr_job_description WHERE title LIKE '%fsvpqi%' AND status = 1 AND user_id = ? LIMIT 1", $user_id)->fetchAssoc();
     return $result['ID'];
 } 
+
+function embedFileUrl($file, $url) {
+    global $pageUrl;
+    $extension = pathinfo($file, PATHINFO_EXTENSION);
+
+    if (
+        (strtolower($extension) == "doc" || strtolower($extension) == "docx") ||
+        (strtolower($extension) == "ppt" || strtolower($extension) == "pptx") || 
+        (strtolower($extension) == "xls" || strtolower($extension) == "xlsb" || strtolower($extension) == "xlsm" || strtolower($extension) == "xlsx" OR strtolower($extension) == "csv" OR strtolower($extension) == "xlsx")
+    ) {
+        $src = 'https://view.officeapps.live.com/op/embed.aspx?src=';
+        $embed = '&embedded=true&isIframe=true';
+        
+        return $src.$pageUrl.'/'.$url.'/'.rawurlencode($file).$embed;
+        // return [
+        //     'isIframe' => true,
+        //     'url' => $src.$url.rawurlencode($file).$embed,
+        // ];
+    }
+
+    return $url.'/'.rawurlencode($file);
+}
+
+function prepareFileInfo($data) {
+    $filename = explode(' - ', $data['filename']);
+    unset($filename[0]);
+    $filename = implode(' - ', $filename);
+
+    return [
+        'id' => $data['id'],
+        'filename' => $filename,
+        'src' => embedFileUrl($data['filename'], $data['path']),
+        'note' => empty($data['note']) ? '(none)': $data['note'],
+        'document_date' => $data['document_date'],
+        'expiration_date' => $data['expiration_date'],
+        'upload_date' => date('Y-m-d', strtotime($data['uploaded_at'])),
+    ];
+}

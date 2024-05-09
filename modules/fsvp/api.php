@@ -71,10 +71,13 @@ if(isset($_GET["newSupplierToList"])) {
 
             $params[] = '(?,?,?,?,?,?,?,?)';
             $filesRecords = [$id, 'supplier-list:compliance-statement', ...array_values($csFile)];
+            $csFile = prepareFileInfo($csFile);
         }
 
         $saFiles = null;
+        $saFileToBeReturned = null;
         if($_POST['supplier_agreement'] == 1) {
+            $saFileToBeReturned = [];
             $saFiles = [];            
             $files = uploadFile($uploadPath, $_FILES['supplier_agreement_file']);
             foreach($files as $index => $file) {
@@ -90,6 +93,7 @@ if(isset($_GET["newSupplierToList"])) {
                 $saFiles[] = $info;
                 $params[] = '(?,?,?,?,?,?,?,?)';
                 $filesRecords = array_merge($filesRecords, [$id, 'supplier-list:supplier-agreement', ...array_values($info)]);
+                $saFileToBeReturned[] = prepareFileInfo($info);
             }
         }
         

@@ -121,12 +121,16 @@ function embedFileUrl($file, $url) {
 }
 
 function prepareFileInfo($data) {
+    if(empty($data)) {
+        return null;
+    }
+    
     $filename = explode(' - ', $data['filename']);
     unset($filename[0]);
     $filename = implode(' - ', $filename);
 
     return [
-        'id' => $data['id'],
+        'id' => $data['id'] ?? null,
         'filename' => $filename,
         'src' => embedFileUrl($data['filename'], $data['path']),
         'note' => empty($data['note']) ? '(none)': $data['note'],

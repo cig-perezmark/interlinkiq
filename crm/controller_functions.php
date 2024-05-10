@@ -2746,7 +2746,7 @@
     if(isset($_POST['get_task_notes'])) {
         $taskid = $_POST['taskid'];
         
-        $stmt = $conn->prepare("SELECT CONCAT(u.first_name, ' ', u.last_name) AS name, n.notes_id, n.taskid, n.Title, n.Notes, n.notes_stamp, n.crm_ids FROM tbl_Customer_Relationship_Notes n JOIN tbl_customer_relationship_task t ON n.taskid = t.crmt_id JOIN tbl_user u ON n.user_cookies = u.ID WHERE n.taskid = ?");
+        $stmt = $conn->prepare("SELECT CONCAT(u.first_name, ' ', u.last_name) AS name, n.notes_id, n.taskid, n.Title, n.Notes, n.notes_stamp, n.crm_ids FROM tbl_Customer_Relationship_Notes n JOIN tbl_Customer_Relationship_Task t ON n.taskid = t.crmt_id JOIN tbl_user u ON n.user_cookies = u.ID WHERE n.taskid = ?");
         if ($stmt === false) {
             echo 'Error preparing Statement: '. $conn->error;
             exit;

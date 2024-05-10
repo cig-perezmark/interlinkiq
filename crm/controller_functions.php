@@ -1683,7 +1683,7 @@
         $successfulRows = [];
     
         if (($handle = fopen($file, "r")) !== false) {
-            $stmt = $conn->prepare("INSERT INTO clone_crm (account_rep, account_name, account_email, account_phone, Account_Source, userID, enterprise_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmt = $conn->prepare("INSERT INTO tbl_Customer_Relationship (account_rep, account_name, account_email, account_phone, Account_Source, userID, enterprise_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
     
             if (!$stmt) {
                 die("Error in preparing the statement: " . $conn->error);
@@ -1692,8 +1692,7 @@
             $stmt->bind_param("sssssii", $account_rep, $account_name, $account_email, $account_phone, $account_source, $binded_employee_id, $binded_employeer_id);
             $successfullyInsertedCount = 0;
             $skippedExistingEmailCount = 0;
-            fgetcsv($handle);
-    
+        fgetcsv($handle);
             while (($data = fgetcsv($handle, 1000, ",")) !== false) {
                 $account_rep            = 'InterlinkIQ';
                 $account_name           = cleanInput($data[0]);
@@ -1703,7 +1702,7 @@
                 $binded_employee_id     = $_COOKIE['ID']; // integer 
                 $binded_employeer_id    = $user_id; // integer
     
-                $checkStmt = $conn->prepare("SELECT COUNT(*) FROM clone_crm WHERE account_email = ? AND enterprise_id = ?");
+                $checkStmt = $conn->prepare("SELECT COUNT(*) FROM tbl_Customer_Relationship WHERE account_email = ? AND enterprise_id = ?");
                 if (!$checkStmt) {
                     die("Error in preparing the statement: " . $conn->error);
                 }
@@ -1714,7 +1713,7 @@
                 $checkStmt->fetch();
                 $checkStmt->close();
     
-                if ($emailCount == 0) {
+                if ($emailCount == 0 && !empty(trim($account_email))) {
                     if ($stmt->execute()) {
                         $successfulRows[] = $data;
                         $successfullyInsertedCount++;
@@ -2765,7 +2764,6 @@
                     <td>'.$name.'</td>
                     <td class="text-center"> 
                         <a class="btn blue btn-sm get-note-details" data-toggle="modal" href="#modalNoteDetails" data-id="'.$notes_id.'" data-value="'.$crm_ids.'">View</a>
-                        <a class="btn red btn-sm remove-notes" data-id="'.$notes_id.'">Delete</a> 
                     </td>
                 </tr>
                 ';

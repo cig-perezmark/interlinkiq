@@ -1,6 +1,9 @@
 jQuery(function() {
     const newMemberForm = $('#newMemberForm');
-    const fsvpTeamTable = Init.dataTable($('#tableFSVPTeamRoster'), {paging: false});
+    const fsvpTeamTable = Init.dataTable($('#tableFSVPTeamRoster'), {
+        paging: false,
+        buttons: [],
+    });
     const actionColumnDT = fsvpTeamTable.dt.column(6);
     let newMemberModalErrorTimeout = null;
     let changeData = {};

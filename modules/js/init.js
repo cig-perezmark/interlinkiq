@@ -60,37 +60,44 @@
                     },
                 ],
                 order: [],
+                dom: 'lBfrtip',
+                buttons: [
+                    // {
+                    //     extend: 'excel',
+                    //     className: 'btn btn-secondary',
+                    //     text: 'Excel',
+                    //     title: 'COA Records',
+                    //     filename: 'COA_Records',
+                    //     attr: {
+                    //         'data-bs-toggle': "tooltip",
+                    //         'data-bs-placement': "top",
+                    //         'title': "Convert to Excel  file"
+                    //     },
+                    //     exportOptions: {
+                    //         columns: ':visible:not(:last-child)'
+                    //     }
+                    // }, 
+                    // {
+                    //     extend: 'pdf',
+                    //     className: 'btn btn-secondary',
+                    //     text: 'PDF',
+                    //     title: 'COA Records',
+                    //     filename: 'COA_Records',
+                    //     attr: {
+                    //         'data-bs-toggle': "tooltip",
+                    //         'data-bs-placement': "top",
+                    //         'title': "Download as PDF"
+                    //     },
+                    //     exportOptions: {
+                    //         columns: ':visible:not(:last-child)'
+                    //     }
+                    // }, 
+                    {
+                        extend: 'colvis',
+                        text: '<i class="fa fa-cog"></i>',
+                    }, 
+                ],
                 ...options,
-                // dom: 'lBfrtip',
-                // buttons: [{
-                //     extend: 'excel',
-                //     className: 'btn btn-secondary',
-                //     text: 'Excel',
-                //     title: 'COA Records',
-                //     filename: 'COA_Records',
-                //     attr: {
-                //         'data-bs-toggle': "tooltip",
-                //         'data-bs-placement': "top",
-                //         'title': "Convert to Excel  file"
-                //     },
-                //     exportOptions: {
-                //         columns: ':visible:not(:last-child)'
-                //     }
-                // }, {
-                //     extend: 'pdf',
-                //     className: 'btn btn-secondary',
-                //     text: 'PDF',
-                //     title: 'COA Records',
-                //     filename: 'COA_Records',
-                //     attr: {
-                //         'data-bs-toggle': "tooltip",
-                //         'data-bs-placement': "top",
-                //         'title': "Download as PDF"
-                //     },
-                //     exportOptions: {
-                //         columns: ':visible:not(:last-child)'
-                //     }
-                // }, ],
             });
 
             return {
@@ -101,6 +108,62 @@
                 }
             };
         },
+        createAlert(element, content = '', timeout = 3000, alertType = 'alert-danger') {
+            if(
+                !(element instanceof HTMLElement) &&
+                !(typeof element === 'object' && element instanceof $ && element.length > 0 && element[0] instanceof HTMLElement)
+            ) {
+                console.error('Invalid element.');
+                return;
+            }
+
+            const alert = $.parseHTML(`
+                <div class="alert ${alertType} alert-dismissable" style="display: none;">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true"></button>
+                    <div class="alert-content">${content}</div>
+                </div>
+            `);
+
+            $(element).append(alert);
+            let id = null;
+
+            return {
+                alert: $(alert),
+                id,
+                show: function() {
+                    const myAlert = this;
+                    if(myAlert.id) {
+                        console.log(myAlert)
+                        clearTimeout(myAlert.id);
+                        myAlert.id = null;
+                    }
+                    
+                    $(myAlert.alert).fadeIn('linear', function() {
+                        myAlert.id = setTimeout(() => {myAlert.hide()}, timeout);
+                    });
+                    return this;
+                },
+                hide: function() {
+                    const myAlert = this;
+                    $(myAlert.alert).fadeOut('linear', () => myAlert.id = null)
+                    return this;
+                },
+                destroy: function () {
+                    if(this.id) {
+                        clearTimeout(this.id);
+                        this.id = null;
+                    }
+                    this.alert.remove();
+                },
+                setContent: function(content) {
+                    $(this.alert).find('.alert-content').html(content);
+                    return this;
+                },
+                isShowing: function() {
+                    return this.id != null;
+                }
+            };
+        } 
     };
 
     if(typeof window !== 'undefined') {

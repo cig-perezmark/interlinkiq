@@ -1,0 +1,25 @@
+
+.dt-buttons {
+    margin: 0 !important;
+    float: left !important;
+}
+
+.dt-buttons:not(:first-child) {
+    margin: 0 0 0 0.5rem !important;
+}
+
+div.dt-button-collection {
+    width: auto;
+    min-width: 150px;
+}
+
+.dt-button-collection .dt-button.active::after {
+    margin-left: 0.5em;
+    content: "✓";
+    color: inherit;
+    float: right;
+}
+
+table.dataTable {
+    width: 100% !important;
+}

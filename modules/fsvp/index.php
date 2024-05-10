@@ -101,6 +101,7 @@ hr {
     justify-content: center;
 }
 </style>
+<link rel="stylesheet" href="modules/Init.style.css">
 
 <div class="row">
     <div class="col-md-12">

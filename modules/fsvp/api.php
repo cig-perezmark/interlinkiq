@@ -323,25 +323,77 @@ if(isset($_GET['updateFSVPTeamRoster'])) {
 // fetching fsvpqi employees
 if(isset($_GET['getFSVPQIs'])) {
     $fsvpId = fsvpqiJDId($conn, $user_id);
-    $result = $conn->select('tbl_hr_employee', "ID AS id, CONCAT(TRIM(first_name), ' ', TRIM(last_name)) AS name, job_description_id", "user_id = $user_id AND status = 1")->fetchAll(function ($data) use($fsvpId) {
-        $jds = array_map(function($d) { return intval($d); }, explode(', ', $data['job_description_id']));
-
-        if(in_array($fsvpId, $jds)){
-            unset($data['job_description_id']);
-            return $data;
-        }
-
-        return null;
-    });
-
     $employees = [];
-    foreach($result as $row) {
-        if(isset($row) && !empty($row)) {
-            $employees[] = $row;   
+
+    if(!empty($fsvpId)) {
+        $result = $conn->select('tbl_hr_employee', "ID AS id, CONCAT(TRIM(first_name), ' ', TRIM(last_name)) AS name, job_description_id", "user_id = $user_id AND status = 1")->fetchAll(function ($data) use($fsvpId) {
+            $jds = array_map(function($d) { return intval($d); }, explode(', ', $data['job_description_id']));
+    
+            if(in_array($fsvpId, $jds)){
+                unset($data['job_description_id']);
+                return $data;
+            }
+    
+            return null;
+        });
+    
+        foreach($result as $row) {
+            if(isset($row) && !empty($row)) {
+                $employees[] = $row;   
+            }
         }
     }
         
     send_response([
         'result' => $employees,
     ]);
+}
+
+if(isset($_GET['newFSVPQI'])) {
+    try {
+        $conn->begin_transaction();
+
+        $fsvpqi = $_POST['fsvpqi'] ?? null;
+        $ces = $_POST['ces'] ?? null;
+
+        if(!empty($fsvpqi)) {
+            throw new Exception('FSVPQI is required.');
+        }
+        
+        $conn->insert('tbl_fsvp_qi', [
+            'employee_id' => $fsvpqi,
+            'c_e_s' => $ces,
+            'user_id' => $user_id,
+            'portal_user' => $portal_user,
+        ]);
+
+        $id = $conn->getInsertId();
+        $type = 'fsvpqi-certifications';
+        $uploadPath = getUploadsDir('fsvp/qi_certifications');
+        $data = [];
+
+        if(isset($_POST['c_pcqi_certified']) && $_POST['c_pcqi_certified'] == 'true') {
+            $file = uploadFile($uploadPath, $_FILES['supplier_agreement_file']);
+            $fileInfo = [
+                "filename" => $csFile,
+                "path" => $uploadPath,
+                "document_date" => $_POST['csf_date'] ?? null,
+                "expiration_date" => $_POST["csf_exp"] ?? null,
+                "note" => $_POST["csf_note"] ?? null,
+                "uploaded_at" => $currentTimestamp,
+            ];
+        }
+
+        $conn->commit();
+        send_response([
+            'data' => $data,
+            'message' => "Saved successfully."
+        ]);
+    } catch(Throwable $e) {
+        $conn->rollback();
+        send_response([
+            "info"=> $e->getMessage(),
+            "message" => 'Error occured.',
+        ], 500);
+    }
 }

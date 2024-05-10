@@ -1452,11 +1452,11 @@ $(document).ready(function() {
                 taskid: id
             },
             success:function(response) {
-                if ($.fn.DataTable.isDataTable('#dataTable_6')) {
-                    $('#dataTable_6').DataTable().destroy();
+                if ($.fn.DataTable.isDataTable('#noteList')) {
+                    $('#noteList').DataTable().destroy();
                 }
-                $('#dataTable_6 tbody').html(response);
-                initializeDataTable2('#dataTable_6');
+                $('#noteList tbody').html(response);
+                initializeDataTable2('#noteList');
             }
         })
     }

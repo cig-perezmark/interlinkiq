@@ -1566,15 +1566,16 @@ $(document).ready(function() {
         formData.append('update_notes', 'update_notes')
         var btn = $('#noteFormBtn');
         var l = Ladda.create(btn[0]);
+        var id = $('#task-id').val()
         l.start();
         $.ajax({
-            url: 'crm/mass_upload.php',
+            url: 'crm/controller_functions.php',
             type: 'POST',
             data: formData,
             processData: false,
             contentType: false,
             success: function(response) {
-                $.bootstrapGrowl('Notes Added!', {
+                $.bootstrapGrowl('Notes Updated Successfully!', {
                     ele: 'body',
                     type: 'success',
                     offset: { from: 'bottom', amount: 50 },
@@ -1585,6 +1586,8 @@ $(document).ready(function() {
                     stackup_spacing: 10
                 });
                 l.stop();
+                get_tasknotes_by_id(id)
+                $('#modalNoteDetails').modal('hide');
             }
         });
     })

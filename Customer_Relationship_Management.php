@@ -169,6 +169,22 @@ $today_tx = $date_default_tx->format('Y-m-d');
     .dt-buttons {
         margin: 2rem 0;
     }
+    .page-container-bg-solid .tabbable-line>.tab-content {
+        border-top: 1px solid transparent;
+    }
+    .tabbable-line>.tab-content {
+        padding: 0;
+    }
+    /* .widget-thumb .widget-thumb-wrap {
+        overflow: unset;
+    }
+    .table-scrollable {
+        overflow: unset;
+        z-index: 2;
+    } */
+    .swal2-container {
+        z-index: 9999;
+    }
 </style>
 
     <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
@@ -237,8 +253,12 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                     <ul class="dropdown-menu pull-right">
                                         <li>
                                             <a data-toggle="modal" href="<?php echo $FreeAccess == false ? '#modalNew':'#modalService'; ?>" >Add New Contacts</a>
-                                           
+                                        </li>
+                                        <li>
                                             <a data-toggle="modal" class="" href="<?php echo $FreeAccess == false ? '#modalMultiUpload':'#modalService'; ?>" >Add Multiple Contacts</a>
+                                        </li>
+                                        <li>
+                                            <a data-toggle="modal" class="" href="<?php echo $FreeAccess == false ? '#modalArchiveContact':'#modalService'; ?>" >Archive Multiple Contacts</a>
                                         </li>
                                         <?php if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163): ?>
                                             <li>
@@ -470,7 +490,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                         </div>
                                     </div>
                                     <!--<div id="spinner" class="glyphicon glyphicon-refresh glyphicon-spin text-info" style="padding: 10px; font-size:20px"></div> <span id="spinner-text" style="display:18px" class="">Fetching data, a momment please . . .</span>-->
-                                     <table class="table table-bordered table-hover d-none" id="dataTable_2">
+                                     <table class="table table-bordered table-hover table-striped d-none" id="dataTable_2">
                                     	<thead>
                                             <tr role="row">
                                                 <th width="5%" class="text-center">
@@ -491,7 +511,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                         </thead>
                                         <tbody></tbody>
                                     </table>
-                                    <table class="table table-bordered table-hover d-none" id="dataTable_1">
+                                    <table class="table table-bordered table-hover table-striped d-none" id="dataTable_1">
                                     	<thead>
                                             <tr role="row">
                                                 <th  width="5%" class="text-center">
@@ -658,7 +678,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="widget-thumb widget-bg-color-white margin-bottom-20">
+                            <div class="widget-thumb widget-bg-color-white margin-bottom-20 tabbable-line">
                                 <div class="d-flex justify-content-between">
                                     <h4 class="widget-thumb-heading text-uppercase">Task</h4>
                                     <div class="actions">
@@ -668,27 +688,55 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                             </a>
                                             <ul class="dropdown-menu pull-right">
                                                 <li>
-                                                    <a data-toggle="modal" href="#modalTaskForm" >Add New Ticket</a>
+                                                    <a data-toggle="modal" href="#modalTaskForm" >Add New Task</a>
                                                 </li>
                                             </ul>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="widget-thumb-wrap">
-                                    <table class="table table-bordered table-hover dataTable no-footer" id="dataTable_3">
-                                        <thead>
-                                            <tr>
-                                                <th>Task</th>
-                                                <th>Originator</th>
-                                                <th>Assigned to</th>
-                                                <th>Description</th>
-                                                <th>Status</th>
-                                                <th>Due</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#pending-task" data-toggle="tab"> Pending </a>
+                                    </li>
+                                    <li>
+                                        <a href="#completed-task" data-toggle="tab"> Completed </a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="pending-task">
+                                        <div class="widget-thumb-wrap">
+                                            <table class="table table-bordered table-hover table-striped dataTable no-footer" id="pendingTaskTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="no-sort"></th>
+                                                        <th>Task</th>
+                                                        <th>Originator</th>
+                                                        <th>Assigned to</th>
+                                                        <th>Status</th>
+                                                        <th>Due</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="completed-task">
+                                        <div class="widget-thumb-wrap">
+                                            <table class="table table-bordered table-hover table-striped dataTable no-footer" id="completedTaskTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="no-sort"></th>
+                                                        <th>Task</th>
+                                                        <th>Originator</th>
+                                                        <th>Assigned to</th>
+                                                        <th>Status</th>
+                                                        <th>Due</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -697,7 +745,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                     <h4 class="widget-thumb-heading text-uppercase">Campaigns</h4>
                                 </div>
                                 <div class="widget-thumb-wrap">
-                                    <table class="table table-bordered table-hover dataTable no-footer" id="dataTable_4">
+                                    <table class="table table-bordered table-hover table-striped dataTable no-footer" id="dataTable_4">
                                         <thead>
                                             <tr>
                                                 <th>Subject</th>
@@ -720,7 +768,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                 </div>
                             </div>
                             
-                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">
+                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 d-none">
                                 <h4 class="widget-thumb-heading"></h4>
                                 <div class="widget-thumb-wrap">
                                     <div id="chartdiv2" style="width: 100%; height: 400px;"></div>
@@ -1132,7 +1180,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                             <i class="icon-users font-dark"></i>
                                             <span class="caption-subject font-dark bold uppercase">Existing Contact Email Entries</span>
                                         </div>
-                                        <table class="table table-bordered table-hover" id="dataTable_3">
+                                        <table class="table table-bordered table-hover table-striped" id="dataTable_3">
                                             <thead>
                                                 <tr role="row">
                                                     <th></th>
@@ -1150,7 +1198,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                             <i class="icon-users font-dark"></i>
                                             <span class="caption-subject font-dark bold uppercase">Inserted Contact Email Entries</span>
                                         </div>
-                                        <table class="table table-bordered table-hover" id="dataTable_4">
+                                        <table class="table table-bordered table-hover table-striped" id="dataTable_4">
                                             <thead>
                                                 <tr role="row">
                                                     <th></th>
@@ -1158,6 +1206,81 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                                     <th>Email</th>
                                                     <th>Phone</th>
                                                     <th>Source</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="massArchivedResult" tabindex="-1" role="basic" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form method="post" enctype="multipart/form-data" class="modalForm modalSave" id="addContactForm">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                            <h4 class="modal-title">Mass Archived Contacts Results</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="tabbable tabbable-tabdrop">
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#updated_tab" data-toggle="tab">Updated Entries</a>
+                                    </li>
+                                    <li>
+                                        <a href="#skipped_tab" data-toggle="tab">Archived Contacts</a>
+                                    </li>
+                                    <li>
+                                        <a href="#notfound_tab" data-toggle="tab">Not Found Entries</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content margin-top-20">
+                                    <div class="tab-pane active" id="updated_tab">
+                                        <div class="caption">
+                                            <i class="icon-users font-dark"></i>
+                                            <span class="caption-subject font-dark bold uppercase">Archived Contacts</span>
+                                        </div>
+                                        <table class="table table-bordered table-hover table-striped" id="archive_result">
+                                            <thead>
+                                                <tr role="row">
+                                                    <th width="1%">#</th>
+                                                    <th>Email</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                    <div class="tab-pane" id="skipped_tab">
+                                        <div class="caption">
+                                            <i class="icon-users font-dark"></i>
+                                            <span class="caption-subject font-dark bold uppercase">Already Archived Contacts</span>
+                                        </div>
+                                        <table class="table table-bordered table-hover table-striped" id="skipped_result">
+                                            <thead>
+                                                <tr role="row">
+                                                    <th width="1%">#</th>
+                                                    <th>Email</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                    <div class="tab-pane" id="notfound_tab">
+                                        <div class="caption">
+                                            <i class="icon-users font-dark"></i>
+                                            <span class="caption-subject font-dark bold uppercase">Not Found Emails</span>
+                                        </div>
+                                        <table class="table table-bordered table-hover table-striped" id="notfound_result">
+                                            <thead>
+                                                <tr role="row">
+                                                    <th width="1%">#</th>
+                                                    <th>Email</th>
                                                 </tr>
                                             </thead>
                                             <tbody></tbody>
@@ -1205,6 +1328,40 @@ $today_tx = $date_default_tx->format('Y-m-d');
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="modalArchiveContact" tabindex="-1" role="basic" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form method="POST" id="massArchiveForm" enctype="multipart/form-data" class="modalForm modalSave">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                            <h4 class="modal-title">Archive Multiple Contacts <a href="customer_relationship_template_archive.php">&nbsp;<i style="font-size:14px;">(Template here...)</i></a></h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="tabbable tabbable-tabdrop">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="control-label">Upload Template</label>
+                                            <input class="form-control" type="hidden" name="from" id="from" value="<?php echo $current_userEmail; ?>">
+                                            <input class="form-control-plaintext mb-2" id="uploadFileCsvInput" type="file" name="csvfile" id="csvfile" accept=".csv">
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
+                                        <button type="submit" id="massArchiveFormBtn" class="btn btn-success ladda-button" name="upload_multiple_contacts" data-style="zoom-out"><span class="ladda-label">Archive</span></button>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         
         <div class="modal fade" id="activity-history" tabindex="-1" role="basic" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -1222,7 +1379,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
          <div class="modal fade" id="modalTaskForm" tabindex="-1" role="basic" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form method="post" action="customer_relationship_AddTask.php" enctype="multipart/form-data" class="modalForm modalSave">
+                    <form id="taskForm">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                             <h4 class="modal-title">Add New Task</h4>
@@ -1231,21 +1388,21 @@ $today_tx = $date_default_tx->format('Y-m-d');
                             <div class="row">
                                 <div class="col-md-12"> 
                                     <div class="form-group">
-                                        <label class="control-label">Assign to</label>
-                                        <select class="form-control" name="email" type="text" required>
-                                            <option>Select Email</option>
+                                        <label class="control-label">Account</label>
+                                        <select class="form-control" name="contact" type="text" required>
+                                            <option>Select Account</option>
                                             <?php
                                                 $flag = 1;
                                                 $status = 'Manual';      
-                                                $stmt = mysqli_prepare($conn, 'SELECT account_email, account_name FROM tbl_Customer_Relationship WHERE flag = ? AND account_status != ?');
+                                                $stmt = mysqli_prepare($conn, 'SELECT account_email, account_name, crm_id FROM tbl_Customer_Relationship WHERE flag = ? AND account_status != ?');
                                                 mysqli_stmt_bind_param($stmt, 'is', $flag, $status);
                                                 mysqli_stmt_execute($stmt);
                                                 if(!$stmt) {
                                                     die('Error: ' . mysqli_error($conn));
                                                 }
-                                                mysqli_stmt_bind_result($stmt, $account_email, $account_name);
+                                                mysqli_stmt_bind_result($stmt, $account_email, $account_name, $crm_id);
                                                 while(mysqli_stmt_fetch($stmt)) {
-                                                    echo '<option value="'.$account_name.'">'.$account_name.'</option>';
+                                                    echo '<option value="'.$crm_id.'">'.$account_name.'</option>';
                                                 }
                                              ?>
                                         </select>
@@ -1256,7 +1413,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label class="control-label">Task Name</label>
-                                        <input class="form-control" type="text" name="assign_task" id="assign_task" required>
+                                        <input class="form-control" type="text" name="task" id="assign_task" required>
                                     </div>
                                 </div>
                             </div>
@@ -1264,7 +1421,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                 <div class="col-md-12"> 
                                     <div class="form-group">
                                         <label class="control-label">Description</label></label>
-                                            <textarea  class="form-control" name="Task_Description" ></textarea>
+                                            <textarea  class="form-control" name="description" ></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -1272,19 +1429,19 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                 <div class="col-md-12"> 
                                     <div class="form-group">
                                         <label class="control-label">Assign to</label>
-                                        <select class="form-control mt-multiselect btn btn-default get-person-activity" name="email" type="text" required style="width: 100%">
+                                        <select class="form-control mt-multiselect btn btn-default get-person-activity" name="assignee" type="text" required style="width: 100%">
                                             <option>Select Person</option>
                                             <?php
                                                 $user_id = $switch_user_id ?? 34 ;
-                                                $query = mysqli_prepare($conn, "SELECT first_name, last_name FROM tbl_hr_employee WHERE user_id = ? ORDER BY first_name ASC");
+                                                $query = mysqli_prepare($conn, "SELECT CONCAT(first_name, ' ', last_name) as name, email FROM tbl_hr_employee WHERE user_id = ? ORDER BY first_name ASC");
                                                 mysqli_stmt_bind_param($query, 'i', $user_id);
                                                 mysqli_stmt_execute($query);
                                                 if(!$query){
                                                     die('Error: '. mysqli_error($conn));
                                                 }
-                                                mysqli_stmt_bind_result($query, $first_name, $last_name);
+                                                mysqli_stmt_bind_result($query, $name, $email);
                                                 while(mysqli_stmt_fetch($query)) {
-                                                    echo '<option value="'.$first_name.' '.$last_name.'">'.$first_name.' '.$last_name.'</option>'; 
+                                                    echo '<option value="'.$email.'">'.$name.'</option>'; 
                                                 }
                                             ?>
                                         </select>
@@ -1295,19 +1452,19 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="control-label">Start Date</label>
-                                        <input class="form-control" type="date" name="Task_added" id="Task_added" required>
+                                        <input class="form-control" type="date" name="startdate" id="Task_added" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label class="control-label">Deadline</label>
-                                        <input class="form-control" type="date" name="Deadline" id="Deadline" required>
+                                        <input class="form-control" type="date" name="duedate" id="Deadline" required>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-body">
-                            <input type="submit" class="btn btn-success" name="btntask_submit" value="Save">
+                            <input type="submit" class="btn btn-success" id="taskFormBtn" value="Save">
                         </div>
                     </form>
                 </div>
@@ -1339,9 +1496,9 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                     <div class="form-group">
                                         <label class="control-label">Task Name</label>
                                         <select class="form-control" name="status" id="task-status">
-                                            <option value="3">Completed</option>
                                             <option value="1">Pending</option>
                                             <option value="2">In Progress</option>
+                                            <option value="3">Completed</option>
                                         </select>
                                     </div>
                                 </div>
@@ -1416,7 +1573,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                         <div id="site_activities_loading">
                             <span id="spinner-text" style="display:18px" class="">Fetching data </span> <img src="../assets/global/img/loading.gif" alt="loading" /> 
                         </div>
-                        <table class="table table-bordered table-hover no-footer d-none" id="dataTable_5">
+                        <table class="table table-bordered table-hover table-striped no-footer d-none" id="dataTable_5">
                             <thead>
                                 <tr>
                                     <th width="5%"></th>
@@ -1433,6 +1590,98 @@ $today_tx = $date_default_tx->format('Y-m-d');
                             <tbody></tbody>
                         </table>
                     </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary btn-sm" data-dismiss="modal" aria-hidden="true">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalTaskNotes" tabindex="-1" role="basic" aria-hidden="true">
+            <div class="modal-dialog" style="width:60%">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">Notes</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="d-flex justify-content-end">
+                            <a class="btn blue btn-sm get-task-id" data-toggle="modal" href="#modalAddNotes">Add Notes</a>
+                        </div>
+                        <div id="site_activities_loading">
+                            <span id="spinner-text" style="display:18px" class="">Fetching data </span> <img src="../assets/global/img/loading.gif" alt="loading" /> 
+                        </div>
+                        <table class="table table-bordered table-hover table-striped no-footer" id="dataTable_6">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Notes</th>
+                                    <th>Notes by</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalAddNotes" tabindex="-1" role="dialog" >
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form id="noteForm">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                            <h4 class="modal-title">Add New Notes</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label>Notes</label>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <input type="hidden" id="task-id" name="taskid">
+                                        <input type="hidden" id="contact-id" name="contactid">
+                                        <textarea class="form-control" type="text" name="notes" col="5" rows="8" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="margin-top:10px;">
+                            <button type="submit" id="noteFormBtn" value="Save" class="btn btn-info ladda-button">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalNoteDetails" tabindex="-1" role="dialog" >
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form id="updateNotesForm">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                            <h4 class="modal-title">Add New Notes</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <label>Notes</label>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <input type="hidden" id="notes-id" name="noteid">
+                                        <textarea class="form-control" type="text" name="notes" col="5" rows="8" required id="notes-v"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer" style="margin-top:10px;">
+                            <button type="submit" id="noteFormBtn" value="Save" class="btn btn-info ladda-button">Save</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -1475,7 +1724,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
         <div class="modal fade bs-modal-lg" id="modalCampaignDetails" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" style="width:95%;">
                 <div class="modal-content">
-                    <form id="updateCampaignForm" method="POST" action="crm/functions.php">
+                    <form id="updateCampaignForm">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                             <h4 class="modal-title">Campaign Details</h4>
@@ -1519,7 +1768,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                             <br>
                             <div class="row">
                                 <div class="form-group">
-                                <div class="col-md-6">
+                                    <!-- <div class="col-md-6">
                                         <label>Frequency</label>
                                         <select class="form-control" name="frequency" id="campaign-frequency">
                 							<option value="1">Once Per Day</option>
@@ -1531,8 +1780,8 @@ $today_tx = $date_default_tx->format('Y-m-d');
                 							<option value="8">Once Per Six Months (Bi-Annual)</option>
                 							<option value="5">Once Per Year</option>
                 						</select>
-                                    </div>
-                                    <div class="col-md-6">
+                                    </div> -->
+                                    <div class="col-md-12">
                                         <label>Auto Email</label>
                                         <select class="form-control" name="status" id="campaign-status">
                                             <option value="0">Stop</option>
@@ -1603,7 +1852,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
         </div>
         
         <!--view modal-->
-         <div class="modal fade bs-modal-lg" id="modalGetContact" tabindex="-1" role="dialog" aria-hidden="true">
+         <div class="modal fade bs-modal-lg" id="6" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                      <form action="customer_relationship_collaboration.php" method="POST" enctype="multipart/form-data">
@@ -1689,7 +1938,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-12 mt-4">
-                                <table class="table table-bordered table-hover" id="dataTable_3">
+                                <table class="table table-bordered table-hover table-striped" id="dataTable_3">
                                 	<thead>
                                         <tr role="row">
                                             <th>#</th>

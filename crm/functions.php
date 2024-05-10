@@ -2517,7 +2517,7 @@
     
     if(isset($_POST['get_user_task'])) {
         $email = 'marvin@consultareinc.com';
-        $campaigns = "SELECT CONCAT(u.first_name, ' ', u.last_name) AS originator, t.crmt_id as taskid, t.assign_task as task_name, t.Assigned_to as assigned, t.Task_Description as description, DATE(t.Task_added) AS date_added, DATE(t.Deadline) as due_date, t.Task_Status as status, c.account_name as contact
+        $campaigns = "SELECT CONCAT(u.first_name, ' ', u.last_name) AS originator, t.crmt_id as taskid, t.assign_task as task_name, t.Assigned_to as assigned, t.Task_Description as description, DATE(t.Task_added) AS date_added, DATE(t.Deadline) as due_date, t.Task_Status as status, c.account_name as contact, c.crm_id
                                             FROM tbl_Customer_Relationship_Task t
                                             JOIN tbl_user u ON t.user_cookies = u.ID
                                             JOIN tbl_Customer_Relationship c ON t.crm_ids = c.crm_id
@@ -2529,7 +2529,7 @@
         $stmt_campaign->bind_param('is', $_COOKIE['ID'], $email);
         if($stmt_campaign->execute()) {
             $results = [];
-            $stmt_campaign->bind_result($originator, $taskid, $task_name, $assigned, $description, $date_added, $due_date, $status, $contact);
+            $stmt_campaign->bind_result($originator, $taskid, $task_name, $assigned, $description, $date_added, $due_date, $status, $contact, $crmid);
             while ($stmt_campaign->fetch()) {
                 $results[] = [
                     'originator' => $originator,
@@ -2540,7 +2540,8 @@
                     'date_added' => $date_added,
                     'due_date' => $due_date,
                     'status' => $status,
-                    'contact' => $contact
+                    'contact' => $contact,
+                    'crmid' => $crmid
                 ];
             }
     
@@ -2572,8 +2573,8 @@
                         <td class="text-center">
                             <div class="clearfix">
                                 <div class="btn-group btn-group-solid">
-                                    <a class="btn btn-sm red tooltips edit-assigned-task" data-id="' . $result['taskid'] . '" data-toggle="modal" href="#modalEditTaskForm"><i class="bi bi-activity"></i> Notes</a>
-                                    <a class="btn btn-sm green tooltips edit-assigned-task" data-id="' . $result['taskid'] . '" data-toggle="modal" href="#modalEditTaskForm"><i class="bi bi-activity"></i> View Contact</a>
+                                    <a class="btn btn-sm red tooltips get-task-notes" data-id="' . $result['taskid'] . '" data-toggle="modal" href="#modalNotes"><i class="bi bi-activity"></i> Notes</a>
+                                    <a href="customer_relationship_View.php?view_id=' . $result['crmid'] . '" class="btn btn-sm green tooltips"><i class="bi bi-activity"></i> View Contact</a>
                                     <a class="btn btn-sm blue tooltips edit-assigned-task" data-id="' . $result['taskid'] . '" data-toggle="modal" href="#modalEditTaskForm"><i class="bi bi-activity"></i> View Task</a>
                                 </div>
                             </div>
@@ -2800,6 +2801,23 @@
     
             // Close the statement
             $stmt->close();
+        }
+    }
+
+    if(isset($_POST['get_task_notes'])) {
+        $taskid = $_POST['taskid'];
+        $stmt = $conn->prepare("SELECT CONCAT(u.first_name, ' ', u.last_name) AS name, n.notes_id, n.taskid, n.Title, n.Notes, n.notes_date, n.crm_ids FROM tbl_customer_relationship_notes n JOIN tbl_customer_relationship_task t ON n.taskid = t.crmt_id JOIN tbl_user u ON n.user_cookies = u.ID WHERE n.taskid = ?");
+        if ($stmt === false) {
+            echo 'Error preparing Statement: '. $conn->error;
+        } else {
+            $stmt->bind_param('i', $taskid);
+            if($stmt->execute()) {
+                $response = array('status'=> 'success', 'message'=> '');
+            } else {   
+                $response = array('status'=> 'error', 'message'=> '');
+            }
+            echo json_encode($response);
+            $stmt->close(); 
         }
     }
 

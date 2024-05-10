@@ -95,11 +95,15 @@
         // Fetch data function
         function fetchData() {
             $.ajax({
-                url: 'crm/functions.php',
+                url: 'crm/controller_functions.php',
                 type: 'POST',
                 data: { get_graphs: true },
                 success: function(response) {
                     var data = JSON.parse(response);
+
+                    console.log(data.contact)
+                    console.log(data.campaign)
+                    console.log(data.user_daily_campaign)
     
                     var contactSeries = chart1.series.getIndex(0);
                     contactSeries.data.setAll(data.contact);
@@ -107,11 +111,11 @@
                     var campaignSeries = chart2.series.getIndex(0);
                     campaignSeries.data.setAll(data.campaign);
     
-                    var series3 = chart3.series.getIndex(0); // Get the series object
-                    series3.data.setAll(data.daily_campaign); // Set the data
+                    var series3 = chart3.series.getIndex(0);
+                    series3.data.setAll(data.daily_campaign);
                     
-                    var series4 = chart4.series.getIndex(0); // Get the series object
-                    series4.data.setAll(data.user_daily_campaign); // Set the data
+                    var series4 = chart4.series.getIndex(0);
+                    series4.data.setAll(data.user_daily_campaign);
     
                     legend1.data.setAll(series1.dataItems);
                     legend2.data.setAll(series2.dataItems);

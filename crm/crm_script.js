@@ -98,7 +98,7 @@ $(document).ready(function() {
                 [5, 10, 15, 20],
                 [5, 10, 15, 20]
             ],
-            pageLength: 10,
+            pageLength: 5,
             searching: false,
             dom: "<'row' <'col-md-12'B>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
         });
@@ -1025,6 +1025,84 @@ $(document).ready(function() {
             }
         });
     });
+
+    $('#massArchiveForm').on('submit', function(e) {
+        e.preventDefault();
+    
+        const formData = new FormData(this);
+        var btn = $('#massArchiveFormBtn');
+        var l = Ladda.create(btn[0]);
+    
+        l.start();
+        formData.append('archive_multiple_contacts', 'archive_multiple_contacts');
+        $('#modalArchiveContact').modal('hide');
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+          }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: 'crm/controller_functions.php',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+            
+                    success: function(response) {
+                        console.log(response)
+                        var responseParts = response.split('|');
+                        var status = responseParts[0];
+                        var message = responseParts[1];
+                        var success_data = responseParts[2];
+                        var notfound_data = responseParts[3];
+                        var archive_data = responseParts[4];
+                        if (status === 'success') {
+                            $.bootstrapGrowl('All contact entries uploaded successfully!', {
+                                ele: 'body',
+                                type: 'success',
+                                offset: { from: 'bottom', amount: 50 },
+                                align: 'right',
+                                width: 'auto',
+                                delay: 4000,
+                                allow_dismiss: true,
+                                stackup_spacing: 10
+                            });
+                            $('#massArchiveForm')[0].reset();
+                        } else if (status === 'error') {
+                            $('#massArchivedResult').modal('show');
+                            initializeDataTable2('#notfound_result');
+                            initializeDataTable2('#archive_result');
+                            initializeDataTable2('#skipped_result');
+                            $('#notfound_result').DataTable().clear().destroy();
+                            $('#archive_result').DataTable().clear().destroy();
+                            $('#skipped_result').DataTable().clear().destroy();
+                            $('#notfound_result tbody').html(notfound_data);
+                            $('#archive_result tbody').html(success_data);
+                            $('#skipped_result tbody').html(archive_data);
+                            initializeDataTable2('#notfound_result');
+                            initializeDataTable2('#archive_result');
+                            initializeDataTable2('#skipped_result');
+                            $('#massArchiveForm')[0].reset();
+                        }
+            
+                        l.stop();
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error('AJAX Error:', textStatus, errorThrown);
+                        l.stop();
+                    }
+                });
+            } else {
+                $('#modalArchiveContact').modal('show');
+                l.stop();
+            }
+          });
+    });
     
     get_counts()
     function numberWithCommas(x) {
@@ -1033,11 +1111,10 @@ $(document).ready(function() {
     
     function get_counts() {
         $.ajax({
-            url: "crm/functions.php",
+            url: "crm/controller_functions.php",
             type: "POST",
             data: { get_counts: true },
             success: function(response) {
-                console.log(response)
                 response = JSON.parse(response);
                 var campaign = numberWithCommas(response.campaignCount);
                 var contact = numberWithCommas(response.relationshipCount);
@@ -1055,7 +1132,7 @@ $(document).ready(function() {
     get_campaigns()
         function get_campaigns() {
         $.ajax({
-            url: "crm/functions.php",
+            url: "crm/controller_functions.php",
             type: "POST",
             data: { get_campaigns_per_subject: true },
             success: function(response) {
@@ -1067,29 +1144,33 @@ $(document).ready(function() {
     graphs();
         function graphs() {
         $.ajax({
-            url: "crm/functions.php",
+            url: "crm/controller_functions.php",
             type: "POST",
             data: { get_graphs: true },
             success: function(responses) {
-                console.log(responses);
                 var response = JSON.parse(responses);
-                console.log(response);
             }
         });
     }
     
     get_task()
     function get_task() {
-        if ($.fn.DataTable.isDataTable('#dataTable_3')) {
-            $('#dataTable_3').DataTable().destroy();
+        if ($.fn.DataTable.isDataTable('#pendingTaskTable')) {
+            $('#pendingTaskTable').DataTable().destroy();
+        }
+        if ($.fn.DataTable.isDataTable('#completedTaskTable')) {
+            $('#completedTaskTable').DataTable().destroy();
         }
         $.ajax({
-            url: "crm/functions.php",
+            url: "crm/controller_functions.php",
             method: "POST",
             data: { get_user_task: true },
             success: function(response) {
-                $('#dataTable_3 tbody').html(response);
-                initializeDataTable2('#dataTable_3');
+                var response = JSON.parse(response) 
+                $('#pendingTaskTable tbody').html(response.pending);
+                $('#completedTaskTable tbody').html(response.completed);
+                initializeDataTable2('#pendingTaskTable');
+                initializeDataTable2('#completedTaskTable');
             }
         });
     }
@@ -1100,7 +1181,7 @@ $(document).ready(function() {
             $('#dataTable_4').DataTable().destroy();
         }
         $.ajax({
-            url: "crm/functions.php",
+            url: "crm/controller_functions.php",
             method: "POST",
             data: { get_user_campaigns: true },
             success: function(response) {
@@ -1119,7 +1200,7 @@ $(document).ready(function() {
             $('#dataTable_5').DataTable().destroy();
         }
         $.ajax({
-            url: "crm/functions.php",
+            url: "crm/controller_functions.php",
             method: "POST",
             data: { group_campaign_list_by_subject: true, subject: subject_name },
             success: function(response) {
@@ -1137,7 +1218,7 @@ $(document).ready(function() {
         $('#site_campaign_loading, #campaign-text').removeClass('d-none');
         $('#campaignMessageBody').addClass('d-none');
         $.ajax({
-            url: "crm/functions.php",
+            url: "crm/controller_functions.php",
             method: "POST",
             data: { get_campaign_message_content: true, campaignid: campaignid },
             success: function(response) {
@@ -1152,7 +1233,7 @@ $(document).ready(function() {
         e.preventDefault();
         var taskid = $(this).data('id');
         $.ajax({
-            url: "crm/functions.php",
+            url: "crm/controller_functions.php",
             method: "POST",
             data: { get_task_details: true, taskid: taskid },
             success: function(response) {
@@ -1179,15 +1260,14 @@ $(document).ready(function() {
         formData.append('update_task', 'update_task');
         
         $.ajax({
-            url: 'crm/functions.php',
+            url: 'crm/controller_functions.php',
             type: 'POST',
             data: formData,
             processData: false,
             contentType: false, 
             success: function (response) {
                 response = JSON.parse(response);
-                $('#modalEditTaskForm').modal('hide');
-                $.bootstrapGrowl(response.message, {
+                $.bootstrapGrowl('Task updated successfully!', {
                   ele: 'body',
                   type: 'success',
                   offset: {from: 'bottom', amount: 50},
@@ -1197,11 +1277,12 @@ $(document).ready(function() {
                   allow_dismiss: true,
                   stackup_spacing: 10
                 });
+                $('#modalEditTaskForm').modal('hide');
                 get_task()
             },
             error: function (error) {
                 response = JSON.parse(response);
-                $.bootstrapGrowl(response.message, {
+                $.bootstrapGrowl('Something went wrong! Please try again.', {
                   ele: 'body',
                   type: 'danger',
                   offset: {from: 'bottom', amount: 50},
@@ -1216,53 +1297,63 @@ $(document).ready(function() {
     })
     
     $('#updateCampaignForm').on('submit', function(e) {
-        e.preventDefault()
+        e.preventDefault();
         const formData = new FormData(this);
         formData.append('update_campaign', 'update_campaign');
+        var subject = $('#campaign-subject').val();
         
         $.ajax({
-            url: 'crm/functions.php',
+            url: 'crm/controller_functions.php',
             type: 'POST',
             data: formData,
             processData: false,
             contentType: false, 
             success: function (response) {
-                response = JSON.parse(response);
-                $('#modalCampaignDetails').modal('hide');
-                $.bootstrapGrowl(response.message, {
-                  ele: 'body',
-                  type: 'success',
-                  offset: {from: 'bottom', amount: 50},
-                  align: 'right',
-                  width: 'auto',
-                  delay: 4000,
-                  allow_dismiss: true,
-                  stackup_spacing: 10
-                });
+                try {
+                    response = JSON.parse(response);
+                    console.log(response);
+                    $.bootstrapGrowl('Campaign updated successfully!', {
+                        ele: 'body',
+                        type: 'success',
+                        offset: {from: 'bottom', amount: 50},
+                        align: 'right',
+                        width: 'auto',
+                        delay: 4000,
+                        allow_dismiss: true,
+                        stackup_spacing: 10
+                    });
+                    $('#modalCampaignDetails').modal('hide');
+                    // get_campaign_by_name(subject);
+                } catch (e) {
+                    console.error("Error parsing JSON response:", e);
+                }
             },
             error: function (error) {
-                response = JSON.parse(response);
-                $.bootstrapGrowl(response.message, {
-                  ele: 'body',
-                  type: 'danger',
-                  offset: {from: 'bottom', amount: 50},
-                  align: 'right',
-                  width: 'auto',
-                  delay: 4000,
-                  allow_dismiss: true,
-                  stackup_spacing: 10
-                });
+                try {
+                    error = JSON.parse(error);
+                    console.log(error);
+                    $.bootstrapGrowl('Something went wrong! Please try again.', {
+                        ele: 'body',
+                        type: 'danger',
+                        offset: {from: 'bottom', amount: 50},
+                        align: 'right',
+                        width: 'auto',
+                        delay: 4000,
+                        allow_dismiss: true,
+                        stackup_spacing: 10
+                    });
+                } catch (e) {
+                    console.error("Error parsing JSON error response:", e);
+                }
             }
-        })
-        
-        get_task();
-        get_user_campaigns();
-    })
+        });
+    });
+    
     
     get_user_contributions()
     function get_user_contributions() {
         $.ajax({
-            url: "crm/functions.php",
+            url: "crm/controller_functions.php",
             type: "POST",
             data: { user_contributions: true },
             success: function(response) {
@@ -1280,7 +1371,6 @@ $(document).ready(function() {
         });
     }
 
-    // Function to format date to "Y-d-m" format
     function formatDate(date) {
         var formattedDate = new Date(date);
         var year = formattedDate.getFullYear();
@@ -1288,14 +1378,12 @@ $(document).ready(function() {
         var day = formattedDate.getDate().toString().padStart(2, '0');
         return year + '-' + day + '-' + month;
     }
-
-
     
     $(document).on('click', '.campaignDetails', function(e) {
         e.preventDefault();
         var campaignid = $(this).data('id');
         $.ajax({
-            url: "crm/functions.php",
+            url: "crm/controller_functions.php",
             method: "POST",
             data: { get_campaign_details: true, id: campaignid },
             success: function(response) {
@@ -1305,24 +1393,17 @@ $(document).ready(function() {
                 $('#campaign-subject').val(response.subject);
                 $('#campaign-recipient').val(response.recipient);
     
-                // Set the selected option based on frequency value
                 var frequency = response.frequency;
                 $('#campaign-frequency option').removeAttr('selected');
                 $('#campaign-frequency option[value="' + frequency + '"]').attr('selected', 'selected');
-                
                 var status = response.status;
                 $('#campaign-status option').removeAttr('selected');
                 $('#campaign-status option[value="' + status + '"]').attr('selected', 'selected');
-                
-                // Initialize Summernote for the campaign message text area
                 $('#campaign-message').summernote({
                     height: 800
                 });
-    
-                // Set the campaign message content in Summernote
                 $('#campaign-message').summernote('code', response.message);
                 
-                console.log(response);
             }
         });
     });
@@ -1340,6 +1421,185 @@ $(document).ready(function() {
                 $('#activity-history .modal-body').html(response);
             }
         })
+    })
+
+    $(document).on('click', '.get-task-notes', function(e) {
+        e.preventDefault();
+        var taskid = $(this).data('id');
+        var contactid = $(this).data('value');
+        $('#task-id').val(taskid)
+        $('#contact-id').val(contactid)
+        $('#site_activities_loading, #spinner-text').removeClass('d-none');
+        $('#dataTable_6').addClass('d-none');
+        $.ajax({
+            url: 'crm/controller_functions.php',
+            type: 'POST',
+            data: {
+                get_task_notes: true,
+                taskid: taskid
+            },
+            success: function(response) {
+                if ($.fn.DataTable.isDataTable('#dataTable_6')) {
+                    $('#dataTable_6').DataTable().destroy();
+                }
+                $('#dataTable_6 tbody').html(response);
+                initializeDataTable2('#dataTable_6');
+                $('#site_activities_loading, #spinner-text').addClass('d-none');
+                $('#dataTable_6').removeClass('d-none');
+            }
+        });
+    });
+
+    function get_tasknotes_by_id(id) {
+        $.ajax({
+            url: 'crm/controller_functions.php',
+            type: 'POST',
+            data: {
+                get_task_notes: true,
+                taskid: id
+            },
+            success:function(response) {
+                console.log(response)
+                if ($.fn.DataTable.isDataTable('#dataTable_6')) {
+                    $('#dataTable_6').DataTable().destroy();
+                }
+                $('#dataTable_6 tbody').html(response);
+                initializeDataTable2('#dataTable_6');
+            }
+        })
+    }
+
+    function get_campaign_by_name(subject) {
+        $.ajax({
+            url: 'crm/controller_functions.php',
+            type: 'POST',
+            data: {
+                group_campaign_list_by_subject: true,
+                subject: subject
+            },
+            success:function(response) {
+                console.log(response)
+                if ($.fn.DataTable.isDataTable('#dataTable_5')) {
+                    $('#dataTable_5').DataTable().destroy();
+                }
+                $('#dataTable_5 tbody').html(response);
+                initializeDataTable2('#dataTable_5');
+            }
+        })
+    }
+    
+    $('#noteForm').on('submit', function(e) {
+        e.preventDefault()
+        const formData = new FormData(this);
+        var id = $('#task-id').val()
+        formData.append('add_notes', 'add_notes');
+        var btn = $('#noteFormBtn');
+        var l = Ladda.create(btn[0]);
+        l.start();
+        $.ajax({
+            url: 'crm/controller_functions.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log(response)
+                $.bootstrapGrowl('Notes Added!', {
+                    ele: 'body',
+                    type: 'success',
+                    offset: { from: 'bottom', amount: 50 },
+                    align: 'right',
+                    width: 'auto',
+                    delay: 4000,
+                    allow_dismiss: true,
+                    stackup_spacing: 10
+                });
+                l.stop();
+                $('#modalAddNotes').modal('hide');
+                get_tasknotes_by_id(id)
+            }
+        });
+    })
+
+
+    $('#taskForm').on('submit', function(e) {
+        e.preventDefault()
+        const formData = new FormData(this);
+        formData.append('add_task', 'add_task');
+        var btn = $('#taskFormBtn');
+        var l = Ladda.create(btn[0]);
+        l.start();
+        $.ajax({
+            url: 'crm/controller_functions.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log(response)
+                $.bootstrapGrowl('Task Added!', {
+                    ele: 'body',
+                    type: 'success',
+                    offset: { from: 'bottom', amount: 50 },
+                    align: 'right',
+                    width: 'auto',
+                    delay: 4000,
+                    allow_dismiss: true,
+                    stackup_spacing: 10
+                });
+                l.stop();
+                $('#modalTaskForm').modal('hide');
+                get_task()
+            }
+        });
+    })
+
+    $(document).on('click', '.get-note-details', function() {
+        var noteid = $(this).data('id')
+        $.ajax({
+            url: 'crm/controller_functions.php',
+            type: 'POST',
+            data: {
+                get_note_details: true,
+                noteid: noteid
+            },
+            success: function(response) {
+                console.log(response)
+                var response = JSON.parse(response);
+                $('#notes-v').val(response.notes);
+                $('#notes-id').val(response.notesid);
+            }
+        })
+    })
+
+    $('#updateNotesForm').on('submit', function(e) {
+        e.preventDefault()
+        const formData = new FormData(this)
+        formData.append('update_notes', 'update_notes')
+        var btn = $('#noteFormBtn');
+        var l = Ladda.create(btn[0]);
+        l.start();
+        $.ajax({
+            url: 'crm/mass_upload.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                console.log(response)
+                $.bootstrapGrowl('Notes Added!', {
+                    ele: 'body',
+                    type: 'success',
+                    offset: { from: 'bottom', amount: 50 },
+                    align: 'right',
+                    width: 'auto',
+                    delay: 4000,
+                    allow_dismiss: true,
+                    stackup_spacing: 10
+                });
+                l.stop();
+            }
+        });
     })
     
     $(document).on('click', '.view-content', function() {

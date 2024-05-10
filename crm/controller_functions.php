@@ -14,6 +14,12 @@
     	$user_id = employerID($portal_user);
     }
     
+    $enterprise_id = $user_id;
+    $status = 'Manual';
+    $flag = 1;
+    $campaign_status = 2;
+    $send_status = 1;
+    
     // PHP MAILER FUNCTION
 	use PHPMailer\PHPMailer\PHPMailer;
 	use PHPMailer\PHPMailer\SMTP;
@@ -182,7 +188,7 @@
                             <td>'.$row["uploader"].'</td>
                             <td class="text-center">
                                 <div class="clearfix">
-                                    <div class="btn-group btn-group-solid">
+                                    <div class="">
                                         <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                         <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                         <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
@@ -271,7 +277,7 @@
                             <td>'.$row["uploader"].'</td>
                             <td class="text-center">
                                 <div class="clearfix">
-                                    <div class="btn-group btn-group-solid">
+                                    <div class="">
                                         <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                         <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                         <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
@@ -359,7 +365,7 @@
                                 <td>'.$row["uploader"].'</td>
                                 <td class="text-center">
                                     <div class="clearfix">
-                                        <div class="btn-group btn-group-solid">
+                                        <div class="">
                                             <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                             <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                             <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
@@ -462,7 +468,7 @@
                         <td>'.$row["uploader"].'</td>
                         <td class="text-center">
                             <div class="clearfix">
-                                <div class="btn-group btn-group-solid">
+                                <div class="">
                                     <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
@@ -560,7 +566,7 @@
                         <td>'.$row["uploader"].'</td>
                         <td class="text-center">
                             <div class="clearfix">
-                                <div class="btn-group btn-group-solid">
+                                <div class="">
                                     <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
@@ -652,7 +658,7 @@
                         <td>'.$row["uploader"].'</td>
                         <td class="text-center">
                             <div class="clearfix">
-                                <div class="btn-group btn-group-solid">
+                                <div class="">
                                     <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
                                     <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
@@ -748,7 +754,7 @@
                         <td>'.$row["uploader"].'</td>
                         <td class="text-center">
                             <div class="clearfix">
-                                <div class="btn-group btn-group-solid">
+                                <div class="">
                                     <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
                                     <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
@@ -841,7 +847,7 @@
                         <td>'.$row["uploader"].'</td>
                         <td class="text-center">
                             <div class="clearfix">
-                                <div class="btn-group btn-group-solid">
+                                <div class="">
                                     <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
                                     <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
@@ -934,7 +940,7 @@
                         <td>'.$row["uploader"].'</td>
                         <td class="text-center">
                             <div class="clearfix">
-                                <div class="btn-group btn-group-solid">
+                                <div class="">
                                     <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
                                     <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
@@ -1040,7 +1046,7 @@
                             <td>'.$row["uploader"].'</td>
                             <td class="text-center">
                                 <div class="clearfix">
-                                    <div class="btn-group btn-group-solid">
+                                    <div class="">
                                         <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                         <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
                                         <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
@@ -1128,7 +1134,7 @@
                             <td>'.$activity_performer.'</td>
                             <td class="text-center">
                                 <div class="clearfix">
-                                    <div class="btn-group btn-group-solid">
+                                    <div class="">
                                         <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                         <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
                                         <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
@@ -1760,7 +1766,7 @@
     }
     
     if (isset($_POST['get_activity_history'])) {
-    $stmt = $conn->prepare("SELECT crm.performer_name, crm.action_taken, crm.type, crm.action_id, DATE_FORMAT(crm.timestamp, '%M %e') AS date, DATE_FORMAT(crm.timestamp, '%h:%i %p') AS time, user_info.avatar FROM tbl_crm_history_data AS crm JOIN tbl_user_info AS user_info ON crm.user_id = user_info.user_id WHERE crm.contact_id = ? ORDER BY crm.history_id DESC");
+        $stmt = $conn->prepare("SELECT crm.performer_name, crm.action_taken, crm.type, crm.action_id, DATE_FORMAT(crm.timestamp, '%M %e') AS date, DATE_FORMAT(crm.timestamp, '%h:%i %p') AS time, user_info.avatar FROM tbl_crm_history_data AS crm JOIN tbl_user_info AS user_info ON crm.user_id = user_info.user_id WHERE crm.contact_id = ? ORDER BY crm.history_id DESC");
         if (!$stmt) {
             die("Error preparing statement: " . $conn->error);
         }
@@ -2134,10 +2140,49 @@
             echo "Error in preparing statement (Campaign graph): " . $conn->error;
         }
         
+        $user_daily_average = $conn->prepare("SELECT DATE_FORMAT(campaign_date, '%M %e, %Y') AS date, ROUND(SUM(total_campaigns_sent) / COUNT(DISTINCT DAY(campaign_date))) AS average_campaign_daily 
+                                            FROM ( SELECT DATE(Campaign_added) AS campaign_date, COUNT(*) AS total_campaigns_sent 
+                                                    FROM tbl_Customer_Relationship_Campaign 
+                                                    WHERE Campaign_Status = ? AND Auto_Send_Status = ? AND enterprise_id = ? AND userID = ? GROUP BY DATE(Campaign_added) ) AS subquery 
+                                                    GROUP BY MONTH(campaign_date), DAY(campaign_date)");
+        
+        if ($user_daily_average) {
+            $user_daily_average->bind_param("iiii", $campaign_status, $send_status, $enterprise_id, $_COOKIE['ID']);
+            
+            // Execute the prepared statement
+            if ($user_daily_average->execute()) {
+                // Bind result variables
+                $user_daily_average->bind_result($date, $average_campaign_daily);
+                $user_campaign_daily = array();
+        
+                // Fetch rows
+                while ($user_daily_average->fetch()) {
+                    // Convert date string to JavaScript Date format
+                    $timestamp = strtotime($date) * 1000; // Convert to milliseconds
+                    // Convert value string to integer
+                    $average_campaign_daily = intval($average_campaign_daily);
+        
+                    $item = array(
+                        'date' => $timestamp,
+                        'value' => $average_campaign_daily
+                    );
+                    $user_campaign_daily[] = $item;
+                }
+            } else {
+                echo "Error executing prepared statement (Campaign graph): " . $user_daily_average->error;
+            }
+        
+            // Close the statement
+            $user_daily_average->close();
+        } else {
+            echo "Error in preparing statement (Campaign graph): " . $conn->error;
+        }
+        
         $graph_data = array(
-            'contact'           =>  $contact_graph,
-            'campaign'          =>  $campaign_graph,
-            'daily_campaign'    =>  $campaign_graph_daily
+            'contact'               =>  $contact_graph,
+            'campaign'              =>  $campaign_graph,
+            'daily_campaign'        =>  $campaign_graph_daily,
+            'user_daily_campaign'   =>  $user_campaign_daily
         );
         
         // Encode the combined data array as JSON
@@ -2216,8 +2261,8 @@
             while ($stmt_campaign->fetch()) {
                 $output .='
                             <tr>
-                                <td> '.$campaign_subject.' </td>
-                                <td> '.$subject_count.' </td>
+                                <td width="80%"> '.$campaign_subject.' </td>
+                                <td width="5%"> '.$subject_count.' </td>
                                 <td class="text-center"> 
                                     <a class="btn blue btn-sm campaignListPerSubject" data-value="'.$campaign_subject.'" data-toggle="modal" href="#modalCampaignList">View list</a> 
                                 </td>
@@ -2233,20 +2278,20 @@
     
     if(isset($_POST['get_user_task'])) {
         $email = 'marvin@consultareinc.com';
-        $campaigns = "SELECT CONCAT(u.first_name, ' ', u.last_name) AS originator, t.crmt_id as taskid, t.assign_task as task_name, t.Assigned_to as assigned, t.Task_Description as description, DATE(t.Task_added) AS date_added, DATE(t.Deadline) as due_date, t.Task_Status as status, c.account_name as contact
-                                            FROM tbl_Customer_Relationship_Task t
-                                            JOIN tbl_user u ON t.user_cookies = u.ID
-                                            JOIN tbl_Customer_Relationship c ON t.crm_ids = c.crm_id
-                                            WHERE t.user_cookies = ? OR t.Assigned_to = ? ORDER BY t.Task_Status ASC";
-        $stmt_campaign = $conn->prepare($campaigns);
-        if(!$stmt_campaign) {
+        $query = "SELECT CONCAT(u.first_name, ' ', u.last_name) AS originator, t.crmt_id as taskid, t.assign_task as task_name, t.Assigned_to as assigned, t.Task_Description as description, DATE(t.Task_added) AS date_added, DATE(t.Deadline) as due_date, t.Task_Status as status, c.account_name as contact, c.crm_id
+                        FROM tbl_Customer_Relationship_Task t
+                            JOIN tbl_user u ON t.user_cookies = u.ID
+                            JOIN tbl_Customer_Relationship c ON t.crm_ids = c.crm_id
+                            WHERE (t.user_cookies = ? OR t.Assigned_to = ?) AND t.Task_Status != 3 ORDER BY t.Deadline DESC";
+        $stmt = $conn->prepare($query);
+        if(!$stmt) {
             die('Error preparing statement: ' .$conn->error);
         }
-        $stmt_campaign->bind_param('is', $_COOKIE['ID'], $email);
-        if($stmt_campaign->execute()) {
+        $stmt->bind_param('is', $_COOKIE['ID'], $email);
+        if($stmt->execute()) {
             $results = [];
-            $stmt_campaign->bind_result($originator, $taskid, $task_name, $assigned, $description, $date_added, $due_date, $status, $contact);
-            while ($stmt_campaign->fetch()) {
+            $stmt->bind_result($originator, $taskid, $task_name, $assigned, $description, $date_added, $due_date, $status, $contact, $crmid);
+            while ($stmt->fetch()) {
                 $results[] = [
                     'originator' => $originator,
                     'taskid' => $taskid,
@@ -2256,57 +2301,134 @@
                     'date_added' => $date_added,
                     'due_date' => $due_date,
                     'status' => $status,
-                    'contact' => $contact
+                    'contact' => $contact,
+                    'crmid' => $crmid
                 ];
             }
     
-            $output = '';
+            $output1 = '';
             foreach ($results as $result) {
-                // Fetching assigned_to using get_name() function
                 $assigned_to = get_name($result['assigned']);
-                
-                // Converting due date format
                 $date = isset($result['due_date']) ? new DateTime($result['due_date']) : null;
                 $due = $date ? $date->format('F j, Y') : '';
-                $status = '<span class="label label-sm label-success">Completed</span>';
                 if($result['status'] == 1) {
                     $status = '<span class="label label-sm label-default">Pending</span>';
                 } elseif($result['status'] == 2) {
                     $status = '<span class="label label-sm label-warning">In progress</span>';
                 }
-                
-    
-                // Building output HTML
-                $output .= '
+                $output1 .= '
                     <tr>
-                        <td>' . $result['task_name'] . '</td>
-                        <td>' . $result['originator'] . '</td>
-                        <td>' . $assigned_to . '</td>
-                        <td>' . $result['description'] . '</td>
-                        <td>' . $status . '</td>
-                        <td>' . $due . '</td>
                         <td class="text-center">
-                            <div class="clearfix">
-                                <div class="btn-group btn-group-solid">
-                                    <a class="btn btn-sm blue tooltips edit-assigned-task" data-id="' . $result['taskid'] . '" data-toggle="modal" href="#modalEditTaskForm"><i class="bi bi-activity"></i> View</a>
+                            <div class="actions">
+                                <div class="btn-group">
+                                    <a class="btn dark btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions
+                                        <i class="fa fa-angle-down"></i>
+                                    </a>
+                                    <ul class="dropdown-menu pull-left">
+                                        <li>
+                                            <a class="tooltips get-task-notes" data-id="' . $result['taskid'] . '" data-value="'.$result['crmid'].'" data-toggle="modal" href="#modalTaskNotes"><i class="bi bi-activity"></i> Notes</a>
+                                        </li>
+                                        <li>
+                                            <a href="customer_relationship_View.php?view_id=' . $result['crmid'] . '" class="tooltips"><i class="bi bi-activity"></i> View Contact</a>
+                                        </li>
+                                        <li>
+                                            <a class="tooltips edit-assigned-task" data-id="' . $result['taskid'] . '" data-toggle="modal" href="#modalEditTaskForm"><i class="bi bi-activity"></i> View Task</a>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
                         </td>
+                        <td>' . $result['task_name'] . '</td>
+                        <td>' . $result['originator'] . '</td>
+                        <td>' . $assigned_to . '</td>
+                        <td>' . $status . '</td>
+                        <td>' . $due . '</td>
                     </tr>
                 ';
             }
-    
-            echo $output;
-            $stmt_campaign->close();
-        } else {
-            echo 'Error executing statement: ' . $stmt_campaign->error;
+
+            $query2 = "SELECT CONCAT(u.first_name, ' ', u.last_name) AS originator, t.crmt_id as taskid, t.assign_task as task_name, t.Assigned_to as assigned, t.Task_Description as description, DATE(t.Task_added) AS date_added, DATE(t.Deadline) as due_date, t.Task_Status as status, c.account_name as contact, c.crm_id
+                        FROM tbl_Customer_Relationship_Task t
+                            JOIN tbl_user u ON t.user_cookies = u.ID
+                            JOIN tbl_Customer_Relationship c ON t.crm_ids = c.crm_id
+                            WHERE (t.user_cookies = ? OR t.Assigned_to = ?) AND t.Task_Status = 3 ORDER BY t.Deadline DESC";
+            $stmt2 = $conn->prepare($query2);
+            if(!$stmt2) {
+                die('Error preparing statement: ' .$conn->error);
+            }
+            $stmt2->bind_param('is', $_COOKIE['ID'], $email);
+            if($stmt2->execute()) {
+                $results2 = [];
+                $stmt2->bind_result($originator, $taskid, $task_name, $assigned, $description, $date_added, $due_date, $status, $contact, $crmid);
+                while ($stmt2->fetch()) {
+                    $results2[] = [
+                        'originator' => $originator,
+                        'taskid' => $taskid,
+                        'task_name' => $task_name,
+                        'assigned' => $assigned,
+                        'description' => $description,
+                        'date_added' => $date_added,
+                        'due_date' => $due_date,
+                        'status' => $status,
+                        'contact' => $contact,
+                        'crmid' => $crmid
+                    ];
+                }
+        
+                $output2 = '';
+                foreach ($results2 as $result) {
+                    $assigned_to2 = get_name($result['assigned']);
+                    $date2 = isset($result['due_date']) ? new DateTime($result['due_date']) : null;
+                    $due2 = $date2 ? $date2->format('F j, Y') : '';
+                    $output2 .= '
+                        <tr>
+                            <td class="text-center">
+                                <div class="actions">
+                                    <div class="btn-group">
+                                        <a class="btn dark btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions
+                                            <i class="fa fa-angle-down"></i>
+                                        </a>
+                                        <ul class="dropdown-menu pull-left">
+                                            <li>
+                                                <a class="tooltips get-task-notes" data-id="' . $result['taskid'] . '" data-value="'.$crmid.'" data-toggle="modal" href="#modalTaskNotes"><i class="bi bi-activity"></i> Notes</a>
+                                            </li>
+                                            <li>
+                                                <a href="customer_relationship_View.php?view_id=' . $result['crmid'] . '" class="tooltips"><i class="bi bi-activity"></i> View Contact</a>
+                                            </li>
+                                            <li>
+                                                <a class="tooltips edit-assigned-task" data-id="' . $result['taskid'] . '" data-toggle="modal" href="#modalEditTaskForm"><i class="bi bi-activity"></i> View Task</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>' . $result['task_name'] . '</td>
+                            <td>' . $result['originator'] . '</td>
+                            <td>' . $assigned_to2 . '</td>
+                            <td> <span class="label label-sm label-success">Completed</span></td>
+                            <td>' . $due2 . '</td>
+                        </tr>
+                    ';
+                }
+        
+                $data = [
+                    'pending' => $output1,
+                    'completed' => $output2
+                ];
+                
+                echo json_encode($data);
+
+                $stmt->close();
+                $stmt2->close();
+            } else {
+                echo 'Error executing statement: ' . $stmt->error;
+            }
         }
     }
     
     if(isset($_POST['group_campaign_list_by_subject'])) {
         $subject = $_POST['subject'];
-        $campaigns = "SELECT c.Campaign_Id, c.Campaign_from, c.Campaign_Name, c.Campaign_body, c.Campaign_Subject, c.Frequency, cc.account_name, cc.account_email, c.Campaign_Status, c.Auto_Send_Status, c.Campaign_added,
-                            TIMESTAMPDIFF(WEEK, NOW(), DATE_ADD(c.Campaign_added, INTERVAL 1 YEAR)) AS remaining_weeks
+        $campaigns = "SELECT c.Campaign_Id, c.Campaign_from, c.Campaign_Name, c.Campaign_body, c.Campaign_Subject, c.Frequency, cc.crm_id, cc.account_name, cc.account_email, c.Campaign_Status, c.Auto_Send_Status, c.Campaign_added
                             FROM tbl_Customer_Relationship_Campaign c 
                             JOIN tbl_Customer_Relationship cc 
                             ON c.crm_ids = cc.crm_id 
@@ -2318,13 +2440,28 @@
         }
         $stmt_campaign->bind_param('siii', $subject, $campaign_status, $send_status, $_COOKIE['ID']);
         if($stmt_campaign->execute()) {
-            $stmt_campaign->bind_result($Campaign_Id, $Campaign_from, $Campaign_Name, $Campaign_body, $Campaign_Subject, $Frequency, $account_name, $account_email, $Campaign_Status, $Auto_Send_Status, $Campaign_added, $remaining_weeks);
+            $stmt_campaign->bind_result($Campaign_Id, $Campaign_from, $Campaign_Name, $Campaign_body, $Campaign_Subject, $Frequency, $crmid, $account_name, $account_email, $Campaign_Status, $Auto_Send_Status, $Campaign_added);
             $output = '';
+            $sent_date = '';
+            $expiration_date = '';
+            $expiry_date = '';
+            $frequencies = '';
+            $status = '';
+            $current_date = new DateTime();
             while ($stmt_campaign->fetch()) {
                 $date = isset($Campaign_added) ? new DateTime($Campaign_added) : null;
-                $sent_date = $date ? $date->format('F j, Y') : '';
-                $frequencies = '';
-                $status = '';
+                if($date !== null) {
+                    $sent_date = $date->format('F j, Y');
+                    $base_date = clone $date;
+                    $base_date->add(new DateInterval('P3M'));
+                    $expiry_date = $base_date->format('F j, Y');
+                    if ($base_date < $current_date) {
+                        $expiration_date = '<span class="text-danger">Expired</span>';
+                    } else {
+                        $expiration_date = $expiry_date;
+                    }
+                }
+                // $expiration_date = ($expiry_date < $current_date) ? '<span class="text-danger">Expired</span>' : $expiry_date ;
                 if($Frequency == 1){ $frequencies = 'Once Per Day'; }
                 else if($Frequency == 2){ $frequencies = 'Once Per Week'; }
                 else if($Frequency == 3){ $frequencies = 'On the 1st and 15th of the Month'; }
@@ -2338,9 +2475,7 @@
                 } else {
                     $status = '<span class="text-success">Active</span>';
                 }
-                
-                $remaining_weeks = ($status > 0) ? $remaining_weeks : '';
-
+               
                 $output .='
                             <tr>
                                 <td class="text-center">
@@ -2350,14 +2485,28 @@
                                     </label>
                                 </td> 
                                 <td> '.$sent_date.' </td>
-                                <td> '.$Campaign_Name.' </td>
+                                <td width="40%"> '.$Campaign_Name.' </td>
                                 <td> '.$account_email.' </td>
                                 <td> <a class="viewCampaignMessage" data-toggle="modal" href="#view-campaign-message" data-id="'.$Campaign_Id.'">View message</a></td></td>
                                 <td> '.$frequencies.' </td>
                                 <td> '.$status.' </td>
-                                <td> '.$remaining_weeks.' Weeks</td>
+                                <td> '.$expiration_date.'</td>
                                 <td class="text-center"> 
-                                    <a class="btn blue btn-sm campaignDetails" data-toggle="modal" href="#modalCampaignDetails" data-id="'.$Campaign_Id.'">View</a> 
+                                    <div class="actions">
+                                        <div class="btn-group">
+                                            <a class="btn dark btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions
+                                                <i class="fa fa-angle-down"></i>
+                                            </a>
+                                            <ul class="dropdown-menu pull-right" style="z-index: 99999">
+                                                <li>
+                                                    <a href="customer_relationship_View.php?view_id='.$crmid.'">View Contact</a>
+                                                </li>
+                                                <li>
+                                                    <a class="campaignDetails" data-toggle="modal" href="#modalCampaignDetails" data-id="'.$Campaign_Id.'">View</a> 
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                 ';
@@ -2390,7 +2539,7 @@
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('i', $campaignid);
         $stmt->execute();
-            $stmt->bind_result($Campaign_Id, $Campaign_Name, $Campaign_Recipients, $Campaign_Subject, $Frequency, $Campaign_body, $Auto_Send_Status);
+        $stmt->bind_result($Campaign_Id, $Campaign_Name, $Campaign_Recipients, $Campaign_Subject, $Frequency, $Campaign_body, $Auto_Send_Status);
         
         if ($stmt->fetch()) {
             $data = array(
@@ -2419,17 +2568,17 @@
         $duedate = format_date($Deadline, 'Y/d/m');
         $assigned = (!empty(get_name($Assigned_to))) ? get_name($Assigned_to): $Assigned_to;
     
-        $data = array(
-            'id'            =>  $crmt_id,
-            'name'          =>  $assign_task,
-            'assignedto'    =>  $assigned,
-            'email'         =>  $Assigned_to,
-            'description'   =>  $Task_Description,
-            'startdate'     =>  $startdate,
-            'duedate'       =>  $duedate,
-            'status'        =>  $Task_Status,
-            'last_updated'  =>  $Date_Updated
-        );
+        $data = [
+                    'id'            =>  $crmt_id,
+                    'name'          =>  $assign_task,
+                    'assignedto'    =>  $assigned,
+                    'email'         =>  $Assigned_to,
+                    'description'   =>  $Task_Description,
+                    'startdate'     =>  $startdate,
+                    'duedate'       =>  $duedate,
+                    'status'        =>  $Task_Status,
+                    'last_updated'  =>  $Date_Updated
+                ];
     
         echo json_encode($data);
     }
@@ -2480,10 +2629,10 @@
         $recipient  = $_POST['recipient'];
         $subject    = $_POST['subject'];
         $message    = $_POST['body'];
-        $frequenct  = $_POST['frequency'];
+        $frequency  = 4; // Corrected variable name
         $status     = $_POST['status'];
     
-        $sql = "UPDATE tbl_Customer_Relationship_Campaign 
+        $sql = "UPDATE tbl_Customer_Relationship_Campaign  
                 SET Campaign_Name = ?, 
                     Campaign_Recipients = ?, 
                     Campaign_Subject = ?, 
@@ -2496,17 +2645,15 @@
         if ($stmt === false) {
             echo "Error preparing statement: " . $conn->error;
         } else {
-            $stmt->bind_param('sssssii', $name, $recipient, $subject, $message, $frequenct, $status, $campaignid);
+            $stmt->bind_param('sssssii', $name, $recipient, $subject, $message, $frequency, $status, $campaignid);
     
             if ($stmt->execute()) {
                 $response = array('status' => 'success', 'message' => "Campaign updated successfully!");
             } else {
-                $response = array('status' => 'error', 'message' => "Error updating record:  '. $stmt->error .'");
+                $response = array('status' => 'error', 'message' => "Error updating record: " . $stmt->error); // Corrected concatenation
             }
-            
-            echo json_encode($response);
     
-            // Close the statement
+            echo json_encode($response);
             $stmt->close();
         }
     }
@@ -2595,4 +2742,226 @@
         // Return JSON response
         echo $json_counts;
     }
+
+    if(isset($_POST['get_task_notes'])) {
+        $taskid = $_POST['taskid'];
+        
+        $stmt = $conn->prepare("SELECT CONCAT(u.first_name, ' ', u.last_name) AS name, n.notes_id, n.taskid, n.Title, n.Notes, n.notes_stamp, n.crm_ids FROM tbl_Customer_Relationship_Notes n JOIN tbl_customer_relationship_task t ON n.taskid = t.crmt_id JOIN tbl_user u ON n.user_cookies = u.ID WHERE n.taskid = ?");
+        if ($stmt === false) {
+            echo 'Error preparing Statement: '. $conn->error;
+            exit;
+        }
+        
+        $stmt->bind_param('i', $taskid);
+        if($stmt->execute()) {
+            $stmt->bind_result($name, $notes_id, $taskid, $Title, $Notes, $notes_stamp, $crm_ids);
+            $output = '';
+            while ($stmt->fetch()) {
+                $date = format_date($notes_stamp, 'F d, Y');
+                $output .='
+                <tr> 
+                    <td width="10%">'.$date.'</td>
+                    <td width="60%">'.$Notes.'</td>
+                    <td>'.$name.'</td>
+                    <td class="text-center"> 
+                        <a class="btn blue btn-sm get-note-details" data-toggle="modal" href="#modalNoteDetails" data-id="'.$notes_id.'" data-value="'.$crm_ids.'">View</a>
+                        <a class="btn red btn-sm remove-notes" data-id="'.$notes_id.'">Delete</a> 
+                    </td>
+                </tr>
+                ';
+            }
+            echo $output;
+            $stmt->close(); 
+        } else {
+            echo 'Error executing statement: ' . $stmt->error;
+        }
+        $conn->close();
+    }
+
+    if(isset($_POST['add_notes'])) {
+        $notes      = $_POST['notes'];
+        $contactid  = $_POST['contactid'];
+        $taskid     = $_POST['taskid'];
+        $user_id    = $_COOKIE['ID'];
+
+        $stmt = $conn->prepare("INSERT INTO tbl_Customer_Relationship_Notes (Notes, crm_ids, taskid, user_cookies) VALUES (?, ?, ?, ?)");
+        
+        if($stmt  === false) {
+            echo "Error preparing Statement: ". $conn->error;
+            exit;
+        }
+
+        $stmt->bind_param("siii", $notes, $contactid, $taskid, $user_id);
+        $stmt->execute();
+        echo "New notes added successfully";
+
+        $stmt->close();
+        $conn->close();
+    }
+    
+    if(isset($_POST["get_note_details"])) {
+        $notes_id = $_POST['noteid'];
+
+        $stmt = $conn->prepare('SELECT Notes, notes_id from tbl_Customer_Relationship_Notes WHERE notes_id = ?');
+        if($stmt === false) { 
+            echo 'Error preparing Statement: '. $conn->error;
+            exit;
+        }
+        $stmt->bind_param('i', $notes_id);
+        $stmt->execute();
+        $stmt->bind_result($notes, $notesid);
+        if($stmt->fetch()) {
+            $data = ['notes' => $notes, 'notesid'=> $notesid];
+            echo json_encode($data);
+        }
+    }
+
+    if(isset($_POST['update_notes'])) {
+        $notes_id = $_POST['noteid'];
+        $notes = $_POST['notes'];
+
+        $stmt = $conn->prepare("UPDATE tbl_Customer_Relationship_Notes SET Notes = ? WHERE notes_id = ?");
+        if($stmt === false) { 
+            echo "Error preparing Statement: ". $conn->error;
+            exit;
+        }
+
+        $stmt->bind_param("si", $notes, $notes_id);
+        $stmt->execute();
+
+        if($stmt->affected_rows > 0) {
+            echo "Notes updated successfully";
+        }
+        $stmt->close();
+        $conn->close();
+    }
+    
+    if(isset($_POST['add_task'])) {
+        $contact = $_POST['contact'];
+        $task = $_POST['task'];
+        $description = $_POST['description'];
+        $assignee = $_POST['assignee'];
+        $startdate = $_POST['startdate'];
+        $duedate = $_POST['duedate'];
+        $status = 1;
+
+        $stmt = $conn->prepare('INSERT INTO tbl_Customer_Relationship_Task (assign_task, Assigned_to, Task_Description, Task_added, Deadline, crm_ids, user_cookies, Task_Status) VALUES(?, ?, ?, ?, ?, ?, ?, ?)');
+
+        if($stmt == false) {
+            echo 'Error preparing Statement: '. $conn->error;
+        }
+        $stmt->bind_param('ssssssii', $task, $assignee, $description, $startdate, $duedate, $contact, $_COOKIE['ID'], $status);
+        $stmt->execute();
+
+        $stmt->close();
+        $conn->close();
+    }
+
+    if (isset($_POST['archive_multiple_contacts'])) {
+        if (!isset($_FILES["csvfile"]["tmp_name"]) || $_FILES["csvfile"]["tmp_name"] === "") {
+            echo "No file uploaded";
+            exit;
+        }
+        $file = $_FILES["csvfile"]["tmp_name"];
+        $is_archive = 0;
+        $handle = fopen($file, "r");
+        if ($handle !== FALSE) {
+            fgetcsv($handle);
+            $stmt_select = $conn->prepare("SELECT * FROM tbl_Customer_Relationship WHERE account_email = ?");
+            $stmt_update = $conn->prepare("UPDATE tbl_Customer_Relationship SET flag = ? WHERE account_email = ?");
+            $updatedRecords = [];
+            $notFoundEmails = [];
+            $archiveEmails = []; // Array to store emails with flag = 0
+            $success = 0;
+            $notfound = 0;
+            while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                $email = trim($data[0]);
+                $stmt_select->bind_param("s", $email);
+                $stmt_select->execute();
+                $result = $stmt_select->get_result();
+                if ($result->num_rows > 0) {
+                    $row = $result->fetch_assoc();
+                    if ($row['flag'] == 0) {
+                        // Store email with flag = 0
+                        $archiveEmails[] = $email;
+                    } else {
+                        // Update flag if it's not 0
+                        $stmt_update->bind_param("is", $is_archive, $email);
+                        $stmt_update->execute();
+                        $updatedRecords[] = $data;
+                        $success++;
+                    }
+                } else {
+                    $notFoundEmails[] = $email;
+                    $notfound++;
+                }
+            }
+            $stmt_select->close();
+            $stmt_update->close();
+            fclose($handle);
+    
+            $updated_contacts = '';    
+            $uc = 1;
+            foreach ($updatedRecords as $email) {
+                $updated_contacts .= '
+                    <tr>
+                        <td width="1%">'.$uc++.'</td>
+                        <td>' . $email[0] . '</td>
+                    </tr>';
+            }
+    
+            $notfound_contacts = '';    
+            $ucn = 1;
+            foreach ($notFoundEmails as $email) {
+                $notfound_contacts .= '
+                    <tr>
+                        <td width="1%">'.$ucn++.'</td>
+                        <td>' . $email . '</td>
+                    </tr>';
+            }
+            
+            $archive_contacts = '';    
+            $fzc = 1;
+            foreach ($archiveEmails as $email) {
+                $archive_contacts .= '
+                    <tr>
+                        <td width="1%">'.$fzc++.'</td>
+                        <td>' . $email . '</td>
+                    </tr>';
+            }
+    
+            if ($notfound > 0) {
+                echo $response = 'error|Some entries failed to save to the record because the entries exist in the record or have issues with special characters|' . $updated_contacts . '|' . $notfound_contacts . '|' . $archive_contacts;
+            } else {
+                echo $response = 'success|All contact entries added successfully|' . $updated_contacts . '|' . $notfound_contacts . '|' . $archive_contacts;
+            }
+        } else {
+            echo "Error opening file <br>";
+        }
+        $conn->close();
+    }
+
+    // function fetchAndDisplayResults($conn, $query, $batchSize = 1000) {
+    //     $offset = 0;
+    
+    //     do {
+    //         if ($stmt = $conn->prepare($query . " LIMIT ?, ?")) {
+    //             $stmt->bind_param('ii', $offset, $batchSize);
+    //             $stmt->execute();
+    //             $result = $stmt->get_result();
+    //             while ($row = $result->fetch_assoc()) {
+    //                 echo $row['Campaign_Name'] . $row['Campaign_added'] . "<br>";
+    //             }
+    //             $stmt->close();
+    //             $offset += $batchSize;
+    //         } else {
+    //             echo "Error: Unable to prepare statement";
+    //         }
+    
+    //     } while ($result->num_rows > 0);
+    // }
+
+    // $query = "SELECT * FROM tbl_Customer_Relationship_Campaign WHERE Campaign_added < DATE_SUB(CURDATE(), INTERVAL 90 DAY)";
+    // $test = fetchAndDisplayResults($conn, $query);
+    // echo $test;
 ?>

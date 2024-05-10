@@ -495,9 +495,9 @@
             function widget_date() {
                 $('.daterange').daterangepicker({
                     ranges: {
-                        'Today': [moment().subtract(1, 'day'), moment().subtract(1, 'day')],
-                        'One Month': [moment().subtract(1, 'day'), moment().add(1, 'month')],
-                        'One Year': [moment().subtract(1, 'day'), moment().add(1, 'year')]
+                        'Today': [moment(), moment()],
+                        'One Month': [moment(), moment().add(1, 'month').subtract(1, 'day')],
+                        'One Year': [moment(), moment().add(1, 'year').subtract(1, 'day')]
                     },
                     "autoApply": true,
                     "showDropdowns": true,

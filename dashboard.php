@@ -64,6 +64,32 @@
         padding: 5px 20px;
         cursor:pointer;
     }
+
+    /* DataTable*/
+    .dt-buttons {
+        margin: unset !important;
+        float: left !important;
+        margin-left: 15px !important;
+    }
+    div.dt-button-collection .dt-button.active:after {
+        position: absolute;
+        top: 50%;
+        margin-top: -10px;
+        right: 1em;
+        display: inline-block;
+        content: "✓";
+        color: inherit;
+    }
+    .table {
+        width: 100% !important;
+    }
+    .table-scrollable .dataTable td>.btn-group, .table-scrollable .dataTable th>.btn-group {
+        position: relative;
+    }
+    .table thead tr th {
+        vertical-align: middle;
+    }
+
 </style>
 
                     <?php
@@ -1709,7 +1735,7 @@
                         </div>
                     </div>
                     <div class="modal fade" id="modalComplianceMore" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalComplianceMore">
                                     <div class="modal-header">
@@ -1726,7 +1752,7 @@
                         </div>
                     </div>
                     <div class="modal fade" id="modalComplianceMoreEdit" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalComplianceMoreEdit">
                                     <div class="modal-header">
@@ -5319,6 +5345,43 @@
                     dataType: "html",
                     success: function(data){
                         $("#modalReport .modal-body").html(data);
+
+                        $('#table2excel').DataTable({
+                            "aaSorting": [],
+                            dom: 'lBfrtip',
+                            lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+                            buttons: [
+                                {
+                                    extend: 'print',
+                                    orientation: 'landscape',
+                                    pageSize: 'LEGAL',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                },
+                                {
+                                    extend: 'pdf',
+                                    orientation: 'landscape',
+                                    pageSize: 'LEGAL',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                },
+                                {
+                                    extend: 'csv',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                },
+                                {
+                                    extend: 'excel',
+                                    autoFilter: true,
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                }
+                            ]
+                        });
                     }
                 });
             }

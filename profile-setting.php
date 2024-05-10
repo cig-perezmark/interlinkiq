@@ -520,13 +520,14 @@
                                                                         <th style="width: 80px;" class="text-center">File</th>
                                                                         <th>File Name</th>
                                                                         <th>Description</th>
-                                                                        <th>Review Due Date</th>
+                                                                        <th>Document Date</th>
+                                                                        <th>Uploaded Date</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
 
                                                                     <?php
-                                                                        $selectFile = mysqli_query( $conn,"SELECT * FROM tbl_hr_file WHERE deleted = 0 AND user_id = $switch_user_id AND employee_id = $current_userEmployeeID ORDER BY due_date DESC" );
+                                                                        $selectFile = mysqli_query( $conn,"SELECT * FROM tbl_hr_file WHERE deleted = 0 AND user_id = $switch_user_id AND employee_id = $current_userEmployeeID ORDER BY filename" );
                                                                         if ( mysqli_num_rows($selectFile) > 0 ) {
                                                                             while($rowFile = mysqli_fetch_array($selectFile)) {
                                                                                 $file_ID = $rowFile["ID"];
@@ -551,15 +552,32 @@
                                                                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                                                 }
 
+                                                                                $file_start_date = $rowFile["start_date"];
+                                                                                $file_uploaded_date = $rowFile["uploaded_date"];
                                                                                 $file_due_date = $rowFile["due_date"];
                                                                                 $file_due_date = new DateTime($file_due_date);
                                                                                 $file_due_date = $file_due_date->format('M d, Y');
+                                                                                if (empty($rowFile["start_date"])) {
+                                                                                    $file_start_date = new DateTime($file_due_date);
+                                                                                    $file_start_date = $file_start_date->format('Y-m-d');
+                                                                                    $file_start_date = strtotime($file_start_date.' -1 year');
+                                                                                    $file_start_date = date('Y-m-d', $file_start_date);
+                                                                                    $file_start_date = strtotime($file_start_date.' -1 day');
+                                                                                    $file_uploaded_date = date('Y-m-d', $file_start_date);
+                                                                                    $file_start_date = date('M d, Y', $file_start_date);
+                                                                                } else {
+                                                                                    $file_start_date = new DateTime($file_start_date);
+                                                                                    $file_start_date = $file_start_date->format('M d, Y');
+                                                                                }
+                                                                                $file_uploaded_date = new DateTime($file_uploaded_date);
+                                                                                $file_uploaded_date = $file_uploaded_date->format('M d, Y');
 
                                                                                 echo '<tr id="tr_'.$file_ID.'">
                                                                                     <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p></td>
                                                                                     <td >'. $file_name .'</td>
                                                                                     <td >'. $file_description .'</td>
-                                                                                    <td >'. $file_due_date .'</td>
+                                                                                    <td >'. $file_start_date .' - '. $file_due_date .'</td>
+                                                                                    <td >'. $file_uploaded_date .'</td>
                                                                                 </tr>';
                                                                             }
                                                                         }

@@ -1204,6 +1204,22 @@
                 $('#copy_'+id).select();
                 document.execCommand("copy");
             }
+            function widget_date() {
+                $('.daterange').daterangepicker({
+                    ranges: {
+                        'Today': [moment(), moment()],
+                        'One Month': [moment(), moment().add(1, 'month').subtract(1, 'day')],
+                        'One Year': [moment(), moment().add(1, 'year').subtract(1, 'day')]
+                    },
+                    "autoApply": true,
+                    "showDropdowns": true,
+                    "linkedCalendars": false,
+                    "alwaysShowCalendars": true,
+                    "drops": "auto"
+                }, function(start, end, label) {
+                  console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+                });
+            }
             function widget_chart(id) {
                 $.ajax({
                     type: "GET",
@@ -1540,6 +1556,7 @@
                     success: function(data){
                         $("#modalNewFile .modal-body").html(data);
                         $(".modalForm").validate();
+                        widget_date();
                     }
                 });
             }
@@ -1581,7 +1598,8 @@
                                 html += '<td >'+obj.files+'</td>';
                                 html += '<td >'+obj.filename+'</td>';
                                 html += '<td >'+obj.description+'</td>';
-                                html += '<td >'+obj.due_date+'</td>';
+                                html += '<td >'+obj.start_date+' - '+obj.due_date+'</td>';
+                                html += '<td >'+obj.uploaded_date+'</td>';
                                 html += '<td >For Review</td>';
                                 html += '<td >NA</td>';
                                 html += '<td class="text-center">';
@@ -1611,6 +1629,7 @@
                     success: function(data){       
                         $("#modalEditFile .modal-body").html(data);
                         $(".modalForm").validate();
+                        widget_date();
                     }
                 });
             }
@@ -1651,7 +1670,8 @@
                             var html = '<td >'+obj.files+'</td>';
                             html += '<td >'+obj.filename+'</td>';
                             html += '<td >'+obj.description+'</td>';
-                            html += '<td >'+obj.due_date+'</td>';
+                            html += '<td >'+obj.start_date+' - '+obj.due_date+'</td>';
+                            html += '<td >'+obj.uploaded_date+'</td>';
                             html += '<td >For Review</td>';
                             html += '<td >NA</td>';
                             html += '<td class="text-center">';

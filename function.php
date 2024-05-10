@@ -2444,7 +2444,8 @@
                                     <th style="width: 80px;" class="text-center">File</th>
                                     <th>File Name</th>
                                     <th>Description</th>
-                                    <th>Review Due Date</th>
+                                    <th>Document Date</th>
+                                    <th>Uploaded Date</th>
                                     <th>Review Status</th>
                                     <th>Reviewed By</th>
                                     <th style="width: 135px;">Action</th>
@@ -2452,7 +2453,7 @@
                             </thead>
                             <tbody>';
 
-				                $selectFile = mysqli_query( $conn,"SELECT * FROM tbl_hr_file WHERE deleted = 0 AND user_id = $user_id AND employee_id = $id ORDER BY due_date DESC" );
+				                $selectFile = mysqli_query( $conn,"SELECT * FROM tbl_hr_file WHERE deleted = 0 AND user_id = $user_id AND employee_id = $id ORDER BY filename" );
 						        if ( mysqli_num_rows($selectFile) > 0 ) {
 							        while($rowFile = mysqli_fetch_array($selectFile)) {
                                         $file_ID = $rowFile["ID"];
@@ -2477,15 +2478,32 @@
 											$files = preg_replace('#[^/]*$#', '', $files).'preview';
 										}
 
+                                        $file_start_date = $rowFile["start_date"];
+                                        $file_uploaded_date = $rowFile["uploaded_date"];
                                         $file_due_date = $rowFile["due_date"];
-						                $file_due_date = new DateTime($file_due_date);
-						                $file_due_date = $file_due_date->format('M d, Y');
+                                        $file_due_date = new DateTime($file_due_date);
+                                        $file_due_date = $file_due_date->format('M d, Y');
+                                        if (empty($rowFile["start_date"])) {
+                                            $file_start_date = new DateTime($file_due_date);
+                                            $file_start_date = $file_start_date->format('Y-m-d');
+                                            $file_start_date = strtotime($file_start_date.' -1 year');
+                                            $file_start_date = date('Y-m-d', $file_start_date);
+                                            $file_start_date = strtotime($file_start_date.' -1 day');
+                                            $file_uploaded_date = date('Y-m-d', $file_start_date);
+                                            $file_start_date = date('M d, Y', $file_start_date);
+                                        } else {
+                                            $file_start_date = new DateTime($file_start_date);
+                                            $file_start_date = $file_start_date->format('M d, Y');
+                                        }
+                                        $file_uploaded_date = new DateTime($file_uploaded_date);
+                                        $file_uploaded_date = $file_uploaded_date->format('M d, Y');
 
 							        	echo '<tr id="tr_'.$file_ID.'">
 		                                    <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p></td>
 		                                    <td >'. $file_name .'</td>
 		                                    <td >'. $file_description .'</td>
-		                                    <td >'. $file_due_date .'</td>
+                                            <td >'. $file_start_date .' - '. $file_due_date .'</td>
+                                            <td >'. $file_uploaded_date .'</td>
 		                                    <td >For Review</td>
 		                                    <td >NA</td>
 					                        <td class="text-center">
@@ -3163,7 +3181,6 @@
 	// File Section
 	if( isset($_GET['modalNew_File']) ) {
 		$ID = $_GET['modalNew_File'];
-		$today = date('Y-m-d');
 
 		echo '<input class="form-control" type="hidden" name="ID" value="'. $ID .'" />
 		<div class="form-group">
@@ -3191,12 +3208,19 @@
 	            <textarea class="form-control" name="description" required></textarea>
 	        </div>
 	    </div>
-	    <div class="form-group">
-	        <label class="col-md-3 control-label">Review Due Date</label>
-	        <div class="col-md-8">
-	            <input class="form-control" type="date" name="due_date" value="'.$today.'" required />
-	        </div>
-	    </div>';
+        <div class="form-group">
+            <label class="col-md-3 control-label">Document Date</label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    <input type="text" class="form-control daterange" name="daterange" />
+                    <span class="input-group-btn">
+                        <button class="btn default date-range-toggle" type="button">
+                            <i class="fa fa-calendar"></i>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>';
 	}
 	if( isset($_GET['modalEdit_File']) ) {
 		$ID = $_GET['modalEdit_File'];
@@ -3206,7 +3230,22 @@
             $row = mysqli_fetch_array($selectData);
             $filename = $row['filename'];
             $description = $row['description'];
-            $due_date = $row['due_date'];
+            $uploaded_date = $row['uploaded_date'];
+
+            $due_date = new DateTime($row['due_date']);
+            $due_date = $due_date->format('m/d/Y');
+            if (empty($row['start_date'])) {
+                $start_date = new DateTime($due_date);
+                $start_date = $start_date->format('Y-m-d');
+                $start_date = strtotime($start_date.' -1 year');
+                $start_date = date('Y-m-d', $start_date);
+                $start_date = strtotime($start_date.' -1 day');
+                $uploaded_date = date('Y-m-d', $start_date);
+                $start_date = date('m/d/Y', $start_date);
+            } else {
+                $start_date = new DateTime($row['start_date']);
+                $start_date = $start_date->format('m/d/Y');
+            }
 
 			$filetype = $row['filetype'];
 			$files = $row["files"];
@@ -3226,6 +3265,7 @@
         }
 
 		echo '<input class="form-control" type="hidden" name="ID" value="'. $ID .'" />
+        <input class="form-control" type="hidden" name="uploaded_date" value="'. $uploaded_date .'" />
 		<div class="form-group">
 	        <label class="col-md-3 control-label">Upload File</label>
 	        <div class="col-md-8">
@@ -3252,12 +3292,19 @@
 	            <textarea class="form-control" name="description" required>'.$description.'</textarea>
 	        </div>
 	    </div>
-	    <div class="form-group">
-	        <label class="col-md-3 control-label">Review Due Date</label>
-	        <div class="col-md-8">
-	            <input class="form-control" type="date" name="due_date" value="'.$due_date.'" required />
-	        </div>
-	    </div>';
+        <div class="form-group">
+            <label class="col-md-3 control-label">Document Date</label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    <input type="text" class="form-control daterange" name="daterange" value="'.$start_date.' - '.$due_date.'" />
+                    <span class="input-group-btn">
+                        <button class="btn default date-range-toggle" type="button">
+                            <i class="fa fa-calendar"></i>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>';
 	}
 	if( isset($_GET['btnDelete_Files']) ) {
 		$id = $_GET['btnDelete_Files'];
@@ -3276,7 +3323,6 @@
 		$ID = $_POST['ID'];
 		$filename = addslashes($_POST['filename']);
 		$description = addslashes($_POST['description']);
-		$due_date = $_POST['due_date'];
         $arr_item = array();
 
 		$filetype = $_POST['filetype'];
@@ -3295,6 +3341,12 @@
             $filesize = 0;
 		}
 
+        $last_modified = date('Y-m-d');
+        $date = $_POST['daterange'];
+        $date = explode(' - ', $date);
+        $date_start = $date[0];
+        $date_end = $date[1];
+
         $output = array (
             'type'  =>  $filetype,
             'name' =>  $files,
@@ -3304,8 +3356,8 @@
         array_push($arr_item, $output);
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
-        $sql = "INSERT INTO tbl_hr_file (user_id, portal_user, employee_id, files, filetype, filename, filesize, file_history, description, due_date)
-        VALUES ('$user_id', '$portal_user', '$ID', '$files', '$filetype', '$filename', '$filesize', '$file_history', '$description', '$due_date')";
+        $sql = "INSERT INTO tbl_hr_file (user_id, portal_user, employee_id, files, filetype, filename, filesize, file_history, description, start_date, due_date, uploaded_date)
+        VALUES ('$user_id', '$portal_user', '$ID', '$files', '$filetype', '$filename', '$filesize', '$file_history', '$description', '$date_start', '$date_end', '$last_modified')";
         
 		if (mysqli_query($conn, $sql)) {
 			$last_id = mysqli_insert_id($conn);
@@ -3335,17 +3387,24 @@
 		            $files = '<p style="margin: 0;"><a data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
 				}
 
-				$data_due_date = $rowData['due_date'];
-                $data_due_date = new DateTime($data_due_date);
-                $data_due_date = $data_due_date->format('M d, Y');
+                $data_uploaded_date = new DateTime($last_modified);
+                $data_uploaded_date = $data_uploaded_date->format('M d, Y');
+
+                $data_date_start = new DateTime($date_start);
+                $data_date_start = $data_date_start->format('M d, Y');
+                
+                $data_date_end = new DateTime($date_end);
+                $data_date_end = $data_date_end->format('M d, Y');
 
 				$output = array(
-					"ID" => $data_ID,
-					"files" => $files,
-					"filename" => $data_filename,
-					"description" => $data_description,
-					"due_date" => $data_due_date
-				);
+                    "ID" => $data_ID,
+                    "files" => $files,
+                    "filename" => $data_filename,
+                    "description" => $data_description,
+                    "start_date" => $data_date_start,
+                    "due_date" => $data_date_end,
+                    "uploaded_date" => $data_uploaded_date
+                );
 			}
 		}
 		mysqli_close($conn);
@@ -3355,9 +3414,15 @@
 		$ID = $_POST['ID'];
 		$filename = addslashes($_POST['filename']);
 		$description = addslashes($_POST['description']);
-		$due_date = $_POST['due_date'];
 
-		mysqli_query( $conn,"UPDATE tbl_hr_file set filename='". $filename ."', description='". $description ."', due_date='". $due_date ."' WHERE ID='". $ID ."'" );
+        $uploaded_date = $_POST['uploaded_date'];
+        $last_modified = date('Y-m-d');
+        $date = $_POST['daterange'];
+        $date = explode(' - ', $date);
+        $date_start = $date[0];
+        $date_end = $date[1];
+
+        mysqli_query( $conn,"UPDATE tbl_hr_file set filename='". $filename ."', description='". $description ."', start_date='". $date_start ."', due_date='". $date_end ."', uploaded_date='". $uploaded_date ."' WHERE ID='". $ID ."'" );
 
 		$selectData = mysqli_query( $conn,'SELECT * FROM tbl_hr_file WHERE ID="'. $ID .'" ORDER BY ID LIMIT 1' );
 		if ( mysqli_num_rows($selectData) > 0 ) {
@@ -3385,7 +3450,7 @@
 
                         $filesize_tot = $filesize + $rowData["filesize"];
 
-                        mysqli_query( $conn,"UPDATE tbl_hr_file SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
+                        mysqli_query( $conn,"UPDATE tbl_hr_file SET filesize='". $filesize_tot ."', uploaded_date = '".$last_modified."' WHERE ID='". $ID ."'" );
                     }
                 } else {
                     $files = $_POST['fileurl'];
@@ -3424,17 +3489,25 @@
 	            $files = '<p style="margin: 0;"><a data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
 			}
 
-			$data_due_date = $rowData['due_date'];
-            $data_due_date = new DateTime($data_due_date);
-            $data_due_date = $data_due_date->format('M d, Y');
+            $data_uploaded_date = $rowData['uploaded_date'];
+            $data_uploaded_date = new DateTime($data_uploaded_date);
+            $data_uploaded_date = $data_uploaded_date->format('M d, Y');
+
+            $data_date_start = new DateTime($date_start);
+            $data_date_start = $data_date_start->format('M d, Y');
+            
+            $data_date_end = new DateTime($date_end);
+            $data_date_end = $data_date_end->format('M d, Y');
 
 			$output = array(
-				"ID" => $data_ID,
-				"files" => $files,
-				"filename" => $data_filename,
-				"description" => $data_description,
-				"due_date" => $data_due_date
-			);
+                "ID" => $data_ID,
+                "files" => $files,
+                "filename" => $data_filename,
+                "description" => $data_description,
+                "start_date" => $data_date_start,
+                "due_date" => $data_date_end,
+                "uploaded_date" => $data_uploaded_date
+            );
 		}
 
 		mysqli_close($conn);
@@ -50306,7 +50379,8 @@
 	if( isset($_GET['modalAttached']) ) {
 		$id = $_GET['modalAttached'];
 		$today = date('Y-m-d');
-		$futureDate = date('Y-m-d', strtotime('+1 year'));
+        $futureDate = date('Y-m-d', strtotime('+1 year'));
+        $futureDate = date('Y-m-d', strtotime($futureDate.'-1 day'));
 
 		echo '<input class="form-control" type="hidden" name="parent_id" value="'. $id .'" />
 		<div class="form-group">
@@ -50700,6 +50774,8 @@
                 $file_name = $rowFiles["name"];
                 $file_comment = $rowFiles["comment"];
                 $file_reason = $rowFiles["reason"];
+                $str_filename = $rowFiles["files"];
+                $str_filetype = $rowFiles["filetype"];
 
                 $file_user_id = $rowFiles["user_id"];
                 $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $file_user_id " );
@@ -50724,6 +50800,8 @@
                     if ($filetype == 1) {
                         $files = $_FILES['file']['name'];
                         if (!empty($files)) {
+                            $str_filename = $files;
+                            $str_filetype = 1;
                             $path = 'uploads/library/';
                             $filesize = $_FILES['file']['size'];
                             $tmp = $_FILES['file']['tmp_name'];
@@ -50736,6 +50814,7 @@
                             mysqli_query( $conn,"UPDATE tbl_library_file SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
                         }
                     } else {
+                        $str_filetype = $filetype;
                         $files = $_POST['fileurl'];
                         $filesize = 0;
                     }
@@ -50754,8 +50833,10 @@
                     }
                 }
 
+                $filetype = $str_filetype;
+                $files = $str_filename;
                 $type = 'iframe';
-                $file_extension = 'fa-youtube-play';
+                $file_extension = 'fa-file-image-o';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -51444,9 +51525,40 @@
 
 		mysqli_query( $conn,"UPDATE tbl_library_compliance SET remark = '1', remark_user = '". $current_userID ."' WHERE ID='". $id ."'" );
 
-		$selectData = mysqli_query( $conn,'SELECT * FROM tbl_library_compliance WHERE ID="'. $id .'"' );
+		// $selectData = mysqli_query( $conn,'SELECT * FROM tbl_library_compliance WHERE ID="'. $id .'"' );
+        $selectData = mysqli_query( $conn, "SELECT
+            l.ID AS l_ID,
+            c.ID AS c_ID,
+            c.type AS c_type,
+            p.ID AS p_ID,
+            p.action_items AS p_action_items,
+            p.requirements AS p_requirements,
+            p.frequency AS p_frequency
+
+            FROM tbl_library_compliance AS c 
+
+            LEFT JOIN (
+                SELECT
+                *
+                FROM tbl_library_compliance
+            ) AS p
+            ON p.ID = c.parent_id
+
+            LEFT JOIN (
+                SELECT
+                *
+                FROM tbl_library
+                WHERE deleted = 0
+            ) AS l
+            ON l.ID = c.library_id
+
+            WHERE c.ID = $id");
 		$rowData = mysqli_fetch_array($selectData);
-        $data_library_id = $rowData['library_id'];
+        $data_library_id = $rowData['l_ID'];
+        $data_compliance_type = $rowData['c_type'];
+        $requirements = $rowData['p_requirements'];
+        $action_items = $rowData['p_action_items'];
+        $frequency = $rowData['p_frequency'];
 
 		// Update History Data
 		actionHistory($data_library_id, 4, 3, $id);
@@ -51990,6 +52102,8 @@
 				$rowData = mysqli_fetch_array($selectData);
                 $compliance_parent_id = $rowData['parent_id'];
                 $compliance_compliant = $rowData['compliant'];
+                $compliance_requirements = $rowData['requirements'];
+                $compliance_action_items = $rowData['action_items'];
 
                 $compliance_user_id = $rowData["user_id"];
                 $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $compliance_user_id " );
@@ -52054,8 +52168,8 @@
                     The following compliance requirement is ready to be performed:<br><br>
 
                     Type - '.$array_library_type[$library_type].'<br>
-                    Requirements – '.stripcslashes($requirements).'<br>
-                    Action Items – '.stripcslashes($action_items).'<br>
+                    Requirements – '.stripcslashes($compliance_requirements).'<br>
+                    Action Items – '.stripcslashes($compliance_action_items).'<br>
                     Frequency – '.$frequency.'<br><br>';
 
                     if ($_COOKIE['client'] == 1) {
@@ -54412,7 +54526,7 @@
             <label class="col-md-3 control-label">Select File</label>
             <div class="col-md-8">
                 <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="file" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload New</button></p>
             </div>
         </div>
 		<div class="form-group selVideo '; echo $type_id == 1 ? '':'hide'; echo '" id="selURL_2">
@@ -54470,7 +54584,7 @@
         $filesize = 0;
 
         $files = $_FILES['file']['name'];
-        if ($type == 1) {
+        if ($type == 0) {
             if (!empty($files)) {
                 $path = 'uploads/library/';
                 $filesize = $_FILES['file']['size'];
@@ -54595,6 +54709,7 @@
 			$data_description = $rowData['description'];
 			$data_type = $rowData['type'];
 			$data_url = $rowData['url'];
+            $data_files = $rowData['files'];
 
 			$data_user_id = $rowData['user_id'];
             $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $data_user_id " );
@@ -54626,11 +54741,12 @@
                 $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
                 $filesize += $rowData["filesize"];
+                $data_files = $files;
 
                 mysqli_query( $conn,"UPDATE tbl_library_video SET files='". $files ."', filesize='". $filesize ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
             }
 
-			$data_files = $rowData['files'];
+			$data_files = $data_files;
             $fileExtension = fileExtension($data_files);
 			$src = $fileExtension['src'];
 			$embed = $fileExtension['embed'];
@@ -55746,13 +55862,14 @@
             $user_id = employerID($portal_user);
         }
 
-	    echo '<div class="table-scrollable">
+	    echo '<div class="table-scrollablex">
             <table class="table table-bordered table-hover" id="table2excel">
                 <thead>
                     <tr>
                         <th>ITEM NAME</th>
                         <th style="width: 100px;">ITEM TYPE</th>
                         <th>LAST COMMENT</th>
+                        <th class="text-center">TEMPLATE</th>
                         <th>DOCUMENT ATTACHED</th>
                         <th style="width: 150px;" class="text-center">UPLOADED DATE</th>
                         <th style="width: 150px;" class="text-center">REVIEW DUE DATE</th>
@@ -55770,6 +55887,10 @@
 
                         c_ID,
                         c2.comment AS c_comment,
+
+                        t_ID,
+                        t2.files AS t_files,
+                        t2.filetype AS t_filetype,
 
                         f_ID,
                         f2.name AS f_name,
@@ -55789,6 +55910,7 @@
                             mainID, parentID, childID, parentCollab, parentName, libType,
                             com_Total,
                             c.ID AS c_ID,
+                            t.ID AS t_ID,
                             f.ID AS f_ID,
                             COALESCE(COUNT(x.ID), 0) AS x_ID,
                             COALESCE(COUNT(x30.COUNT_30), 0) AS x30_ID,
@@ -55852,6 +55974,17 @@
                             ON o.mainID = c.library_id
 
                             LEFT JOIN (
+                                SELECT 
+                                MAX(ID) AS ID,
+                                library_id
+                                FROM tbl_library_template 
+                                WHERE is_deleted = 0
+                                GROUP BY library_id
+                                ORDER BY ID DESC
+                            ) AS t
+                            ON o.mainID = t.library_id
+
+                            LEFT JOIN (
                                 SELECT
                                 MAX(ID) AS ID,
                                 library_id
@@ -55861,7 +55994,6 @@
                                 ORDER BY ID DESC
                             ) AS f
                             ON o.mainID = f.library_id
-
 
                             LEFT JOIN (
                                 SELECT 
@@ -55903,6 +56035,13 @@
                             FROM tbl_library_comment
                         ) AS c2
                         ON r.c_ID = c2.ID
+
+                        LEFT JOIN (
+                            SELECT
+                            *
+                            FROM tbl_library_template
+                        ) AS t2
+                        ON r.t_ID = t2.ID
 
                         LEFT JOIN (
                             SELECT
@@ -55954,6 +56093,24 @@
                                 $files = '<a data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'">'.$files_name.'</a>';
                             } else if ($filetype == 3) {
                                 $files = '<a data-src="'.preg_replace('#[^/]*$#', '', $files).'preview" data-fancybox data-type="'.$type.'">'.$files_name.'</a>';
+                            }
+
+                            $t_files = $rowItem["t_files"];
+                            $t_filetype = $rowItem['t_filetype'];
+                            $type = 'iframe';
+                            if ($filetype == 1) {
+                                if (!empty($t_files)) {
+                                    $fileExtension = fileExtension($t_files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/library/';
+
+                                    $t_files = '<a data-src="'.$src.$url.rawurlencode($t_files).$embed.'" data-fancybox data-type="'.$type.'">View</a>';
+                                }
+                            } else if ($filetype == 3) {
+                                $t_files = '<a data-src="'.preg_replace('#[^/]*$#', '', $t_files).'preview" data-fancybox data-type="'.$type.'">View</a>';
                             }
 
                             $name = $rowItem["parentName"];
@@ -56009,6 +56166,7 @@
                                 <td>'. htmlentities($name ?? '') .'</td>
                                 <td>'. $rtype .'</td>
                                 <td>'. htmlentities($comment ?? '') .'</td>
+                                <td class="text-center">'. $t_files .'</td>
                                 <td>'. $files .'</td>
 		                        <td class="text-center">'. $files_uploaded .'</td>
 		                        <td class="text-center">'. $due_date .'</td>

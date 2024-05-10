@@ -63,7 +63,7 @@
                                                 </thead>
                                                 <tbody>
                                                     <?php
-                                                        $resultSupplier = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE archived = 1 AND deleted = 0 AND type = 1 AND updated = 0 AND user_id = $switch_user_id" );
+                                                        $resultSupplier = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE deleted = 0 AND type = 1 AND updated = 0 AND user_id = $switch_user_id" );
                                                         if ( mysqli_num_rows($resultSupplier) > 0 ) {
                                                             while($rowSupplier = mysqli_fetch_array($resultSupplier)) {
                                                                 $supplier_user_id = $rowSupplier["user_id"];
@@ -289,7 +289,7 @@
                                                 </thead>
                                                 <tbody>
                                                     <?php
-                                                        $resultSupplier = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE archived = 1 AND deleted = 0 AND type = 2 AND updated = 0 AND user_id = $switch_user_id" );
+                                                        $resultSupplier = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE deleted = 0 AND type = 2 AND updated = 0 AND user_id = $switch_user_id" );
                                                         if ( mysqli_num_rows($resultSupplier) > 0 ) {
                                                             while($rowSupplier = mysqli_fetch_array($resultSupplier)) {
                                                                 $supplier_user_id = $rowSupplier["user_id"];

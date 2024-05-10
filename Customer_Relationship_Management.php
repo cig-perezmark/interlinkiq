@@ -1663,7 +1663,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                     <form id="updateNotesForm">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                            <h4 class="modal-title">Add New Notes</h4>
+                            <h4 class="modal-title">Edit Notes</h4>
                         </div>
                         <div class="modal-body">
                             <div class="row">
@@ -1679,7 +1679,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                             </div>
                         </div>
                         <div class="modal-footer" style="margin-top:10px;">
-                            <button type="submit" id="noteFormBtn" value="Save" class="btn btn-info ladda-button">Save</button>
+                            <button type="submit" id="noteFormBtn" value="Save" class="btn btn-info ladda-button">Update</button>
                         </div>
                     </form>
                 </div>

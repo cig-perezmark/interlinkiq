@@ -99,7 +99,7 @@ $(document).ready(function() {
                 [5, 10, 15, 20]
             ],
             pageLength: 5,
-            searching: false,
+            searching: true,
             dom: "<'row' <'col-md-12'B>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
         });
     }
@@ -172,7 +172,6 @@ $(document).ready(function() {
             contentType: false, 
             success: function (response) {
                 response = JSON.parse(response);
-                console.log(response)
                 $('#modalNew').modal('hide');
                 $('#addContactForm')[0].reset();
                 $.bootstrapGrowl(response.message, {
@@ -188,7 +187,6 @@ $(document).ready(function() {
             },
             error: function (error) {
                 response = JSON.parse(response);
-                console.log(response)
                 $.bootstrapGrowl(response.message, {
                   ele: 'body',
                   type: 'danger',
@@ -210,9 +208,9 @@ $(document).ready(function() {
 
         var selectedIds = [];
         var action = 'campaign';
-        var body = $('#campaign-body').val();
-        var subject = $('#campaign-subject').val();
-        var name = $('#campaign-name').val();
+        var body = $('#campaign-body-multi').val();
+        var subject = $('#campaign-subject-multi').val();
+        var name = $('#campaign-name-multi').val();
         var frequency = $('#campaign-frequency').val();
         var from = $('#current-email').val();
         
@@ -237,7 +235,6 @@ $(document).ready(function() {
                 success: function (response) {
                     response = JSON.parse(response);
                     if (response.status === 'success') {
-                        // Success handling: Hide the modal, reset the form, and show a success notification
                         $.bootstrapGrowl(response.message, {
                             ele: 'body',
                             type: 'success',
@@ -973,14 +970,13 @@ $(document).ready(function() {
         l.start();
         formData.append('upload_multiple_contacts', 'upload_multiple_contacts');
         $.ajax({
-            url: 'crm/mass_upload.php',
+            url: 'crm/controller_functions.php',
             type: 'POST',
             data: formData,
             processData: false,
             contentType: false,
     
             success: function(response) {
-                console.log(response)
                 var responseParts = response.split('|');
                 var status = responseParts[0];
                 var message = responseParts[1];
@@ -1002,16 +998,16 @@ $(document).ready(function() {
                 } else if (status === 'error') {
                     $('#massUploadResult').modal('show');
                     // Destroy existing DataTable instances before reinitializing
-                    initializeDataTable2('#dataTable_3');
-                    initializeDataTable2('#dataTable_4');
+                    initializeDataTable2('#existContactEntriesResult');
+                    initializeDataTable2('#insertedContactEntriesResult');
     
                     // Reinitialize DataTable with the new data
-                    $('#dataTable_3').DataTable().clear().destroy();
-                    $('#dataTable_4').DataTable().clear().destroy();
-                    $('#dataTable_3 tbody').html(skipped_data);
-                    $('#dataTable_4 tbody').html(success_data);
-                    initializeDataTable2('#dataTable_3');
-                    initializeDataTable2('#dataTable_4');
+                    $('#existContactEntriesResult').DataTable().clear().destroy();
+                    $('#insertedContactEntriesResult').DataTable().clear().destroy();
+                    $('#existContactEntriesResult tbody').html(skipped_data);
+                    $('#insertedContactEntriesResult tbody').html(success_data);
+                    initializeDataTable2('#existContactEntriesResult');
+                    initializeDataTable2('#insertedContactEntriesResult');
     
                     $('#modalMultiUpload').modal('hide');
                     $('#massUploadForm')[0].reset();
@@ -1054,7 +1050,6 @@ $(document).ready(function() {
                     contentType: false,
             
                     success: function(response) {
-                        console.log(response)
                         var responseParts = response.split('|');
                         var status = responseParts[0];
                         var message = responseParts[1];
@@ -1177,16 +1172,16 @@ $(document).ready(function() {
     
     get_user_campaigns()
     function get_user_campaigns() {
-        if ($.fn.DataTable.isDataTable('#dataTable_4')) {
-            $('#dataTable_4').DataTable().destroy();
+        if ($.fn.DataTable.isDataTable('#userCampaignListResult')) {
+            $('#userCampaignListResult').DataTable().destroy();
         }
         $.ajax({
             url: "crm/controller_functions.php",
             method: "POST",
             data: { get_user_campaigns: true },
             success: function(response) {
-                $('#dataTable_4 tbody').html(response);
-                initializeDataTable2('#dataTable_4');
+                $('#userCampaignListResult tbody').html(response);
+                initializeDataTable2('#userCampaignListResult');
             }
         });
     }
@@ -1195,19 +1190,19 @@ $(document).ready(function() {
         e.preventDefault()
         var subject_name = $(this).data('value');
         $('#site_activities_loading, #spinner-text').removeClass('d-none');
-        $('#dataTable_5').addClass('d-none');
-        if ($.fn.DataTable.isDataTable('#dataTable_5')) {
-            $('#dataTable_5').DataTable().destroy();
+        $('#campaignListAsPerSubject').addClass('d-none');
+        if ($.fn.DataTable.isDataTable('#campaignListAsPerSubject')) {
+            $('#campaignListAsPerSubject').DataTable().destroy();
         }
         $.ajax({
             url: "crm/controller_functions.php",
             method: "POST",
             data: { group_campaign_list_by_subject: true, subject: subject_name },
             success: function(response) {
-                $('#dataTable_5 tbody').html(response);
-                initializeDataTable2('#dataTable_5');
+                $('#campaignListAsPerSubject tbody').html(response);
+                initializeDataTable2('#campaignListAsPerSubject');
                 $('#site_activities_loading, #spinner-text').addClass('d-none');
-                $('#dataTable_5').removeClass('d-none');
+                $('#campaignListAsPerSubject').removeClass('d-none');
             }
         });
     });
@@ -1249,7 +1244,6 @@ $(document).ready(function() {
                 var status = response.status;
                 $('#task-status option').removeAttr('selected');
                 $('#task-status option[value="' + status + '"]').attr('selected', 'selected');
-                console.log(response);
             }
         });
     });
@@ -1311,7 +1305,6 @@ $(document).ready(function() {
             success: function (response) {
                 try {
                     response = JSON.parse(response);
-                    console.log(response);
                     $.bootstrapGrowl('Campaign updated successfully!', {
                         ele: 'body',
                         type: 'success',
@@ -1430,7 +1423,7 @@ $(document).ready(function() {
         $('#task-id').val(taskid)
         $('#contact-id').val(contactid)
         $('#site_activities_loading, #spinner-text').removeClass('d-none');
-        $('#dataTable_6').addClass('d-none');
+        $('#noteList').addClass('d-none');
         $.ajax({
             url: 'crm/controller_functions.php',
             type: 'POST',
@@ -1439,13 +1432,13 @@ $(document).ready(function() {
                 taskid: taskid
             },
             success: function(response) {
-                if ($.fn.DataTable.isDataTable('#dataTable_6')) {
-                    $('#dataTable_6').DataTable().destroy();
+                if ($.fn.DataTable.isDataTable('#noteList')) {
+                    $('#noteList').DataTable().destroy();
                 }
-                $('#dataTable_6 tbody').html(response);
-                initializeDataTable2('#dataTable_6');
+                $('#noteList tbody').html(response);
+                initializeDataTable2('#noteList');
                 $('#site_activities_loading, #spinner-text').addClass('d-none');
-                $('#dataTable_6').removeClass('d-none');
+                $('#noteList').removeClass('d-none');
             }
         });
     });
@@ -1459,7 +1452,6 @@ $(document).ready(function() {
                 taskid: id
             },
             success:function(response) {
-                console.log(response)
                 if ($.fn.DataTable.isDataTable('#dataTable_6')) {
                     $('#dataTable_6').DataTable().destroy();
                 }
@@ -1478,7 +1470,6 @@ $(document).ready(function() {
                 subject: subject
             },
             success:function(response) {
-                console.log(response)
                 if ($.fn.DataTable.isDataTable('#dataTable_5')) {
                     $('#dataTable_5').DataTable().destroy();
                 }
@@ -1503,7 +1494,6 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             success: function(response) {
-                console.log(response)
                 $.bootstrapGrowl('Notes Added!', {
                     ele: 'body',
                     type: 'success',
@@ -1536,7 +1526,6 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             success: function(response) {
-                console.log(response)
                 $.bootstrapGrowl('Task Added!', {
                     ele: 'body',
                     type: 'success',
@@ -1564,7 +1553,6 @@ $(document).ready(function() {
                 noteid: noteid
             },
             success: function(response) {
-                console.log(response)
                 var response = JSON.parse(response);
                 $('#notes-v').val(response.notes);
                 $('#notes-id').val(response.notesid);
@@ -1586,7 +1574,6 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             success: function(response) {
-                console.log(response)
                 $.bootstrapGrowl('Notes Added!', {
                     ele: 'body',
                     type: 'success',

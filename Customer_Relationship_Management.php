@@ -745,7 +745,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                     <h4 class="widget-thumb-heading text-uppercase">Campaigns</h4>
                                 </div>
                                 <div class="widget-thumb-wrap">
-                                    <table class="table table-bordered table-hover table-striped dataTable no-footer" id="dataTable_4">
+                                    <table class="table table-bordered table-hover table-striped dataTable no-footer" id="userCampaignListResult">
                                         <thead>
                                             <tr>
                                                 <th>Subject</th>
@@ -1180,7 +1180,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                             <i class="icon-users font-dark"></i>
                                             <span class="caption-subject font-dark bold uppercase">Existing Contact Email Entries</span>
                                         </div>
-                                        <table class="table table-bordered table-hover table-striped" id="dataTable_3">
+                                        <table class="table table-bordered table-hover table-striped" id="existContactEntriesResult">
                                             <thead>
                                                 <tr role="row">
                                                     <th></th>
@@ -1198,7 +1198,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                             <i class="icon-users font-dark"></i>
                                             <span class="caption-subject font-dark bold uppercase">Inserted Contact Email Entries</span>
                                         </div>
-                                        <table class="table table-bordered table-hover table-striped" id="dataTable_4">
+                                        <table class="table table-bordered table-hover table-striped" id="insertedContactEntriesResult">
                                             <thead>
                                                 <tr role="row">
                                                     <th></th>
@@ -1573,7 +1573,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                         <div id="site_activities_loading">
                             <span id="spinner-text" style="display:18px" class="">Fetching data </span> <img src="../assets/global/img/loading.gif" alt="loading" /> 
                         </div>
-                        <table class="table table-bordered table-hover table-striped no-footer d-none" id="dataTable_5">
+                        <table class="table table-bordered table-hover table-striped no-footer d-none" id="campaignListAsPerSubject">
                             <thead>
                                 <tr>
                                     <th width="5%"></th>
@@ -1611,7 +1611,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                         <div id="site_activities_loading">
                             <span id="spinner-text" style="display:18px" class="">Fetching data </span> <img src="../assets/global/img/loading.gif" alt="loading" /> 
                         </div>
-                        <table class="table table-bordered table-hover table-striped no-footer" id="dataTable_6">
+                        <table class="table table-bordered table-hover table-striped no-footer" id="noteList">
                             <thead>
                                 <tr>
                                     <th>Date</th>
@@ -2037,14 +2037,14 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Campaign Name</label>
-                                        <input class="form-control" type="text" id="campaign-name" name="campaign_name" required>
+                                        <input class="form-control" type="text" id="campaign-name-multi" name="campaign_name" required>
                                         <input class="form-control" type="hidden" name="from" id="current-email" value="<?=$current_userEmail?>">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Subject</label>
-                                        <input class="form-control" type="text" name="subject" id="campaign-subject" required>
+                                        <input class="form-control" type="text" name="subject" id="campaign-subject-multi" required>
                                     </div>
                                 </div>
                             </div>
@@ -2053,7 +2053,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label>Message</label>
-                                        <textarea class="form-control summernoteEditor" type="text" name="body" rows="4" id="campaign-body" required></textarea>
+                                        <textarea class="form-control summernoteEditor" type="text" name="body" rows="4" id="campaign-body-multi" required></textarea>
                                     </div>
                                 </div>
                             </div>

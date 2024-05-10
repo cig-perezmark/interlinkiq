@@ -100,11 +100,6 @@
                 data: { get_graphs: true },
                 success: function(response) {
                     var data = JSON.parse(response);
-
-                    console.log(data.contact)
-                    console.log(data.campaign)
-                    console.log(data.user_daily_campaign)
-    
                     var contactSeries = chart1.series.getIndex(0);
                     contactSeries.data.setAll(data.contact);
     

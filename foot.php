@@ -146,7 +146,8 @@
 		<script src="assets/specialist/vendor/swiper/swiper-bundle.min.js"></script>
 		<script src="assets/specialist/vendor/purecounter/purecounter_vanilla.js"></script>
 		<!-- <script src="assets/specialist/vendor/php-email-form/validate.js"></script> -->
-		<script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
+		<!--<script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>-->
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
 		<script type="text/javascript" src="//cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
 		<script src="//cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/carousel/carousel.umd.js"></script>

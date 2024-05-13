@@ -19,19 +19,16 @@
 <!doctype html>
 <html lang="en" data-bs-theme="light">
   <head>
-    <!--<script src="color-modes.js"></script>-->
+    <!-- <script src="color-modes.js"></script> -->
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.122.0">
-    <title>Food Safety 360 - Login</title>
+    <title>Safe Cannabis 360 - Login</title>
 
     <link rel="canonical" href="//getbootstrap.com/docs/5.3/examples/sign-in/">
-
-    
-
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@docsearch/css@3">
 
     <!-- <link href="/docs/5.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"> -->
@@ -41,7 +38,7 @@
     <link rel="apple-touch-icon" href="/docs/5.3/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
     <link rel="icon" href="/docs/5.3/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
     <link rel="icon" href="/docs/5.3/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
-    <!--<link rel="manifest" href="/docs/5.3/assets/img/favicons/manifest.json">-->
+    <!-- <link rel="manifest" href="/docs/5.3/assets/img/favicons/manifest.json"> -->
     <link rel="mask-icon" href="/docs/5.3/assets/img/favicons/safari-pinned-tab.svg" color="#712cf9">
     <link rel="icon" href="/docs/5.3/assets/img/favicons/favicon.ico">
     <meta name="theme-color" content="#712cf9">
@@ -126,7 +123,7 @@
 
 
       .sign-in-container {
-        background: url('uploads/login/bg/FoodSafety.jpg');
+        background: url('uploads/login/bg/Cannabis backgroud.jpg');
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
@@ -255,8 +252,8 @@
     <div class="container text-center">
       <div class="row justify-content-center">
         <div class="col-6">
-          <img class="w-100 sign-logo" src="uploads/login/icon/Food Safety 360.png" />
-          <h3 class="mb-3 text-white">Manages compliance with requirements for current Good Manufacturing Practices</h3>
+          <img class="w-100 sign-logo" src="uploads/login/icon/Cannabis 360.png" />
+          <h3 class="mb-3 text-white">Manages compliance of requirements with standards in Cannabis cultivation, manufacturing, distribution, retail, GMPs, OSHA, regulatory , and certification domains.</h3>
         </div>
       </div>
     </div>
@@ -294,7 +291,7 @@
               </div>
             </div>
 
-            <button class="btn btn-primary w-100 py-2" type="submit" style="background: #A5A1FF;">
+            <button class="btn btn-primary w-100 py-2" type="submit" style="background: #5AD15B;">
               Login
               <svg xmlns="//www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
@@ -332,7 +329,7 @@
               <label for="confirm_password">Confirm Password</label>
             </div>
 
-            <button class="btn btn-primary w-100 py-2" type="submit" style="background: #7877BB;">SIGN UP</button>
+            <button class="btn btn-primary w-100 py-2" type="submit" style="background: #4DB850;">SIGN UP</button>
           </form>
         </div>
       </div>
@@ -378,7 +375,7 @@
 
         var formData = new FormData(this);
         formData.append('btnSignIn',true);
-        formData.append('client',2);
+        formData.append('client',3);
 
         // var l = Ladda.create(document.querySelector('#btnSave_Attached'));
         // l.start();
@@ -419,7 +416,7 @@
           
         var formData = new FormData(this);
         formData.append('btn_SignUp',true);
-        formData.append('client',2);
+        formData.append('client',3);
 
         $.ajax({
           url: "function.php",

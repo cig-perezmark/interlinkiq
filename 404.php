@@ -3,6 +3,8 @@
     $site = "404";
     $breadcrumbs = '';
     $sub_breadcrumbs = ''; 
+    
+    // phpinfo();
 // 
     if ($sub_breadcrumbs) {
         $breadcrumbs .= '<li><span>'. $sub_breadcrumbs .'</span><i class="fa fa-angle-right"></i></li>';

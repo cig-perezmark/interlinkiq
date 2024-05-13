@@ -92,7 +92,7 @@
                     </div>
                     <div class="tab-pane" id="tab_Me"> 
                         <?php
-                            $connect = new PDO("mysql:host=localhost;dbname=brandons_interlinkiq", "brandons_interlinkiq", "L1873@2019new");
+                            $connect = new PDO("mysql:host=localhost;dbname=brandons_interlinkiq", "brandons_interlinkiq", "iz8gbjBQqhcy~+WNSj");
                             $query = "SELECT DISTINCT(CIA_progress) FROM tbl_MyProject_Services_Childs_action_Items where CIA_progress != 2";
                             $statement = $connect->prepare($query);
                             $statement->execute();

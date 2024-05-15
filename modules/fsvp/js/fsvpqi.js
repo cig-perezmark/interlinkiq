@@ -1,4 +1,5 @@
 jQuery(function() {
+    let fsvpqiData = [];
     const alert = Init.createAlert($('#fsvpqiRegForm .modal-body'));
     const tableFSVPQI = Init.dataTable($('#tableFSVPQI'), {
         columnDefs:  [
@@ -34,7 +35,7 @@ jQuery(function() {
             }
 
             alert.setContent(`<strong>Error!</strong> An FSVPQI is required.`).show();
-            // return;
+            return;
         }
 
         const data = new FormData(form); 
@@ -45,8 +46,12 @@ jQuery(function() {
             contentType: false,
             processData: false,
             data,
-            success: function({result}) {
-                // 
+            success: function({data, message}) {
+                renderDTRow(fsvpqiData, data, tableFSVPQI);
+                form.reset();
+                $(form.fsvpqi).val('').trigger('change');
+                $('#modalFSVPQIReg').modal('show');
+                bootstrapGrowl(message || 'Saved successfully.');
             },
             error: function() {
                 bootstrapGrowl('Error saving data.');
@@ -105,4 +110,24 @@ function populateFSVPQISelect() {
             bootstrapGrowl('Error fetching data.');
         },
     });
+}
+
+function renderDTRow(set, d, {dt}) {
+    set[d.id] = d;
+        dt.row.add([
+            d.name,
+            d.ces,
+            d.address,
+            '',
+            '',
+            '',
+            '',
+            '',
+            `
+                <div class="d-flex center">
+                    <button type="button" class="btn-link">Open</button>
+                </div>
+            `,
+        ]);
+    return dt;
 }

@@ -1,6 +1,7 @@
 <?php
 
 include_once __DIR__ ."/../../alt-setup/setup.php";
+date_default_timezone_set('America/Chicago');
 
 function getSuppliersByUser($conn, $userId) {
     return $conn->select("tbl_supplier", "ID as id, name", [ 'user_id'=> $userId, 'status'=>1, 'page'=>1])->fetchAll();
@@ -140,6 +141,21 @@ function prepareFileInfo($data) {
     ];
 }
 
-function saveFSVPQICertificate($data, $fileName) {
+function saveFSVPQICertificate($postData, $name) {
+    if(isset($postData[$name]) && $postData[$name] == 'true') {
+        $uploadPath = getUploadsDir('fsvp/qi_certifications');
+        $currentTimestamp = date('Y-m-d H:i:s');
+        
+        $file = uploadFile($uploadPath, $_FILES[$name .'-file']);
+        return [
+            "filename" => $file,
+            "path" => $uploadPath,
+            "document_date" => $postData[$name . '-document_date'] ?? null,
+            "expiration_date" => $postData[$name . "-expiration_date"] ?? null,
+            "note" => $postData[$name . "-note"] ?? null,
+            "uploaded_at" => $currentTimestamp,
+        ];
+    }
 
+    throw new Exception('Unable to save file.');
 }

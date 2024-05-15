@@ -356,7 +356,7 @@ if(isset($_GET['newFSVPQI'])) {
         $fsvpqi = $_POST['fsvpqi'] ?? null;
         $ces = $_POST['ces'] ?? null;
 
-        if(!empty($fsvpqi)) {
+        if(empty($fsvpqi)) {
             throw new Exception('FSVPQI is required.');
         }
         
@@ -370,23 +370,78 @@ if(isset($_GET['newFSVPQI'])) {
         $id = $conn->getInsertId();
         $type = 'fsvpqi-certifications';
         $uploadPath = getUploadsDir('fsvp/qi_certifications');
-        $data = [];
+        $filesData = [];
 
         if(isset($_POST['c_pcqi_certified']) && $_POST['c_pcqi_certified'] == 'true') {
-            $file = uploadFile($uploadPath, $_FILES['supplier_agreement_file']);
-            $fileInfo = [
-                "filename" => $csFile,
-                "path" => $uploadPath,
-                "document_date" => $_POST['csf_date'] ?? null,
-                "expiration_date" => $_POST["csf_exp"] ?? null,
-                "note" => $_POST["csf_note"] ?? null,
-                "uploaded_at" => $currentTimestamp,
-            ];
+            $d = saveFSVPQICertificate($_POST, 'c_pcqi_certified');
+            $conn->insert('tbl_fsvp_files', [
+                'record_id' => $id,
+                'record_type' => "$type:pcqi-certificate",
+                ...$d,
+            ]);
+            $d['id'] = $conn->getInsertId();
+            $d['filename'] = embedFileUrl($d['filename'], $d['path']);
+            $filesData['c_pcqi_certified'] = $d;
         }
 
+        if(isset($_POST['c_food_quality_auditing']) && $_POST['c_food_quality_auditing'] == 'true') {
+            $d = saveFSVPQICertificate($_POST, 'c_food_quality_auditing');
+            $conn->insert('tbl_fsvp_files', [
+                'record_id' => $id,
+                'record_type' => "$type:food-quality-auditing",
+                ...$d,
+            ]);
+            $d['id'] = $conn->getInsertId();
+            $d['filename'] = embedFileUrl($d['filename'], $d['path']);
+            $filesData['c_food_quality_auditing'] = $d;
+        }
+        
+        if(isset($_POST['c_haccp_training']) && $_POST['c_haccp_training'] == 'true') {
+            $d = saveFSVPQICertificate($_POST, 'c_haccp_training');
+            $conn->insert('tbl_fsvp_files', [
+                'record_id' => $id,
+                'record_type' => "$type:haccp-training",
+                ...$d,
+            ]);
+            $d['id'] = $conn->getInsertId();
+            $d['filename'] = embedFileUrl($d['filename'], $d['path']);
+            $filesData['c_haccp_training'] = $d;
+        }
+
+        if(isset($_POST['c_fs_training_certificate']) && $_POST['c_fs_training_certificate'] == 'true') {
+            $d = saveFSVPQICertificate($_POST, 'c_fs_training_certificate');
+            $conn->insert('tbl_fsvp_files', [
+                'record_id' => $id,
+                'record_type' => "$type:food-safety-training-certificate",
+                ...$d,
+            ]);
+            $d['id'] = $conn->getInsertId();
+            $d['filename'] = embedFileUrl($d['filename'], $d['path']);
+            $filesData['c_fs_training_certificate'] = $d;
+        }
+
+        if(isset($_POST['c_gfsi_certificate']) && $_POST['c_gfsi_certificate'] == 'true') {
+            $d = saveFSVPQICertificate($_POST, 'c_gfsi_certificate');
+            $conn->insert('tbl_fsvp_files', [
+                'record_id' => $id,
+                'record_type' => "$type:gfsi-certificate",
+                ...$d,
+            ]);
+            $d['id'] = $conn->getInsertId();
+            $d['filename'] = embedFileUrl($d['filename'], $d['path']);
+            $filesData['c_gfsi_certificate'] = $d;
+        }
+
+        $name = $conn->select('tbl_hr_employee', "CONCAT(TRIM(first_name), ' ', TRIM(last_name)) AS name", "ID = $fsvpqi")->fetchAssoc()['name'];
+        
         $conn->commit();
         send_response([
-            'data' => $data,
+            'data' => [
+                'certifications'=> $filesData,
+                'id' => $id,
+                'ces' => $ces,
+                'name' => $name,
+            ],
             'message' => "Saved successfully."
         ]);
     } catch(Throwable $e) {

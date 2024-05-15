@@ -252,7 +252,7 @@
     <div class="container text-center">
       <div class="row justify-content-center">
         <div class="col-6">
-          <img class="w-100 sign-logo" src="uploads/login/icon/Cannabis 360.png" />
+          <img class="w-100 sign-logo" src="uploads/login/icon/SafeCannabis 360.png" />
           <h3 class="mb-3 text-white">Manages compliance of requirements with standards in Cannabis cultivation, manufacturing, distribution, retail, GMPs, OSHA, regulatory , and certification domains.</h3>
         </div>
       </div>

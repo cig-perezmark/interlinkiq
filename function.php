@@ -539,6 +539,14 @@
                 unset($_COOKIE['client']);
                 setcookie('client', '', time() - 3600, '/'); // empty value and old timestamp
                 echo '<script>window.location.href = "FoodSafety360"</script>';
+            } else if ($_COOKIE['client'] == 3)  {
+                unset($_COOKIE['client']);
+                setcookie('client', '', time() - 3600, '/'); // empty value and old timestamp
+                echo '<script>window.location.href = "SafeCannabis360"</script>';
+            } else if ($_COOKIE['client'] == 4)  {
+                unset($_COOKIE['client']);
+                setcookie('client', '', time() - 3600, '/'); // empty value and old timestamp
+                echo '<script>window.location.href = "Exim360"</script>';
             } else {
     			unset($_COOKIE['client']);
     	    	setcookie('client', '', time() - 3600, '/'); // empty value and old timestamp
@@ -2028,6 +2036,10 @@
 				$client_url = 'CannOS-Login';
 			} else if ($client == 2) {
                 $client_url = 'FoodSafety360';
+            } else if ($client == 3) {
+                $client_url = 'SafeCannabis360';
+            } else if ($client == 4) {
+                $client_url = 'Exim360';
             }
         }
 
@@ -2655,6 +2667,10 @@
 					$client_url = 'CannOS-Login';
 				} else if ($client == 2) {
                     $client_url = 'FoodSafety360';
+                } else if ($client == 3) {
+                    $client_url = 'SafeCannabis360';
+                } else if ($client == 4) {
+                    $client_url = 'Exim360';
                 }
 
                 $selectEnterprise = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE users_entities = $user_id" );
@@ -2710,6 +2726,30 @@
                         If you experience difficulties opening the website, kindly use this link instead <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">'. $base_url . $client_url .'?r=1&i='. $last_id .'</a><br><br>
 
                         Should you need assistance, kindly email <a href="mailto:foodsafety360r@gmail.com" target="_blank">foodsafety360r@gmail.com</a><br><br>
+
+                        Cann OS Team';
+                    } elseif ($_COOKIE['client'] == 3) {
+                        $subject = 'Welcome to Food Safety 360!';
+                        $body = 'Hi '. $data_first_name .',<br><br>
+
+                        Your employer, '.$data_company.',<br><br>
+
+                        invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">SafeCannabis360</a> to connect with your assigned duties, work, and tasks. 
+                        If you experience difficulties opening the website, kindly use this link instead <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">'. $base_url . $client_url .'?r=1&i='. $last_id .'</a><br><br>
+
+                        Should you need assistance, kindly email <a href="mailto:cannabis360r@gmail.com @gmail.com" target="_blank">cannabis360r@gmail.com</a><br><br>
+
+                        Cann OS Team';
+                    } elseif ($_COOKIE['client'] == 4) {
+                        $subject = 'Welcome to Food Safety 360!';
+                        $body = 'Hi '. $data_first_name .',<br><br>
+
+                        Your employer, '.$data_company.',<br><br>
+
+                        invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">Exim360</a> to connect with your assigned duties, work, and tasks. 
+                        If you experience difficulties opening the website, kindly use this link instead <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">'. $base_url . $client_url .'?r=1&i='. $last_id .'</a><br><br>
+
+                        Should you need assistance, kindly email <a href="mailto:exim360r@gmail.com" target="_blank">exim360r@gmail.com</a><br><br>
 
                         Cann OS Team';
                     } else {
@@ -2805,6 +2845,10 @@
 						$client_url = 'CannOS-Login';
 					} else if ($client == 2) {
                         $client_url = 'FoodSafety360';
+                    } else if ($client == 3) {
+                        $client_url = 'SafeCannabis360';
+                    } else if ($client == 4) {
+                        $client_url = 'Exim360';
                     }
 
 					$position = array();
@@ -2875,6 +2919,30 @@
                             If you experience difficulties opening the website, kindly use this link instead <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">'. $base_url . $client_url .'?r=1&i='. $last_id .'</a><br><br>
 
                             Should you need assistance, kindly email <a href="mailto:foodsafety360r@gmail.com" target="_blank">foodsafety360r@gmail.com</a><br><br>
+
+                            Cann OS Team';
+                        } else if ($_COOKIE['client'] == 3) {
+                            $subject = 'Welcome to Cann OS!';
+                            $body = 'Hi '. $data_first_name .',<br><br>
+
+                            Your employer, '.$data_company.',<br><br>
+
+                            invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">Food Safety 360</a> to connect with your assigned duties, work, and tasks. 
+                            If you experience difficulties opening the website, kindly use this link instead <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">'. $base_url . $client_url .'?r=1&i='. $last_id .'</a><br><br>
+
+                            Should you need assistance, kindly email <a href="mailto:cannabis360r@gmail.com" target="_blank">cannabis360r@gmail.com</a><br><br>
+
+                            Cann OS Team';
+                        } else if ($_COOKIE['client'] == 4) {
+                            $subject = 'Welcome to Cann OS!';
+                            $body = 'Hi '. $data_first_name .',<br><br>
+
+                            Your employer, '.$data_company.',<br><br>
+
+                            invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">Food Safety 360</a> to connect with your assigned duties, work, and tasks. 
+                            If you experience difficulties opening the website, kindly use this link instead <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">'. $base_url . $client_url .'?r=1&i='. $last_id .'</a><br><br>
+
+                            Should you need assistance, kindly email <a href="mailto:exim360r@gmail.com" target="_blank">exim360r@gmail.com</a><br><br>
 
                             Cann OS Team';
                         } else {
@@ -3146,6 +3214,14 @@
                 } else if ($_COOKIE['client'] == 2) {
                     $from = 'foodsafety360r@gmail.com';
                     $name = 'FoodSafety360';
+                    $body .= 'Food Safety Procedure';
+                } else if ($_COOKIE['client'] == 3) {
+                    $from = 'cannabis360r@gmail.com';
+                    $name = 'SafeCannabis360';
+                    $body .= 'Food Safety Procedure';
+                } else if ($_COOKIE['client'] == 4) {
+                    $from = 'exim360r@gmail.com';
+                    $name = 'Exim360';
                     $body .= 'Food Safety Procedure';
                 } else {
                     $from = 'services@interlinkiq.com';
@@ -4096,7 +4172,7 @@
 
                                 $filesize_tot = $filesize + $rowData["filesize"];
 
-                                mysqli_query( $conn,"UPDATE tbl_hr_job_description SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
+                                mysqli_query( $conn,"UPDATE tbl_hr_job_description SET files='". $files ."', filetype='". $filetype ."', filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
 
                                 $fileExtension = fileExtension($files);
                                 $src = $fileExtension['src'];
@@ -4117,6 +4193,8 @@
                         $filesize = 0;
                         $type = 'iframe';
 
+                        mysqli_query( $conn,"UPDATE tbl_hr_job_description SET files='". $files ."', filetype='". $filetype ."' WHERE ID='". $ID ."'" );
+
                         if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         }
@@ -4133,7 +4211,7 @@
                         array_push($arr_item, $output);
                         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
-                        mysqli_query( $conn,"UPDATE tbl_hr_job_description SET files='". $files ."', filetype='". $filetype ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
+                        mysqli_query( $conn,"UPDATE tbl_hr_job_description SET file_history='". $file_history ."' WHERE ID='". $ID ."'" );
                     }
                 } else {
                     $filetype = $rowData['filetype'];
@@ -16411,6 +16489,22 @@
 
                             Food Safety 360<br>
                             BeGreen Legal';
+                        } else if ($_COOKIE['client'] == 3) {
+                            $subject = 'Welcome to Food Safety 360!';
+                            $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'CannOS-Login" target="_blank">SafeCannabis360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'CannOS-Login" target="_blank">https://interlinkiq.com/SafeCannabis360</a>.<br><br>
+
+                            Should you need assistance, kindly email <a href="mailto:cannabis360r@gmail.com" target="_blank">cannabis360r@gmail.com.<br><br>
+
+                            Food Safety 360<br>
+                            BeGreen Legal';
+                        } else if ($_COOKIE['client'] == 4) {
+                            $subject = 'Welcome to Food Safety 360!';
+                            $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'CannOS-Login" target="_blank">Exim360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'CannOS-Login" target="_blank">https://interlinkiq.com/Exim360</a>.<br><br>
+
+                            Should you need assistance, kindly email <a href="mailto:exim360r@gmail.com" target="_blank">exim360r@gmail.com.<br><br>
+
+                            Food Safety 360<br>
+                            BeGreen Legal';
                         } else {
     		    			$subject = 'You are invited!';
     		    			$body = 'Hi '.$user.',<br><br>
@@ -16520,6 +16614,26 @@
                                             Your supplier FoodSafety360, invites you to <a href="'.$base_url.'FoodSafety360" target="_blank">Food Safety 360</a> to connect and manage your Food Safety operation(s).<br><br>
 
                                             Should you need assistance, kindly email <a href="mailto:foodsafety360r@gmail.com">foodsafety360r@gmail.com.</a><br><br>
+                                
+                                            Cann OS Team<br>
+                                            BeGreenLegal';
+                                        } else if ($_COOKIE['client'] == 3) {
+                                            $subject = 'Welcome to Cann OS!';
+                                            $body = 'Hi '.$user.',<br><br>
+                                
+                                            Your supplier SafeCannabis360, invites you to <a href="'.$base_url.'SafeCannabis360" target="_blank">Food Safety 360</a> to connect and manage your Food Safety operation(s).<br><br>
+
+                                            Should you need assistance, kindly email <a href="mailto:cannabis360r@gmail.com">cannabis360r@gmail.com.</a><br><br>
+                                
+                                            Cann OS Team<br>
+                                            BeGreenLegal';
+                                        } else if ($_COOKIE['client'] == 4) {
+                                            $subject = 'Welcome to Cann OS!';
+                                            $body = 'Hi '.$user.',<br><br>
+                                
+                                            Your supplier Exim360, invites you to <a href="'.$base_url.'Exim360" target="_blank">Food Safety 360</a> to connect and manage your Food Safety operation(s).<br><br>
+
+                                            Should you need assistance, kindly email <a href="mailto:exim360r@gmail.com">exim360r@gmail.com.</a><br><br>
                                 
                                             Cann OS Team<br>
                                             BeGreenLegal';
@@ -18816,6 +18930,7 @@
             }
 
             $audit = $row["audit"];
+            $audit_score = $row["audit_score"];
             $reviewed_by = $row["reviewed_by"];
             $reviewed_date = $row["reviewed_date"];
             $reviewed_due = $row["reviewed_due"];
@@ -20320,6 +20435,14 @@
                             <div class="form-group">
                                 <label class="control-label">Comments / Notes</label>
                                 <input class="form-control" type="text" name="audit_action_note" value="'.$audit_action_arr[3].'" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label">Audit Score</label>
+                                <input class="form-control" type="text" name="audit_score" value="'.$audit_score.'"/>
                             </div>
                         </div>
                     </div>
@@ -22288,9 +22411,23 @@
                                 $subject = 'Welcome to Cann OS!';
                                 $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'FoodSafety360" target="_blank">Food Safe</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'FoodSafety360" target="_blank">https://interlinkiq.com/FoodSafety360</a>.<br><br>
 
-                                Should you need assistance, kindly email <a href="mailto:foodsafety360r@gmail.com" target="_blank">nnelson@begreenlegal.com</a>.<br><br>
+                                Should you need assistance, kindly email <a href="mailto:foodsafety360r@gmail.com" target="_blank">foodsafety360r@gmail.com</a>.<br><br>
 
                                 FoodSafety360 Team';
+                            } else if ($_COOKIE['client'] == 3) {
+                                $subject = 'Welcome to Cann OS!';
+                                $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'SafeCannabis360" target="_blank">Food Safe</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'SafeCannabis360" target="_blank">https://interlinkiq.com/SafeCannabis360</a>.<br><br>
+
+                                Should you need assistance, kindly email <a href="mailto:cannabis360r@gmail.com" target="_blank">cannabis360r@gmail.com</a>.<br><br>
+
+                                SafeCannabis360 Team';
+                            } else if ($_COOKIE['client'] == 4) {
+                                $subject = 'Welcome to Cann OS!';
+                                $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'Exim360" target="_blank">Food Safe</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'Exim360" target="_blank">https://interlinkiq.com/Exim360</a>.<br><br>
+
+                                Should you need assistance, kindly email <a href="mailto:exim360r@gmail.com" target="_blank">exim360r@gmail.com</a>.<br><br>
+
+                                Exim360 Team';
                             } else {
                                 $subject = $data_company.' Customer Invitation via InterlinkIQ.com';
                                 $body = 'Hi '.$user.',<br><br>
@@ -22396,8 +22533,21 @@
 
                                                 Should you need assistance, kindly email <a href="mailto:foodsafety360r@gmail.com" target="_blank">foodsafety360r@gmail.com</a>.<br><br>
 
-                                                Cann OS Team<br>
-                                                BeGreen Legal';
+                                                FoodSafety360 Team';
+                                            } else if ($_COOKIE['client'] == 3) {
+                                                $subject = 'Welcome to Cann OS!';
+                                                $body = 'Food Safety, invites you to join <a href="'.$base_url.'SafeCannabis360" target="_blank">Food Safe</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'SafeCannabis360" target="_blank">https://interlinkiq.com/SafeCannabis360</a>.<br><br>
+
+                                                Should you need assistance, kindly email <a href="mailto:cannabis360r@gmail.com" target="_blank">cannabis360r@gmail.com</a>.<br><br>
+
+                                                SafeCannabis360 Team';
+                                            } else if ($_COOKIE['client'] == 4) {
+                                                $subject = 'Welcome to Cann OS!';
+                                                $body = 'Food Safety, invites you to join <a href="'.$base_url.'Exim360" target="_blank">Food Safe</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'Exim360" target="_blank">https://interlinkiq.com/Exim360</a>.<br><br>
+
+                                                Should you need assistance, kindly email <a href="mailto:exim360r@gmail.com" target="_blank">exim360r@gmail.com</a>.<br><br>
+
+                                                Exim360 Team';
                                             } else {
                                                 $subject = $data_company.' Customer Invitation via InterlinkIQ.com';
                                                 $body = 'Hi '.$user.',<br><br>
@@ -42500,6 +42650,14 @@
                                     $from = 'foodsafety360r@gmail.com';
                                     $name = 'FoodSafety360';
                                     $body .= '<br><br>FoodSafety360';
+                                } else if ($_COOKIE['client'] == 3) {
+                                    $from = 'cannabis360r@gmail.com';
+                                    $name = 'SafeCannabis360';
+                                    $body .= '<br><br>SafeCannabis360';
+                                } else if ($_COOKIE['client'] == 4) {
+                                    $from = 'exim360r@gmail.com';
+                                    $name = 'Exim360';
+                                    $body .= '<br><br>Exim360';
                                 } else {
                                     $from = 'services@interlinkiq.com';
                                     $name = 'InterlinkIQ';
@@ -42545,6 +42703,14 @@
                             $from = 'foodsafety360r@gmail.com';
                             $name = 'FoodSafety360';
                             $body .= '<br><br>FoodSafety360';
+                        } else if ($_COOKIE['client'] == 3) {
+                            $from = 'cannabis360r@gmail.com';
+                            $name = 'SafeCannabis360';
+                            $body .= '<br><br>SafeCannabis360';
+                        } else if ($_COOKIE['client'] == 4) {
+                            $from = 'exim360r@gmail.com';
+                            $name = 'Exim360';
+                            $body .= '<br><br>Exim360';
                         } else {
                             $from = 'services@interlinkiq.com';
                             $name = 'InterlinkIQ';
@@ -45702,6 +45868,14 @@
                                             $from = 'foodsafety360r@gmail.com';
                                             $name = 'FoodSafety360';
                                             $body .= '<br><br>FoodSafety360';
+                                        } else if ($_COOKIE['client'] == 3) {
+                                            $from = 'cannabis360r@gmail.com';
+                                            $name = 'SafeCannabis360';
+                                            $body .= '<br><br>SafeCannabis360';
+                                        } else if ($_COOKIE['client'] == 4) {
+                                            $from = 'exim360r@gmail.com';
+                                            $name = 'Exim360';
+                                            $body .= '<br><br>Exim360';
                                         } else {
                                             $from = 'services@interlinkiq.com';
                                             $name = 'InterlinkIQ';
@@ -52411,6 +52585,8 @@
 		    
                         if ($_COOKIE['client'] == 1) { $body .= '<br><br>Cann OS Team'; }
                         else if ($_COOKIE['client'] == 2) { $body .= '<br><br>FoodSafety360 Team'; }
+                        else if ($_COOKIE['client'] == 3) { $body .= '<br><br>SafeCannabis360 Team'; }
+                        else if ($_COOKIE['client'] == 4) { $body .= '<br><br>Exim360 Team'; }
                         
 		    			php_mailer_1($to, $user, $subject, $body, $from, $sender);
 					}
@@ -52862,6 +53038,14 @@
                 $from = 'foodsafety360r@gmail.com';
                 $name = 'Food Safety 360';
                 $body .= 'Food Safety 360';
+            } else if ($_COOKIE['client'] == 3) {
+                $from = 'cannabis360r@gmail.com';
+                $name = 'SafeCannabis360';
+                $body .= 'SafeCannabis360';
+            } else if ($_COOKIE['client'] == 4) {
+                $from = 'exim360r@gmail.com';
+                $name = 'Exim360';
+                $body .= 'Exim360';
             } else {
                 $from = 'services@interlinkiq.com';
                 $name = 'InterlinkIQ';
@@ -53114,6 +53298,14 @@
                             $from = 'foodsafety360r@gmail.com';
                             $name = 'Food Safety 360';
                             $body .= 'Food Safety 360';
+                        } else if ($_COOKIE['client'] == 3) {
+                            $from = 'cannabis360r@gmail.com';
+                            $name = 'SafeCannabis360';
+                            $body .= 'SafeCannabis360';
+                        } else if ($_COOKIE['client'] == 4) {
+                            $from = 'exim360r@gmail.com';
+                            $name = 'Exim360';
+                            $body .= 'Exim360';
                         } else {
                             $from = 'services@interlinkiq.com';
                             $name = 'InterlinkIQ';
@@ -53460,6 +53652,14 @@
                             $from = 'foodsafety360r@gmail.com';
                             $name = 'Food Safety 360';
                             $body .= 'Food Safety 360';
+                        } else if ($_COOKIE['client'] == 3) {
+                            $from = 'cannabis360r@gmail.com';
+                            $name = 'SafeCannabis360';
+                            $body .= 'SafeCannabis360';
+                        } else if ($_COOKIE['client'] == 4) {
+                            $from = 'exim360r@gmail.com';
+                            $name = 'Exim360';
+                            $body .= 'Exim360';
                         } else {
                             $from = 'services@interlinkiq.com';
                             $name = 'InterlinkIQ';
@@ -56600,7 +56800,15 @@
                                 $from = 'foodsafety360r@gmail.com';
                                 $name = 'Food Safety 360';
                                 $body .= 'Food Safety 360';
-                            }else {
+                            } else if ($_COOKIE['client'] == 3) {
+                                $from = 'cannabis360r@gmail.com';
+                                $name = 'SafeCannabis360';
+                                $body .= 'SafeCannabis360';
+                            } else if ($_COOKIE['client'] == 4) {
+                                $from = 'exim360r@gmail.com';
+                                $name = 'Exim360';
+                                $body .= 'Exim360';
+                            } else {
                                 $from = 'services@interlinkiq.com';
                                 $name = 'InterlinkIQ';
                                 $body .= 'InterlinkIQ.com Team<br>
@@ -56780,6 +56988,14 @@
                             $from = 'foodsafety360r@gmail.com';
                             $name = 'Food Safety 360';
                             $body .= 'Food Safety 360';
+                        } else if ($_COOKIE['client'] == 3) {
+                            $from = 'cannabis360r@gmail.com';
+                            $name = 'SafeCannabis360';
+                            $body .= 'SafeCannabis360';
+                        } else if ($_COOKIE['client'] == 4) {
+                            $from = 'exim360r@gmail.com';
+                            $name = 'Exim360';
+                            $body .= 'Exim360';
                         } else {
                             $from = 'services@interlinkiq.com';
                             $name = 'InterlinkIQ';
@@ -57530,7 +57746,7 @@
                             $t_files = $rowItem["t_files"];
                             $t_filetype = $rowItem['t_filetype'];
                             $type = 'iframe';
-                            if ($filetype == 1) {
+                            if ($t_filetype == 1) {
                                 if (!empty($t_files)) {
                                     $fileExtension = fileExtension($t_files);
                                     $src = $fileExtension['src'];
@@ -57541,7 +57757,7 @@
 
                                     $t_files = '<a data-src="'.$src.$url.rawurlencode($t_files).$embed.'" data-fancybox data-type="'.$type.'">View</a>';
                                 }
-                            } else if ($filetype == 3) {
+                            } else if ($t_filetype == 3) {
                                 $t_files = '<a data-src="'.preg_replace('#[^/]*$#', '', $t_files).'preview" data-fancybox data-type="'.$type.'">View</a>';
                             }
 

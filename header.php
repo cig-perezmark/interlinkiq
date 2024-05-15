@@ -2540,6 +2540,207 @@ License: You must have a valid license purchased only from themeforest(the above
                     <?php endif ?>
                     <?php } ?>
 
+                    <?php if($switch_user_id == 1372): ?>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Production Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Foreign Supplier Verification Program (FSVP) Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Sanitation Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Preventive Maintenance Program (PMP) Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Formulation/Product Realization Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Product Testing Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Environmental Monitoring Program (EMP) Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Records Verification Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Food Fraud Vulnerability Assessment (FFVA) Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Certificate of Analysis (COA) Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Internal Audit (IA) Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Shelf Life Program Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Stability Program Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Food Safety/ HACCP Plan Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Bill of Material (BOM) / Mock Recall Traceability Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Calibration Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Crisis Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Customer Complaint Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Food Safety Culture Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Laboratory Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Inventory Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Storage and Distribution Report Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Sales Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Positive Product Release Program Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Residue Testing Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Purchasing Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">QA/QC Activity Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Receiving Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                    <?php endif ?>
+                    
+                    
+                    
                     <li class="nav-item <?php echo $site === "forms" ? "active" : ""; ?>">
                         <a href="forms" class="nav-link">
                             <i class="icon-docs" style="color: orange !important;"></i>

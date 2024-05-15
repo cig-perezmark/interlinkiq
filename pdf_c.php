@@ -45,26 +45,85 @@
     $html = '';
     $base_url = 'https://interlinkiq.com/';
 
-    // Include autoloader 
-    require_once 'dompdf/autoload.inc.php'; 
+    //============================================================+
+    // File name   : example_006.php
+    // Begin       : 2008-03-04
+    // Last Update : 2013-05-14
+    //
+    // Description : Example 006 for TCPDF class
+    //               WriteHTML and RTL support
+    //
+    // Author: Nicola Asuni
+    //
+    // (c) Copyright:
+    //               Nicola Asuni
+    //               Tecnick.com LTD
+    //               www.tecnick.com
+    //               info@tecnick.com
+    //============================================================+
 
-    // define("DOMPDF_ENABLE_REMOTE", false);
-    // $_dompdf_show_warnings = true;
-    // $_dompdf_debug = true;
+    /**
+     * Creates an example PDF TEST document using TCPDF
+     * @package com.tecnick.tcpdf
+     * @abstract TCPDF - Example: WriteHTML and RTL support
+     * @author Nicola Asuni
+     * @since 2008-03-04
+     */
 
-    // Reference the Dompdf namespace 
-    use Dompdf\Dompdf; 
-    use Dompdf\Options;
+    // Include the main TCPDF library (search for installation path).
+    require_once('TCPDF/tcpdf.php');
 
-    // Options
-    $options = new Options();
-    $options->set('isRemoteEnabled', TRUE);
-    $options->set('defaultFont', 'dejavusans');
-    // $options->set('dpi','120');
-    $options->set('enable_html5_parser',true);
-     
-    // Instantiate and use the dompdf class 
-    $dompdf = new Dompdf($options);
+    // create new PDF document
+    $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+    // set document information
+    $pdf->SetCreator(PDF_CREATOR);
+    $pdf->SetAuthor('InterlinkIQ.com');
+    $pdf->SetTitle('InterlinkIQ.com');
+    $pdf->SetSubject('InterlinkIQ.com');
+    $pdf->SetKeywords('InterlinkIQ.com');
+
+    // set default header data
+    $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
+
+    // // set header and footer fonts
+    // $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+    // $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+    // remove default header/footer
+    $pdf->setPrintHeader(false);
+    $pdf->setPrintFooter(false);
+    $pdf->setHeaderMargin(0);
+    // $pdf->setMargins(0, 0, 0, true);
+    // $pdf->setPageOrientation('', false, 0);
+
+    // set default monospaced font
+    $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+    // // set margins
+    // $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+    // $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+    // $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+    // set auto page breaks
+    $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+    // set image scale factor
+    $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+    // set some language-dependent strings (optional)
+    if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+        require_once(dirname(__FILE__).'/lang/eng.php');
+        $pdf->setLanguageArray($l);
+    }
+
+    // ---------------------------------------------------------
+
+    // set font
+    $pdf->SetFont('dejavusans', '', 9);
+
+    // add a page
+    $pdf->AddPage();
 
 	if ($type == 1) {
 		$selectData = mysqli_query( $conn,"SELECT * FROM tbl_cam WHERE ID = $ID" );
@@ -472,7 +531,7 @@
 
 				<table cellpadding="7" cellspacing="0" border="0" nobr="true" width="100%" >
 					<tr bor>
-						<td style="background-color: #fff;"></td>
+						<td style="border-bottom: 1px solid #444; border-right: 1px solid #444; background-color: #fff;"></td>
 						<td style="border: 1px solid #444;"><b>Name</b></td>
 						<td style="border: 1px solid #444;"><b>Title</b></td>
 						<td style="border: 1px solid #444;"><b>Date</b></td>
@@ -505,28 +564,14 @@
 		</html>';
 	}
 
-    // Load HTML content
-    $dompdf->loadHtml($html, 'UTF-8'); 
+    // output the HTML content
+    $pdf->writeHTML($html, true, false, true, false, '');
 
-    // (Optional) Setup the paper size and orientation 
-    // $dompdf->setPaper('A4', 'landscape'); 
+    // reset pointer to the last page
+    $pdf->lastPage();
 
-    // Render the HTML as PDF 
-    $dompdf->render();
+    // ---------------------------------------------------------
 
-    // Pagination
-    $canvas = $dompdf->getCanvas();
-    $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
-        $text = "Page $pageNumber of $pageCount";
-        $font = $fontMetrics->getFont('dejavusans');
-        $pageWidth = $canvas->get_width();
-        $pageHeight = $canvas->get_height();
-        $size = 8;
-        $width = $fontMetrics->getTextWidth($text, $font, $size);
-        $canvas->text($pageWidth - $width - 20, $pageHeight - 20, $text, $font, $size);
-    });
-
-    // Output the generated PDF to Browser 
-    // $dompdf->stream();
-    $dompdf->stream('Title -'.date('Ymd'), array("Attachment" => 0));
+    //Close and output PDF document
+    $pdf->Output('Title -'.date('Ymd').'.pdf', 'I');
 ?>

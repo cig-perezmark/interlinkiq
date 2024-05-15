@@ -1,6 +1,7 @@
 <?php
 
 include_once __DIR__ . '/mysqli_extended.php';
+include_once __DIR__ . '/../database_iiq.php';
 
 // $servername='localhost';
 // $username='brandons_interlinkiq';
@@ -12,7 +13,7 @@ if (isset($conn) && is_object($conn) && $conn instanceof mysqli) {
 } else {
 	$servername='localhost';
 	$username='brandons_interlinkiq';
-	$password='L1873@2019new';
+	$password='iJG6+_i.$65.VG9Jf]';
 	$dbname = "brandons_interlinkiq";
 }
 
@@ -23,7 +24,7 @@ $getConn = function() use ($conn) {
     if(!isset($conn)) {
         $servername='localhost';
         $username='brandons_interlinkiq';
-        $password='L1873@2019new';
+        $password='iJG6+_i.$65.VG9Jf]';
         $dbname = "brandons_interlinkiq";
         $conn = new mysqli_extended($servername, $username, $password, $dbname);
     }

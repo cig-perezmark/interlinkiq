@@ -675,11 +675,22 @@ if( isset($_GET['postDetails2']) ) {
                             <select class="form-control mt-multiselect btn btn-default" type="text" name="account" required>
                                 <option value="0">---Select---</option>
                                 <?php
-                                    $queryAcc = "SELECT * FROM tbl_service_logs_accounts order by name ASC";
-                                    $resultAcc = mysqli_query($conn, $queryAcc);
-                                    while($rowAcc = mysqli_fetch_array($resultAcc)) { 
-                                        echo '<option value="'.$rowAcc['name'].'" '; echo $rowAcc['name'] == $row_proj['account'] ? 'selected' : ''; echo'>'.$rowAcc['name'].'</option>'; 
+                                    if($user_id == 34 || $_COOKIE['ID']== 450 ) {
+                                        $queryAcc = "SELECT * FROM tbl_service_logs_accounts order by name ASC";
+                                        $resultAcc = mysqli_query($conn, $queryAcc);
+                                        while($rowAcc = mysqli_fetch_array($resultAcc)) { 
+                                            echo '<option value="'.$rowAcc['name'].'" '; echo $rowAcc['name'] == $row_proj['account'] ? 'selected' : ''; echo'>'.$rowAcc['name'].'</option>'; 
+                                        }
                                     }
+                                    else if($user_id == 247){echo '<option value="SFI" '; echo $row_proj['account'] == "SFI" ? 'selected' : ''; echo'>SFI</option>'; }
+                                    else if($user_id == 250){echo '<option value="SPI" '; echo $row_proj['account'] == "SPI" ? 'selected' : ''; echo'>SPI</option>'; }
+                                    else if($user_id == 266){echo '<option value="RFP" '; echo $row_proj['account'] == "RFP" ? 'selected' : ''; echo'>RFP</option>'; }
+                                    else if($user_id == 256){echo '<option value="KAV" '; echo $row_proj['account'] == "KAV" ? 'selected' : ''; echo'>KAV</option>'; }
+                                    else if($user_id == 337){echo '<option value="HT" '; echo $row_proj['account'] == "HT" ? 'selected' : ''; echo'>HT</option>'; }
+                                    else if($user_id == 308){echo '<option value="FWCC" '; echo $row_proj['account'] == "FWCC" ? 'selected' : ''; echo'>FWCC</option>'; }
+                                    else if($user_id == 457){echo '<option value="PF" '; echo $row_proj['account'] == "PF" ? 'selected' : ''; echo'>PF</option>'; }
+                                    else if($user_id == 253){echo '<option value="AFIA" '; echo $row_proj['account'] == "AFIA" ? 'selected' : ''; echo'>AFIA</option>'; }
+                                    else if($user_id == 1362){echo '<option value="Longevity Nutra Inc." '; echo $row_proj['account'] == "Longevity Nutra Inc." ? 'selected' : ''; echo'>Longevity Nutra Inc.</option>'; }
                                 ?>
                             </select>
                         </div>
@@ -715,6 +726,14 @@ if( isset($_GET['postDetails2']) ) {
                                     $resultAssignto = mysqli_query($conn, $queryAssignto);
                                     while($rowAssignto = mysqli_fetch_array($resultAssignto)) { 
                                         echo '<option value="'.$rowAssignto['ID'].'" '; if(in_array($rowAssignto['ID'],$array_data_attd)){echo 'selected';}else{echo '';} echo'>'.$rowAssignto['first_name'].'</option>'; 
+                                    }
+                                    
+                                    if($user_id == 1362){
+                                        $queryAttd = "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = 34 AND ID IN (83, 71, 69, 129, 72, 80, 209) order by first_name ASC";
+                                        $resultAttd = mysqli_query($conn, $queryAttd);
+                                        while($rowAttd = mysqli_fetch_array($resultAttd)) { 
+                                            echo '<option value="'.$rowAttd['ID'].'" '; if(in_array($rowAttd['ID'],$array_data_attd)){echo 'selected';}else{echo '';} echo'>'.$rowAttd['first_name'].' '.$rowAttd['last_name'].'</option>'; 
+                                        }
                                     }
                                 ?>
                             </select>
@@ -789,7 +808,7 @@ if( isset($_GET['postDetails2']) ) {
                                             $main_id = $row_proj['presider'];
                                             $queryPres = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = 34 AND ID = $main_id" );
                                             if ( mysqli_num_rows($queryPres) > 0 ) {
-                                                echo '<option value="'.$main_id.'" SELECTED>Compliance teamssss</option>'; 
+                                                echo '<option value="'.$main_id.'" SELECTED>Compliance team/option>'; 
                                             }
                                         }
                                     }
@@ -831,7 +850,7 @@ if( isset($_GET['postDetails2']) ) {
                                             $main_id = $row_proj['note_taker'];
                                             $queryPres = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = 34 AND ID = $main_id" );
                                             if ( mysqli_num_rows($queryPres) > 0 ) {
-                                                echo '<option value="'.$main_id.'" SELECTED>Compliance teamssss</option>'; 
+                                                echo '<option value="'.$main_id.'" SELECTED>Compliance team</option>'; 
                                             }
                                         }
                                     }
@@ -873,7 +892,7 @@ if( isset($_GET['postDetails2']) ) {
                                             $main_id = $row_proj['verified_by'];
                                             $queryPres = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = 34 AND ID = $main_id" );
                                             if ( mysqli_num_rows($queryPres) > 0 ) {
-                                                echo '<option value="'.$main_id.'" SELECTED>Compliance teamssss</option>'; 
+                                                echo '<option value="'.$main_id.'" SELECTED>Compliance team</option>'; 
                                             }
                                         }
                                     }
@@ -915,7 +934,7 @@ if( isset($_GET['postDetails2']) ) {
                                             $main_id = $row_proj['approved_by'];
                                             $queryPres = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = 34 AND ID = $main_id" );
                                             if ( mysqli_num_rows($queryPres) > 0 ) {
-                                                echo '<option value="'.$main_id.'" SELECTED>Compliance teamssss</option>'; 
+                                                echo '<option value="'.$main_id.'" SELECTED>Compliance team</option>'; 
                                             }
                                         }
                                     }

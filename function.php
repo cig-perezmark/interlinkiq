@@ -46915,7 +46915,7 @@
                                                     <li><a href="javascript:;" class="btnDelete" data-id="'. $item_ID .'" onclick="btnDelete('. $item_ID .')">Delete</a></li>
                                                     <li><a href="#modalReport" class="btnReport" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnReport('. $item_ID .')">Report</a></li>';
                                             
-    		                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464) {
+    		                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366) {
     		                                        	$output .= '<li><a href="#modalClone" data-toggle="modal" onclick="btnClone('. $item_ID .')">Clone</a></li>';
     		                                        }
 
@@ -47160,16 +47160,6 @@
             $portal_user = $_COOKIE['ID'];
             $user_id = employerID($portal_user);
         }
-
-        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
-        if ( mysqli_num_rows($hasLibrary) == 0 ) {
-            $user_id = 163;
-            $current_userEmployerID = $user_id;
-            $current_userID = $user_id;
-        } else {
-            $current_userEmployerID = $user_id;
-            $current_userID = $_COOKIE['ID'];
-        }
 		
 		// $selectData = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID = $id AND deleted = 0 AND user_id = $user_id" );
         $selectData = mysqli_query( $conn,"SELECT
@@ -47317,7 +47307,7 @@
                                         echo '<li><a href="javascript:;" class="btnDelete" data-id="'. $library_ID .'" onclick="btnDelete('. $library_ID .')">Delete</a></li>
                                         <li><a href="#modalReport" class="btnReport" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnReport('. $library_ID .')">Report</a></li>';
                                         
-                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464) {
+                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366) {
                                         	echo '<li><a href="#modalClone" data-toggle="modal" onclick="btnClone('. $library_ID .')">Clone</a></li>';
                                         }
                                         
@@ -47356,6 +47346,16 @@
                                     <li class="active"><a href="#tabDescription_'. $library_ID .'" data-toggle="tab" aria-expanded="true">Description</a></li>
                                     <li class=""><a href="#tabFiles_'. $library_ID .'" data-toggle="tab" aria-expanded="true">Files</a></li>
                                     <li class="">';
+
+                                        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+                                        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+                                            $user_id = 163;
+                                            $current_userEmployerID = $user_id;
+                                            $current_userID = $user_id;
+                                        } else {
+                                            $current_userEmployerID = $user_id;
+                                            $current_userID = $_COOKIE['ID'];
+                                        }
 
                                 		$countComment = 0;
                                     	$team = 1;
@@ -50547,7 +50547,10 @@
             if ($collabUser == 1 AND !isset($_COOKIE['switchAccount'])) { $resultTree = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE deleted = 0 AND collaborator_id <> '' AND user_id = $user_id" ); }
             if ($current_userEmployerID == 27) { $resultTree = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE parent_id = 0 AND deleted = 0 AND user_id = $user_id" ); }
         } else {
-            $resultTree = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID = 116706101" );
+            $customID = 116706101;
+            if ($_COOKIE['client'] == 3) { $customID = 116713042; }
+
+            $resultTree = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID = $customID" );
             $user_id = 163;
             $current_userEmployeeID = employeeID($user_id);
             $current_userEmployerID = employerID($user_id);
@@ -57252,7 +57255,7 @@
                 <select class="form-control mt-multiselect btn btn-default" name="user" required>
                 	<option value="">Select</option>';
 
-		            if ($portal_user == 1 OR $portal_user == 2 OR $portal_user == 19 OR $portal_user == 163 OR $current_userEmployerID == 27 OR $user_id == 464) {
+		            if ($portal_user == 1 OR $portal_user == 2 OR $portal_user == 19 OR $portal_user == 163 OR $current_userEmployerID == 27 OR $user_id == 464 OR $portal_user == 481) {
                 		$selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = 0 AND is_verified = 1 AND is_active = 1" );
                 		if ($current_client == 1) { $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = 0 AND is_verified = 1 AND is_active = 1 AND client = 1" ); }
 

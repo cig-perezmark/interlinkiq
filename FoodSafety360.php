@@ -254,17 +254,16 @@
 
     <div class="container text-center">
       <div class="row justify-content-center">
-        <div class="col-6">
+        <div class="col-lg-6">
           <img class="w-100 sign-logo" src="uploads/login/icon/Food Safety 360.png" />
-          <h3 class="mb-3 text-white">Manages compliance with requirements for current Good Manufacturing Practices</h3>
         </div>
       </div>
     </div>
 
     <div class="container text-center">
       <div class="row justify-content-center">
-        <div class="col-4 p-5 sign-in-container d-flex align-items-center">
-          <form method="POST" class="form formSignIn">
+        <div class="col-lg-4 p-5 sign-in-container d-flex align-items-center">
+          <form method="POST" class="form formSignIn w-100">
             <h1 class="text-white">Welcome Back</h1>
             <p class="text-white">To keep connected with us, please login with your personal info</p>
 
@@ -304,7 +303,7 @@
             <a href="#" class="text-white">Forgot Password?</a>
           </form>
         </div>
-        <div class="col-4 p-5 sign-up-container">
+        <div class="col-lg-4 p-5 sign-up-container">
           <form method="POST" class="form formSignUp">
             <h1>Create Account</h1>
             <p>Grab your FREE Access Now!</p>

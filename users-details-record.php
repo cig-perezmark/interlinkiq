@@ -72,17 +72,16 @@
                                             <th>Email</th>
                                     </thead>
                                     <?php
-                                    $i = 1;
-                                    $query = "SELECT * from tbl_user  order by ID desc";
-                                    $result = mysqli_query($conn, $query);
-                                    while($row = mysqli_fetch_array($result)) {?> 
-                                    <tbody>
-                                        <tr>
-                                            <td><?php echo $i++; ?></td>
-                                            <td><?php echo $row['first_name'];?> <?php echo $row['last_name'];?></td>
-                                            <td><?php echo $row['email'];?></td>
-                                        </tr>
-                                    </tbody> 
+                                        $i = 1;
+                                        $result = mysqli_query($conn, "SELECT * FROM tbl_user WHERE client = $current_client ORDER BY ID desc");
+                                        while($row = mysqli_fetch_array($result)) {?> 
+                                        <tbody>
+                                            <tr>
+                                                <td><?php echo $i++; ?></td>
+                                                <td><?php echo $row['first_name'];?> <?php echo $row['last_name'];?></td>
+                                                <td><?php echo $row['email'];?></td>
+                                            </tr>
+                                        </tbody> 
                                     <?php } ?>      
                                 </table>
                             </div>

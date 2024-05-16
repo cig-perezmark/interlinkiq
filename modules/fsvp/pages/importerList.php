@@ -36,7 +36,7 @@
                 <div class="row">
                     <div class="col-md-7">
                         <div class="form-group">
-                            <label for="importerdd">Importer </label>
+                            <label for="importerdd">Importer <span class="required">*</span></label>
                             <select name="importer" id="importerdd" class="form-control">
                                 <option value="" selected disabled>Select importer</option>
                                 <?php
@@ -94,10 +94,8 @@
                 <div class="row margin-bottom-20x">
                     <div class="col-md-7">
                         <div class="form-group">
-                            <label for="">FSVPQI</label>
-                            <select name="fsvpqi" id="fsvpqiSelect" class="form-control">
-                                <option value="" selected disabled>Select FSVPQI</option>
-                            </select>
+                            <label for="fsvpqiSelect">FSVPQI <span class="required">*</span></label>
+                            <select name="fsvpqi" id="fsvpqiSelect" class="form-control"></select>
                             <small class="help-block" id="fsvpqiSelectHelpBlock"></small>
                         </div>
                     </div>
@@ -121,7 +119,7 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <label for="evalDate">Evaluation Date </label>
+                            <label for="evalDate">Evaluation Date <span class="required">*</span></label>
                             <input type="date" name="evaluation_date" id="evalDate" class="form-control" required>
                         </div>
                     </div>

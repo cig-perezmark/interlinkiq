@@ -70,7 +70,7 @@ function yesNoRadio() {
                 <div class="row">
                     <div class="col-md-7">
                         <div class="form-group">
-                            <label for="fsvpqiSelect">Select FSVQI</label>
+                            <label for="fsvpqiSelect">Select FSVPQI</label>
                             <select name="fsvpqi" id="fsvpqiSelect" class="form-control">
                                 <option value="" selected disabled>Select FSVPQI</option>
                             </select>

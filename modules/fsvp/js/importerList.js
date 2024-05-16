@@ -41,7 +41,7 @@ $(function() {
                             $('#productsHelpBlock').text('No materials found.');
                             return;
                         } else {
-                            $('#productsHelpBlock').text('Tick on the checkboxes to select.');
+                            $('#productsHelpBlock').text('Tick on the checkboxes to select the product.');
                         }
 
                         materials.forEach((m) => {
@@ -76,16 +76,19 @@ $(function() {
         const form = e.target;
 
         if(form.importerdd.value == '') {
-            if(alert.isShowing()) {
-                alert.hide();
-            }
-
+            alert.isShowing() && alert.hide();
             alert.setContent(`<strong>Error!</strong> Importer field is required.`).show();
             return;
         }
+
+        if($(form).find('[name="importer_products[]"]').length && !$(form).find('[name="importer_products[]"]:checked').length) {
+            alert.isShowing() && alert.hide();
+            alert.setContent(`<strong>Error!</strong> Please select product(s) to proceed.`).show();
+            return;
+        }
         
-        // var l = Ladda.create(form.querySelector('[type=submit]'));
-        // l.start();
+        var l = Ladda.create(form.querySelector('[type=submit]'));
+        l.start();
         const data = new FormData(form);
 
         $.ajax({

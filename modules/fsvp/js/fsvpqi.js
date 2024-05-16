@@ -15,6 +15,10 @@ jQuery(function() {
                 className: "dt-right",
             },
             {
+                className: "text-center",
+                targets: [2,3,4,5,6]
+            },
+            {
                 visible: false,
                 targets: [1]
             }
@@ -22,7 +26,8 @@ jQuery(function() {
     });
     
     Init.multiSelect($('#fsvpqiSelect'));
-    populateFSVPQISelect();
+    populateFSVPQISelect(alert);
+    fetchFSVPQIData(fsvpqiData, tableFSVPQI);
 
     $('#fsvpqiRegForm').on('submit', function(e) {
         e.preventDefault();
@@ -34,7 +39,7 @@ jQuery(function() {
                 alert.hide();
             }
 
-            alert.setContent(`<strong>Error!</strong> An FSVPQI is required.`).show();
+            alert.setContent(`<strong>Error!</strong> FSVPQI field is required.`).show();
             return;
         }
 
@@ -48,10 +53,13 @@ jQuery(function() {
             data,
             success: function({data, message}) {
                 renderDTRow(fsvpqiData, data, tableFSVPQI);
+                tableFSVPQI.dt.draw();
+
                 form.reset();
                 $(form.fsvpqi).val('').trigger('change');
-                $('#modalFSVPQIReg').modal('show');
+                $('#modalFSVPQIReg').modal('hide');
                 bootstrapGrowl(message || 'Saved successfully.');
+                populateFSVPQISelect(alert);
             },
             error: function() {
                 bootstrapGrowl('Error saving data.');
@@ -68,17 +76,17 @@ jQuery(function() {
     });
 });
 
-function populateFSVPQISelect() {
+function populateFSVPQISelect(alert) {
     $.ajax({
         url: Init.baseUrl + "getFSVPQIs",
         type: "GET",
         contentType: false,
         processData: false,
-        success: function({result}) {
+        success: function({result, message}) {
             if(result) {
                 let options = [{
-                    label: 'No data available.',
-                    title: 'No data available.',
+                    label: message || 'No data available.',
+                    title: message || 'No data available.',
                     value: '',
                     selected: true,
                     disabled: true,
@@ -100,9 +108,14 @@ function populateFSVPQISelect() {
                             value: d.id
                         });
                     });
+                    alert.hide();
+                } else {
+                    alert.setContent(`<strong>Note:</strong> An FSVPQI employee is required.`).show();
                 }
-
-                $('#fsvpqiSelectHelpBlock').html(!result.length ? `Please assign FSVPQI(s) in the <a href="/employee" target="_blank">Employee Roster</a> module.` : '');
+                
+                alert.setTimeout(result.length ? 3000 : 10000);
+                $('#modalFSVPQIReg [type=submit]').prop('disabled', !result.length);
+                $('#fsvpqiSelectHelpBlock').html(!result.length ? `Assign FSVPQI(s) in the <a href="/employee" target="_blank">Employee Roster</a> module.` : '');
                 $('#fsvpqiSelect').multiselect('dataprovider', options);
             }
         },
@@ -112,22 +125,49 @@ function populateFSVPQISelect() {
     });
 }
 
-function renderDTRow(set, d, {dt}) {
+function renderDTRow(set, d, table) {
     set[d.id] = d;
-        dt.row.add([
-            d.name,
-            d.ces,
-            d.address,
-            '',
-            '',
-            '',
-            '',
-            '',
-            `
-                <div class="d-flex center">
-                    <button type="button" class="btn-link">Open</button>
-                </div>
-            `,
-        ]);
-    return dt;
+
+
+    
+    table.dt.row.add([
+        d.name || '',
+        d.ces || '',
+        fileCellHtml(d.certifications['pcqi-certificate'], d.id),
+        fileCellHtml(d.certifications['food-quality-auditing'], d.id),
+        fileCellHtml(d.certifications['haccp-training'], d.id),
+        fileCellHtml(d.certifications['food-safety-training-certificate'], d.id),
+        fileCellHtml(d.certifications['gfsi-certificate'], d.id),
+        `
+            <div class="d-flex center">
+                <button type="button" class="btn-link">Open</button>
+            </div>
+        `,
+    ]);
+    return table.dt;
+}
+
+function fetchFSVPQIData(dataSet, table) {
+    $.ajax({
+        url: Init.baseUrl + "fetchFSVPQI",
+        type: "GET",
+        contentType: false,
+        processData: false,
+        success: function({data}) {
+            if(data && Array.isArray(data)) {
+                data.forEach((d) => renderDTRow(dataSet, d, table));
+                table.dt.draw();
+            }
+        },
+        error: function() {
+            bootstrapGrowl('Error fetching data.');
+        },
+    });
+}
+
+function fileCellHtml(fileData, id) {
+    return !fileData 
+        ? `<span class="fa fa-close text-danger"></span>` 
+        // ? `<span style="font-weight:600;">No</span>` 
+        : `<a href="javascript:void(0)" data-opensafile="${id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View</a>`;
 }

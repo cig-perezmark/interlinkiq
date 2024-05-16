@@ -35,7 +35,7 @@ jQuery(function() {
 
     initSuppliers();
     
-    initMultiSelect($('.supplierdd'), {
+    Init.multiSelect($('.supplierdd'), {
         onChange: function(option, checked, select) {
             const mList = $('#materialListSelection');
             mList.html('');

@@ -18,6 +18,14 @@
             $('.multiselect-container .multiselect-filter', $(el).parent()).css({
                 'position': 'sticky', 'top': '0px', 'z-index': 1,
             });
+
+            return {
+                el,
+                reset() {
+                   $(this.el).multiselect('select', ''); 
+                   $(this.el).multiselect('refresh'); 
+                }
+            }
         },
         dataTable(el, options = {}) {
             const dt = $(el).DataTable({

@@ -60,7 +60,7 @@ if(isset($_GET["newSupplierToList"])) {
         // process uploads
         $csFile = null;
         $uploadPath = getUploadsDir('fsvp/supplier_lists');
-        if($_POST['compliance_statement'] == 1 && ($csFile = uploadFile($uploadPath, $_FILES['compliance_statement_file']))) {
+        if(isset($_POST['compliance_statement']) && $_POST['compliance_statement'] == 1 && ($csFile = uploadFile($uploadPath, $_FILES['compliance_statement_file']))) {
             $csFile = [
                 "filename" => $csFile,
                 "path" => $uploadPath,
@@ -76,7 +76,7 @@ if(isset($_GET["newSupplierToList"])) {
         }
 
         $saFiles = null;
-        if($_POST['supplier_agreement'] == 1) {
+        if(isset($_POST['supplier_agreement']) && $_POST['supplier_agreement'] == 1) {
             $saFiles = [];            
             $files = uploadFile($uploadPath, $_FILES['supplier_agreement_file']);
             foreach($files as $index => $file) {
@@ -114,6 +114,7 @@ if(isset($_GET["newSupplierToList"])) {
         
     } catch(Throwable $e) {
         $conn->rollback();
+        http_response_code(500);
         send_response([
             "info"=> $e->getMessage(),
             "message" => 'Error occured.',
@@ -514,15 +515,110 @@ if(isset($_GET['myFSVPQIInRecords']) ) {
     ]);
 }
 
+// adding new importer
 if(isset($_GET['newImporter']) ) {
     try {
-        $conn->begin_transaction(); 
+        $conn->begin_transaction();
+
+        if(!isset($_POST['importer']) || !isset($_POST['fsvpqi']) || !isset($_POST['evaluation_date'])) {
+            throw new Exception('Incomplete fields.');
+        }
+
+        $insertData = [
+            'user_id' => $user_id,
+            'portal_user' => $portal_user,
+            'importer_id' => $_POST['importer'],
+            'supplier_id' => $_POST['supplier'] ?? null,
+            'fsvpqi_id' =>  $_POST['fsvpqi'],
+            'evaluation_date' =>  $_POST['evaluation_date'],
+            'duns_no' =>  $_POST['duns_no'],
+            'fda_registration' =>  $_POST['fda_registration'],
+            'products' => json_encode($_POST['importer_products'] ?? []),
+        ];
+        $conn->insert("tbl_fsvp_importers", $insertData);
+
+        $id = $conn->getInsertId();
+        $importerName = $conn->select("tbl_supplier", 'name', "ID = " . $insertData['importer_id'])->fetchAssoc()['name'] ?? null;
+        $fsvpqiName = $conn->execute("SELECT CONCAT(TRIM(emp.first_name), ' ', TRIM(emp.last_name)) as name FROM tbl_fsvp_qi qi JOIN tbl_hr_employee emp ON emp.ID = qi.employee_id WHERE qi.id = ?", $insertData['fsvpqi_id'])->fetchAssoc()['name'] ?? null;
+        
+        if(isset($insertData['supplier_id'])) {
+            $supplierName = $conn->select("tbl_supplier", 'name', "ID = " . $insertData['supplier_id'])->fetchAssoc()['name'] ?? null;
+        }
 
         $conn->commit();
-        send_response($_POST);
+        send_response([
+            'message' => 'Saved successfully.',
+            'data' => [
+                'id' => $id,
+                'duns_no' => $insertData['duns_no'],
+                'fda_registration' => $insertData['fda_registration'],
+                'evaluation_date' => $insertData['evaluation_date'],
+                'importer' => [
+                    'id' => $insertData['importer_id'],
+                    'name' => $importerName,
+                ],
+                'supplier' => [
+                    'id' => $insertData['supplier_id'],
+                    'name' => $supplierName ?? null,
+                ],
+                'fsvpqi' => [
+                    'id' => $insertData['fsvpqi_id'],
+                    'name' => $fsvpqiName,
+                ]
+            ],
+        ]);
     } catch(Throwable $e) {
         $conn->rollback();
         http_response_code(500);
         echo $e->getMessage();
     }
+}
+
+// displaying importers to table
+if(isset($_GET['fetchImportersForTable']) ) {
+    $result = $conn->execute(
+        "SELECT 
+            i.id, 
+            i.duns_no, 
+            i.fda_registration, 
+            i.evaluation_date,
+            i.importer_id, 
+            imp.name AS importer_name, 
+            i.fsvpqi_id, 
+            CONCAT(TRIM(emp.first_name), ' ', TRIM(emp.last_name)) AS fsvpqi_name,
+            i.supplier_id,
+            sup.name AS supplier_name
+        FROM 
+            tbl_fsvp_importers i 
+            JOIN tbl_supplier imp ON imp.ID = i.importer_id
+            LEFT JOIN tbl_supplier sup ON sup.ID = i.supplier_id
+            JOIN tbl_fsvp_qi qi ON qi.id = i.fsvpqi_id
+            JOIN tbl_hr_employee emp ON emp.ID = qi.employee_id
+        WHERE 
+            i.user_id = ?",
+        $user_id
+    )->fetchAll(function($data) {
+        return [
+            'id' => $data['id'],
+            'duns_no' => $data['duns_no'],
+            'fda_registration' => $data['fda_registration'],
+            'evaluation_date' => $data['evaluation_date'],
+            'importer' => [
+                'id' => $data['importer_id'],
+                'name' => $data['importer_name'],
+            ],
+            'supplier' => [
+                'id' => $data['supplier_id'],
+                'name' => $data['supplier_name'],
+            ],
+            'fsvpqi' => [
+                'id' => $data['fsvpqi_id'],
+                'name' => $data['fsvpqi_name'],
+            ]
+        ];
+    });
+
+    send_response([
+        'data' => $result,
+    ]);
 }

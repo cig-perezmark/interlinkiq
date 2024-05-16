@@ -130,6 +130,7 @@
             return {
                 alert: $(alert),
                 id,
+                timeout,
                 show: function() {
                     const myAlert = this;
                     if(myAlert.id) {
@@ -139,7 +140,7 @@
                     }
                     
                     $(myAlert.alert).fadeIn('linear', function() {
-                        myAlert.id = setTimeout(() => {myAlert.hide()}, timeout);
+                        myAlert.id = setTimeout(() => {myAlert.hide()}, myAlert.timeout);
                     });
                     return this;
                 },
@@ -161,6 +162,9 @@
                 },
                 isShowing: function() {
                     return this.id != null;
+                },
+                setTimeout: function(timeout) {
+                    this.timeout = timeout;
                 }
             };
         } 

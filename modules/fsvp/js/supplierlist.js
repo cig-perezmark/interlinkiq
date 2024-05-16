@@ -35,7 +35,7 @@ jQuery(function() {
 
     initSuppliers();
     
-    Init.multiSelect($('.supplierdd'), {
+    const supplierSelect = Init.multiSelect($('.supplierdd'), {
         onChange: function(option, checked, select) {
             const mList = $('#materialListSelection');
             mList.html('');
@@ -204,7 +204,11 @@ jQuery(function() {
                     renderDTRow(data).draw();
                 }
 
-                $(form.supplier).val('').trigger('change');
+                supplierSelect.reset();
+                form.reset();
+                $('#materialListSelection').html('');
+                $('#materialListHelpBlock').text('Please select a supplier first.');
+
                 $('#modalNewSupplier').modal('hide');
                 bootstrapGrowl(message || 'Saved!');
             },

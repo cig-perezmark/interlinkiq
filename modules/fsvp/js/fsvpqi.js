@@ -78,7 +78,7 @@ jQuery(function() {
 
 function populateFSVPQISelect(alert) {
     $.ajax({
-        url: Init.baseUrl + "getFSVPQIs",
+        url: Init.baseUrl + "getFSVPQIsForRegistration",
         type: "GET",
         contentType: false,
         processData: false,
@@ -127,9 +127,6 @@ function populateFSVPQISelect(alert) {
 
 function renderDTRow(set, d, table) {
     set[d.id] = d;
-
-
-    
     table.dt.row.add([
         d.name || '',
         d.ces || '',

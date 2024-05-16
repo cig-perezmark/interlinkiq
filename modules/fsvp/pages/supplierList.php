@@ -12,6 +12,29 @@
     flex-shrink: 0;
 }
 
+.checkFileUpload {
+    display: flex;
+    width: 100%;
+    gap: 2rem;
+}
+
+.checkFileUpload .input-group {
+    flex: 1 0 auto;
+}
+
+.frfUplDoc .row {
+    display: none;
+    margin-bottom: 20px;
+}
+
+.frfUplDoc:has(input:checked) .row {
+    display: block;
+}
+
+.semibold {
+    font-weight: 600;
+}
+
 td,
 th {
     white-space: normal !important;
@@ -63,7 +86,7 @@ th {
 <!-- modal -->
 <div class="modal fade in" id="modalEvaluationForm" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <form class="modal-content" role="form">
+        <form class="modal-content" role="form" id="evaluationForm">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                 <h4 class="modal-title">Foreign Supplier Evaluation Form</h4>
@@ -72,94 +95,291 @@ th {
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="effsname">Foreign Supplier Name</label>
+                            <label for="effsname">Foreign Supplier Name <i class="text-muted">(auto-filled)</i></label>
                             <input type="text" class="form-control bg-white" id="effsname" placeholder="Enter foreign supplier name" readonly>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="effsaddress">Address</label>
+                            <label for="effsaddress">Address <i class="text-muted">(auto-filled)</i></label>
                             <input type="text" class="form-control bg-white" id="effsaddress" placeholder="Enter supplier address" readonly>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="">Importer Name</label>
-                            <input type="text" class="form-control" placeholder="Enter importer name">
+                            <label for="importerSelect">Importer <span class="required">*</span></label>
+                            <select name="importer" id="importerSelect">
+                                <option value="" selected disabled>Select importer</option>
+                                <?php
+                                    $suppliers = getImportersByUser($conn, $switch_user_id);
+                                    foreach($suppliers as $supplier) {
+                                        echo '<option value="'.$supplier['id'].'" data-address="'.$supplier['address'].'">'.$supplier['name'].'</option>';
+                                    }
+                                    if(count($suppliers) == 0) {
+                                        echo'';
+                                    }
+                                ?>
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="">Address</label>
-                            <input type="text" class="form-control" placeholder="Enter importer address">
+                            <label>Address <i class="text-muted">(auto-filled)</i></label>
+                            <input type="text" id="efImporterAddress" class="form-control bg-white" placeholder="Select an importer to fill this field" readonly>
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="">Description</label>
-                            <textarea name="" id="" class="form-control" placeholder="Enter description"></textarea>
+                            <label for="efDescription">Description</label>
+                            <textarea name="description" id="efDescription" class="form-control" placeholder="Enter description"></textarea>
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="">Evaluation</label>
-                            <textarea name="" id="" class="form-control" placeholder="Enter evaluation"></textarea>
+                            <label for="efEvaluation">Evaluation</label>
+                            <textarea name="evaluation" id="efEvaluation" class="form-control" placeholder="Enter evaluation"></textarea>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <label for="">Evaluation Date</label>
-                            <input type="date" name="" id="" class="form-control">
+                            <label for="efEvalDate">Evaluation Date <span class="required">*</span></label>
+                            <input type="date" name="evaluation_date" id="efEvalDate" class="form-control" required>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <label for="">Evaluation Due Date</label>
-                            <input type="date" name="" id="" class="form-control">
+                            <label for="efEvalDueDate">Evaluation Due Date <span class="required">*</span></label>
+                            <input type="date" name="evaluation_due_date" id="efEvalDueDate" class="form-control" required>
                         </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5><strong>**Evaluation Consideration and Results</strong></h5>
                     </div>
                     <div class="col-md-12">
-                        <hr>
-                        <h5>
-                            <strong>Evaluation Consideration and Results</strong>
-                            <button type="button" class="btn blue-madison btn-xs" title="Add row(s)">
-                                <i class="fa fa-plus"></i>
-                            </button>
-                        </h5>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-align-top fsvp-table">
-                                <thead>
-                                    <tr>
-                                        <th>Supplier's Procedures, Practices, and Processes</th>
-                                        <th>Import Alerts</th>
-                                        <th>Recalls</th>
-                                        <th>Warning Letters</th>
-                                        <th>Other Signigicant Compliance Action</th>
-                                        <th>Supplier's Corrective Actions</th>
-                                        <th>Information related to the Safety of the Food</th>
-                                        <th>Rejection Date</th>
-                                        <th>Approval Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
+                        <div class="form-group">
+                            <label for="efSPPP">Suppliers Procedures, Practices, & Processes</label>
+                            <textarea name="sppp" id="efSPPP" class="form-control" placeholder="Enter suppliers procedures, practices, & processes"></textarea>
                         </div>
+                    </div>
+                </div>
 
-                        <div class="form-group margin-top-15">
-                            <label for="">Assessment of FSVP Evaluation</label>
-                            <textarea name="" id="" class="form-control" placeholder="Assessment of Results of Foreign Supplier Evaluation"></textarea>
-                            <span class="help-block">
+                <div class="row ynDocsUpl">
+                    <div class="col-md-3">
+                        <div class="semibold"> Import Alerts </div>
+                        <div class="mt-radio-inline">
+                            <label class="mt-radio mt-radio-outline">
+                                <input type="radio" name="import_alerts" value="1"> Yes
+                                <span></span>
+                            </label>
+                            <label class="mt-radio mt-radio-outline">
+                                <input type="radio" name="import_alerts" value="0"> No
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Upload document</label>
+                            <input type="file" class="form-control" name="import_alerts-file">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Document date</label>
+                            <input type="date" name="import_alerts-document_date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Expiration date</label>
+                            <input type="date" name="import_alerts-expiration_date" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="row ynDocsUpl">
+                    <div class="col-md-3">
+                        <div class="semibold"> Recalls </div>
+                        <div class="mt-radio-inline">
+                            <label class="mt-radio mt-radio-outline">
+                                <input type="radio" name="recalls" value="1"> Yes
+                                <span></span>
+                            </label>
+                            <label class="mt-radio mt-radio-outline">
+                                <input type="radio" name="recalls" value="0"> No
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Upload document</label>
+                            <input type="file" class="form-control" name="recalls-file">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Document date</label>
+                            <input type="date" name="recalls-document_date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Expiration date</label>
+                            <input type="date" name="recalls-expiration_date" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="row ynDocsUpl">
+                    <div class="col-md-3">
+                        <div class="semibold"> Warning Letters </div>
+                        <div class="mt-radio-inline">
+                            <label class="mt-radio mt-radio-outline">
+                                <input type="radio" name="warning_letters" value="1"> Yes
+                                <span></span>
+                            </label>
+                            <label class="mt-radio mt-radio-outline">
+                                <input type="radio" name="warning_letters" value="0"> No
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Upload document</label>
+                            <input type="file" class="form-control" name="warning_letters-file">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Document date</label>
+                            <input type="date" name="warning_letters-document_date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Expiration date</label>
+                            <input type="date" name="warning_letters-expiration_date" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="row ynDocsUpl">
+                    <div class="col-md-3">
+                        <div class="semibold"> Other Significant Compliance Action </div>
+                        <div class="mt-radio-inline">
+                            <label class="mt-radio mt-radio-outline">
+                                <input type="radio" name="other_sca" value="1"> Yes
+                                <span></span>
+                            </label>
+                            <label class="mt-radio mt-radio-outline">
+                                <input type="radio" name="other_sca" value="0"> No
+                                <span></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="row margin-top-20">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Upload document</label>
+                                    <input type="file" class="form-control" name="other_sca-file">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Document date</label>
+                                    <input type="date" name="other_sca-document_date" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Expiration date</label>
+                                    <input type="date" name="other_sca-expiration_date" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row ynDocsUpl">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="semibold"> Supplier's Corrective Actions </div>
+                                <div class="mt-radio-inline">
+                                    <label class="mt-radio mt-radio-outline">
+                                        <input type="radio" name="supplier_corrective_actions" value="1"> Yes
+                                        <span></span>
+                                    </label>
+                                    <label class="mt-radio mt-radio-outline">
+                                        <input type="radio" name="supplier_corrective_actions" value="0"> No
+                                        <span></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <textarea name="supplier_corrective_actions-note" class="form-control margin-top-20" placeholder="Enter supplier's corrective actions"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3"></div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Upload supporting doc...</label>
+                            <input type="file" class="form-control" name="supplier_corrective_actions-file">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Document date</label>
+                            <input type="date" name="supplier_corrective_actions-document_date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Expiration date</label>
+                            <input type="date" name="supplier_corrective_actions-expiration_date" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="efInfo">Information related to the safety of the food</label>
+                            <textarea name="info_related" id="efInfo" class="form-control" placeholder="Enter information related to the safety of the food"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="efRejectionDate">Rejection Date</label>
+                            <input type="date" name="rejection_date" id="efRejectionDate" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="efApprovalDate">Approval Date</label>
+                            <input type="date" name="approval_date" id="efApprovalDate" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group margin-top-15x">
+                            <label for="efAFE">Assessment of FSVP Evaluation</label>
+                            <textarea name="assessment" id="efAFE" class="form-control" placeholder="Assessment of Results of Foreign Supplier Evaluation"></textarea>
+                            <i class="help-block">
                                 Note: If the evaluation was performed by another entity (other than the foreign supplier) include Entity's name, address, email, and date of evaluation.
-                            </span>
+                            </i>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                <button type="button" class="btn green saveSigns-btn">Submit </button>
+                <button type="submit" class="btn green">Submit </button>
             </div>
         </form>
     </div>
@@ -174,7 +394,7 @@ th {
             </div>
             <div class="modal-body form-body">
                 <div class="row">
-                    <div class="col-md-12 margin-bottom-20">
+                    <div class="col-md-7 margin-bottom-20">
                         <div class="form-group">
                             <label for="findSupplierDd">Find supplier </label>
                             <select name="supplier" id="findSupplierDd" class="supplierdd">

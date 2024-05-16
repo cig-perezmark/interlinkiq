@@ -1,15 +1,35 @@
 <?php
 
 include_once __DIR__ ."/../../alt-setup/setup.php";
+date_default_timezone_set('America/Chicago');
 
 function getSuppliersByUser($conn, $userId) {
     return $conn->select("tbl_supplier", "ID as id, name", [ 'user_id'=> $userId, 'status'=>1, 'page'=>1])->fetchAll();
+}
+
+function getImportersByUser($conn, $userId) {
+    return $conn->execute(
+        "SELECT imp.id, sup.name, sup.address FROM tbl_fsvp_importers imp 
+         JOIN tbl_supplier sup ON sup.ID = imp.importer_id
+         WHERE imp.user_id = ? AND deleted_at IS NULL",
+        $userId
+    )->fetchAll(function($data) { 
+        $data['address'] = formatSupplierAddress($data['address']);
+        return $data;
+    });
 }
 
 function getRealFileName($fileName) {
     $fn = explode(' - ', $fileName);
     unset($fn[0]);
     return implode(' - ', $fn);
+}
+
+function formatSupplierAddress($add) {
+    [$a1, $a2, $a3, $a4, $a5] = preg_split("/\||,/", $add);
+    return implode(', ', array_filter(array_map(function ($a) {
+        return htmlentities(trim($a));
+    }, [ $a2, $a3, $a4, $a1, $a5 ]), function($a) { return !empty($a); }));
 }
 
 function getSupplierList($conn, $userId) {
@@ -23,11 +43,7 @@ function getSupplierList($conn, $userId) {
 
     $data = [];
     foreach ($list as $d) {
-        [$a1, $a2, $a3, $a4, $a5] = preg_split("/\||,/", $d["address"]);
-        $address = implode(', ', array_filter(array_map(function ($a) {
-            return htmlentities(trim($a));
-        }, [ $a2, $a3, $a4, $a1, $a5 ]), function($a) { return !empty($a); }));
-
+        $address = formatSupplierAddress($d["address"]);
         $mIds = implode(', ', json_decode($d['food_imported']));
         $materialData = $conn->select("tbl_supplier_material", "material_name AS name, ID as id", "ID in ($mIds)")->fetchAll();
 
@@ -125,9 +141,7 @@ function prepareFileInfo($data) {
         return null;
     }
     
-    $filename = explode(' - ', $data['filename']);
-    unset($filename[0]);
-    $filename = implode(' - ', $filename);
+    $filename = getRealFileName($data['filename']);
 
     return [
         'id' => $data['id'] ?? null,
@@ -140,6 +154,21 @@ function prepareFileInfo($data) {
     ];
 }
 
-function saveFSVPQICertificate($data, $fileName) {
+function saveFSVPQICertificate($postData, $name) {
+    if(isset($postData[$name]) && $postData[$name] == 'true') {
+        $uploadPath = getUploadsDir('fsvp/qi_certifications');
+        $currentTimestamp = date('Y-m-d H:i:s');
+        
+        $file = uploadFile($uploadPath, $_FILES[$name .'-file']);
+        return [
+            "filename" => $file,
+            "path" => $uploadPath,
+            "document_date" => $postData[$name . '-document_date'] ?? null,
+            "expiration_date" => $postData[$name . "-expiration_date"] ?? null,
+            "note" => $postData[$name . "-note"] ?? null,
+            "uploaded_at" => $currentTimestamp,
+        ];
+    }
 
+    throw new Exception('Unable to save file.');
 }

@@ -18,6 +18,14 @@
             $('.multiselect-container .multiselect-filter', $(el).parent()).css({
                 'position': 'sticky', 'top': '0px', 'z-index': 1,
             });
+
+            return {
+                el,
+                reset() {
+                   $(this.el).multiselect('select', ''); 
+                   $(this.el).multiselect('refresh'); 
+                }
+            }
         },
         dataTable(el, options = {}) {
             const dt = $(el).DataTable({
@@ -130,6 +138,7 @@
             return {
                 alert: $(alert),
                 id,
+                timeout,
                 show: function() {
                     const myAlert = this;
                     if(myAlert.id) {
@@ -139,7 +148,7 @@
                     }
                     
                     $(myAlert.alert).fadeIn('linear', function() {
-                        myAlert.id = setTimeout(() => {myAlert.hide()}, timeout);
+                        myAlert.id = setTimeout(() => {myAlert.hide()}, myAlert.timeout);
                     });
                     return this;
                 },
@@ -161,6 +170,9 @@
                 },
                 isShowing: function() {
                     return this.id != null;
+                },
+                setTimeout: function(timeout) {
+                    this.timeout = timeout;
                 }
             };
         } 

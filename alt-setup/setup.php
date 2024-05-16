@@ -118,6 +118,10 @@ function uploadFile($path, $file, $newFilename = null) {
         $fileCount = count($file['tmp_name']);
 
         for ($i = 0; $i < $fileCount; $i++) {
+            if(!isValidFile($file['name'][$i])) {
+                throw new Exception('Invalid file.');
+            }
+            
             if (!is_uploaded_file($file["tmp_name"][$i]) || $file["error"][$i] !== UPLOAD_ERR_OK) {
                 throw new Exception("Upload failed with error code " . $file["error"]);
             }
@@ -130,6 +134,10 @@ function uploadFile($path, $file, $newFilename = null) {
         }
         return $filenameArr;
     } else {
+        if(!isValidFile($file['name'])) {
+            throw new Exception('Invalid file.');
+        }
+        
         if (!is_uploaded_file($file["tmp_name"]) || $file["error"] !== UPLOAD_ERR_OK) {
             throw new Exception("Upload failed with error code " . $file["error"]);
         }
@@ -143,6 +151,18 @@ function uploadFile($path, $file, $newFilename = null) {
     }
 
     throw new Exception("Failed to move uploaded file.");
+}
+
+function isValidFile($filename)
+{
+    $disallowedExtensions = ['php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll'];
+
+    $fileExtension = pathinfo($filename, PATHINFO_EXTENSION);
+    if (in_array(strtolower($fileExtension), $disallowedExtensions)) {
+        return false;
+    }
+    
+    return true;
 }
 
 ?>

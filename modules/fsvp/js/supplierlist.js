@@ -152,7 +152,7 @@ jQuery(function() {
             return showError('Please select a supplier.');
         }
 
-        if(!$(form).find('[name="food_imported[]"]:checked').length) {
+        if($(form).find('[name="food_imported[]"]').length && !$(form).find('[name="food_imported[]"]:checked').length) {
             return showError('Please select food imported to proceed.');
         }
 

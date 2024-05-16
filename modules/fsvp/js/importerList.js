@@ -1,4 +1,5 @@
 $(function() {
+    let importersData = [];
     const alert = Init.createAlert($('#newImporterForm .modal-body'));
     const importerListTable = Init.dataTable($('#tableImporterList'), {
         columnDefs: [
@@ -13,17 +14,13 @@ $(function() {
             {
                 className: "dt-right",
             },
-            {
-                visible: false,
-                targets: [2]
-            }
         ]
     });
 
     // init
-    Init.multiSelect($('#fsvpqiSelect'));
-    Init.multiSelect($('#supplierSelectDropdown'));
-    Init.multiSelect($('#importerdd'), {
+    const fsvpqiSelect = Init.multiSelect($('#fsvpqiSelect'));
+    const supplierSelect = Init.multiSelect($('#supplierSelectDropdown'));
+    const importerSelect = Init.multiSelect($('#importerdd'), {
         onChange: function(option, checked, select) {
             const pList = $('#productsListSelection');
             pList.html('');
@@ -68,7 +65,7 @@ $(function() {
         }
     });
     populateFSVPQISelect();
-
+    fetchImporterListTable(importersData, importerListTable);
     // events
     $('#newImporterForm').on('submit', function(e) {
         e.preventDefault();
@@ -98,16 +95,21 @@ $(function() {
             processData: false,
             data,
             success: function({data, message}) {
-                // if(data) {
-                //     renderDTRow(data).draw();
-                // }
+                if(data) {
+                    renderDTRow(importersData, data, importerListTable).draw();
+                }
 
-                // $(form.supplier).val('').trigger('change');
-                // $('#modalNewSupplier').modal('hide');
-                // bootstrapGrowl(message || 'Saved!');
+                // reset form
+                importerSelect.reset();
+                supplierSelect.reset();
+                fsvpqiSelect.reset();
+                form.reset();
+                
+                $('#modalNewImporter').modal('hide');
+                bootstrapGrowl(message || 'Saved!');
             },
-            error: function() {
-                bootstrapGrowl('Error!', 'danger');
+            error: function({responseText}) {
+                bootstrapGrowl(responseText || 'Error!', 'danger');
             },
             complete: function() {
                 l.stop();
@@ -160,4 +162,47 @@ function populateFSVPQISelect() {
             bootstrapGrowl('Error fetching data.');
         },
     });
+}
+
+function fetchImporterListTable(importersData, table) {
+    $.ajax({
+        url: baseUrl + "fetchImportersForTable",
+        type: "GET",
+        contentType: false,
+        processData: false,
+        success: function({data}) {
+            if(data) {
+                table.dt.clear().draw();
+                data.forEach((d) => renderDTRow(importersData, d, table));
+                table.dt.draw();
+                // fancyBoxes();      
+            }
+        },
+        error: function() {
+            bootstrapGrowl('Error fetching records!');
+        },
+    });
+}
+
+function renderDTRow(importersData, d, table) {
+    // save to local storage
+    importersData[d.id] = d;
+    // const no = `<span style="font-weight:600;">No</span>`;
+    // const sa = !d.supplier_agreement || !d.supplier_agreement.length ? no : `<a href="javascript:void(0)" data-opensafile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View</a>`;
+    // const cs = !d.compliance_statement || !d.compliance_statement.length ?  no : `<a href="javascript:void(0)" data-opencsfile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View </a>`;
+    
+    table.dt.row.add([
+        d.importer.name || '(unnamed)',
+        d.duns_no,
+        d.fda_registration,
+        d.fsvpqi.name,
+        d.evaluation_date,
+        '',
+        `
+            <div class="d-flex center">
+                <button type="button" class="btn-link">Open</button>
+            </div>
+        `,
+    ]);
+    return table.dt;
 }

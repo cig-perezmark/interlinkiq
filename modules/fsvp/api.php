@@ -324,9 +324,21 @@ if(isset($_GET['updateFSVPTeamRoster'])) {
 if(isset($_GET['getFSVPQIs'])) {
     $fsvpId = fsvpqiJDId($conn, $user_id);
     $employees = [];
+    $resultData = [];
+
+    // checking existing fsvpqis
+    $a = $conn->execute("SELECT DISTINCT employee_id FROM tbl_fsvp_qi WHERE user_id = ? AND deleted_at IS NULL", $user_id)->fetchAll();
+    $fsvpqiIdsInRecord = implode(',', array_map(function($d) { return $d['employee_id']; }, $a));
 
     if(!empty($fsvpId)) {
-        $result = $conn->select('tbl_hr_employee', "ID AS id, CONCAT(TRIM(first_name), ' ', TRIM(last_name)) AS name, job_description_id", "user_id = $user_id AND status = 1")->fetchAll(function ($data) use($fsvpId) {
+        $cond = "user_id = $user_id AND status = 1";
+
+        if(!empty($fsvpqiIdsInRecord)) {
+            $cond .= " AND ID NOT IN ($fsvpqiIdsInRecord)";
+        }
+        
+        // $result = $conn->select('tbl_hr_employee', "ID AS id, CONCAT(TRIM(first_name), ' ', TRIM(last_name)) AS name, job_description_id", "user_id = $user_id AND status = 1")->fetchAll(function ($data) use($fsvpId) {
+        $result = $conn->select('tbl_hr_employee', "ID AS id, CONCAT(TRIM(first_name), ' ', TRIM(last_name)) AS name, job_description_id", $cond)->fetchAll(function ($data) use($fsvpId) {
             $jds = array_map(function($d) { return intval($d); }, explode(', ', $data['job_description_id']));
     
             if(in_array($fsvpId, $jds)){
@@ -337,19 +349,27 @@ if(isset($_GET['getFSVPQIs'])) {
             return null;
         });
     
+        $resultData['result'] = [];
         foreach($result as $row) {
             if(isset($row) && !empty($row)) {
-                $employees[] = $row;   
+                $resultData['result'][] = $row;   
             }
         }
+
+        if(count($resultData['result']) == 0) {
+            $resultData['message'] = 'All FSVPQIs have already been added.';
+        }
+    } else {
+        $resultData = [
+            'result' => [],
+            'message' => 'No data available.'
+        ];
     }
         
-    send_response([
-        'result' => $employees,
-    ]);
+    send_response($resultData);
 }
 
-if(isset($_GET['newFSVPQI'])) {
+if(isset($_GET['newFSVPQI'])) { 
     try {
         $conn->begin_transaction();
 
@@ -381,7 +401,7 @@ if(isset($_GET['newFSVPQI'])) {
             ]);
             $d['id'] = $conn->getInsertId();
             $d['filename'] = embedFileUrl($d['filename'], $d['path']);
-            $filesData['c_pcqi_certified'] = $d;
+            $filesData['pcqi-certificate'] = $d;
         }
 
         if(isset($_POST['c_food_quality_auditing']) && $_POST['c_food_quality_auditing'] == 'true') {
@@ -393,7 +413,7 @@ if(isset($_GET['newFSVPQI'])) {
             ]);
             $d['id'] = $conn->getInsertId();
             $d['filename'] = embedFileUrl($d['filename'], $d['path']);
-            $filesData['c_food_quality_auditing'] = $d;
+            $filesData['food-quality-auditing'] = $d;
         }
         
         if(isset($_POST['c_haccp_training']) && $_POST['c_haccp_training'] == 'true') {
@@ -405,7 +425,7 @@ if(isset($_GET['newFSVPQI'])) {
             ]);
             $d['id'] = $conn->getInsertId();
             $d['filename'] = embedFileUrl($d['filename'], $d['path']);
-            $filesData['c_haccp_training'] = $d;
+            $filesData['haccp-training'] = $d;
         }
 
         if(isset($_POST['c_fs_training_certificate']) && $_POST['c_fs_training_certificate'] == 'true') {
@@ -417,7 +437,7 @@ if(isset($_GET['newFSVPQI'])) {
             ]);
             $d['id'] = $conn->getInsertId();
             $d['filename'] = embedFileUrl($d['filename'], $d['path']);
-            $filesData['c_fs_training_certificate'] = $d;
+            $filesData['food-safety-training-certificate'] = $d;
         }
 
         if(isset($_POST['c_gfsi_certificate']) && $_POST['c_gfsi_certificate'] == 'true') {
@@ -429,7 +449,7 @@ if(isset($_GET['newFSVPQI'])) {
             ]);
             $d['id'] = $conn->getInsertId();
             $d['filename'] = embedFileUrl($d['filename'], $d['path']);
-            $filesData['c_gfsi_certificate'] = $d;
+            $filesData['gfsi-certificate'] = $d;
         }
 
         $name = $conn->select('tbl_hr_employee', "CONCAT(TRIM(first_name), ' ', TRIM(last_name)) AS name", "ID = $fsvpqi")->fetchAssoc()['name'];
@@ -450,5 +470,57 @@ if(isset($_GET['newFSVPQI'])) {
             "info"=> $e->getMessage(),
             "message" => 'Error occured.',
         ], 500);
+    }
+}
+
+if(isset($_GET['fetchFSVPQI']) ) {
+    try {
+        $recordType = 'fsvpqi-certifications';
+        $fsvpqis = $conn->execute("SELECT q.*, CONCAT(TRIM(e.first_name), ' ', TRIM(e.last_name)) AS name FROM tbl_fsvp_qi q JOIN tbl_hr_employee e ON e.ID = q.employee_id WHERE q.user_id = ? AND deleted_at IS NULL", $user_id)->fetchAll();
+        $data = [];
+
+        foreach($fsvpqis as $f) {
+            $files = $conn->select("tbl_fsvp_files","*", "deleted_at IS NULL AND record_type LIKE '$recordType%' AND record_id = " . $f['id'])->fetchAll();
+            $fd = [];
+            if(count($files) > 0) {
+                foreach ($files as $file) {
+                    $type = explode(':', $file['record_type'])[1];
+                    $fd[$type] = prepareFileInfo($file);
+                }
+            }
+            $data[] = [
+                'id' => $f['id'],
+                'name' => $f['name'],
+                'ces' => $f['c_e_s'],
+                'certifications' => $fd,
+            ];
+        }
+
+        send_response([
+            'data' => $data,
+        ]);
+    } catch(Throwable $e) {
+        http_response_code(500);
+        echo $e->getMessage();
+    }
+}
+
+if(isset($_GET['myFSVPQIInRecords']) ) {
+    $result = $conn->execute("SELECT q.id, CONCAT(TRIM(e.first_name), ' ', TRIM(e.last_name)) AS name FROM tbl_fsvp_qi q JOIN tbl_hr_employee e ON q.employee_id = e.ID WHERE q.user_id = ? AND q.deleted_at IS NULL", $user_id)->fetchAll();
+    send_response([
+        'result' => $result,
+    ]);
+}
+
+if(isset($_GET['newImporter']) ) {
+    try {
+        $conn->begin_transaction(); 
+
+        $conn->commit();
+        send_response($_POST);
+    } catch(Throwable $e) {
+        $conn->rollback();
+        http_response_code(500);
+        echo $e->getMessage();
     }
 }

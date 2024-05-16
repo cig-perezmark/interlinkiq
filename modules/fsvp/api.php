@@ -320,8 +320,8 @@ if(isset($_GET['updateFSVPTeamRoster'])) {
     }
 }
 
-// fetching fsvpqi employees
-if(isset($_GET['getFSVPQIs'])) {
+// for populating dropdown in fsvpqi reg page
+if(isset($_GET['getFSVPQIsForRegistration'])) {
     $fsvpId = fsvpqiJDId($conn, $user_id);
     $employees = [];
     $resultData = [];
@@ -337,7 +337,6 @@ if(isset($_GET['getFSVPQIs'])) {
             $cond .= " AND ID NOT IN ($fsvpqiIdsInRecord)";
         }
         
-        // $result = $conn->select('tbl_hr_employee', "ID AS id, CONCAT(TRIM(first_name), ' ', TRIM(last_name)) AS name, job_description_id", "user_id = $user_id AND status = 1")->fetchAll(function ($data) use($fsvpId) {
         $result = $conn->select('tbl_hr_employee', "ID AS id, CONCAT(TRIM(first_name), ' ', TRIM(last_name)) AS name, job_description_id", $cond)->fetchAll(function ($data) use($fsvpId) {
             $jds = array_map(function($d) { return intval($d); }, explode(', ', $data['job_description_id']));
     
@@ -369,6 +368,7 @@ if(isset($_GET['getFSVPQIs'])) {
     send_response($resultData);
 }
 
+// add fsvpqi 
 if(isset($_GET['newFSVPQI'])) { 
     try {
         $conn->begin_transaction();
@@ -473,6 +473,7 @@ if(isset($_GET['newFSVPQI'])) {
     }
 }
 
+// displaying fsvpqis to table
 if(isset($_GET['fetchFSVPQI']) ) {
     try {
         $recordType = 'fsvpqi-certifications';
@@ -505,6 +506,7 @@ if(isset($_GET['fetchFSVPQI']) ) {
     }
 }
 
+// populating fsvpqis to dropdowns outside the fsvpqi page
 if(isset($_GET['myFSVPQIInRecords']) ) {
     $result = $conn->execute("SELECT q.id, CONCAT(TRIM(e.first_name), ' ', TRIM(e.last_name)) AS name FROM tbl_fsvp_qi q JOIN tbl_hr_employee e ON q.employee_id = e.ID WHERE q.user_id = ? AND q.deleted_at IS NULL", $user_id)->fetchAll();
     send_response([

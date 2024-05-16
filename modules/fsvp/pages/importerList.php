@@ -13,11 +13,11 @@
     <thead>
         <tr>
             <th>Importer Name</th>
-            <th>Food Imported</th>
-            <th>Address</th>
+            <th>DUNS No.</th>
+            <th>FDA Registration No.</th>
+            <th>FSVPQI</th>
             <th>Evaluation Date</th>
-            <th>Supplier Agreement</th>
-            <th>FSVP Compliance Statement</th>
+            <th>FSVP CBP Filing Form</th>
             <th>Actions</th>
         </tr>
     </thead>

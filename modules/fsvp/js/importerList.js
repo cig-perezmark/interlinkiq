@@ -13,7 +13,10 @@ $(function() {
             },
             {
                 className: "dt-right",
-            },
+            },{
+                className: 'text-center',
+                targets: [3, 5]
+            }
         ]
     });
 
@@ -35,10 +38,10 @@ $(function() {
                 success: function({materials}) {
                     if (materials && Array.isArray(materials)) {
                         if (!materials.length) {
-                            $('#productsHelpBlock').text('No materials found.');
+                            $('#productsHelpBlock').text('No products found.');
                             return;
                         } else {
-                            $('#productsHelpBlock').text('Tick on the checkboxes to select the product.');
+                            $('#productsHelpBlock').text('Tick on the checkbox to select the product.');
                         }
 
                         materials.forEach((m) => {
@@ -104,6 +107,9 @@ $(function() {
                 supplierSelect.reset();
                 fsvpqiSelect.reset();
                 form.reset();
+                
+                $('#productsListSelection').html('');
+                $('#productsHelpBlock').text('Select importer first.');
                 
                 $('#modalNewImporter').modal('hide');
                 bootstrapGrowl(message || 'Saved!');
@@ -195,9 +201,9 @@ function renderDTRow(importersData, d, table) {
         d.importer.name || '(unnamed)',
         d.duns_no,
         d.fda_registration,
-        d.fsvpqi.name,
+        `<a href="#" title="View details">${d.fsvpqi.name}</a>`,
         d.evaluation_date,
-        '',
+        `<button title="Evaluation form" type="button" class="btn green-soft btn-circle btn-sm">Open Form</button>`,
         `
             <div class="d-flex center">
                 <button type="button" class="btn-link">Open</button>

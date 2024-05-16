@@ -29,13 +29,8 @@ if(isset($_GET["newSupplierToList"])) {
         
         $supplierId = $_POST["supplier"];
         $supplierData = $conn->select("tbl_supplier", "address, name", ["ID" => $supplierId])->fetchAssoc(function ($d) {
-            [$a1, $a2, $a3, $a4, $a5] = preg_split("/\||,/", $d["address"]);
-            $address = implode(', ', array_filter(array_map(function ($a) {
-                return htmlentities(trim($a));
-            }, [ $a2, $a3, $a4, $a1, $a5 ]), function($a) { return !empty($a); }));
-            
             return [
-                'address' => $address,
+                'address' => formatSupplierAddress($d["address"]),
                 'name' => $d['name']
             ];
         });

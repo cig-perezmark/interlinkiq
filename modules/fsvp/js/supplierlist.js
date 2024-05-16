@@ -79,6 +79,12 @@ jQuery(function() {
             });
         }
     });
+    const importerSelect = Init.multiSelect($('#importerSelect'), {
+        onChange: function(option, checked, select) {
+            const address = $('#importerSelect option:selected').attr('data-address') || '';
+            $('#efImporterAddress').val(address);
+        }
+    });
 
     $('#tableSupplierList').on('click', '[data-openevalform]', function() {
         openEvaluationForm(suppliersData[this.dataset.openevalform]);
@@ -288,8 +294,49 @@ jQuery(function() {
 
         $('.file-viewer').attr('src', 'about:blank');
         $('.view-anchor').attr('data-src', 'about:blank');
-    })
+    });
 
+    $('.ynDocsUpl input[type=radio]').on('change', function() {
+        const container = this.closest('.ynDocsUpl');
+        const isDisabled = this.checked && this.value == 0;
+        
+        if(isDisabled) {
+            const file = $(container).find('input[type=file]').get(0);
+
+            if(file.files.length > 0) {
+                swal(
+                    {
+                        title: `You will lose the uploaded file...`,
+                        type: "warning",
+                        allowOutsideClick: false,
+                        showConfirmButton: true,
+                        showCancelButton: true,
+                        confirmButtonClass: "btn red",
+                        cancelButtonClass: "btn default",
+                        closeOnConfirm: true,
+                        closeOnCancel: true,
+                        confirmButtonText: "That's OK",
+                        cancelButtonText: "Cancel",
+                    },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            $(container).find('.form-control').val('').prop('disabled', true).prop('required', false);
+                        } else {
+                            // cancelled, return to yes option
+                            $(container).find('input[type=radio][value=1]').prop('checked', true);
+                        }
+                    }
+                );
+            } else {
+                $(container).find('.form-control').val('').prop('disabled', true).prop('required', false);
+            }
+        } else {
+            $(container).find('.form-control').prop('disabled', false).prop('required', true);
+        }
+        
+    });
+    resetEvaluationForm();
+    
     function initSuppliers() {
         $.ajax({
             url: baseUrl + "suppliersByUser",
@@ -436,4 +483,12 @@ function openEvaluationForm(data) {
     $('#effsname').val(data.name || '')
     
     $('#modalEvaluationForm').modal('show');
+}
+
+function resetEvaluationForm() {
+    // defaulting file uploads fields
+    $('.ynDocsUpl input[type=radio][value=0]').prop('checked', true).trigger('change');
+
+    const form = $('#evaluationForm');
+    form.get(0).reset();
 }

@@ -61,8 +61,8 @@ jQuery(function() {
                 bootstrapGrowl(message || 'Saved successfully.');
                 populateFSVPQISelect(alert);
             },
-            error: function() {
-                bootstrapGrowl('Error saving data.');
+            error: function({responseJSON}) {
+                bootstrapGrowl(responseJSON.info || responseJSON.message || 'Error saving data.');
             },
             complete: function() {
                 // 

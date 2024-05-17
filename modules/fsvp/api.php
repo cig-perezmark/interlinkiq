@@ -683,6 +683,11 @@ if(isset($_GET['newSupplierEvaluation'])) {
         );
         $data['id'] = $id;
         $data['files'] = [];
+        $data['evaluation_status'] = 'done';
+
+        if(!empty($data['evaluation_due_date']) && strtotime($data['evaluation_due_date']) <= strtotime(date('Y-m-d'))) {
+            $data['evaluation_status'] = 'due';
+        }
 
         foreach($evalFiles as $file) {
             $name = explode(':', $file['record_type'])[1];

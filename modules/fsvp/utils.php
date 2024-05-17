@@ -33,49 +33,79 @@ function formatSupplierAddress($add) {
 }
 
 function getSupplierList($conn, $userId) {
-    $recordType = 'supplier-list:';
+    try {
+        $recordType = 'supplier-list:';
 
-    $list = $conn->execute("SELECT fs.*, s.name, s.address FROM tbl_fsvp_suppliers fs 
-        JOIN tbl_supplier s ON s.ID = fs.supplier_id
-        WHERE fs.user_id = ? AND fs.deleted_at IS NULL
-        ORDER BY fs.created_at DESC
-    ", $userId)->fetchAll();
-
-    $data = [];
-    foreach ($list as $d) {
-        $address = formatSupplierAddress($d["address"]);
-        $mIds = implode(', ', json_decode($d['food_imported']));
-        $materialData = $conn->select("tbl_supplier_material", "material_name AS name, ID as id", "ID in ($mIds)")->fetchAll();
-
-        // fetching stored files
-        $mFiles = $conn->select("tbl_fsvp_files","*", "deleted_at IS NULL AND record_type LIKE '$recordType%' AND record_id = " . $d['id'])->fetchAll();
-
-        $saFiles = [];
-        $csFile = [];
-
-        if(count($mFiles) > 0) {
-            foreach ($mFiles as $mFile) {
-                $fileData = prepareFileInfo($mFile);
-                
-                if($mFile['record_type'] == 'supplier-list:supplier-agreement') {
-                    $saFiles[] = $fileData;
-                } else if($mFile['record_type'] == 'supplier-list:compliance-statement') {
-                    $csFile[] = $fileData;
+        $list = $conn->execute("SELECT fs.*, s.name, s.address FROM tbl_fsvp_suppliers fs 
+            JOIN tbl_supplier s ON s.ID = fs.supplier_id
+            WHERE fs.user_id = ? AND fs.deleted_at IS NULL
+            ORDER BY fs.created_at DESC
+        ", $userId)->fetchAll();
+    
+        $data = [];
+        foreach ($list as $d) {
+            $address = formatSupplierAddress($d["address"]);
+            $mIds = implode(', ', json_decode($d['food_imported']));
+            $materialData = $conn->select("tbl_supplier_material", "material_name AS name, ID as id", "ID in ($mIds)")->fetchAll();
+    
+            // fetching stored files
+            $mFiles = $conn->select("tbl_fsvp_files","*", "deleted_at IS NULL AND record_type LIKE '$recordType%' AND record_id = " . $d['id'])->fetchAll();
+    
+            $saFiles = [];
+            $csFile = [];
+    
+            if(count($mFiles) > 0) {
+                foreach ($mFiles as $mFile) {
+                    $fileData = prepareFileInfo($mFile);
+                    
+                    if($mFile['record_type'] == 'supplier-list:supplier-agreement') {
+                        $saFiles[] = $fileData;
+                    } else if($mFile['record_type'] == 'supplier-list:compliance-statement') {
+                        $csFile[] = $fileData;
+                    }
                 }
             }
-        }
-        
-        $data[] = [
-            'address' => $address,
-            'name' => $d['name'],
-            'id' => $d['id'],
-            'food_imported' => $materialData,
-            'compliance_statement' => $csFile,
-            'supplier_agreement' => $saFiles,
-        ];
-    }
+    
+            $evalData = getCurrentEvaluation($conn, $d['id']);
+            $evalStatus = null;
 
-    return $data;
+            if(!count($evalData)) {
+                $evalStatus = 'none';
+            } else {
+                $evalDueDate = strtotime($evalData['evaluation_due_date']);
+                $current = strtotime(date('Y-m-d'));
+                
+                if($evalDueDate <= $current) {
+                    $evalStatus = 'due';
+                } else {
+                    $evalStatus = 'done';
+                }
+            }
+            
+            
+            $data[] = [
+                'address' => $address,
+                'name' => $d['name'],
+                'id' => $d['id'],
+                'evaluation_id' => $evalData['id'] ?? null,
+                'evaluation_date' => $evalData['evaluation_date'] ?? null,
+                'evaluation_status' => $evalStatus,
+                'food_imported' => $materialData,
+                'compliance_statement' => $csFile,
+                'supplier_agreement' => $saFiles,
+            ];
+        }
+    
+        return $data;
+    } catch(Throwable $e) {
+        send_response([
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+function getCurrentEvaluation($conn, $supplierId) {
+    return $conn->execute("SELECT * FROM tbl_fsvp_evaluations WHERE supplier_id = ? AND deleted_at IS NULL ORDER BY created_at DESC LIMIT 1", $supplierId)->fetchAssoc();
 }
 
 function getEmployeesInfo($conn, $employeeIds, $jdIds) {

@@ -364,6 +364,11 @@ jQuery(function() {
             success: function({data, message}) {
                 if(data) {
                     cachedEvalFormData = data;
+                    const upd = suppliersData[data.supplier_id];
+                    upd['evaluation_id'] = data.id;
+                    upd['evaluation_date'] = data.evaluation_date;
+                    upd['evaluation_status'] = data.evaluation_status;
+                    renderDTRow(upd, 'data').draw();
                 }
 
                 $('#modalEvaluationForm').modal('hide');
@@ -410,19 +415,15 @@ jQuery(function() {
         const cs = !d.compliance_statement || !d.compliance_statement.length ?  no : `<a href="javascript:void(0)" data-opencsfile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View </a>`;
         let evalBtn = '';
 
-        d.evaluation_status = 'done';
-        const stat = Math.floor(Math.random() * (3 - 1 + 1)) + 1;
-        switch(stat) {
-            // case 'done': 
-            case 1: 
-                evalBtn = `<a href="#" class="font-dark semibold" title="Click to view evaluation details"> 
-                2020-12-03
+        switch(d.evaluation_status) {
+            case 'done': 
+                evalBtn = `<a href="#modalEvaluationDetails" data-toggle="modal" class="font-dark semibold" title="Click to view evaluation details"> 
+                                ${d.evaluation_date}
                                 <i class="fa fa-check-circle font-green-jungle" style="margin-left:.75rem"></i>
                             </a>`;
                 break;
-            // case 'due': 
-            case 2: 
-                evalBtn = `<button type="button"  class="btn red btn-sm btn-circle" title="Re-evaluate" data-openevalform="${d.id}">
+            case 'due': 
+                evalBtn = `<button type="button"  class="btn red btn-sm btn-circle" title="Re-evaluate" data-reeval="true" data-openevalform="${d.id}">
                                 Re-evaluate
                             </button>`;
                 break;
@@ -434,8 +435,7 @@ jQuery(function() {
                             </button>`;
                 break;
         }
-        
-        supplierTable.dt.row.add([
+        const rowData = [
             d.name,
             d.food_imported.map((x) => x.name).join(', '),
             d.address,
@@ -445,13 +445,20 @@ jQuery(function() {
             `
                 <div class="d-flex center">
                     <div class="btn-group btn-group-circle btn-group-sm btn-group-solid">
-                        
                         <button type="button" class="btn dark btn-outline" title="View data">View</button>
                         <button type="button" class="btn blue btn-outlinex" title="Update">Update</button>
                     </div>
                 </div>
             `,
-        ]);
+        ];
+        
+        if(method == 'data') {
+            const index = $(`#tableSupplierList tr:has([data-openevalform=${d.id}])`).index();
+            supplierTable.dt.row(index).data(rowData);
+        } else if(method == 'add') {
+            supplierTable.dt.row.add(rowData);
+        }
+
         return supplierTable.dt;
     }
     

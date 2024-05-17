@@ -320,7 +320,7 @@ th {
                                 </div>
                             </div>
                             <div class="col-md-9">
-                                <textarea name="supplier_corrective_actions-note" class="form-control margin-top-20" placeholder="Enter supplier's corrective actions"></textarea>
+                                <textarea name="supplier_corrective_actions-note" class="form-control margin-top-20 margin-bottom-10" placeholder="Enter supplier's corrective actions"></textarea>
                             </div>
                         </div>
                     </div>

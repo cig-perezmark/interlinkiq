@@ -87,6 +87,7 @@ jQuery(function() {
     });
 
     $('#tableSupplierList').on('click', '[data-openevalform]', function() {
+        resetEvaluationForm();
         openEvaluationForm(suppliersData[this.dataset.openevalform]);
     });
 
@@ -281,6 +282,7 @@ jQuery(function() {
     });
     // end of file modal buttons
 
+    // resetting modal display
     $('#modalViewFiles').on('hidden.bs.modal', function() {
         const fileInfoForm = document.querySelector('#viewFileInfoForm');
 
@@ -296,6 +298,7 @@ jQuery(function() {
         $('.view-anchor').attr('data-src', 'about:blank');
     });
 
+    // evaluation form radio buttons
     $('.ynDocsUpl input[type=radio]').on('change', function() {
         const container = this.closest('.ynDocsUpl');
         const isDisabled = this.checked && this.value == 0;
@@ -322,7 +325,7 @@ jQuery(function() {
                         if (isConfirm) {
                             $(container).find('.form-control').val('').prop('disabled', true).prop('required', false);
                         } else {
-                            // cancelled, return to yes option
+                            // cancelled, recheck yes option
                             $(container).find('input[type=radio][value=1]').prop('checked', true);
                         }
                     }
@@ -485,10 +488,13 @@ function openEvaluationForm(data) {
     $('#modalEvaluationForm').modal('show');
 }
 
+// basically triggering reset
 function resetEvaluationForm() {
-    // defaulting file uploads fields
-    $('.ynDocsUpl input[type=radio][value=0]').prop('checked', true).trigger('change');
-
     const form = $('#evaluationForm');
+    // initially reset all fields
+    form.get(0).reset();
+    // to disable upload fields, simmulate "no" option
+    $('.ynDocsUpl input[type=radio][value=0]').prop('checked', true).trigger('change');
+    // to reset the radio buttons
     form.get(0).reset();
 }

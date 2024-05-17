@@ -6,10 +6,10 @@ jQuery(function() {
 
     let newSupplierFileCounter = 0;
     let newSupplierErrorDisplay = null;
-    let supplierTable = null;
     let suppliersData = {};
+    let cachedEvalFormData = null;
 
-    supplierTable = Init.dataTable('#tableSupplierList', {
+    const supplierTable = Init.dataTable('#tableSupplierList', {
         columnDefs: [
             {
                 orderable: false,
@@ -24,7 +24,7 @@ jQuery(function() {
             },
             {
                 className: "text-center",
-                targets: [4,5] 
+                targets: [3,4,5] 
             },
             {
                 visible: false,
@@ -32,9 +32,6 @@ jQuery(function() {
             },
         ]
     });
-
-    initSuppliers();
-    
     const supplierSelect = Init.multiSelect($('.supplierdd'), {
         onChange: function(option, checked, select) {
             const mList = $('#materialListSelection');
@@ -85,9 +82,12 @@ jQuery(function() {
             $('#efImporterAddress').val(address);
         }
     });
+    const evalFormAlert = Init.createAlert($('#evaluationForm .modal-body'));
 
     $('#tableSupplierList').on('click', '[data-openevalform]', function() {
+        evalFormAlert.isShowing() && evalFormAlert.hide();
         resetEvaluationForm();
+        importerSelect.reset();
         openEvaluationForm(suppliersData[this.dataset.openevalform]);
     });
 
@@ -314,11 +314,11 @@ jQuery(function() {
                         allowOutsideClick: false,
                         showConfirmButton: true,
                         showCancelButton: true,
-                        confirmButtonClass: "btn red",
+                        confirmButtonClass: "btn blue",
                         cancelButtonClass: "btn default",
                         closeOnConfirm: true,
                         closeOnCancel: true,
-                        confirmButtonText: "That's OK",
+                        confirmButtonText: "It's OK",
                         cancelButtonText: "Cancel",
                     },
                     function (isConfirm) {
@@ -338,7 +338,49 @@ jQuery(function() {
         }
         
     });
-    resetEvaluationForm();
+
+    $('#evaluationForm').submit(function(e) {
+        e.preventDefault();
+
+        const form = e.target;
+
+        if(form.importer.value == '') {
+            evalFormAlert.isShowing() && evalFormAlert.hide();
+            evalFormAlert.setContent('<strong>Error!</strong> Importer is required.').show();
+            return;
+        }
+
+        const data = new FormData(form);
+
+        var l = Ladda.create(this.querySelector('[type=submit]'));
+        l.start();
+
+        $.ajax({
+            url: baseUrl + "newSupplierEvaluation",
+            type: "POST",
+            contentType: false,
+            processData: false,
+            data,
+            success: function({data, message}) {
+                if(data) {
+                    cachedEvalFormData = data;
+                }
+
+                $('#modalEvaluationForm').modal('hide');
+                resetEvaluationForm();
+                importerSelect.reset();
+                evalFormAlert.isShowing() && evalFormAlert.hide();
+
+                bootstrapGrowl(message || 'Saved!');
+            },
+            error: function({responseJSON}) {
+                bootstrapGrowl(responseJSON.error || 'Error!', 'danger');
+            },
+            complete: function() {
+                l.stop();
+            }
+        });
+    });
     
     function initSuppliers() {
         $.ajax({
@@ -360,25 +402,53 @@ jQuery(function() {
         });
     }
 
-    function renderDTRow(d) {
+    function renderDTRow(d, method = 'add') {
         // save to local storage
         suppliersData[d.id] = d;
         const no = `<span style="font-weight:600;">No</span>`;
         const sa = !d.supplier_agreement || !d.supplier_agreement.length ? no : `<a href="javascript:void(0)" data-opensafile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View</a>`;
         const cs = !d.compliance_statement || !d.compliance_statement.length ?  no : `<a href="javascript:void(0)" data-opencsfile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View </a>`;
+        let evalBtn = '';
+
+        d.evaluation_status = 'done';
+        const stat = Math.floor(Math.random() * (3 - 1 + 1)) + 1;
+        switch(stat) {
+            // case 'done': 
+            case 1: 
+                evalBtn = `<a href="#" class="font-dark semibold" title="Click to view evaluation details"> 
+                2020-12-03
+                                <i class="fa fa-check-circle font-green-jungle" style="margin-left:.75rem"></i>
+                            </a>`;
+                break;
+            // case 'due': 
+            case 2: 
+                evalBtn = `<button type="button"  class="btn red btn-sm btn-circle" title="Re-evaluate" data-openevalform="${d.id}">
+                                Re-evaluate
+                            </button>`;
+                break;
+            case 'pending':
+                break;
+            default: 
+                evalBtn = `<button type="button"  class="btn green btn-sm btn-circle" title="Evaluation form" data-openevalform="${d.id}">
+                                <i class="fa fa-search icon-margin-right"></i> Evaluate
+                            </button>`;
+                break;
+        }
         
         supplierTable.dt.row.add([
             d.name,
             d.food_imported.map((x) => x.name).join(', '),
             d.address,
-            '',
+            evalBtn,
             sa,
             cs,
             `
                 <div class="d-flex center">
-                    <button title="Evaluation form" type="button" class="btn green-soft btn-circle btn-sm" data-openevalform="${d.id}"> <i class="icon-margin-rightx fa fa-edit"></i> Form</button>
-                    <span>|</span>
-                    <button type="button" class="btn-link">Open</button>
+                    <div class="btn-group btn-group-circle btn-group-sm btn-group-solid">
+                        
+                        <button type="button" class="btn dark btn-outline" title="View data">View</button>
+                        <button type="button" class="btn blue btn-outlinex" title="Update">Update</button>
+                    </div>
                 </div>
             `,
         ]);
@@ -407,6 +477,10 @@ jQuery(function() {
             }, 5000);
         });
     }
+
+    // init
+    resetEvaluationForm();
+    initSuppliers();
 });
 
 // truncrate string into desired maximum length
@@ -484,6 +558,7 @@ function openEvaluationForm(data) {
 
     $('#effsaddress').val(data.address || '')
     $('#effsname').val(data.name || '')
+    $('#evaluationForm input[name="supplier"]').val(data.id || '');
     
     $('#modalEvaluationForm').modal('show');
 }
@@ -497,4 +572,9 @@ function resetEvaluationForm() {
     $('.ynDocsUpl input[type=radio][value=0]').prop('checked', true).trigger('change');
     // to reset the radio buttons
     form.get(0).reset();
+}
+
+// updating rows
+function updateDTRow(suppliersData, newData, table) {
+// 
 }

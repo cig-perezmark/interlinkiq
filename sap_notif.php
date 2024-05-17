@@ -122,50 +122,64 @@
     $status1 = 'Manual';
     $campaignStatus = 2;
     $autoSendStatus = 1;
-    
-    $stmt = $conn->prepare("SELECT crm_id, account_name, account_email, account_status, flag, crm_id FROM tbl_Customer_Relationship WHERE flag = ? OR account_status = ?");
-    if (!$stmt) {
-        die("Error in the first prepared statement: " . $conn->error);
-    }
-    
-    $stmt->bind_param("is", $flag1, $status1);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    $stmt2 = $conn->prepare("SELECT crm_ids, Campaign_from, Campaign_Recipients, Campaign_Subject, Campaign_body FROM tbl_Customer_Relationship_Campaign WHERE Campaign_Status = ? AND Auto_Send_Status = ?");
-    if (!$stmt2) {
-        die("Error in the second prepared statement: " . $conn->error);
-    }
-    
-    $stmt2->bind_param("ii", $campaignStatus, $autoSendStatus);
-    $stmt2->execute();
-    $result2 = $stmt2->get_result();
-    
-    while ($row = $result->fetch_assoc()) {
-        $crmIdToMatch = $row['crm_id'];
-        $matchingRow = null;
-    
+    $chunkSize1 = 1000;
+    $offset1 = 0;
+
+    do {
+        // Fetch a chunk of records from tbl_Customer_Relationship
+        $stmt = $conn->prepare("SELECT crm_id, account_name, account_email, account_status, flag FROM tbl_Customer_Relationship WHERE flag = ? OR account_status = ? LIMIT ? OFFSET1 ?");
+        if (!$stmt) {
+            die("Error in the first prepared statement: " . $conn->error);
+        }
+
+        $stmt->bind_param("isii", $flag1, $status1, $chunkSize1, $offset1);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        // Break if no more records are fetched
+        if ($result->num_rows == 0) {
+            break;
+        }
+
+        // Fetch all campaign records once (assuming they are not very large)
+        $stmt2 = $conn->prepare("SELECT crm_ids, Campaign_from, Campaign_Recipients, Campaign_Subject, Campaign_body FROM tbl_Customer_Relationship_Campaign WHERE Campaign_Status = ? AND Auto_Send_Status = ?");
+        if (!$stmt2) {
+            die("Error in the second prepared statement: " . $conn->error);
+        }
+
+        $stmt2->bind_param("ii", $campaignStatus, $autoSendStatus);
+        $stmt2->execute();
+        $result2 = $stmt2->get_result();
+
+        $campaigns = [];
         while ($row2 = $result2->fetch_assoc()) {
-            if ($row2['crm_ids'] == $crmIdToMatch) {
-                $matchingRow = $row2;
-                break;
+            $campaigns[$row2['crm_ids']] = $row2;
+        }
+
+        while ($row = $result->fetch_assoc()) {
+            $crmIdToMatch = $row['crm_id'];
+
+            if (isset($campaigns[$crmIdToMatch])) {
+                $updateStmt = $conn->prepare("UPDATE tbl_Customer_Relationship_Campaign SET Auto_Send_Status = 0 WHERE crm_ids = ?");
+                if (!$updateStmt) {
+                    die("Error in the update prepared statement: " . $conn->error);
+                }
+
+                $updateStmt->bind_param("s", $crmIdToMatch);  // Assuming crm_ids is a string, adjust accordingly
+                $updateStmt->execute();
+                $updateStmt->close();
             }
         }
-    
-        if ($matchingRow !== null) {
-            $updateStmt = $conn->prepare("UPDATE tbl_Customer_Relationship_Campaign SET Auto_Send_Status = 0 WHERE crm_ids = ?");
-            if (!$updateStmt) {
-                die("Error in the update prepared statement: " . $conn->error);
-            }
-    
-            $updateStmt->bind_param("s", $crmIdToMatch);  // Assuming crm_ids is a string, adjust accordingly
-            $updateStmt->execute();
-            $updateStmt->close();
-        }
-    
-        // Reset the second result set pointer to the beginning for the next iteration
-        $result2->data_seek(0);
-    }
+
+        // Move to the next chunk
+        $offset1 += $chunkSize1;
+        
+        // Clean up result sets
+        $result->free();
+        $result2->free();
+
+    } while (true);
+
     // end auto update campaign status
     
     // $result = mysqli_query( $conn,"SELECT * FROM tbl_supplier WHERE is_deleted = 0 AND ID = 558" );

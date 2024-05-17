@@ -452,135 +452,169 @@
             }
         }
     }
-    
-    // campaign crm
-    // $result_campaign = mysqli_query( $conn,"SELECT * FROM tbl_Customer_Relationship_Campaign WHERE Campaign_Status  = 2 and Auto_Send_Status = 1" );
-    //$result_campaign = mysqli_query( $conn,"SELECT * FROM tbl_Customer_Relationship_Campaign WHERE Campaign_Status  = 2 and userID = 38 and Auto_Send_Status = 1" );
-    // $result_campaign = mysqli_query( $conn,"SELECT * FROM tbl_Customer_Relationship_Campaign WHERE Campaign_Status = 2 and Auto_Send_Status = 1 AND Frequency <> '' AND Frequency IS NOT NULL" );
-    // $result_campaign = mysqli_query( $conn,"SELECT * FROM tbl_Customer_Relationship_Campaign WHERE Campaign_Status = 2 AND userID = 38 AND Auto_Send_Status = 1 AND Frequency <> '' AND Frequency IS NOT NULL" );
-    // $result_campaign = mysqli_query( $conn,"SELECT * FROM tbl_Customer_Relationship_Campaign WHERE Campaign_Status = 2 AND Auto_Send_Status = 1 AND Frequency = 8" );
-    // $result_campaign = mysqli_query( $conn,"SELECT * FROM tbl_Customer_Relationship_Campaign WHERE Campaign_Status = 2 and Auto_Send_Status = 1 AND Frequency > 0 AND Frequency <= 8" );
-    $result_campaign = mysqli_query( $conn,"SELECT * FROM tbl_Customer_Relationship_Campaign WHERE Campaign_Status = 2 and Auto_Send_Status = 1 AND Frequency BETWEEN 1 AND 8" );
-    if ( mysqli_num_rows($result_campaign) > 0 ) {
-        $mail_sent = 0;
-        while($row = mysqli_fetch_array($result_campaign)) {
+
+    $chunkSize = 1000; // Adjust the chunk size as needed
+    $offset = 0;
+
+    $stopStmt = $conn->prepare("UPDATE tbl_Customer_Relationship_Campaign SET Auto_Send_Status = 0 WHERE Campaign_Id = ?");
+
+    if (!$stopStmt) {
+        die('Prepare failed: ' . $conn->error);
+    }
+
+    while (true) {
+        $stmt = $conn->prepare("
+            SELECT Campaign_Id 
+            FROM tbl_Customer_Relationship_Campaign 
+            WHERE Campaign_added < DATE_SUB(CURDATE(), INTERVAL 90 DAY)
+            LIMIT ?, ?
+        ");
+        if (!$stmt) {
+            die('Prepare failed: ' . $conn->error);
+        }
+
+        $stmt->bind_param('ii', $offset, $chunkSize);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 0) {
+            break;
+        }
+
+        while ($campaign = $result->fetch_assoc()) {
+            $stopStmt->bind_param('i', $campaign['Campaign_Id']);
+            $stopStmt->execute();
+        }
+        $offset += $chunkSize;
+        $stmt->close();
+    }
+
+    $stopStmt->close();
+
+    while (true) {
+        $stmt = $conn->prepare("
+            SELECT * 
+            FROM tbl_Customer_Relationship_Campaign 
+            WHERE Campaign_Status = 2 AND Auto_Send_Status = 1 AND Frequency BETWEEN 1 AND 8
+            LIMIT ?, ?
+        ");
+        if (!$stmt) {
+            die('Prepare failed: ' . $conn->error);
+        }
+
+        $stmt->bind_param('ii', $offset, $chunkSize);
+        $stmt->execute();
+        $result_campaign = $stmt->get_result();
+
+        if ($result_campaign->num_rows === 0) {
+            break;
+        }
+
+        while ($row = $result_campaign->fetch_assoc()) {
             $frequency_ids = $row["Campaign_Id"];
             $frequency = $row["Frequency"];
             $frequency_custom = '0 | 0 | * | * | *';
-            if ($frequency == 1) {
-                $frequency_custom = '0 | 0 | * | * | *';    // Once Per Day
-            } else if ($frequency == 2) {
-                $frequency_custom = '0 | 0 | * | * | 0';    // Once Per Week
-            } else if ($frequency == 3) {
-                $frequency_custom = '0 | 0 | 1,15 | * | *'; // On the 1st and 15th of the Month
-            } else if ($frequency == 4) {
-                $frequency_custom = '0 | 0 | 1 | * | *';    // Once Per Month
-            } else if ($frequency == 5) {
-                $frequency_custom = '0 | 0 | 1 | 1 | *';    // Once Per Year
-            } else if ($frequency == 6) {
-                $frequency_custom = '0 | 0 | 1 | */2 | *';    // Every Other Month
-            } else if ($frequency == 7) {
-                $frequency_custom = '0 | 0 | 1 | */4 | *';    // Quarterly
-            } else if ($frequency == 8) {
-                $frequency_custom = '0 | 0 | 1 | 1,7 | *';    // Bi-Annual
+
+            switch ($frequency) {
+                case 1: $frequency_custom = '0 | 0 | * | * | *'; break;    // Once Per Day
+                case 2: $frequency_custom = '0 | 0 | * | * | 0'; break;    // Once Per Week
+                case 3: $frequency_custom = '0 | 0 | 1,15 | * | *'; break; // On the 1st and 15th of the Month
+                case 4: $frequency_custom = '0 | 0 | 1 | * | *'; break;    // Once Per Month
+                case 5: $frequency_custom = '0 | 0 | 1 | 1 | *'; break;    // Once Per Year
+                case 6: $frequency_custom = '0 | 0 | 1 | */2 | *'; break;  // Every Other Month
+                case 7: $frequency_custom = '0 | 0 | 1 | */4 | *'; break;  // Quarterly
+                case 8: $frequency_custom = '0 | 0 | 1 | 1,7 | *'; break;  // Bi-Annual
             }
+
             $frequency_custom_arr = explode(" | ", $frequency_custom);
-
             $count_send = 0;
-            if (is_numeric($frequency_custom_arr[0]) AND $frequency_custom_arr[0] == $current_minute) { // minute
+
+            // Check each frequency component
+            if (is_numeric($frequency_custom_arr[0]) && $frequency_custom_arr[0] == $current_minute) {
                 $count_send++;
-            } else {
-                if ($frequency_custom_arr[0] == '*') { 
+            } else if ($frequency_custom_arr[0] == '*') {
+                $count_send++;
+            } else if ($frequency_custom_arr[0] == '*/2') {
+                $count_send += intval(check($current_minute, 2));
+            } else if ($frequency_custom_arr[0] == '*/5') {
+                $count_send += intval(check($current_minute, 5));
+            } else if ($frequency_custom_arr[0] == '*/10') {
+                $count_send += intval(check($current_minute, 10));
+            } else if ($frequency_custom_arr[0] == '*/15') {
+                $count_send += intval(check($current_minute, 15));
+            } else if ($frequency_custom_arr[0] == '0,30') {
+                $count_send += intval(check($current_minute, 30));
+            }
+
+            if (is_numeric($frequency_custom_arr[1]) && $frequency_custom_arr[1] == $current_hour) {
+                $count_send++;
+            } else if ($frequency_custom_arr[1] == '*') {
+                $count_send++;
+            } else if ($frequency_custom_arr[1] == '*/2') {
+                $count_send += intval(check($current_hour, 2));
+            } else if ($frequency_custom_arr[1] == '*/3') {
+                $count_send += intval(check($current_hour, 3));
+            } else if ($frequency_custom_arr[1] == '*/4') {
+                $count_send += intval(check($current_hour, 4));
+            } else if ($frequency_custom_arr[1] == '*/6') {
+                $count_send += intval(check($current_hour, 6));
+            } else if ($frequency_custom_arr[1] == '0,12') {
+                $count_send += intval(check($current_hour, 12));
+            }
+
+            if (is_numeric($frequency_custom_arr[2]) && $frequency_custom_arr[2] == $current_day) {
+                $count_send++;
+            } else if ($frequency_custom_arr[2] == '*') {
+                $count_send++;
+            } else if ($frequency_custom_arr[2] == '*/2') {
+                $count_send += intval(check($current_day, 2));
+            } else if ($frequency_custom_arr[2] == '1,15') {
+                if ($current_day == 1 || $current_day == 15) {
                     $count_send++;
-                } else if ($frequency_custom_arr[0] == '*/2') {
-                    $count_send += intval(check($current_minute, 2));
-                } else if ($frequency_custom_arr[0] == '*/5') {
-                    $count_send += intval(check($current_minute, 5));
-                } else if ($frequency_custom_arr[0] == '*/10') {
-                    $count_send += intval(check($current_minute, 10));
-                } else if ($frequency_custom_arr[0] == '*/15') {
-                    $count_send += intval(check($current_minute, 15));
-                } else if ($frequency_custom_arr[0] == '0,30') {
-                    $count_send += intval(check($current_minute, 30));
                 }
             }
 
-            if (is_numeric($frequency_custom_arr[1]) AND $frequency_custom_arr[1] == $current_hour) { // hour
+            if (is_numeric($frequency_custom_arr[3]) && $frequency_custom_arr[3] == $current_month) {
                 $count_send++;
-            } else {
-                if ($frequency_custom_arr[1] == '*') {
+            } else if ($frequency_custom_arr[3] == '*') {
+                $count_send++;
+            } else if ($frequency_custom_arr[3] == '*/2') {
+                $count_send += intval(check($current_month, 2));
+            } else if ($frequency_custom_arr[3] == '*/4') {
+                $count_send += intval(check($current_month, 4));
+            } else if ($frequency_custom_arr[3] == '1,7') {
+                if ($current_month == 1 || $current_month == 7) {
                     $count_send++;
-                } else if ($frequency_custom_arr[1] == '*/2') {
-                    $count_send += intval(check($current_hour, 2));
-                } else if ($frequency_custom_arr[1] == '*/3') {
-                    $count_send += intval(check($current_hour, 3));
-                } else if ($frequency_custom_arr[1] == '*/4') {
-                    $count_send += intval(check($current_hour, 4));
-                } else if ($frequency_custom_arr[1] == '*/6') {
-                    $count_send += intval(check($current_hour, 6));
-                } else if ($frequency_custom_arr[1] == '0,12') {
-                    $count_send += intval(check($current_hour, 12));
                 }
             }
-            
-            if (is_numeric($frequency_custom_arr[2]) AND $frequency_custom_arr[2] == $current_day) { // day
+
+            if (is_numeric($frequency_custom_arr[4]) && $frequency_custom_arr[4] == $current_weekday) {
                 $count_send++;
-            } else {
-                if ($frequency_custom_arr[2] == '*') {
+            } else if ($frequency_custom_arr[4] == '*') {
+                $count_send++;
+            } else if ($frequency_custom_arr[4] == '1-5') {
+                if (in_array($current_weekday, range(1, 5))) {
                     $count_send++;
-                } else if ($frequency_custom_arr[2] == '*/2') {
-                    $count_send += intval(check($current_day, 2));
-                } else if ($frequency_custom_arr[2] == '1,15') {
-                    if ($current_day == 1 OR $current_day == 15) {
-                        $count_send ++;
-                    }
                 }
-            }
-            
-            if (is_numeric($frequency_custom_arr[3]) AND $frequency_custom_arr[3] == $current_month) { // month
-                $count_send++;
-            } else {
-                if ($frequency_custom_arr[3] == '*') {
+            } else if ($frequency_custom_arr[4] == '6,7') {
+                if ($current_weekday == 6 || $current_weekday == 7) {
                     $count_send++;
-                } else if ($frequency_custom_arr[3] == '*/2') {
-                    $count_send += intval(check($current_month, 2));
-                } else if ($frequency_custom_arr[3] == '*/4') {
-                    $count_send += intval(check($current_month, 3));
-                } else if ($frequency_custom_arr[3] == '1,7') {
-                    if ($current_month == 1 OR $current_month == 7) {
-                        $count_send ++;
-                    }
                 }
-            }
-            
-            if (is_numeric($frequency_custom_arr[4]) AND $frequency_custom_arr[4] == $current_weekday) { // weekday
-                $count_send++;
-            } else {
-                if ($frequency_custom_arr[4] == '*') {
+            } else if ($frequency_custom_arr[4] == '1,3,5') {
+                if ($current_weekday == 1 || $current_weekday == 3 || $current_weekday == 5) {
                     $count_send++;
-                } else if ($frequency_custom_arr[4] == '1-5') {
-                    if (in_array($current_weekday, range(1,5))) {
-                        $count_send ++;
-                    }
-                } else if ($frequency_custom_arr[4] == '6,7') {
-                    if ($current_weekday == 6 OR $current_weekday == 7) {
-                        $count_send ++;
-                    }
-                } else if ($frequency_custom_arr[4] == '1,3,5') {
-                    if ($current_weekday == 1 OR $current_weekday == 3 OR $current_weekday == 5) {
-                        $count_send ++;
-                    }
-                } else if ($frequency_custom_arr[4] == '2,4') {
-                    if ($current_weekday == 2 OR $current_weekday == 4) {
-                        $count_send ++;
-                    }
+                }
+            } else if ($frequency_custom_arr[4] == '2,4') {
+                if ($current_weekday == 2 || $current_weekday == 4) {
+                    $count_send++;
                 }
             }
 
             if ($count_send == 5) {
                 $crm_ids = $row['crm_ids'];
-                $acc_query = mysqli_query($conn, "select * from tbl_Customer_Relationship where crm_id = $crm_ids");
-                foreach($acc_query as $acct){
+                $acc_query = $conn->query("SELECT * FROM tbl_Customer_Relationship WHERE crm_id = $crm_ids");
+                $account_name = '';
+                foreach ($acc_query as $acct) {
                     $account_name = $acct['account_name'];
                 }
                 $rowUser_name = 'InterlinkIQ.com';
@@ -588,20 +622,151 @@
                 $to = $row['Campaign_Recipients'];
                 $user = '';
                 $subject = $row['Campaign_Subject'];
-                $body = 'Hi '.$account_name.',<br><br>'.$row['Campaign_body'];
+                $body = 'Hi ' . $account_name . ',<br><br>' . $row['Campaign_body'];
 
-                // if ($mail_sent > 0) {
-                //     php_mailer_2($to, $user, $subject, $body, $rowUser_email, $rowUser_name);
-                //     $mail_sent++;
-                // } else {
-                    php_mailer_1($to, $user, $subject, $body, $rowUser_email, $rowUser_name);
-                //     $mail_sent++;
-                // }
+                php_mailer_1($to, $user, $subject, $body, $rowUser_email, $rowUser_name);
             }
         }
+
+        // Move to the next chunk
+        $offset += $chunkSize;
+        $stmt->close();
     }
+ 
+    // $result_campaign = mysqli_query( $conn,"SELECT * FROM tbl_Customer_Relationship_Campaign WHERE Campaign_Status = 2 and Auto_Send_Status = 1 AND Frequency BETWEEN 1 AND 8" );
+    // if ( mysqli_num_rows($result_campaign) > 0 ) {
+    //     $mail_sent = 0;
+    //     while($row = mysqli_fetch_array($result_campaign)) {
+    //         $frequency_ids = $row["Campaign_Id"];
+    //         $frequency = $row["Frequency"];
+    //         $frequency_custom = '0 | 0 | * | * | *';
+    //         if ($frequency == 1) {
+    //             $frequency_custom = '0 | 0 | * | * | *';    // Once Per Day
+    //         } else if ($frequency == 2) {
+    //             $frequency_custom = '0 | 0 | * | * | 0';    // Once Per Week
+    //         } else if ($frequency == 3) {
+    //             $frequency_custom = '0 | 0 | 1,15 | * | *'; // On the 1st and 15th of the Month
+    //         } else if ($frequency == 4) {
+    //             $frequency_custom = '0 | 0 | 1 | * | *';    // Once Per Month
+    //         } else if ($frequency == 5) {
+    //             $frequency_custom = '0 | 0 | 1 | 1 | *';    // Once Per Year
+    //         } else if ($frequency == 6) {
+    //             $frequency_custom = '0 | 0 | 1 | */2 | *';    // Every Other Month
+    //         } else if ($frequency == 7) {
+    //             $frequency_custom = '0 | 0 | 1 | */4 | *';    // Quarterly
+    //         } else if ($frequency == 8) {
+    //             $frequency_custom = '0 | 0 | 1 | 1,7 | *';    // Bi-Annual
+    //         }
+    //         $frequency_custom_arr = explode(" | ", $frequency_custom);
 
+    //         $count_send = 0;
+    //         if (is_numeric($frequency_custom_arr[0]) AND $frequency_custom_arr[0] == $current_minute) { // minute
+    //             $count_send++;
+    //         } else {
+    //             if ($frequency_custom_arr[0] == '*') { 
+    //                 $count_send++;
+    //             } else if ($frequency_custom_arr[0] == '*/2') {
+    //                 $count_send += intval(check($current_minute, 2));
+    //             } else if ($frequency_custom_arr[0] == '*/5') {
+    //                 $count_send += intval(check($current_minute, 5));
+    //             } else if ($frequency_custom_arr[0] == '*/10') {
+    //                 $count_send += intval(check($current_minute, 10));
+    //             } else if ($frequency_custom_arr[0] == '*/15') {
+    //                 $count_send += intval(check($current_minute, 15));
+    //             } else if ($frequency_custom_arr[0] == '0,30') {
+    //                 $count_send += intval(check($current_minute, 30));
+    //             }
+    //         }
 
+    //         if (is_numeric($frequency_custom_arr[1]) AND $frequency_custom_arr[1] == $current_hour) { // hour
+    //             $count_send++;
+    //         } else {
+    //             if ($frequency_custom_arr[1] == '*') {
+    //                 $count_send++;
+    //             } else if ($frequency_custom_arr[1] == '*/2') {
+    //                 $count_send += intval(check($current_hour, 2));
+    //             } else if ($frequency_custom_arr[1] == '*/3') {
+    //                 $count_send += intval(check($current_hour, 3));
+    //             } else if ($frequency_custom_arr[1] == '*/4') {
+    //                 $count_send += intval(check($current_hour, 4));
+    //             } else if ($frequency_custom_arr[1] == '*/6') {
+    //                 $count_send += intval(check($current_hour, 6));
+    //             } else if ($frequency_custom_arr[1] == '0,12') {
+    //                 $count_send += intval(check($current_hour, 12));
+    //             }
+    //         }
+            
+    //         if (is_numeric($frequency_custom_arr[2]) AND $frequency_custom_arr[2] == $current_day) { // day
+    //             $count_send++;
+    //         } else {
+    //             if ($frequency_custom_arr[2] == '*') {
+    //                 $count_send++;
+    //             } else if ($frequency_custom_arr[2] == '*/2') {
+    //                 $count_send += intval(check($current_day, 2));
+    //             } else if ($frequency_custom_arr[2] == '1,15') {
+    //                 if ($current_day == 1 OR $current_day == 15) {
+    //                     $count_send ++;
+    //                 }
+    //             }
+    //         }
+            
+    //         if (is_numeric($frequency_custom_arr[3]) AND $frequency_custom_arr[3] == $current_month) { // month
+    //             $count_send++;
+    //         } else {
+    //             if ($frequency_custom_arr[3] == '*') {
+    //                 $count_send++;
+    //             } else if ($frequency_custom_arr[3] == '*/2') {
+    //                 $count_send += intval(check($current_month, 2));
+    //             } else if ($frequency_custom_arr[3] == '*/4') {
+    //                 $count_send += intval(check($current_month, 3));
+    //             } else if ($frequency_custom_arr[3] == '1,7') {
+    //                 if ($current_month == 1 OR $current_month == 7) {
+    //                     $count_send ++;
+    //                 }
+    //             }
+    //         }
+            
+    //         if (is_numeric($frequency_custom_arr[4]) AND $frequency_custom_arr[4] == $current_weekday) { // weekday
+    //             $count_send++;
+    //         } else {
+    //             if ($frequency_custom_arr[4] == '*') {
+    //                 $count_send++;
+    //             } else if ($frequency_custom_arr[4] == '1-5') {
+    //                 if (in_array($current_weekday, range(1,5))) {
+    //                     $count_send ++;
+    //                 }
+    //             } else if ($frequency_custom_arr[4] == '6,7') {
+    //                 if ($current_weekday == 6 OR $current_weekday == 7) {
+    //                     $count_send ++;
+    //                 }
+    //             } else if ($frequency_custom_arr[4] == '1,3,5') {
+    //                 if ($current_weekday == 1 OR $current_weekday == 3 OR $current_weekday == 5) {
+    //                     $count_send ++;
+    //                 }
+    //             } else if ($frequency_custom_arr[4] == '2,4') {
+    //                 if ($current_weekday == 2 OR $current_weekday == 4) {
+    //                     $count_send ++;
+    //                 }
+    //             }
+    //         }
+
+    //         if ($count_send == 5) {
+    //             $crm_ids = $row['crm_ids'];
+    //             $acc_query = mysqli_query($conn, "select * from tbl_Customer_Relationship where crm_id = $crm_ids");
+    //             foreach($acc_query as $acct){
+    //                 $account_name = $acct['account_name'];
+    //             }
+    //             $rowUser_name = 'InterlinkIQ.com';
+    //             $rowUser_email = $row['Campaign_from'];
+    //             $to = $row['Campaign_Recipients'];
+    //             $user = '';
+    //             $subject = $row['Campaign_Subject'];
+    //             $body = 'Hi '.$account_name.',<br><br>'.$row['Campaign_body'];
+
+    //             php_mailer_1($to, $user, $subject, $body, $rowUser_email, $rowUser_name);
+    //         }
+    //     }
+    // }
 
     // Password Expired - DAILY NOTIFICATION
     $frequency_custom = '0 | 0 | * | * | *';    // Once Per Day

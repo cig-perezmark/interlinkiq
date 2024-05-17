@@ -122,12 +122,12 @@
     $status1 = 'Manual';
     $campaignStatus = 2;
     $autoSendStatus = 1;
-    $chunkSize1 = 1000;
+    $chunkSize1 = 100;
     $offset1 = 0;
 
     do {
         // Fetch a chunk of records from tbl_Customer_Relationship
-        $stmt = $conn->prepare("SELECT crm_id, account_name, account_email, account_status, flag FROM tbl_Customer_Relationship WHERE flag = ? OR account_status = ? LIMIT ? OFFSET1 ?");
+        $stmt = $conn->prepare("SELECT crm_id, account_name, account_email, account_status, flag FROM tbl_Customer_Relationship WHERE flag = ? OR account_status = ? LIMIT ? OFFSET ?");
         if (!$stmt) {
             die("Error in the first prepared statement: " . $conn->error);
         }
@@ -142,7 +142,7 @@
         }
 
         // Fetch all campaign records once (assuming they are not very large)
-        $stmt2 = $conn->prepare("SELECT crm_ids, Campaign_from, Campaign_Recipients, Campaign_Subject, Campaign_body FROM tbl_Customer_Relationship_Campaign WHERE Campaign_Status = ? AND Auto_Send_Status = ?");
+        $stmt2 = $conn->prepare("SELECT crm_ids FROM tbl_Customer_Relationship_Campaign WHERE Campaign_Status = ? AND Auto_Send_Status = ?");
         if (!$stmt2) {
             die("Error in the second prepared statement: " . $conn->error);
         }

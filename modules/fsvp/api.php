@@ -570,7 +570,7 @@ if(isset($_GET['newImporter']) ) {
 }
 
 // displaying importers to table
-if(isset($_GET['fetchImportersForTable']) ) {
+if(isset($_GET['fetchImportersForTable'])) {
     $result = $conn->execute(
         "SELECT 
             i.id, 
@@ -616,4 +616,89 @@ if(isset($_GET['fetchImportersForTable']) ) {
     send_response([
         'data' => $result,
     ]);
+}
+
+if(isset($_GET['newSupplierEvaluation'])) {
+    try {
+        $conn->begin_transaction();
+
+        if(empty($_POST['importer'])) {
+            throw new Exception('Importer is required.');
+        }
+
+        if(empty($_POST['supplier'])) {
+            throw new Exception('No foreign supplier is acquired.');
+        }
+
+        $params = [
+            'user_id'                       => $user_id,
+            'portal_user'                   => $portal_user,
+            'supplier_id'                   => $_POST['supplier'],
+            'importer_id'                   => $_POST['importer'],
+            'description'                   => emptyIsNull($_POST['description']),
+            'evaluation'                    => emptyIsNull($_POST['evaluation']),
+            'evaluation_date'               => emptyIsNull($_POST['evaluation_date']),
+            'evaluation_due_date'           => emptyIsNull($_POST['evaluation_due_date']),
+            'sppp'                          => emptyIsNull($_POST['sppp']),
+            'import_alerts'                 => $_POST['import_alerts'] ?? NULL,
+            'recalls'                       => $_POST['recalls'] ?? NULL,
+            'warning_letters'               => $_POST['warning_letters'] ?? NULL,
+            'other_significant_ca'          => $_POST['other_significant_ca'] ?? NULL,
+            'suppliers_corrective_actions'  => $_POST['suppliers_corrective_actions'] ?? NULL,
+            'info_related'                  => emptyIsNull($_POST['info_related']),
+            'rejection_date'                => emptyIsNull($_POST['rejection_date']),
+            'approval_date'                 => emptyIsNull($_POST['approval_date']),
+            'assessment'                    => emptyIsNull($_POST['assessment']),
+        ];
+
+        $conn->insert("tbl_fsvp_evaluations", $params);
+        $id = $conn->getInsertId();
+
+        $evalFiles = array_map(function ($fileData) use($conn, $id) {
+            $conn->insert("tbl_fsvp_files", [
+                'record_id' => $id,
+                ...$fileData,
+            ]);
+            $fileData['id'] = $conn->getInsertId();
+            $fileData['filename'] = embedFileUrl($fileData['filename'], $fileData['path']);
+            unset($fileData['path']);
+            return $fileData;
+        }, array_filter([
+            saveEvaluationFile($_POST, 'import_alerts'),
+            saveEvaluationFile($_POST, 'recalls'),
+            saveEvaluationFile($_POST, 'warning_letters'),
+            saveEvaluationFile($_POST, 'other_significant_ca'),
+            saveEvaluationFile($_POST, 'suppliers_corrective_actions'),
+        ], function($r) { return is_array($r); }));
+
+        $data = $params;
+        unset(
+            $data['user_id'],
+            $data['portal_user'],
+            $data['import_alerts'],
+            $data['recalls'],
+            $data['warning_letters'],
+            $data['other_significant_ca'],
+            $data['suppliers_corrective_actions'],
+        );
+        $data['id'] = $id;
+        $data['files'] = [];
+
+        foreach($evalFiles as $file) {
+            $name = explode(':', $file['record_type'])[1];
+            unset($file['record_type']);
+            $data['files'][$name] = $file;
+        }
+
+        $conn->commit();
+        send_response([
+            'data' => $data,
+            'message' => 'Save successfully.',
+        ]);
+    } catch(Throwable $e) {
+        $conn->rollback();
+        send_response([
+            'error' => $e->getMessage(),
+        ], 500);
+    }
 }

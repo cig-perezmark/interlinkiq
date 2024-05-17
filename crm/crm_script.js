@@ -848,7 +848,7 @@ $(document).ready(function() {
         $('.filter_value').not(this).prop('checked', false);
     });
     
-    $('#searchForm').on('submit', function(e) {
+    $('#searchParent').on('submit', function(e) {
         e.preventDefault();
         var searchVal = $('#searchValue').val();
         
@@ -865,6 +865,34 @@ $(document).ready(function() {
             url: "crm/controller_functions.php",
             data: {
                 search_contact: true,
+                searchVal: searchVal,
+            },
+            success: function(response) {
+                $('#dataTable_2').removeClass('d-none');
+                $('#dataTable_2 tbody').html(response);
+                initializeDataTable('#dataTable_2');
+                $('#site_activities_loading, #spinner-text').addClass('d-none');
+            }
+        });
+    });
+
+    $('#searchForm').on('submit', function(e) {
+        e.preventDefault();
+        var searchVal = $('#searchValue').val();
+        
+        if ($.fn.DataTable.isDataTable('#dataTable_1')) {
+            $('#dataTable_1').DataTable().destroy();
+            $('#dataTable_1').addClass('d-none');
+        }
+        if ($.fn.DataTable.isDataTable('#dataTable_2')) {
+            $('#dataTable_2').DataTable().destroy();
+            $('#dataTable_2').addClass('d-none');
+        }
+        $('#site_activities_loading, #spinner-text').removeClass('d-none');
+        $.post({
+            url: "crm/controller_functions.php",
+            data: {
+                search_parent: true,
                 searchVal: searchVal,
             },
             success: function(response) {
@@ -1115,26 +1143,46 @@ $(document).ready(function() {
                 var contact = numberWithCommas(response.relationshipCount);
                 var campainer = numberWithCommas(response.campaignerCount);
                 var average = numberWithCommas(response.campaignAverage);
+                var expires = numberWithCommas(response.expiredCampaigns);
+                var archives = numberWithCommas(response.archivedContacts);
               
                 $('#campaignCount').text(campaign);
                 $('#contactCount').text(contact);
                 $('#activeCampaignerCount').text(campainer);
                 $('#monthlyCampaignAverage').text(average);
+                $('#archivedContacts').text(archives);
+                $('#expiredCampaigns').text(expires);
             }
         });
     }
 
     get_campaigns()
         function get_campaigns() {
+            if ($.fn.DataTable.isDataTable('#campaignsArea')) {
+            $('#campaignsArea').DataTable().destroy();
+        }
         $.ajax({
             url: "crm/controller_functions.php",
             type: "POST",
             data: { get_campaigns_per_subject: true },
             success: function(response) {
-                $('.campaignsArea').html(response);
+                $('#campaignsArea tbody').html(response);
+                initializeDataTable2('#campaignsArea');
             }
         });
     }
+
+    $(document).on('click', '#stop-campaigns', function(e) {
+        e.preventDefault()
+        $.ajax({
+            url: "crm/controller_functions.php",
+            method: "POST",
+            data: { stop_campaigns: true},
+            success: function(response) {
+               console.log(response)
+            }
+        });
+    });
     
     graphs();
         function graphs() {
@@ -1355,11 +1403,15 @@ $(document).ready(function() {
                 var contact     =   numberWithCommas(response.userContacts);
                 var today       =   numberWithCommas(response.campaignSentToday);
                 var average     =   numberWithCommas(response.dailyAverage);
+                var expires     =   numberWithCommas(response.expiredCampaigns);
+                var archives     =   numberWithCommas(response.archivedContacts);
               
                 $('#userCampaigns').text(campaign);
                 $('#userContacts').text(contact);
                 $('#userSentToday').text(today);
                 $('#userDailyAverage').text(average);
+                $('#userExpiredCampaigns').text(expires);
+                $('#userArchiveContacts').text(archives);
             }
         });
     }

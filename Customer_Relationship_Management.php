@@ -185,32 +185,43 @@ $today_tx = $date_default_tx->format('Y-m-d');
     .swal2-container {
         z-index: 9999;
     }
-</style>
 
+    .table-scrollable {
+        overflow-y: auto;
+    }
+</style>
+    <link href="assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.css" rel="stylesheet" type="text/css" />
+    <link href="assets/global/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet" type="text/css" />
+    <link href="assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css" rel="stylesheet" type="text/css" />
+    <link href="assets/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css" />
+    <script src="assets/global/plugins/moment.min.js" type="text/javascript"></script>
     <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
     <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
     <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
     <script src="https://cdn.amcharts.com/lib/5/themes/Responsive.js"></script>
+    <script src="assets/global/scripts/app.min.js" type="text/javascript"></script>
+    <script src="assets/pages/scripts/components-date-time-pickers.min.js" type="text/javascript"></script>
     <div class="row">
         <div class="col-md-12">
             <!-- BEGIN BORDERED TABLE PORTLET-->
             <ul class="nav nav-tabs">
                 <li class="active">
-                    <a href="#list" data-toggle="tab"> Contact List </a>
-                </li>
-                
-                <li>
                     <a href="#contribution" data-toggle="tab"> My Contribution </a>
                 </li>
-                
+                <li>
+                    <a href="#list" data-toggle="tab"> Contact List </a>
+                </li>
                 <li>
                     <a href="#report" data-toggle="tab"> Report </a>
                 </li>
+                <li class="d-none">
+                    <a href="#settings" data-toggle="tab"> Misc </a>
+                </li>
             </ul>
             <div class="tab-content">
-                <div class="tab-pane active" id="list">
+                <div class="tab-pane" id="list">
                     <div class="portlet light portlet-fit ">
                         <div class="portlet-title mb-5">
                             <div class="caption">
@@ -279,6 +290,15 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                     <div class="filter-flex">
                                         <form id="searchForm">
                                             <label>Contact name</label>
+                                            <div class="input-group" style="margin-bottom:1rem">
+                                                <input type="text" class="form-control" id="searchValue" placeholder="Search customer name">
+                                                <span class="input-group-btn">
+                                                    <button type="submit" class="btn green" type="button"><i class="fa fa-search"></i></button>
+                                                </span>
+                                            </div>
+                                        </form>
+                                        <form id="searchParent">
+                                            <label>Contact Parent</label>
                                             <div class="input-group" style="margin-bottom:1rem">
                                                 <input type="text" class="form-control" id="searchValue" placeholder="Search customer name">
                                                 <span class="input-group-btn">
@@ -459,7 +479,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                         
                                         <label class="bold font-dark mt-2 filter--title">Custom Date Range</label>
                                         <div class="bd-highlight">
-                                            <form method="POST" id="filter-via-date">
+                                            <form method="POST" id="filter-via-date" autocomplete="off">
                                                <div class="form-group">
                                                     <div class="input-group date-picker input-daterange" data-date="10/11/2012" data-date-format="mm/dd/yyyy">
                                                         <input type="text" id="date-from" class="form-control" name="date_from">
@@ -474,7 +494,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                 </div>
                                 <div class="col-md-10">
                                     <div id="site_activities_loading">
-                                        <span id="spinner-text" style="display:18px" class="">Fetching data </span> <img src="../assets/global/img/loading.gif" alt="loading" /> 
+                                        <span id="spinner-text" style="display:18px" class="">Fetching data </span> <img src="assets/global/img/loading.gif" alt="loading" /> 
                                     </div>
                                     <div class="clearfix d-none" id="actionBtn">
                                         <div class="btn-group btn-group-solid">
@@ -537,11 +557,10 @@ $today_tx = $date_default_tx->format('Y-m-d');
                         </div>
                     </div>
                 </div>
-                
                 <div class="tab-pane" id="report">
                     <div class="row widget-row">
-                        <div class="col-md-3">
-                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
+                        <div class="col-md-4 col-xs-12 col-sm-6">
+                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">
                                 <h4 class="widget-thumb-heading">Contacts</h4>
                                 <div class="widget-thumb-wrap">
                                     <i class="widget-thumb-icon bg-green icon-users"></i>
@@ -551,7 +570,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4 col-xs-12 col-sm-6">
                             <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
                                 <h4 class="widget-thumb-heading">Active Campaigns</h4>
                                 <div class="widget-thumb-wrap">
@@ -562,7 +581,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4 col-xs-12 col-sm-6">
                             <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
                                 <h4 class="widget-thumb-heading">Active Campaigners</h4>
                                 <div class="widget-thumb-wrap">
@@ -573,7 +592,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4 col-xs-12 col-sm-6">
                             <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
                                 <h4 class="widget-thumb-heading">Average Campaign Send Monthly</h4>
                                 <div class="widget-thumb-wrap">
@@ -584,11 +603,44 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-4 col-xs-12 col-sm-6">
+                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
+                                <h4 class="widget-thumb-heading">Archive Contacts</h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon bg-yellow icon-user"></i>
+                                    <div class="widget-thumb-body">
+                                        <span class="widget-thumb-body-stat" id="archivedContacts">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xs-12 col-sm-6">
+                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
+                                <h4 class="widget-thumb-heading">Expired Campaigns</h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon bg-blue icon-envelope-letter"></i>
+                                    <div class="widget-thumb-body">
+                                        <span class="widget-thumb-body-stat" id="expiredCampaigns">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="col-md-5">
-                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">
+                            <div class="widget-thumb widget-bg-color-white margin-bottom-20">
                                 <h4 class="widget-thumb-heading">Active Campaigns</h4>
                                 <div class="widget-thumb-wrap">
-                                    <div class="scroller" style="height: 1065px;" data-always-visible="1" data-rail-visible="0">
+                                    <table class="table table-bordered table-hover table-striped dataTable no-footer" id="campaignsArea">
+                                        <thead>
+                                            <tr>
+                                                <th>Subject</th>
+                                                <th>Total Campaign Sent</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                    <!-- <div class="scroller" style="height: 1065px;" data-always-visible="1" data-rail-visible="0">
                                         <ul class="feeds campaignsArea">
                                             <li>
                                                 <div class="col1">
@@ -601,7 +653,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                                 </div>
                                             </li>
                                         </ul>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -631,9 +683,9 @@ $today_tx = $date_default_tx->format('Y-m-d');
                     </div>
                 </div>
                
-                <div class="tab-pane" id="contribution">
+                <div class="tab-pane active" id="contribution">
                     <div class="row widget-row">
-                        <div class="col-md-3">
+                        <div class="col-md-4 col-xs-12 col-sm-6">
                             <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
                                 <h4 class="widget-thumb-heading">Contacts</h4>
                                 <div class="widget-thumb-wrap">
@@ -644,7 +696,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4 col-xs-12 col-sm-6">
                             <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
                                 <h4 class="widget-thumb-heading">Active Campaigns</h4>
                                 <div class="widget-thumb-wrap">
@@ -655,7 +707,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4 col-xs-12 col-sm-6">
                             <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
                                 <h4 class="widget-thumb-heading">Campaigns Sent Today</h4>
                                 <div class="widget-thumb-wrap">
@@ -666,7 +718,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4 col-xs-12 col-sm-6">
                             <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
                                 <h4 class="widget-thumb-heading">Daily Average Campaign sent</h4>
                                 <div class="widget-thumb-wrap">
@@ -674,6 +726,48 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                     <div class="widget-thumb-body">
                                         <span class="widget-thumb-body-stat" id="userDailyAverage">0</span>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xs-12 col-sm-6">
+                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
+                                <h4 class="widget-thumb-heading">Archive Contacts</h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon bg-yellow icon-users"></i>
+                                    <div class="widget-thumb-body">
+                                        <span class="widget-thumb-body-stat" id="userArchiveContacts">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-xs-12 col-sm-6">
+                            <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
+                                <h4 class="widget-thumb-heading">Expired Campaigns</h4>
+                                <div class="widget-thumb-wrap">
+                                    <i class="widget-thumb-icon bg-blue icon-envelope-letter"></i>
+                                    <div class="widget-thumb-body">
+                                        <span class="widget-thumb-body-stat" id="userExpiredCampaigns">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            <div class="col-md-12 d-none">
+                            <div class="actions" style="margin-bottom: 2rem">
+                                <div class="btn-group">
+                                    <a class="btn btn-default btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions
+                                        <i class="fa fa-angle-down"></i>
+                                    </a>
+                                    <ul class="dropdown-menu pull-left">
+                                        <li>
+                                            <a class="tooltips get-task-notes" data-toggle="modal" href="#createCampaignTemplate"> Notes</a>
+                                        </li>
+                                        <li>
+                                            <a id="stop-campaigns" class="tooltips"> Stop Campaigns</a>
+                                        </li>
+                                        <li>
+                                            <a class="tooltips edit-assigned-task" data-id="' . $result['taskid'] . '" data-toggle="modal" href="#modalEditTaskForm"> View Task</a>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -1720,7 +1814,102 @@ $today_tx = $date_default_tx->format('Y-m-d');
                 </div>
             </div>
         </div>
-        
+
+        <div class="modal fade" id="createCampaignTemplate" tabindex="-1" role="basic" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="taskForm">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                            <h4 class="modal-title">Add New Task</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12"> 
+                                    <div class="form-group">
+                                        <label class="control-label">Account</label>
+                                        <select class="form-control" name="contact" type="text" required>
+                                            <option>Select Account</option>
+                                            <?php
+                                                $flag = 1;
+                                                $status = 'Manual';      
+                                                $stmt = mysqli_prepare($conn, 'SELECT account_email, account_name, crm_id FROM tbl_Customer_Relationship WHERE flag = ? AND account_status != ?');
+                                                mysqli_stmt_bind_param($stmt, 'is', $flag, $status);
+                                                mysqli_stmt_execute($stmt);
+                                                if(!$stmt) {
+                                                    die('Error: ' . mysqli_error($conn));
+                                                }
+                                                mysqli_stmt_bind_result($stmt, $account_email, $account_name, $crm_id);
+                                                while(mysqli_stmt_fetch($stmt)) {
+                                                    echo '<option value="'.$crm_id.'">'.$account_name.'</option>';
+                                                }
+                                             ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label class="control-label">Task Name</label>
+                                        <input class="form-control" type="text" name="task" id="assign_task" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12"> 
+                                    <div class="form-group">
+                                        <label class="control-label">Description</label></label>
+                                            <textarea  class="form-control" name="description" ></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12"> 
+                                    <div class="form-group">
+                                        <label class="control-label">Assign to</label>
+                                        <select class="form-control mt-multiselect btn btn-default get-person-activity" name="assignee" type="text" required style="width: 100%">
+                                            <option>Select Person</option>
+                                            <?php
+                                                $user_id = $switch_user_id ?? 34 ;
+                                                $query = mysqli_prepare($conn, "SELECT CONCAT(first_name, ' ', last_name) as name, email FROM tbl_hr_employee WHERE user_id = ? ORDER BY first_name ASC");
+                                                mysqli_stmt_bind_param($query, 'i', $user_id);
+                                                mysqli_stmt_execute($query);
+                                                if(!$query){
+                                                    die('Error: '. mysqli_error($conn));
+                                                }
+                                                mysqli_stmt_bind_result($query, $name, $email);
+                                                while(mysqli_stmt_fetch($query)) {
+                                                    echo '<option value="'.$email.'">'.$name.'</option>'; 
+                                                }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Start Date</label>
+                                        <input class="form-control" type="date" name="startdate" id="Task_added" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="control-label">Deadline</label>
+                                        <input class="form-control" type="date" name="duedate" id="Deadline" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <input type="submit" class="btn btn-success" id="taskFormBtn" value="Save">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <div class="modal fade bs-modal-lg" id="modalCampaignDetails" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" style="width:95%;">
                 <div class="modal-content">

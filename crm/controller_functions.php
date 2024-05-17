@@ -671,6 +671,98 @@
             }   
         }
     }
+
+    if(isset($_POST['search_parent'])) {   // get searched contact by account name
+        $output = '';
+        $searchValue = $_POST['searchVal'];
+        $query = "SELECT
+                cr.crm_id, 
+                cr.userID, 
+                cr.account_rep, 
+                cr.account_name, 
+                cr.account_email,  
+                cr.Account_Source, 
+                cr.account_status,
+                cr.contact_phone,
+                cr.enterprise_id,
+                cr.flag,
+                chd.timestamp,
+                chd.performer_name,
+                CONCAT(u.first_name, ' ', u.last_name) AS uploader
+            FROM 
+                tbl_Customer_Relationship cr
+            LEFT JOIN 
+                (SELECT 
+                     contact_id, MAX(history_id) AS max_history_data_id
+                 FROM 
+                     tbl_crm_history_data
+                 GROUP BY 
+                     contact_id) latest_history
+            ON 
+                cr.crm_id = latest_history.contact_id
+            LEFT JOIN 
+                tbl_crm_history_data chd
+            ON 
+                latest_history.contact_id = chd.contact_id
+                AND latest_history.max_history_data_id = chd.history_id
+            LEFT JOIN 
+                tbl_user u
+            ON 
+                chd.user_id = u.ID
+            WHERE 
+                parent_account LIKE '%".$searchValue."%' AND LENGTH(account_name) > 0
+                AND cr.enterprise_id = $user_id
+            GROUP BY
+                cr.crm_id,
+                cr.userID,
+                cr.account_name,
+                cr.account_email,
+                cr.Account_Source,
+                cr.contact_phone,
+                cr.flag,
+                cr.enterprise_id,
+                cr.account_status
+            ORDER BY 
+                cr.crm_date_added DESC";
+        $result = mysqli_query($conn, $query);
+        if($result){
+            if(mysqli_num_rows($result) > 0) {
+                while($row = mysqli_fetch_array($result)) {
+                    $userID = $row["userID"];
+                    $status = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
+                    $date = isset($row['timestamp']) ? new DateTime($row['timestamp']) : null;
+                    $activity_date = $date ? $date->format('F j, Y') : '';
+                    $checkbox_display = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
+                    $output .= '
+                    <tr class="contact-row">
+                        <td class="text-center">
+                            <label class="mt-checkbox '.$checkbox_display.'">
+                                <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="'.$row["crm_id"].'"/>
+                                <span></span>
+                            </label>
+                        </td>    
+                        <td>'.$row["account_name"].'</td>
+                        <td>'.$row["account_email"].'</td>
+                        <td>'.$row["contact_phone"].'</td>
+                        <td>'.$row["Account_Source"].'</td>
+                        <td class="contact-status">'.$status.'</td>
+                        <td>'.$activity_date.'</td>
+                        <td>'.$row["uploader"].'</td>
+                        <td class="text-center">
+                            <div class="clearfix">
+                                <div class="">
+                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
+                                    <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>';
+                }
+             echo $output;
+            }   
+        }
+    }
     
     if(isset($_POST['search_contact_email'])) {  // get searched contact by account email
         $output = '';
@@ -1865,10 +1957,40 @@
     
     if(isset($_POST['get_counts'])) {
         // Initialize count variables
-        $relationshipCount = 0;
-        $campaignCount = 0;
-        $campaignerCount = 0;
-        $campaignAverage = 0;
+        $relationshipCount  = 0;
+        $campaignCount      = 0;
+        $campaignerCount    = 0;
+        $campaignAverage    = 0;
+        $archivedContacts   = 0;
+        $expiredCampaigns   = 0;
+
+        $query_archives = 'SELECT COUNT(*) FROM tbl_Customer_Relationship WHERE enterprise_id = ? AND flag = 0';
+        $archives = $conn->prepare($query_archives);
+        if(!$archives) {
+            die('Error in preparing statement: ' . $conn->error);
+        }
+        $archives->bind_param('i', $enterprise_id);
+        if($archives->execute()) {
+            $archives->bind_result($archivedContacts);
+            $archives->fetch();
+        } else {
+            echo "Error executing statement: " . $archives->error;
+        }
+        $archives->close();
+        
+        $query_expires = 'SELECT COUNT(Campaign_Id) FROM tbl_Customer_Relationship_Campaign WHERE Campaign_added < DATE_SUB(CURDATE(), INTERVAL 90 DAY) AND enterprise_id = ?';
+        $expires = $conn->prepare($query_expires);
+        if(!$expires) {
+            die('Error in preparing statement: ' . $conn->error);
+        }
+        $expires->bind_param('i', $enterprise_id);
+        if($expires->execute()) {
+            $expires->bind_result($expiredCampaigns);
+            $expires->fetch();
+        } else {
+            echo "Error executing statement: " . $expires->error;
+        }
+        $expires->close();
     
         // Prepare and execute query for tbl_Customer_Relationship
         $query_relationship = 'SELECT COUNT(*) FROM tbl_Customer_Relationship WHERE enterprise_id = ? AND flag = ?';
@@ -1935,6 +2057,8 @@
     
         // Create an associative array to hold counts
         $counts = array(
+            'archivedContacts'  =>  $archivedContacts,
+            'expiredCampaigns'  =>  $expiredCampaigns,
             'relationshipCount' =>  $relationshipCount,
             'campaignCount'     =>  $campaignCount,
             'campaignerCount'   =>  $campaignerCount,
@@ -1965,19 +2089,14 @@
             $output = '';
             while ($stmt_campaign->fetch()) {
                 $output .='
-                    <li>
-                        <div class="col1">
-                            <div class="cont">
-                                <div class="cont-col2">
-                                    <div class="desc"> '.$campaign_name.' </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col2">
-                            <span class=" text-white h5 label label-md label-success">'.$subject_count.'</span>
-                        </div>
-                    </li>
-                ';
+                            <tr>
+                                <td width="80%"> '.$campaign_name.' </td>
+                                <td width="5%"> '.$subject_count.' </td>
+                                <td class="text-center"> 
+                                    <a class="btn blue btn-sm campaignListPerSubject" data-value="'.$campaign_name.'" data-toggle="modal" href="#modalCampaignList">View list</a> 
+                                </td>
+                            </tr>
+                        ';
             }
             echo $output;
             $stmt_campaign->close();
@@ -2461,14 +2580,18 @@
                     }
                 }
                 // $expiration_date = ($expiry_date < $current_date) ? '<span class="text-danger">Expired</span>' : $expiry_date ;
-                if($Frequency == 1){ $frequencies = 'Once Per Day'; }
-                else if($Frequency == 2){ $frequencies = 'Once Per Week'; }
-                else if($Frequency == 3){ $frequencies = 'On the 1st and 15th of the Month'; }
-                else if($Frequency == 4){ $frequencies = 'Once Per Month'; }
-                else if($Frequency == 5){ $frequencies = 'Once Per Year'; }
-                else if($Frequency == 6){ $frequencies = 'Once Per Two Months (Every Other Month)'; }
-                else if($Frequency == 7){ $frequencies = 'Once Per Three Months (Quarterly)'; }
-                else if($Frequency == 8){ $frequencies = 'Once Per Six Months (Bi-Annual)'; }
+                $frequencyMap = [
+                    1 => 'Once Per Day',
+                    2 => 'Once Per Week',
+                    3 => 'On the 1st and 15th of the Month',
+                    4 => 'Once Per Month',
+                    5 => 'Once Per Year',
+                    6 => 'Once Per Two Months (Every Other Month)',
+                    7 => 'Once Per Three Months (Quarterly)',
+                    8 => 'Once Per Six Months (Bi-Annual)',
+                ];
+
+                $frequencies = isset($frequencyMap[$Frequency]) ? $frequencyMap[$Frequency] : 'Unknown Frequency';
                 if($Auto_Send_Status == 0) {
                     $status = '<span class="text-danger">Stopped</span>';
                 } else {
@@ -2663,7 +2786,37 @@
         $campaignCount      = 0;
         $campaignSentToday  = 0;
         $dailyAverage       = 0;
-    
+        $archivedContacts   = 0;
+        $expiredCampaigns   = 0;
+        
+        $query_archives = 'SELECT COUNT(*) FROM tbl_Customer_Relationship WHERE enterprise_id = ? AND flag = 0 AND userID = ?';
+        $archives = $conn->prepare($query_archives);
+        if(!$archives) {
+            die('Error in preparing statement: ' . $conn->error);
+        }
+        $archives->bind_param('ii', $enterprise_id, $_COOKIE['ID']);
+        if($archives->execute()) {
+            $archives->bind_result($archivedContacts);
+            $archives->fetch();
+        } else {
+            echo "Error executing statement: " . $archives->error;
+        }
+        $archives->close();
+        
+        $query_expires = 'SELECT COUNT(Campaign_Id) FROM tbl_Customer_Relationship_Campaign WHERE Campaign_added < DATE_SUB(CURDATE(), INTERVAL 90 DAY) AND enterprise_id = ? AND userID = ?';
+        $expires = $conn->prepare($query_expires);
+        if(!$expires) {
+            die('Error in preparing statement: ' . $conn->error);
+        }
+        $expires->bind_param('ii', $enterprise_id, $_COOKIE['ID']);
+        if($expires->execute()) {
+            $expires->bind_result($expiredCampaigns);
+            $expires->fetch();
+        } else {
+            echo "Error executing statement: " . $expires->error;
+        }
+        $expires->close();
+
         // Prepare and execute query for tbl_Customer_Relationship
         $query_relationship = 'SELECT COUNT(*) FROM tbl_Customer_Relationship WHERE enterprise_id = ? AND flag = ? AND userID = ?';
         $stmt_relationship = $conn->prepare($query_relationship);
@@ -2729,6 +2882,8 @@
     
         // Create an associative array to hold counts
         $counts = array(
+            'archivedContacts'    =>  $archivedContacts,
+            'expiredCampaigns'    =>  $expiredCampaigns,
             'userContacts'        =>   $userContacts,
             'campaignCount'       =>   $campaignCount,
             'campaignSentToday'   =>   $campaignSentToday,
@@ -2939,27 +3094,43 @@
         $conn->close();
     }
 
-    // function fetchAndDisplayResults($conn, $query, $batchSize = 1000) {
-    //     $offset = 0;
-    
-    //     do {
-    //         if ($stmt = $conn->prepare($query . " LIMIT ?, ?")) {
-    //             $stmt->bind_param('ii', $offset, $batchSize);
-    //             $stmt->execute();
-    //             $result = $stmt->get_result();
-    //             while ($row = $result->fetch_assoc()) {
-    //                 echo $row['Campaign_Name'] . $row['Campaign_added'] . "<br>";
-    //             }
-    //             $stmt->close();
-    //             $offset += $batchSize;
-    //         } else {
-    //             echo "Error: Unable to prepare statement";
-    //         }
-    
-    //     } while ($result->num_rows > 0);
-    // }
+    if(isset($_POST['stop_campaigns'])) {
+        $chunkSize = 1500;
+        $offset = 0;
+        $updateStmt = $conn->prepare("UPDATE tbl_Customer_Relationship_Campaign SET Auto_Send_Status = 1 WHERE Campaign_Id = ?");
 
-    // $query = "SELECT * FROM tbl_Customer_Relationship_Campaign WHERE Campaign_added < DATE_SUB(CURDATE(), INTERVAL 90 DAY)";
-    // $test = fetchAndDisplayResults($conn, $query);
-    // echo $test;
+        if (!$updateStmt) {
+            die('Prepare failed: ' . $conn->error);
+        }
+
+        while (true) {
+            $stmt = $conn->prepare("
+                SELECT Campaign_Id 
+                FROM tbl_Customer_Relationship_Campaign 
+                WHERE Campaign_added < DATE_SUB(CURDATE(), INTERVAL 90 DAY)
+                LIMIT ?, ?
+            ");
+            if (!$stmt) {
+                die('Prepare failed: ' . $conn->error);
+            }
+
+            $stmt->bind_param('ii', $offset, $chunkSize);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows === 0) {
+                break;
+            }
+
+            while ($campaign = $result->fetch_assoc()) {
+                $updateStmt->bind_param('i', $campaign['Campaign_Id']);
+                $updateStmt->execute();
+            }
+            $offset += $chunkSize;
+            $stmt->close();
+        }
+
+        $updateStmt->close();
+        $conn->close();
+    }
 ?>

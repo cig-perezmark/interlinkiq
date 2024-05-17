@@ -172,3 +172,27 @@ function saveFSVPQICertificate($postData, $name) {
 
     throw new Exception('Unable to save file.');
 }
+
+function saveEvaluationFile($postData, $name) {
+    if(isset($postData[$name]) && $postData[$name] == 1) {
+        try {
+            $uploadPath = getUploadsDir('fsvp/evaluation_docs');
+            $currentTimestamp = date('Y-m-d H:i:s');
+            
+            $file = uploadFile($uploadPath, $_FILES[$name .'-file']);
+            return [
+                'record_type' => 'evaluation:' . str_replace('_', '-', $name),
+                "filename" => $file,
+                "path" => $uploadPath,
+                "document_date" => $postData[$name . '-document_date'] ?? null,
+                "expiration_date" => $postData[$name . "-expiration_date"] ?? null,
+                "note" => $postData[$name . "-note"] ?? null,
+                "uploaded_at" => $currentTimestamp,
+            ];
+        } catch(Throwable $e) {
+            throw $e;
+        }
+    } else {
+        return null;
+    }
+}

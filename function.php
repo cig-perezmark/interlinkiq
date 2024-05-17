@@ -47160,6 +47160,16 @@
             $portal_user = $_COOKIE['ID'];
             $user_id = employerID($portal_user);
         }
+
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
+            $current_userEmployerID = $user_id;
+            $current_userID = $user_id;
+        } else {
+            $current_userEmployerID = $user_id;
+            $current_userID = $_COOKIE['ID'];
+        }
 		
 		// $selectData = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID = $id AND deleted = 0 AND user_id = $user_id" );
         $selectData = mysqli_query( $conn,"SELECT
@@ -47346,16 +47356,6 @@
                                     <li class="active"><a href="#tabDescription_'. $library_ID .'" data-toggle="tab" aria-expanded="true">Description</a></li>
                                     <li class=""><a href="#tabFiles_'. $library_ID .'" data-toggle="tab" aria-expanded="true">Files</a></li>
                                     <li class="">';
-
-                                        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
-                                        if ( mysqli_num_rows($hasLibrary) == 0 ) {
-                                            $user_id = 163;
-                                            $current_userEmployerID = $user_id;
-                                            $current_userID = $user_id;
-                                        } else {
-                                            $current_userEmployerID = $user_id;
-                                            $current_userID = $_COOKIE['ID'];
-                                        }
 
                                 		$countComment = 0;
                                     	$team = 1;

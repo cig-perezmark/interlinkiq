@@ -281,7 +281,7 @@
 						<td><b>Description of Issue</b></td>
 					</tr>
 					<tr>
-						<td>'; $html .= $type == 1 ? htmlentities($row['description']):htmlentities($row['nature_complaint']); $html .= '</td>
+						<td>'; $html .= $type == 1 ? nl2br(htmlentities($row['description'])):nl2br(htmlentities($row['nature_complaint'])); $html .= '</td>
 					</tr>
 				</table>
 
@@ -292,7 +292,7 @@
 						<td colspan="2"><b>Observation / Issue(s)</b></td>
 					</tr>
 					<tr>
-						<td style="width: 50%;">'.htmlentities($row['observation']).'</td>
+						<td style="width: 50%;">'.nl2br(htmlentities($row['observation'])).'</td>
 						<td style="width: 50%;">
 							Supporting Documents / Evidence:
 							<ol>';
@@ -318,7 +318,7 @@
 						<td colspan="2"><b>Root Cause(s)</b></td>
 					</tr>
 					<tr>
-						<td style="width: 50%;">'.htmlentities($row['root_cause']).'</td>
+						<td style="width: 50%;">'.nl2br(htmlentities($row['root_cause'])).'</td>
 						<td style="width: 50%;">
 							Supporting Documents / Evidence:
 							<ol>';
@@ -348,7 +348,7 @@
 							Status: '.$status_array[$corrective_status].'<br>';
 
 							if ($type == 1) {
-								$html .= htmlentities($row['corrective_desc']).'<br>
+								$html .= nl2br(htmlentities($row['corrective_desc'])).'<br>
 								Date: '.$row['corrective_date'].'<br>';
 							} else {
 								$html .= $row['action_taken'].'<br>
@@ -385,7 +385,7 @@
 					<tr>
 						<td style="width: 50%;">
 							Status: '.$status_array[$implementation_status].'<br>
-							'.htmlentities($row['implementation_desc']).'<br>
+							'.nl2br(htmlentities($row['implementation_desc'])).'<br>
 							Effective Date of Resolution: '.$row['implementation_date'].'<br>
 							Implementated By: '.htmlentities($row['implementation_by']).'
 						</td>
@@ -416,7 +416,7 @@
 					<tr>
 						<td style="width: 50%;">
 							Status: '.$status_array[$preventive_status].'<br>
-							'.htmlentities($row['preventive_desc']).'
+							'.nl2br(htmlentities($row['preventive_desc'])).'
 						</td>
 						<td style="width: 50%;">
 							Supporting Documents / Evidence:
@@ -445,7 +445,7 @@
 					<tr>
 						<td style="width: 50%;">
 							Status: '.$status_array[$evaluation_status].'<br>
-							'.htmlentities($row['evaluation_desc']).'
+							'.nl2br(htmlentities($row['evaluation_desc'])).'
 						</td>
 						<td style="width: 50%;">
 							Supporting Documents / Evidence:
@@ -472,7 +472,7 @@
 						<td colspan="2"><b>Comments</b></td>
 					</tr>
 					<tr>
-						<td style="width: 50%;">'.htmlentities($row['comment']).'</td>
+						<td style="width: 50%;">'.nl2br(htmlentities($row['comment'])).'</td>
 						<td style="width: 50%;">
 							Supporting Documents / Evidence:
 							<ol>';

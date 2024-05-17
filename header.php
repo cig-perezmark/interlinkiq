@@ -1844,56 +1844,56 @@ License: You must have a valid license purchased only from themeforest(the above
                         </a>
                     </li>
                     <?php endif?>
-                    <?php if($current_client == 0 AND $switch_user_id <> 1106) { ?>
-                    <li class="nav-item hide <?php echo $site === "tracking" ? "active" : ""; ?>">
-                        <a href="tracking" class="nav-link">
-                            <i class="icon-target"></i>
-                            <span class="title">Tracking Dashboard</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item hide <?php echo $site === "app-store" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('app-store', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="app-store" class="nav-link">
-                            <i class="icon-grid"></i>
-                            <span class="title">App Catalog</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li> 
+                    <?php if(($current_client == 0 AND $switch_user_id <> 1106) OR $switch_user_id == 1360) { ?>
+                        <li class="nav-item hide <?php echo $site === "tracking" ? "active" : ""; ?>">
+                            <a href="tracking" class="nav-link">
+                                <i class="icon-target"></i>
+                                <span class="title">Tracking Dashboard</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item hide <?php echo $site === "app-store" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('app-store', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                            <a href="app-store" class="nav-link">
+                                <i class="icon-grid"></i>
+                                <span class="title">App Catalog</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li> 
 
-                    <?php
-                                if ($current_userEmployerID == 46400 OR $switch_user_id == 464) {
-                                    echo '<li class="nav-item ">
-                                        <a href="form-owned" class="nav-link">
-                                            <i class="icon-graph"></i>
-                                            <span class="title">E-Forms</span>
-                                            <span class="selected"></span>
-                                        </a>
-                                    </li>';
-                                }
-                            ?>
+                        <?php
+                            if ($current_userEmployerID == 46400 OR $switch_user_id == 464) {
+                                echo '<li class="nav-item ">
+                                    <a href="form-owned" class="nav-link">
+                                        <i class="icon-graph"></i>
+                                        <span class="title">E-Forms</span>
+                                        <span class="selected"></span>
+                                    </a>
+                                </li>';
+                            }
+                        ?>
 
-                    <li class="nav-item">
-                        <a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="icon-support" style="color: #ffff00;"></i>
-                            <span class="title" style="color: #ffff00; font-weight: bold;">Risk Assessment</span>
-                            <span class="selected"></span>
-                            <span class="arrow"></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li class="nav-item">
-                                <a href="survey" class="nav-link " target="_blank" onclick="myfunction(<?= $current_userEmployerID; ?>)">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Qualification Survey</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="e-forms/Sanitary_controller/Sanitary/gmp_food_v" class="nav-link " target="_blank" onclick="set_newCookie(<?= $switch_user_id; ?>)">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Food and Beverage</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                        <li class="nav-item">
+                            <a href="javascript:;" class="nav-link nav-toggle">
+                                <i class="icon-support" style="color: #ffff00;"></i>
+                                <span class="title" style="color: #ffff00; font-weight: bold;">Risk Assessment</span>
+                                <span class="selected"></span>
+                                <span class="arrow"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="nav-item">
+                                    <a href="survey" class="nav-link " target="_blank" onclick="myfunction(<?= $current_userEmployerID; ?>)">
+                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                        <span class="title">Qualification Survey</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="e-forms/Sanitary_controller/Sanitary/gmp_food_v" class="nav-link " target="_blank" onclick="set_newCookie(<?= $switch_user_id; ?>)">
+                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                        <span class="title">Food and Beverage</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
                     <?php } ?>
 

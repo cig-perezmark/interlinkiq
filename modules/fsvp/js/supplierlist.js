@@ -99,6 +99,28 @@ jQuery(function() {
         viewFile(suppliersData, this.dataset.opencsfile, 'compliance_statement');
     });
 
+    $('#tableSupplierList').on('click', '[data-view-eval]', function() {
+        const id = this.dataset.viewEval;
+
+        if(!id) {
+            bootstrapGrowl('Missing data.', 'error');
+            return;
+        }
+
+        $.ajax({
+            url: baseUrl + "viewEvaluationData=" + id,
+            type: "GET",
+            contentType: false,
+            processData: false,
+            success: function({data}) {
+                console.log(data)
+            },
+            error: function({responseJSON}) {
+                bootstrapGrowl(responseJSON.error || 'Error fetching data!', 'danger');
+            },
+        });
+    });
+
     $('.asFileUpload').change(function() {
         const files = this.files;
         const arrDisplay = $(this).closest('.supplierlist-check').find('.filesArrayDisplay');
@@ -417,7 +439,7 @@ jQuery(function() {
 
         switch(d.evaluation_status) {
             case 'done': 
-                evalBtn = `<a href="#modalEvaluationDetails" data-toggle="modal" class="font-dark semibold" title="Click to view evaluation details"> 
+                evalBtn = `<a href="javascript:void(0)" class="font-dark semibold" data-view-eval="${d.id}" title="Click to view evaluation details"> 
                                 ${d.evaluation_date}
                                 <i class="fa fa-check-circle font-green-jungle" style="margin-left:.75rem"></i>
                             </a>`;
@@ -581,7 +603,6 @@ function resetEvaluationForm() {
     form.get(0).reset();
 }
 
-// updating rows
-function updateDTRow(suppliersData, newData, table) {
-// 
+function viewEvaluationDetails(data) {
+    const modal = $('#modalEvaluationDetails');
 }

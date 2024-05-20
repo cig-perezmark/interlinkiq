@@ -128,10 +128,30 @@
             $enterprise_id = mysqli_fetch_assoc($employee_resut);
             
             $employee_enterprise_id = $enterprise_id['user_id'];
-            $update_query = "UPDATE tbl_forms_owned SET form_owned = CONCAT(form_owned, ',', '$last_inserted_id') WHERE user_id = 481 AND enterprise_id = $employee_enterprise_id";
-            $update_result = mysqli_query($conn, $update_query);
-            if($update_result){
-                header('Location: ' . $_SERVER["HTTP_REFERER"]);
+            // Check if a record exists
+            $select_query = "SELECT * FROM tbl_forms_owned WHERE user_id = $session_id AND enterprise_id = $employee_enterprise_id";
+            $select_result = mysqli_query($conn, $select_query);
+            
+            if(mysqli_num_rows($select_result) > 0) {
+                // Record exists, perform an update
+                $update_query = "UPDATE tbl_forms_owned SET form_owned = CONCAT(form_owned, ',', '$last_inserted_id') WHERE user_id = $session_id AND enterprise_id = $employee_enterprise_id";
+                $update_result = mysqli_query($conn, $update_query);
+                if($update_result) {
+                    header('Location: ' . $_SERVER["HTTP_REFERER"]);
+                } else {
+                    // Handle update error
+                    echo "Error updating record: " . mysqli_error($conn);
+                }
+            } else {
+                // Record does not exist, perform an insert
+                $insert_query = "INSERT INTO tbl_forms_owned (user_id, enterprise_id, form_owned) VALUES ($session_id, $employee_enterprise_id, '$last_inserted_id')";
+                $insert_result = mysqli_query($conn, $insert_query);
+                if($insert_result) {
+                    header('Location: ' . $_SERVER["HTTP_REFERER"]);
+                } else {
+                    // Handle insert error
+                    echo "Error inserting record: " . mysqli_error($conn);
+                }
             }
             
         }

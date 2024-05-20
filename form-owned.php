@@ -71,29 +71,29 @@
                     <!--END SEARCH BAR-->
                     <?php if($current_client != 1): ?>
                         <?php if($current_userEmployeeID == 0 OR $current_userEmployeeID == 64 OR $current_userEmployeeID == 81  OR $current_userEmployeeID == 78): ?>
-    						<div class="row">
-    							<div class="col-lg-12">
-                            		<div class="portlet-title" style="margin-bottom:10px;float:right">
-                                    	<div class="actions">
-                                        	<div class="btn-group">
-            	                                <a class="btn dark btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions
-                	                                <i class="fa fa-angle-down"></i>
-                    	                        </a>
-                        	                    <ul class="dropdown-menu pull-right">
-                            	                    <li>
-                                                    	<a data-toggle="modal" data-target="<?php echo $FreeAccess == false ? '#exampleModal':'#modalService'; ?>"> Assign Form</a>
-                                                	</li>
-                                                	<?php if($switch_user_id == 163): ?>
-                                                	<li>
-                                                    	<a data-toggle="modal" data-target="<?php echo $FreeAccess == false ? '#clone_modal':'#modalService'; ?>"> Clone Form</a>
-                                                	</li>
-                                                	<?php endif; ?>
-                                            	</ul>
-                                        	</div>
-                                    	</div>
-                                	</div>
-                                </div>
-    						</div>
+    						<!--<div class="row">-->
+    						<!--	<div class="col-lg-12">-->
+          <!--                  		<div class="portlet-title" style="margin-bottom:10px;float:right">-->
+          <!--                          	<div class="actions">-->
+          <!--                              	<div class="btn-group">-->
+          <!--  	                                <a class="btn dark btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions-->
+          <!--      	                                <i class="fa fa-angle-down"></i>-->
+          <!--          	                        </a>-->
+          <!--              	                    <ul class="dropdown-menu pull-right">-->
+          <!--                  	                    <li>-->
+                                                    	<!--<a data-toggle="modal" data-target="<?php echo $FreeAccess == false ? '#exampleModal':'#modalService'; ?>"> Assign Form</a>-->
+          <!--                                      	</li>-->
+          <!--                                      	<?php if($switch_user_id == 163): ?>-->
+          <!--                                      	<li>-->
+          <!--                                          	<a data-toggle="modal" data-target="<?php echo $FreeAccess == false ? '#clone_modal':'#modalService'; ?>"> Clone Form</a>-->
+          <!--                                      	</li>-->
+          <!--                                      	<?php endif; ?>-->
+          <!--                                  	</ul>-->
+          <!--                              	</div>-->
+          <!--                          	</div>-->
+          <!--                      	</div>-->
+          <!--                      </div>-->
+    						<!--</div>-->
             	        <?php endif; ?>
         	        <?php endif; ?>
         	        <?php if($current_client == 1): ?>
@@ -108,7 +108,7 @@
                     	                        </a>
                         	                    <ul class="dropdown-menu pull-right">
                             	                    <li>
-                                                    	<a data-toggle="modal" data-target="<?php echo $FreeAccess == false ? '#exampleModal':'#modalService'; ?>"> Assign Form</a>
+                                                    	<!--<a data-toggle="modal" data-target="<?php echo $FreeAccess == false ? '#exampleModal':'#modalService'; ?>"> Assign Form</a>-->
                                                 	</li>
                                                 	<?php if($switch_user_id == 163): ?>
                                                 	<li>
@@ -124,7 +124,6 @@
             	        <?php endif; ?>
         	        <?php endif; ?>
         	        
-        	        <?php if( $_COOKIE['ID'] == 481 OR $_COOKIE['ID'] == 153 ): ?>
 						<div class="row">
 							<div class="col-lg-12">
                         		<div class="portlet-title" style="margin-bottom:10px;float:right">
@@ -143,7 +142,6 @@
                             	</div>
                             </div>
 						</div>
-        	        <?php endif; ?>
     	        
                     <!-- List of apps in tbl_app_store table -->
                     <div class="portlet-body">

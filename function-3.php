@@ -7572,7 +7572,7 @@
 		                    <div class="row '; echo $row["type"] == 2 ? 'hide':''; echo '">
 		                        <div class="col-md-4">
 		                            <div class="form-group">
-		                                <label class="control-label">Supplier Name</label>
+		                                <label class="control-label">Company Name</label>
 		                                <input class="form-control" type="text" name="company" value="'.$row["company"].'" '; echo $row["type"] == 1 ? 'required':''; echo ' />
 		                            </div>
 		                        </div>
@@ -10492,7 +10492,6 @@
 			$likelihood_answer_other = implode(', ', $likelihood_answer_other);
 		}
 
-        $arr_item = array();
 		$likelihood_comment = "";
 		$likelihood_comment_other = "";
 		$likelihood_file_arr = array();
@@ -10668,14 +10667,13 @@
                 array_push($consequence_file_other_arr, $file_docs_template);
             }
         }
+		$consequence_file_arr = implode(' | ', $consequence_file_arr);
+		$consequence_file_other_arr = implode(' | ', $consequence_file_other_arr);
+
+		$consequence_rate = "";
+		$consequence_rate_other = "";
 
         if ($process == true) {
-            $consequence_file_arr = implode(' | ', $consequence_file_arr);
-            $consequence_file_other_arr = implode(' | ', $consequence_file_other_arr);
-            $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
-
-            $consequence_rate = "";
-            $consequence_rate_other = "";
     		if (!empty($_POST['consequence_rate'])) { 
     			$consequence_rate = $_POST['consequence_rate'];
     			$consequence_rate = implode(', ', $consequence_rate);
@@ -10942,8 +10940,7 @@
                 	// if ($data_int_verify_status == 1 AND $notification == 1) {
                     if ($notification == 1) {
     	            	// Reviewer
-                		// if (!empty($reviewed_by) AND (empty($reviewed_signature) OR $reviewed_signature == $empty_signature)) {
-                        if (!empty($reviewed_by)) {
+                		if (!empty($reviewed_by) AND (empty($reviewed_signature) OR $reviewed_signature == $empty_signature)) {
     						$selectDataUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $reviewed_by" );
     						if ( mysqli_num_rows($selectDataUser) > 0 ) {
     							$rowDataUser = mysqli_fetch_array($selectDataUser);
@@ -10966,8 +10963,7 @@
     							<b>Assigned by</b><br>
     							Arnel Ryan<br><br>
 
-                                <a href="'. $base_url .'ffva?v='.$last_id.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
-                                <a href="'. $base_url .'pdf_ffva?id='.$last_id.'&signed=1" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #e73d4a; border-color: #e73d4a; display: inline-block;">PDF</a>';
+    							<a href="'. $base_url .'ffva" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
     			    
     			    			php_mailer_1($to, $user, $subject, $body, $from, $sender);
     			    			$countSend++;
@@ -10975,8 +10971,7 @@
     	            	}
 
     					// Approver
-    	            	// if (!empty($approved_by) AND (empty($approved_signature) OR $approved_signature == $empty_signature)) {
-                        if (!empty($approved_by)) {
+    	            	if (!empty($approved_by) AND (empty($approved_signature) OR $approved_signature == $empty_signature)) {
     						$selectDataUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $approved_by" );
     						if ( mysqli_num_rows($selectDataUser) > 0 ) {
     							$rowDataUser = mysqli_fetch_array($selectDataUser);
@@ -10999,8 +10994,7 @@
     							<b>Assigned by</b><br>
     							Arnel Ryan<br><br>
 
-                                <a href="'. $base_url .'ffva?v='.$last_id.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
-                                <a href="'. $base_url .'pdf_ffva?id='.$last_id.'&signed=1" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #e73d4a; border-color: #e73d4a; display: inline-block;">PDF</a>';
+    							<a href="'. $base_url .'ffva" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
     			    
     			    			if ($countSend > 0) {
     			    				php_mailer_2($to, $user, $subject, $body, $from, $sender);
@@ -11569,8 +11563,7 @@
     							<b>Assigned by</b><br>
     							Arnel Ryan<br><br>
 
-    							<a href="'. $base_url .'ffva?v='.$last_id.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
-                                <a href="'. $base_url .'pdf_ffva?id='.$last_id.'&signed=1" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #e73d4a; border-color: #e73d4a; display: inline-block;">PDF</a>';
+    							<a href="'. $base_url .'ffva" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
     			    
     			    			php_mailer_1($to, $user, $subject, $body, $from, $sender);
     			    			$countSend++;
@@ -11601,8 +11594,7 @@
     							<b>Assigned by</b><br>
     							Arnel Ryan<br><br>
 
-                                <a href="'. $base_url .'ffva?v='.$last_id.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
-                                <a href="'. $base_url .'pdf_ffva?id='.$last_id.'&signed=1" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #e73d4a; border-color: #e73d4a; display: inline-block;">PDF</a>';
+    							<a href="'. $base_url .'ffva" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
     			    
     			    			if ($countSend > 0) {
     			    				php_mailer_2($to, $user, $subject, $body, $from, $sender);
@@ -47491,7 +47483,7 @@
                                                                             <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                                                         </div>
                                                                         <div class="mt-action-details" style="vertical-align: middle;">
-                                                                            <span class="mt-action-author">'. htmlentities($file_name ?? '');
+                                                                            <span class="mt-action-author">'. $file_name;
 
     																			if (!empty($file_reason)) {
     																				echo '<i class="fa fa-warning font-red itemWarning" style="margin-left: 5px;"></i>';
@@ -50642,14 +50634,14 @@
                         WHERE t2.deleted = 0 AND t2.user_id = $user_id
                     )
                     SELECT 
-                    mainID, portal_userID, parentID, childIDs, type, free_access, parentCollab, parentName
-                    -- fileID, files, name
+                    mainID, portal_userID, parentID, childIDs, type, free_access, parentCollab, parentName,
+                    fileID, files, name
                     FROM cte
 
-                    -- LEFT JOIN (
-                    --     SELECT ID AS fileID, library_id, files, name, last_modified, due_date FROM tbl_library_file WHERE deleted = 0
-                    -- ) AS f
-                    -- ON cte.mainID = f.library_id
+                    LEFT JOIN (
+                        SELECT ID AS fileID, library_id, files, name, last_modified, due_date FROM tbl_library_file WHERE deleted = 0
+                    ) AS f
+                    ON cte.mainID = f.library_id
                     -- WHERE f.name IS NOT NULL
                     -- ORDER BY mainID, parentID
                     ORDER BY FIELD(type,1,2,3,5,4) ASC, mainID ASC, parentID ASC" );
@@ -50663,10 +50655,10 @@
 						$parentID = $rowFile["parentID"];
 						$parentName = $rowFile["parentName"];
                         $type_id = $rowFile["type"];
-						// $file_ID = $rowFile["fileID"];
-						// $file_name = $rowFile["name"];
+						$file_ID = $rowFile["fileID"];
+						$file_name = $rowFile["name"];
 
-						// $files = $rowFile["files"];
+						$files = $rowFile["files"];
 			            // $fileExtension = fileExtension($files);
 						// $src = $fileExtension['src'];
 						// $embed = $fileExtension['embed'];

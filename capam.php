@@ -1818,6 +1818,29 @@
                 // console.log(complaints);
                 // console.log(departments);
 
+                Highcharts.setOptions({ // Apply the exporting height to print as well
+                    chart: {
+                        events: {
+                            beforePrint: function () {
+                                const height = this.options.exporting.chartOptions.chart.height;
+                                if (height) {
+                                    this.resetParams = [
+                                        this.chartWidth,
+                                        this.chartHeight,
+                                        false
+                                    ];
+                                    this.setSize(this.chartWidth, height, false);
+                                }
+                            },
+                            afterPrint: function () {
+                                if (this.options.exporting.chartOptions.chart.height) {
+                                    this.setSize.apply(this, this.resetParams);
+                                }
+                            }
+                        }
+                    }
+                });
+
                 Highcharts.getJSON(
                     'function.php?modalTrend_CAM='+val+'&years='+years+'&months='+months+'&complaints='+complaints+'&departments='+departments,
                     function (data) {
@@ -1896,7 +1919,16 @@
                                     stacking: 'normal'
                                 }
                             },
-                            series: series
+                            series: series,
+
+                            // In export, increase the chart height to disable navigation
+                            exporting: {
+                                chartOptions: {
+                                    chart: {
+                                        height: 650
+                                    }
+                                }
+                            }
                         });
                     }
                 );
@@ -1987,8 +2019,32 @@
                 complaints = highchart_complaint(0);
                 departments = highchart_department(0);
                 // alert(val);
-                console.log(complaints);
-                console.log(departments);
+                // console.log(complaints);
+                // console.log(departments);
+
+                Highcharts.setOptions({ // Apply the exporting height to print as well
+                    chart: {
+                        events: {
+                            beforePrint: function () {
+                                const height = this.options.exporting.chartOptions.chart.height;
+                                if (height) {
+                                    this.resetParams = [
+                                        this.chartWidth,
+                                        this.chartHeight,
+                                        false
+                                    ];
+                                    this.setSize(this.chartWidth, height, false);
+                                }
+                            },
+                            afterPrint: function () {
+                                if (this.options.exporting.chartOptions.chart.height) {
+                                    this.setSize.apply(this, this.resetParams);
+                                }
+                            }
+                        }
+                    }
+                });
+                
                 Highcharts.getJSON(
                     'function.php?modalTrend_CAMSummary='+val+'&year='+year+'&months='+months+'&complaints='+complaints+'&departments='+departments,
                     function (data) {
@@ -2072,7 +2128,16 @@
                                     stacking: 'normal'
                                 }
                             },
-                            series: series
+                            series: series,
+
+                            // In export, increase the chart height to disable navigation
+                            exporting: {
+                                chartOptions: {
+                                    chart: {
+                                        height: 650
+                                    }
+                                }
+                            }
                         });
                     }
                 );

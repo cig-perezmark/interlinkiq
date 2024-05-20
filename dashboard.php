@@ -201,8 +201,8 @@
                         $newUser = 0;
                     ?>
                     
-                    <?php if($current_client == 0) { ?>
-                        <div class="row <?php echo $newUser == 1 ? '':'hide'; ?>">
+                    <?php if($current_client == 0 AND $newUser == 1) { ?>
+                        <div class="row">
                             <?php
                                 $get_category=mysqli_query($conn,"SELECT * FROM tbl_dashboard_cards ORDER BY sort_by");
                                 while ($row=mysqli_fetch_array($get_category)) {

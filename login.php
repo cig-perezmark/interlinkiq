@@ -149,13 +149,13 @@ License: You must have a valid license purchased only from themeforest(the above
                 <input class="form-control" type="hidden" name="client" value="0" />
                 <div class="form-group">
                     <label class="control-label">Email Address</label>
-                    <input class="form-control form-control-solid placeholder-no-fix" type="email" value="marvin@consultareinc.com" autocomplete="off" name="email" required />
+                    <input class="form-control form-control-solid placeholder-no-fix" type="email" value="" autocomplete="off" name="email" required />
                 </div>
                 <div class="form-group">
                     <label class="control-label">Password</label>
                     <div class="input-icon right">
                         <i class="fa fa-eye font-green viewPW"></i>
-                        <input type="password" class="form-control form-control-solid placeholder-no-fix" name="password" value="archive101" autocomplete="off" required />
+                        <input type="password" class="form-control form-control-solid placeholder-no-fix" name="password" value="" autocomplete="off" required />
                     </div>
                 </div>
                 <div class="form-actions">

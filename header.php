@@ -2413,13 +2413,13 @@ License: You must have a valid license purchased only from themeforest(the above
 
 
                     <?php $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseProducts = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
-                    <li class="nav-item <?php echo $site === "batchproduction" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('products', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="batchproduction" class="nav-link">
-                            <i class="icon-wrench"></i>
-                            <span class="title">Batch Production</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                    <!--<li class="nav-item <?php // echo $site === "batchproduction" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('products', $current_userEmployerID, $current_userEmployeeID); } ?>">-->
+                    <!--    <a href="batchproduction" class="nav-link">-->
+                    <!--        <i class="icon-wrench"></i>-->
+                    <!--        <span class="title">Batch Production</span>-->
+                    <!--        <span class="selected"></span>-->
+                    <!--    </a>-->
+                    <!--</li>-->
                     <?php } ?>
                    
 

@@ -1188,6 +1188,12 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <ul class="dropdown-menu hide"></ul>
                                     </li>';
 
+
+
+
+
+
+
                                     if ($current_userEmployeeID == 129 OR $current_userEmployeeID == 128) {
                                         $selectSpeak = mysqli_query($conn, "SELECT * FROM tbl_speakup WHERE reply_to = 0 AND seen = 0 AND user_id = $current_userEmployerID ORDER BY ID DESC");
                                         echo '<li class="dropdown dropdown-extended" id="speakup_employer">
@@ -2395,6 +2401,8 @@ License: You must have a valid license purchased only from themeforest(the above
                             <span class="selected"></span>
                         </a>
                     </li>
+
+
                     <li class="nav-item hide <?php echo $site === "archive" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('archive', $current_userEmployerID, $current_userEmployeeID); } ?>">
                         <a href="archive" class="nav-link">
                             <i class="icon-folder-alt"></i>
@@ -2402,6 +2410,21 @@ License: You must have a valid license purchased only from themeforest(the above
                             <span class="selected"></span>
                         </a>
                     </li>
+
+
+                    <?php $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseProducts = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
+                    <li class="nav-item <?php echo $site === "batchproduction" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('products', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                        <a href="batchproduction" class="nav-link">
+                            <i class="icon-wrench"></i>
+                            <span class="title">Batch Production</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <?php } ?>
+                   
+
+                    
+
                     <li class="nav-item hide <?php echo $site === "ffva" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('ffva', $current_userEmployerID, $current_userEmployeeID); } ?>">
                         <a href="ffva" class="nav-link">
                             <i class="icon-doc"></i>
@@ -2409,6 +2432,9 @@ License: You must have a valid license purchased only from themeforest(the above
                             <span class="selected"></span>
                         </a>
                     </li>
+
+
+
 
                     <!--247 - Scandic-->
                     <!--324 - Tom Sonchai-->

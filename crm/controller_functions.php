@@ -2078,22 +2078,22 @@
         $flag = 1;
         $campaign_status = 2;
         $send_status = 1;
-        $campaigns = "SELECT Campaign_Name, COUNT(*) AS subject_count FROM tbl_Customer_Relationship_Campaign WHERE Campaign_Status = ? AND Auto_Send_Status = ? AND enterprise_id = ? AND Campaign_Subject NOT LIKE '%Test Subject%' AND Campaign_Subject NOT LIKE '%Internal Email Campaign Test%' GROUP BY Campaign_Subject";
+        $campaigns = "SELECT Campaign_Subject, COUNT(*) AS subject_count FROM tbl_Customer_Relationship_Campaign WHERE Campaign_Status = ? AND Auto_Send_Status = ? AND enterprise_id = ? AND Campaign_Subject NOT LIKE '%Test Subject%' AND Campaign_Subject NOT LIKE '%Internal Email Campaign Test%' GROUP BY Campaign_Subject";
         $stmt_campaign = $conn->prepare($campaigns);
         if(!$stmt_campaign) {
             die('Error preparing statement: ' .$conn->error);
         }
         $stmt_campaign->bind_param('iii', $campaign_status, $send_status, $enterprise_id);
         if($stmt_campaign->execute()) {
-            $stmt_campaign->bind_result($campaign_name, $subject_count);
+            $stmt_campaign->bind_result($campaign_subject, $subject_count);
             $output = '';
             while ($stmt_campaign->fetch()) {
                 $output .='
                             <tr>
-                                <td width="80%"> '.$campaign_name.' </td>
+                                <td width="80%"> '.$campaign_subject.' </td>
                                 <td width="5%"> '.$subject_count.' </td>
                                 <td class="text-center"> 
-                                    <a class="btn blue btn-sm campaignListPerSubject" data-value="'.$campaign_name.'" data-toggle="modal" href="#modalCampaignList">View list</a> 
+                                    <a class="btn blue btn-sm campaignListPerSubject" data-value="'.$campaign_subject.'" data-toggle="modal" href="#modalCampaignList">View list</a> 
                                 </td>
                             </tr>
                         ';
@@ -2900,7 +2900,7 @@
     if(isset($_POST['get_task_notes'])) {
         $taskid = $_POST['taskid'];
         
-        $stmt = $conn->prepare("SELECT CONCAT(u.first_name, ' ', u.last_name) AS name, n.notes_id, n.taskid, n.Title, n.Notes, n.notes_stamp, n.crm_ids FROM tbl_Customer_Relationship_Notes n JOIN tbl_Customer_Relationship_Task t ON n.taskid = t.crmt_id JOIN tbl_user u ON n.user_cookies = u.ID WHERE n.taskid = ?");
+        $stmt = $conn->prepare("SELECT CONCAT(TRIM(u.first_name), ' ', TRIM(u.last_name)) AS name, n.notes_id, n.taskid, n.Title, n.Notes, n.notes_stamp, n.crm_ids FROM tbl_Customer_Relationship_Notes n JOIN tbl_Customer_Relationship_Task t ON n.taskid = t.crmt_id JOIN tbl_user u ON n.user_cookies = u.ID WHERE n.taskid = ?");
         if ($stmt === false) {
             echo 'Error preparing Statement: '. $conn->error;
             exit;

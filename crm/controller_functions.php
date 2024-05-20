@@ -19,6 +19,10 @@
     $flag = 1;
     $campaign_status = 2;
     $send_status = 1;
+    $method = "AES-256-CBC";
+    $key = "interlink";
+    $options = 0;
+    $iv = '1234567891011121';
     
     // PHP MAILER FUNCTION
 	use PHPMailer\PHPMailer\PHPMailer;
@@ -1395,7 +1399,7 @@
             echo json_encode($response);
             exit;
         }
-    
+        
         $records = mysqli_fetch_all($checkResult, MYSQLI_ASSOC);
         $missingIds = array_diff($selectedIds, array_column($records, 'crm_id'));
     
@@ -1467,7 +1471,14 @@
                     echo json_encode($response);
                     exit;
                 } else {
-                    $mail = php_mailer($from, $data['account_email'], $user, $subject, $body);
+                    $decryptedToken = openssl_decrypt($data['crm_id'], $method, $key, $options, $iv);
+                    $button = '
+                        <div style="display: flex; justify-content: center; margin: 5rem 0">
+                            <a style="display: inline-block; margin-bottom: 0; font-weight: 400; text-align: center; vertical-align: middle; touch-action: manipulation; cursor: pointer; border: 1px solid transparent; white-space: nowrap; padding: 6px 12px; font-size: 14px; color: #fff; background-color: #337ab7; border-color: #2e6da4;" href="crm/unsubscribe.php?token='.$encryptedData.'">Unsubscribe</a>
+                        <div>
+                    ';
+                    $campaign_body = $body . $button;
+                    $mail = php_mailer($from, $data['account_email'], $user, $subject, $campaign_body);
                     $last_insert_id = mysqli_insert_id($conn);
                     $action = 'Added new Campaign';
                     $name = $_COOKIE['first_name'] .' '. $_COOKIE['last_name'];
@@ -3129,8 +3140,62 @@
             $offset += $chunkSize;
             $stmt->close();
         }
-
         $updateStmt->close();
+        $conn->close();
+    }
+
+    if (isset($_POST['get_content'])) {
+        $token = $_POST['token'];
+        $decryptedToken = openssl_decrypt($token, $method, $key, $options, $iv);
+        $stmt = $conn->prepare("SELECT flag as status FROM tbl_Customer_Relationship WHERE crm_id = ?");
+        $stmt->bind_param('i', $decryptedToken);
+        $stmt->execute();
+        $stmt->bind_result($status);
+        $stmt->fetch();
+        $stmt->close();
+
+        $output = '';
+
+        if ($status == 1) {
+            $output .= '
+            <span><i class="bi bi-emoji-laughing"></i></span>
+            <h3 class="bold text-success">Thank you!</h3>
+            <p>You\'re successfully resubscribed to our newsletter<br>
+                Did you subscribe by mistake? <br>Don\'t worry! You can unsubscribe instantly
+                by clicking the unsubscribe button below<br/>
+            </p>
+            <div class="d-flex-center mb-2">
+                <a class="btn btn-danger subscription" data-value="0">Unsubscribe</a>
+            </div>';
+        } else {
+            $output .= '
+            <span><i class="bi bi-emoji-frown"></i></span>
+            <h3 class="bold text-danger">You\'re Unsubscribed</h3>
+            <p>We\'re sorry to lose you, but we totally understand<br>
+                Did you unsubscribe by mistake? <br>Don\'t worry! You can resubscribe instantly
+                by clicking the subscribe button below<br/>
+            </p>
+            <div class="d-flex-center mb-2">
+                <a class="btn btn-primary subscription" data-value="1">Subscribe</a>
+            </div>';
+        }
+
+        echo json_encode($output);
+        $conn->close();
+    }
+
+    if (isset($_POST['subscribe']) && isset($_POST['token'])) {
+        $token = $_POST['token'];
+        $flag = $_POST['status'];
+        $decryptedToken = openssl_decrypt($token, $method, $key, $options, $iv);
+        $stmt = $conn->prepare("UPDATE tbl_Customer_Relationship SET flag = ? WHERE crm_id = ?");
+        $stmt->bind_param('ii', $flag, $decryptedToken);
+        if ($stmt->execute()) {
+            echo 'success';
+        } else {
+            echo 'error';
+        }
+        $stmt->close();
         $conn->close();
     }
 ?>

@@ -81,8 +81,7 @@ function getSupplierList($conn, $userId) {
                     $evalStatus = 'done';
                 }
             }
-            
-            
+                        
             $data[] = [
                 'address' => $address,
                 'name' => $d['name'],
@@ -106,6 +105,12 @@ function getSupplierList($conn, $userId) {
 
 function getCurrentEvaluation($conn, $supplierId) {
     return $conn->execute("SELECT * FROM tbl_fsvp_evaluations WHERE supplier_id = ? AND deleted_at IS NULL ORDER BY created_at DESC LIMIT 1", $supplierId)->fetchAssoc();
+}
+
+// evaluation data for every supplier in the supplier list page
+function getEvaluationData($conn, $supplierId) {
+    $data = $conn->execute("SELECT * FROM tbl_fsvp_evaluations WHERE status = 'current' AND supplier_id = ? AND deleted_at IS NULL ORDER BY created_at DESC LIMIT 1", $supplierId)->fetchAssoc();
+
 }
 
 function getEmployeesInfo($conn, $employeeIds, $jdIds) {
@@ -226,3 +231,7 @@ function saveEvaluationFile($postData, $name) {
         return null;
     }
 }
+
+
+// schedule
+function 

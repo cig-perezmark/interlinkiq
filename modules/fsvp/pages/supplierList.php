@@ -63,6 +63,10 @@ th {
 .border-none {
     border: none !important;
 }
+
+#modalEvaluationDetails .modal-body [class^="col-md-6"] {
+    margin-bottom: 20px;
+}
 </style>
 
 <div class="d-flex margin-bottom-20" style="justify-content: end;">
@@ -613,10 +617,80 @@ th {
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">Foreign Supplier Evaluation Form</h4>
+                <h4 class="modal-title">Evaluation Details</h4>
             </div>
             <div class="modal-body">
-
+                <div class="row margin-bottom-20">
+                    <div class="col-md-2 semibold">IMPORTER NAME:</div>
+                    <div class="col-md-4">
+                        <div class="form-control grey-steel" data-ed="importer"> </div>
+                    </div>
+                    <div class="col-md-2 semibold">DATE:</div>
+                    <div class="col-md-4">
+                        <div class="form-control grey-steel" data-ed="date">Importer</div>
+                    </div>
+                </div>
+                <div class="row margin-bottom-20">
+                    <div class="col-md-2 semibold">Foreign Supplier Name:</div>
+                    <div class="col-md-4">
+                        <div class="form-control grey-steel" data-ed="supplier"> </div>
+                    </div>
+                    <div class="col-md-2 semibold">Foreign Supplier Address:</div>
+                    <div class="col-md-4">
+                        <div class="form-control grey-steel" data-ed="supplier_address"> </div>
+                    </div>
+                </div>
+                <div class="row margin-bottom-20">
+                    <div class="col-md-2 semibold">Food Product(s) Imported:</div>
+                    <div class="col-md-4">
+                        <div class="form-control grey-steel" data-ed="food_products"></div>
+                    </div>
+                    <div class="col-md-2 semibold">Food Product(s) Description(s), including Important Food Safety Characteristics:</div>
+                    <div class="col-md-4">
+                        <div class="form-control grey-steel" data-ed="food_products_description"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 margin-bottom-10">
+                        <strong>Evaluation Considerations and Results</strong>
+                    </div>
+                    <div class="col-md-12">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Supplier's Procedures, Practices, and Processes</th>
+                                    <th>Import Alerts</th>
+                                    <th>Recalls</th>
+                                    <th>Warning Letters</th>
+                                    <th style="width: 10rem;">Other Significant Compliance Action</th>
+                                    <th style="width: 10rem;">Supplier's Corrective Actions</th>
+                                    <th>Informmation related to the safety of the food</th>
+                                    <th>Rejection Date</th>
+                                    <th>Approval Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-ed="spp"></td>
+                                    <td data-ed="import_alerts"></td>
+                                    <td data-ed="recalls"></td>
+                                    <td data-ed="warning_letters"></td>
+                                    <td data-ed="osca"></td>
+                                    <td data-ed="suppliers_ca"></td>
+                                    <td data-ed="info_related"></td>
+                                    <td data-ed="rejection_date"></td>
+                                    <td data-ed="approval_date"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="">Assessment of Results of Foreign Supplier Evaluation</label>
+                            <div class="form-control border-nonex" style="min-height: 7rem;" data-ed="assessment"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>

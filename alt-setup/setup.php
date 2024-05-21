@@ -32,9 +32,15 @@ if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") {
  * 
  * @param mixed $var Variable to be validated.
  * @return null|string Returns null if it is an empty or not a string at all, otherwise, the string itself.
+ * @deprecated Use emptyIsNull function.
  */
 function val_str($var) {
     return isset($var) && is_string($var) && empty($var) ? null : $var;
+}
+
+function emptyIsNull($var) {
+    global $conn;
+    return isset($var) && is_string($var) && empty($var) ? null : $conn->real_escape_string($var);
 }
 
 /**

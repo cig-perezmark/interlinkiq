@@ -67,6 +67,10 @@ th {
 #modalEvaluationDetails .modal-body [class^="col-md-6"] {
     margin-bottom: 20px;
 }
+
+[data-ed] {
+    height: auto;
+}
 </style>
 
 <div class="d-flex margin-bottom-20" style="justify-content: end;">
@@ -691,6 +695,109 @@ th {
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade in" id="modalEvalViewFile" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Viewing: <span id="viewFileTitle"></span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-7">
+                        <p><strong>File list:</strong></p>
+                        <div class="mt-element-list">
+                            <div class="mt-list-container list-simple ext-1">
+                                <ul id="viewFileList"></ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5" style="border-left: 1px solid #eee">
+                        <p><strong>Preview</strong></p>
+                        <iframe src="about:blank" frameborder="0" class="file-viewer"></iframe>
+                    </div>
+                    <div class="col-md-12" style="margin: 1rem 0 2rem 0;">
+                        <hr>
+                    </div>
+                </div>
+                <form class="row" role="form" id="viewFileInfoForm">
+                    <div class="col-md-12">
+                        <div class="form-group row">
+                            <label class="col-form-label col-md-2 bold">File</label>
+                            <div class="col-md-7">
+                                <span data-view-info="filename"></span>
+                                <input type="file" name="file" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-form-label col-md-2 bold">Document date</label>
+                            <div class="col-md-7">
+                                <span data-view-info="document_date"></span>
+                                <input type="date" name="document_date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-form-label col-md-2 bold">Expiration date</label>
+                            <div class="col-md-7">
+                                <span data-view-info="expiration_date"></span>
+                                <input type="date" name="expiration_date" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-form-label col-md-2 bold">Note</label>
+                            <div class="col-md-7">
+                                <span data-view-info="note"></span>
+                                <textarea name="note" class="form-control" placeholder="Add note (optional)"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row" data-view-info>
+                            <label class="col-form-label col-md-2 bold">Upload date</label>
+                            <div class="col-md-8">
+                                <span data-view-info="upload_date"></span>
+                            </div>
+                        </div>
+                        <div class="row margin-bottom-20">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-8 vfbtns">
+                                <div style="display:flex;gap:.75rem;">
+                                    <a href="javascript:void(0)" data-fancybox data-src="" data-type="iframe" class="btn btn-sm btn-circle default view-anchor">
+                                        <i class="fa fa-external-link icon-margin-right"></i>
+                                        View file
+                                    </a>
+                                    <button type="button" class="btn btn-sm default btn-circle" id="vfUpdateBtn">
+                                        <i class="fa fa-edit icon-margin-right font-blue"></i>
+                                        Update
+                                    </button>
+                                    <button type="button" class="btn btn-sm default text-danger btn-circle" id="vfRemoveBtn">
+                                        <i class="fa fa-close icon-margin-right font-red"></i>
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-8 vfupdt">
+                                <div style="display:flex;gap:.75rem;">
+                                    <button type="button" class="btn btn-sm default btn-circle">
+                                        <i class="fa fa-check icon-margin-right font-green"></i>
+                                        Save changes
+                                    </button>
+                                    <button type="button" class="btn btn-sm default text-danger btn-circle" id="vfCancelBtn">
+                                        <i class="fa fa-close icon-margin-right"></i>
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>

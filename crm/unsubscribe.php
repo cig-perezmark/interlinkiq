@@ -12,7 +12,7 @@ if (isset($_GET['token'])) {
         $stmt = $conn->prepare("UPDATE tbl_Customer_Relationship SET flag = 0 WHERE crm_id = ?");
         $stmt->bind_param('i', $decryptedToken);
         if ($stmt->execute()) {
-            header("Location: /interlink/subscribe-page?token=" . $_GET['token']);
+            header("Location: https://interlinkiq.com//subscribe-page?token=" . $_GET['token']);
             exit();
         } else {
             echo 'Error updating contact status.';

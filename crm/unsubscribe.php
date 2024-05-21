@@ -1,7 +1,7 @@
 <?php
 require '../database.php';
 $pageUrl =  "http://" . $_SERVER['SERVER_NAME'];
-// Check for HTTPS if enabled
+
 if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") {
 	$pageUrl = "https://" . $_SERVER['SERVER_NAME'];
 }

@@ -113,12 +113,19 @@ jQuery(function() {
             contentType: false,
             processData: false,
             success: function({data}) {
-                console.log(data)
+                cachedEvalFormData = data;
+                viewEvaluationDetails(data);
             },
             error: function({responseJSON}) {
                 bootstrapGrowl(responseJSON.error || 'Error fetching data!', 'danger');
             },
         });
+    });
+
+    $('#modalEvaluationDetails').on('click', '[data-file]', function() {
+        
+        // $('#modalEvaluationDetails').modal('hide');
+        // $('#modalEvalViewFile').modal('show');
     });
 
     $('.asFileUpload').change(function() {
@@ -605,4 +612,29 @@ function resetEvaluationForm() {
 
 function viewEvaluationDetails(data) {
     const modal = $('#modalEvaluationDetails');
+    const viewFileBtn = (file) => {
+        return `<a href="javascript:void(0)" data-file="${file}" title="View file"><i class="fa fa-file-text-o icon-margin-right"></i>View</a>`;
+    }
+    const no = `<strong>No</strong>`;
+
+    modal.find('[data-ed=importer]').text(data.importer_name);
+    modal.find('[data-ed=date]').text(data.evaluation_date);
+    modal.find('[data-ed=supplier]').text(data.supplier_name);
+    modal.find('[data-ed=supplier_address]').text(data.supplier_address);
+    modal.find('[data-ed=food_products]').text('');
+    modal.find('[data-ed=food_products_description]').text(data.description);
+    modal.find('[data-ed=spp]').text(data.sppp || '');
+
+    modal.find('[data-ed=import_alerts]').html(data.import_alerts == 1 ? viewFileBtn('import_alerts') : no);
+    modal.find('[data-ed=recalls]').html(data.recalls == 1 ? viewFileBtn('recalls') : no);
+    modal.find('[data-ed=warning_letters]').html(data.warning_letters == 1 ? viewFileBtn('warning_letters') : no);
+    modal.find('[data-ed=osca]').html(data.other_significant_ca == 1 ? viewFileBtn('other_significant_ca') : no);
+    modal.find('[data-ed=suppliers_ca]').html(data.suppliers_corrective_actions == 1 ? viewFileBtn('suppliers_corrective_actions') : no);
+
+    modal.find('[data-ed=info_related]').text(data.info_related || '');
+    modal.find('[data-ed=rejection_date]').text(data.rejection_date || '');
+    modal.find('[data-ed=approval_date]').text(data.approval_date || '');
+    modal.find('[data-ed=assessment]').text(data.assessment || '');
+
+    modal.modal('show');
 }

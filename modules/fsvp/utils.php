@@ -65,30 +65,12 @@ function getSupplierList($conn, $userId) {
                     }
                 }
             }
-    
-            $evalData = getCurrentEvaluation($conn, $d['id']);
-            $evalStatus = null;
-
-            if(!count($evalData)) {
-                $evalStatus = 'none';
-            } else {
-                $evalDueDate = strtotime($evalData['evaluation_due_date']);
-                $current = strtotime(date('Y-m-d'));
-                
-                if($evalDueDate <= $current) {
-                    $evalStatus = 'due';
-                } else {
-                    $evalStatus = 'done';
-                }
-            }
                         
             $data[] = [
                 'address' => $address,
                 'name' => $d['name'],
                 'id' => $d['id'],
-                'evaluation_id' => $evalData['id'] ?? null,
-                'evaluation_date' => $evalData['evaluation_date'] ?? null,
-                'evaluation_status' => $evalStatus,
+                'evaluation' => getEvaluationStatus($conn, $d['id']),
                 'food_imported' => $materialData,
                 'compliance_statement' => $csFile,
                 'supplier_agreement' => $saFiles,
@@ -103,14 +85,62 @@ function getSupplierList($conn, $userId) {
     }
 }
 
-function getCurrentEvaluation($conn, $supplierId) {
-    return $conn->execute("SELECT * FROM tbl_fsvp_evaluations WHERE supplier_id = ? AND deleted_at IS NULL ORDER BY created_at DESC LIMIT 1", $supplierId)->fetchAssoc();
+// evaluation data for every supplier in the supplier list page
+function getEvaluationData($conn, $evalId) {
+    $eval = $conn->execute("SELECT 
+                eval.*,
+                supp.name AS supplier_name, 
+                supp.address AS supplier_address,
+                imp.name AS importer_name, 
+                imp.address AS importer_address 
+            FROM tbl_fsvp_evaluations eval
+            LEFT JOIN tbl_fsvp_suppliers fsupp ON eval.supplier_id = fsupp.id
+            LEFT JOIN tbl_fsvp_importers fimp ON eval.importer_id = fimp.id
+            -- tbl_suppliers (original)
+            LEFT JOIN tbl_supplier supp ON supp.ID = fsupp.supplier_id
+            LEFT JOIN tbl_supplier imp ON imp.ID = fimp.importer_id 
+                WHERE eval.id = ? AND eval.deleted_at IS NULL", 
+        $evalId)->fetchAssoc(function($d) {
+            $d['supplier_address'] = formatSupplierAddress($d['supplier_address']);
+            $d['importer_address'] = formatSupplierAddress($d['importer_address']);
+            return $d;
+        });
+
+    // if($eval['status'] == 'expired') {
+        
+    // }
+
+    return $eval;
 }
 
-// evaluation data for every supplier in the supplier list page
-function getEvaluationData($conn, $supplierId) {
-    $data = $conn->execute("SELECT * FROM tbl_fsvp_evaluations WHERE status = 'current' AND supplier_id = ? AND deleted_at IS NULL ORDER BY created_at DESC LIMIT 1", $supplierId)->fetchAssoc();
+function getEvaluationStatus($conn, $supplierId) {
+    try {
+        $conn->begin_transaction();
+        $data = $conn->execute("SELECT id,status, evaluation_date, evaluation_due_date FROM tbl_fsvp_evaluations WHERE supplier_id = ? AND deleted_at IS NULL ORDER BY created_at DESC LIMIT 1", $supplierId)->fetchAssoc();
 
+        if(!count($data)) {
+            return null;
+        } else {
+            if($data['status'] == 'current') {
+                $evalDueDate = strtotime($data['evaluation_due_date']);
+                $current = strtotime(date('Y-m-d'));
+                
+                // already dued
+                if($evalDueDate <= $current) {
+                    $conn->update("tbl_fsvp_evaluations", ['status' => 'expired'], "id = {$data['id']}");
+                    $data['status'] = 'expired';
+                }
+            } else if($data['status'] == 're_evaluated') {
+
+            }
+        }
+
+        $conn->commit();
+        return $data;
+    } catch(Throwable $e) {
+        $conn->rollback();
+        throw $e;
+    }
 }
 
 function getEmployeesInfo($conn, $employeeIds, $jdIds) {
@@ -234,4 +264,4 @@ function saveEvaluationFile($postData, $name) {
 
 
 // schedule
-function 
+// function 

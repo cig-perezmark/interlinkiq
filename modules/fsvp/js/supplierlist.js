@@ -6,10 +6,10 @@ jQuery(function() {
 
     let newSupplierFileCounter = 0;
     let newSupplierErrorDisplay = null;
-    let supplierTable = null;
     let suppliersData = {};
+    let cachedEvalFormData = null;
 
-    supplierTable = Init.dataTable('#tableSupplierList', {
+    const supplierTable = Init.dataTable('#tableSupplierList', {
         columnDefs: [
             {
                 orderable: false,
@@ -24,7 +24,7 @@ jQuery(function() {
             },
             {
                 className: "text-center",
-                targets: [4,5] 
+                targets: [3,4,5] 
             },
             {
                 visible: false,
@@ -32,10 +32,7 @@ jQuery(function() {
             },
         ]
     });
-
-    initSuppliers();
-    
-    initMultiSelect($('.supplierdd'), {
+    const supplierSelect = Init.multiSelect($('.supplierdd'), {
         onChange: function(option, checked, select) {
             const mList = $('#materialListSelection');
             mList.html('');
@@ -79,8 +76,18 @@ jQuery(function() {
             });
         }
     });
+    const importerSelect = Init.multiSelect($('#importerSelect'), {
+        onChange: function(option, checked, select) {
+            const address = $('#importerSelect option:selected').attr('data-address') || '';
+            $('#efImporterAddress').val(address);
+        }
+    });
+    const evalFormAlert = Init.createAlert($('#evaluationForm .modal-body'));
 
     $('#tableSupplierList').on('click', '[data-openevalform]', function() {
+        evalFormAlert.isShowing() && evalFormAlert.hide();
+        resetEvaluationForm();
+        importerSelect.reset();
         openEvaluationForm(suppliersData[this.dataset.openevalform]);
     });
 
@@ -90,6 +97,67 @@ jQuery(function() {
 
     $('#tableSupplierList').on('click', '[data-opencsfile]', function() {
         viewFile(suppliersData, this.dataset.opencsfile, 'compliance_statement');
+    });
+
+    $('#tableSupplierList').on('click', '[data-view-eval]', function() {
+        const id = this.dataset.viewEval;
+
+        if(!id) {
+            bootstrapGrowl('Missing data.', 'error');
+            return;
+        }
+
+        $.ajax({
+            url: baseUrl + "viewEvaluationData=" + id,
+            type: "GET",
+            contentType: false,
+            processData: false,
+            success: function({data}) {
+                cachedEvalFormData = data;
+                viewEvaluationDetails(data);
+            },
+            error: function({responseJSON}) {
+                bootstrapGrowl(responseJSON.error || 'Error fetching data!', 'danger');
+            },
+        });
+    });
+
+    $('#modalEvaluationDetails').on('click', '[data-file]', function() {
+        const data = cachedEvalFormData?.files[this.dataset.file];
+
+        if(!data) {
+            bootstrapGrowl('Unable to preview file', 'error');
+            return;
+        }
+
+        const modal = $('#modalEvaluationDetails');
+        modal.find('#evalFilename').text(convertStringToTitleCase(this.dataset.file));
+        modal.find('[data-evalfile=filename]').text(data.filename);
+        modal.find('[data-evalfile=document_date]').text(data.document_date);
+        modal.find('[data-evalfile=due_date]').text(data.expiration_date);
+        modal.find('#evalFileIframe').prop('src', data.src);
+        modal.find('#evalFileIframeAnchor').attr('data-src', data.src);
+
+        if(this.dataset.file == 'suppliers_corrective_actions') {
+            modal.find('.evalFileCommentRow').show();
+            modal.find('[data-evalfile=note]').text(data.note);
+        } else {
+            modal.find('.evalFileCommentRow').hide();
+        }
+
+        $('#evalFilePreviewPanel').fadeIn();
+    });
+
+    $('#modalEvaluationDetails').on('click', '#evalFilePreviewClose', function() {
+        $('#evalFilePreviewPanel').fadeOut('linear', function() {
+            const modal = $('#modalEvaluationDetails');
+            modal.find('[data-evalfile]').text('');
+            modal.find('#evalFilename').text('');
+            modal.find('#evalFileIframe').prop('src', 'about:blank');
+            modal.find('#evalFileIframeAnchor').attr('data-src', '');
+            modal.find('.evalFileCommentRow').hide();
+            document.getElementById('edStatus').outerHTML = '<span id="edStatus"></span>';
+        });
     });
 
     $('.asFileUpload').change(function() {
@@ -152,7 +220,7 @@ jQuery(function() {
             return showError('Please select a supplier.');
         }
 
-        if(!$(form).find('[name="food_imported[]"]:checked').length) {
+        if($(form).find('[name="food_imported[]"]').length && !$(form).find('[name="food_imported[]"]:checked').length) {
             return showError('Please select food imported to proceed.');
         }
 
@@ -204,7 +272,11 @@ jQuery(function() {
                     renderDTRow(data).draw();
                 }
 
-                $(form.supplier).val('').trigger('change');
+                supplierSelect.reset();
+                form.reset();
+                $('#materialListSelection').html('');
+                $('#materialListHelpBlock').text('Please select a supplier first.');
+
                 $('#modalNewSupplier').modal('hide');
                 bootstrapGrowl(message || 'Saved!');
             },
@@ -271,6 +343,7 @@ jQuery(function() {
     });
     // end of file modal buttons
 
+    // resetting modal display
     $('#modalViewFiles').on('hidden.bs.modal', function() {
         const fileInfoForm = document.querySelector('#viewFileInfoForm');
 
@@ -284,8 +357,97 @@ jQuery(function() {
 
         $('.file-viewer').attr('src', 'about:blank');
         $('.view-anchor').attr('data-src', 'about:blank');
-    })
+    });
 
+    // evaluation form radio buttons
+    $('.ynDocsUpl input[type=radio]').on('change', function() {
+        const container = this.closest('.ynDocsUpl');
+        const isDisabled = this.checked && this.value == 0;
+        
+        if(isDisabled) {
+            const file = $(container).find('input[type=file]').get(0);
+
+            if(file.files.length > 0) {
+                swal(
+                    {
+                        title: `You will lose the uploaded file...`,
+                        type: "warning",
+                        allowOutsideClick: false,
+                        showConfirmButton: true,
+                        showCancelButton: true,
+                        confirmButtonClass: "btn blue",
+                        cancelButtonClass: "btn default",
+                        closeOnConfirm: true,
+                        closeOnCancel: true,
+                        confirmButtonText: "It's OK",
+                        cancelButtonText: "Cancel",
+                    },
+                    function (isConfirm) {
+                        if (isConfirm) {
+                            $(container).find('.form-control').val('').prop('disabled', true).prop('required', false);
+                        } else {
+                            // cancelled, recheck yes option
+                            $(container).find('input[type=radio][value=1]').prop('checked', true);
+                        }
+                    }
+                );
+            } else {
+                $(container).find('.form-control').val('').prop('disabled', true).prop('required', false);
+            }
+        } else {
+            $(container).find('.form-control').prop('disabled', false).prop('required', true);
+        }
+        
+    });
+
+    $('#evaluationForm').submit(function(e) {
+        e.preventDefault();
+
+        const form = e.target;
+
+        if(form.importer.value == '') {
+            evalFormAlert.isShowing() && evalFormAlert.hide();
+            evalFormAlert.setContent('<strong>Error!</strong> Importer is required.').show();
+            return;
+        }
+
+        const data = new FormData(form);
+
+        var l = Ladda.create(this.querySelector('[type=submit]'));
+        l.start();
+
+        $.ajax({
+            url: baseUrl + "newSupplierEvaluation",
+            type: "POST",
+            contentType: false,
+            processData: false,
+            data,
+            success: function({data, message}) {
+                if(data) {
+                    cachedEvalFormData = data;
+                    const upd = suppliersData[data.supplier_id];
+                    upd['evaluation_id'] = data.id;
+                    upd['evaluation_date'] = data.evaluation_date;
+                    upd['evaluation_status'] = data.evaluation_status;
+                    renderDTRow(upd, 'data').draw();
+                }
+
+                $('#modalEvaluationForm').modal('hide');
+                resetEvaluationForm();
+                importerSelect.reset();
+                evalFormAlert.isShowing() && evalFormAlert.hide();
+
+                bootstrapGrowl(message || 'Saved!');
+            },
+            error: function({responseJSON}) {
+                bootstrapGrowl(responseJSON.error || 'Error!', 'danger');
+            },
+            complete: function() {
+                l.stop();
+            }
+        });
+    });
+    
     function initSuppliers() {
         $.ajax({
             url: baseUrl + "suppliersByUser",
@@ -306,28 +468,55 @@ jQuery(function() {
         });
     }
 
-    function renderDTRow(d) {
+    function renderDTRow(d, method = 'add') {
         // save to local storage
         suppliersData[d.id] = d;
         const no = `<span style="font-weight:600;">No</span>`;
         const sa = !d.supplier_agreement || !d.supplier_agreement.length ? no : `<a href="javascript:void(0)" data-opensafile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View</a>`;
         const cs = !d.compliance_statement || !d.compliance_statement.length ?  no : `<a href="javascript:void(0)" data-opencsfile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View </a>`;
-        
-        supplierTable.dt.row.add([
+        let evalBtn = '';
+
+        switch(d.evaluation?.status) {
+            case 'current': 
+                evalBtn = `<a href="javascript:void(0)" class="font-dark semibold" data-view-eval="${d.evaluation.id}" title="Click to view evaluation details"> 
+                                ${d.evaluation.evaluation_date}
+                                <i class="fa fa-check-circle font-green-jungle" style="margin-left:.75rem"></i>
+                            </a>`;
+                break;
+            case 'expired': 
+                evalBtn = `<button type="button"  class="btn red btn-sm btn-circle" title="Re-evaluate" data-reeval="true" data-openevalform="${d.id}">
+                                Re-evaluate
+                            </button>`;
+                break;
+            case 're_evaluated':
+                break;
+            default: 
+                evalBtn = `<button type="button"  class="btn green btn-sm btn-circle" title="Evaluation form" data-openevalform="${d.id}">
+                                <i class="fa fa-search icon-margin-right"></i> Evaluate
+                            </button>`;
+                break;
+        }
+        const rowData = [
             d.name,
             d.food_imported.map((x) => x.name).join(', '),
             d.address,
-            '',
+            evalBtn,
             sa,
             cs,
             `
                 <div class="d-flex center">
-                    <button title="Evaluation form" type="button" class="btn green-soft btn-circle btn-sm" data-openevalform="${d.id}"> <i class="icon-margin-rightx fa fa-edit"></i> Form</button>
-                    <span>|</span>
-                    <button type="button" class="btn-link">Open</button>
+                    <button type="button" class="btn dark btn-outline btn-circle" title="View data">View</button>
                 </div>
             `,
-        ]);
+        ];
+        
+        if(method == 'data') {
+            const index = $(`#tableSupplierList tr:has([data-openevalform=${d.id}])`).index();
+            supplierTable.dt.row(index).data(rowData);
+        } else if(method == 'add') {
+            supplierTable.dt.row.add(rowData);
+        }
+
         return supplierTable.dt;
     }
     
@@ -353,6 +542,10 @@ jQuery(function() {
             }, 5000);
         });
     }
+
+    // init
+    resetEvaluationForm();
+    initSuppliers();
 });
 
 // truncrate string into desired maximum length
@@ -430,6 +623,71 @@ function openEvaluationForm(data) {
 
     $('#effsaddress').val(data.address || '')
     $('#effsname').val(data.name || '')
+    $('#evaluationForm input[name="supplier"]').val(data.id || '');
     
     $('#modalEvaluationForm').modal('show');
+}
+
+// basically triggering reset
+function resetEvaluationForm() {
+    const form = $('#evaluationForm');
+    // initially reset all fields
+    form.get(0).reset();
+    // to disable upload fields, simmulate "no" option
+    $('.ynDocsUpl input[type=radio][value=0]').prop('checked', true).trigger('change');
+    // to reset the radio buttons
+    form.get(0).reset();
+}
+
+function viewEvaluationDetails(data) {
+    const modal = $('#modalEvaluationDetails');
+    const viewFileBtn = (file) => {
+        return `<a href="javascript:void(0)" data-file="${file}" title="View details"><i class="fa fa-file-text-o icon-margin-right"></i>View</a>`;
+    }
+    const no = `<strong>No</strong>`;
+    const none = `<i class="text-muted small">(None)</i>`;
+    const statusBadge = document.getElementById('edStatus');
+
+    switch(data.status) {
+        case 'current': statusBadge.outerHTML = `<span class="label label-success" id="edStatus"> current </span>`; break;
+        case 'expired': statusBadge.outerHTML = `<span class="label label-danger" id="edStatus"> expired </span>`; break;
+        default: statusBadge.outerHTML = `<span id="edStatus"></span>`; break;
+    }
+
+    modal.find('[data-ed=importer]').text(data.importer_name);
+    modal.find('[data-ed=date]').text(data.evaluation_date);
+    modal.find('[data-ed=supplier]').text(data.supplier_name);
+    modal.find('[data-ed=supplier_address]').text(data.supplier_address);
+    modal.find('[data-ed=food_products_description]').html(data.description || none);
+    modal.find('[data-ed=spp]').html(data.sppp || none);
+
+    let fpStr = ``;
+    if(data.food_imported && Array.isArray(data.food_imported)) {
+        fpStr = `<ul style="margin:0;">`;
+        data.food_imported.forEach(d => {
+            fpStr += `<li class="liFP" title="${d.description}">${d.name}</li>`;
+        })
+        fpStr += `</ul>`;
+    }
+    modal.find('[data-ed=food_products]').html(fpStr);
+    
+
+    modal.find('[data-ed=import_alerts]').html(data.import_alerts == 1 ? viewFileBtn('import_alerts') : no);
+    modal.find('[data-ed=recalls]').html(data.recalls == 1 ? viewFileBtn('recalls') : no);
+    modal.find('[data-ed=warning_letters]').html(data.warning_letters == 1 ? viewFileBtn('warning_letters') : no);
+    modal.find('[data-ed=osca]').html(data.other_significant_ca == 1 ? viewFileBtn('other_significant_ca') : no);
+    modal.find('[data-ed=suppliers_ca]').html(data.suppliers_corrective_actions == 1 ? viewFileBtn('suppliers_corrective_actions') : no);
+
+    modal.find('[data-ed=info_related]').html(data.info_related || none);
+    modal.find('[data-ed=rejection_date]').html(data.rejection_date || none);
+    modal.find('[data-ed=approval_date]').html(data.approval_date || none);
+    modal.find('[data-ed=assessment]').html(data.assessment || none);
+
+    modal.modal('show');
+}
+
+function convertStringToTitleCase(str) {
+    return str.replace(/(_|\b)(\w)/g, function(m, pre, char) {
+        return (pre === '_' ? ' ' : pre) + char.toUpperCase();
+    });
 }

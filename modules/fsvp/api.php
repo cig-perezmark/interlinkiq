@@ -29,13 +29,8 @@ if(isset($_GET["newSupplierToList"])) {
         
         $supplierId = $_POST["supplier"];
         $supplierData = $conn->select("tbl_supplier", "address, name", ["ID" => $supplierId])->fetchAssoc(function ($d) {
-            [$a1, $a2, $a3, $a4, $a5] = preg_split("/\||,/", $d["address"]);
-            $address = implode(', ', array_filter(array_map(function ($a) {
-                return htmlentities(trim($a));
-            }, [ $a2, $a3, $a4, $a1, $a5 ]), function($a) { return !empty($a); }));
-            
             return [
-                'address' => $address,
+                'address' => formatSupplierAddress($d["address"]),
                 'name' => $d['name']
             ];
         });
@@ -60,7 +55,7 @@ if(isset($_GET["newSupplierToList"])) {
         // process uploads
         $csFile = null;
         $uploadPath = getUploadsDir('fsvp/supplier_lists');
-        if($_POST['compliance_statement'] == 1 && ($csFile = uploadFile($uploadPath, $_FILES['compliance_statement_file']))) {
+        if(isset($_POST['compliance_statement']) && $_POST['compliance_statement'] == 1 && ($csFile = uploadFile($uploadPath, $_FILES['compliance_statement_file']))) {
             $csFile = [
                 "filename" => $csFile,
                 "path" => $uploadPath,
@@ -76,7 +71,7 @@ if(isset($_GET["newSupplierToList"])) {
         }
 
         $saFiles = null;
-        if($_POST['supplier_agreement'] == 1) {
+        if(isset($_POST['supplier_agreement']) && $_POST['supplier_agreement'] == 1) {
             $saFiles = [];            
             $files = uploadFile($uploadPath, $_FILES['supplier_agreement_file']);
             foreach($files as $index => $file) {
@@ -114,6 +109,7 @@ if(isset($_GET["newSupplierToList"])) {
         
     } catch(Throwable $e) {
         $conn->rollback();
+        http_response_code(500);
         send_response([
             "info"=> $e->getMessage(),
             "message" => 'Error occured.',
@@ -320,13 +316,24 @@ if(isset($_GET['updateFSVPTeamRoster'])) {
     }
 }
 
-// fetching fsvpqi employees
-if(isset($_GET['getFSVPQIs'])) {
+// for populating dropdown in fsvpqi reg page
+if(isset($_GET['getFSVPQIsForRegistration'])) {
     $fsvpId = fsvpqiJDId($conn, $user_id);
     $employees = [];
+    $resultData = [];
+
+    // checking existing fsvpqis
+    $a = $conn->execute("SELECT DISTINCT employee_id FROM tbl_fsvp_qi WHERE user_id = ? AND deleted_at IS NULL", $user_id)->fetchAll();
+    $fsvpqiIdsInRecord = implode(',', array_map(function($d) { return $d['employee_id']; }, $a));
 
     if(!empty($fsvpId)) {
-        $result = $conn->select('tbl_hr_employee', "ID AS id, CONCAT(TRIM(first_name), ' ', TRIM(last_name)) AS name, job_description_id", "user_id = $user_id AND status = 1")->fetchAll(function ($data) use($fsvpId) {
+        $cond = "user_id = $user_id AND status = 1";
+
+        if(!empty($fsvpqiIdsInRecord)) {
+            $cond .= " AND ID NOT IN ($fsvpqiIdsInRecord)";
+        }
+        
+        $result = $conn->select('tbl_hr_employee', "ID AS id, CONCAT(TRIM(first_name), ' ', TRIM(last_name)) AS name, job_description_id", $cond)->fetchAll(function ($data) use($fsvpId) {
             $jds = array_map(function($d) { return intval($d); }, explode(', ', $data['job_description_id']));
     
             if(in_array($fsvpId, $jds)){
@@ -337,26 +344,35 @@ if(isset($_GET['getFSVPQIs'])) {
             return null;
         });
     
+        $resultData['result'] = [];
         foreach($result as $row) {
             if(isset($row) && !empty($row)) {
-                $employees[] = $row;   
+                $resultData['result'][] = $row;   
             }
         }
+
+        if(count($resultData['result']) == 0) {
+            $resultData['message'] = 'All FSVPQIs have already been added.';
+        }
+    } else {
+        $resultData = [
+            'result' => [],
+            'message' => 'No data available.'
+        ];
     }
         
-    send_response([
-        'result' => $employees,
-    ]);
+    send_response($resultData);
 }
 
-if(isset($_GET['newFSVPQI'])) {
+// add fsvpqi 
+if(isset($_GET['newFSVPQI'])) { 
     try {
         $conn->begin_transaction();
 
         $fsvpqi = $_POST['fsvpqi'] ?? null;
         $ces = $_POST['ces'] ?? null;
 
-        if(!empty($fsvpqi)) {
+        if(empty($fsvpqi)) {
             throw new Exception('FSVPQI is required.');
         }
         
@@ -370,23 +386,78 @@ if(isset($_GET['newFSVPQI'])) {
         $id = $conn->getInsertId();
         $type = 'fsvpqi-certifications';
         $uploadPath = getUploadsDir('fsvp/qi_certifications');
-        $data = [];
+        $filesData = [];
 
         if(isset($_POST['c_pcqi_certified']) && $_POST['c_pcqi_certified'] == 'true') {
-            $file = uploadFile($uploadPath, $_FILES['supplier_agreement_file']);
-            $fileInfo = [
-                "filename" => $csFile,
-                "path" => $uploadPath,
-                "document_date" => $_POST['csf_date'] ?? null,
-                "expiration_date" => $_POST["csf_exp"] ?? null,
-                "note" => $_POST["csf_note"] ?? null,
-                "uploaded_at" => $currentTimestamp,
-            ];
+            $d = saveFSVPQICertificate($_POST, 'c_pcqi_certified');
+            $conn->insert('tbl_fsvp_files', [
+                'record_id' => $id,
+                'record_type' => "$type:pcqi-certificate",
+                ...$d,
+            ]);
+            $d['id'] = $conn->getInsertId();
+            $d['filename'] = embedFileUrl($d['filename'], $d['path']);
+            $filesData['pcqi-certificate'] = $d;
         }
 
+        if(isset($_POST['c_food_quality_auditing']) && $_POST['c_food_quality_auditing'] == 'true') {
+            $d = saveFSVPQICertificate($_POST, 'c_food_quality_auditing');
+            $conn->insert('tbl_fsvp_files', [
+                'record_id' => $id,
+                'record_type' => "$type:food-quality-auditing",
+                ...$d,
+            ]);
+            $d['id'] = $conn->getInsertId();
+            $d['filename'] = embedFileUrl($d['filename'], $d['path']);
+            $filesData['food-quality-auditing'] = $d;
+        }
+        
+        if(isset($_POST['c_haccp_training']) && $_POST['c_haccp_training'] == 'true') {
+            $d = saveFSVPQICertificate($_POST, 'c_haccp_training');
+            $conn->insert('tbl_fsvp_files', [
+                'record_id' => $id,
+                'record_type' => "$type:haccp-training",
+                ...$d,
+            ]);
+            $d['id'] = $conn->getInsertId();
+            $d['filename'] = embedFileUrl($d['filename'], $d['path']);
+            $filesData['haccp-training'] = $d;
+        }
+
+        if(isset($_POST['c_fs_training_certificate']) && $_POST['c_fs_training_certificate'] == 'true') {
+            $d = saveFSVPQICertificate($_POST, 'c_fs_training_certificate');
+            $conn->insert('tbl_fsvp_files', [
+                'record_id' => $id,
+                'record_type' => "$type:food-safety-training-certificate",
+                ...$d,
+            ]);
+            $d['id'] = $conn->getInsertId();
+            $d['filename'] = embedFileUrl($d['filename'], $d['path']);
+            $filesData['food-safety-training-certificate'] = $d;
+        }
+
+        if(isset($_POST['c_gfsi_certificate']) && $_POST['c_gfsi_certificate'] == 'true') {
+            $d = saveFSVPQICertificate($_POST, 'c_gfsi_certificate');
+            $conn->insert('tbl_fsvp_files', [
+                'record_id' => $id,
+                'record_type' => "$type:gfsi-certificate",
+                ...$d,
+            ]);
+            $d['id'] = $conn->getInsertId();
+            $d['filename'] = embedFileUrl($d['filename'], $d['path']);
+            $filesData['gfsi-certificate'] = $d;
+        }
+
+        $name = $conn->select('tbl_hr_employee', "CONCAT(TRIM(first_name), ' ', TRIM(last_name)) AS name", "ID = $fsvpqi")->fetchAssoc()['name'];
+        
         $conn->commit();
         send_response([
-            'data' => $data,
+            'data' => [
+                'certifications'=> $filesData,
+                'id' => $id,
+                'ces' => $ces,
+                'name' => $name,
+            ],
             'message' => "Saved successfully."
         ]);
     } catch(Throwable $e) {
@@ -396,4 +467,271 @@ if(isset($_GET['newFSVPQI'])) {
             "message" => 'Error occured.',
         ], 500);
     }
+}
+
+// displaying fsvpqis to table
+if(isset($_GET['fetchFSVPQI']) ) {
+    try {
+        $recordType = 'fsvpqi-certifications';
+        $fsvpqis = $conn->execute("SELECT q.*, CONCAT(TRIM(e.first_name), ' ', TRIM(e.last_name)) AS name FROM tbl_fsvp_qi q JOIN tbl_hr_employee e ON e.ID = q.employee_id WHERE q.user_id = ? AND deleted_at IS NULL", $user_id)->fetchAll();
+        $data = [];
+
+        foreach($fsvpqis as $f) {
+            $files = $conn->select("tbl_fsvp_files","*", "deleted_at IS NULL AND record_type LIKE '$recordType%' AND record_id = " . $f['id'])->fetchAll();
+            $fd = [];
+            if(count($files) > 0) {
+                foreach ($files as $file) {
+                    $type = explode(':', $file['record_type'])[1];
+                    $fd[$type] = prepareFileInfo($file);
+                }
+            }
+            $data[] = [
+                'id' => $f['id'],
+                'name' => $f['name'],
+                'ces' => $f['c_e_s'],
+                'certifications' => $fd,
+            ];
+        }
+
+        send_response([
+            'data' => $data,
+        ]);
+    } catch(Throwable $e) {
+        http_response_code(500);
+        echo $e->getMessage();
+    }
+}
+
+// populating fsvpqis to dropdowns outside the fsvpqi page
+if(isset($_GET['myFSVPQIInRecords']) ) {
+    $result = $conn->execute("SELECT q.id, CONCAT(TRIM(e.first_name), ' ', TRIM(e.last_name)) AS name FROM tbl_fsvp_qi q JOIN tbl_hr_employee e ON q.employee_id = e.ID WHERE q.user_id = ? AND q.deleted_at IS NULL", $user_id)->fetchAll();
+    send_response([
+        'result' => $result,
+    ]);
+}
+
+// adding new importer
+if(isset($_GET['newImporter']) ) {
+    try {
+        $conn->begin_transaction();
+
+        if(!isset($_POST['importer']) || !isset($_POST['fsvpqi']) || !isset($_POST['evaluation_date'])) {
+            throw new Exception('Incomplete fields.');
+        }
+
+        $insertData = [
+            'user_id' => $user_id,
+            'portal_user' => $portal_user,
+            'importer_id' => $_POST['importer'],
+            'supplier_id' => $_POST['supplier'] ?? null,
+            'fsvpqi_id' =>  $_POST['fsvpqi'],
+            'evaluation_date' =>  $_POST['evaluation_date'],
+            'duns_no' =>  $_POST['duns_no'],
+            'fda_registration' =>  $_POST['fda_registration'],
+            'products' => json_encode($_POST['importer_products'] ?? []),
+        ];
+        $conn->insert("tbl_fsvp_importers", $insertData);
+
+        $id = $conn->getInsertId();
+        $importerName = $conn->select("tbl_supplier", 'name', "ID = " . $insertData['importer_id'])->fetchAssoc()['name'] ?? null;
+        $fsvpqiName = $conn->execute("SELECT CONCAT(TRIM(emp.first_name), ' ', TRIM(emp.last_name)) as name FROM tbl_fsvp_qi qi JOIN tbl_hr_employee emp ON emp.ID = qi.employee_id WHERE qi.id = ?", $insertData['fsvpqi_id'])->fetchAssoc()['name'] ?? null;
+        
+        if(isset($insertData['supplier_id'])) {
+            $supplierName = $conn->select("tbl_supplier", 'name', "ID = " . $insertData['supplier_id'])->fetchAssoc()['name'] ?? null;
+        }
+
+        $conn->commit();
+        send_response([
+            'message' => 'Saved successfully.',
+            'data' => [
+                'id' => $id,
+                'duns_no' => $insertData['duns_no'],
+                'fda_registration' => $insertData['fda_registration'],
+                'evaluation_date' => $insertData['evaluation_date'],
+                'importer' => [
+                    'id' => $insertData['importer_id'],
+                    'name' => $importerName,
+                ],
+                'supplier' => [
+                    'id' => $insertData['supplier_id'],
+                    'name' => $supplierName ?? null,
+                ],
+                'fsvpqi' => [
+                    'id' => $insertData['fsvpqi_id'],
+                    'name' => $fsvpqiName,
+                ]
+            ],
+        ]);
+    } catch(Throwable $e) {
+        $conn->rollback();
+        http_response_code(500);
+        echo $e->getMessage();
+    }
+}
+
+// displaying importers to table
+if(isset($_GET['fetchImportersForTable'])) {
+    $result = $conn->execute(
+        "SELECT 
+            i.id, 
+            i.duns_no, 
+            i.fda_registration, 
+            i.evaluation_date,
+            i.importer_id, 
+            imp.name AS importer_name, 
+            i.fsvpqi_id, 
+            CONCAT(TRIM(emp.first_name), ' ', TRIM(emp.last_name)) AS fsvpqi_name,
+            i.supplier_id,
+            sup.name AS supplier_name
+        FROM 
+            tbl_fsvp_importers i 
+            JOIN tbl_supplier imp ON imp.ID = i.importer_id
+            LEFT JOIN tbl_supplier sup ON sup.ID = i.supplier_id
+            JOIN tbl_fsvp_qi qi ON qi.id = i.fsvpqi_id
+            JOIN tbl_hr_employee emp ON emp.ID = qi.employee_id
+        WHERE 
+            i.user_id = ?",
+        $user_id
+    )->fetchAll(function($data) {
+        return [
+            'id' => $data['id'],
+            'duns_no' => $data['duns_no'],
+            'fda_registration' => $data['fda_registration'],
+            'evaluation_date' => $data['evaluation_date'],
+            'importer' => [
+                'id' => $data['importer_id'],
+                'name' => $data['importer_name'],
+            ],
+            'supplier' => [
+                'id' => $data['supplier_id'],
+                'name' => $data['supplier_name'],
+            ],
+            'fsvpqi' => [
+                'id' => $data['fsvpqi_id'],
+                'name' => $data['fsvpqi_name'],
+            ]
+        ];
+    });
+
+    send_response([
+        'data' => $result,
+    ]);
+}
+
+// adding supplier evaluation
+if(isset($_GET['newSupplierEvaluation'])) {
+    try {
+        $conn->begin_transaction();
+
+        if(empty($_POST['importer'])) {
+            throw new Exception('Importer is required.');
+        }
+
+        if(empty($_POST['supplier'])) {
+            throw new Exception('No foreign supplier is acquired.');
+        }
+
+        $params = [
+            'user_id'                       => $user_id,
+            'portal_user'                   => $portal_user,
+            'supplier_id'                   => $_POST['supplier'],
+            'importer_id'                   => $_POST['importer'],
+            'description'                   => emptyIsNull($_POST['description']),
+            'evaluation'                    => emptyIsNull($_POST['evaluation']),
+            'evaluation_date'               => emptyIsNull($_POST['evaluation_date']),
+            'evaluation_due_date'           => emptyIsNull($_POST['evaluation_due_date']),
+            'sppp'                          => emptyIsNull($_POST['sppp']),
+            'import_alerts'                 => $_POST['import_alerts'] ?? NULL,
+            'recalls'                       => $_POST['recalls'] ?? NULL,
+            'warning_letters'               => $_POST['warning_letters'] ?? NULL,
+            'other_significant_ca'          => $_POST['other_significant_ca'] ?? NULL,
+            'suppliers_corrective_actions'  => $_POST['suppliers_corrective_actions'] ?? NULL,
+            'info_related'                  => emptyIsNull($_POST['info_related']),
+            'rejection_date'                => emptyIsNull($_POST['rejection_date']),
+            'approval_date'                 => emptyIsNull($_POST['approval_date']),
+            'assessment'                    => emptyIsNull($_POST['assessment']),
+        ];
+
+        $conn->insert("tbl_fsvp_evaluations", $params);
+        $id = $conn->getInsertId();
+
+        $evalFiles = array_map(function ($fileData) use($conn, $id) {
+            $conn->insert("tbl_fsvp_files", [
+                'record_id' => $id,
+                ...$fileData,
+            ]);
+            $fileData['id'] = $conn->getInsertId();
+            $fileData['filename'] = embedFileUrl($fileData['filename'], $fileData['path']);
+            unset($fileData['path']);
+            return $fileData;
+        }, array_filter([
+            saveEvaluationFile($_POST, 'import_alerts'),
+            saveEvaluationFile($_POST, 'recalls'),
+            saveEvaluationFile($_POST, 'warning_letters'),
+            saveEvaluationFile($_POST, 'other_significant_ca'),
+            saveEvaluationFile($_POST, 'suppliers_corrective_actions'),
+        ], function($r) { return is_array($r); }));
+
+        $data = $params;
+        unset(
+            $data['user_id'],
+            $data['portal_user'],
+            $data['import_alerts'],
+            $data['recalls'],
+            $data['warning_letters'],
+            $data['other_significant_ca'],
+            $data['suppliers_corrective_actions'],
+        );
+        $data['id'] = $id;
+        $data['files'] = [];
+        $data['evaluation_status'] = 'done';
+
+        if(!empty($data['evaluation_due_date']) && strtotime($data['evaluation_due_date']) <= strtotime(date('Y-m-d'))) {
+            $data['evaluation_status'] = 'due';
+        }
+
+        foreach($evalFiles as $file) {
+            $name = explode(':', $file['record_type'])[1];
+            unset($file['record_type']);
+            $data['files'][$name] = $file;
+        }
+
+        $conn->commit();
+        send_response([
+            'data' => $data,
+            'message' => 'Save successfully.',
+        ]);
+    } catch(Throwable $e) {
+        $conn->rollback();
+        send_response([
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+// viewing evaluation data
+if(!empty($_GET['viewEvaluationData'])) {
+    $id = $_GET['viewEvaluationData'];
+
+    // $data = $conn->execute("SELECT 
+    //         eval.*,
+    //         TRIM(supp.name) AS supplier_name,
+    //         TRIM(imp.name) AS importer_name,
+    //         supp.address AS supplier_address, 
+    //         imp.address AS importer_address
+    //     FROM tbl_fsvp_evaluations eval
+    //     JOIN tbl_supplier supp ON supp.ID = eval.supplier_id
+    //     JOIN tbl_supplier imp ON imp.ID = eval.importer_id
+    //     WHERE eval.id = ?", 
+    //     $id)->fetchAssoc(function($d) {
+    //         $d['supplier_address'] = formatSupplierAddress($d['supplier_address']);
+    //         $d['importer_address'] = formatSupplierAddress($d['importer_address']);
+    //         return $d;
+    //     });
+
+    $data = getEvaluationData($conn, $id);
+    
+    send_response([
+        'data' => $data,
+    ]);
 }

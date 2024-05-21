@@ -826,6 +826,28 @@ License: You must have a valid license purchased only from themeforest(the above
                                     echo '<a href="dashboard"><img src="/companyDetailsFolder/252423%20-%20FoodSafety%20360%20V1%20with%20register%20logo.png" height="60px" alt="logo" /></a>';
                                 }
                                 
+                            } else if ($current_client == 3) {
+                                if ($switch_user_id == 1365) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="/companyDetailsFolder/190391%20-%20SafeCannabis%20360%20(2).png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="/companyDetailsFolder/190391%20-%20SafeCannabis%20360%20(2).png" height="60px" alt="logo" /></a>';
+                                }
+                                
+                            } else if ($current_client == 4) {
+                                if ($switch_user_id == 1366) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="/companyDetailsFolder/190391%20-%20SafeCannabis%20360%20(2).png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="/companyDetailsFolder/190391%20-%20SafeCannabis%20360%20(2).png" height="60px" alt="logo" /></a>';
+                                }
+                                
                             } else {
                                 if (isset($_COOKIE['switchAccount'])) {
                                     echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
@@ -1166,6 +1188,12 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <ul class="dropdown-menu hide"></ul>
                                     </li>';
 
+
+
+
+
+
+
                                     if ($current_userEmployeeID == 129 OR $current_userEmployeeID == 128) {
                                         $selectSpeak = mysqli_query($conn, "SELECT * FROM tbl_speakup WHERE reply_to = 0 AND seen = 0 AND user_id = $current_userEmployerID ORDER BY ID DESC");
                                         echo '<li class="dropdown dropdown-extended" id="speakup_employer">
@@ -1350,15 +1378,14 @@ License: You must have a valid license purchased only from themeforest(the above
                             <?php endif; ?>
                         </li>
                         <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-                            <?php if($user_id == 2 || $user_id == 1 || $user_id == 19 || $user_id == 43 || $user_id == 35 || $user_id == 54 || $user_id == 40 || $user_id == 41 || $user_id == 42 || $user_id == 178 || $user_id == 55 || $user_id == 100 || $user_id == 693 || $user_id == 88 || $user_id == 1027): ?>
+                            <?php if($user_id == 2 || $user_id == 1 || $user_id == 19 || $user_id == 43 || $user_id == 35 || $user_id == 54 || $user_id == 40 || $user_id == 41 || $user_id == 42 || $user_id == 178 || $user_id == 55 || $user_id == 100 || $user_id == 693 || $user_id == 88 || $user_id == 1027 || $user_id == 1360 || $user_id == 1365 || $user_id == 1366): ?>
                             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
 
                                 <i class="icon-bell"></i>
                                 <span class="badge badge-default">
                                     <?php    
                                         $users = $user_id;
-                                        $query = "SELECT count(*) as count FROM tbl_user";
-                                        $result = mysqli_query($conn, $query);
+                                        $result = mysqli_query($conn, "SELECT count(*) AS count FROM tbl_user WHERE client = $current_client ORDER BY ID desc");
                                                                                             
                                         while($row = mysqli_fetch_array($result))
                                         {?>
@@ -1379,8 +1406,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
                                         <?php 
                                                 $users = $user_id;
-                                                $query = "SELECT count(*) as count FROM tbl_user";
-                                                $result = mysqli_query($conn, $query);
+                                                $result = mysqli_query($conn, "SELECT count(*) AS count FROM tbl_user WHERE client = $current_client ORDER BY ID desc");
                                                                                                     
                                                 while($row = mysqli_fetch_array($result))
                                                 {?>
@@ -1399,26 +1425,34 @@ License: You must have a valid license purchased only from themeforest(the above
                                         </li>
                                         <?php } ?>
                                         <?php 
+                                            if ($current_client == 0) {
+                                                
                                                 $users = $user_id;
                                                 $query = "SELECT count(*) as count FROM tblEnterpiseDetails";
                                                 $result = mysqli_query($conn, $query);
                                                                                                     
-                                                while($row = mysqli_fetch_array($result))
-                                                {?>
-                                        <li>
-                                            <form action="enterprise-function/export_users.php" method="POST" style="margin-top: 10px;">
-                                                <a style="text-decoration:none;" href="enterprise_record">
-                                                    <span class="time" style="background-color:red;color:white;margin-right:20px;"><?php echo $row['count']; ?></span>
-                                                    <span class="details">
-                                                        <span class="label label-sm label-icon ">
-                                                            <button class="btn btn-xs btn-success" type="submit" name="exportExcelEnterprise"><i class="fa fa-book"></i></button>
-                                                        </span>
-                                                        Enterprise Record
-                                                    </span>
-                                                </a>
-                                            </form>
-                                        </li>
-                                        <?php } ?>
+                                                while($row = mysqli_fetch_array($result)) {
+                                            }
+                                        ?>
+                                                    <li>
+                                                        <form action="enterprise-function/export_users.php" method="POST" style="margin-top: 10px;">
+                                                            <a style="text-decoration:none;" href="enterprise_record">
+                                                                <span class="time" style="background-color:red;color:white;margin-right:20px;"><?php echo $row['count'] ?? '0'; /* added nullish fallback operator */ ?></span>
+                                                                <span class="details">
+                                                                    <span class="label label-sm label-icon ">
+                                                                        <button class="btn btn-xs btn-success" type="submit" name="exportExcelEnterprise"><i class="fa fa-book"></i></button>
+                                                                    </span>
+                                                                    Enterprise Record
+                                                                </span>
+                                                            </a>
+                                                        </form>
+                                                    </li>
+                                        <?php 
+                                        
+                                            if ($current_client == 0) {
+                                                }
+                                            }
+                                        ?>
                                         <li class="hide">
                                             <a href="javascript:;">
                                                 <span class="time">10 mins</span>
@@ -1722,7 +1756,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                 </li>
                                 <li class="divider"> </li>
                                 <?php
-                                        if ($current_userID == 34 || $current_userID == 163 || $current_userEmployerID == 27 || $current_userEmployerID == 464) {
+                                        if ($current_userID == 34 || $current_userID == 163 || $current_userEmployerID == 27 || $current_userEmployerID == 464 || $current_userID == 1360 || $current_userID == 1365 || $current_userID == 1366) {
                                             if ($current_userEmployeeID == 0 || ($current_userEmployeeID > 0 && $current_userAdminAccess == 1)) {
                                                 echo '<li><a href="sidebar"><i class="icon-login"></i> Sidebar Setting</a></li>';
                                             }
@@ -1816,56 +1850,56 @@ License: You must have a valid license purchased only from themeforest(the above
                         </a>
                     </li>
                     <?php endif?>
-                    <?php if($current_client == 0 AND $switch_user_id <> 1106) { ?>
-                    <li class="nav-item hide <?php echo $site === "tracking" ? "active" : ""; ?>">
-                        <a href="tracking" class="nav-link">
-                            <i class="icon-target"></i>
-                            <span class="title">Tracking Dashboard</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
-                    <li class="nav-item hide <?php echo $site === "app-store" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('app-store', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="app-store" class="nav-link">
-                            <i class="icon-grid"></i>
-                            <span class="title">App Catalog</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li> 
+                    <?php if(($current_client == 0 AND $switch_user_id <> 1106) OR $switch_user_id == 1360) { ?>
+                        <li class="nav-item hide <?php echo $site === "tracking" ? "active" : ""; ?>">
+                            <a href="tracking" class="nav-link">
+                                <i class="icon-target"></i>
+                                <span class="title">Tracking Dashboard</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item hide <?php echo $site === "app-store" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('app-store', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                            <a href="app-store" class="nav-link">
+                                <i class="icon-grid"></i>
+                                <span class="title">App Catalog</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li> 
 
-                    <?php
-                                if ($current_userEmployerID == 46400 OR $switch_user_id == 464) {
-                                    echo '<li class="nav-item ">
-                                        <a href="form-owned" class="nav-link">
-                                            <i class="icon-graph"></i>
-                                            <span class="title">E-Forms</span>
-                                            <span class="selected"></span>
-                                        </a>
-                                    </li>';
-                                }
-                            ?>
+                        <?php
+                            if ($current_userEmployerID == 46400 OR $switch_user_id == 464) {
+                                echo '<li class="nav-item ">
+                                    <a href="form-owned" class="nav-link">
+                                        <i class="icon-graph"></i>
+                                        <span class="title">E-Forms</span>
+                                        <span class="selected"></span>
+                                    </a>
+                                </li>';
+                            }
+                        ?>
 
-                    <li class="nav-item">
-                        <a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="icon-support" style="color: #ffff00;"></i>
-                            <span class="title" style="color: #ffff00; font-weight: bold;">Risk Assessment</span>
-                            <span class="selected"></span>
-                            <span class="arrow"></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li class="nav-item">
-                                <a href="survey" class="nav-link " target="_blank" onclick="myfunction(<?= $current_userEmployerID; ?>)">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Qualification Survey</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="e-forms/Sanitary_controller/Sanitary/gmp_food_v" class="nav-link " target="_blank" onclick="set_newCookie(<?= $switch_user_id; ?>)">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Food and Beverage</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                        <li class="nav-item">
+                            <a href="javascript:;" class="nav-link nav-toggle">
+                                <i class="icon-support" style="color: #ffff00;"></i>
+                                <span class="title" style="color: #ffff00; font-weight: bold;">Risk Assessment</span>
+                                <span class="selected"></span>
+                                <span class="arrow"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="nav-item">
+                                    <a href="survey" class="nav-link " target="_blank" onclick="myfunction(<?= $current_userEmployerID; ?>)">
+                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                        <span class="title">Qualification Survey</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="e-forms/Sanitary_controller/Sanitary/gmp_food_v" class="nav-link " target="_blank" onclick="set_newCookie(<?= $switch_user_id; ?>)">
+                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                        <span class="title">Food and Beverage</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
                     <?php } ?>
 
@@ -2367,6 +2401,8 @@ License: You must have a valid license purchased only from themeforest(the above
                             <span class="selected"></span>
                         </a>
                     </li>
+
+
                     <li class="nav-item hide <?php echo $site === "archive" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('archive', $current_userEmployerID, $current_userEmployeeID); } ?>">
                         <a href="archive" class="nav-link">
                             <i class="icon-folder-alt"></i>
@@ -2374,6 +2410,21 @@ License: You must have a valid license purchased only from themeforest(the above
                             <span class="selected"></span>
                         </a>
                     </li>
+
+
+                    <?php $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseProducts = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
+                    <!--<li class="nav-item <?php // echo $site === "batchproduction" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('products', $current_userEmployerID, $current_userEmployeeID); } ?>">-->
+                    <!--    <a href="batchproduction" class="nav-link">-->
+                    <!--        <i class="icon-wrench"></i>-->
+                    <!--        <span class="title">Batch Production</span>-->
+                    <!--        <span class="selected"></span>-->
+                    <!--    </a>-->
+                    <!--</li>-->
+                    <?php } ?>
+                   
+
+                    
+
                     <li class="nav-item hide <?php echo $site === "ffva" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('ffva', $current_userEmployerID, $current_userEmployeeID); } ?>">
                         <a href="ffva" class="nav-link">
                             <i class="icon-doc"></i>
@@ -2381,6 +2432,9 @@ License: You must have a valid license purchased only from themeforest(the above
                             <span class="selected"></span>
                         </a>
                     </li>
+
+
+
 
                     <!--247 - Scandic-->
                     <!--324 - Tom Sonchai-->

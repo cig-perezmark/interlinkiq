@@ -1,9 +1,22 @@
 <?php
 
 include_once __DIR__ ."/../../alt-setup/setup.php";
+date_default_timezone_set('America/Chicago');
 
 function getSuppliersByUser($conn, $userId) {
     return $conn->select("tbl_supplier", "ID as id, name", [ 'user_id'=> $userId, 'status'=>1, 'page'=>1])->fetchAll();
+}
+
+function getImportersByUser($conn, $userId) {
+    return $conn->execute(
+        "SELECT imp.id, sup.name, sup.address FROM tbl_fsvp_importers imp 
+         JOIN tbl_supplier sup ON sup.ID = imp.importer_id
+         WHERE imp.user_id = ? AND deleted_at IS NULL",
+        $userId
+    )->fetchAll(function($data) { 
+        $data['address'] = formatSupplierAddress($data['address']);
+        return $data;
+    });
 }
 
 function getRealFileName($fileName) {
@@ -12,51 +25,185 @@ function getRealFileName($fileName) {
     return implode(' - ', $fn);
 }
 
+function formatSupplierAddress($add) {
+    [$a1, $a2, $a3, $a4, $a5] = preg_split("/\||,/", $add);
+    return implode(', ', array_filter(array_map(function ($a) {
+        return htmlentities(trim($a));
+    }, [ $a2, $a3, $a4, $a1, $a5 ]), function($a) { return !empty($a); }));
+}
+
 function getSupplierList($conn, $userId) {
-    $recordType = 'supplier-list:';
+    try {
+        $recordType = 'supplier-list:';
 
-    $list = $conn->execute("SELECT fs.*, s.name, s.address FROM tbl_fsvp_suppliers fs 
-        JOIN tbl_supplier s ON s.ID = fs.supplier_id
-        WHERE fs.user_id = ? AND fs.deleted_at IS NULL
-        ORDER BY fs.created_at DESC
-    ", $userId)->fetchAll();
-
-    $data = [];
-    foreach ($list as $d) {
-        [$a1, $a2, $a3, $a4, $a5] = preg_split("/\||,/", $d["address"]);
-        $address = implode(', ', array_filter(array_map(function ($a) {
-            return htmlentities(trim($a));
-        }, [ $a2, $a3, $a4, $a1, $a5 ]), function($a) { return !empty($a); }));
-
-        $mIds = implode(', ', json_decode($d['food_imported']));
-        $materialData = $conn->select("tbl_supplier_material", "material_name AS name, ID as id", "ID in ($mIds)")->fetchAll();
-
-        // fetching stored files
-        $mFiles = $conn->select("tbl_fsvp_files","*", "deleted_at IS NULL AND record_type LIKE '$recordType%' AND record_id = " . $d['id'])->fetchAll();
-
-        $saFiles = [];
-        $csFile = [];
-
-        if(count($mFiles) > 0) {
-            foreach ($mFiles as $mFile) {
-                $fileData = prepareFileInfo($mFile);
-                
-                if($mFile['record_type'] == 'supplier-list:supplier-agreement') {
-                    $saFiles[] = $fileData;
-                } else if($mFile['record_type'] == 'supplier-list:compliance-statement') {
-                    $csFile[] = $fileData;
+        $list = $conn->execute("SELECT fs.*, s.name, s.address FROM tbl_fsvp_suppliers fs 
+            JOIN tbl_supplier s ON s.ID = fs.supplier_id
+            WHERE fs.user_id = ? AND fs.deleted_at IS NULL
+            ORDER BY fs.created_at DESC
+        ", $userId)->fetchAll();
+    
+        $data = [];
+        foreach ($list as $d) {
+            $address = formatSupplierAddress($d["address"]);
+            $mIds = implode(', ', json_decode($d['food_imported']));
+            $materialData = $conn->select("tbl_supplier_material", "material_name AS name, ID as id", "ID in ($mIds)")->fetchAll();
+    
+            // fetching stored files
+            $mFiles = $conn->select("tbl_fsvp_files","*", "deleted_at IS NULL AND record_type LIKE '$recordType%' AND record_id = " . $d['id'])->fetchAll();
+    
+            $saFiles = [];
+            $csFile = [];
+    
+            if(count($mFiles) > 0) {
+                foreach ($mFiles as $mFile) {
+                    $fileData = prepareFileInfo($mFile);
+                    
+                    if($mFile['record_type'] == 'supplier-list:supplier-agreement') {
+                        $saFiles[] = $fileData;
+                    } else if($mFile['record_type'] == 'supplier-list:compliance-statement') {
+                        $csFile[] = $fileData;
+                    }
                 }
             }
+                        
+            $data[] = [
+                'address' => $address,
+                'name' => $d['name'],
+                'id' => $d['id'],
+                'evaluation' => getEvaluationStatus($conn, $d['id']),
+                'food_imported' => $materialData,
+                'compliance_statement' => $csFile,
+                'supplier_agreement' => $saFiles,
+            ];
         }
-        
-        $data[] = [
-            'address' => $address,
-            'name' => $d['name'],
-            'id' => $d['id'],
-            'food_imported' => $materialData,
-            'compliance_statement' => $csFile,
-            'supplier_agreement' => $saFiles,
-        ];
+    
+        return $data;
+    } catch(Throwable $e) {
+        send_response([
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+// evaluation data for every supplier in the supplier list page
+function getEvaluationData($conn, $evalId) {
+    $eval = $conn->execute("SELECT 
+                eval.status,
+                eval.evaluation,
+                eval.evaluation_date,
+                eval.evaluation_due_date,
+                eval.sppp,
+                eval.import_alerts,
+                eval.recalls,
+                eval.warning_letters,
+                eval.other_significant_ca,
+                eval.suppliers_corrective_actions,
+                eval.info_related,
+                eval.rejection_date,
+                eval.approval_date,
+                eval.assessment,
+                supp.name AS supplier_name, 
+                supp.address AS supplier_address,
+                imp.name AS importer_name, 
+                imp.address AS importer_address,
+                fsupp.food_imported
+            FROM tbl_fsvp_evaluations eval
+            LEFT JOIN tbl_fsvp_suppliers fsupp ON eval.supplier_id = fsupp.id
+            LEFT JOIN tbl_fsvp_importers fimp ON eval.importer_id = fimp.id
+            -- tbl_suppliers (original)
+            LEFT JOIN tbl_supplier supp ON supp.ID = fsupp.supplier_id
+            LEFT JOIN tbl_supplier imp ON imp.ID = fimp.importer_id 
+                WHERE eval.id = ? AND eval.deleted_at IS NULL", 
+        $evalId)->fetchAssoc(function($d) {
+            $d['supplier_address'] = formatSupplierAddress($d['supplier_address']);
+            $d['importer_address'] = formatSupplierAddress($d['importer_address']);
+            return $d;
+        });
+
+    // update current evaluation status
+    if($eval['status'] == 'current') {
+        $eval['status'] = updateEvaluationStatus($conn, $eval['evaluation_due_date'], $evalId);
+    } else if($eval['status'] == 're_evaluated') {
+        // find re evaluation data
+    }
+
+    // files
+    $evalFileCategoriesToFetch = [];
+    ($eval['import_alerts'] == 1) && ($evalFileCategoriesToFetch[] = 'import-alerts');
+    ($eval['recalls'] == 1) && ($evalFileCategoriesToFetch[] = 'recalls');
+    ($eval['warning_letters'] == 1) && ($evalFileCategoriesToFetch[] = 'warning-letters');
+    ($eval['other_significant_ca'] == 1) && ($evalFileCategoriesToFetch[] = 'other-significant-ca');
+    ($eval['suppliers_corrective_actions'] == 1) && ($evalFileCategoriesToFetch[] = 'suppliers-corrective-actions');
+
+    if(count($evalFileCategoriesToFetch) > 0) {
+        $eval['files'] = fetchEvaluationFiles($conn, $evalId, $evalFileCategoriesToFetch);
+    }
+
+    $eval['food_imported'] = getSupplierFoodImported($conn, $eval['food_imported']);
+
+    return $eval;
+}
+
+function getEvaluationStatus($conn, $supplierId) {
+    try {
+        $conn->begin_transaction();
+        $data = $conn->execute("SELECT id,status, evaluation_date, evaluation_due_date FROM tbl_fsvp_evaluations WHERE supplier_id = ? AND deleted_at IS NULL ORDER BY created_at DESC LIMIT 1", $supplierId)->fetchAssoc();
+
+        if(!count($data)) {
+            return null;
+        } else {
+            if($data['status'] == 'current') {
+                $data['status'] = updateEvaluationStatus($conn, $data['evaluation_due_date'], $data['id']);
+            } else if($data['status'] == 're_evaluated') {
+
+            }
+        }
+
+        $conn->commit();
+        return $data;
+    } catch(Throwable $e) {
+        $conn->rollback();
+        throw $e;
+    }
+}
+
+function updateEvaluationStatus($conn, $due, $id) {
+    $evalDueDate = strtotime($due);
+    $current = strtotime(date('Y-m-d'));
+    
+    // already dued
+    if($evalDueDate <= $current) {
+        $conn->update("tbl_fsvp_evaluations", ['status' => 'expired'], "id = $id");
+        return 'expired';
+    }
+
+    return 'current';
+}
+
+function getSupplierFoodImported($conn, $foodIds) {
+    // not: empty array  or string
+    if(!empty($foodIds) && count(($foodIds = json_decode($foodIds))) > 0) {
+        $ids = implode(',', $foodIds);
+        return $conn->select("tbl_supplier_material", "material_name AS name, description", "ID in ($ids) AND active = 1")->fetchAll();
+    }
+    
+    return null;
+}
+
+// fetching evaluation files
+function fetchEvaluationFiles($conn, $recordId, $fileCategories) {
+    $recordType = implode(',', array_map(function($c) { return "'evaluation:$c'"; }, $fileCategories));
+    $sql = "SELECT * FROM tbl_fsvp_files WHERE (record_type IN ($recordType)) AND record_id = ? AND deleted_at IS NULL";
+    $result = $conn->execute($sql, $recordId)->fetchAll();
+
+    if(count($result) == 0) {
+        return null;
+    }
+
+    $data = [];
+    foreach($result as $d) {
+        $cat = str_replace('-', '_', explode(':', $d['record_type'])[1]);
+        $data[$cat] = prepareFileInfo($d);
     }
 
     return $data;
@@ -125,9 +272,7 @@ function prepareFileInfo($data) {
         return null;
     }
     
-    $filename = explode(' - ', $data['filename']);
-    unset($filename[0]);
-    $filename = implode(' - ', $filename);
+    $filename = getRealFileName($data['filename']);
 
     return [
         'id' => $data['id'] ?? null,
@@ -140,6 +285,49 @@ function prepareFileInfo($data) {
     ];
 }
 
-function saveFSVPQICertificate($data, $fileName) {
+function saveFSVPQICertificate($postData, $name) {
+    if(isset($postData[$name]) && $postData[$name] == 'true') {
+        $uploadPath = getUploadsDir('fsvp/qi_certifications');
+        $currentTimestamp = date('Y-m-d H:i:s');
+        
+        $file = uploadFile($uploadPath, $_FILES[$name .'-file']);
+        return [
+            "filename" => $file,
+            "path" => $uploadPath,
+            "document_date" => $postData[$name . '-document_date'] ?? null,
+            "expiration_date" => $postData[$name . "-expiration_date"] ?? null,
+            "note" => $postData[$name . "-note"] ?? null,
+            "uploaded_at" => $currentTimestamp,
+        ];
+    }
 
+    throw new Exception('Unable to save file.');
 }
+
+function saveEvaluationFile($postData, $name) {
+    if(isset($postData[$name]) && $postData[$name] == 1) {
+        try {
+            $uploadPath = getUploadsDir('fsvp/evaluation_docs');
+            $currentTimestamp = date('Y-m-d H:i:s');
+            
+            $file = uploadFile($uploadPath, $_FILES[$name .'-file']);
+            return [
+                'record_type' => 'evaluation:' . str_replace('_', '-', $name),
+                "filename" => $file,
+                "path" => $uploadPath,
+                "document_date" => $postData[$name . '-document_date'] ?? null,
+                "expiration_date" => $postData[$name . "-expiration_date"] ?? null,
+                "note" => $postData[$name . "-note"] ?? null,
+                "uploaded_at" => $currentTimestamp,
+            ];
+        } catch(Throwable $e) {
+            throw $e;
+        }
+    } else {
+        return null;
+    }
+}
+
+
+// schedule
+// function 

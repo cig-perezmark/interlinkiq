@@ -155,15 +155,154 @@
                                     </thead>
                                     <tbody id="meeting_tbl">
                                         <?php
-                                            if ($current_userEmployeeID > 0 AND !isset($_COOKIE['switchAccount'])) {
-                                                // for attendess
-                                                $cookie_employee_id = $_COOKIE['employee_id'];
-                                                $meetings = $conn->query("SELECT * FROM tbl_meeting_minutes ORDER BY inserted_at DESC;");
+                                            // Admin - display all
+                                            // Employee - display only created and connected
+                                            if ($current_userEmployeeID > 0) {
+                                                if (isset($_COOKIE['switchAccount'])) {
+                                                    $meetings = $conn->query("SELECT * FROM tbl_meeting_minutes WHERE user_ids = $switch_user_id ORDER BY inserted_at DESC");
+                                                    if(mysqli_num_rows($meetings) > 0) {
+                                                        $counter = 0;
+                                                        while($row = $meetings->fetch_assoc()) {
+                                                            $array_data = explode(", ", $row["attendees"]);
+                                                            // if(in_array($cookie_employee_id,$array_data)) {
+        
+                                                                echo '<tr id="id_'.$row['id'].'">
+                                                                    <td>'.$row['account'].'</td>
+                                                                    <td>'.$row['meeting_date'].'</td>
+                                                                    <td>'.$row['agenda'].'</td>
+                                                                    <td>';
+                                                                        $array_data = explode(", ", $row["attendees"]);
+                                                                        $queryAssignto = "SELECT * FROM tbl_hr_employee where status =1 order by first_name ASC";
+                                                                        $resultAssignto = mysqli_query($conn, $queryAssignto);
+                                                                        while($rowAssignto = mysqli_fetch_array($resultAssignto)) { 
+                                                                            if(in_array($rowAssignto['ID'],$array_data)){echo$rowAssignto['first_name'].',';}
+                                                                        }
+        
+                                                                    echo '</td>
+                                                                    <td>';
+        
+                                                                        $getId = $row['id'];
+                                                                        $queryOpen = "SELECT COUNT(*) AS countOpen, SUM(CASE WHEN status = 'Open' THEN 1 ELSE 0 END) AS countStatus, SUM(CASE WHEN status = 'Follow Up' THEN 1 ELSE 0 END) AS countFollow FROM tbl_meeting_minutes_action_items WHERE action_meeting_id = $getId ";
+                                                                        $resultOpen = mysqli_query($conn, $queryOpen);
+                                                                        while($rowOpen = mysqli_fetch_array($resultOpen)) {
+                                                                            $btnBG = 'btn-success';
+                                                                            if ($rowOpen['countStatus'] > 0) { $btnBG = 'dark'; }
+                                                                            else { if ($rowOpen['countFollow'] > 0) { $btnBG = 'btn-warning'; } }
+        
+                                                                            echo '<a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm '.$btnBG.'" type="button" onclick="btnGet_status('.$row['id'].')">'.$rowOpen['countOpen'].'</a>';
+                                                                        }
+        
+                                                                    echo '</td>
+                                                                    <td>
+                                                                        <div class="btn-group btn-group-circle">
+                                                                           <a href="#modalGet_details" data-toggle="modal" class="btn btn-outline dark btn-sm" type="button" onclick="btnUpdate_meeting_details('.$row['id'].')">Edit</a>
+                                                                            <a class="btn red btn-sm" type="button" id="pdf_report" data-id="'.$row['id'].'">PDF</a>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>';
+                                                            // }
+                                                        }
+                                                    }
+                                                } else {
+                                                    // Assign
+                                                    $meetings = $conn->query("SELECT * FROM tbl_meeting_minutes WHERE user_ids = $switch_user_id ORDER BY inserted_at DESC");
+                                                    if(mysqli_num_rows($meetings) > 0) {
+                                                        $counter = 0;
+                                                        while($row = $meetings->fetch_assoc()) {
+                                                            $array_data = explode(", ", $row["attendees"]);
+                                                            if(in_array($current_userEmployeeID,$array_data)) {
+        
+                                                                echo '<tr id="id_'.$row['id'].'">
+                                                                    <td>'.$row['account'].'</td>
+                                                                    <td>'.$row['meeting_date'].'</td>
+                                                                    <td>'.$row['agenda'].'</td>
+                                                                    <td>';
+                                                                        $array_data = explode(", ", $row["attendees"]);
+                                                                        $queryAssignto = "SELECT * FROM tbl_hr_employee where status =1 order by first_name ASC";
+                                                                        $resultAssignto = mysqli_query($conn, $queryAssignto);
+                                                                        while($rowAssignto = mysqli_fetch_array($resultAssignto)) { 
+                                                                            if(in_array($rowAssignto['ID'],$array_data)){echo$rowAssignto['first_name'].',';}
+                                                                        }
+        
+                                                                    echo '</td>
+                                                                    <td>';
+        
+                                                                        $getId = $row['id'];
+                                                                        $queryOpen = "SELECT COUNT(*) AS countOpen, SUM(CASE WHEN status = 'Open' THEN 1 ELSE 0 END) AS countStatus, SUM(CASE WHEN status = 'Follow Up' THEN 1 ELSE 0 END) AS countFollow FROM tbl_meeting_minutes_action_items WHERE action_meeting_id = $getId ";
+                                                                        $resultOpen = mysqli_query($conn, $queryOpen);
+                                                                        while($rowOpen = mysqli_fetch_array($resultOpen)) {
+                                                                            $btnBG = 'btn-success';
+                                                                            if ($rowOpen['countStatus'] > 0) { $btnBG = 'dark'; }
+                                                                            else { if ($rowOpen['countFollow'] > 0) { $btnBG = 'btn-warning'; } }
+        
+                                                                            echo '<a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm '.$btnBG.'" type="button" onclick="btnGet_status('.$row['id'].')">'.$rowOpen['countOpen'].'</a>';
+                                                                        }
+        
+                                                                    echo '</td>
+                                                                    <td>
+                                                                        <div class="btn-group btn-group-circle">
+                                                                           <a href="#modalGet_details" data-toggle="modal" class="btn btn-outline dark btn-sm" type="button" onclick="btnUpdate_meeting_details('.$row['id'].')">Edit</a>
+                                                                            <a class="btn red btn-sm" type="button" id="pdf_report" data-id="'.$row['id'].'">PDF</a>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>';
+                                                            }
+                                                        }
+                                                    }
+                                                    
+                                                    // Created
+                                                    $meetings = $conn->query("SELECT * FROM tbl_meeting_minutes WHERE user_ids = $switch_user_id AND added_by_id = $current_userID ORDER BY inserted_at DESC");
+                                                    if(mysqli_num_rows($meetings) > 0) {
+                                                        $counter = 0;
+                                                        while($row = $meetings->fetch_assoc()) {
+                                                            $array_data = explode(", ", $row["attendees"]);
+                                                            // if(in_array($cookie_employee_id,$array_data)) {
+        
+                                                                echo '<tr id="id_'.$row['id'].'">
+                                                                    <td>'.$row['account'].'</td>
+                                                                    <td>'.$row['meeting_date'].'</td>
+                                                                    <td>'.$row['agenda'].'</td>
+                                                                    <td>';
+                                                                        $array_data = explode(", ", $row["attendees"]);
+                                                                        $queryAssignto = "SELECT * FROM tbl_hr_employee where status =1 order by first_name ASC";
+                                                                        $resultAssignto = mysqli_query($conn, $queryAssignto);
+                                                                        while($rowAssignto = mysqli_fetch_array($resultAssignto)) { 
+                                                                            if(in_array($rowAssignto['ID'],$array_data)){echo$rowAssignto['first_name'].',';}
+                                                                        }
+        
+                                                                    echo '</td>
+                                                                    <td>';
+        
+                                                                        $getId = $row['id'];
+                                                                        $queryOpen = "SELECT COUNT(*) AS countOpen, SUM(CASE WHEN status = 'Open' THEN 1 ELSE 0 END) AS countStatus, SUM(CASE WHEN status = 'Follow Up' THEN 1 ELSE 0 END) AS countFollow FROM tbl_meeting_minutes_action_items WHERE action_meeting_id = $getId ";
+                                                                        $resultOpen = mysqli_query($conn, $queryOpen);
+                                                                        while($rowOpen = mysqli_fetch_array($resultOpen)) {
+                                                                            $btnBG = 'btn-success';
+                                                                            if ($rowOpen['countStatus'] > 0) { $btnBG = 'dark'; }
+                                                                            else { if ($rowOpen['countFollow'] > 0) { $btnBG = 'btn-warning'; } }
+        
+                                                                            echo '<a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm '.$btnBG.'" type="button" onclick="btnGet_status('.$row['id'].')">'.$rowOpen['countOpen'].'</a>';
+                                                                        }
+        
+                                                                    echo '</td>
+                                                                    <td>
+                                                                        <div class="btn-group btn-group-circle">
+                                                                           <a href="#modalGet_details" data-toggle="modal" class="btn btn-outline dark btn-sm" type="button" onclick="btnUpdate_meeting_details('.$row['id'].')">Edit</a>
+                                                                            <a class="btn red btn-sm" type="button" id="pdf_report" data-id="'.$row['id'].'">PDF</a>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>';
+                                                            // }
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                $meetings = $conn->query("SELECT * FROM tbl_meeting_minutes WHERE user_ids = $switch_user_id ORDER BY inserted_at DESC;");
                                                 if(mysqli_num_rows($meetings) > 0) {
                                                     $counter = 0;
                                                     while($row = $meetings->fetch_assoc()) {
                                                         $array_data = explode(", ", $row["attendees"]);
-                                                        if(in_array($cookie_employee_id,$array_data)) {
+                                                        // if(in_array($cookie_employee_id,$array_data)) {
     
                                                             echo '<tr id="id_'.$row['id'].'">
                                                                 <td>'.$row['account'].'</td>
@@ -199,125 +338,180 @@
                                                                     </div>
                                                                 </td>
                                                             </tr>';
-                                                        }
+                                                        // }
                                                     }
                                                 }
+                                            }
+                                            
+                                        
+                                        
+                                        
+                                        
+                                            // if ($current_userEmployeeID > 0 AND !isset($_COOKIE['switchAccount'])) {
+                                            //     // for attendess
+                                            //     $cookie_employee_id = $_COOKIE['employee_id'];
+                                            //     $meetings = $conn->query("SELECT * FROM tbl_meeting_minutes ORDER BY inserted_at DESC;");
+                                            //     if(mysqli_num_rows($meetings) > 0) {
+                                            //         $counter = 0;
+                                            //         while($row = $meetings->fetch_assoc()) {
+                                            //             $array_data = explode(", ", $row["attendees"]);
+                                            //             if(in_array($cookie_employee_id,$array_data)) {
     
-                                                // for action item  
-                                                $emp_id = $_COOKIE['employee_id'];
-                                                // $ai_query = mysqli_query($conn,"select Distinct(assigned_to),id,account,meeting_date,agenda,attendees,action_meeting_id from tbl_meeting_minutes_action_items 
-                                                // left join tbl_meeting_minutes on id = action_meeting_id where assigned_to = $emp_id");
+                                            //                 echo '<tr id="id_'.$row['id'].'">
+                                            //                     <td>'.$row['account'].'</td>
+                                            //                     <td>'.$row['meeting_date'].'</td>
+                                            //                     <td>'.$row['agenda'].'</td>
+                                            //                     <td>';
+                                            //                         $array_data = explode(", ", $row["attendees"]);
+                                            //                         $queryAssignto = "SELECT * FROM tbl_hr_employee where status =1 order by first_name ASC";
+                                            //                         $resultAssignto = mysqli_query($conn, $queryAssignto);
+                                            //                         while($rowAssignto = mysqli_fetch_array($resultAssignto)) { 
+                                            //                             if(in_array($rowAssignto['ID'],$array_data)){echo$rowAssignto['first_name'].',';}
+                                            //                         }
+    
+                                            //                     echo '</td>
+                                            //                     <td>';
+    
+                                            //                         $getId = $row['id'];
+                                            //                         $queryOpen = "SELECT COUNT(*) AS countOpen, SUM(CASE WHEN status = 'Open' THEN 1 ELSE 0 END) AS countStatus, SUM(CASE WHEN status = 'Follow Up' THEN 1 ELSE 0 END) AS countFollow FROM tbl_meeting_minutes_action_items WHERE action_meeting_id = $getId ";
+                                            //                         $resultOpen = mysqli_query($conn, $queryOpen);
+                                            //                         while($rowOpen = mysqli_fetch_array($resultOpen)) {
+                                            //                             $btnBG = 'btn-success';
+                                            //                             if ($rowOpen['countStatus'] > 0) { $btnBG = 'dark'; }
+                                            //                             else { if ($rowOpen['countFollow'] > 0) { $btnBG = 'btn-warning'; } }
+    
+                                            //                             echo '<a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm '.$btnBG.'" type="button" onclick="btnGet_status('.$row['id'].')">'.$rowOpen['countOpen'].'</a>';
+                                            //                         }
+    
+                                            //                     echo '</td>
+                                            //                     <td>
+                                            //                         <div class="btn-group btn-group-circle">
+                                            //                           <a href="#modalGet_details" data-toggle="modal" class="btn btn-outline dark btn-sm" type="button" onclick="btnUpdate_meeting_details('.$row['id'].')">Edit</a>
+                                            //                             <a class="btn red btn-sm" type="button" id="pdf_report" data-id="'.$row['id'].'">PDF</a>
+                                            //                         </div>
+                                            //                     </td>
+                                            //                 </tr>';
+                                            //             }
+                                            //         }
+                                            //     }
+    
+                                            //     // for action item  
+                                            //     $emp_id = $_COOKIE['employee_id'];
+                                            //     // $ai_query = mysqli_query($conn,"select Distinct(assigned_to),id,account,meeting_date,agenda,attendees,action_meeting_id from tbl_meeting_minutes_action_items 
+                                            //     // left join tbl_meeting_minutes on id = action_meeting_id where assigned_to = $emp_id");
                                                 
-                                                $ai_query = mysqli_query($conn,"SELECT 
-                                                    Distinct(assigned_to),
-                                                    id,
-                                                    account,
-                                                    meeting_date,
-                                                    agenda,
-                                                    attendees,
-                                                    action_meeting_id 
+                                            //     $ai_query = mysqli_query($conn,"SELECT 
+                                            //         Distinct(assigned_to),
+                                            //         id,
+                                            //         account,
+                                            //         meeting_date,
+                                            //         agenda,
+                                            //         attendees,
+                                            //         action_meeting_id 
                                                     
-                                                    FROM tbl_meeting_minutes_action_items 
-                                                    LEFT JOIN tbl_meeting_minutes 
-                                                    ON id = action_meeting_id 
-                                                    WHERE assigned_to = $emp_id 
-                                                    AND FIND_IN_SET($emp_id, REPLACE(attendees, ' ', ''))");
-                                                foreach($ai_query as $ai_orw) {
-                                                    $array_data2 = explode(", ", $ai_orw["attendees"]);
-                                                    // if(!in_array($emp_id,$array_data2)) {
-                                                        echo '<tr id="id_'.$ai_orw['id'].'">
-                                                            <td>'.$ai_orw['account'].'</td>
-                                                            <td>'.$ai_orw['meeting_date'].'</td>
-                                                            <td>'.$ai_orw['agenda'].'</td>
-                                                            <td>';
+                                            //         FROM tbl_meeting_minutes_action_items 
+                                            //         LEFT JOIN tbl_meeting_minutes 
+                                            //         ON id = action_meeting_id 
+                                            //         WHERE assigned_to = $emp_id 
+                                            //         AND FIND_IN_SET($emp_id, REPLACE(attendees, ' ', ''))");
+                                            //     foreach($ai_query as $ai_orw) {
+                                            //         $array_data2 = explode(", ", $ai_orw["attendees"]);
+                                            //         // if(!in_array($emp_id,$array_data2)) {
+                                            //             echo '<tr id="id_'.$ai_orw['id'].'">
+                                            //                 <td>'.$ai_orw['account'].'</td>
+                                            //                 <td>'.$ai_orw['meeting_date'].'</td>
+                                            //                 <td>'.$ai_orw['agenda'].'</td>
+                                            //                 <td>';
     
-                                                                $array_data = explode(", ", $ai_orw["attendees"]);
-                                                                $queryAssignto = "SELECT * FROM tbl_hr_employee where status =1 order by first_name ASC";
-                                                                $resultAssignto = mysqli_query($conn, $queryAssignto);
-                                                                while($rowAssignto = mysqli_fetch_array($resultAssignto)) { 
-                                                                    if(in_array($rowAssignto['ID'],$array_data)){echo$rowAssignto['first_name'].',';}
-                                                                }
+                                            //                     $array_data = explode(", ", $ai_orw["attendees"]);
+                                            //                     $queryAssignto = "SELECT * FROM tbl_hr_employee where status =1 order by first_name ASC";
+                                            //                     $resultAssignto = mysqli_query($conn, $queryAssignto);
+                                            //                     while($rowAssignto = mysqli_fetch_array($resultAssignto)) { 
+                                            //                         if(in_array($rowAssignto['ID'],$array_data)){echo$rowAssignto['first_name'].',';}
+                                            //                     }
     
-                                                            echo '</td>
-                                                            <td>';
+                                            //                 echo '</td>
+                                            //                 <td>';
     
-                                                                $getId = $ai_orw['id'];
-                                                                $queryOpen = "SELECT COUNT(*) AS countOpen, SUM(CASE WHEN status = 'Open' THEN 1 ELSE 0 END) AS countStatus, SUM(CASE WHEN status = 'Follow Up' THEN 1 ELSE 0 END) AS countFollow FROM tbl_meeting_minutes_action_items WHERE action_meeting_id = $getId ";
-                                                                $resultOpen = mysqli_query($conn, $queryOpen);
-                                                                while($rowOpen = mysqli_fetch_array($resultOpen)) { 
-                                                                    $btnBG = 'btn-success';
-                                                                    if ($rowOpen['countStatus'] > 0) { $btnBG = 'dark'; }
-                                                                    else { if ($rowOpen['countFollow'] > 0) { $btnBG = 'btn-warning'; } }
+                                            //                     $getId = $ai_orw['id'];
+                                            //                     $queryOpen = "SELECT COUNT(*) AS countOpen, SUM(CASE WHEN status = 'Open' THEN 1 ELSE 0 END) AS countStatus, SUM(CASE WHEN status = 'Follow Up' THEN 1 ELSE 0 END) AS countFollow FROM tbl_meeting_minutes_action_items WHERE action_meeting_id = $getId ";
+                                            //                     $resultOpen = mysqli_query($conn, $queryOpen);
+                                            //                     while($rowOpen = mysqli_fetch_array($resultOpen)) { 
+                                            //                         $btnBG = 'btn-success';
+                                            //                         if ($rowOpen['countStatus'] > 0) { $btnBG = 'dark'; }
+                                            //                         else { if ($rowOpen['countFollow'] > 0) { $btnBG = 'btn-warning'; } }
     
-                                                                    echo '<a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm '.$btnBG.'" type="button" onclick="btnGet_status('.$ai_orw['id'].')">'.$rowOpen['countOpen'].'</a>';
-                                                                }
+                                            //                         echo '<a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm '.$btnBG.'" type="button" onclick="btnGet_status('.$ai_orw['id'].')">'.$rowOpen['countOpen'].'</a>';
+                                            //                     }
     
-                                                            echo '</td>
-                                                            <td>
-                                                                <div class="btn-group btn-group-circle">
-                                                                   <a href="#modalGet_details" data-toggle="modal" class="btn btn-outline dark btn-sm" type="button" onclick="btnUpdate_meeting_details('. $ai_orw['id'].')">Edit</a>
-                                                                    <a class="btn red btn-sm" type="button" id="pdf_report" data-id="'.$ai_orw['id'].'">PDF</a>
-                                                                </div>
-                                                            </td>
-                                                        </tr>';
-                                                    // }
-                                                }
-                                            }
+                                            //                 echo '</td>
+                                            //                 <td>
+                                            //                     <div class="btn-group btn-group-circle">
+                                            //                       <a href="#modalGet_details" data-toggle="modal" class="btn btn-outline dark btn-sm" type="button" onclick="btnUpdate_meeting_details('. $ai_orw['id'].')">Edit</a>
+                                            //                         <a class="btn red btn-sm" type="button" id="pdf_report" data-id="'.$ai_orw['id'].'">PDF</a>
+                                            //                     </div>
+                                            //                 </td>
+                                            //             </tr>';
+                                            //         // }
+                                            //     }
+                                            // }
 
-                                            // Create
-                                            $cookie_user = $_COOKIE['ID'];
-                                            $emp_id1 = $_COOKIE['employee_id'];
-                                            $ai_query1 = mysqli_query($conn,"select * from  tbl_meeting_minutes where added_by_id  = '$cookie_user'");
-                                            if(isset($_COOKIE['switchAccount'])) {
-                                                $ai_query1 = mysqli_query($conn,"select * from  tbl_meeting_minutes where added_by_id  = '$switch_user_id'");
-                                            }
-                                            foreach($ai_query1 as $row_create) {
-                                                $array_data3 = explode(", ", $row_create["attendees"]);
-                                                $action_meeting_ids = $row_create['id'];
+                                            // // Create
+                                            // $cookie_user = $_COOKIE['ID'];
+                                            // $emp_id1 = $_COOKIE['employee_id'];
+                                            // // $ai_query1 = mysqli_query($conn,"select * from  tbl_meeting_minutes where added_by_id  = $cookie_user");
+                                            // $ai_query1 = mysqli_query($conn,"SELECT * FROM  tbl_meeting_minutes WHERE added_by_id  = $current_userID");
+                                            // if(isset($_COOKIE['switchAccount'])) {
+                                            //     // $ai_query1 = mysqli_query($conn,"select * from  tbl_meeting_minutes where added_by_id  = '$switch_user_id'");
+                                            //     $ai_query1 = mysqli_query($conn,"SELECT * FROM  tbl_meeting_minutes WHERE user_ids = $switch_user_id");
+                                            // }
+                                            // foreach($ai_query1 as $row_create) {
+                                            //     $array_data3 = explode(", ", $row_create["attendees"]);
+                                            //     $action_meeting_ids = $row_create['id'];
                                                 
-                                                $break = false;
-                                                if(!in_array($emp_id1,$array_data3)) {
-                                                    $acc_assign = mysqli_query($conn, "select * from tbl_meeting_minutes_action_items where action_meeting_id = $action_meeting_ids");
-                                                    if(mysqli_num_rows($acc_assign) > 0){
-                                                    } else {
-                                                        echo '<tr id="id_'.$row_create['id'].'">
-                                                            <td>'.$row_create['account'].'</td>
-                                                            <td>'.$row_create['meeting_date'].'</td>
-                                                            <td>'.$row_create['agenda'].'</td>
-                                                            <td>';
+                                            //     $break = false;
+                                            //     // if(!in_array($emp_id1,$array_data3)) {
+                                            //         $acc_assign = mysqli_query($conn, "select * from tbl_meeting_minutes_action_items where action_meeting_id = $action_meeting_ids");
+                                            //         if(mysqli_num_rows($acc_assign) > 0){
+                                            //         } else {
+                                            //             echo '<tr id="id_'.$row_create['id'].'">
+                                            //                 <td>'.$row_create['account'].'</td>
+                                            //                 <td>'.$row_create['meeting_date'].'</td>
+                                            //                 <td>'.$row_create['agenda'].'</td>
+                                            //                 <td>';
 
-                                                                $array_data_attd = explode(", ", $row_create["attendees"]);
-                                                                $queryAssignto = "SELECT * FROM tbl_hr_employee where status =1 order by first_name ASC";
-                                                                $resultAssignto = mysqli_query($conn, $queryAssignto);
-                                                                while($rowAssignto = mysqli_fetch_array($resultAssignto))
-                                                                { 
-                                                                    if(in_array($rowAssignto['ID'],$array_data_attd)){ echo $rowAssignto['first_name'].',';}
-                                                                }
+                                            //                     $array_data_attd = explode(", ", $row_create["attendees"]);
+                                            //                     $queryAssignto = "SELECT * FROM tbl_hr_employee where status =1 order by first_name ASC";
+                                            //                     $resultAssignto = mysqli_query($conn, $queryAssignto);
+                                            //                     while($rowAssignto = mysqli_fetch_array($resultAssignto))
+                                            //                     { 
+                                            //                         if(in_array($rowAssignto['ID'],$array_data_attd)){ echo $rowAssignto['first_name'].',';}
+                                            //                     }
 
-                                                            echo '</td>
-                                                            <td>';
-                                                                $getId = $row_create['id'];
-                                                                $queryOpen = "SELECT COUNT(*) AS countOpen, SUM(CASE WHEN status = 'Open' THEN 1 ELSE 0 END) AS countStatus, SUM(CASE WHEN status = 'Follow Up' THEN 1 ELSE 0 END) AS countFollow FROM tbl_meeting_minutes_action_items WHERE action_meeting_id = $getId ";
-                                                                $resultOpen = mysqli_query($conn, $queryOpen);
-                                                                while($rowOpen = mysqli_fetch_array($resultOpen)) { 
-                                                                    $btnBG = 'btn-success';
-                                                                    if ($rowOpen['countStatus'] > 0) { $btnBG = 'dark'; }
-                                                                    else { if ($rowOpen['countFollow'] > 0) { $btnBG = 'btn-warning'; } }
+                                            //                 echo '</td>
+                                            //                 <td>';
+                                            //                     $getId = $row_create['id'];
+                                            //                     $queryOpen = "SELECT COUNT(*) AS countOpen, SUM(CASE WHEN status = 'Open' THEN 1 ELSE 0 END) AS countStatus, SUM(CASE WHEN status = 'Follow Up' THEN 1 ELSE 0 END) AS countFollow FROM tbl_meeting_minutes_action_items WHERE action_meeting_id = $getId ";
+                                            //                     $resultOpen = mysqli_query($conn, $queryOpen);
+                                            //                     while($rowOpen = mysqli_fetch_array($resultOpen)) { 
+                                            //                         $btnBG = 'btn-success';
+                                            //                         if ($rowOpen['countStatus'] > 0) { $btnBG = 'dark'; }
+                                            //                         else { if ($rowOpen['countFollow'] > 0) { $btnBG = 'btn-warning'; } }
 
-                                                                    echo '<a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm '.$btnBG.'" type="button" onclick="btnGet_status('.$row_create['id'].')">'.$rowOpen['countOpen'].'</a>';
-                                                                }
+                                            //                         echo '<a href="#modalGet_sStatus" data-toggle="modal" class="btn btn-outline btn-sm '.$btnBG.'" type="button" onclick="btnGet_status('.$row_create['id'].')">'.$rowOpen['countOpen'].'</a>';
+                                            //                     }
 
-                                                            echo '</td>
-                                                            <td>
-                                                                <div class="btn-group btn-group-circle">
-                                                                   <a href="#modalGet_details" data-toggle="modal" class="btn btn-outline dark btn-sm" type="button" onclick="btnUpdate_meeting_details('.$row_create['id'].')">Edit</a>
-                                                                    <a class="btn red btn-sm" type="button" id="pdf_report" data-id="'.$row_create['id'].'">PDF</a>
-                                                                </div>
-                                                            </td>
-                                                        </tr>';
-                                                    }
-                                                }
-                                            }
+                                            //                 echo '</td>
+                                            //                 <td>
+                                            //                     <div class="btn-group btn-group-circle">
+                                            //                       <a href="#modalGet_details" data-toggle="modal" class="btn btn-outline dark btn-sm" type="button" onclick="btnUpdate_meeting_details('.$row_create['id'].')">Edit</a>
+                                            //                         <a class="btn red btn-sm" type="button" id="pdf_report" data-id="'.$row_create['id'].'">PDF</a>
+                                            //                     </div>
+                                            //                 </td>
+                                            //             </tr>';
+                                            //         }
+                                            //     // }
+                                            // }
                                         ?>
                                     </tbody>
                                 </table>
@@ -540,6 +734,7 @@
                                                             else if($switch_user_id == 308){echo '<option value="FWCC">FWCC</option>'; }
                                                             else if($switch_user_id == 457){echo '<option value="PF">PF</option>'; }
                                                             else if($switch_user_id == 253){echo '<option value="AFIA">AFIA</option>'; }
+                                                            else if($switch_user_id == 1362){echo '<option value="Longevity Nutra Inc.">Longevity Nutra Inc.</option>'; }
                                                         ?>
                                                     </select>
                                                 </div>
@@ -573,6 +768,14 @@
                                                             $resultAttd = mysqli_query($conn, $queryAttd);
                                                             while($rowAttd = mysqli_fetch_array($resultAttd)) { 
                                                                 echo '<option value="'.$rowAttd['ID'].'">'.$rowAttd['first_name'].' '.$rowAttd['last_name'].'</option>'; 
+                                                            }
+                                                            
+                                                            if($switch_user_id == 1362){
+                                                                $queryAttd = "SELECT * FROM tbl_hr_employee where suspended = 0 AND status = 1 AND user_id = 34 AND ID IN (83, 71, 69, 129, 72, 80, 209) order by first_name ASC";
+                                                                $resultAttd = mysqli_query($conn, $queryAttd);
+                                                                while($rowAttd = mysqli_fetch_array($resultAttd)) { 
+                                                                    echo '<option value="'.$rowAttd['ID'].'">'.$rowAttd['first_name'].' '.$rowAttd['last_name'].'</option>'; 
+                                                                }
                                                             }
                                                         ?>
                                                     </select>

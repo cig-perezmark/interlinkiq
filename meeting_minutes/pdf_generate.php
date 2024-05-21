@@ -40,7 +40,7 @@ if( isset($_POST['post_id']) ) {
                 ';
                         
                         $array_data = explode(", ", $row["attendees"]);
-                        $queryAssignto = "SELECT * FROM tbl_hr_employee where user_id = 34 and status =1 order by first_name ASC";
+                        $queryAssignto = "SELECT * FROM tbl_hr_employee where status =1 order by first_name ASC";
                         $resultAssignto = mysqli_query($conn, $queryAssignto);
                         while($rowAssignto = mysqli_fetch_array($resultAssignto))
                         { 

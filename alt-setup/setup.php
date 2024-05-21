@@ -32,9 +32,15 @@ if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") {
  * 
  * @param mixed $var Variable to be validated.
  * @return null|string Returns null if it is an empty or not a string at all, otherwise, the string itself.
+ * @deprecated Use emptyIsNull function.
  */
 function val_str($var) {
     return isset($var) && is_string($var) && empty($var) ? null : $var;
+}
+
+function emptyIsNull($var) {
+    global $conn;
+    return isset($var) && is_string($var) && empty($var) ? null : $conn->real_escape_string($var);
 }
 
 /**
@@ -118,6 +124,10 @@ function uploadFile($path, $file, $newFilename = null) {
         $fileCount = count($file['tmp_name']);
 
         for ($i = 0; $i < $fileCount; $i++) {
+            if(!isValidFile($file['name'][$i])) {
+                throw new Exception('Invalid file.');
+            }
+            
             if (!is_uploaded_file($file["tmp_name"][$i]) || $file["error"][$i] !== UPLOAD_ERR_OK) {
                 throw new Exception("Upload failed with error code " . $file["error"]);
             }
@@ -130,6 +140,10 @@ function uploadFile($path, $file, $newFilename = null) {
         }
         return $filenameArr;
     } else {
+        if(!isValidFile($file['name'])) {
+            throw new Exception('Invalid file.');
+        }
+        
         if (!is_uploaded_file($file["tmp_name"]) || $file["error"] !== UPLOAD_ERR_OK) {
             throw new Exception("Upload failed with error code " . $file["error"]);
         }
@@ -143,6 +157,18 @@ function uploadFile($path, $file, $newFilename = null) {
     }
 
     throw new Exception("Failed to move uploaded file.");
+}
+
+function isValidFile($filename)
+{
+    $disallowedExtensions = ['php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll'];
+
+    $fileExtension = pathinfo($filename, PATHINFO_EXTENSION);
+    if (in_array(strtolower($fileExtension), $disallowedExtensions)) {
+        return false;
+    }
+    
+    return true;
 }
 
 ?>

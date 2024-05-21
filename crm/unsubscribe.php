@@ -1,6 +1,5 @@
 <?php
 require '../database.php';
-
 if (isset($_GET['token'])) {
     $method = "AES-256-CBC";
     $key = "interlink";

@@ -88,7 +88,20 @@ function getSupplierList($conn, $userId) {
 // evaluation data for every supplier in the supplier list page
 function getEvaluationData($conn, $evalId) {
     $eval = $conn->execute("SELECT 
-                eval.*,
+                eval.status,
+                eval.evaluation,
+                eval.evaluation_date,
+                eval.evaluation_due_date,
+                eval.sppp,
+                eval.import_alerts,
+                eval.recalls,
+                eval.warning_letters,
+                eval.other_significant_ca,
+                eval.suppliers_corrective_actions,
+                eval.info_related,
+                eval.rejection_date,
+                eval.approval_date,
+                eval.assessment,
                 supp.name AS supplier_name, 
                 supp.address AS supplier_address,
                 imp.name AS importer_name, 
@@ -122,7 +135,7 @@ function getEvaluationData($conn, $evalId) {
     ($eval['suppliers_corrective_actions'] == 1) && ($evalFileCategoriesToFetch[] = 'suppliers-corrective-actions');
 
     if(count($evalFileCategoriesToFetch) > 0) {
-        $eval['files'] = fetchEvaluationFiles($conn, $eval['id'], $evalFileCategoriesToFetch);
+        $eval['files'] = fetchEvaluationFiles($conn, $evalId, $evalFileCategoriesToFetch);
     }
 
     return $eval;

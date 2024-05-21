@@ -647,14 +647,15 @@ function viewEvaluationDetails(data) {
         return `<a href="javascript:void(0)" data-file="${file}" title="View details"><i class="fa fa-file-text-o icon-margin-right"></i>View</a>`;
     }
     const no = `<strong>No</strong>`;
+    const none = `<i class="text-muted small">(None)</i>`;
 
     modal.find('[data-ed=importer]').text(data.importer_name);
     modal.find('[data-ed=date]').text(data.evaluation_date);
     modal.find('[data-ed=supplier]').text(data.supplier_name);
     modal.find('[data-ed=supplier_address]').text(data.supplier_address);
     modal.find('[data-ed=food_products]').text('');
-    modal.find('[data-ed=food_products_description]').text(data.description);
-    modal.find('[data-ed=spp]').text(data.sppp || '');
+    modal.find('[data-ed=food_products_description]').html(data.description || none);
+    modal.find('[data-ed=spp]').html(data.sppp || none);
 
     modal.find('[data-ed=import_alerts]').html(data.import_alerts == 1 ? viewFileBtn('import_alerts') : no);
     modal.find('[data-ed=recalls]').html(data.recalls == 1 ? viewFileBtn('recalls') : no);
@@ -662,10 +663,10 @@ function viewEvaluationDetails(data) {
     modal.find('[data-ed=osca]').html(data.other_significant_ca == 1 ? viewFileBtn('other_significant_ca') : no);
     modal.find('[data-ed=suppliers_ca]').html(data.suppliers_corrective_actions == 1 ? viewFileBtn('suppliers_corrective_actions') : no);
 
-    modal.find('[data-ed=info_related]').text(data.info_related || '');
-    modal.find('[data-ed=rejection_date]').text(data.rejection_date || '');
-    modal.find('[data-ed=approval_date]').text(data.approval_date || '');
-    modal.find('[data-ed=assessment]').text(data.assessment || '');
+    modal.find('[data-ed=info_related]').html(data.info_related || none);
+    modal.find('[data-ed=rejection_date]').html(data.rejection_date || none);
+    modal.find('[data-ed=approval_date]').html(data.approval_date || none);
+    modal.find('[data-ed=assessment]').html(data.assessment || none);
 
     modal.modal('show');
 }

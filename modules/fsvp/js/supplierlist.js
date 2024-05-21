@@ -123,9 +123,40 @@ jQuery(function() {
     });
 
     $('#modalEvaluationDetails').on('click', '[data-file]', function() {
-        
-        // $('#modalEvaluationDetails').modal('hide');
-        // $('#modalEvalViewFile').modal('show');
+        const data = cachedEvalFormData?.files[this.dataset.file];
+
+        if(!data) {
+            bootstrapGrowl('Unable to preview file', 'error');
+            return;
+        }
+
+        const modal = $('#modalEvaluationDetails');
+        modal.find('#evalFilename').text(convertStringToTitleCase(this.dataset.file));
+        modal.find('[data-evalfile=filename]').text(data.filename);
+        modal.find('[data-evalfile=document_date]').text(data.document_date);
+        modal.find('[data-evalfile=due_date]').text(data.expiration_date);
+        modal.find('#evalFileIframe').prop('src', data.src);
+        modal.find('#evalFileIframeAnchor').attr('data-src', data.src);
+
+        if(this.dataset.file == 'suppliers_corrective_actions') {
+            modal.find('.evalFileCommentRow').show();
+            modal.find('[data-evalfile=note]').text(data.note);
+        } else {
+            modal.find('.evalFileCommentRow').hide();
+        }
+
+        $('#evalFilePreviewPanel').fadeIn();
+    });
+
+    $('#modalEvaluationDetails').on('click', '#evalFilePreviewClose', function() {
+        $('#evalFilePreviewPanel').fadeOut('linear', function() {
+            const modal = $('#modalEvaluationDetails');
+            modal.find('[data-evalfile]').text('');
+            modal.find('#evalFilename').text('');
+            modal.find('#evalFileIframe').prop('src', 'about:blank');
+            modal.find('#evalFileIframeAnchor').attr('data-src', '');
+            modal.find('.evalFileCommentRow').hide();
+        });
     });
 
     $('.asFileUpload').change(function() {
@@ -613,7 +644,7 @@ function resetEvaluationForm() {
 function viewEvaluationDetails(data) {
     const modal = $('#modalEvaluationDetails');
     const viewFileBtn = (file) => {
-        return `<a href="javascript:void(0)" data-file="${file}" title="View file"><i class="fa fa-file-text-o icon-margin-right"></i>View</a>`;
+        return `<a href="javascript:void(0)" data-file="${file}" title="View details"><i class="fa fa-file-text-o icon-margin-right"></i>View</a>`;
     }
     const no = `<strong>No</strong>`;
 
@@ -637,4 +668,10 @@ function viewEvaluationDetails(data) {
     modal.find('[data-ed=assessment]').text(data.assessment || '');
 
     modal.modal('show');
+}
+
+function convertStringToTitleCase(str) {
+    return str.replace(/(_|\b)(\w)/g, function(m, pre, char) {
+        return (pre === '_' ? ' ' : pre) + char.toUpperCase();
+    });
 }

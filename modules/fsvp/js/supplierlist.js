@@ -156,6 +156,7 @@ jQuery(function() {
             modal.find('#evalFileIframe').prop('src', 'about:blank');
             modal.find('#evalFileIframeAnchor').attr('data-src', '');
             modal.find('.evalFileCommentRow').hide();
+            document.getElementById('edStatus').outerHTML = '<span id="edStatus"></span>';
         });
     });
 
@@ -504,10 +505,8 @@ jQuery(function() {
             cs,
             `
                 <div class="d-flex center">
-                    <div class="btn-group btn-group-circle btn-group-sm btn-group-solid">
-                        <button type="button" class="btn dark btn-outline" title="View data">View</button>
-                        <button type="button" class="btn blue btn-outlinex" title="Update">Update</button>
-                    </div>
+                    <div class="btn-group btn-group-circle btn-group-sm btn-group-solid"></div>
+                    <button type="button" class="btn dark btn-outline btn-circle" title="View data">View</button>
                 </div>
             `,
         ];
@@ -648,14 +647,31 @@ function viewEvaluationDetails(data) {
     }
     const no = `<strong>No</strong>`;
     const none = `<i class="text-muted small">(None)</i>`;
+    const statusBadge = document.getElementById('edStatus');
+
+    switch(data.status) {
+        case 'current': statusBadge.outerHTML = `<span class="label label-success" id="edStatus"> current </span>`; break;
+        case 'expired': statusBadge.outerHTML = `<span class="label label-danger" id="edStatus"> expired </span>`; break;
+        default: statusBadge.outerHTML = `<span id="edStatus"></span>`; break;
+    }
 
     modal.find('[data-ed=importer]').text(data.importer_name);
     modal.find('[data-ed=date]').text(data.evaluation_date);
     modal.find('[data-ed=supplier]').text(data.supplier_name);
     modal.find('[data-ed=supplier_address]').text(data.supplier_address);
-    modal.find('[data-ed=food_products]').text('');
     modal.find('[data-ed=food_products_description]').html(data.description || none);
     modal.find('[data-ed=spp]').html(data.sppp || none);
+
+    let fpStr = ``;
+    if(data.food_imported && Array.isArray(data.food_imported)) {
+        fpStr = `<ul style="margin:0;">`;
+        data.food_imported.forEach(d => {
+            fpStr += `<li class="liFP" title="${d.description}">${d.name}</li>`;
+        })
+        fpStr += `</ul>`;
+    }
+    modal.find('[data-ed=food_products]').html(fpStr);
+    
 
     modal.find('[data-ed=import_alerts]').html(data.import_alerts == 1 ? viewFileBtn('import_alerts') : no);
     modal.find('[data-ed=recalls]').html(data.recalls == 1 ? viewFileBtn('recalls') : no);

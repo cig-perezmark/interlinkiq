@@ -83,6 +83,14 @@ th {
     height: 100%;
     width: 100%;
 }
+
+.liFP:hover {
+    text-decoration: underline;
+}
+
+.liFP {
+    cursor: default;
+}
 </style>
 
 <div class="d-flex margin-bottom-20" style="justify-content: end;">
@@ -633,7 +641,7 @@ th {
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">Evaluation Details</h4>
+                <h4 class="modal-title">Evaluation Details <span class="label label-danger" id="edStatus"> current </span></h4>
             </div>
             <div class="modal-body">
                 <div class="row margin-bottom-20">

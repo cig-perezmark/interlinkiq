@@ -713,22 +713,24 @@ if(isset($_GET['newSupplierEvaluation'])) {
 if(!empty($_GET['viewEvaluationData'])) {
     $id = $_GET['viewEvaluationData'];
 
-    $data = $conn->execute("SELECT 
-            eval.*,
-            TRIM(supp.name) AS supplier_name,
-            TRIM(imp.name) AS importer_name,
-            supp.address AS supplier_address, 
-            imp.address AS importer_address
-        FROM tbl_fsvp_evaluations eval
-        JOIN tbl_supplier supp ON supp.ID = eval.supplier_id
-        JOIN tbl_supplier imp ON imp.ID = eval.importer_id
-        WHERE eval.id = ?", 
-        $id)->fetchAssoc(function($d) {
-            $d['supplier_address'] = formatSupplierAddress($d['supplier_address']);
-            $d['importer_address'] = formatSupplierAddress($d['importer_address']);
-            return $d;
-        });
+    // $data = $conn->execute("SELECT 
+    //         eval.*,
+    //         TRIM(supp.name) AS supplier_name,
+    //         TRIM(imp.name) AS importer_name,
+    //         supp.address AS supplier_address, 
+    //         imp.address AS importer_address
+    //     FROM tbl_fsvp_evaluations eval
+    //     JOIN tbl_supplier supp ON supp.ID = eval.supplier_id
+    //     JOIN tbl_supplier imp ON imp.ID = eval.importer_id
+    //     WHERE eval.id = ?", 
+    //     $id)->fetchAssoc(function($d) {
+    //         $d['supplier_address'] = formatSupplierAddress($d['supplier_address']);
+    //         $d['importer_address'] = formatSupplierAddress($d['importer_address']);
+    //         return $d;
+    //     });
 
+    $data = getEvaluationData($conn, $id);
+    
     send_response([
         'data' => $data,
     ]);

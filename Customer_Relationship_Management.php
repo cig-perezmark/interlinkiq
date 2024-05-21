@@ -729,6 +729,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                 </div>
                             </div>
                         </div>
+                        
                         <div class="col-md-4 col-xs-12 col-sm-6">
                             <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
                                 <h4 class="widget-thumb-heading">Archive Contacts</h4>

@@ -1440,6 +1440,14 @@
             $today = $date_default_tx->format('Y/m/d');
         
             foreach ($records as $data) {
+                $encryptedToken = openssl_encrypt($data['crm_id'], $method, $key, $options, $iv);
+                $button = '
+                    <div style="display: flex; justify-content: center; margin: 3rem 0">
+                        <a style="display: inline-block; margin-bottom: 0; font-weight: 400; text-decoration:none; text-align: center; vertical-align: middle; touch-action: manipulation; cursor: pointer; border: 1px solid transparent; white-space: nowrap; padding: 6px 12px; font-size: 14px; color: #fff; background-color: #337ab7; border-color: #2e6da4;" href="crm/unsubscribe.php?token='.$encryptedToken.'">Unsubscribe</a>
+                    <div>
+                ';
+                
+                $campaign_body = $body . $button;
             $sql = "INSERT INTO tbl_Customer_Relationship_Campaign (
                         Campaign_from, 
                         Campaign_Name, 
@@ -1460,7 +1468,7 @@
                     $campaign_name,
                     $data['account_email'],
                     $subject,
-                    $body,
+                    $campaign_body,
                     $campaign_status,
                     $data['crm_id'],
                     $send_status,
@@ -1471,13 +1479,6 @@
                     echo json_encode($response);
                     exit;
                 } else {
-                    $decryptedToken = openssl_decrypt($data['crm_id'], $method, $key, $options, $iv);
-                    $button = '
-                        <div style="display: flex; justify-content: center; margin: 3rem 0">
-                            <a style="display: inline-block; margin-bottom: 0; font-weight: 400; text-decoration:none; text-align: center; vertical-align: middle; touch-action: manipulation; cursor: pointer; border: 1px solid transparent; white-space: nowrap; padding: 6px 12px; font-size: 14px; color: #fff; background-color: #337ab7; border-color: #2e6da4;" href="crm/unsubscribe.php?token='.$decryptedToken.'">Unsubscribe</a>
-                        <div>
-                    ';
-                    $campaign_body = $body . $button;
                     $mail = php_mailer($from, $data['account_email'], $user, $subject, $campaign_body);
                     $last_insert_id = mysqli_insert_id($conn);
                     $action = 'Added new Campaign';

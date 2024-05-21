@@ -1413,19 +1413,19 @@
             $sql = "UPDATE tbl_Customer_Relationship SET flag = 0, updated_by = ? WHERE crm_id IN ($idString)";
             $response = array('status' => 'success', 'message' => 'Contact moved to archive successfully.');
         } 
-        if ($action == 'suspend') {
+        elseif ($action == 'suspend') {
             $sql = "UPDATE tbl_Customer_Relationship SET flag = 0, updated_by = ? WHERE crm_id IN ($idString)";
             $response = array('status' => 'success', 'message' => 'Contact moved to archive successfully.');
         } 
-        if ($action == 'restore') {
+        elseif ($action == 'restore') {
             $sql = "UPDATE tbl_Customer_Relationship SET flag = 1, updated_by = ? WHERE crm_id IN ($idString)";
             $response = array('status' => 'success', 'message' => 'Contact restored successfully.');
         }
-        if ($action == 'delete') {
+        elseif ($action == 'delete') {
             $sql = "DELETE FROM tbl_Customer_Relationship WHERE crm_id IN ($idString)";
             $response = array('status' => 'success', 'message' => 'Contact deleted successfully.');
         } 
-        if ($action == 'campaign') {
+        elseif ($action == 'campaign') {
             $campaign_name = isset($_POST['name']) ? $_POST['name'] : '';
             $subject = isset($_POST['subject']) ? $_POST['subject'] : '';
             $body = isset($_POST['body']) ? $_POST['body'] : '';
@@ -1473,8 +1473,8 @@
                 } else {
                     $decryptedToken = openssl_decrypt($data['crm_id'], $method, $key, $options, $iv);
                     $button = '
-                        <div style="display: flex; justify-content: center; margin: 5rem 0">
-                            <a style="display: inline-block; margin-bottom: 0; font-weight: 400; text-align: center; vertical-align: middle; touch-action: manipulation; cursor: pointer; border: 1px solid transparent; white-space: nowrap; padding: 6px 12px; font-size: 14px; color: #fff; background-color: #337ab7; border-color: #2e6da4;" href="crm/unsubscribe.php?token='.$encryptedData.'">Unsubscribe</a>
+                        <div style="display: flex; justify-content: center; margin: 3rem 0">
+                            <a style="display: inline-block; margin-bottom: 0; font-weight: 400; text-decoration:none; text-align: center; vertical-align: middle; touch-action: manipulation; cursor: pointer; border: 1px solid transparent; white-space: nowrap; padding: 6px 12px; font-size: 14px; color: #fff; background-color: #337ab7; border-color: #2e6da4;" href="crm/unsubscribe.php?token='.$decryptedToken.'">Unsubscribe</a>
                         <div>
                     ';
                     $campaign_body = $body . $button;
@@ -3158,26 +3158,28 @@
 
         if ($status == 1) {
             $output .= '
-            <span><i class="bi bi-emoji-laughing"></i></span>
-            <h3 class="bold text-success">Thank you!</h3>
-            <p>You\'re successfully resubscribed to our newsletter<br>
-                Did you subscribe by mistake? <br>Don\'t worry! You can unsubscribe instantly
-                by clicking the unsubscribe button below<br/>
-            </p>
-            <div class="d-flex-center mb-2">
-                <a class="btn btn-danger subscription" data-value="0">Unsubscribe</a>
-            </div>';
+                <span><i class="bi bi-emoji-laughing"></i></span>
+                <h3 class="bold text-success">Thank you!</h3>
+                <p class="message-content">Welcome back to our email community! We\'ve missed having you around and can\'t wait to share more exciting updates and content with you.<br><br>
+                    In need of a progressive compliance solution? Register for free access on <a href="www.interlinkIQ.com">interlinkIQ.com</a>
+                    To access our free training courses, visit: <a href="www.TrainingAce.org">TrainingAce.org</a>
+                </p>
+                <div class="d-flex-center mb-2 d-none">
+                    <a class="btn btn-danger subscription" data-value="0">Unsubscribe</a>
+                </div>';
         } else {
             $output .= '
-            <span><i class="bi bi-emoji-frown"></i></span>
-            <h3 class="bold text-danger">You\'re Unsubscribed</h3>
-            <p>We\'re sorry to lose you, but we totally understand<br>
-                Did you unsubscribe by mistake? <br>Don\'t worry! You can resubscribe instantly
-                by clicking the subscribe button below<br/>
-            </p>
-            <div class="d-flex-center mb-2">
-                <a class="btn btn-primary subscription" data-value="1">Subscribe</a>
-            </div>';
+                <span><i class="bi bi-emoji-frown"></i></span>
+                <h3 class="bold text-danger">You\'re Unsubscribed</h3>
+                <p class="message-content">We\'re sad to see you go off our email list, but we respect your decision.
+                    Should you need assistance in the future regarding Compliance Management, Quality Systems (QS), Quality Management Systems (QMS),
+                    Regulatory, Accreditation, and Certification Prerequisite Programs, and General Administrative Services,
+                    Please feel free to reach out. We\'re always here to help!<br><br>
+                    If you think you\'ve unsubscribed by mistake, don\'t worry. You can resubscribe instantly by clicking the button below.
+                </p>
+                <div class="d-flex-center mb-2">
+                    <a class="btn btn-success subscription" data-value="1">Subscribe</a>
+                </div>';
         }
 
         echo json_encode($output);

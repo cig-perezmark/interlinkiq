@@ -106,9 +106,24 @@ function getEvaluationData($conn, $evalId) {
             return $d;
         });
 
-    // if($eval['status'] == 'expired') {
-        
-    // }
+    // update current evaluation status
+    if($eval['status'] == 'current') {
+        $eval['status'] = updateEvaluationStatus($conn, $eval['evaluation_due_date'], $evalId);
+    } else if($eval['status'] == 're_evaluated') {
+        // find re evaluation data
+    }
+
+    // files
+    $evalFileCategoriesToFetch = [];
+    ($eval['import_alerts'] == 1) && ($evalFileCategoriesToFetch[] = 'import-alerts');
+    ($eval['recalls'] == 1) && ($evalFileCategoriesToFetch[] = 'recalls');
+    ($eval['warning_letters'] == 1) && ($evalFileCategoriesToFetch[] = 'warning-letters');
+    ($eval['other_significant_ca'] == 1) && ($evalFileCategoriesToFetch[] = 'other-significant-ca');
+    ($eval['suppliers_corrective_actions'] == 1) && ($evalFileCategoriesToFetch[] = 'suppliers-corrective-actions');
+
+    if(count($evalFileCategoriesToFetch) > 0) {
+        $eval['files'] = fetchEvaluationFiles($conn, $eval['id'], $evalFileCategoriesToFetch);
+    }
 
     return $eval;
 }
@@ -122,14 +137,7 @@ function getEvaluationStatus($conn, $supplierId) {
             return null;
         } else {
             if($data['status'] == 'current') {
-                $evalDueDate = strtotime($data['evaluation_due_date']);
-                $current = strtotime(date('Y-m-d'));
-                
-                // already dued
-                if($evalDueDate <= $current) {
-                    $conn->update("tbl_fsvp_evaluations", ['status' => 'expired'], "id = {$data['id']}");
-                    $data['status'] = 'expired';
-                }
+                $data['status'] = updateEvaluationStatus($conn, $data['evaluation_due_date'], $data['id']);
             } else if($data['status'] == 're_evaluated') {
 
             }
@@ -141,6 +149,38 @@ function getEvaluationStatus($conn, $supplierId) {
         $conn->rollback();
         throw $e;
     }
+}
+
+function updateEvaluationStatus($conn, $due, $id) {
+    $evalDueDate = strtotime($due);
+    $current = strtotime(date('Y-m-d'));
+    
+    // already dued
+    if($evalDueDate <= $current) {
+        $conn->update("tbl_fsvp_evaluations", ['status' => 'expired'], "id = $id");
+        return 'expired';
+    }
+
+    return 'current';
+}
+
+// fetching evaluation files
+function fetchEvaluationFiles($conn, $recordId, $fileCategories) {
+    $recordType = implode(',', array_map(function($c) { return "'evaluation:$c'"; }, $fileCategories));
+    $sql = "SELECT * FROM tbl_fsvp_files WHERE (record_type IN ($recordType)) AND record_id = ? AND deleted_at IS NULL";
+    $result = $conn->execute($sql, $recordId)->fetchAll();
+
+    if(count($result) == 0) {
+        return null;
+    }
+
+    $data = [];
+    foreach($result as $d) {
+        $cat = str_replace('-', '_', explode(':', $d['record_type'])[1]);
+        $data[$cat] = prepareFileInfo($d);
+    }
+
+    return $data;
 }
 
 function getEmployeesInfo($conn, $employeeIds, $jdIds) {

@@ -23,7 +23,12 @@
     $key = "interlink";
     $options = 0;
     $iv = '1234567891011121';
-    
+    $pageUrl =  "http://" . $_SERVER['SERVER_NAME'];
+
+    if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") {
+        $pageUrl = "https://" . $_SERVER['SERVER_NAME'];
+    }
+
     // PHP MAILER FUNCTION
 	use PHPMailer\PHPMailer\PHPMailer;
 	use PHPMailer\PHPMailer\SMTP;
@@ -1443,7 +1448,7 @@
                 $encryptedToken = openssl_encrypt($data['crm_id'], $method, $key, $options, $iv);
                 $button = '
                     <div style="display: flex; justify-content: center; margin: 3rem 0">
-                        <a style="display: inline-block; margin-bottom: 0; font-weight: 400; text-decoration:none; text-align: center; vertical-align: middle; touch-action: manipulation; cursor: pointer; border: 1px solid transparent; white-space: nowrap; padding: 6px 12px; font-size: 14px; color: #fff; background-color: #337ab7; border-color: #2e6da4;" href="crm/unsubscribe.php?token='.$encryptedToken.'">Unsubscribe</a>
+                        <a style="display: inline-block; margin-bottom: 0; font-weight: 400; text-decoration:none; text-align: center; vertical-align: middle; touch-action: manipulation; cursor: pointer; border: 1px solid transparent; white-space: nowrap; padding: 6px 12px; font-size: 14px; color: #fff; background-color: #337ab7; border-color: #2e6da4;" href="$pageUrl/crm/unsubscribe.php?token='.$encryptedToken.'">Unsubscribe</a>
                     <div>
                 ';
                 

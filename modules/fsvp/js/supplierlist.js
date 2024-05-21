@@ -505,7 +505,6 @@ jQuery(function() {
             cs,
             `
                 <div class="d-flex center">
-                    <div class="btn-group btn-group-circle btn-group-sm btn-group-solid"></div>
                     <button type="button" class="btn dark btn-outline btn-circle" title="View data">View</button>
                 </div>
             `,

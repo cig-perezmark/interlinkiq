@@ -105,7 +105,8 @@ function getEvaluationData($conn, $evalId) {
                 supp.name AS supplier_name, 
                 supp.address AS supplier_address,
                 imp.name AS importer_name, 
-                imp.address AS importer_address 
+                imp.address AS importer_address,
+                fsupp.food_imported
             FROM tbl_fsvp_evaluations eval
             LEFT JOIN tbl_fsvp_suppliers fsupp ON eval.supplier_id = fsupp.id
             LEFT JOIN tbl_fsvp_importers fimp ON eval.importer_id = fimp.id
@@ -137,6 +138,8 @@ function getEvaluationData($conn, $evalId) {
     if(count($evalFileCategoriesToFetch) > 0) {
         $eval['files'] = fetchEvaluationFiles($conn, $evalId, $evalFileCategoriesToFetch);
     }
+
+    $eval['food_imported'] = getSupplierFoodImported($conn, $eval['food_imported']);
 
     return $eval;
 }
@@ -175,6 +178,16 @@ function updateEvaluationStatus($conn, $due, $id) {
     }
 
     return 'current';
+}
+
+function getSupplierFoodImported($conn, $foodIds) {
+    // not: empty array  or string
+    if(!empty($foodIds) && count(($foodIds = json_decode($foodIds))) > 0) {
+        $ids = implode(',', $foodIds);
+        return $conn->select("tbl_supplier_material", "material_name AS name, description", "ID in ($ids) AND active = 1")->fetchAll();
+    }
+    
+    return null;
 }
 
 // fetching evaluation files

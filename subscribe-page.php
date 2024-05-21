@@ -167,8 +167,6 @@
             $(document).on('click', '.subscription', function() {
                 var token = new URLSearchParams(window.location.search).get('token');
                 var flag = $(this).data('value');
-                console.log(flag)
-                console.log(token)
                 if (!token) {
                     alert('ID not provided.');
                     return;

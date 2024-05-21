@@ -59,6 +59,38 @@ th {
 #viewFileInfoForm.is-update .vfupdt {
     display: block !important;
 }
+
+.border-none {
+    border: none !important;
+}
+
+#modalEvaluationDetails .modal-body [class^="col-md-6"] {
+    margin-bottom: 20px;
+}
+
+[data-ed] {
+    height: auto;
+}
+
+.preview-grid {
+    display: grid;
+    grid-template-columns: 5fr 7fr;
+    gap: 10px;
+    /* Optional: adds space between the columns */
+}
+
+.preview-grid .file-preview {
+    height: 100%;
+    width: 100%;
+}
+
+.liFP:hover {
+    text-decoration: underline;
+}
+
+.liFP {
+    cursor: default;
+}
 </style>
 
 <div class="d-flex margin-bottom-20" style="justify-content: end;">
@@ -74,10 +106,13 @@ th {
             <th>Supplier Name</th>
             <th>Food Imported</th>
             <th style="width: 220px;">Address</th>
-            <th style="width: 100px">Evaluation Date</th>
+            <th style="max-width: 140px">
+                Evaluation Date <br>
+                <small class="text-muted margin-top-10 font-grey-salsa" style="font-weight: normal;line-height: 98%;display: inline-block;">Click the date to view evaluation details.</small>
+            </th>
             <th style="max-width: 80px">Supplier Agreement</th>
             <th style="max-width: 80px;">FSVP Compliance Statement</th>
-            <th class="text-center">Actions</th>
+            <th class="text-center" style="width: 120px">Actions</th>
         </tr>
     </thead>
     <tbody></tbody>
@@ -97,6 +132,7 @@ th {
                         <div class="form-group">
                             <label for="effsname">Foreign Supplier Name <i class="text-muted">(auto-filled)</i></label>
                             <input type="text" class="form-control bg-white" id="effsname" placeholder="Enter foreign supplier name" readonly>
+                            <input type="hidden" name="supplier">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -320,7 +356,7 @@ th {
                                 </div>
                             </div>
                             <div class="col-md-9">
-                                <textarea name="supplier_corrective_actions-note" class="form-control margin-top-20" placeholder="Enter supplier's corrective actions"></textarea>
+                                <textarea name="supplier_corrective_actions-note" class="form-control margin-top-20 margin-bottom-10" placeholder="Enter supplier's corrective actions"></textarea>
                             </div>
                         </div>
                     </div>
@@ -592,6 +628,131 @@ th {
                         </div>
                     </div>
                 </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade in" id="modalEvaluationDetails" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Evaluation Details <span class="label label-danger" id="edStatus"> current </span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row margin-bottom-20">
+                    <div class="col-md-2 semibold">IMPORTER NAME:</div>
+                    <div class="col-md-4">
+                        <div class="form-control grey-steel" data-ed="importer"> </div>
+                    </div>
+                    <div class="col-md-2 semibold">DATE:</div>
+                    <div class="col-md-4">
+                        <div class="form-control grey-steel" data-ed="date">Importer</div>
+                    </div>
+                </div>
+                <div class="row margin-bottom-20">
+                    <div class="col-md-2 semibold">Foreign Supplier Name:</div>
+                    <div class="col-md-4">
+                        <div class="form-control grey-steel" data-ed="supplier"> </div>
+                    </div>
+                    <div class="col-md-2 semibold">Foreign Supplier Address:</div>
+                    <div class="col-md-4">
+                        <div class="form-control grey-steel" data-ed="supplier_address"> </div>
+                    </div>
+                </div>
+                <div class="row margin-bottom-20">
+                    <div class="col-md-2 semibold">Food Product(s) Imported:</div>
+                    <div class="col-md-4">
+                        <div class="form-control grey-steel" data-ed="food_products"></div>
+                    </div>
+                    <div class="col-md-2 semibold">Food Product(s) Description(s), including Important Food Safety Characteristics:</div>
+                    <div class="col-md-4">
+                        <div class="form-control grey-steel" data-ed="food_products_description"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 margin-bottom-10">
+                        <strong>Evaluation Considerations and Results</strong>
+                    </div>
+                    <div class="col-md-12">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Supplier's Procedures, Practices, and Processes</th>
+                                    <th>Import Alerts</th>
+                                    <th>Recalls</th>
+                                    <th>Warning Letters</th>
+                                    <th style="width: 10rem;">Other Significant Compliance Action</th>
+                                    <th style="width: 10rem;">Supplier's Corrective Actions</th>
+                                    <th>Informmation related to the safety of the food</th>
+                                    <th>Rejection Date</th>
+                                    <th>Approval Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-ed="spp"></td>
+                                    <td data-ed="import_alerts"></td>
+                                    <td data-ed="recalls"></td>
+                                    <td data-ed="warning_letters"></td>
+                                    <td data-ed="osca"></td>
+                                    <td data-ed="suppliers_ca"></td>
+                                    <td data-ed="info_related"></td>
+                                    <td data-ed="rejection_date"></td>
+                                    <td data-ed="approval_date"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div id="evalFilePreviewPanel" class="col-md-12 margin-bottom-20 bg-grey-cararra-opacity" style="padding-top:10px; padding-bottom:10px; display: none;">
+                        <div>
+                            <i class="bold"><span id="evalFilename"></span> - Preview</i>
+                            <a href="javascript:void(0)" class="btn btn-link btn-sm" id="evalFilePreviewClose">[Close]</a>
+                        </div>
+                        <div class="preview-grid">
+                            <!-- style="border-right: 1px solid grey; padding-right: 10px;" -->
+                            <div>
+                                <table class="table">
+                                    <tr>
+                                        <th style="width: 8rem;">Filename</th>
+                                        <td data-evalfile="filename">filename.txt</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Document Date</th>
+                                        <td data-evalfile="document_date">filename.txt</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Expiration Date</th>
+                                        <td data-evalfile="due_date">filename.txt</td>
+                                    </tr>
+                                    <tr class="evalFileCommentRow" style="display: none;">
+                                        <th>Comment</th>
+                                        <td data-evalfile="note">filename.txt</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            <a href="javascript:void(0)" data-fancybox data-src="" data-type="iframe" id="evalFileIframeAnchor">View file</a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div>
+                                <iframe src="about:blank" frameborder="0" class="file-preview" id="evalFileIframe"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="">Assessment of Results of Foreign Supplier Evaluation</label>
+                            <div class="form-control border-nonex" style="min-height: 7rem;" data-ed="assessment"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>

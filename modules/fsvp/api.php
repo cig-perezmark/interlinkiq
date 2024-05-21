@@ -672,33 +672,9 @@ if(isset($_GET['newSupplierEvaluation'])) {
             saveEvaluationFile($_POST, 'suppliers_corrective_actions'),
         ], function($r) { return is_array($r); }));
 
-        $data = $params;
-        unset(
-            $data['user_id'],
-            $data['portal_user'],
-            $data['import_alerts'],
-            $data['recalls'],
-            $data['warning_letters'],
-            $data['other_significant_ca'],
-            $data['suppliers_corrective_actions'],
-        );
-        $data['id'] = $id;
-        $data['files'] = [];
-        $data['evaluation_status'] = 'done';
-
-        if(!empty($data['evaluation_due_date']) && strtotime($data['evaluation_due_date']) <= strtotime(date('Y-m-d'))) {
-            $data['evaluation_status'] = 'due';
-        }
-
-        foreach($evalFiles as $file) {
-            $name = explode(':', $file['record_type'])[1];
-            unset($file['record_type']);
-            $data['files'][$name] = $file;
-        }
-
         $conn->commit();
         send_response([
-            'data' => $data,
+            'data' => getEvaluationStatus($conn, $params['supplier_id']),
             'message' => 'Save successfully.',
         ]);
     } catch(Throwable $e) {
@@ -712,26 +688,7 @@ if(isset($_GET['newSupplierEvaluation'])) {
 // viewing evaluation data
 if(!empty($_GET['viewEvaluationData'])) {
     $id = $_GET['viewEvaluationData'];
-
-    // $data = $conn->execute("SELECT 
-    //         eval.*,
-    //         TRIM(supp.name) AS supplier_name,
-    //         TRIM(imp.name) AS importer_name,
-    //         supp.address AS supplier_address, 
-    //         imp.address AS importer_address
-    //     FROM tbl_fsvp_evaluations eval
-    //     JOIN tbl_supplier supp ON supp.ID = eval.supplier_id
-    //     JOIN tbl_supplier imp ON imp.ID = eval.importer_id
-    //     WHERE eval.id = ?", 
-    //     $id)->fetchAssoc(function($d) {
-    //         $d['supplier_address'] = formatSupplierAddress($d['supplier_address']);
-    //         $d['importer_address'] = formatSupplierAddress($d['importer_address']);
-    //         return $d;
-    //     });
-
-    $data = getEvaluationData($conn, $id);
-    
     send_response([
-        'data' => $data,
+        'data' => getEvaluationData($conn, $id),
     ]);
 }

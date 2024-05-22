@@ -3153,7 +3153,8 @@
 
     if (isset($_POST['get_content'])) {
         $token = $_POST['token'];
-        $decryptedToken = openssl_decrypt($token, $method, $key, $options, $iv);
+        $encryptedToken = base64_decode(urldecode($_POST['token']));
+        $decryptedToken = openssl_decrypt($encryptedToken, $method, $key, $options, $iv);
         $stmt = $conn->prepare("SELECT flag as status FROM tbl_Customer_Relationship WHERE crm_id = ?");
         $stmt->bind_param('i', $decryptedToken);
         $stmt->execute();
@@ -3195,10 +3196,10 @@
 
     if (isset($_POST['subscribe']) && isset($_POST['token'])) {
         $token = $_POST['token'];
-        $flag = $_POST['status'];
-        $decryptedToken = openssl_decrypt($token, $method, $key, $options, $iv);
-        $stmt = $conn->prepare("UPDATE tbl_Customer_Relationship SET flag = ? WHERE crm_id = ?");
-        $stmt->bind_param('ii', $flag, $decryptedToken);
+        $encryptedToken = base64_decode(urldecode($_POST['token']));
+        $decryptedToken = openssl_decrypt($encryptedToken, $method, $key, $options, $iv);
+        $stmt = $conn->prepare("UPDATE tbl_Customer_Relationship SET flag = 1 WHERE crm_id = ?");
+        $stmt->bind_param('i', $decryptedToken);
         if ($stmt->execute()) {
             echo 'success';
         } else {

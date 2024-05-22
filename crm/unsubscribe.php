@@ -10,7 +10,10 @@ if (isset($_GET['token'])) {
     $key = "interlink";
     $options = 0;
     $iv = '1234567891011121';
-    $decryptedToken = openssl_decrypt($_GET['token'], $method, $key, $options, $iv);
+
+    $encodedToken = $_GET['token'];
+    $encryptedToken = base64_decode(urldecode($encodedToken));
+    $decryptedToken = openssl_decrypt($encryptedToken, $method, $key, $options, $iv);
 
     if ($decryptedToken !== false) {
         $stmt = $conn->prepare("UPDATE tbl_Customer_Relationship SET flag = 0 WHERE crm_id = ?");

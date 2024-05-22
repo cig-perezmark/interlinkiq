@@ -23,7 +23,12 @@
     $key = "interlink";
     $options = 0;
     $iv = '1234567891011121';
-    
+    $token = time();
+    $pageUrl =  "http://" . $_SERVER['SERVER_NAME'];
+    if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on") {
+        $pageUrl = "https://" . $_SERVER['SERVER_NAME'];
+    }
+
     // PHP MAILER FUNCTION
 	use PHPMailer\PHPMailer\PHPMailer;
 	use PHPMailer\PHPMailer\SMTP;
@@ -1441,14 +1446,15 @@
         
             foreach ($records as $data) {
                 $encryptedToken = openssl_encrypt($data['crm_id'], $method, $key, $options, $iv);
+                $encodedToken = urlencode(base64_encode($encryptedToken));
                 $button = '
-                    <div style="display: flex; justify-content: center; margin: 3rem 0">
-                        <a style="display: inline-block; margin-bottom: 0; font-weight: 400; text-decoration:none; text-align: center; vertical-align: middle; touch-action: manipulation; cursor: pointer; border: 1px solid transparent; white-space: nowrap; padding: 6px 12px; font-size: 14px; color: #fff; background-color: #337ab7; border-color: #2e6da4;" href="crm/unsubscribe.php?token='.$encryptedToken.'">Unsubscribe</a>
+                    <div style="display: flex; ustify-content: center !important; margin: 3rem 0">
+                        <a style="display: inline-block; margin-bottom: 0; font-weight: 400; text-decoration:none; text-align: center; vertical-align: middle; touch-action: manipulation; cursor: pointer; border: 1px solid transparent; white-space: nowrap; padding: 6px 12px; font-size: 14px; color: #000; background-color: #fff; border-color: #000; border-radius: 4px" href="'.$pageUrl.'/crm/unsubscribe.php?token='.$encodedToken.'">Unsubscribe me</a>
                     <div>
                 ';
                 
                 $campaign_body = $body . $button;
-            $sql = "INSERT INTO tbl_Customer_Relationship_Campaign (
+                $sql = "INSERT INTO tbl_Customer_Relationship_Campaign (
                         Campaign_from, 
                         Campaign_Name, 
                         Campaign_Recipients, 
@@ -1468,7 +1474,7 @@
                     $campaign_name,
                     $data['account_email'],
                     $subject,
-                    $campaign_body,
+                    $body,
                     $campaign_status,
                     $data['crm_id'],
                     $send_status,

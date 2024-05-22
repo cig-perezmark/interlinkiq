@@ -154,10 +154,11 @@
                     return;
                 }
                 $.ajax({
-                    url: 'crm/controller_functions.php',
+                    url: 'https://interlinkiq.com/crm/controller_functions.php',
                     method: 'POST',
                     data: { get_content: true, token: token },
                     success: function(response) {
+                        console.log(response)
                         var response = JSON.parse(response)
                         $('#subscription-content').html(response);
                     }
@@ -166,15 +167,15 @@
 
             $(document).on('click', '.subscription', function() {
                 var token = new URLSearchParams(window.location.search).get('token');
-                var flag = $(this).data('value');
+                // var flag = $(this).data('value');
                 if (!token) {
                     alert('ID not provided.');
                     return;
                 }
                 $.ajax({
-                    url: 'crm/controller_functions.php',
+                    url: 'https://interlinkiq.com/crm/controller_functions.php',
                     method: 'POST',
-                    data: { subscribe: true, status: flag, token: token },
+                    data: { subscribe: true, token: token },
                     success: function(response) {
                         if (response === 'success') {
                             Swal.fire({

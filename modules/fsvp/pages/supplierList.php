@@ -116,7 +116,7 @@ th {
             </th>
             <th style="max-width: 80px">Supplier Agreement</th>
             <th style="max-width: 80px;">FSVP Compliance Statement</th>
-            <th class="text-center" style="width: 120px">History</th>
+            <!-- <th class="text-center" style="width: 120px">History</th> -->
         </tr>
     </thead>
     <tbody></tbody>
@@ -819,7 +819,7 @@ th {
                     <div class="col-md-12">
                         <h5 class="display:flex;align-items:center;">
                             <strong>**Re-Evaluation</strong>
-                            <a href="javascript:void(0)" class="btn btn-link btn-smx p-0" id="evalFilePreviewClose">[View Previous Evaluation]</a>
+                            <a href="javascript:void(0)" class="btn btn-link btn-smx p-0" id="viewPreviousEvalBtn">[View Previous Evaluation]</a>
                         </h5>
                     </div>
                     <div class="col-md-12">

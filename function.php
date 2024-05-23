@@ -50536,7 +50536,7 @@
 	        }
 	    }
 	}
-	if( isset($_GET['jstree_HTML2']) ) {
+	if( isset($_GET['jstree_HTML222']) ) {
 		if (!empty($_COOKIE['switchAccount'])) {
 			$portal_user = $_COOKIE['ID'];
 			$user_id = $_COOKIE['switchAccount'];
@@ -50831,6 +50831,523 @@
 
 		echo json_encode($result);
 	}
+    if( isset($_GET['jstree_HTML22']) ) {
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+        $collabUser = $_GET['jstree_HTML2'];
+        $current_userEmployeeID = employeeID($portal_user);
+        $current_userEmployerID = employerID($portal_user);
+
+        $hasLibrary = mysqli_query( $conn,"SELECT ID FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) > 0 ) {
+            // $resultTree = mysqli_query( $conn,"SELECT ID, name, collaborator_id FROM tbl_library WHERE parent_id = 0 AND deleted = 0 AND user_id = $user_id" );
+            $resultTree = mysqli_query( $conn,"SELECT 
+                ID AS mainID,
+                portal_user AS portal_userID,
+                parent_id AS parentID,
+                child_id AS childIDs,
+                type AS type,
+                free_access AS free_access,
+                collaborator_id AS parentCollab,
+                name AS parentName
+                FROM tbl_library
+
+                WHERE deleted = 0
+                AND user_id = $user_id
+                AND parent_id = 0
+
+                UNION ALL
+
+                SELECT 
+                ID AS mainID,
+                portal_user AS portal_userID,
+                CASE WHEN parent_id > 0 THEN 0 END AS parentID,
+                child_id AS childIDs,
+                type AS type,
+                free_access AS free_access,
+                collaborator_id AS parentCollab,
+                name AS parentName
+                FROM tbl_library
+
+                WHERE deleted = 0
+                AND user_id = $user_id
+                AND parent_id > 0
+                AND parent_id NOT IN (
+                    SELECT DISTINCT ID FROM tbl_library WHERE deleted = 0 AND user_id = $user_id
+                )
+
+                UNION ALL
+
+                SELECT 
+                ID AS mainID,
+                portal_user AS portal_userID,
+                parent_id AS parentID,
+                child_id AS childIDs,
+                type AS type,
+                free_access AS free_access,
+                collaborator_id AS parentCollab,
+                name AS parentName
+                FROM tbl_library
+
+                WHERE deleted = 0
+                AND user_id = $user_id
+                AND parent_id > 0
+                AND parent_id IN (
+                    SELECT DISTINCT ID FROM tbl_library WHERE deleted = 0 AND user_id = $user_id
+                )" );
+            // if ($collabUser == 1 AND !isset($_COOKIE['switchAccount'])) { $resultTree = mysqli_query( $conn,"SELECT ID, name, collaborator_id FROM tbl_library WHERE deleted = 0 AND collaborator_id <> '' AND user_id = $user_id" ); }
+            // if ($current_userEmployerID == 27) { $resultTree = mysqli_query( $conn,"SELECT ID, name, collaborator_id FROM tbl_library WHERE parent_id = 0 AND deleted = 0 AND user_id = $user_id" ); }
+        } else {
+            $customID = 116706101;
+            if ($_COOKIE['client'] == 3) { $customID = 116713042; }
+
+            $resultTree = mysqli_query( $conn,"SELECT ID, name, collaborator_id FROM tbl_library WHERE ID = $customID" );
+            $user_id = 163;
+            $current_userEmployeeID = employeeID($user_id);
+            $current_userEmployerID = employerID($user_id);
+            $collabUser = 0;
+        }
+
+        $result = array();
+        if ( mysqli_num_rows($resultTree) > 0 ) {
+            while($rowTree = mysqli_fetch_array($resultTree)) {
+                $library_ID = $rowTree["ID"];
+                $library_name = $rowTree["name"];
+                $library_collaborator_id = $rowTree["collaborator_id"];
+
+                $selectFile = mysqli_query( $conn,"WITH RECURSIVE cte (mainID, portal_userID, parentID, childIDs, type, free_access, parentCollab, parentName) AS
+                    (
+                        SELECT 
+                            t1.ID AS mainID,
+                            t1.portal_user AS portal_userID,
+                            t1.parent_id AS parentID,
+                            t1.child_id AS childIDs,
+                            t1.type AS type,
+                            t1.free_access AS free_access,
+                            t1.collaborator_id AS parentCollab,
+                            t1.name AS parentName
+                        FROM tbl_library AS t1
+                        WHERE t1.deleted = 0 AND t1.user_id = $user_id AND t1.parent_id = 0 AND t1.ID = $library_ID
+                        
+                        UNION ALL
+                        
+                        SELECT 
+                            t2.ID AS mainID,
+                            t2.portal_user AS portal_userID,
+                            t2.parent_id AS parentID,
+                            t2.child_id AS childIDs,
+                            t2.type AS type,
+                            t2.free_access AS free_access,
+                            t2.collaborator_id AS parentCollab,
+                            t2.name AS parentName
+                        FROM tbl_library AS t2
+                        JOIN cte ON cte.mainID = t2.parent_id
+                        WHERE t2.deleted = 0 AND t2.user_id = $user_id
+                    )
+                    SELECT 
+                    mainID, portal_userID, parentID, childIDs, type, free_access, parentCollab, parentName
+                    FROM cte
+
+                    ORDER BY FIELD(type,1,2,3,5,4) ASC, mainID ASC, parentID ASC" );
+                if ( mysqli_num_rows($selectFile) > 0 ) {
+                    $list_array = array();
+
+                    while($rowFile = mysqli_fetch_array($selectFile)) {
+                        $mainID = $rowFile["mainID"];
+                        $parentID = $rowFile["parentID"];
+                        $parentName = $rowFile["parentName"];
+                        $type_id = $rowFile["type"];
+
+                        $childIDs = $rowFile["childIDs"];
+                        $item_child = false;
+                        if (!empty($childIDs)) { $item_child = true; }
+
+                        $displayLibrary = false;
+                        if (mysqli_num_rows($hasLibrary) == 0) {
+                            if ($rowFile["portal_userID"] == $portal_user OR $rowFile["portal_userID"] == 163) {
+                                $displayLibrary = true;
+                            }
+                        } else {
+                            if ($rowFile["free_access"] == 0) {
+                                $displayLibrary = true;
+                            }
+                        }
+
+                        if ($displayLibrary == true) {
+                            if ($collabUser == 1) {
+                                if (!empty($library_collaborator_id)) {
+                                    $collab = json_decode($library_collaborator_id, true);
+                                    foreach ($collab as $key => $value) {
+                                        if ($current_userEmployerID == $key) {
+                                            if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
+                                                if (!in_array($mainID, $list_array)) {
+                                                    array_push($list_array, $mainID);
+
+                                                    $array_name_id = explode(", ", $parentName);
+                                                    // if ( count($array_name_id) == 4 AND $type_id == 0 ) {
+                                                    if ( count($array_name_id) == 4 ) {
+                                                        $data_name = array();
+
+                                                        $selectType = mysqli_query($conn,"SELECT * FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'");
+                                                        if ( mysqli_num_rows($selectType) > 0 ) {
+                                                            while($rowType = mysqli_fetch_array($selectType)) {
+                                                                array_push($data_name, $rowType["name"]);
+                                                            }
+                                                        }
+
+                                                        $selectCategory = mysqli_query($conn,"SELECT * FROM tbl_library_category WHERE ID = '".$array_name_id[1]."'");
+                                                        if ( mysqli_num_rows($selectCategory) > 0 ) {
+                                                            while($rowCategory = mysqli_fetch_array($selectCategory)) {
+                                                                array_push($data_name, $rowCategory["name"]);
+                                                            }
+                                                        }
+
+                                                        $selectScope = mysqli_query($conn,"SELECT * FROM tbl_library_scope WHERE ID = '".$array_name_id[2]."'");
+                                                        if ( mysqli_num_rows($selectScope) > 0 ) {
+                                                            while($rowScope = mysqli_fetch_array($selectScope)) {
+                                                                array_push($data_name, $rowScope["name"]);
+                                                            }
+                                                        }
+
+                                                        $selectModule = mysqli_query($conn,"SELECT * FROM tbl_library_module WHERE ID = '".$array_name_id[3]."'");
+                                                        if ( mysqli_num_rows($selectModule) > 0 ) {
+                                                            while($rowModule = mysqli_fetch_array($selectModule)) {
+                                                                array_push($data_name, $rowModule["name"]);
+                                                            }
+                                                        }
+
+                                                        $parentName = implode(" - ",$data_name);
+                                                    }
+
+                                                    if($parentID == 0) { $parentID = '#'; }
+
+                                                    $output = array(
+                                                        "id" => $mainID,
+                                                        "parent" => $parentID,
+                                                        "state" => 'close',
+                                                        "text" => htmlentities($parentName ?? '')
+                                                    );
+                                                    array_push($result, $output);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (!in_array($mainID, $list_array)) {
+                                    array_push($list_array, $mainID);
+
+                                    $array_name_id = explode(", ", $parentName);
+                                    if ( count($array_name_id) == 4 AND $type_id == 0 ) {
+                                        $data_name = array();
+
+                                        $selectType = mysqli_query($conn,"SELECT * FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'");
+                                        if ( mysqli_num_rows($selectType) > 0 ) {
+                                            while($rowType = mysqli_fetch_array($selectType)) {
+                                                array_push($data_name, $rowType["name"]);
+                                            }
+                                        }
+
+                                        $selectCategory = mysqli_query($conn,"SELECT * FROM tbl_library_category WHERE ID = '".$array_name_id[1]."'");
+                                        if ( mysqli_num_rows($selectCategory) > 0 ) {
+                                            while($rowCategory = mysqli_fetch_array($selectCategory)) {
+                                                array_push($data_name, $rowCategory["name"]);
+                                            }
+                                        }
+
+                                        $selectScope = mysqli_query($conn,"SELECT * FROM tbl_library_scope WHERE ID = '".$array_name_id[2]."'");
+                                        if ( mysqli_num_rows($selectScope) > 0 ) {
+                                            while($rowScope = mysqli_fetch_array($selectScope)) {
+                                                array_push($data_name, $rowScope["name"]);
+                                            }
+                                        }
+
+                                        $selectModule = mysqli_query($conn,"SELECT * FROM tbl_library_module WHERE ID = '".$array_name_id[3]."'");
+                                        if ( mysqli_num_rows($selectModule) > 0 ) {
+                                            while($rowModule = mysqli_fetch_array($selectModule)) {
+                                                array_push($data_name, $rowModule["name"]);
+                                            }
+                                        }
+
+                                        $parentName = implode(" - ",$data_name);
+                                    }
+
+                                    if($parentID == 0) { $parentID = '#'; }
+
+                                    $output = array(
+                                        "id" => $mainID,
+                                        "parent" => $parentID,
+                                        "state" => 'close',
+                                        "text" => htmlentities($parentName ?? '')
+                                    );
+                                    array_push($result, $output);
+                                }
+                            }
+                        }
+                     }
+                }
+            }
+        }
+
+        echo json_encode($result);
+    }
+    if( isset($_GET['jstree_HTML2']) ) {
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+        $collabUser = $_GET['jstree_HTML2'];
+        $current_userEmployeeID = employeeID($portal_user);
+        $current_userEmployerID = $user_id;
+        $result = array();
+
+        $hasLibrary = mysqli_query( $conn,"SELECT ID FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) > 0 ) {
+            $selectLibrary = mysqli_query( $conn,"
+                SELECT 
+                ID AS mainID,
+                portal_user AS portal_userID,
+                parent_id AS parentID,
+                child_id AS childIDs,
+                type AS type,
+                free_access AS free_access,
+                collaborator_id AS parentCollab,
+                name AS parentName
+                FROM tbl_library
+
+                WHERE deleted = 0
+                AND user_id = $user_id
+                AND parent_id = 0
+
+
+                UNION ALL
+
+                SELECT 
+                ID AS mainID,
+                portal_user AS portal_userID,
+                parent_id AS parentID,
+                child_id AS childIDs,
+                type AS type,
+                free_access AS free_access,
+                collaborator_id AS parentCollab,
+                name AS parentName
+                FROM tbl_library
+
+                WHERE deleted = 0
+                AND user_id = $user_id
+                AND parent_id > 0
+                AND parent_id IN (
+                    SELECT DISTINCT ID FROM tbl_library WHERE deleted = 0 AND user_id = $user_id
+                )
+
+                UNION ALL
+
+                SELECT 
+                ID AS mainID,
+                portal_user AS portal_userID,
+                CASE WHEN parent_id > 0 THEN 0 END AS parentID,
+                child_id AS childIDs,
+                type AS type,
+                free_access AS free_access,
+                collaborator_id AS parentCollab,
+                name AS parentName
+                FROM tbl_library
+
+                WHERE deleted = 0
+                AND user_id = $user_id
+                AND parent_id > 0
+                AND parent_id NOT IN (
+                    SELECT DISTINCT ID FROM tbl_library WHERE deleted = 0 AND user_id = $user_id
+                )
+            " );
+
+            if ($collabUser == 1) {
+                $selectLibrary = mysqli_query( $conn,"
+                    SELECT 
+                    ID AS mainID,
+                    portal_user AS portal_userID,
+                    parent_id AS parentID,
+                    child_id AS childIDs,
+                    type AS type,
+                    free_access AS free_access,
+                    collaborator_id AS parentCollab,
+                    name AS parentName
+                    FROM tbl_library
+
+                    WHERE deleted = 0
+                    AND user_id = $user_id
+                    AND parent_id = 0
+                    AND LENGTH(collaborator_id) > 0 
+                    AND collaborator_id LIKE '%\"$current_userEmployeeID\"%'
+                    -- AND JSON_EXTRACT(collaborator_id, '$.$user_id.assigned_to_id') LIKE '%\"$current_userEmployeeID\"%'
+                " );
+
+            }
+        } else {
+            $customID = 116706101;
+            if ($_COOKIE['client'] == 3) { $customID = 116713042; }
+
+            $selectLibrary = mysqli_query( $conn,"SELECT ID AS mainID, name AS parentName, collaborator_id AS parentCollab FROM tbl_library WHERE ID = $customID" );
+            $user_id = 163;
+            $collabUser = 1;
+        }
+
+        $list_array = array();
+        if ( mysqli_num_rows($selectLibrary) > 0 ) {
+            while($rowLibrary = mysqli_fetch_array($selectLibrary)) {
+
+                if ($collabUser == 1) {
+                    $library_ID = $rowLibrary["mainID"];
+                    $library_name = $rowLibrary["parentName"];
+                    $library_collaborator_id = $rowLibrary["parentCollab"];
+
+                    $selectChild = mysqli_query( $conn,"
+                        WITH RECURSIVE cte (mainID, portal_userID, parentID, childIDs, type, free_access, parentCollab, parentName) AS
+                        (
+                            SELECT 
+                                t1.ID AS mainID,
+                                t1.portal_user AS portal_userID,
+                                t1.parent_id AS parentID,
+                                t1.child_id AS childIDs,
+                                t1.type AS type,
+                                t1.free_access AS free_access,
+                                t1.collaborator_id AS parentCollab,
+                                t1.name AS parentName
+                            FROM tbl_library AS t1
+                            WHERE t1.deleted = 0 AND t1.user_id = $user_id AND t1.parent_id = 0 AND t1.ID = $library_ID
+                            
+                            UNION ALL
+                            
+                            SELECT 
+                                t2.ID AS mainID,
+                                t2.portal_user AS portal_userID,
+                                t2.parent_id AS parentID,
+                                t2.child_id AS childIDs,
+                                t2.type AS type,
+                                t2.free_access AS free_access,
+                                t2.collaborator_id AS parentCollab,
+                                t2.name AS parentName
+                            FROM tbl_library AS t2
+                            JOIN cte ON cte.mainID = t2.parent_id
+                            WHERE t2.deleted = 0 AND t2.user_id = $user_id
+                        )
+                        SELECT 
+                        mainID, portal_userID, parentID, childIDs, type, free_access, parentCollab, parentName
+                        FROM cte
+
+                        ORDER BY FIELD(type,1,2,3,5,4) ASC, mainID ASC, parentID ASC
+                    " );
+
+                    if ( mysqli_num_rows($selectChild) > 0 ) {
+                        while($rowChild = mysqli_fetch_array($selectChild)) {
+                            $mainID = $rowChild["mainID"];
+                            $parentID = $rowChild["parentID"];
+                            $parentName = $rowChild["parentName"];
+                            $type_id = $rowChild["type"];
+
+                            $childIDs = $rowChild["childIDs"];
+                            $item_child = false;
+                            if (!empty($childIDs)) { $item_child = true; }
+
+                            $displayLibrary = false;
+                            if (mysqli_num_rows($hasLibrary) == 0) {
+                                if ($rowChild["portal_userID"] == $portal_user OR $rowChild["portal_userID"] == 163) {
+                                    $displayLibrary = true;
+                                }
+                            } else {
+                                if ($rowChild["free_access"] == 0) {
+                                    $displayLibrary = true;
+                                }
+                            }
+
+                            if ($displayLibrary == true) {
+                                $array_name_id = explode(", ", $parentName);
+                                if ( count($array_name_id) == 4 AND $type_id == 0 ) {
+                                    $data_name = array();
+
+                                    $selectLibraryName = mysqli_query($conn,"
+                                        SELECT name FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'
+                                        UNION ALL
+                                        SELECT name FROM tbl_library_category WHERE ID = '".$array_name_id[1]."'
+                                        UNION ALL
+                                        SELECT name FROM tbl_library_scope WHERE ID = '".$array_name_id[2]."'
+                                        UNION ALL
+                                        SELECT name FROM tbl_library_module WHERE ID = '".$array_name_id[3]."'
+                                    ");
+                                    if ( mysqli_num_rows($selectLibraryName) > 0 ) {
+                                        while($rowLibraryName = mysqli_fetch_array($selectLibraryName)) {
+                                            array_push($data_name, $rowLibraryName["name"]);
+                                        }
+                                    }
+
+                                    $parentName = implode(" - ",$data_name);
+                                }
+
+                                if($parentID == 0) { $parentID = '#'; }
+
+                                $output = array(
+                                    "id" => $mainID,
+                                    "parent" => $parentID,
+                                    "state" => 'close',
+                                    "text" => htmlentities($parentName ?? '')
+                                );
+                                array_push($result, $output);
+                            }
+                         }
+                    }
+                } else {
+                    $mainID = $rowLibrary["mainID"];
+                    $parentID = $rowLibrary["parentID"];
+                    $parentName = $rowLibrary["parentName"];
+                    $type_id = $rowLibrary["type"];
+                    $parentCollab = $rowLibrary["parentCollab"];
+
+                    $array_name_id = explode(", ", $parentName);
+                    if ( count($array_name_id) == 4 AND $type_id == 0 ) {
+                        $data_name = array();
+
+                        $selectLibraryName = mysqli_query($conn,"
+                            SELECT name FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'
+                            UNION ALL
+                            SELECT name FROM tbl_library_category WHERE ID = '".$array_name_id[1]."'
+                            UNION ALL
+                            SELECT name FROM tbl_library_scope WHERE ID = '".$array_name_id[2]."'
+                            UNION ALL
+                            SELECT name FROM tbl_library_module WHERE ID = '".$array_name_id[3]."'
+                        ");
+                        if ( mysqli_num_rows($selectLibraryName) > 0 ) {
+                            while($rowLibraryName = mysqli_fetch_array($selectLibraryName)) {
+                                array_push($data_name, $rowLibraryName["name"]);
+                            }
+                        }
+
+                        $parentName = implode(" - ",$data_name);
+                    }
+
+                    if($parentID == 0) { $parentID = '#'; }
+
+                    $output = array(
+                        "id" => $mainID,
+                        "parent" => $parentID,
+                        "state" => 'close',
+                        "text" => htmlentities($parentName ?? '')
+                    );
+                    array_push($result, $output);
+                }
+            }
+        }
+        echo json_encode($result);
+    }
 
 	// Item Section
     if( isset($_GET['modalChanges_Area']) ) {

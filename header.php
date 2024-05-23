@@ -2594,6 +2594,93 @@ License: You must have a valid license purchased only from themeforest(the above
                     <?php endif ?>
                     <?php } ?>
 
+                    <?php if($switch_user_id == 1360): ?>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Environmental Monitoring Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Equipment Calibration Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Food Safety Culture Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Formula / Recipe Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">HACCP / Food Safety Plan Builder Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Laboratory Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Positive Product Release Program Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Residue Testing Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Risk Assessment</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Shelf Life Program Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Stability Program Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Storage and Distribution Report Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                    <?php endif ?>
+                    
                     <?php if($switch_user_id == 1372): ?>
                         <li class="nav-item">
                             <a href="coming-soon" class="nav-link">

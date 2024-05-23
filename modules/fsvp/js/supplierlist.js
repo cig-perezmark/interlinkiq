@@ -92,44 +92,28 @@ jQuery(function() {
     });
     
     $('#tableSupplierList').on('click', '[data-openreevalform]', function() {
-        $('#viewPreviousEvalBtn').attr('data-evalid', this.dataset.openreevalform || '')
-        $('#modalReEvaluation').modal('show')
+        const data = suppliersData[this.dataset.openreevalform];
+
+        if(!data) {
+            bootstrapGrowl('Unable to fetch data.', 'error');
+            return;
+        }
+        
+        switchEvalModalFn('reeval');
+        $('#viewPreviousEvalBtn').attr('data-evalid', this.dataset.preveval || '')
+
+        $('#effsname').val(data.evaluation.supplier_name || '');
+        $('#effsaddress').val(data.evaluation.supplier_address || '');
+        $('#reefimporter').val(data.evaluation.importer_name || '');
+        $('#efImporterAddress').val(data.evaluation.importer_address || '');
+        
+        $('#modalEvaluationForm').modal('show');
     });
     
     $('#viewPreviousEvalBtn').on('click', function() {
-        // evalFormAlert.isShowing() && evalFormAlert.hide();
-        // resetEvaluationForm();
-        // importerSelect.reset();
-        // openEvaluationForm(suppliersData[this.dataset.openevalform]);
-
-        const id = this.dataset.evalid;
-
-        if(!id) {
-            bootstrapGrowl('Missing data.', 'error');
-            return;
-        } else if(cachedEvalFormData && cachedEvalFormData.id == id) {
-            // reuse data
-            viewEvaluationDetails(cachedEvalFormData);
-            return;
-        }
-
-        $.ajax({
-            url: baseUrl + "viewEvaluationData=" + id,
-            type: "GET",
-            contentType: false,
-            processData: false,
-            success: function({data}) {
-                cachedEvalFormData = data;
-                $('#modalReEvaluation').modal('hide');
-                viewEvaluationDetails(data);
-
-            },
-            error: function({responseJSON}) {
-                bootstrapGrowl(responseJSON.error || 'Error fetching data!', 'danger');
-            },
+        fetchEvaluationData(this.dataset.evalid, () => {
+            $('#modalEvaluationForm').modal('hide');
         });
-
-
     })
 
     $('#tableSupplierList').on('click', '[data-opensafile]', function() {
@@ -141,30 +125,7 @@ jQuery(function() {
     });
 
     $('#tableSupplierList').on('click', '[data-view-eval]', function() {
-        const id = this.dataset.viewEval;
-
-        if(!id) {
-            bootstrapGrowl('Missing data.', 'error');
-            return;
-        } else if(cachedEvalFormData && cachedEvalFormData.id == id) {
-            // reuse data
-            viewEvaluationDetails(cachedEvalFormData);
-            return;
-        }
-
-        $.ajax({
-            url: baseUrl + "viewEvaluationData=" + id,
-            type: "GET",
-            contentType: false,
-            processData: false,
-            success: function({data}) {
-                cachedEvalFormData = data;
-                viewEvaluationDetails(data);
-            },
-            error: function({responseJSON}) {
-                bootstrapGrowl(responseJSON.error || 'Error fetching data!', 'danger');
-            },
-        });
+        fetchEvaluationData(this.dataset.viewEval);
     });
 
     $('#modalEvaluationDetails').on('click', '[data-file]', function() {
@@ -206,6 +167,7 @@ jQuery(function() {
     });
 
     $('#modalEvaluationDetails').on('hide.bs.modal', function() {
+        // close file previews during modal hide
         $('#evalFilePreviewClose').click();
     })
 
@@ -529,7 +491,7 @@ jQuery(function() {
                             </a>`;
                 break;
             case 'expired': 
-                evalBtn = `<button type="button"  class="btn red btn-sm btn-circle" title="Re-evaluate" data-reeval="true" data-openreevalform="${d.evaluation.id}">
+                evalBtn = `<button type="button"  class="btn red btn-sm btn-circle" title="Re-evaluate" data-reeval="true" data-openreevalform="${d.id}" data-preveval="${d.evaluation.id}">
                                 Re-evaluate
                             </button>`;
                 break;
@@ -591,9 +553,36 @@ jQuery(function() {
         });
     }
 
+    function fetchEvaluationData(id, callback = null) {
+        if(!id) {
+            bootstrapGrowl('Missing data.', 'error');
+            return;
+        } else if(cachedEvalFormData && cachedEvalFormData.id == id) {
+            // reuse data
+            viewEvaluationDetails(cachedEvalFormData);
+            return;
+        }
+
+        $.ajax({
+            url: baseUrl + "viewEvaluationData=" + id,
+            type: "GET",
+            contentType: false,
+            processData: false,
+            success: function({data}) {
+                cachedEvalFormData = data;
+                callback && callback();
+                viewEvaluationDetails(data);
+            },
+            error: function({responseJSON}) {
+                bootstrapGrowl(responseJSON.error || 'Error fetching data!', 'danger');
+            },
+        });
+    }
+
     // init
     resetEvaluationForm();
     initSuppliers();
+    switchEvalModalFn();
 });
 
 // truncrate string into desired maximum length
@@ -738,4 +727,9 @@ function convertStringToTitleCase(str) {
     return str.replace(/(_|\b)(\w)/g, function(m, pre, char) {
         return (pre === '_' ? ' ' : pre) + char.toUpperCase();
     });
+}
+
+function switchEvalModalFn(mode = 'eval') {
+    $(`#modalEvaluationForm [data-efm]:not([data-efm=${mode}])`).hide();
+    $(`#modalEvaluationForm [data-efm=${mode}]`).show();
 }

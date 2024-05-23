@@ -103,6 +103,7 @@ function getEvaluationData($conn, $evalId) {
                 eval.rejection_date,
                 eval.approval_date,
                 eval.assessment,
+                eval.description,
                 supp.name AS supplier_name, 
                 supp.address AS supplier_address,
                 imp.name AS importer_name, 
@@ -157,6 +158,8 @@ function getEvaluationStatus($conn, $supplierId) {
                 $data['status'] = updateEvaluationStatus($conn, $data['evaluation_due_date'], $data['id']);
             } else if($data['status'] == 're_evaluated') {
                 // add code..
+            } else if($data['status'] == 'expired') {
+                
             }
         }
 

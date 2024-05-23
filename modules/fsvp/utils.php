@@ -37,7 +37,7 @@ function getSupplierList($conn, $userId) {
         $recordType = 'supplier-list:';
 
         $list = $conn->execute("SELECT fs.*, s.name, s.address FROM tbl_fsvp_suppliers fs 
-            JOIN tbl_supplier s ON s.ID = fs.supplier_id
+            LEFT JOIN tbl_supplier s ON s.ID = fs.supplier_id
             WHERE fs.user_id = ? AND fs.deleted_at IS NULL
             ORDER BY fs.created_at DESC
         ", $userId)->fetchAll();
@@ -149,11 +149,29 @@ function getEvaluationData($conn, $evalId) {
 function getEvaluationStatus($conn, $supplierId) {
     try {
         $conn->begin_transaction();
-        $data = $conn->execute("SELECT id,status, evaluation_date, evaluation_due_date FROM tbl_fsvp_evaluations WHERE supplier_id = ? AND deleted_at IS NULL ORDER BY created_at DESC LIMIT 1", $supplierId)->fetchAssoc();
+        $data = $conn->execute("SELECT 
+                EVAL.id,
+                EVAL.status, 
+                EVAL.evaluation_date, 
+                EVAL.evaluation_due_date,
+                IMP.name AS importer_name,
+                IMP.address AS importer_address,
+                SUPP.name AS supplier_name,
+                SUPP.address AS supplier_address
+            FROM tbl_fsvp_evaluations EVAL
+            LEFT JOIN tbl_fsvp_suppliers FSUPP ON FSUPP.id = EVAL.supplier_id
+            LEFT JOIN tbl_fsvp_importers FIMP ON FIMP.id = EVAL.importer_id
+            LEFT JOIN tbl_supplier SUPP ON SUPP.ID = FSUPP.supplier_id
+            LEFT JOIN tbl_supplier IMP ON IMP.ID = FIMP.importer_id
+            WHERE EVAL.supplier_id = ? AND EVAL.deleted_at IS NULL ORDER BY EVAL.created_at DESC LIMIT 1", 
+            $supplierId)->fetchAssoc();
 
         if(!count($data)) {
             return null;
         } else {
+            $data['supplier_address'] = formatSupplierAddress($data['supplier_address']);
+            $data['importer_address'] = formatSupplierAddress($data['importer_address']);
+            
             if($data['status'] == 'current') {
                 $data['status'] = updateEvaluationStatus($conn, $data['evaluation_due_date'], $data['id']);
             } else if($data['status'] == 're_evaluated') {

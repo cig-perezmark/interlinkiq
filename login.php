@@ -189,6 +189,10 @@ License: You must have a valid license purchased only from themeforest(the above
                     <input class="form-control placeholder-no-fix" type="email" name="email" value="<?php echo $predefine === true ? $data_email : ''; ?>" <?php echo $predefine === true ? 'readonly' : ''; ?> required />
                 </div>
                 <div class="form-group">
+                    <label class="control-label">Phone</label>
+                    <input class="form-control placeholder-no-fix" type="text" name="phone" value="" required />
+                </div>
+                <div class="form-group">
                     <label class="control-label">Password</label>
                     <div class="input-icon right">
                         <i class="fa fa-eye font-green viewPW"></i>

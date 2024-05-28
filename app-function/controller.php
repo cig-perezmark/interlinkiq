@@ -35,67 +35,67 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
     
-  if(isset($_POST['action'])){ 
+    if(isset($_POST['action'])){ 
       
-      if($_POST['action'] == "update_pay"){
-         $payid = $_POST['payid'];
+        if($_POST['action'] == "update_pay"){
+            $payid = $_POST['payid'];
 
-        $update_query = "UPDATE pay SET paidstatus= 'paid' WHERE payid = '$payid'";
-        if (mysqli_query($payroll_connection, $update_query)) {
-          return true;
-        } else {
-          echo "Error updating record: " . mysqli_error($payroll_connection);
-        } 
-      }
-      
-      if($_POST['action']=="get_form"){	
-        $form_id = $_POST['form_id'];
-        $enterprise = $_POST['enterprise'];
-        $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE user_id = '" . $_COOKIE['ID'] . "' AND enterprise_id = '$enterprise'");
- 		$check_result = mysqli_fetch_array($check_form_owned);
- 		$num_rows = mysqli_num_rows($check_form_owned);
- 		if($num_rows > 0){
- 		    $form_owned = $check_result["form_owned"].',' .$form_id;
- 		    $update_query = "UPDATE tbl_forms_owned SET form_owned='$form_owned' WHERE user_id = '" . $_COOKIE['ID'] . "' AND enterprise_id = '$enterprise' ";
-            if (mysqli_query($conn, $update_query)) {
-              return true;
+            $update_query = "UPDATE pay SET paidstatus= 'paid' WHERE payid = '$payid'";
+            if (mysqli_query($payroll_connection, $update_query)) {
+                return true;
             } else {
-              echo "Error updating record: " . mysqli_error($conn);
+                echo "Error updating record: " . mysqli_error($payroll_connection);
             } 
- 		}
- 		else{
- 		   echo $insert_query = "INSERT INTO `tbl_forms_owned`(`user_id`,enterprise_id,`form_owned`) VALUES ( '" . $_COOKIE['ID'] . "' ,'$enterprise' ,'$form_id')";
- 		    if (mysqli_query($conn, $insert_query)) {
-              return true;
-            } else {
-              echo "Error updating record: " . mysqli_error($conn);
-            }
- 		}
-      }
+        }
       
-      if($_POST['action'] == "insert_leave"){
-          
-          $end_date = $_POST['end_date'];
-          $task_date = $_POST['task_date'];
-          $user_id = $_POST['user_id'];
-          $minute = $_POST['minute'];
-          $checker = mysqli_query($conn,"SELECT * FROM tbl_user WHERE ID = '$user_id'");
-          $check_result = mysqli_fetch_array($checker);
-          $user_session_id = $check_result['employee_id'];
-          $begin = new DateTime($_POST['task_date']);
-          $end   = new DateTime($_POST['end_date']);
-          for($i = $begin; $i <= $end; $i->modify('+1 day')){
-            $task_date = $i->format("Y-m-d");
-            $insert_query = "INSERT INTO `tbl_service_logs`(`user_id`,minute,`task_date`,description,comment,status) VALUES ('$user_id','$minute','$task_date','CONSULTAREINC','CONSULTAREINC',NULL)";
- 		    if (mysqli_query($conn, $insert_query)) {
-              $update_query = "UPDATE leave_details SET approve_status='2' WHERE payeeid = '$user_id' AND start_date = '$task_date'";
+        if($_POST['action']=="get_form"){    
+            $form_id = $_POST['form_id'];
+            $enterprise = $_POST['enterprise'];
+            $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE user_id = '" . $_COOKIE['ID'] . "' AND enterprise_id = '$enterprise'");
+            $check_result = mysqli_fetch_array($check_form_owned);
+            $num_rows = mysqli_num_rows($check_form_owned);
+            if($num_rows > 0){
+                $form_owned = $check_result["form_owned"].',' .$form_id;
+                $update_query = "UPDATE tbl_forms_owned SET form_owned='$form_owned' WHERE user_id = '" . $_COOKIE['ID'] . "' AND enterprise_id = '$enterprise' ";
                 if (mysqli_query($conn, $update_query)) {
-                    
-                }
-            } else {
-              echo "Error updating record: " . mysqli_error($conn);
+                    return true;
+                } else {
+                    echo "Error updating record: " . mysqli_error($conn);
+                } 
             }
-          }
+            else{
+                $insert_query = "INSERT INTO `tbl_forms_owned`(`user_id`,enterprise_id,`form_owned`) VALUES ( '" . $_COOKIE['ID'] . "' ,'$enterprise' ,'$form_id')";
+                if (mysqli_query($conn, $insert_query)) {
+                    return true;
+                } else {
+                    echo "Error updating record: " . mysqli_error($conn);
+                }
+            }
+        }
+      
+        if($_POST['action'] == "insert_leave"){
+          
+            $end_date = $_POST['end_date'];
+            $task_date = $_POST['task_date'];
+            $user_id = $_POST['user_id'];
+            $minute = $_POST['minute'];
+            $checker = mysqli_query($conn,"SELECT * FROM tbl_user WHERE ID = '$user_id'");
+            $check_result = mysqli_fetch_array($checker);
+            $user_session_id = $check_result['employee_id'];
+            $begin = new DateTime($_POST['task_date']);
+            $end   = new DateTime($_POST['end_date']);
+            for($i = $begin; $i <= $end; $i->modify('+1 day')){
+                $task_date = $i->format("Y-m-d");
+                $insert_query = "INSERT INTO `tbl_service_logs`(`user_id`,minute,`task_date`,description,comment,status) VALUES ('$user_id','$minute','$task_date','CONSULTAREINC','CONSULTAREINC',NULL)";
+                if (mysqli_query($conn, $insert_query)) {
+                    $update_query = "UPDATE leave_details SET approve_status='2' WHERE payeeid = '$user_id' AND start_date = '$task_date'";
+                    if (mysqli_query($conn, $update_query)) {
+                        
+                    }
+                } else {
+                    echo "Error updating record: " . mysqli_error($conn);
+                }
+            }
             $select = "SELECT * FROM others_employee_details WHERE employee_id = '$user_session_id'";
             $result = mysqli_query ($conn, $select);
             $row = mysqli_fetch_array($result);
@@ -103,12 +103,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $total_leave = floatval($row['total_leave']);
             if($total_leave != 0){
                 if($_POST['minute'] == -7){
-                   $new_total_leave = $total_leave - .5;
-                     $update_total_leave = "UPDATE others_employee_details SET total_leave='$new_total_leave' WHERE employee_id = '$user_session_id'"; 
+                    $new_total_leave = $total_leave - .5;
+                    $update_total_leave = "UPDATE others_employee_details SET total_leave='$new_total_leave' WHERE employee_id = '$user_session_id'"; 
                 }
                 if($_POST['minute'] == -5){
-                   $new_total_leave = $total_leave - 0;
-                   $update_total_leave = "UPDATE others_employee_details SET total_leave='$new_total_leave' WHERE employee_id = '$user_session_id'"; 
+                    $new_total_leave = $total_leave - 0;
+                    $update_total_leave = "UPDATE others_employee_details SET total_leave='$new_total_leave' WHERE employee_id = '$user_session_id'"; 
                 }
                 if($_POST['minute'] != -5 && $_POST['minute'] != -7){
                     $new_total_leaves = $total_leave - $leave_count;
@@ -117,19 +117,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if(mysqli_query($conn,$update_total_leave)){
                 }
             }
-          return true;
-      }
+            return true;
+        }
       
-      if($_POST['action'] == "update_leave"){
+        if($_POST['action'] == "update_leave"){
             $user_id = $_POST['user_id'];
             $leave_id = $_POST['leave_ids'];
             $update_leave = "UPDATE leave_details SET approve_status='1' WHERE payeeid = '$user_id' AND ids = '$leave_id'";
             if(mysqli_query($conn,$update_leave)){
                 return true;
             }
-      }
+        }
       
-      if($_POST['action'] == "cancel_pto"){
+        if($_POST['action'] == "cancel_pto"){
             $leave_count = $_POST['leave_count'];
             $leave_id = $_POST['leave_ids'];
             $users_id = $_POST['users_id'];
@@ -144,46 +144,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     return true;
                 }
             }
-      }
+        }
       
         if($_POST['action'] == "add_form"){
-          $eform_id = $_POST['eform_id'];
-          $form_owner = $_POST['form_owner'];
-          $enterprise_id = $_POST['enterprise_id'];
-          $i = '';
+            $eform_id = $_POST['eform_id'];
+            $form_owner = $_POST['form_owner'];
+            $enterprise_id = $_POST['enterprise_id'];
+            $i = '';
             foreach($form_owner as $row){
-                $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE user_id = '$row'");
-         		$check_result = mysqli_fetch_array($check_form_owned);
-         		if( mysqli_num_rows($check_form_owned) > 0 ) {
+                $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE user_id = '$row' AND enterprise_id = '$enterprise_id' ");
+                $check_result = mysqli_fetch_array($check_form_owned);
+                if( mysqli_num_rows($check_form_owned) > 0 ) {
                     $array_counter = explode(",", $check_result["form_owned"]); 
                     if(!in_array($eform_id,$array_counter)){
                         array_push($array_counter,$eform_id);
                         $new_form_id =   implode(',',$array_counter);
                         $update_query = "UPDATE tbl_forms_owned SET form_owned='$new_form_id' WHERE user_id = '$row'";
                         if (mysqli_query($conn, $update_query)) {
-                          return true;
+                            return true;
                         } else {
-                          echo "Error updating record: " . mysqli_error($conn);
+                            echo "Error updating record: " . mysqli_error($conn);
                         }
                     }
-         		}
-                    else{
-                        $insert_query = "INSERT INTO `tbl_forms_owned`(`user_id`,enterprise_id,`form_owned`) VALUES ( '$row' ,'$enterprise_id' ,'$eform_id')";
-             		    if (mysqli_query($conn, $insert_query)) {
-                          return true;
-                        } else {
-                          echo "Error updating record: " . mysqli_error($conn);
-                        }
+                }
+                else{
+                    $insert_query = "INSERT INTO `tbl_forms_owned`(`user_id`,enterprise_id,`form_owned`) VALUES ( '$row' ,'$enterprise_id' ,'$eform_id')";
+                    if (mysqli_query($conn, $insert_query)) {
+                        return true;
+                    } else {
+                        echo "Error updating record: " . mysqli_error($conn);
                     }
-             		
-                  return true;
                 }
             }
-  }
-    
+        }
+    }
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
+    // Your GET request handling code here
 }
 
 ?>

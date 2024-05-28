@@ -64,6 +64,32 @@
         padding: 5px 20px;
         cursor:pointer;
     }
+
+    /* DataTable*/
+    .dt-buttons {
+        margin: unset !important;
+        float: left !important;
+        margin-left: 15px !important;
+    }
+    div.dt-button-collection .dt-button.active:after {
+        position: absolute;
+        top: 50%;
+        margin-top: -10px;
+        right: 1em;
+        display: inline-block;
+        content: "✓";
+        color: inherit;
+    }
+    .table {
+        width: 100% !important;
+    }
+    .table-scrollable .dataTable td>.btn-group, .table-scrollable .dataTable th>.btn-group {
+        position: relative;
+    }
+    .table thead tr th {
+        vertical-align: middle;
+    }
+
 </style>
 
                     <?php
@@ -171,11 +197,12 @@
                         }
                         
                         if($switch_user_id == 253 AND $switch_user_id == 1) { $newUser = 1; }
-                        if($switch_user_id == 423) { $newUser = 0; }
+                        // if($switch_user_id == 423) { $newUser = 0; }
+                        $newUser = 0;
                     ?>
                     
-                    <?php if($current_client == 0) { ?>
-                        <div class="row <?php echo $newUser == 1 ? '':'hide'; ?>">
+                    <?php if($current_client == 0 AND $newUser == 1) { ?>
+                        <div class="row">
                             <?php
                                 $get_category=mysqli_query($conn,"SELECT * FROM tbl_dashboard_cards ORDER BY sort_by");
                                 while ($row=mysqli_fetch_array($get_category)) {
@@ -1708,7 +1735,7 @@
                         </div>
                     </div>
                     <div class="modal fade" id="modalComplianceMore" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalComplianceMore">
                                     <div class="modal-header">
@@ -1725,7 +1752,7 @@
                         </div>
                     </div>
                     <div class="modal fade" id="modalComplianceMoreEdit" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalComplianceMoreEdit">
                                     <div class="modal-header">
@@ -2383,13 +2410,97 @@
                 $.ajax({
                     async: true,
                     type: 'GET',
-                    url: 'function.php?jstree_HTML2='+collabUser,
+                    url: 'function.php?jstree_HTML2_new='+collabUser,
                     dataType: 'json',
                     success: function (json) {
                         // alert(json);
                         // json.sort((a, b) => a.text.localeCompare(b.text));
-                        json.sort((a, b) => a.text.localeCompare(b.text, 'en', { numeric: true }));
-                        createJSTree(json);
+                        // json.sort((a, b) => a.text.localeCompare(b.text, 'en', { numeric: true }));
+                        // createJSTree(json);
+                        
+                        
+                        
+                        // alert(json);
+                        // console.log(json);
+                        // json.sort((a, b) => a.text.localeCompare(b.text, 'en', { numeric: true }));
+
+                        // const sortArray = (sourceArray) => {
+                        //     const sortByLocation = (a, b) => a.text.localeCompare(b.text, 'en', { numeric: true });
+                        //     //Notice that I specify location here ^^       and here        ^^ using dot notation
+                        //     return sourceArray.sort(sortByLocation);
+                        // };
+                        // let arr = ["A1", "A10", "A11", "A12", "A2", "A3", "A4", "B10", "B2", "F1", "F12", "F3"]
+
+                        // json.sort(new Intl.Collator('en',{numeric:true, sensitivity:'accent'}).compare);
+
+                        // array_multisort($test, SORT_NUMERIC, $test);
+
+                        // Your JSON data (parsed from a string)
+                        // const jsonData = json;
+
+                        // // Create a dictionary of items by ID
+                        // const itemDict = {};
+                        // jsonData.forEach(item => {
+                        //     itemDict[item.id] = item;
+                        // });
+
+                        // // Filter out items with invalid parents
+                        // const filteredData = jsonData.filter(item => {
+                        //     return item.parent === '#' || itemDict[item.parent];
+                        // });
+
+                        // // Print the filtered data (you can adjust this as needed)
+                        // console.log(filteredData);
+
+                        // console.log(json);
+                        // createJSTree(filteredData);
+                        
+                        
+                        
+                        
+                        
+                        console.log(json);
+                        const data = json;
+
+
+                        // Create a map of id to its children
+                        const childrenMap = data.reduce((acc, item) => {
+                          if (!acc[item.parent]) {
+                            acc[item.parent] = [];
+                          }
+                          acc[item.parent].push(item);
+                          return acc;
+                        }, {});
+
+                        // Set of valid ids (including root #)
+                        const validIds = new Set(['#']);
+
+                        // Function to collect valid ids recursively
+                        function collectValidIds(id) {
+                          if (childrenMap[id]) {
+                            childrenMap[id].forEach(child => {
+                              validIds.add(child.id);
+                              collectValidIds(child.id);
+                            });
+                          }
+                        }
+
+                        // Start with the root parents (those whose parent is '#')
+                        collectValidIds('#');
+
+                        // Filter the data to keep only valid items
+                        const filteredData = data.filter(item => validIds.has(item.id));
+
+                        
+                        
+                        
+                        filteredData.sort((a, b) => a.text.localeCompare(b.text));
+                        filteredData.sort((a, b) => a.text.localeCompare(b.text, 'en', { numeric: true }));
+                        createJSTree(filteredData);
+                        
+                        console.log(filteredData);
+                        
+                        createJSTree(filteredData);
                     },
 
                     error: function (xhr, ajaxOptions, thrownError) {
@@ -2581,7 +2692,7 @@
                 if($(e).val() == 1) {
                     $(e).parent().find('.fileUpload').show();
                     $(e).parent().find('.fileUpload').prop('required',true);
-                } else if($(e).val() == 2 || $(e).val() == 3) {
+                } else if($(e).val() == 2 || $(e).val() == 3 || $(e).val() == 4) {
                     $(e).parent().find('.fileURL').show();
                     $(e).parent().find('.fileURL').prop('required',true);
                 }
@@ -5318,6 +5429,43 @@
                     dataType: "html",
                     success: function(data){
                         $("#modalReport .modal-body").html(data);
+
+                        $('#table2excel').DataTable({
+                            "aaSorting": [],
+                            dom: 'lBfrtip',
+                            lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+                            buttons: [
+                                {
+                                    extend: 'print',
+                                    orientation: 'landscape',
+                                    pageSize: 'LEGAL',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                },
+                                {
+                                    extend: 'pdf',
+                                    orientation: 'landscape',
+                                    pageSize: 'LEGAL',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                },
+                                {
+                                    extend: 'csv',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                },
+                                {
+                                    extend: 'excel',
+                                    autoFilter: true,
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                }
+                            ]
+                        });
                     }
                 });
             }

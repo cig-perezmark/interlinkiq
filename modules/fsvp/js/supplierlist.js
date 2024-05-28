@@ -11,14 +11,14 @@ jQuery(function() {
 
     const supplierTable = Init.dataTable('#tableSupplierList', {
         columnDefs: [
-            {
-                orderable: false,
-                targets: [-1],
-            },
-            {
-                searchable: false,
-                targets: [-1],
-            },
+            // {
+            //     orderable: false,
+            //     targets: [-1],
+            // },
+            // {
+            //     searchable: false,
+            //     targets: [-1],
+            // },
             {
                 className: "dt-right",
             },
@@ -90,6 +90,47 @@ jQuery(function() {
         importerSelect.reset();
         openEvaluationForm(suppliersData[this.dataset.openevalform]);
     });
+    
+    $('#tableSupplierList').on('click', '[data-openreevalform]', function() {
+        $('#viewPreviousEvalBtn').attr('data-evalid', this.dataset.openreevalform || '')
+        $('#modalReEvaluation').modal('show')
+    });
+    
+    $('#viewPreviousEvalBtn').on('click', function() {
+        // evalFormAlert.isShowing() && evalFormAlert.hide();
+        // resetEvaluationForm();
+        // importerSelect.reset();
+        // openEvaluationForm(suppliersData[this.dataset.openevalform]);
+
+        const id = this.dataset.evalid;
+
+        if(!id) {
+            bootstrapGrowl('Missing data.', 'error');
+            return;
+        } else if(cachedEvalFormData && cachedEvalFormData.id == id) {
+            // reuse data
+            viewEvaluationDetails(cachedEvalFormData);
+            return;
+        }
+
+        $.ajax({
+            url: baseUrl + "viewEvaluationData=" + id,
+            type: "GET",
+            contentType: false,
+            processData: false,
+            success: function({data}) {
+                cachedEvalFormData = data;
+                $('#modalReEvaluation').modal('hide');
+                viewEvaluationDetails(data);
+
+            },
+            error: function({responseJSON}) {
+                bootstrapGrowl(responseJSON.error || 'Error fetching data!', 'danger');
+            },
+        });
+
+
+    })
 
     $('#tableSupplierList').on('click', '[data-opensafile]', function() {
         viewFile(suppliersData, this.dataset.opensafile, 'supplier_agreement');
@@ -104,6 +145,10 @@ jQuery(function() {
 
         if(!id) {
             bootstrapGrowl('Missing data.', 'error');
+            return;
+        } else if(cachedEvalFormData && cachedEvalFormData.id == id) {
+            // reuse data
+            viewEvaluationDetails(cachedEvalFormData);
             return;
         }
 
@@ -159,6 +204,10 @@ jQuery(function() {
             document.getElementById('edStatus').outerHTML = '<span id="edStatus"></span>';
         });
     });
+
+    $('#modalEvaluationDetails').on('hide.bs.modal', function() {
+        $('#evalFilePreviewClose').click();
+    })
 
     $('.asFileUpload').change(function() {
         const files = this.files;
@@ -424,12 +473,8 @@ jQuery(function() {
             data,
             success: function({data, message}) {
                 if(data) {
-                    cachedEvalFormData = data;
-                    const upd = suppliersData[data.supplier_id];
-                    upd['evaluation_id'] = data.id;
-                    upd['evaluation_date'] = data.evaluation_date;
-                    upd['evaluation_status'] = data.evaluation_status;
-                    renderDTRow(upd, 'data').draw();
+                    suppliersData[form.supplier.value] && (suppliersData[form.supplier.value].evaluation = data);
+                    renderDTRow(suppliersData[form.supplier.value], 'data').draw();
                 }
 
                 $('#modalEvaluationForm').modal('hide');
@@ -484,7 +529,7 @@ jQuery(function() {
                             </a>`;
                 break;
             case 'expired': 
-                evalBtn = `<button type="button"  class="btn red btn-sm btn-circle" title="Re-evaluate" data-reeval="true" data-openevalform="${d.id}">
+                evalBtn = `<button type="button"  class="btn red btn-sm btn-circle" title="Re-evaluate" data-reeval="true" data-openreevalform="${d.evaluation.id}">
                                 Re-evaluate
                             </button>`;
                 break;
@@ -503,11 +548,14 @@ jQuery(function() {
             evalBtn,
             sa,
             cs,
-            `
-                <div class="d-flex center">
-                    <button type="button" class="btn dark btn-outline btn-circle" title="View data">View</button>
-                </div>
-            `,
+            // `
+            //     <div class="d-flex center">
+            //         <div class="btn-group btn-group-circle btn-group-sm btn-group-solid hide">
+            //             <button type="button" class="btn dark btn-outline btn-circle btn-smx" title="View data">View</button>
+            //         </div>
+            //         <button type="button" class="btn dark btn-outline btn-circle btn-sm" title="View data">View</button>
+            //     </div>
+            // `,
         ];
         
         if(method == 'data') {

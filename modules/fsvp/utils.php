@@ -88,6 +88,7 @@ function getSupplierList($conn, $userId) {
 // evaluation data for every supplier in the supplier list page
 function getEvaluationData($conn, $evalId) {
     $eval = $conn->execute("SELECT 
+                eval.id,
                 eval.status,
                 eval.evaluation,
                 eval.evaluation_date,
@@ -102,6 +103,7 @@ function getEvaluationData($conn, $evalId) {
                 eval.rejection_date,
                 eval.approval_date,
                 eval.assessment,
+                eval.description,
                 supp.name AS supplier_name, 
                 supp.address AS supplier_address,
                 imp.name AS importer_name, 
@@ -155,7 +157,9 @@ function getEvaluationStatus($conn, $supplierId) {
             if($data['status'] == 'current') {
                 $data['status'] = updateEvaluationStatus($conn, $data['evaluation_due_date'], $data['id']);
             } else if($data['status'] == 're_evaluated') {
-
+                // add code..
+            } else if($data['status'] == 'expired') {
+                
             }
         }
 

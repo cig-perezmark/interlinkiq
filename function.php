@@ -547,6 +547,10 @@
                 unset($_COOKIE['client']);
                 setcookie('client', '', time() - 3600, '/'); // empty value and old timestamp
                 echo '<script>window.location.href = "Exim360"</script>';
+            } else if ($_COOKIE['client'] == 5)  {
+                unset($_COOKIE['client']);
+                setcookie('client', '', time() - 3600, '/'); // empty value and old timestamp
+                echo '<script>window.location.href = "Vikings"</script>';
             } else {
     			unset($_COOKIE['client']);
     	    	setcookie('client', '', time() - 3600, '/'); // empty value and old timestamp
@@ -799,6 +803,7 @@
 		$first_name = addslashes($_POST['first_name']);
 		$last_name = addslashes($_POST['last_name']);
 		$email = $_POST['email'];
+        $phone = addslashes($_POST['phone']);
 		$password = $_POST['password'];
 		$password_hash = password_hash($password, PASSWORD_DEFAULT);
 		$exist = false;
@@ -811,7 +816,42 @@
 			$sql = "INSERT INTO tbl_user (employee_id, first_name, last_name, email, password, client)
 			VALUES ( '$ID', '$first_name', '$last_name', '$email', '$password_hash', '$client')";
 			if (mysqli_query($conn, $sql)) {
-				// $last_id = mysqli_insert_id($conn);
+                $last_id = mysqli_insert_id($conn);
+                $sql = "INSERT INTO tbl_user_info (user_id, mobile) VALUES ('$last_id', '$phone')";
+                mysqli_query($conn, $sql);
+
+                $array_client = array(
+                    0 => 'CIG',
+                    1 => 'CannOS',
+                    2 => 'FoodSafety360',
+                    3 => 'SafeCannabis360',
+                    4 => 'Exim360',
+                    5 => 'Viking Atlantic Sales Group, LLC',
+                    6 => 'Swiss Food',
+                    7 => 'FSSC360'
+                );
+
+                $sender_name = 'Interlink IQ';
+                $sender_email = 'services@interlinkiq.com';
+                $sender[$sender_email] = $sender_name;
+
+                $recipients_name = 'Arnel Ryan';
+                $recipients_email = 'arnel@consultareinc.com';
+                $recipients[$recipients_email] = $recipients_name;
+
+                $subject = 'New User Registered from '.$array_client[$client];
+                $body = 'Hi Team,<br><br>
+
+                See details for our new user registered below<br><br>
+
+                Name: '.$first_name.' '.$last_name.'<br>
+                Email: '.$email.'<br>
+                Phone: '.$phone.'<br><br>
+
+                InterlinkIQ.com Team<br>
+                Consultare Inc. Group';
+
+                php_mailer_dynamic($sender, $recipients, $subject, $body);
 
 				// $to = $email;
 				// $user = $first_name .' '. $last_name;
@@ -2040,6 +2080,8 @@
                 $client_url = 'SafeCannabis360';
             } else if ($client == 4) {
                 $client_url = 'Exim360';
+            } else if ($client == 5) {
+                $client_url = 'Vikings';
             }
         }
 
@@ -2671,6 +2713,8 @@
                     $client_url = 'SafeCannabis360';
                 } else if ($client == 4) {
                     $client_url = 'Exim360';
+                } else if ($client == 5) {
+                    $client_url = 'Vikings';
                 }
 
                 $selectEnterprise = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE users_entities = $user_id" );
@@ -2750,6 +2794,18 @@
                         If you experience difficulties opening the website, kindly use this link instead <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">'. $base_url . $client_url .'?r=1&i='. $last_id .'</a><br><br>
 
                         Should you need assistance, kindly email <a href="mailto:exim360r@gmail.com" target="_blank">exim360r@gmail.com</a><br><br>
+
+                        Cann OS Team';
+                    } elseif ($_COOKIE['client'] == 5) {
+                        $subject = 'Welcome to Vikings Atlantic Sales Group, LLC!';
+                        $body = 'Hi '. $data_first_name .',<br><br>
+
+                        Your employer, '.$data_company.',<br><br>
+
+                        invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">Vikings Atlantic Sales Group, LLC</a> to connect with your assigned duties, work, and tasks. 
+                        If you experience difficulties opening the website, kindly use this link instead <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">'. $base_url . $client_url .'?r=1&i='. $last_id .'</a><br><br>
+
+                        Should you need assistance, kindly email <a href="mailto:vikingatlanticsalesgroupllc@gmail.com" target="_blank">vikingatlanticsalesgroupllc@gmail.com</a><br><br>
 
                         Cann OS Team';
                     } else {
@@ -2849,6 +2905,8 @@
                         $client_url = 'SafeCannabis360';
                     } else if ($client == 4) {
                         $client_url = 'Exim360';
+                    } else if ($client == 5) {
+                        $client_url = 'Vikings';
                     }
 
 					$position = array();
@@ -2910,7 +2968,7 @@
 
                             Cann OS Team';
                     	} else if ($_COOKIE['client'] == 2) {
-                            $subject = 'Welcome to Cann OS!';
+                            $subject = 'Welcome to FoodSafety360!';
                             $body = 'Hi '. $data_first_name .',<br><br>
 
                             Your employer, '.$data_company.',<br><br>
@@ -2920,29 +2978,41 @@
 
                             Should you need assistance, kindly email <a href="mailto:foodsafety360r@gmail.com" target="_blank">foodsafety360r@gmail.com</a><br><br>
 
-                            Cann OS Team';
+                            FoodSafety360 Team';
                         } else if ($_COOKIE['client'] == 3) {
-                            $subject = 'Welcome to Cann OS!';
+                            $subject = 'Welcome to FoodSafety360!';
                             $body = 'Hi '. $data_first_name .',<br><br>
 
                             Your employer, '.$data_company.',<br><br>
 
-                            invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">Food Safety 360</a> to connect with your assigned duties, work, and tasks. 
+                            invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">SafeCannabis360</a> to connect with your assigned duties, work, and tasks. 
                             If you experience difficulties opening the website, kindly use this link instead <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">'. $base_url . $client_url .'?r=1&i='. $last_id .'</a><br><br>
 
                             Should you need assistance, kindly email <a href="mailto:cannabis360r@gmail.com" target="_blank">cannabis360r@gmail.com</a><br><br>
 
-                            Cann OS Team';
+                            SafeCannabis360 Team';
                         } else if ($_COOKIE['client'] == 4) {
+                            $subject = 'Welcome to Exim360!';
+                            $body = 'Hi '. $data_first_name .',<br><br>
+
+                            Your employer, '.$data_company.',<br><br>
+
+                            invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">Exim360</a> to connect with your assigned duties, work, and tasks. 
+                            If you experience difficulties opening the website, kindly use this link instead <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">'. $base_url . $client_url .'?r=1&i='. $last_id .'</a><br><br>
+
+                            Should you need assistance, kindly email <a href="mailto:exim360r@gmail.com" target="_blank">exim360r@gmail.com</a><br><br>
+
+                            Cann OS Team';
+                        } else if ($_COOKIE['client'] == 5) {
                             $subject = 'Welcome to Cann OS!';
                             $body = 'Hi '. $data_first_name .',<br><br>
 
                             Your employer, '.$data_company.',<br><br>
 
-                            invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">Food Safety 360</a> to connect with your assigned duties, work, and tasks. 
+                            invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">Viking Atlantic Sales Group, LLC</a> to connect with your assigned duties, work, and tasks. 
                             If you experience difficulties opening the website, kindly use this link instead <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">'. $base_url . $client_url .'?r=1&i='. $last_id .'</a><br><br>
 
-                            Should you need assistance, kindly email <a href="mailto:exim360r@gmail.com" target="_blank">exim360r@gmail.com</a><br><br>
+                            Should you need assistance, kindly email <a href="mailto:vikingatlanticsalesgroupllc@gmail.com" target="_blank">vikingatlanticsalesgroupllc@gmail.com</a><br><br>
 
                             Cann OS Team';
                         } else {
@@ -3222,6 +3292,10 @@
                 } else if ($_COOKIE['client'] == 4) {
                     $from = 'exim360r@gmail.com';
                     $name = 'Exim360';
+                    $body .= 'Food Safety Procedure';
+                } else if ($_COOKIE['client'] == 5) {
+                    $from = 'vikingatlanticsalesgroupllc@gmail.com';
+                    $name = 'Vikings';
                     $body .= 'Food Safety Procedure';
                 } else {
                     $from = 'services@interlinkiq.com';
@@ -16491,28 +16565,32 @@
     						BeGreen Legal';
     					} else if ($_COOKIE['client'] == 2) {
                             $subject = 'Welcome to Food Safety 360!';
-                            $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'CannOS-Login" target="_blank">FoodSafety360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'CannOS-Login" target="_blank">https://interlinkiq.com/FoodSafety360</a>.<br><br>
+                            $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'CannOS-Login" target="_blank">FoodSafety360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'FoodSafety360" target="_blank">https://interlinkiq.com/FoodSafety360</a>.<br><br>
 
                             Should you need assistance, kindly email <a href="mailto:foodsafety360r@gmail.com" target="_blank">foodsafety360r@gmail.com.<br><br>
 
-                            Food Safety 360<br>
-                            BeGreen Legal';
+                            Food Safety 360';
                         } else if ($_COOKIE['client'] == 3) {
-                            $subject = 'Welcome to Food Safety 360!';
-                            $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'CannOS-Login" target="_blank">SafeCannabis360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'CannOS-Login" target="_blank">https://interlinkiq.com/SafeCannabis360</a>.<br><br>
+                            $subject = 'Welcome to SafeCannabis360!';
+                            $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'CannOS-Login" target="_blank">SafeCannabis360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'SafeCannabis360" target="_blank">https://interlinkiq.com/SafeCannabis360</a>.<br><br>
 
                             Should you need assistance, kindly email <a href="mailto:cannabis360r@gmail.com" target="_blank">cannabis360r@gmail.com.<br><br>
 
-                            Food Safety 360<br>
-                            BeGreen Legal';
+                            SafeCannabis360';
                         } else if ($_COOKIE['client'] == 4) {
-                            $subject = 'Welcome to Food Safety 360!';
-                            $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'CannOS-Login" target="_blank">Exim360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'CannOS-Login" target="_blank">https://interlinkiq.com/Exim360</a>.<br><br>
+                            $subject = 'Welcome to Exim360!';
+                            $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'CannOS-Login" target="_blank">Exim360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'Exim360" target="_blank">https://interlinkiq.com/Exim360</a>.<br><br>
 
                             Should you need assistance, kindly email <a href="mailto:exim360r@gmail.com" target="_blank">exim360r@gmail.com.<br><br>
 
-                            Food Safety 360<br>
-                            BeGreen Legal';
+                            Exim360';
+                        } else if ($_COOKIE['client'] == 5) {
+                            $subject = 'Welcome to Vikings!';
+                            $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'CannOS-Login" target="_blank">Viking Atlantic Sales Group, LLC</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'Vikings" target="_blank">https://interlinkiq.com/Vikings</a>.<br><br>
+
+                            Should you need assistance, kindly email <a href="mailto:vikingatlanticsalesgroupllc@gmail.com" target="_blank">vikingatlanticsalesgroupllc@gmail.com<br><br>
+
+                            Vikings Atlantic Sales Group, LLC';
                         } else {
     		    			$subject = 'You are invited!';
     		    			$body = 'Hi '.$user.',<br><br>
@@ -16616,35 +16694,41 @@
                                             Cann OS Team<br>
                                             BeGreenLegal';
     									} else if ($_COOKIE['client'] == 2) {
-                                            $subject = 'Welcome to Cann OS!';
+                                            $subject = 'Welcome to FoodSafety360!';
                                             $body = 'Hi '.$user.',<br><br>
                                 
                                             Your supplier FoodSafety360, invites you to <a href="'.$base_url.'FoodSafety360" target="_blank">Food Safety 360</a> to connect and manage your Food Safety operation(s).<br><br>
 
                                             Should you need assistance, kindly email <a href="mailto:foodsafety360r@gmail.com">foodsafety360r@gmail.com.</a><br><br>
                                 
-                                            Cann OS Team<br>
-                                            BeGreenLegal';
+                                            FoodSafety360';
                                         } else if ($_COOKIE['client'] == 3) {
-                                            $subject = 'Welcome to Cann OS!';
+                                            $subject = 'Welcome to SafeCannabis360!';
                                             $body = 'Hi '.$user.',<br><br>
                                 
-                                            Your supplier SafeCannabis360, invites you to <a href="'.$base_url.'SafeCannabis360" target="_blank">Food Safety 360</a> to connect and manage your Food Safety operation(s).<br><br>
+                                            Your supplier SafeCannabis360, invites you to <a href="'.$base_url.'SafeCannabis360" target="_blank">SafeCannabis360</a> to connect and manage your Food Safety operation(s).<br><br>
 
                                             Should you need assistance, kindly email <a href="mailto:cannabis360r@gmail.com">cannabis360r@gmail.com.</a><br><br>
                                 
-                                            Cann OS Team<br>
-                                            BeGreenLegal';
+                                            SafeCannabis360';
                                         } else if ($_COOKIE['client'] == 4) {
-                                            $subject = 'Welcome to Cann OS!';
+                                            $subject = 'Welcome to Exim360!';
                                             $body = 'Hi '.$user.',<br><br>
                                 
-                                            Your supplier Exim360, invites you to <a href="'.$base_url.'Exim360" target="_blank">Food Safety 360</a> to connect and manage your Food Safety operation(s).<br><br>
+                                            Your supplier Exim360, invites you to <a href="'.$base_url.'Exim360" target="_blank">Exim360</a> to connect and manage your Food Safety operation(s).<br><br>
 
                                             Should you need assistance, kindly email <a href="mailto:exim360r@gmail.com">exim360r@gmail.com.</a><br><br>
                                 
-                                            Cann OS Team<br>
-                                            BeGreenLegal';
+                                            Exim360';
+                                        } else if ($_COOKIE['client'] == 5) {
+                                            $subject = 'Welcome to Vikings!';
+                                            $body = 'Hi '.$user.',<br><br>
+                                
+                                            Your supplier Vikings, invites you to <a href="'.$base_url.'Vikings" target="_blank">Viking Atlantic Sales Group, LLC</a> to connect and manage your Food Safety operation(s).<br><br>
+
+                                            Should you need assistance, kindly email <a href="mailto:vikingatlanticsalesgroupllc@gmail.com">vikingatlanticsalesgroupllc@gmail.com</a><br><br>
+                                
+                                            Vikings Atlantic Sales Group, LLC';
                                         } else {
     		                    			$body = 'Hi '.$user.',<br><br>
     		                    
@@ -22416,26 +22500,33 @@
                                 Cann OS Team<br>
                                 BeGreen Legal';
                             } else if ($_COOKIE['client'] == 2) {
-                                $subject = 'Welcome to Cann OS!';
+                                $subject = 'Welcome to FoodSafety360!';
                                 $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'FoodSafety360" target="_blank">Food Safe</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'FoodSafety360" target="_blank">https://interlinkiq.com/FoodSafety360</a>.<br><br>
 
                                 Should you need assistance, kindly email <a href="mailto:foodsafety360r@gmail.com" target="_blank">foodsafety360r@gmail.com</a>.<br><br>
 
                                 FoodSafety360 Team';
                             } else if ($_COOKIE['client'] == 3) {
-                                $subject = 'Welcome to Cann OS!';
-                                $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'SafeCannabis360" target="_blank">Food Safe</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'SafeCannabis360" target="_blank">https://interlinkiq.com/SafeCannabis360</a>.<br><br>
+                                $subject = 'Welcome to SafeCannabis360!';
+                                $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'SafeCannabis360" target="_blank">SafeCannabis360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'SafeCannabis360" target="_blank">https://interlinkiq.com/SafeCannabis360</a>.<br><br>
 
                                 Should you need assistance, kindly email <a href="mailto:cannabis360r@gmail.com" target="_blank">cannabis360r@gmail.com</a>.<br><br>
 
                                 SafeCannabis360 Team';
                             } else if ($_COOKIE['client'] == 4) {
                                 $subject = 'Welcome to Cann OS!';
-                                $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'Exim360" target="_blank">Food Safe</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'Exim360" target="_blank">https://interlinkiq.com/Exim360</a>.<br><br>
+                                $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'Exim360" target="_blank">Exim360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'Exim360" target="_blank">https://interlinkiq.com/Exim360</a>.<br><br>
 
                                 Should you need assistance, kindly email <a href="mailto:exim360r@gmail.com" target="_blank">exim360r@gmail.com</a>.<br><br>
 
                                 Exim360 Team';
+                            } else if ($_COOKIE['client'] == 5) {
+                                $subject = 'Welcome to Cann OS!';
+                                $body = 'Vikings, invites you to join <a href="'.$base_url.'Vikings" target="_blank">Vikings Atlantic Sales Group, LLC</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'Vikings" target="_blank">https://interlinkiq.com/Vikings</a>.<br><br>
+
+                                Should you need assistance, kindly email <a href="mailto:vikingatlanticsalesgroupllc@gmail.com" target="_blank">vikingatlanticsalesgroupllc@gmail.com</a>.<br><br>
+
+                                Vikings Team';
                             } else {
                                 $subject = $data_company.' Customer Invitation via InterlinkIQ.com';
                                 $body = 'Hi '.$user.',<br><br>
@@ -22556,6 +22647,13 @@
                                                 Should you need assistance, kindly email <a href="mailto:exim360r@gmail.com" target="_blank">exim360r@gmail.com</a>.<br><br>
 
                                                 Exim360 Team';
+                                            } else if ($_COOKIE['client'] == 5) {
+                                                $subject = 'Welcome to Cann OS!';
+                                                $body = 'Food Safety, invites you to join <a href="'.$base_url.'Vikings" target="_blank">Food Safe</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'Vikings" target="_blank">https://interlinkiq.com/Vikings</a>.<br><br>
+
+                                                Should you need assistance, kindly email <a href="mailto:vikingatlanticsalesgroupllc@gmail.com" target="_blank">vikingatlanticsalesgroupllc@gmail.com</a>.<br><br>
+
+                                                Vikings Team';
                                             } else {
                                                 $subject = $data_company.' Customer Invitation via InterlinkIQ.com';
                                                 $body = 'Hi '.$user.',<br><br>
@@ -42666,6 +42764,10 @@
                                     $from = 'exim360r@gmail.com';
                                     $name = 'Exim360';
                                     $body .= '<br><br>Exim360';
+                                } else if ($_COOKIE['client'] == 5) {
+                                    $from = 'vikingatlanticsalesgroupllc@gmail.com';
+                                    $name = 'Vikings Atlantic Sales Group, LLC';
+                                    $body .= '<br><br>Vikings';
                                 } else {
                                     $from = 'services@interlinkiq.com';
                                     $name = 'InterlinkIQ';
@@ -42719,6 +42821,10 @@
                             $from = 'exim360r@gmail.com';
                             $name = 'Exim360';
                             $body .= '<br><br>Exim360';
+                        } else if ($_COOKIE['client'] == 5) {
+                            $from = 'vikingatlanticsalesgroupllc@gmail.com';
+                            $name = 'Vikings Atlantic Sales Group, LLC';
+                            $body .= '<br><br>Vikings';
                         } else {
                             $from = 'services@interlinkiq.com';
                             $name = 'InterlinkIQ';
@@ -45884,6 +45990,10 @@
                                             $from = 'exim360r@gmail.com';
                                             $name = 'Exim360';
                                             $body .= '<br><br>Exim360';
+                                        } else if ($_COOKIE['client'] == 5) {
+                                            $from = 'vikingatlanticsalesgroupllc@gmail.com';
+                                            $name = 'Vikings Atlantic Sales Group, LLC';
+                                            $body .= '<br><br>Vikings';
                                         } else {
                                             $from = 'services@interlinkiq.com';
                                             $name = 'InterlinkIQ';
@@ -46923,7 +47033,7 @@
                                                     <li><a href="javascript:;" class="btnDelete" data-id="'. $item_ID .'" onclick="btnDelete('. $item_ID .')">Delete</a></li>
                                                     <li><a href="#modalReport" class="btnReport" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnReport('. $item_ID .')">Report</a></li>';
                                             
-    		                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366) {
+    		                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453) {
     		                                        	$output .= '<li><a href="#modalClone" data-toggle="modal" onclick="btnClone('. $item_ID .')">Clone</a></li>';
     		                                        }
 
@@ -47325,7 +47435,7 @@
                                         echo '<li><a href="javascript:;" class="btnDelete" data-id="'. $library_ID .'" onclick="btnDelete('. $library_ID .')">Delete</a></li>
                                         <li><a href="#modalReport" class="btnReport" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnReport('. $library_ID .')">Report</a></li>';
                                         
-                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366) {
+                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453) {
                                         	echo '<li><a href="#modalClone" data-toggle="modal" onclick="btnClone('. $library_ID .')">Clone</a></li>';
                                         }
                                         
@@ -47435,6 +47545,7 @@
 
                                                     $files = '';
                                                     $type = 'iframe';
+                                                    $target = '';
                                                     $file_extension = 'fa-youtube-play';
                                                     if (!empty($rowFiles["files"])) {
                                                         $arr_filename = explode(' | ', $rowFiles["files"]);
@@ -47461,6 +47572,10 @@
                                                         } else if ($str_filetype == 3) {
                                                             $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                             $file_extension = 'fa-google';
+                                                        } else if ($str_filetype == 4) {
+                                                            $files = preg_replace('#[^/]*$#', '', $str_filename);
+                                                            $file_extension = 'fa-strikethrough';
+                                                            $target = '_blank';
                                                         }
                                                     }
 
@@ -47488,7 +47603,7 @@
                                                                 <div class="mt-action-row">
                                                                     <div class="mt-action-info">
                                                                         <div class="mt-action-icon">
-                                                                            <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                                                            <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                                                         </div>
                                                                         <div class="mt-action-details" style="vertical-align: middle;">
                                                                             <span class="mt-action-author">'. htmlentities($file_name ?? '');
@@ -48947,6 +49062,7 @@
 
                                             $files = '';
                                             $type = 'iframe';
+                                            $target = '';
                                             $file_extension = 'fa-youtube-play';
                                             if (!empty($rowFiles["files"])) {
                                                 $arr_filename = explode(' | ', $rowFiles["files"]);
@@ -48973,6 +49089,10 @@
                                                 } else if ($str_filetype == 3) {
                                                     $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                     $file_extension = 'fa-google';
+                                                } else if ($str_filetype == 4) {
+                                                    $files = preg_replace('#[^/]*$#', '', $str_filename);
+                                                    $file_extension = 'fa-strikethrough';
+                                                    $target = '_blank';
                                                 }
                                             }
 
@@ -48988,7 +49108,7 @@
                                                     <div class="mt-action-row">
                                                         <div class="mt-action-info">
                                                             <div class="mt-action-icon">
-                                                                <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                                                <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                                             </div>
                                                             <div class="mt-action-details" style="vertical-align: middle;">
                                                                 <span class="mt-action-author">'. htmlentities($file_name ?? '');
@@ -50536,7 +50656,7 @@
 	        }
 	    }
 	}
-	if( isset($_GET['jstree_HTML2']) ) {
+	if( isset($_GET['jstree_HTML2_new']) ) {
 		if (!empty($_COOKIE['switchAccount'])) {
 			$portal_user = $_COOKIE['ID'];
 			$user_id = $_COOKIE['switchAccount'];
@@ -50831,6 +50951,533 @@
 
 		echo json_encode($result);
 	}
+    if( isset($_GET['jstree_HTML22']) ) {
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+        $collabUser = $_GET['jstree_HTML2'];
+        $current_userEmployeeID = employeeID($portal_user);
+        $current_userEmployerID = employerID($portal_user);
+
+        $hasLibrary = mysqli_query( $conn,"SELECT ID FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) > 0 ) {
+            // $resultTree = mysqli_query( $conn,"SELECT ID, name, collaborator_id FROM tbl_library WHERE parent_id = 0 AND deleted = 0 AND user_id = $user_id" );
+            $resultTree = mysqli_query( $conn,"SELECT 
+                ID AS mainID,
+                portal_user AS portal_userID,
+                parent_id AS parentID,
+                child_id AS childIDs,
+                type AS type,
+                free_access AS free_access,
+                collaborator_id AS parentCollab,
+                name AS parentName
+                FROM tbl_library
+
+                WHERE deleted = 0
+                AND user_id = $user_id
+                AND parent_id = 0
+
+                UNION ALL
+
+                SELECT 
+                ID AS mainID,
+                portal_user AS portal_userID,
+                CASE WHEN parent_id > 0 THEN 0 END AS parentID,
+                child_id AS childIDs,
+                type AS type,
+                free_access AS free_access,
+                collaborator_id AS parentCollab,
+                name AS parentName
+                FROM tbl_library
+
+                WHERE deleted = 0
+                AND user_id = $user_id
+                AND parent_id > 0
+                AND parent_id NOT IN (
+                    SELECT DISTINCT ID FROM tbl_library WHERE deleted = 0 AND user_id = $user_id
+                )
+
+                UNION ALL
+
+                SELECT 
+                ID AS mainID,
+                portal_user AS portal_userID,
+                parent_id AS parentID,
+                child_id AS childIDs,
+                type AS type,
+                free_access AS free_access,
+                collaborator_id AS parentCollab,
+                name AS parentName
+                FROM tbl_library
+
+                WHERE deleted = 0
+                AND user_id = $user_id
+                AND parent_id > 0
+                AND parent_id IN (
+                    SELECT DISTINCT ID FROM tbl_library WHERE deleted = 0 AND user_id = $user_id
+                )" );
+            // if ($collabUser == 1 AND !isset($_COOKIE['switchAccount'])) { $resultTree = mysqli_query( $conn,"SELECT ID, name, collaborator_id FROM tbl_library WHERE deleted = 0 AND collaborator_id <> '' AND user_id = $user_id" ); }
+            // if ($current_userEmployerID == 27) { $resultTree = mysqli_query( $conn,"SELECT ID, name, collaborator_id FROM tbl_library WHERE parent_id = 0 AND deleted = 0 AND user_id = $user_id" ); }
+        } else {
+            $customID = 116706101;
+            if ($_COOKIE['client'] == 3) { $customID = 116713042; }
+
+            $resultTree = mysqli_query( $conn,"SELECT ID, name, collaborator_id FROM tbl_library WHERE ID = $customID" );
+            $user_id = 163;
+            $current_userEmployeeID = employeeID($user_id);
+            $current_userEmployerID = employerID($user_id);
+            $collabUser = 0;
+        }
+
+        $result = array();
+        if ( mysqli_num_rows($resultTree) > 0 ) {
+            while($rowTree = mysqli_fetch_array($resultTree)) {
+                $library_ID = $rowTree["ID"];
+                $library_name = $rowTree["name"];
+                $library_collaborator_id = $rowTree["collaborator_id"];
+
+                $selectFile = mysqli_query( $conn,"WITH RECURSIVE cte (mainID, portal_userID, parentID, childIDs, type, free_access, parentCollab, parentName) AS
+                    (
+                        SELECT 
+                            t1.ID AS mainID,
+                            t1.portal_user AS portal_userID,
+                            t1.parent_id AS parentID,
+                            t1.child_id AS childIDs,
+                            t1.type AS type,
+                            t1.free_access AS free_access,
+                            t1.collaborator_id AS parentCollab,
+                            t1.name AS parentName
+                        FROM tbl_library AS t1
+                        WHERE t1.deleted = 0 AND t1.user_id = $user_id AND t1.parent_id = 0 AND t1.ID = $library_ID
+                        
+                        UNION ALL
+                        
+                        SELECT 
+                            t2.ID AS mainID,
+                            t2.portal_user AS portal_userID,
+                            t2.parent_id AS parentID,
+                            t2.child_id AS childIDs,
+                            t2.type AS type,
+                            t2.free_access AS free_access,
+                            t2.collaborator_id AS parentCollab,
+                            t2.name AS parentName
+                        FROM tbl_library AS t2
+                        JOIN cte ON cte.mainID = t2.parent_id
+                        WHERE t2.deleted = 0 AND t2.user_id = $user_id
+                    )
+                    SELECT 
+                    mainID, portal_userID, parentID, childIDs, type, free_access, parentCollab, parentName
+                    FROM cte
+
+                    ORDER BY FIELD(type,1,2,3,5,4) ASC, mainID ASC, parentID ASC" );
+                if ( mysqli_num_rows($selectFile) > 0 ) {
+                    $list_array = array();
+
+                    while($rowFile = mysqli_fetch_array($selectFile)) {
+                        $mainID = $rowFile["mainID"];
+                        $parentID = $rowFile["parentID"];
+                        $parentName = $rowFile["parentName"];
+                        $type_id = $rowFile["type"];
+
+                        $childIDs = $rowFile["childIDs"];
+                        $item_child = false;
+                        if (!empty($childIDs)) { $item_child = true; }
+
+                        $displayLibrary = false;
+                        if (mysqli_num_rows($hasLibrary) == 0) {
+                            if ($rowFile["portal_userID"] == $portal_user OR $rowFile["portal_userID"] == 163) {
+                                $displayLibrary = true;
+                            }
+                        } else {
+                            if ($rowFile["free_access"] == 0) {
+                                $displayLibrary = true;
+                            }
+                        }
+
+                        if ($displayLibrary == true) {
+                            if ($collabUser == 1) {
+                                if (!empty($library_collaborator_id)) {
+                                    $collab = json_decode($library_collaborator_id, true);
+                                    foreach ($collab as $key => $value) {
+                                        if ($current_userEmployerID == $key) {
+                                            if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
+                                                if (!in_array($mainID, $list_array)) {
+                                                    array_push($list_array, $mainID);
+
+                                                    $array_name_id = explode(", ", $parentName);
+                                                    // if ( count($array_name_id) == 4 AND $type_id == 0 ) {
+                                                    if ( count($array_name_id) == 4 ) {
+                                                        $data_name = array();
+
+                                                        $selectType = mysqli_query($conn,"SELECT * FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'");
+                                                        if ( mysqli_num_rows($selectType) > 0 ) {
+                                                            while($rowType = mysqli_fetch_array($selectType)) {
+                                                                array_push($data_name, $rowType["name"]);
+                                                            }
+                                                        }
+
+                                                        $selectCategory = mysqli_query($conn,"SELECT * FROM tbl_library_category WHERE ID = '".$array_name_id[1]."'");
+                                                        if ( mysqli_num_rows($selectCategory) > 0 ) {
+                                                            while($rowCategory = mysqli_fetch_array($selectCategory)) {
+                                                                array_push($data_name, $rowCategory["name"]);
+                                                            }
+                                                        }
+
+                                                        $selectScope = mysqli_query($conn,"SELECT * FROM tbl_library_scope WHERE ID = '".$array_name_id[2]."'");
+                                                        if ( mysqli_num_rows($selectScope) > 0 ) {
+                                                            while($rowScope = mysqli_fetch_array($selectScope)) {
+                                                                array_push($data_name, $rowScope["name"]);
+                                                            }
+                                                        }
+
+                                                        $selectModule = mysqli_query($conn,"SELECT * FROM tbl_library_module WHERE ID = '".$array_name_id[3]."'");
+                                                        if ( mysqli_num_rows($selectModule) > 0 ) {
+                                                            while($rowModule = mysqli_fetch_array($selectModule)) {
+                                                                array_push($data_name, $rowModule["name"]);
+                                                            }
+                                                        }
+
+                                                        $parentName = implode(" - ",$data_name);
+                                                    }
+
+                                                    if($parentID == 0) { $parentID = '#'; }
+
+                                                    $output = array(
+                                                        "id" => $mainID,
+                                                        "parent" => $parentID,
+                                                        "state" => 'close',
+                                                        "text" => htmlentities($parentName ?? '')
+                                                    );
+                                                    array_push($result, $output);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (!in_array($mainID, $list_array)) {
+                                    array_push($list_array, $mainID);
+
+                                    $array_name_id = explode(", ", $parentName);
+                                    if ( count($array_name_id) == 4 AND $type_id == 0 ) {
+                                        $data_name = array();
+
+                                        $selectType = mysqli_query($conn,"SELECT * FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'");
+                                        if ( mysqli_num_rows($selectType) > 0 ) {
+                                            while($rowType = mysqli_fetch_array($selectType)) {
+                                                array_push($data_name, $rowType["name"]);
+                                            }
+                                        }
+
+                                        $selectCategory = mysqli_query($conn,"SELECT * FROM tbl_library_category WHERE ID = '".$array_name_id[1]."'");
+                                        if ( mysqli_num_rows($selectCategory) > 0 ) {
+                                            while($rowCategory = mysqli_fetch_array($selectCategory)) {
+                                                array_push($data_name, $rowCategory["name"]);
+                                            }
+                                        }
+
+                                        $selectScope = mysqli_query($conn,"SELECT * FROM tbl_library_scope WHERE ID = '".$array_name_id[2]."'");
+                                        if ( mysqli_num_rows($selectScope) > 0 ) {
+                                            while($rowScope = mysqli_fetch_array($selectScope)) {
+                                                array_push($data_name, $rowScope["name"]);
+                                            }
+                                        }
+
+                                        $selectModule = mysqli_query($conn,"SELECT * FROM tbl_library_module WHERE ID = '".$array_name_id[3]."'");
+                                        if ( mysqli_num_rows($selectModule) > 0 ) {
+                                            while($rowModule = mysqli_fetch_array($selectModule)) {
+                                                array_push($data_name, $rowModule["name"]);
+                                            }
+                                        }
+
+                                        $parentName = implode(" - ",$data_name);
+                                    }
+
+                                    if($parentID == 0) { $parentID = '#'; }
+
+                                    $output = array(
+                                        "id" => $mainID,
+                                        "parent" => $parentID,
+                                        "state" => 'close',
+                                        "text" => htmlentities($parentName ?? '')
+                                    );
+                                    array_push($result, $output);
+                                }
+                            }
+                        }
+                     }
+                }
+            }
+        }
+
+        echo json_encode($result);
+    }
+    if( isset($_GET['jstree_HTML2']) ) {
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+        $collabUser = $_GET['jstree_HTML2'];
+        $current_userEmployeeID = employeeID($portal_user);
+        $current_userEmployerID = $user_id;
+        $result = array();
+
+        $hasLibrary = mysqli_query( $conn,"SELECT ID FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) > 0 ) {
+            $selectLibrary = mysqli_query( $conn,"
+                SELECT 
+                ID AS mainID,
+                portal_user AS portal_userID,
+                parent_id AS parentID,
+                child_id AS childIDs,
+                type AS type,
+                free_access AS free_access,
+                collaborator_id AS parentCollab,
+                name AS parentName
+                FROM tbl_library
+
+                WHERE deleted = 0
+                AND user_id = $user_id
+                AND parent_id = 0
+
+                UNION ALL
+
+                SELECT 
+                ID AS mainID,
+                portal_user AS portal_userID,
+                parent_id AS parentID,
+                child_id AS childIDs,
+                type AS type,
+                free_access AS free_access,
+                collaborator_id AS parentCollab,
+                name AS parentName
+                FROM tbl_library
+
+                WHERE deleted = 0
+                AND user_id = $user_id
+                AND parent_id > 0
+                AND parent_id IN (
+                    SELECT DISTINCT ID FROM tbl_library WHERE deleted = 0 AND user_id = $user_id
+                )
+            " );
+
+            if ($collabUser == 1) {
+                $selectLibrary = mysqli_query( $conn,"
+                    SELECT 
+                    ID AS mainID,
+                    portal_user AS portal_userID,
+                    parent_id AS parentID,
+                    child_id AS childIDs,
+                    type AS type,
+                    free_access AS free_access,
+                    collaborator_id AS parentCollab,
+                    name AS parentName
+                    FROM tbl_library
+
+                    WHERE deleted = 0
+                    AND user_id = $user_id
+                    AND parent_id = 0
+                    AND LENGTH(collaborator_id) > 0 
+                    AND collaborator_id LIKE '%\"$current_userEmployeeID\"%'
+                    -- AND JSON_EXTRACT(collaborator_id, '$.$user_id.assigned_to_id') LIKE '%\"$current_userEmployeeID\"%'
+
+                    UNION ALL
+
+                    SELECT 
+                    ID AS mainID,
+                    portal_user AS portal_userID,
+                    parent_id AS parentID,
+                    child_id AS childIDs,
+                    type AS type,
+                    free_access AS free_access,
+                    collaborator_id AS parentCollab,
+                    name AS parentName
+                    FROM tbl_library
+
+                    WHERE deleted = 0
+                    AND user_id = $user_id
+                    AND parent_id > 0
+                    AND parent_id IN (
+                        SELECT DISTINCT ID FROM tbl_library WHERE deleted = 0 AND user_id = $user_id
+                    )
+                " );
+            }
+        } else {
+            $customID = 116706101;
+            if ($_COOKIE['client'] == 3) { $customID = 116713042; }
+
+            $selectLibrary = mysqli_query( $conn,"SELECT ID AS mainID, name AS parentName, collaborator_id AS parentCollab FROM tbl_library WHERE ID = $customID" );
+            $user_id = 163;
+        }
+
+        $list_array = array();
+        if ( mysqli_num_rows($selectLibrary) > 0 ) {
+            while($rowLibrary = mysqli_fetch_array($selectLibrary)) {
+
+                if ( mysqli_num_rows($hasLibrary) == 0 ) {
+                    $library_ID = $rowLibrary["mainID"];
+                    $library_name = $rowLibrary["parentName"];
+                    $library_collaborator_id = $rowLibrary["parentCollab"];
+
+                    $selectChild = mysqli_query( $conn,"
+                        WITH RECURSIVE cte (mainID, portal_userID, parentID, childIDs, type, free_access, parentCollab, parentName) AS
+                        (
+                            SELECT 
+                                t1.ID AS mainID,
+                                t1.portal_user AS portal_userID,
+                                t1.parent_id AS parentID,
+                                t1.child_id AS childIDs,
+                                t1.type AS type,
+                                t1.free_access AS free_access,
+                                t1.collaborator_id AS parentCollab,
+                                t1.name AS parentName
+                            FROM tbl_library AS t1
+                            WHERE t1.deleted = 0 AND t1.user_id = $user_id AND t1.parent_id = 0 AND t1.ID = $library_ID
+                            
+                            UNION ALL
+                            
+                            SELECT 
+                                t2.ID AS mainID,
+                                t2.portal_user AS portal_userID,
+                                t2.parent_id AS parentID,
+                                t2.child_id AS childIDs,
+                                t2.type AS type,
+                                t2.free_access AS free_access,
+                                t2.collaborator_id AS parentCollab,
+                                t2.name AS parentName
+                            FROM tbl_library AS t2
+                            JOIN cte ON cte.mainID = t2.parent_id
+                            WHERE t2.deleted = 0 AND t2.user_id = $user_id
+                        )
+                        SELECT 
+                        mainID, portal_userID, parentID, childIDs, type, free_access, parentCollab, parentName
+                        FROM cte
+
+                        ORDER BY FIELD(type,1,2,3,5,4) ASC, mainID ASC, parentID ASC
+                    " );
+
+                    if ( mysqli_num_rows($selectChild) > 0 ) {
+                        while($rowChild = mysqli_fetch_array($selectChild)) {
+                            $mainID = $rowChild["mainID"];
+                            $parentID = $rowChild["parentID"];
+                            $parentName = $rowChild["parentName"];
+                            $type_id = $rowChild["type"];
+
+                            $childIDs = $rowChild["childIDs"];
+                            $item_child = false;
+                            if (!empty($childIDs)) { $item_child = true; }
+
+                            $displayLibrary = false;
+                            if (mysqli_num_rows($hasLibrary) == 0) {
+                                if ($rowChild["portal_userID"] == $portal_user OR $rowChild["portal_userID"] == 163) {
+                                    $displayLibrary = true;
+                                }
+                            } else {
+                                if ($rowChild["free_access"] == 0) {
+                                    $displayLibrary = true;
+                                }
+                            }
+
+                            if ($displayLibrary == true) {
+                                $array_name_id = explode(", ", $parentName);
+                                if ( count($array_name_id) == 4 AND $type_id == 0 ) {
+                                    $data_name = array();
+
+                                    $selectLibraryName = mysqli_query($conn,"
+                                        SELECT name FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'
+                                        UNION ALL
+                                        SELECT name FROM tbl_library_category WHERE ID = '".$array_name_id[1]."'
+                                        UNION ALL
+                                        SELECT name FROM tbl_library_scope WHERE ID = '".$array_name_id[2]."'
+                                        UNION ALL
+                                        SELECT name FROM tbl_library_module WHERE ID = '".$array_name_id[3]."'
+                                    ");
+                                    if ( mysqli_num_rows($selectLibraryName) > 0 ) {
+                                        while($rowLibraryName = mysqli_fetch_array($selectLibraryName)) {
+                                            array_push($data_name, $rowLibraryName["name"]);
+                                        }
+                                    }
+
+                                    $parentName = implode(" - ",$data_name);
+                                }
+
+                                if($parentID == 0) { $parentID = '#'; }
+
+                                $output = array(
+                                    "id" => $mainID,
+                                    "parent" => $parentID,
+                                    "state" => 'close',
+                                    "text" => htmlentities($parentName ?? '')
+                                );
+                                array_push($result, $output);
+                            }
+                         }
+                    }
+                } else {
+                    $mainID = $rowLibrary["mainID"];
+                    $parentID = $rowLibrary["parentID"];
+                    $parentName = $rowLibrary["parentName"];
+                    $type_id = $rowLibrary["type"];
+                    $parentCollab = $rowLibrary["parentCollab"];
+
+                    $displayLibrary = false;
+                    if (mysqli_num_rows($hasLibrary) == 0) {
+                        if ($rowLibrary["portal_userID"] == $portal_user OR $rowLibrary["portal_userID"] == 163) {
+                            $displayLibrary = true;
+                        }
+                    } else {
+                        if ($rowLibrary["free_access"] == 0) {
+                            $displayLibrary = true;
+                        }
+                    }
+
+                    if ($displayLibrary == true) {
+                        $array_name_id = explode(", ", $parentName);
+                        if ( count($array_name_id) == 4 AND $type_id == 0 ) {
+                            $data_name = array();
+
+                            $selectLibraryName = mysqli_query($conn,"
+                                SELECT name FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'
+                                UNION ALL
+                                SELECT name FROM tbl_library_category WHERE ID = '".$array_name_id[1]."'
+                                UNION ALL
+                                SELECT name FROM tbl_library_scope WHERE ID = '".$array_name_id[2]."'
+                                UNION ALL
+                                SELECT name FROM tbl_library_module WHERE ID = '".$array_name_id[3]."'
+                            ");
+                            if ( mysqli_num_rows($selectLibraryName) > 0 ) {
+                                while($rowLibraryName = mysqli_fetch_array($selectLibraryName)) {
+                                    array_push($data_name, $rowLibraryName["name"]);
+                                }
+                            }
+
+                            $parentName = implode(" - ",$data_name);
+                        }
+
+                        if($parentID == 0) { $parentID = '#'; }
+
+                        $output = array(
+                            "id" => $mainID,
+                            "parent" => $parentID,
+                            "state" => 'close',
+                            "text" => htmlentities($parentName ?? '')
+                        );
+                        array_push($result, $output);
+                    }
+                }
+            }
+        }
+        echo json_encode($result);
+    }
 
 	// Item Section
     if( isset($_GET['modalChanges_Area']) ) {
@@ -51809,6 +52456,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -51882,6 +52530,9 @@
                     $files = $src.$url.rawurlencode($str_filename).$embed;
                 } else if ($str_filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
+                } else if ($str_filetype == 4) {
+                    $files = preg_replace('#[^/]*$#', '', $str_filename);
+                    $file_extension = 'fa-strikethrough';
                 }
             }
         }
@@ -51895,6 +52546,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -52123,6 +52775,7 @@
                         $filetype = $rowFiles['filetype'];
                         $files = $rowFiles["files"];
                         $type = 'iframe';
+                        $target = '';
                         $file_extension = 'fa-youtube-play';
                         if (!empty($files)) {
                             if ($filetype == 1) {
@@ -52137,6 +52790,10 @@
                             } else if ($filetype == 3) {
                                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                 $file_extension = 'fa-google';
+                            } else if ($str_filetype == 4) {
+                                $files = preg_replace('#[^/]*$#', '', $str_filename);
+                                $file_extension = 'fa-strikethrough';
+                                $target = '_blank';
                             }
                         }
 
@@ -52145,7 +52802,7 @@
                                 <div class="mt-action-row">
                                     <div class="mt-action-info">
                                         <div class="mt-action-icon">
-                                            <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                            <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                         </div>
                                         <div class="mt-action-details" style="vertical-align: middle;">
                                             <span class="mt-action-author">'.stripcslashes(htmlentities($file_name)).'</span>
@@ -52270,6 +52927,7 @@
                     $filetype = $str_filetype;
                     $files = $str_filename;
                     $type = 'iframe';
+                    $target = '';
                     $file_extension = 'fa-file-image-o';
                     if (!empty($files)) {
                         if ($filetype == 1) {
@@ -52284,6 +52942,10 @@
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
+                        } else if ($str_filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $str_filename);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                     }
 
@@ -52291,7 +52953,7 @@
                         <div class="mt-action-row">
                             <div class="mt-action-info">
                                 <div class="mt-action-icon">
-                                    <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                    <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                 </div>
                                 <div class="mt-action-details" style="vertical-align: middle;">
                                     <span class="mt-action-author">'.stripcslashes(htmlentities($file_name)).'</span>
@@ -52598,6 +53260,7 @@
                         else if ($_COOKIE['client'] == 2) { $body .= '<br><br>FoodSafety360 Team'; }
                         else if ($_COOKIE['client'] == 3) { $body .= '<br><br>SafeCannabis360 Team'; }
                         else if ($_COOKIE['client'] == 4) { $body .= '<br><br>Exim360 Team'; }
+                        else if ($_COOKIE['client'] == 5) { $body .= '<br><br>Vikings Team'; }
                         
 		    			php_mailer_1($to, $user, $subject, $body, $from, $sender);
 					}
@@ -53057,6 +53720,10 @@
                 $from = 'exim360r@gmail.com';
                 $name = 'Exim360';
                 $body .= 'Exim360';
+            } else if ($_COOKIE['client'] == 5) {
+                $from = 'vikingatlanticsalesgroupllc@gmail.com';
+                $name = 'Vikings Atlantic Sales Group, LLC';
+                $body .= 'Vikings';
             } else {
                 $from = 'services@interlinkiq.com';
                 $name = 'InterlinkIQ';
@@ -53317,6 +53984,10 @@
                             $from = 'exim360r@gmail.com';
                             $name = 'Exim360';
                             $body .= 'Exim360';
+                        } else if ($_COOKIE['client'] == 5) {
+                            $from = 'vikingatlanticsalesgroupllc@gmail.com';
+                            $name = 'Vikings Atlantic Sales Group, LLC';
+                            $body .= 'Vikings';
                         } else {
                             $from = 'services@interlinkiq.com';
                             $name = 'InterlinkIQ';
@@ -53671,6 +54342,10 @@
                             $from = 'exim360r@gmail.com';
                             $name = 'Exim360';
                             $body .= 'Exim360';
+                        } else if ($_COOKIE['client'] == 5) {
+                            $from = 'vikingatlanticsalesgroupllc@gmail.com';
+                            $name = 'Vikings Atlantic Sales Group, LLC';
+                            $body .= 'Vikings';
                         } else {
                             $from = 'services@interlinkiq.com';
                             $name = 'InterlinkIQ';
@@ -56819,6 +57494,10 @@
                                 $from = 'exim360r@gmail.com';
                                 $name = 'Exim360';
                                 $body .= 'Exim360';
+                            } else if ($_COOKIE['client'] == 5) {
+                                $from = 'vikingatlanticsalesgroupllc@gmail.com';
+                                $name = 'Vikings Atlantic Sales Group, LLC';
+                                $body .= 'Vikings';
                             } else {
                                 $from = 'services@interlinkiq.com';
                                 $name = 'InterlinkIQ';
@@ -57007,6 +57686,10 @@
                             $from = 'exim360r@gmail.com';
                             $name = 'Exim360';
                             $body .= 'Exim360';
+                        } else if ($_COOKIE['client'] == 5) {
+                            $from = 'vikingatlanticsalesgroupllc@gmail.com';
+                            $name = 'Vikings Atlantic Sales Group, LLC';
+                            $body .= 'Vikings';
                         } else {
                             $from = 'services@interlinkiq.com';
                             $name = 'InterlinkIQ';

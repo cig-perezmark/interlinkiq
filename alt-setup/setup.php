@@ -159,16 +159,65 @@ function uploadFile($path, $file, $newFilename = null) {
     throw new Exception("Failed to move uploaded file.");
 }
 
+// function isValidFile($filename)
+// {
+//     $disallowedExtensions = ['php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll'];
+
+//     $fileExtension = pathinfo($filename, PATHINFO_EXTENSION);
+//     if (in_array(strtolower($fileExtension), $disallowedExtensions)) {
+//         return false;
+//     }
+    
+//     return true;
+// }
+
 function isValidFile($filename)
 {
+    // List of disallowed extensions
     $disallowedExtensions = ['php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll'];
 
+    // List of disallowed MIME types corresponding to disallowed extensions
+    $disallowedMimeTypes = [
+        'application/x-php',
+        'application/x-httpd-php',
+        'application/php',
+        'text/php',
+        'text/x-php',
+        'application/x-httpd-php-source',
+        'text/x-php-source',
+        'application/x-perl',
+        'text/x-perl',
+        'application/x-shellscript',
+        'text/x-shellscript',
+        'application/x-python',
+        'text/x-python',
+        'application/x-ruby',
+        'text/x-ruby',
+        'application/x-msdos-program',
+        'application/octet-stream'
+    ];
+
+    // Check file extension
     $fileExtension = pathinfo($filename, PATHINFO_EXTENSION);
     if (in_array(strtolower($fileExtension), $disallowedExtensions)) {
         return false;
     }
-    
+
+    // Check MIME type
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    if (!$finfo) {
+        return false; // If finfo_open fails, consider the file invalid
+    }
+
+    $mimeType = finfo_file($finfo, $filename);
+    finfo_close($finfo);
+
+    if (in_array($mimeType, $disallowedMimeTypes)) {
+        return false;
+    }
+
     return true;
 }
+
 
 ?>

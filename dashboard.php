@@ -2413,10 +2413,54 @@
                     url: 'function.php?jstree_HTML2='+collabUser,
                     dataType: 'json',
                     success: function (json) {
+                        
+                        const data = json;
+
+                        // Create a map of id to its children
+                        const childrenMap = data.reduce((acc, item) => {
+                          if (!acc[item.parent]) {
+                            acc[item.parent] = [];
+                          }
+                          acc[item.parent].push(item);
+                          return acc;
+                        }, {});
+
+                        // Set of valid ids (including root #)
+                        const validIds = new Set(['#']);
+
+                        // Function to collect valid ids recursively
+                        function collectValidIds(id) {
+                          if (childrenMap[id]) {
+                            childrenMap[id].forEach(child => {
+                              validIds.add(child.id);
+                              collectValidIds(child.id);
+                            });
+                          }
+                        }
+
+                        // Start with the root parents (those whose parent is '#')
+                        collectValidIds('#');
+
+                        // Filter the data to keep only valid items
+                        const filteredData = data.filter(item => validIds.has(item.id));
+                        
+                        
+                        
+                        
+                        filteredData.sort((a, b) => a.text.localeCompare(b.text));
+                        filteredData.sort((a, b) => a.text.localeCompare(b.text, 'en', { numeric: true }));
+                        createJSTree(filteredData);
+                        
+                        console.log(filteredData);
+                        
+                        createJSTree(filteredData);
+                        
+                        
+                        
                         // alert(json);
                         // json.sort((a, b) => a.text.localeCompare(b.text));
-                        json.sort((a, b) => a.text.localeCompare(b.text, 'en', { numeric: true }));
-                        createJSTree(json);
+                        // json.sort((a, b) => a.text.localeCompare(b.text, 'en', { numeric: true }));
+                        // createJSTree(json);
                     },
 
                     error: function (xhr, ajaxOptions, thrownError) {
@@ -2608,7 +2652,7 @@
                 if($(e).val() == 1) {
                     $(e).parent().find('.fileUpload').show();
                     $(e).parent().find('.fileUpload').prop('required',true);
-                } else if($(e).val() == 2 || $(e).val() == 3) {
+                } else if($(e).val() == 2 || $(e).val() == 3 || $(e).val() == 4) {
                     $(e).parent().find('.fileURL').show();
                     $(e).parent().find('.fileURL').prop('required',true);
                 }

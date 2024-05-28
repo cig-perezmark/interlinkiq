@@ -128,6 +128,9 @@
             $enterprise_id = mysqli_fetch_assoc($employee_resut);
             
             $employee_enterprise_id = $enterprise_id['user_id'];
+            if(!$employee_enterprise_id){
+                $employee_enterprise_id = $session_id;
+            }
             // Check if a record exists
             $select_query = "SELECT * FROM tbl_forms_owned WHERE user_id = $session_id AND enterprise_id = $employee_enterprise_id";
             $select_result = mysqli_query($conn, $select_query);
@@ -144,7 +147,8 @@
                 }
             } else {
                 // Record does not exist, perform an insert
-                echo$insert_query = "INSERT INTO tbl_forms_owned (user_id, enterprise_id, form_owned) VALUES ('$session_id', '$employee_enterprise_id', '$last_inserted_id')";
+                
+                $insert_query = "INSERT INTO tbl_forms_owned (user_id, enterprise_id, form_owned) VALUES ('$session_id', '$employee_enterprise_id', '$last_inserted_id')";
                 $insert_result = mysqli_query($conn, $insert_query);
                 if($insert_result) {
                     header('Location: ' . $_SERVER["HTTP_REFERER"]);

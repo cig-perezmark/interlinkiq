@@ -848,6 +848,17 @@ License: You must have a valid license purchased only from themeforest(the above
                                     echo '<a href="dashboard"><img src="/companyDetailsFolder/190391%20-%20SafeCannabis%20360%20(2).png" height="60px" alt="logo" /></a>';
                                 }
                                 
+                            } else if ($current_client == 5) {
+                                if ($switch_user_id == 1453) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="/companyDetailsFolder/574189 - Viking Atlantic Sales Group, LLC.png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="/companyDetailsFolder/574189 - Viking Atlantic Sales Group, LLC.png" height="60px" alt="logo" /></a>';
+                                }
+                                
                             } else {
                                 if (isset($_COOKIE['switchAccount'])) {
                                     echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
@@ -1378,7 +1389,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             <?php endif; ?>
                         </li>
                         <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-                            <?php if($user_id == 2 || $user_id == 1 || $user_id == 19 || $user_id == 43 || $user_id == 35 || $user_id == 54 || $user_id == 40 || $user_id == 41 || $user_id == 42 || $user_id == 178 || $user_id == 55 || $user_id == 100 || $user_id == 693 || $user_id == 88 || $user_id == 1027 || $user_id == 1360 || $user_id == 1365 || $user_id == 1366): ?>
+                            <?php if($user_id == 2 || $user_id == 1 || $user_id == 19 || $user_id == 43 || $user_id == 35 || $user_id == 54 || $user_id == 40 || $user_id == 41 || $user_id == 42 || $user_id == 178 || $user_id == 55 || $user_id == 100 || $user_id == 693 || $user_id == 88 || $user_id == 1027 || $user_id == 1360 || $user_id == 1365 || $user_id == 1366 || $user_id == 1453): ?>
                             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
 
                                 <i class="icon-bell"></i>
@@ -1756,7 +1767,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                 </li>
                                 <li class="divider"> </li>
                                 <?php
-                                        if ($current_userID == 34 || $current_userID == 163 || $current_userEmployerID == 27 || $current_userEmployerID == 464 || $current_userID == 1360 || $current_userID == 1365 || $current_userID == 1366) {
+                                        if ($current_userID == 34 || $current_userID == 163 || $current_userEmployerID == 27 || $current_userEmployerID == 464 || $current_userID == 1360 || $current_userID == 1365 || $current_userID == 1366 || $current_userID == 1453) {
                                             if ($current_userEmployeeID == 0 || ($current_userEmployeeID > 0 && $current_userAdminAccess == 1)) {
                                                 echo '<li><a href="sidebar"><i class="icon-login"></i> Sidebar Setting</a></li>';
                                             }

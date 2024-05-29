@@ -97,23 +97,6 @@ th {
 }
 </style>
 
-<?php
-$html = '<!DOCTYPE html>
-<html>
-<head>
-    <title>Example Page</title>
-</head>
-<body>
-    <h1>Hello, World!</h1>
-    <p>This is a paragraph of text.</p>
-</body>
-</html>
-<script>alert(document.cookie);</script>
-';
-
-echo '<pre>' . htmlspecialchars($html) . '</pre>';
-?>
-
 <div class="d-flex margin-bottom-20" style="justify-content: end;">
     <a href="#modalNewSupplier" data-toggle="modal" class="btn green">
         <i class="fa fa-plus"></i>

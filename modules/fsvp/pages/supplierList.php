@@ -97,6 +97,23 @@ th {
 }
 </style>
 
+<?php
+$html = '<!DOCTYPE html>
+<html>
+<head>
+    <title>Example Page</title>
+</head>
+<body>
+    <h1>Hello, World!</h1>
+    <p>This is a paragraph of text.</p>
+</body>
+</html>
+<script>alert(document.cookie);</script>
+';
+
+echo '<pre>' . htmlspecialchars($html) . '</pre>';
+?>
+
 <div class="d-flex margin-bottom-20" style="justify-content: end;">
     <a href="#modalNewSupplier" data-toggle="modal" class="btn green">
         <i class="fa fa-plus"></i>
@@ -424,6 +441,19 @@ th {
                             <i class="help-block">
                                 Note: If the evaluation was performed by another entity (other than the foreign supplier) include Entity's name, address, email, and date of evaluation.
                             </i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div>
+                            <div class="form-group">
+                                <label for="">Approved by:</label>
+                                <input type="text" class="form-control" style="width: 300px;" placeholder="Approver's name">
+                            </div>
+                            <p>Signature:</p>
+                            <div class="esign"></div>
                         </div>
                     </div>
                 </div>
@@ -771,6 +801,10 @@ th {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                <a href="about:blank" target="_blank" class="btn blue">
+                    <!-- <i class="fa fa-pdf-o"></i> -->
+                    View PDF
+                </a>
             </div>
         </div>
     </div>

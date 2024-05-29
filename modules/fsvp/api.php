@@ -692,3 +692,31 @@ if(!empty($_GET['viewEvaluationData'])) {
         'data' => getEvaluationData($conn, $id),
     ]);
 }
+
+// re evaluation
+if(isset($_GET['supplierReEvaluation']) && !empty($_POST['previous_evaluation_id'])) {
+    try {
+        // verify evaluation id
+        $evalId = intval($_POST['previous_evaluation_id']) ?? null;
+    
+        if(!empty($evalId)) {
+            throw new Exception("Invalid previous evaluation id.");
+        }
+
+        $isValid = $conn->execute("SELECT id, evaluation_due_date FROM tbl_fsvp_evaluations WHERE id = ?", $evalId)->fetchAssoc();
+
+        if(!count($isValid)) {
+            throw new Exception("No matching previous record(s) found.");
+        } else if(strtotime(date('Y-m-d') > strtotime($isValid['evaluation_due_date']))) {
+            throw new Exception('Previous evaluation data is currently active.');
+        }
+
+        
+
+    } catch(Throwable $e) {
+        $conn->rollback();
+        send_response([
+            'message' => $e->getMessage(),
+        ], 500);
+    }
+}

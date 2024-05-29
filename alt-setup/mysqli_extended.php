@@ -30,6 +30,8 @@ class mysqli_extended extends mysqli implements CRUD {
     protected $query_count = 0;
     public $show_error = true;
     public $charset = 'utf8';
+    public $escapeString = true;
+    public $stripTags = false;
 
     public function __construct($hostname = 'localhost', $username = 'root', $password = '', $database = null) {
         try {
@@ -87,8 +89,17 @@ class mysqli_extended extends mysqli implements CRUD {
                 foreach ($args as $k => &$arg) {
 					if (is_array($args[$k])) {
 						foreach ($args[$k] as $j => &$a) {
-							$types .= $this->_gettype($args[$k][$j]);
-							$args_ref[] = &$a;
+                            $t = $this->_gettype($args[$k][$j]);
+							$types .= $t;
+
+                            if($t === 's') {
+                                $value = &$a;
+                                if($this->stripTags ) $value = strip_tags($value);
+                                if($this->escapeString) $value = mysqli_real_escape_string($this, $value);
+                                $args_ref[] = $value;
+                            } else {
+                                $args_ref[] = &$a;
+                            }
 						}
 					} else {
 	                	$types .= $this->_gettype($args[$k]);

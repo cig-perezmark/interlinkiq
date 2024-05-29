@@ -8,6 +8,7 @@ jQuery(function() {
     let newSupplierErrorDisplay = null;
     let suppliersData = {};
     let cachedEvalFormData = null;
+    let prevEvalId = null;
 
     const supplierTable = Init.dataTable('#tableSupplierList', {
         columnDefs: [
@@ -83,6 +84,7 @@ jQuery(function() {
         }
     });
     const evalFormAlert = Init.createAlert($('#evaluationForm .modal-body'));
+    $('.esign').eSign();
 
     $('#tableSupplierList').on('click', '[data-openevalform]', function() {
         evalFormAlert.isShowing() && evalFormAlert.hide();
@@ -101,6 +103,7 @@ jQuery(function() {
         
         switchEvalModalFn('reeval');
         $('#viewPreviousEvalBtn').attr('data-evalid', this.dataset.preveval || '')
+        prevEvalId = this.dataset.preveval || '';
 
         $('#effsname').val(data.evaluation.supplier_name || '');
         $('#effsaddress').val(data.evaluation.supplier_address || '');
@@ -111,7 +114,7 @@ jQuery(function() {
     });
     
     $('#viewPreviousEvalBtn').on('click', function() {
-        fetchEvaluationData(this.dataset.evalid, () => {
+        fetchEvaluationData(prevEvalId, () => {
             $('#modalEvaluationForm').modal('hide');
         });
     })
@@ -415,6 +418,7 @@ jQuery(function() {
         e.preventDefault();
 
         const form = e.target;
+        let url = baseUrl;
 
         if(form.importer.value == '') {
             evalFormAlert.isShowing() && evalFormAlert.hide();
@@ -427,8 +431,15 @@ jQuery(function() {
         var l = Ladda.create(this.querySelector('[type=submit]'));
         l.start();
 
+        if(prevEvalId !== null) {
+            data.append('previous_evaluation_id', prevEvalId);
+            url += "supplierReEvaluation";
+        } else {
+            url += "newSupplierEvaluation";
+        }
+
         $.ajax({
-            url: baseUrl + "newSupplierEvaluation",
+            url,
             type: "POST",
             contentType: false,
             processData: false,
@@ -453,6 +464,11 @@ jQuery(function() {
                 l.stop();
             }
         });
+    });
+
+    $('#modalEvaluationForm').on('hidden.bs.modal', () => {
+        prevEvalId = null;
+        switchEvalModalFn();
     });
     
     function initSuppliers() {

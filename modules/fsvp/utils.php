@@ -350,6 +350,24 @@ function saveEvaluationFile($postData, $name) {
     }
 }
 
+function saveEvalFiles($postData, $conn, $id) {
+    return array_map(function ($fileData) use($conn, $id) {
+        $conn->insert("tbl_fsvp_files", [
+            'record_id' => $id,
+            ...$fileData,
+        ]);
+        $fileData['id'] = $conn->getInsertId();
+        $fileData['filename'] = embedFileUrl($fileData['filename'], $fileData['path']);
+        unset($fileData['path']);
+        return $fileData;
+    }, array_filter([
+        saveEvaluationFile($postData, 'import_alerts'),
+        saveEvaluationFile($postData, 'recalls'),
+        saveEvaluationFile($postData, 'warning_letters'),
+        saveEvaluationFile($postData, 'other_significant_ca'),
+        saveEvaluationFile($postData, 'suppliers_corrective_actions'),
+    ], function($r) { return is_array($r); }));
+}
 
 // schedule
 // function 

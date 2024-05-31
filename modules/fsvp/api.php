@@ -654,28 +654,12 @@ if(isset($_GET['newSupplierEvaluation'])) {
 
         $conn->insert("tbl_fsvp_evaluations", $params);
         $id = $conn->getInsertId();
-
-        $evalFiles = array_map(function ($fileData) use($conn, $id) {
-            $conn->insert("tbl_fsvp_files", [
-                'record_id' => $id,
-                ...$fileData,
-            ]);
-            $fileData['id'] = $conn->getInsertId();
-            $fileData['filename'] = embedFileUrl($fileData['filename'], $fileData['path']);
-            unset($fileData['path']);
-            return $fileData;
-        }, array_filter([
-            saveEvaluationFile($_POST, 'import_alerts'),
-            saveEvaluationFile($_POST, 'recalls'),
-            saveEvaluationFile($_POST, 'warning_letters'),
-            saveEvaluationFile($_POST, 'other_significant_ca'),
-            saveEvaluationFile($_POST, 'suppliers_corrective_actions'),
-        ], function($r) { return is_array($r); }));
-
+        saveEvalFiles($_POST, $conn, $id);
+        
         $conn->commit();
         send_response([
             'data' => getEvaluationStatus($conn, $params['supplier_id']),
-            'message' => 'Save successfully.',
+            'message' => 'Saved successfully.',
         ]);
     } catch(Throwable $e) {
         $conn->rollback();
@@ -699,7 +683,7 @@ if(isset($_GET['supplierReEvaluation']) && !empty($_POST['previous_evaluation_id
         // verify evaluation id
         $evalId = intval($_POST['previous_evaluation_id']) ?? null;
     
-        if(!empty($evalId)) {
+        if(empty($evalId)) {
             throw new Exception("Invalid previous evaluation id.");
         }
 
@@ -711,8 +695,49 @@ if(isset($_GET['supplierReEvaluation']) && !empty($_POST['previous_evaluation_id
             throw new Exception('Previous evaluation data is currently active.');
         }
 
-        
+        $conn->begin_transaction();
+        $dueDate = emptyIsNull($_POST['evaluation_due_date']);
 
+        $params = [
+            'user_id'                       => $user_id,
+            'portal_user'                   => $portal_user,
+            'evaluation_id'                 => $evalId,
+            'evaluation_date'               => emptyIsNull($_POST['evaluation_date']),
+            'evaluation_due_date'           => $dueDate,
+            'sppp'                          => emptyIsNull($_POST['sppp']),
+            'import_alerts'                 => $_POST['import_alerts'] ?? NULL,
+            'recalls'                       => $_POST['recalls'] ?? NULL,
+            'warning_letters'               => $_POST['warning_letters'] ?? NULL,
+            'other_significant_ca'          => $_POST['other_significant_ca'] ?? NULL,
+            'suppliers_corrective_actions'  => $_POST['suppliers_corrective_actions'] ?? NULL,
+        ];
+
+        // evaluate due date if already expired
+        if(isset($dueDate) && strtotime($dueDate) <= strtotime(date('Y-m-d'))) {
+            $params['status'] = 'expired';
+        }
+
+        $conn->insert("tbl_fsvp_reevaluations", $params);
+        $id = $conn->getInsertId();
+        saveEvalFiles($_POST, $conn, $id);
+
+        $conn->commit();
+
+        $data = $params;
+        $data['id'] = $id;
+
+        unset(
+            $data['sppp'],
+            $data['import_alerts'],
+            $data['recalls'],
+            $data['warning_letters'],
+            $data['other_significant_ca'],
+            $data['suppliers_corrective_actions'],
+        );
+        
+        send_response([
+            'data' => $data,
+        ]);
     } catch(Throwable $e) {
         $conn->rollback();
         send_response([

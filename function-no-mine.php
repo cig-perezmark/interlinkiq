@@ -507,70 +507,6 @@
     }
 
 
-    //FILE UPLOAD VALIDATION
-    function fileValidation($type, $file, $path) {
-        // Type
-        // 0 - General / Exclude invalid file type
-        // 1 - Accept Image Only
-
-        $path = 'uploads/'.$path;
-        $files = $_FILES[$file]['name'];
-        $size = $_FILES[$file]['size'];
-        $tmp = $_FILES[$file]['tmp_name'];
-
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        if (!$finfo) {
-            return false; // If finfo_open fails, consider the file invalid
-        }
-        $mime = finfo_file($finfo, $tmp);
-        finfo_close($finfo);
-
-        // $mime = mime_content_type($tmp);
-        $mime_array = array(
-            'text/x-php',
-            'text/plain', 
-            'text/plain', 
-            'text/css', 
-            'text/html', 
-            'text/javascript', 
-            'application/json', 
-            'application/x-httpd-php', 
-            'application/rtf', 
-            'application/x-sh', 
-            'font/ttf', 
-            'font/woff', 
-            'font/woff2', 
-            'application/xhtml+xml', 
-            'application/xml', 
-            'text/xml', 
-            'application/atom+xml', 
-            'application/vnd.mozilla.xul+xml', 
-            'application/x-msdownload'
-        );
-        if ($type == 1) { $mime_array = array('image/png', 'image/jpeg', 'image/jpg'); }
-
-        $ext_array = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-        
-        $files = rand(1000,1000000) . ' - ' . $files;
-        $path = $path.$files;
-
-        $output = array(
-            "valid" => false,
-            "files" => $files,
-            "size" => $size,
-            "mime" => $mime
-        );
-        if ( ($type == 0 AND !in_array($mime, $mime_array)) OR ($type == 1 AND in_array($mime, $mime_array)) ) {
-            if(move_uploaded_file($tmp,$path)) {
-                $output['valid'] = true;
-            }
-        }
-        
-        return $output;
-    }
-
-
 	// LOGIN SECTION
 	if( isset($_GET['logout']) ) {
 		unset($_COOKIE['ID']);
@@ -3540,15 +3476,24 @@
         $arr_item = array();
         $process = true;
 
-        $files = '';
 		$filetype = $_POST['filetype'];
 		if ($filetype == 1) {
-			if (!empty($_FILES['file']['name'])) {
-                $fileValidation = fileValidation(0, 'file', 'hr/');
-                $files = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
-            }
+			$files = $_FILES['file']['name'];
+			if (!empty($files)) {
+				$path = 'uploads/hr/';
+                $filesize = $_FILES['file']['size'];
+				$tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+				$files = rand(1000,1000000) . ' - ' . $files;
+				$path = $path.$files;
+
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($tmp,$path);
+                } else {
+                    $process = false;
+                }
+			}
 		} else {
 			$files = $_POST['fileurl'];
             $filesize = 0;
@@ -3655,16 +3600,24 @@
             $filetype = $_POST['filetype'];
             if ($filetype > 0) {
                 if ($filetype == 1) {
-                    if (!empty($_FILES['file']['name'])) {
-                        $fileValidation = fileValidation(0, 'file', '');
-                        $files = $fileValidation['files'];
-                        $filesize = $fileValidation['size'];
-                        $process = $fileValidation['valid'];
+                    $files = $_FILES['file']['name'];
+                    if (!empty($files)) {
+                        $path = 'uploads/';
+                        $filesize = $_FILES['file']['size'];
+                        $tmp = $_FILES['file']['tmp_name'];
+                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                        $files = rand(1000,1000000) . ' - ' . $files;
+                        $path = $path.$files;
 
-                        if ($process == true) {
+                        if(!in_array($ext, $invalid_extensions)) {
+                            move_uploaded_file($tmp,$path);
+
                             $filesize_tot = $filesize + $rowData["filesize"];
 
                             mysqli_query( $conn,"UPDATE tbl_hr_file SET filesize='". $filesize_tot ."', uploaded_date = '".$last_modified."' WHERE ID='". $ID ."'" );
+                        } else {
+                            $process = false;
                         }
                     }
                 } else {
@@ -4151,12 +4104,22 @@
 
 		$filetype = $_POST['filetype'];
 		if ($filetype == 1) {
-			if (!empty($_FILES['file']['name'])) {
-                $fileValidation = fileValidation(0, 'file', '');
-                $files = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
-            }
+			$files = $_FILES['file']['name'];
+			if (!empty($files)) {
+				$path = 'uploads/';
+                $filesize = $_FILES['file']['size'];
+				$tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+				$files = rand(1000,1000000) . ' - ' . $files;
+				$path = $path.$files;
+
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($tmp,$path);
+                } else {
+                    $process = false;
+                }
+			}
 		} else {
 			$files = $_POST['fileurl'];
             $filesize = 0;
@@ -4268,13 +4231,19 @@
                 $filetype = $_POST['filetype'];
                 if ($filetype > 0) {
                     if ($filetype == 1) {
-                        if (!empty($_FILES['file']['name'])) {
-                            $fileValidation = fileValidation(0, 'file', 'avatar/');
-                            $files = $fileValidation['files'];
-                            $filesize = $fileValidation['size'];
-                            $process = $fileValidation['valid'];
+                        $files = $_FILES['file']['name'];
+                        if (!empty($files)) {
+                            $path = 'uploads/';
+                            $filesize = $_FILES['file']['size'];
+                            $tmp = $_FILES['file']['tmp_name'];
+                            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                            $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                            $files = rand(1000,1000000) . ' - ' . $files;
+                            $path = $path.$files;
 
-                            if ($process == true) {
+                            if(!in_array($ext, $invalid_extensions)) {
+                                move_uploaded_file($tmp,$path);
+
                                 $filesize_tot = $filesize + $rowData["filesize"];
 
                                 mysqli_query( $conn,"UPDATE tbl_hr_job_description SET files='". $files ."', filetype='". $filetype ."', filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
@@ -4289,6 +4258,8 @@
                                 $files = $src.$url.rawurlencode($files).$embed;
 
                                 $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
+                            } else {
+                                $process = false;
                             }
                         }
                     } else {
@@ -6610,12 +6581,22 @@
 
 		$filetype = $_POST['filetype'];
 		if ($filetype == 1) {
-			if (!empty($_FILES['file']['name'])) {
-                $fileValidation = fileValidation(0, 'file', '');
-                $files = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
-            }
+			$files = $_FILES['file']['name'];
+			if (!empty($files)) {
+				$path = 'uploads/';
+                $filesize = $_FILES['file']['size'];
+				$tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+				$files = rand(1000,1000000) . ' - ' . $files;
+				$path = $path.$files;
+
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($tmp,$path);
+                } else {
+                    $process = false;
+                }
+			}
 		} else {
 			$files = $_POST['fileurl'];
             $filesize = 0;
@@ -6706,16 +6687,24 @@
                 $filetype = $_POST['filetype'];
                 if ($filetype > 0) {
                     if ($filetype == 1) {
-                        if (!empty($_FILES['file']['name'])) {
-                            $fileValidation = fileValidation(0, 'file', '');
-                            $files = $fileValidation['files'];
-                            $filesize = $fileValidation['size'];
-                            $process = $fileValidation['valid'];
+                        $files = $_FILES['file']['name'];
+                        if (!empty($files)) {
+                            $path = 'uploads/';
+                            $filesize = $_FILES['file']['size'];
+                            $tmp = $_FILES['file']['tmp_name'];
+                            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                            $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                            $files = rand(1000,1000000) . ' - ' . $files;
+                            $path = $path.$files;
 
-                            if ($process == true) {
+                            if(!in_array($ext, $invalid_extensions)) {
+                                move_uploaded_file($tmp,$path);
+
                                 $filesize_tot = $filesize + $rowData["filesize"];
 
                                 mysqli_query( $conn,"UPDATE tbl_hr_department SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
+                            } else {
+                                $process = false;
                             }
                         }
                     } else {
@@ -7411,8 +7400,8 @@
 							            	</select>
 							            </div>
 							        </div>
-					                <input type="hidden" name="prepared_signature_default_temp" value="'.$empty_signature.'" />
-					                <img class="img img-fluid sign signature_default" src="'.$empty_signature.'" />
+					                <input type="hidden" name="prepared_signature_default_temp" value="'.$arnel_signature.'" />
+					                <img class="img img-fluid sign signature_default" src="'.$arnel_signature.'" />
 					                <input type="file" class="form-control hide sign signature_upload" name="prepared_file" />
 					                <div class="hide sign signature_sign">
 					                	<input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
@@ -8469,8 +8458,8 @@
 									            	</select>
 									            </div>
 									        </div>
-							                <input type="hidden" name="prepared_signature_default_temp" value="'.$empty_signature.'" />
-							                <img class="img img-fluid sign signature_default" src="'.$empty_signature.'" />
+							                <input type="hidden" name="prepared_signature_default_temp" value="'.$arnel_signature.'" />
+							                <img class="img img-fluid sign signature_default" src="'.$arnel_signature.'" />
 							                <input type="file" class="form-control hide sign signature_upload" name="prepared_file" />
 							                <div class="hide sign signature_sign">
 							                	<input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
@@ -11777,12 +11766,20 @@
         $process = true;
 
 		$files = $_FILES['file']['name'];
-		if (!empty($_FILES['file']['name'])) {
-            $fileValidation = fileValidation(0, 'file', 'ffva/');
-            $files = $fileValidation['files'];
-            $filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
-        }
+		if (!empty($files)) {
+			$path = 'uploads/ffva/';
+			$tmp = $_FILES['file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+			$files = rand(1000,1000000) . ' - ' . $files;
+			$path = $path.$files;
+
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($tmp,$path);
+            } else {
+                $process = false;
+            }
+		}
 
         if ($process == true) {
     		if ($area == 1) {
@@ -15983,20 +15980,26 @@
         $audit_report_validity_end = !empty($audit_report_validity[1]) ? $audit_report_validity[1] : '';
         $audit_report_file = $_FILES['audit_report_file']['name'];
         if (!empty($audit_report_file)) {
-            $fileValidation = fileValidation(0, 'audit_report_file', 'supplier/');
-            $audit_report_file = $fileValidation['files'];
-            $audit_filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $audit_filesize = $_FILES['audit_report_file']['size'];
+            $audit_report_file_tmp = $_FILES['audit_report_file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($audit_report_file, PATHINFO_EXTENSION));
+            $audit_report_file = $random.' - '.$audit_report_file;
+            $audit_report_file_path = $path.$audit_report_file;
 
-            if ($process == true) {
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($audit_report_file_tmp, $audit_report_file_path);
                 array_push($audit_report, $audit_report_file);
+
                 $output = array (
                     'type'  =>  1,
                     'name' =>  $audit_report_file,
                     'size' =>  $audit_filesize,
                     'date' =>  $local_date
                 );
-                array_push($arr_item, $output);
+                array_push($audit_arr_item, $output);
+            } else {
+                $process = false;
             }
         } else {
             array_push($audit_report, '');
@@ -16013,13 +16016,17 @@
         $audit_certificate_validity_end = !empty($audit_certificate_validity[1]) ? $audit_certificate_validity[1] : '';
         $audit_certificate_file = $_FILES['audit_certificate_file']['name'];
         if (!empty($audit_certificate_file)) {
-            $fileValidation = fileValidation(0, 'audit_certificate_file', 'supplier/');
-            $audit_certificate_file = $fileValidation['files'];
-            $audit_filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $audit_filesize = $_FILES['audit_certificate_file']['size'];
+            $audit_certificate_file_tmp = $_FILES['audit_certificate_file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($audit_certificate_file, PATHINFO_EXTENSION));
+            $audit_certificate_file = $random.' - '.$audit_certificate_file;
+            $audit_certificate_file_path = $path.$audit_certificate_file;
 
-            if ($process == true) {
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($audit_certificate_file_tmp, $audit_certificate_file_path);
                 array_push($audit_certificate, $audit_certificate_file);
+
                 $output = array (
                     'type'  =>  2,
                     'name' =>  $audit_certificate_file,
@@ -16027,6 +16034,8 @@
                     'date' =>  $local_date
                 );
                 array_push($audit_arr_item, $output);
+            } else {
+                $process = false;
             }
         } else {
             array_push($audit_certificate, '');
@@ -16043,13 +16052,17 @@
         $audit_action_validity_end = !empty($audit_action_validity[1]) ? $audit_action_validity[1] : '';
         $audit_action_file = $_FILES['audit_action_file']['name'];
         if (!empty($audit_action_file)) {
-            $fileValidation = fileValidation(0, 'audit_action_file', 'supplier/');
-            $audit_action_file = $fileValidation['files'];
-            $audit_filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $audit_filesize = $_FILES['audit_action_file']['size'];
+            $audit_action_file_tmp = $_FILES['audit_action_file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($audit_action_file, PATHINFO_EXTENSION));
+            $audit_action_file = $random.' - '.$audit_action_file;
+            $audit_action_file_path = $path.$audit_action_file;
 
-            if ($process == true) {
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($audit_action_file_tmp, $audit_action_file_path);
                 array_push($audit_action, $audit_action_file);
+
                 $output = array (
                     'type'  =>  3,
                     'name' =>  $audit_action_file,
@@ -16057,6 +16070,8 @@
                     'date' =>  $local_date
                 );
                 array_push($audit_arr_item, $output);
+            } else {
+                $process = false;
             }
         } else {
             array_push($audit_action, '');
@@ -16162,14 +16177,10 @@
     								$tmp_docs = $_FILES['document_file']['tmp_name'][$i];
                                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                     $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-
-                                    $mime = mime_content_type($tmp_docs);
-                                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                                    
     								$file_docs = $random.' - '.$files;
     								$path_docs = $path.$file_docs;
 
-                                    if(!in_array($mime, $mime_array)) {
+                                    if(!in_array($ext, $invalid_extensions)) {
                                         move_uploaded_file($tmp_docs,$path_docs);
                                     } else {
                                         $process = false;
@@ -16194,14 +16205,10 @@
     							$tmp_docs = $_FILES['document_template']['tmp_name'][$i];
                                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                 $ext = strtolower(pathinfo($files_template, PATHINFO_EXTENSION));
-
-                                $mime = mime_content_type($tmp_docs);
-                                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                                
     							$file_docs_template = $random.' - '.$files_template;
     							$path_docs = $path.$file_docs;
 
-                                if(!in_array($mime, $mime_array)) {
+                                if(!in_array($ext, $invalid_extensions)) {
                                     move_uploaded_file($tmp_docs,$path_docs);
 
                                     $output = array (
@@ -16260,14 +16267,10 @@
                                     $tmp_docs = $_FILES['document_other_file']['tmp_name'][$i];
                                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                     $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-
-                                    $mime = mime_content_type($tmp_docs);
-                                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                                    
                                     $file_docs = $random.' - '.$files;
                                     $path_docs = $path.$file_docs;
 
-                                    if(!in_array($mime, $mime_array)) {
+                                    if(!in_array($ext, $invalid_extensions)) {
                                         move_uploaded_file($tmp_docs,$path_docs);
                                     } else {
                                         $process = false;
@@ -16292,14 +16295,10 @@
                                 $tmp_docs = $_FILES['document_other_template']['tmp_name'][$i];
                                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                 $ext = strtolower(pathinfo($files_template, PATHINFO_EXTENSION));
-
-                                $mime = mime_content_type($tmp_docs);
-                                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                                
                                 $file_docs_template = $random.' - '.$files_template;
                                 $path_docs = $path.$file_docs_template;
 
-                                if(!in_array($mime, $mime_array)) {
+                                if(!in_array($ext, $invalid_extensions)) {
                                     move_uploaded_file($tmp_docs,$path_docs);
 
                                     $output = array (
@@ -16929,20 +16928,26 @@
         $audit_report_validity_end = !empty($audit_report_validity[1]) ? $audit_report_validity[1] : '';
         $audit_report_file = $_FILES['audit_report_file']['name'];
         if (!empty($audit_report_file)) {
-            $fileValidation = fileValidation(0, 'audit_report_file', 'supplier/');
-            $audit_report_file = $fileValidation['files'];
-            $audit_filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $audit_filesize = $_FILES['audit_report_file']['size'];
+            $audit_report_file_tmp = $_FILES['audit_report_file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($audit_report_file, PATHINFO_EXTENSION));
+            $audit_report_file = $random.' - '.$audit_report_file;
+            $audit_report_file_path = $path.$audit_report_file;
 
-            if ($process == true) {
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($audit_report_file_tmp, $audit_report_file_path);
                 array_push($audit_report, $audit_report_file);
+
                 $output = array (
                     'type'  =>  1,
                     'name' =>  $audit_report_file,
                     'size' =>  $audit_filesize,
                     'date' =>  $local_date
                 );
-                array_push($arr_item, $output);
+                array_push($audit_arr_item, $output);
+            } else {
+                $process = false;
             }
         } else {
             array_push($audit_report, $_POST['audit_report_file_tmp']);
@@ -16959,13 +16964,17 @@
         $audit_certificate_validity_end = !empty($audit_certificate_validity[1]) ? $audit_certificate_validity[1] : '';
         $audit_certificate_file = $_FILES['audit_certificate_file']['name'];
         if (!empty($audit_certificate_file)) {
-            $fileValidation = fileValidation(0, 'audit_certificate_file', 'supplier/');
-            $audit_certificate_file = $fileValidation['files'];
-            $audit_filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $audit_filesize = $_FILES['audit_certificate_file']['size'];
+            $audit_certificate_file_tmp = $_FILES['audit_certificate_file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($audit_certificate_file, PATHINFO_EXTENSION));
+            $audit_certificate_file = $random.' - '.$audit_certificate_file;
+            $audit_certificate_file_path = $path.$audit_certificate_file;
 
-            if ($process == true) {
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($audit_certificate_file_tmp, $audit_certificate_file_path);
                 array_push($audit_certificate, $audit_certificate_file);
+
                 $output = array (
                     'type'  =>  2,
                     'name' =>  $audit_certificate_file,
@@ -16973,6 +16982,8 @@
                     'date' =>  $local_date
                 );
                 array_push($audit_arr_item, $output);
+            } else {
+                $process = false;
             }
         } else {
             array_push($audit_certificate, $_POST['audit_certificate_file_tmp']);
@@ -16989,13 +17000,17 @@
         $audit_action_validity_end = !empty($audit_action_validity[1]) ? $audit_action_validity[1] : '';
         $audit_action_file = $_FILES['audit_action_file']['name'];
         if (!empty($audit_action_file)) {
-            $fileValidation = fileValidation(0, 'audit_action_file', 'supplier/');
-            $audit_action_file = $fileValidation['files'];
-            $audit_filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $audit_filesize = $_FILES['audit_action_file']['size'];
+            $audit_action_file_tmp = $_FILES['audit_action_file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($audit_action_file, PATHINFO_EXTENSION));
+            $audit_action_file = $random.' - '.$audit_action_file;
+            $audit_action_file_path = $path.$audit_action_file;
 
-            if ($process == true) {
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($audit_action_file_tmp, $audit_action_file_path);
                 array_push($audit_action, $audit_action_file);
+
                 $output = array (
                     'type'  =>  3,
                     'name' =>  $audit_action_file,
@@ -17003,6 +17018,8 @@
                     'date' =>  $local_date
                 );
                 array_push($audit_arr_item, $output);
+            } else {
+                $process = false;
             }
         } else {
             array_push($audit_action, $_POST['audit_action_file_tmp']);
@@ -17133,14 +17150,10 @@
                                     $tmp_docs = $_FILES['document_file']['tmp_name'][$i];
                                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                     $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-
-                                    $mime = mime_content_type($tmp_docs);
-                                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                                    
                                     $file_docs = $random.' - '.$files;
                                     $path_docs = $path.$file_docs;
 
-                                    if(!in_array($mime, $mime_array)) {
+                                    if(!in_array($ext, $invalid_extensions)) {
                                         move_uploaded_file($tmp_docs,$path_docs);
                                     } else {
                                         $process = false;
@@ -17165,14 +17178,10 @@
     							$tmp_docs = $_FILES['document_template']['tmp_name'][$i];
                                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                 $ext = strtolower(pathinfo($files_template, PATHINFO_EXTENSION));
-
-                                $mime = mime_content_type($tmp_docs);
-                                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                                
     							$file_docs_template = $random.' - '.$files_template;
     							$path_docs = $path.$file_docs_template;
 
-                                if(!in_array($mime, $mime_array)) {
+                                if(!in_array($ext, $invalid_extensions)) {
                                     move_uploaded_file($tmp_docs,$path_docs);
 
                                     $output = array (
@@ -17261,14 +17270,10 @@
                                     $tmp_docs = $_FILES['document_other_file']['tmp_name'][$i];
                                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                     $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-
-                                    $mime = mime_content_type($tmp_docs);
-                                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                                    
                                     $file_docs = $random.' - '.$files;
                                     $path_docs = $path.$file_docs;
 
-                                    if(!in_array($mime, $mime_array)) {
+                                    if(!in_array($ext, $invalid_extensions)) {
                                         move_uploaded_file($tmp_docs,$path_docs);
                                     } else {
                                         $process = false;
@@ -17293,14 +17298,10 @@
                                 $tmp_docs = $_FILES['document_other_template']['tmp_name'][$i];
                                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                 $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-
-                                $mime = mime_content_type($tmp_docs);
-                                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                                
                                 $file_docs_template = $random.' - '.$files_template;
                                 $path_docs = $path.$file_docs_template;
 
-                                if(!in_array($mime, $mime_array)) {
+                                if(!in_array($ext, $invalid_extensions)) {
                                     move_uploaded_file($tmp_docs,$path_docs);
 
                                     $output = array (
@@ -18231,12 +18232,16 @@
 		$material_spec_file = $_FILES['material_spec_file']['name'];
 		$material_spec_file_final = "";
 		if (!empty($material_spec_file)) {
-            $fileValidation = fileValidation(0, 'material_spec_file', 'supplier/');
-            $material_spec_file_final = $fileValidation['files'];
-            $spec_filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $spec_filesize = $_FILES['material_spec_file']['size'];
+			$material_spec_file_tmp = $_FILES['material_spec_file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($material_spec_file, PATHINFO_EXTENSION));
+			$material_spec_file_final = $random.' - '.$material_spec_file;
+			$material_spec_file_path = $path.$material_spec_file_final;
 
-            if ($process == true) {
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($material_spec_file_tmp, $material_spec_file_path);
+
                 $output = array (
                     'type' =>  0,
                     'name' =>  $material_spec_file_final,
@@ -18244,6 +18249,8 @@
                     'date' =>  $local_date
                 );
                 array_push($arr_item, $output);
+            } else {
+                $process = false;
             }
 		}
 		// $material_spec_date_from = $_POST['material_spec_date_from'];
@@ -18282,14 +18289,10 @@
                 $material_file_doc_tmp = implode('*', $_FILES['material_other']['tmp_name'][$i]);
                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                 $ext = strtolower(pathinfo($material_file_doc, PATHINFO_EXTENSION));
-
-                $mime = mime_content_type($material_file_doc_tmp);
-                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                
 				$material_file_doc_final = $random.' - '.$material_file_doc_final;
 				$material_file_doc_path = $path.$material_file_doc_final;
 
-                if(!in_array($mime, $mime_array)) {
+                if(!in_array($ext, $invalid_extensions)) {
                     move_uploaded_file($material_file_doc_tmp, $material_file_doc_path);
 
                     $filesize += $spec_filesize_other;
@@ -18365,19 +18368,25 @@
 		$material_spec_file_final = $_POST['material_spec_file_temp'];
 		$material_spec_file = $_FILES['material_spec_file']['name'];
 		if (!empty($material_spec_file)) {
-            $fileValidation = fileValidation(0, 'material_spec_file', 'supplier/');
-            $material_spec_file_final = $fileValidation['files'];
-            $spec_filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $spec_filesize = $_FILES['material_spec_file']['size'];
+			$material_spec_file_tmp = $_FILES['material_spec_file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($material_spec_file, PATHINFO_EXTENSION));
+			$material_spec_file_final = $random.' - '.$material_spec_file;
+			$material_spec_file_path = $path.$material_spec_file_final;
 
-            if ($process == true) {
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($material_spec_file_tmp, $material_spec_file_path);
+
                 $output = array (
-                    'type' =>  0,
+                    'type'  =>  0,
                     'name' =>  $material_spec_file_final,
                     'size' =>  $spec_filesize,
                     'date' =>  $local_date
                 );
                 array_push($arr_item, $output);
+            } else {
+                $process = false;
             }
 		}
 		// $material_spec_date_from = $_POST['material_spec_date_from'];
@@ -18416,14 +18425,10 @@
                 $material_file_doc_tmp = implode('*', $_FILES['material_other']['tmp_name'][$i]);
                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                 $ext = strtolower(pathinfo($material_file_doc, PATHINFO_EXTENSION));
-
-                $mime = mime_content_type($material_spec_file_tmp);
-                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                
 				$material_file_doc_final = $random.' - '.$material_file_doc;
 				$material_file_doc_path = $path.$material_file_doc_final;
 
-                if(!in_array($mime, $mime_array)) {
+                if(!in_array($ext, $invalid_extensions)) {
                     move_uploaded_file($material_file_doc_tmp, $material_file_doc_path);
 
                     $filesize += $spec_filesize_other;
@@ -18729,20 +18734,19 @@
 		$service_spec_file = $_FILES['service_spec_file']['name'];
 		$service_spec_file_final = "";
 		if (!empty($service_spec_file)) {
-            $fileValidation = fileValidation(0, 'service_spec_file', 'supplier/');
-            $service_spec_file_final = $fileValidation['files'];
-            $spec_filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $spec_filesize = $_FILES['service_spec_file']['size'];
+			$service_spec_file_tmp = $_FILES['service_spec_file']['tmp_name'];
+			$service_spec_file_final = $random.' - '.$service_spec_file;
+			$service_spec_file_path = $path.$service_spec_file_final;
+			move_uploaded_file($service_spec_file_tmp, $service_spec_file_path);
 
-            if ($process == true) {
-                $output = array (
-                    'type'  =>  0,
-                    'name' =>  $service_spec_file_final,
-                    'size' =>  $spec_filesize,
-                    'date' =>  $local_date
-                );
-                array_push($arr_item, $output);
-            }
+            $output = array (
+                'type'  =>  0,
+                'name' =>  $service_spec_file_final,
+                'size' =>  $spec_filesize,
+                'date' =>  $local_date
+            );
+            array_push($arr_item, $output);
 		}
 		$service_spec_date_from = $_POST['service_spec_date_from'];
 		$service_spec_date_to = $_POST['service_spec_date_to'];
@@ -18761,10 +18765,6 @@
                 $service_file_doc_tmp = implode('*', $_FILES['service_other']['tmp_name'][$i]);
                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                 $ext = strtolower(pathinfo($service_file_doc_final, PATHINFO_EXTENSION));
-
-                $mime = mime_content_type($service_file_doc_tmp);
-                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                
 				$service_file_doc_final = $random.' - '.$service_file_doc_final;
 				$service_file_doc_path = $path.$service_file_doc_final;
 
@@ -18858,12 +18858,16 @@
         $service_spec_file_final = $_POST['service_spec_file_tmp'];
 		$service_spec_file = $_FILES['service_spec_file']['name'];
 		if (!empty($service_spec_file)) {
-            $fileValidation = fileValidation(0, 'service_spec_file', 'supplier/');
-            $service_spec_file_final = $fileValidation['files'];
-            $spec_filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $spec_filesize = $_FILES['service_spec_file']['size'];
+			$service_spec_file_tmp = $_FILES['service_spec_file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($service_spec_file, PATHINFO_EXTENSION));
+			$service_spec_file_final = $random.' - '.$service_spec_file;
+			$service_spec_file_path = $path.$service_spec_file_final;
 
-            if ($process == true) {
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($service_spec_file_tmp, $service_spec_file_path);
+
                 $output = array (
                     'type'  =>  0,
                     'name' =>  $service_spec_file_final,
@@ -18871,6 +18875,8 @@
                     'date' =>  $local_date
                 );
                 array_push($arr_item, $output);
+            } else {
+                $process = false;
             }
 		}
 		$service_spec_date_from = $_POST['service_spec_date_from'];
@@ -18890,14 +18896,10 @@
                 $service_file_doc_tmp = implode('*', $_FILES['service_other']['tmp_name'][$i]);
                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                 $ext = strtolower(pathinfo($service_file_doc, PATHINFO_EXTENSION));
-
-                $mime = mime_content_type($service_file_doc_tmp);
-                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                
 				$service_file_doc_final = $random.' - '.$service_file_doc_final;
 				$service_file_doc_path = $path.$service_file_doc_final;
 
-                if(!in_array($mime, $mime_array)) {
+                if(!in_array($ext, $invalid_extensions)) {
                     move_uploaded_file($service_file_doc_tmp, $service_file_doc_path);
 
                     $filesize += $spec_filesize_other;
@@ -21900,13 +21902,17 @@
         $audit_report_validity_end = !empty($audit_report_validity[1]) ? $audit_report_validity[1] : '';
         $audit_report_file = $_FILES['audit_report_file']['name'];
         if (!empty($audit_report_file)) {
-            $fileValidation = fileValidation(0, 'audit_report_file', 'supplier/');
-            $audit_report_file = $fileValidation['files'];
-            $audit_filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $audit_filesize = $_FILES['audit_report_file']['size'];
+            $audit_report_file_tmp = $_FILES['audit_report_file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($audit_report_file, PATHINFO_EXTENSION));
+            $audit_report_file = $random.' - '.$audit_report_file;
+            $audit_report_file_path = $path.$audit_report_file;
 
-            if ($process == true) {
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($audit_report_file_tmp, $audit_report_file_path);
                 array_push($audit_report, $audit_report_file);
+
                 $output = array (
                     'type'  =>  1,
                     'name' =>  $audit_report_file,
@@ -21914,7 +21920,9 @@
                     'date' =>  $local_date
                 );
                 array_push($audit_arr_item, $output);
-            } 
+            } else {
+                $process = false;
+            }   
         } else {
             array_push($audit_report, '');
         }
@@ -21930,13 +21938,17 @@
         $audit_certificate_validity_end = !empty($audit_certificate_validity[1]) ? $audit_certificate_validity[1] : '';
         $audit_certificate_file = $_FILES['audit_certificate_file']['name'];
         if (!empty($audit_certificate_file)) {
-            $fileValidation = fileValidation(0, 'audit_certificate_file', 'supplier/');
-            $audit_certificate_file = $fileValidation['files'];
-            $audit_filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $audit_filesize = $_FILES['audit_certificate_file']['size'];
+            $audit_certificate_file_tmp = $_FILES['audit_certificate_file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($audit_certificate_file, PATHINFO_EXTENSION));
+            $audit_certificate_file = $random.' - '.$audit_certificate_file;
+            $audit_certificate_file_path = $path.$audit_certificate_file;
 
-            if ($process == true) {
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($audit_certificate_file_tmp, $audit_certificate_file_path);
                 array_push($audit_certificate, $audit_certificate_file);
+
                 $output = array (
                     'type'  =>  2,
                     'name' =>  $audit_certificate_file,
@@ -21944,6 +21956,8 @@
                     'date' =>  $local_date
                 );
                 array_push($audit_arr_item, $output);
+            } else {
+                $process = false;
             }
         } else {
             array_push($audit_certificate, '');
@@ -21960,13 +21974,17 @@
         $audit_action_validity_end = !empty($audit_action_validity[1]) ? $audit_action_validity[1] : '';
         $audit_action_file = $_FILES['audit_action_file']['name'];
         if (!empty($audit_action_file)) {
-            $fileValidation = fileValidation(0, 'audit_action_file', 'supplier/');
-            $audit_action_file = $fileValidation['files'];
-            $audit_filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $audit_filesize = $_FILES['audit_action_file']['size'];
+            $audit_action_file_tmp = $_FILES['audit_action_file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($audit_action_file, PATHINFO_EXTENSION));
+            $audit_action_file = $random.' - '.$audit_action_file;
+            $audit_action_file_path = $path.$audit_action_file;
 
-            if ($process == true) {
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($audit_action_file_tmp, $audit_action_file_path);
                 array_push($audit_action, $audit_action_file);
+
                 $output = array (
                     'type'  =>  3,
                     'name' =>  $audit_action_file,
@@ -21974,6 +21992,8 @@
                     'date' =>  $local_date
                 );
                 array_push($audit_arr_item, $output);
+            } else {
+                $process = false;
             }
         } else {
             array_push($audit_action, '');
@@ -22079,14 +22099,10 @@
                                         $tmp_docs = $_FILES['document_file']['tmp_name'][$i];
                                         $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                         $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-
-                                        $mime = mime_content_type($tmp_docs);
-                                        $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                                        
                                         $file_docs = $random.' - '.$files;
                                         $path_docs = $path.$file_docs;
 
-                                        if(!in_array($mime, $mime_array)) {
+                                        if(!in_array($ext, $invalid_extensions)) {
                                             move_uploaded_file($tmp_docs,$path_docs);
                                         } else {
                                             $process = false;
@@ -22176,14 +22192,10 @@
                                         $tmp_docs = $_FILES['document_other_file']['tmp_name'][$i];
                                         $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                         $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-
-                                        $mime = mime_content_type($tmp_docs);
-                                        $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                                        
                                         $file_docs = $random.' - '.$files;
                                         $path_docs = $path.$file_docs;
 
-                                        if(!in_array($mime, $mime_array)) {
+                                        if(!in_array($ext, $invalid_extensions)) {
                                             move_uploaded_file($tmp_docs,$path_docs);
                                         } else {
                                             $process = false;
@@ -22843,13 +22855,17 @@
         $audit_report_validity_end = !empty($audit_report_validity[1]) ? $audit_report_validity[1] : '';
         $audit_report_file = $_FILES['audit_report_file']['name'];
         if (!empty($audit_report_file)) {
-            $fileValidation = fileValidation(0, 'audit_report_file', 'supplier/');
-            $audit_report_file = $fileValidation['files'];
-            $audit_filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $audit_filesize = $_FILES['audit_report_file']['size'];
+            $audit_report_file_tmp = $_FILES['audit_report_file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($audit_report_file, PATHINFO_EXTENSION));
+            $audit_report_file = $random.' - '.$audit_report_file;
+            $audit_report_file_path = $path.$audit_report_file;
 
-            if ($process == true) {
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($audit_report_file_tmp, $audit_report_file_path);
                 array_push($audit_report, $audit_report_file);
+
                 $output = array (
                     'type'  =>  1,
                     'name' =>  $audit_report_file,
@@ -22857,6 +22873,8 @@
                     'date' =>  $local_date
                 );
                 array_push($audit_arr_item, $output);
+            } else {
+                $process = false;
             }
         } else {
             array_push($audit_report, $_POST['audit_report_file_tmp']);
@@ -22873,13 +22891,17 @@
         $audit_certificate_validity_end = !empty($audit_certificate_validity[1]) ? $audit_certificate_validity[1] : '';
         $audit_certificate_file = $_FILES['audit_certificate_file']['name'];
         if (!empty($audit_certificate_file)) {
-            $fileValidation = fileValidation(0, 'audit_certificate_file', 'supplier/');
-            $audit_certificate_file = $fileValidation['files'];
-            $audit_filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $audit_filesize = $_FILES['audit_certificate_file']['size'];
+            $audit_certificate_file_tmp = $_FILES['audit_certificate_file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($audit_certificate_file, PATHINFO_EXTENSION));
+            $audit_certificate_file = $random.' - '.$audit_certificate_file;
+            $audit_certificate_file_path = $path.$audit_certificate_file;
 
-            if ($process == true) {
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($audit_certificate_file_tmp, $audit_certificate_file_path);
                 array_push($audit_certificate, $audit_certificate_file);
+
                 $output = array (
                     'type'  =>  2,
                     'name' =>  $audit_certificate_file,
@@ -22887,6 +22909,8 @@
                     'date' =>  $local_date
                 );
                 array_push($audit_arr_item, $output);
+            } else {
+                $process = false;
             }
         } else {
             array_push($audit_certificate, $_POST['audit_certificate_file_tmp']);
@@ -22903,13 +22927,17 @@
         $audit_action_validity_end = !empty($audit_action_validity[1]) ? $audit_action_validity[1] : '';
         $audit_action_file = $_FILES['audit_action_file']['name'];
         if (!empty($audit_action_file)) {
-            $fileValidation = fileValidation(0, 'audit_action_file', 'supplier/');
-            $audit_action_file = $fileValidation['files'];
-            $audit_filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $audit_filesize = $_FILES['audit_action_file']['size'];
+            $audit_action_file_tmp = $_FILES['audit_action_file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($audit_action_file, PATHINFO_EXTENSION));
+            $audit_action_file = $random.' - '.$audit_action_file;
+            $audit_action_file_path = $path.$audit_action_file;
 
-            if ($process == true) {
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($audit_action_file_tmp, $audit_action_file_path);
                 array_push($audit_action, $audit_action_file);
+
                 $output = array (
                     'type'  =>  3,
                     'name' =>  $audit_action_file,
@@ -22917,6 +22945,8 @@
                     'date' =>  $local_date
                 );
                 array_push($audit_arr_item, $output);
+            } else {
+                $process = false;
             }
         } else {
             array_push($audit_action, $_POST['audit_action_file_tmp']);
@@ -23051,14 +23081,10 @@
                                     $tmp_docs = $_FILES['document_file']['tmp_name'][$i];
                                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                     $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-
-                                    $mime = mime_content_type($tmp_docs);
-                                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                                    
                                     $file_docs = $random.' - '.$files;
                                     $path_docs = $path.$file_docs;
 
-                                    if(!in_array($mime, $mime_array)) {
+                                    if(!in_array($ext, $invalid_extensions)) {
                                         move_uploaded_file($tmp_docs,$path_docs);
                                     } else {
                                         $process = false;
@@ -23175,14 +23201,10 @@
                                     $tmp_docs = $_FILES['document_other_file']['tmp_name'][$i];
                                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                     $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-
-                                    $mime = mime_content_type($tmp_docs);
-                                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                                    
                                     $file_docs = $random.' - '.$files;
                                     $path_docs = $path.$file_docs;
 
-                                    if(!in_array($mime, $mime_array)) {
+                                    if(!in_array($ext, $invalid_extensions)) {
                                         move_uploaded_file($tmp_docs,$path_docs);
                                     } else {
                                         $process = false;
@@ -23950,14 +23972,10 @@
                                     $tmp_docs = $_FILES['document_file']['tmp_name'][$i];
                                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                     $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-
-                                    $mime = mime_content_type($tmp_docs);
-                                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                                    
                                     $file_docs = $random.' - '.$files;
                                     $path_docs = $path.$file_docs;
 
-                                    if(!in_array($mime, $mime_array)) {
+                                    if(!in_array($ext, $invalid_extensions)) {
                                         move_uploaded_file($tmp_docs,$path_docs);
                                     } else {
                                         $process = false;
@@ -23973,14 +23991,10 @@
                                 $tmp_docs = $_FILES['document_template']['tmp_name'][$i];
                                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                 $ext = strtolower(pathinfo($files_template, PATHINFO_EXTENSION));
-
-                                $mime = mime_content_type($tmp_docs);
-                                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                                
                                 $file_docs_template = $random.' - '.$files_template;
                                 $path_docs = $path.$file_docs_template;
 
-                                if(!in_array($mime, $mime_array)) {
+                                if(!in_array($ext, $invalid_extensions)) {
                                     move_uploaded_file($tmp_docs,$path_docs);
                                 } else {
                                     $process = false;
@@ -24051,14 +24065,10 @@
                                     $tmp_docs = $_FILES['document_other_file']['tmp_name'][$i];
                                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                     $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-
-                                    $mime = mime_content_type($tmp_docs);
-                                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                                    
                                     $file_docs = $random.' - '.$files;
                                     $path_docs = $path.$file_docs;
 
-                                    if(!in_array($mime, $mime_array)) {
+                                    if(!in_array($ext, $invalid_extensions)) {
                                         move_uploaded_file($tmp_docs,$path_docs);
                                     } else {
                                         $process = false;
@@ -24075,14 +24085,10 @@
                                 $tmp_docs = $_FILES['document_other_template']['tmp_name'][$i];
                                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                 $ext = strtolower(pathinfo($files_template, PATHINFO_EXTENSION));
-
-                                $mime = mime_content_type($tmp_docs);
-                                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                                
                                 $file_docs_template = $random.' - '.$files_template;
                                 $path_docs = $path.$file_docs_template;
 
-                                if(!in_array($mime, $mime_array)) {
+                                if(!in_array($ext, $invalid_extensions)) {
                                     move_uploaded_file($tmp_docs,$path_docs);
                                 } else {
                                     $process = false;
@@ -24881,10 +24887,19 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $fileValidation = fileValidation(0, 'file', 'supplier/');
-                $files = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
+                $filesize = $_FILES['file']['size'];
+                $path = 'uploads/supplier/';
+                $tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                $files = rand(1000,1000000) . ' - ' . $files;
+                $path = $path.$files;
+
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($tmp,$path);
+                } else {
+                    $process = false;
+                }
             }
         } else {
             $files = $_POST['fileurl'];
@@ -24987,13 +25002,20 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $fileValidation = fileValidation(0, 'file', 'supplier/');
-                $files = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
+                $filesize = $_FILES['file']['size'];
+                $path = 'uploads/supplier/';
+                $tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                $files = rand(1000,1000000) . ' - ' . $files;
+                $path = $path.$files;
 
-                if ($process == true) {
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($tmp,$path);
+
                     mysqli_query( $conn,"UPDATE tbl_supplier_regulatory set files='". $files ."', filetype='". $filetype ."' WHERE ID='". $ID ."'" );
+                } else {
+                    $process = false;
                 }
             }
         } else {
@@ -25691,12 +25713,16 @@
 		$material_spec_file = $_FILES['material_spec_file']['name'];
 		$material_spec_file_final = "";
 		if (!empty($material_spec_file)) {
-            $fileValidation = fileValidation(0, 'material_spec_file', 'supplier/');
-            $material_spec_file_final = $fileValidation['files'];
-            $spec_filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $spec_filesize = $_FILES['material_spec_file']['size'];
+            $material_spec_file_tmp = $_FILES['material_spec_file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($material_spec_file, PATHINFO_EXTENSION));
+            $material_spec_file_final = $random.' - '.$material_spec_file;
+            $material_spec_file_path = $path.$material_spec_file_final;
 
-            if ($process == true) {
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($material_spec_file_tmp, $material_spec_file_path);
+
                 $output = array (
                     'type' =>  0,
                     'name' =>  $material_spec_file_final,
@@ -25704,6 +25730,8 @@
                     'date' =>  $local_date
                 );
                 array_push($arr_item, $output);
+            } else {
+                $process = false;
             }
         }
 		// $material_spec_date_from = $_POST['material_spec_date_from'];
@@ -25742,14 +25770,10 @@
                 $material_file_doc_tmp = implode('*', $_FILES['material_other']['tmp_name'][$i]);
                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                 $ext = strtolower(pathinfo($material_file_doc, PATHINFO_EXTENSION));
-
-                $mime = mime_content_type($material_file_doc_tmp);
-                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                
                 $material_file_doc_final = $random.' - '.$material_file_doc_final;
                 $material_file_doc_path = $path.$material_file_doc_final;
 
-                if(!in_array($mime, $mime_array)) {
+                if(!in_array($ext, $invalid_extensions)) {
                     move_uploaded_file($material_file_doc_tmp, $material_file_doc_path);
 
                     $filesize += $spec_filesize_other;
@@ -25833,19 +25857,25 @@
 		$material_spec_file_final = $_POST['material_spec_file_temp'];
 		$material_spec_file = $_FILES['material_spec_file']['name'];
 		if (!empty($material_spec_file)) {
-            $fileValidation = fileValidation(0, 'material_spec_file', 'supplier/');
-            $material_spec_file_final = $fileValidation['files'];
-            $spec_filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $spec_filesize = $_FILES['material_spec_file']['size'];
+			$material_spec_file_tmp = $_FILES['material_spec_file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($material_spec_file, PATHINFO_EXTENSION));
+			$material_spec_file_final = $random.' - '.$material_spec_file;
+			$material_spec_file_path = $path.$material_spec_file_final;
 
-            if ($process == true) {
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($material_spec_file_tmp, $material_spec_file_path);
+
                 $output = array (
-                    'type' =>  0,
+                    'type'  =>  0,
                     'name' =>  $material_spec_file_final,
                     'size' =>  $spec_filesize,
                     'date' =>  $local_date
                 );
                 array_push($arr_item, $output);
+            } else {
+                $process = false;
             }
 		}
 		// $material_spec_date_from = $_POST['material_spec_date_from'];
@@ -25883,14 +25913,10 @@
                 $material_file_doc_tmp = implode('*', $_FILES['material_other']['tmp_name'][$i]);
                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                 $ext = strtolower(pathinfo($material_file_doc, PATHINFO_EXTENSION));
-
-                $mime = mime_content_type($material_file_doc_tmp);
-                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                
 				$material_file_doc_final = $random.' - '.$material_file_doc;
 				$material_file_doc_path = $path.$material_file_doc_final;
 
-                if(!in_array($mime, $mime_array)) {
+                if(!in_array($ext, $invalid_extensions)) {
                     move_uploaded_file($material_file_doc_tmp, $material_file_doc_path);
 
                     $filesize += $spec_filesize_other;
@@ -26157,19 +26183,25 @@
 		$service_spec_file = $_FILES['service_spec_file']['name'];
 		$service_spec_file_final = "";
 		if (!empty($service_spec_file)) {
-            $fileValidation = fileValidation(0, 'service_spec_file', 'supplier/');
-            $service_spec_file_final = $fileValidation['files'];
-            $spec_filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $spec_filesize = $_FILES['service_spec_file']['size'];
+            $service_spec_file_tmp = $_FILES['service_spec_file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($service_spec_file, PATHINFO_EXTENSION));
+            $service_spec_file_final = $random.' - '.$service_spec_file;
+            $service_spec_file_path = $path.$service_spec_file_final;
 
-            if ($process == true) {
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($service_spec_file_tmp, $service_spec_file_path);
+
                 $output = array (
-                    'type'  =>  0,
+                    'type' =>  0,
                     'name' =>  $service_spec_file_final,
                     'size' =>  $spec_filesize,
                     'date' =>  $local_date
                 );
                 array_push($arr_item, $output);
+            } else {
+                $process = false;
             }
         }
 		$service_spec_date_from = $_POST['service_spec_date_from'];
@@ -26189,14 +26221,10 @@
                 $service_file_doc_tmp = implode('*', $_FILES['service_other']['tmp_name'][$i]);
                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                 $ext = strtolower(pathinfo($service_file_doc_final, PATHINFO_EXTENSION));
-
-                $mime = mime_content_type($service_file_doc_tmp);
-                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                
                 $service_file_doc_final = $random.' - '.$service_file_doc_final;
                 $service_file_doc_path = $path.$service_file_doc_final;
 
-                if(!in_array($mime, $mime_array)) {
+                if(!in_array($ext, $invalid_extensions)) {
                     move_uploaded_file($service_file_doc_tmp, $service_file_doc_path);
 
                     $filesize += $spec_filesize_other;
@@ -26269,12 +26297,16 @@
         $service_spec_file_final = $_POST['service_spec_file_tmp'];
         $service_spec_file = $_FILES['service_spec_file']['name'];
 		if (!empty($service_spec_file)) {
-            $fileValidation = fileValidation(0, 'service_spec_file', 'supplier/');
-            $service_spec_file_final = $fileValidation['files'];
-            $spec_filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $spec_filesize = $_FILES['service_spec_file']['size'];
+            $service_spec_file_tmp = $_FILES['service_spec_file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($service_spec_file, PATHINFO_EXTENSION));
+            $service_spec_file_final = $random.' - '.$service_spec_file;
+            $service_spec_file_path = $path.$service_spec_file_final;
 
-            if ($process == true) {
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($service_spec_file_tmp, $service_spec_file_path);
+
                 $output = array (
                     'type'  =>  0,
                     'name' =>  $service_spec_file_final,
@@ -26282,6 +26314,8 @@
                     'date' =>  $local_date
                 );
                 array_push($arr_item, $output);
+            } else {
+                $process = false;
             }
         }
 		$service_spec_date_from = $_POST['service_spec_date_from'];
@@ -26301,14 +26335,10 @@
                 $service_file_doc_tmp = implode('*', $_FILES['service_other']['tmp_name'][$i]);
                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                 $ext = strtolower(pathinfo($service_file_doc, PATHINFO_EXTENSION));
-
-                $mime = mime_content_type($service_file_doc_tmp);
-                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                
                 $service_file_doc_final = $random.' - '.$service_file_doc_final;
                 $service_file_doc_path = $path.$service_file_doc_final;
 
-                if(!in_array($mime, $mime_array)) {
+                if(!in_array($ext, $invalid_extensions)) {
                     move_uploaded_file($service_file_doc_tmp, $service_file_doc_path);
 
                     $filesize += $spec_filesize_other;
@@ -26399,10 +26429,18 @@
 			$file = $_FILES['file']['name'];
 			$file_final = "";
 			if (!empty($file)) {
-                $fileValidation = fileValidation(0, 'file', 'supplier/');
-                $file_final = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
+                $filesize = $_FILES['file']['size'];
+				$file_tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+				$file_final = $random.' - '.$file;
+				$file_path = $path.$file_final;
+
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($file_tmp, $file_path);
+                } else {
+                    $process = false;
+                }
 			}
 		} else {
 			$file_final = $_POST['fileurl'];
@@ -26504,10 +26542,18 @@
 			$file = $_FILES['file']['name'];
 			$file_final = "";
 			if (!empty($file)) {
-                $fileValidation = fileValidation(0, 'file', 'supplier/');
-                $file_final = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
+                $filesize = $_FILES['file']['size'];
+				$file_tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+				$file_final = $random.' - '.$file;
+				$file_path = $path.$file_final;
+
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($file_tmp, $file_path);
+                } else {
+                    $process = false;
+                }
 			}
 		} else {
 			$file_final = $_POST['fileurl'];
@@ -27125,10 +27171,19 @@
 		$final_file = "";
 		$file = $_FILES['file']['name'];
 		if (!empty($file)) {
-            $fileValidation = fileValidation(0, 'file', 'job/');
-            $files = $fileValidation['files'];
-            $filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+			$path = 'uploads/job/';
+			$random = rand(1000,1000000);
+			$tmp_file = $_FILES['file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+			$final_file = $random.' - '.$file;
+			$path_file = $path.$final_file;
+
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($tmp_file,$path_file);
+            } else {
+                $process = false;
+            }
 		}
 
         if ($process == true) {
@@ -27173,13 +27228,20 @@
 		$final_file = "";
 		$file = $_FILES['file']['name'];
 		if (!empty($file)) {
-            $fileValidation = fileValidation(0, 'file', 'job/');
-            $files = $fileValidation['files'];
-            $filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+			$path = 'uploads/job/';
+			$random = rand(1000,1000000);
+			$tmp_file = $_FILES['file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+			$final_file = $random.' - '.$file;
+			$path_file = $path.$final_file;
 
-            if ($process == true) {
-                mysqli_query( $conn,"UPDATE tbl_job_listing set files='". $files ."' WHERE ID='". $ID ."'" );
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($tmp_file,$path_file);
+
+                mysqli_query( $conn,"UPDATE tbl_job_listing set files='". $final_file ."' WHERE ID='". $ID ."'" );
+            } else {
+                $process = false;
             }
 		}
 
@@ -31260,10 +31322,19 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $fileValidation = fileValidation(0, 'file', 'eforms/');
-                $files = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
+                $path = 'uploads/eforms/';
+                $filesize = $_FILES['file']['size'];
+                $tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                $files = rand(1000,1000000) . ' - ' . $files;
+                $path = $path.$files;
+
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($tmp,$path);
+                } else {
+                    $process = false;
+                }
             }
         } else {
             $files = $_POST['fileurl'];
@@ -31434,15 +31505,22 @@
                 if ($filetype == 1) {
                     $files = $_FILES['file']['name'];
                     if (!empty($files)) {
-                        $fileValidation = fileValidation(0, 'file', 'eforms/');
-                        $files = $fileValidation['files'];
-                        $filesize = $fileValidation['size'];
-                        $process = $fileValidation['valid'];
+                        $path = 'uploads/eforms/';
+                        $filesize = $_FILES['file']['size'];
+                        $tmp = $_FILES['file']['tmp_name'];
+                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                        $files = rand(1000,1000000) . ' - ' . $files;
+                        $path = $path.$files;
 
-                        if ($process == true) {
+                        if(!in_array($ext, $invalid_extensions)) {
+                            move_uploaded_file($tmp,$path);
+
                             $filesize_tot = $filesize + $rowData["filesize"];
 
                             mysqli_query( $conn,"UPDATE tbl_eforms SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
+                        } else {
+                            $process = false;
                         }
                     }
                 } else {
@@ -31825,10 +31903,19 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $fileValidation = fileValidation(0, 'file', 'lib/');
-                $files = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
+                $path = 'uploads/lib/';
+                $filesize = $_FILES['file']['size'];
+                $tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                $files = rand(1000,1000000) . ' - ' . $files;
+                $path = $path.$files;
+
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($tmp,$path);
+                } else {
+                    $process = false;
+                }
             }
         } else {
             $files = $_POST['fileurl'];
@@ -31915,15 +32002,22 @@
                 if ($filetype == 1) {
                     $files = $_FILES['file']['name'];
                     if (!empty($files)) {
-                        $fileValidation = fileValidation(0, 'file', 'lib/');
-                        $files = $fileValidation['files'];
-                        $filesize = $fileValidation['size'];
-                        $process = $fileValidation['valid'];
+                        $path = 'uploads/lib/';
+                        $filesize = $_FILES['file']['size'];
+                        $tmp = $_FILES['file']['tmp_name'];
+                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                        $files = rand(1000,1000000) . ' - ' . $files;
+                        $path = $path.$files;
 
-                        if ($process == true) {
+                        if(!in_array($ext, $invalid_extensions)) {
+                            move_uploaded_file($tmp,$path);
+
                             $filesize_tot = $filesize + $rowData["filesize"];
 
                             mysqli_query( $conn,"UPDATE tbl_lib SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
+                        } else {
+                            $process = false;
                         }
                     }
                 } else {
@@ -32265,10 +32359,19 @@
 		if ($filetype == 1) {
 			$files = $_FILES['file']['name'];
 			if (!empty($files)) {
-                $fileValidation = fileValidation(0, 'file', 'archiving/');
-                $files = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
+				$path = 'uploads/archiving/';
+                $filesize = $_FILES['file']['size'];
+				$tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+				$files = rand(1000,1000000) . ' - ' . $files;
+				$path = $path.$files;
+
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($tmp,$path);
+                } else {
+                    $process = false;
+                }
 			}
 		} else {
 			$files = $_POST['fileurl'];
@@ -32355,15 +32458,22 @@
                 if ($filetype == 1) {
                     $files = $_FILES['file']['name'];
                     if (!empty($files)) {
-                        $fileValidation = fileValidation(0, 'file', 'archiving/');
-                        $files = $fileValidation['files'];
-                        $filesize = $fileValidation['size'];
-                        $process = $fileValidation['valid'];
+                        $path = 'uploads/archiving/';
+                        $filesize = $_FILES['file']['size'];
+                        $tmp = $_FILES['file']['tmp_name'];
+                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                        $files = rand(1000,1000000) . ' - ' . $files;
+                        $path = $path.$files;
 
-                        if ($process == true) {
+                        if(!in_array($ext, $invalid_extensions)) {
+                            move_uploaded_file($tmp,$path);
+
                             $filesize_tot = $filesize + $rowData["filesize"];
 
                             mysqli_query( $conn,"UPDATE tbl_archiving SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
+                        } else {
+                            $process = false;
                         }
                     }
                 } else {
@@ -33027,10 +33137,18 @@
 
 		$files = $_FILES['file']['name'];
 		if (!empty($files)) {
-            $fileValidation = fileValidation(0, 'file', 'services/');
-            $files = $fileValidation['files'];
-            $filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+			$path = 'uploads/services/';
+			$tmp = $_FILES['file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+			$files = rand(1000,1000000) . ' - ' . $files;
+			$path = $path.$files;
+
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($tmp,$path);
+            } else {
+                $process = false;
+            }
 		}
 
         if ($process == true) {
@@ -36438,13 +36556,18 @@
 		if ($type_id == 0) {
 			$file_upload = $_FILES['file']['name'];
 			if (!empty($file_upload)) {
-                $fileValidation = fileValidation(0, 'file', 'instruction/');
-                $file_upload = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
+				$tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($file_upload, PATHINFO_EXTENSION));
+				$file_upload = $random . ' - ' . $file_upload;
+				$path = $path.$file_upload;
 
-                if ($process == true) {
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($tmp,$path);
+
                     mysqli_query( $conn,"UPDATE tbl_pages_demo_video SET file_upload = '".$file_upload."' WHERE id = '".$last_id."'" );
+                } else {
+                    $process = false;
                 }
 			}
 		} else if ($type_id == 1 OR $type_id == 2) {
@@ -44704,14 +44827,29 @@
 		$success = true;
 		$message = "Error";
 
-        if (!empty($_FILES['file']['name'])) {
-            $fileValidation = fileValidation(1, 'file', 'avatar/');
-            $files = $fileValidation['files'];
-            $filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
-        }
+		if( !empty( $_FILES['file']['name'] ) ) {
+			$valid_extensions = array('jpeg', 'jpg', 'png'); // valid extensions
+			$path = 'uploads/avatar/'; // upload directory
+			$file = $_FILES['file']['name'];
+			$tmp = $_FILES['file']['tmp_name'];
+			// get uploaded file's extension
+			$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+			// can upload same image using rand function
+			$final_file = rand(1000,1000000).' - '.$file;
+			// check's valid format
+			if(in_array($ext, $valid_extensions)) {
+				$files = $final_file;
+				$path = $path.$final_file;
+				if(move_uploaded_file($tmp,$path)) {
+					$success = true;
+				}
+			} else {
+				$success = false;
+			}
+		}
 
-		if ($process == true) {
+		if ($success == true) {
+
 			$selectData = mysqli_query( $conn,'SELECT * FROM tbl_user_info WHERE user_id="'. $ID .'"' );
 			if ( mysqli_num_rows($selectData) > 0 ) {
 				$rowData = mysqli_fetch_array($selectData);
@@ -44895,10 +45033,19 @@
 		$profile_tmp = $_POST['profile_tmp'];
 		$profile_file = $_FILES['profile']['name'];
 		if (!empty($profile_file)) {
-            $fileValidation = fileValidation(0, 'profile', 'avatar/');
-            $profile_file = $fileValidation['files'];
-            $filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+			$cv_file_tmp = $_FILES['profile']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($profile_file, PATHINFO_EXTENSION));
+			$path = 'uploads/avatar/';
+			$random = rand(1000,1000000);
+			$profile_file = $random . ' - ' . $profile_file;
+			$path = $path.$profile_file;
+
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($cv_file_tmp, $path);
+            } else {
+                $process = false;
+            }
 		} else {
 			$profile_file = $profile_tmp;
 		}
@@ -44915,10 +45062,20 @@
 		$cv_tmp = $_POST['cv_tmp'];
 		$cv_file = $_FILES['cv']['name'];
 		if (!empty($cv_file)) {
-            $fileValidation = fileValidation(0, 'cv', 'avatar/');
-            $cv_file = $fileValidation['files'];
-            $filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+			$cv_file_tmp = $_FILES['cv']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($profile_file, PATHINFO_EXTENSION));
+			$path = 'uploads/job/';
+			$random = rand(1000,1000000);
+			$cv_file = $random . ' - ' . $cv_file;
+			$path = $path.$cv_file;
+
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($cv_file_tmp, $path);
+            } else {
+                $process = false;
+            }
+
 		} else {
 			$cv_file = $cv_tmp;
 		}
@@ -44938,16 +45095,12 @@
 					$tmp = implode('*', $_FILES['education']['tmp_name'][$i]);
                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                     $ext = strtolower(pathinfo($profile_file, PATHINFO_EXTENSION));
-            
-                    $mime = mime_content_type($tmp);
-                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                    
 					$path = 'uploads/job/';
 					$random = rand(1000,1000000);
 					$files = $random . ' - ' . $files;
 					$path = $path.$files;
 
-                    if(!in_array($mime, $mime_array)) {
+                    if(!in_array($ext, $invalid_extensions)) {
                         move_uploaded_file($tmp, $path);
 
                         $output = array (
@@ -45231,10 +45384,24 @@
 
 		$success = false;
 		if( !empty( $_FILES['file']['name'] ) ) {
-            $fileValidation = fileValidation(0, 'file', '');
-            $files = $fileValidation['files'];
-            $filesize = $fileValidation['size'];
-            $success = $fileValidation['valid'];
+			$valid_extensions = array('jpeg', 'jpg', 'png', 'gif', 'bmp' , 'pdf' , 'doc' , 'ppt'); // valid extensions
+			$path = 'uploads/'; // upload directory
+			$file = $_FILES['file']['name'];
+			$tmp = $_FILES['file']['tmp_name'];
+			// get uploaded file's extension
+			$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+			// can upload same image using rand function
+			$final_file = rand(1000,1000000).' - '.$file;
+			// check's valid format
+			if(in_array($ext, $valid_extensions)) {
+				$files = $final_file;
+				$path = $path.$final_file;
+				if(move_uploaded_file($tmp,$path)) {
+					$success = true;
+				}
+			} else {
+				$success = false;
+			}
 		}
 
 		if ($success == true) {
@@ -45926,10 +46093,18 @@
 
 		$files = $_FILES['file']['name'];
 		if (!empty($files)) {
-            $fileValidation = fileValidation(0, 'file', 'pro_services/');
-            $files = $fileValidation['files'];
-            $filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+			$path = 'uploads/pro_services/';
+			$tmp = $_FILES['file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+			$files = rand(1000,1000000) . ' - ' . $files;
+			$path = $path.$files;
+
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($tmp,$path);
+            } else {
+                $process = false;
+            }
 		}
 
         if ($process == true) {
@@ -46526,10 +46701,18 @@
 
 		$files = $_FILES['file']['name'];
 		if (!empty($files)) {
-            $fileValidation = fileValidation(0, 'file', 'tracking/');
-            $files = $fileValidation['files'];
-            $filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+			$path = 'uploads/tracking/';
+			$tmp = $_FILES['file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+			$files = rand(1000,1000000) . ' - ' . $files;
+			$path = $path.$files;
+
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($tmp,$path);
+            } else {
+                $process = false;
+            }
 		}
 
         if ($process == true) {
@@ -46633,10 +46816,18 @@
 
         $files = $_FILES['file']['name'];
         if (!empty($files)) {
-            $fileValidation = fileValidation(0, 'file', 'pricing/');
-            $files = $fileValidation['files'];
-            $filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $path = 'uploads/pricing/';
+            $tmp = $_FILES['file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+            $files = rand(1000,1000000) . ' - ' . $files;
+            $path = $path.$files;
+
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($tmp,$path);
+            } else {
+                $process = false;
+            }
         }
 
         if ($process == true) {
@@ -52490,10 +52681,19 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $fileValidation = fileValidation(0, 'file', 'library/');
-                $files = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
+                $path = 'uploads/library/';
+                $filesize = $_FILES['file']['size'];
+                $tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                $files = rand(1000,1000000) . ' - ' . $files;
+                $path = $path.$files;
+
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($tmp,$path);
+                } else {
+                    $process = false;
+                }
             }
         } else {
             $files = $_POST['fileurl'];
@@ -52685,14 +52885,22 @@
                     if ($filetype == 1) {
                         $files = $_FILES['file']['name'];
                         if (!empty($files)) {
-                            $fileValidation = fileValidation(0, 'file', 'library/');
-                            $files = $fileValidation['files'];
-                            $filesize = $fileValidation['size'];
-                            $process = $fileValidation['valid'];
+                            $path = 'uploads/library/';
+                            $filesize = $_FILES['file']['size'];
+                            $tmp = $_FILES['file']['tmp_name'];
+                            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                            $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                            $files = rand(1000,1000000) . ' - ' . $files;
+                            $path = $path.$files;
+                            $str_filename = $files;
+                            $str_filetype = 1;
 
-                            if ($process == true) {
+                            if(!in_array($ext, $invalid_extensions)) {
+                                move_uploaded_file($tmp,$path);
                                 $filesize_tot = $filesize + $rowFiles["filesize"];
                                 mysqli_query( $conn,"UPDATE tbl_library_file SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
+                            } else {
+                                $process = false;
                             }
                         }
                     } else {
@@ -53582,10 +53790,19 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $fileValidation = fileValidation(0, 'file', 'library/');
-                $files = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
+                $path = 'uploads/library/';
+                $filesize = $_FILES['file']['size'];
+                $tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                $files = rand(1000,1000000) . ' - ' . $files;
+                $path = $path.$files;
+
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($tmp,$path);
+                } else {
+                    $process = false;
+                }
             }
         } else {
             $files = $_POST['fileurl'];
@@ -53888,15 +54105,22 @@
                 if ($filetype == 1) {
                     $files = $_FILES['file']['name'];
                     if (!empty($files)) {
-                        $fileValidation = fileValidation(0, 'file', 'library/');
-                        $files = $fileValidation['files'];
-                        $filesize = $fileValidation['size'];
-                        $process = $fileValidation['valid'];
-                        
-                        if ($process == true) {
+                        $path = 'uploads/library/';
+                        $filesize = $_FILES['file']['size'];
+                        $tmp = $_FILES['file']['tmp_name'];
+                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                        $files = rand(1000,1000000) . ' - ' . $files;
+                        $path = $path.$files;
+
+                        if(!in_array($ext, $invalid_extensions)) {
+                            move_uploaded_file($tmp,$path);
+
                             $filesize_tot = $filesize + $rowData["filesize"];
 
                             mysqli_query( $conn,"UPDATE tbl_library_compliance SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
+                        } else {
+                            $process = false;
                         }
                     }
                 } else {
@@ -53986,10 +54210,18 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $fileValidation = fileValidation(0, 'file', 'library/');
-                $files = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
+                $path = 'uploads/library/';
+                $tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                $files = rand(1000,1000000) . ' - ' . $files;
+                $path = $path.$files;
+
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($tmp,$path);
+                } else {
+                    $process = false;
+                }
             }
         } else {
             $files = $_POST['fileurl'];
@@ -54176,13 +54408,19 @@
             if ($filetype == 1) {
                 $files = $_FILES['file']['name'];
                 if (!empty($files)) {
-                    $fileValidation = fileValidation(0, 'file', 'library/');
-                    $files = $fileValidation['files'];
-                    $filesize = $fileValidation['size'];
-                    $process = $fileValidation['valid'];
-                    
-                    if ($process == true) {
+                    $path = 'uploads/library/';
+                    $tmp = $_FILES['file']['tmp_name'];
+                    $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                    $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                    $files = rand(1000,1000000) . ' - ' . $files;
+                    $path = $path.$files;
+
+                    if(!in_array($ext, $invalid_extensions)) {
+                        move_uploaded_file($tmp,$path);
+
                         mysqli_query( $conn,"UPDATE tbl_library_compliance set files='". $files ."', filetype='". $filetype ."' WHERE ID='". $ID ."'" );
+                    } else {
+                        $process = false;
                     }
                 }
             } else {
@@ -54811,10 +55049,19 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $fileValidation = fileValidation(0, 'file', 'library/');
-                $files = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
+                $path = 'uploads/library/';
+                $filesize = $_FILES['file']['size'];
+                $tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                $files = rand(1000,1000000) . ' - ' . $files;
+                $path = $path.$files;
+
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($tmp,$path);
+                } else {
+                    $process = false;
+                }
             }
         } else {
             $files = $_POST['fileurl'];
@@ -54950,15 +55197,22 @@
                 if ($filetype == 1) {
                     $files = $_FILES['file']['name'];
                     if (!empty($files)) {
-                        $fileValidation = fileValidation(0, 'file', 'library/');
-                        $files = $fileValidation['files'];
-                        $filesize = $fileValidation['size'];
-                        $process = $fileValidation['valid'];
-                        
-                        if ($process == true) {
+                        $path = 'uploads/library/';
+                        $filesize = $_FILES['file']['size'];
+                        $tmp = $_FILES['file']['tmp_name'];
+                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                        $files = rand(1000,1000000) . ' - ' . $files;
+                        $path = $path.$files;
+
+                        if(!in_array($ext, $invalid_extensions)) {
+                            move_uploaded_file($tmp,$path);
+
                             $filesize_tot = $filesize + $rowReview["filesize"];
 
                             mysqli_query( $conn,"UPDATE tbl_library_review SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
+                        } else {
+                            $process = false;
                         }
                     }
                 } else {
@@ -55092,10 +55346,19 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $fileValidation = fileValidation(0, 'file', 'library/');
-                $files = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
+                $path = 'uploads/library/';
+                $filesize = $_FILES['file']['size'];
+                $tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                $files = rand(1000,1000000) . ' - ' . $files;
+                $path = $path.$files;
+
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($tmp,$path);
+                } else {
+                    $process = false;
+                }
             }
         } else {
             $files = $_POST['fileurl'];
@@ -55262,15 +55525,22 @@
                 if ($filetype == 1) {
                     $files = $_FILES['file']['name'];
                     if (!empty($files)) {
-                        $fileValidation = fileValidation(0, 'file', 'library/');
-                        $files = $fileValidation['files'];
-                        $filesize = $fileValidation['size'];
-                        $process = $fileValidation['valid'];
-                        
-                        if ($process == true) {
+                        $path = 'uploads/library/';
+                        $filesize = $_FILES['file']['size'];
+                        $tmp = $_FILES['file']['tmp_name'];
+                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                        $files = rand(1000,1000000) . ' - ' . $files;
+                        $path = $path.$files;
+
+                        if(!in_array($ext, $invalid_extensions)) {
+                            move_uploaded_file($tmp,$path);
+
                             $filesize_tot = $filesize + $rowReview["filesize"];
 
                             mysqli_query( $conn,"UPDATE tbl_library_review SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
+                        } else {
+                            $process = false;
                         }
                     }
                 } else {
@@ -55366,10 +55636,19 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $fileValidation = fileValidation(0, 'file', 'library/');
-                $files = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
+                $path = 'uploads/library/';
+                $filesize = $_FILES['file']['size'];
+                $tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                $files = rand(1000,1000000) . ' - ' . $files;
+                $path = $path.$files;
+
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($tmp,$path);
+                } else {
+                    $process = false;
+                }
             }
         } else {
             $files = $_POST['fileurl'];
@@ -55546,15 +55825,22 @@
                 if ($filetype == 1) {
                     $files = $_FILES['file']['name'];
                     if (!empty($files)) {
-                        $fileValidation = fileValidation(0, 'file', 'library/');
-                        $files = $fileValidation['files'];
-                        $filesize = $fileValidation['size'];
-                        $process = $fileValidation['valid'];
-                        
-                        if ($process == true) {
+                        $path = 'uploads/library/';
+                        $filesize = $_FILES['file']['size'];
+                        $tmp = $_FILES['file']['tmp_name'];
+                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                        $files = rand(1000,1000000) . ' - ' . $files;
+                        $path = $path.$files;
+
+                        if(!in_array($ext, $invalid_extensions)) {
+                            move_uploaded_file($tmp,$path);
+
                             $filesize_tot = $filesize + $rowReview["filesize"];
 
                             mysqli_query( $conn,"UPDATE tbl_library_review SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
+                        } else {
+                            $process = false;
                         }
                     }
                 } else {
@@ -55753,10 +56039,19 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $fileValidation = fileValidation(0, 'file', 'library/');
-                $files = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
+                $path = 'uploads/library/';
+                $filesize = $_FILES['file']['size'];
+                $tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                $files = rand(1000,1000000) . ' - ' . $files;
+                $path = $path.$files;
+
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($tmp,$path);
+                } else {
+                    $process = false;
+                }
             }
         } else {
             $files = $_POST['fileurl'];
@@ -55925,15 +56220,22 @@
                 if ($filetype == 1) {
                     $files = $_FILES['file']['name'];
                     if (!empty($files)) {
-                        $fileValidation = fileValidation(0, 'file', 'library/');
-                        $files = $fileValidation['files'];
-                        $filesize = $fileValidation['size'];
-                        $process = $fileValidation['valid'];
-                        
-                        if ($process == true) {
+                        $path = 'uploads/library/';
+                        $filesize = $_FILES['file']['size'];
+                        $tmp = $_FILES['file']['tmp_name'];
+                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                        $files = rand(1000,1000000) . ' - ' . $files;
+                        $path = $path.$files;
+
+                        if(!in_array($ext, $invalid_extensions)) {
+                            move_uploaded_file($tmp,$path);
+
                             $filesize_tot = $filesize + $rowData["filesize"];
 
                             mysqli_query( $conn,"UPDATE tbl_library_template SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
+                        } else {
+                            $process = false;
                         }
                     }
                 } else {
@@ -56149,10 +56451,19 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $fileValidation = fileValidation(0, 'file', 'library/');
-                $files = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
+                $path = 'uploads/library/';
+                $filesize = $_FILES['file']['size'];
+                $tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                $files = rand(1000,1000000) . ' - ' . $files;
+                $path = $path.$files;
+
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($tmp,$path);
+                } else {
+                    $process = false;
+                }
             }
         } else {
             $files = $_POST['fileurl'];
@@ -56323,15 +56634,22 @@
                 if ($filetype == 1) {
                     $files = $_FILES['file']['name'];
                     if (!empty($files)) {
-                        $fileValidation = fileValidation(0, 'file', 'library/');
-                        $files = $fileValidation['files'];
-                        $filesize = $fileValidation['size'];
-                        $process = $fileValidation['valid'];
-                        
-                        if($process == true) {
+                        $path = 'uploads/library/';
+                        $filesize = $_FILES['file']['size'];
+                        $tmp = $_FILES['file']['tmp_name'];
+                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                        $files = rand(1000,1000000) . ' - ' . $files;
+                        $path = $path.$files;
+
+                        if(!in_array($ext, $invalid_extensions)) {
+                            move_uploaded_file($tmp,$path);
+
                             $filesize_tot = $filesize + $rowData["filesize"];
 
                             mysqli_query( $conn,"UPDATE tbl_library_references SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
+                        } else {
+                            $process = false;
                         }
                     }
                 } else if ($filetype == 1) {
@@ -56546,10 +56864,19 @@
         $files = $_FILES['file']['name'];
         if ($type == 0) {
             if (!empty($files)) {
-                $fileValidation = fileValidation(0, 'file', 'library/');
-                $files = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
+                $path = 'uploads/library/';
+                $filesize = $_FILES['file']['size'];
+                $tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                $files = rand(1000,1000000) . ' - ' . $files;
+                $path = $path.$files;
+
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($tmp,$path);
+                } else {
+                    $process = false;
+                }
             }
         }
 
@@ -56684,12 +57011,17 @@
             }
             
             if (!empty($files)) {
-                $fileValidation = fileValidation(0, 'file', 'library/');
-                $files = $fileValidation['files'];
-                $filesize = $fileValidation['size'];
-                $process = $fileValidation['valid'];
+                $path = 'uploads/library/';
+                $filesize = $_FILES['file']['size'];
+                $tmp = $_FILES['file']['tmp_name'];
+                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                $files = rand(1000,1000000) . ' - ' . $files;
+                $path = $path.$files;
 
-                if ($process == true) {
+                if(!in_array($ext, $invalid_extensions)) {
+                    move_uploaded_file($tmp,$path);
+
                     $output = array (
                         'type'  =>  $type,
                         'name' =>  $files,
@@ -56704,6 +57036,8 @@
                     $data_files = $files;
 
                     mysqli_query( $conn,"UPDATE tbl_library_video SET files='". $files ."', filesize='". $filesize ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
+                } else {
+                    $process = false;
                 }
             }
 
@@ -57063,10 +57397,18 @@
 
 		$files = $_FILES['file']['name'];
 		if (!empty($files)) {
-            $fileValidation = fileValidation(0, 'file', 'task/');
-            $files = $fileValidation['files'];
-            $filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+			$path = 'uploads/task/';
+			$tmp = $_FILES['file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+			$files = rand(1000,1000000) . ' - ' . $files;
+			$path = $path.$files;
+
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($tmp,$path);
+            } else {
+                $process = false;
+            }
 		}
 
         if ($process == true) {
@@ -57248,13 +57590,19 @@
 
 		$files = $_FILES['file']['name'];
         if (!empty($files)) {
-            $fileValidation = fileValidation(0, 'file', 'task/');
-            $files = $fileValidation['files'];
-            $filesize = $fileValidation['size'];
-            $process = $fileValidation['valid'];
+            $path = 'uploads/task/';
+            $tmp = $_FILES['file']['tmp_name'];
+            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+            $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+            $files = rand(1000,1000000) . ' - ' . $files;
+            $path = $path.$files;
 
-            if ($process == true) {
+            if(!in_array($ext, $invalid_extensions)) {
+                move_uploaded_file($tmp,$path);
+
                 mysqli_query( $conn,"UPDATE tbl_MyProject_Services_History SET files='". $files ."' WHERE History_id='". $ID ."'" );
+            } else {
+                $process = false;
             }
         }
 

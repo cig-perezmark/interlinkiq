@@ -681,7 +681,7 @@ if (mysqli_num_rows($record_result) > 0) {
                         <div class="col-md-12 form-group">
                             <label>Select Owner</label>
                             <?php
-                                $get_users = "SELECT * FROM `tbl_hr_employee` WHERE user_id = '$switch_user_id' AND status != 0 AND type_id = 1 ";
+                                $get_users = "SELECT * FROM `tbl_hr_employee` WHERE user_id = '$switch_user_id' AND status != 0 ";
                                 $user_result = mysqli_query($conn, $get_users);
                             ?>
                             <select id="form_owner"  class="form-control mt-multiselect btn btn-default" name="assigned_to_id[]" multiple="multiple">

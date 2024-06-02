@@ -545,6 +545,24 @@
     		echo json_encode($output);
     	}
     	if(isset($_POST['action'])) {
+    	    if($_POST['action'] == "upload_module_img"){
+    	        $dataID = $_POST['data_id'];
+                $fileAttachment = $_POST['file_attachment'];
+                // Prepare and bind
+                $stmt = $conn->prepare("UPDATE tblPlugins SET file_attachment = ? WHERE plugin_id = ?");
+                $stmt->bind_param('ss', $fileAttachment, $dataID);
+ 
+                // Execute the query
+                if ($stmt->execute()) {
+                    echo json_encode(["status" => "success", "message" => "File uploaded successfully."]);
+                } else {
+                    echo json_encode(["status" => "error", "message" => "Error uploading file."]);
+                }
+        
+                // Close statement
+                $stmt->close();
+    	    }
+    	    
     	    if($_POST['action'] == "get_report"){
 
     	        echo '

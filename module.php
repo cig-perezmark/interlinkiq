@@ -14,6 +14,12 @@
     error_reporting(0);
 ?>
 <style>
+    .icon {
+            font-size: 24px;
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+    }
     .mt_element_card .mt_card_item {
         border: 1px solid;
         border-color: #e7ecf1;
@@ -333,12 +339,54 @@
                                     </div>';
                                 }
                             ?>
+                            
+                            <?php
+                                $selectModules = mysqli_query( $conn,"SELECT * FROM tblPlugins WHERE deleted = 0 ORDER BY plugin_name ASC" );
+                                if ( mysqli_num_rows($selectModules) > 0 ) {
+                                    while($rowData = mysqli_fetch_array($selectModules)) {
+                                        $data_ID = $rowData['plugin_id'];
+                                        $data_name = stripcslashes($rowData['plugin_name']);
+                                        $data_description = stripcslashes($rowData['plugin_description']);
+                                        $data_available = $rowData['available'];
+                                        $data_menu_id = $rowData['menu_id'];
+                                        $file_attachmet = $rowData['file_attachment'];
+                                        
+                                        echo '<div class="col-md-3 text-center" style="height: 200px; min-height: 200px;">';
+                                            if($file_attachmet){
+                                                echo '<img src="data:image/png;base64,'.$file_attachmet.'" width="100px" /><br>';
+                                            } else {
+                                                echo '<button class="btn btn-danger upload-btn" data-id="'.$data_ID.'" data-toggle="modal" data-target="#upload_file">Upload</button><br>';
+                                            }
+                                            
+                                            if ($data_available == 1) {
+                    	                        $selectMenu = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE ID = $data_menu_id" );
+                                                if ( mysqli_num_rows($selectMenu) > 0 ) {
+                                                    $rowMenu = mysqli_fetch_array($selectMenu);
+                                                    $data_url = $rowMenu['url'];
+                                                    
+                                                    echo '<a href="'.$data_url.'" class="blue-steel bold" target="_blank">'.$data_name.'</a>';
+                                                } else {
+                                                    echo $data_name;
+                                                }
+                    	                    } else {
+                                                echo $data_name;
+                                            }
+                                        echo '</div>';
+                                    }
+                                }
+                            
+                            ?>
                                     
-                            <table class="table table-bordered" id="tableModule">
+                            <table class="table table-bordered hide" id="tableModule">
                                 <thead class="bg-primary">
                                     <tr>
+                                        <?php
+                                            if($_COOKIE['ID'] == 481){
+                                                echo '<th style="width: 150px;">Attachment - <button class="btn btn-primary" data-toggle="modal" data-target="#demo_modal">Demo</button></th>';
+                                            }
+                                        ?>
                                         <th style="width: 300px;">Module Name</th>
-                                        <th>Description</th>
+                                        <th class="hide">Description</th>
                                         <?php
                                             if ($switch_user_id == 1 || $switch_user_id == 19 || $switch_user_id == 163) { echo '<th style="width: 135px;" class="text-center">Action</th>'; }
                                         ?>
@@ -355,8 +403,18 @@
                                                 $data_description = stripcslashes($rowData['plugin_description']);
                                                 $data_available = $rowData['available'];
                                                 $data_menu_id = $rowData['menu_id'];
+                                                $file_attachmet = $rowData['file_attachment'];
                                                 
                                                 echo '<tr id="tr_'.$data_ID.'">
+                                                    <td class="text-center">';
+                                                    if($_COOKIE['ID'] == 481){
+                                                        if($file_attachmet){
+                                                            echo '<img src="data:image/png;base64,'.$file_attachmet.'" width="100px" />';
+                                                            // echo '<button class="btn btn-primary view-btn" data-image="data:image/png;base64,'.$file_attachmet.'">View</button>';
+                                                        }
+                                                        echo '<button class="btn btn-danger upload-btn" data-id="'.$data_ID.'" data-toggle="modal" data-target="#upload_file">Upload</button>';
+                                                    }
+                                                    echo '</td>
                                 	                <td>';
                                 	                
                                 	                    if ($data_available == 1) {
@@ -374,7 +432,7 @@
                                                         }
                                                         
                                 	                echo '</td>
-                                	                <td>'.$data_description.'</td>';
+                                	                <td class="hide">'.$data_description.'</td>';
                                 	                
                             	                    if ($switch_user_id == 1 || $switch_user_id == 19 || $switch_user_id == 163) {
                             	                        echo '<td class="text-center">
@@ -397,7 +455,86 @@
                 <!--End of App Cards-->
 
                 <!-- MODAL AREA-->
-
+                <!-- Modal -->
+                <div class="modal fade" id="demo_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal Demo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div id="app">
+                                    <?php
+                                         $select_image = "SELECT file_attachment FROM tblPlugins WHERE deleted = 0 AND file_attachment != '' ORDER BY plugin_name ASC";
+                                         $result = mysqli_query($conn,$select_image);
+                                         foreach($result as $row):
+                                             $file_attachment = $row['file_attachment'];
+                                    ?>
+                                        <div class="icon" draggable="true" id="icon1">
+                                            <img src="data:image/png;base64,<?= $file_attachment ?>" style="width:40px;height:40px">
+                                        </div>
+                                    <?php endforeach; ?>
+                                  </div>
+                            </div>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div id="imageModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="imageModalLabel">View Image</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Image will be injected here by jQuery -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form id="uploadForm">
+                    <div class="modal fade" id="upload_file" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Upload File </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <input type="hidden" id="data_id">
+                                            <input type="file" id="fileInput" class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Upload</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                
                 <div class="modal fade" id="modalProServiceNotice" tabindex="-1" role="basic" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -694,9 +831,123 @@
     	
     	
         <script src="assets/global/plugins/bootstrap-select/js/bootstrap-select.min.js" type="text/javascript"></script>
+        <script>
+            const icons = document.querySelectorAll('.icon');
+        
+        let dragSrcEl = null;
+        
+        function handleDragStart(e) {
+          dragSrcEl = this;
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/html', this.innerHTML);
+        }
+        
+        function handleDragOver(e) {
+          if (e.preventDefault) {
+            e.preventDefault();
+          }
+          e.dataTransfer.dropEffect = 'move';
+          return false;
+        }
+        
+        function handleDragEnter(e) {
+          this.classList.add('over');
+        }
+        
+        function handleDragLeave() {
+          this.classList.remove('over');
+        }
+        
+        function handleDrop(e) {
+          if (e.stopPropagation) {
+            e.stopPropagation();
+          }
+        
+          if (dragSrcEl !== this) {
+            dragSrcEl.innerHTML = this.innerHTML;
+            this.innerHTML = e.dataTransfer.getData('text/html');
+          }
+        
+          return false;
+        }
+        
+        function handleDragEnd() {
+          icons.forEach(icon => {
+            icon.classList.remove('over');
+          });
+        }
+        
+        icons.forEach(icon => {
+          icon.addEventListener('dragstart', handleDragStart);
+          icon.addEventListener('dragenter', handleDragEnter);
+          icon.addEventListener('dragover', handleDragOver);
+          icon.addEventListener('dragleave', handleDragLeave);
+          icon.addEventListener('drop', handleDrop);
+          icon.addEventListener('dragend', handleDragEnd);
+        });
+        
+        
+        
+        </script>
         <script> 
             
             $(document).ready(function() {
+                $('.view-btn').click(function() {
+                    var imageSrc = $(this).data('image');
+                    // Create an image element
+                    var imgElement = '<img src="' + imageSrc + '" alt="Uploaded Image" style="width: 100%; height: auto;" />';
+                    
+                    // Display the image in a modal or a dedicated container
+                    $('#imageModal .modal-body').html(imgElement);
+                    $('#imageModal').modal('show');
+                });
+                
+                $('.upload-btn').click(function(){
+                    var dataID = $(this).data('id');
+                    $('#data_id').val(dataID);
+                });
+                
+                $('#uploadForm').submit(function(e){
+                    e.preventDefault(); // Prevent default form submission
+                    var dataID = $('#data_id').val(); // Get data ID from input field
+                    var file = $('#fileInput')[0].files[0]; // Get selected file
+                    if(!file) {
+                        alert("Please select a file.");
+                        return;
+                    }
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var base64String = e.target.result.split('base64,')[1]; // Get Base64 string
+                        // AJAX request to update the file_attachment column with the Base64 string
+                        $.ajax({
+                            url: 'controller.php', // Replace with your PHP script URL
+                            method: 'POST',
+                            data: {
+                                data_id: dataID, 
+                                file_attachment: base64String,
+                                action:"upload_module_img"
+                            },
+                            success: function(response){
+                                // Reload table or do any other necessary actions
+                                // $('#tableModule').load(location.href + ' #tableModule');
+                                // $('#upload_file').modal('hide'); // Hide the modal after successful upload
+                                msg = "Sucessfully Uploaded!";
+                                bootstrapGrowl(msg);
+                                $('#upload_file').modal('hide');
+                            },
+                            error: function(xhr, status, error) {
+                                console.error(xhr.responseText);
+                                alert('Error uploading file. Please try again.');
+                            }
+                        });
+                    };
+                    reader.readAsDataURL(file); // Convert file to Base64 string
+                });
+                
+                
+                
+                
+                
                 // $('#tableComply, #tableModule, #tableSOP, #tableProServices, #tableProServices, #tableProServices, #tableProServices').dataTable( {
                 //   "columnDefs": [
                 //     { "width": "auto" }
@@ -1445,3 +1696,87 @@
         </script>
     </body>
 </html>
+<style>
+    #app {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 500px;
+}
+
+.icon {
+  width: 75px;
+  height: 75px;
+  background-color: #ccc;
+  border: 1px solid #999;
+  border-radius: 50% !important;
+  margin: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+}
+
+.icon:hover {
+  background-color: #ddd;
+}
+
+.up, .down, .left, .right {
+  position: relative;
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
+}
+
+.up {
+  animation-name: moveUp;
+}
+
+.down {
+  animation-name: moveDown;
+}
+
+.left {
+  animation-name: moveLeft;
+}
+
+.right {
+  animation-name: moveRight;
+}
+
+@keyframes moveUp {
+  from {
+    transform: translateY(0) translateX(0);
+  }
+  to {
+    transform: translateY(-100px) translateX(0);
+  }
+}
+
+@keyframes moveDown {
+  from {
+    transform: translateY(0) translateX(0);
+  }
+  to {
+    transform: translateY(100px) translateX(0);
+  }
+}
+
+@keyframes moveLeft {
+  from {
+    transform: translateX(0) translateY(0);
+  }
+  to {
+    transform: translateX(-100px) translateY(0);
+  }
+}
+
+@keyframes moveRight {
+  from {
+    transform: translateX(0) translateY(0);
+  }
+  to {
+    transform: translateX(100px) translateY(0);
+  }
+}
+
+</style>

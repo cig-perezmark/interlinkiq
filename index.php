@@ -70,10 +70,10 @@
                 }
                 })
                 
-                if (getCookie('modalCMS') == null) {
-                    setCookie('modalCMS','1','30'); //(key,value,expiry in days)
-                    $("#modalCMS").modal('show');
-                } 
+                // if (getCookie('modalCMS') == null) {
+                //     setCookie('modalCMS','1','30'); //(key,value,expiry in days)
+                //     $("#modalCMS").modal('show');
+                // } 
             });
             function setCookie(key, value, expiry) {
                 var expires = new Date();

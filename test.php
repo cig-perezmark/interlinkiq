@@ -1,3 +1,112 @@
+
+<?php
+
+
+function isValidFile($filename) {
+    // List of disallowed extensions
+    $disallowedExtensions = ['php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll'];
+
+    // List of disallowed MIME types corresponding to disallowed extensions
+    $disallowedMimeTypes = [
+        'application/x-php',
+        'application/x-httpd-php',
+        'application/php',
+        'text/php',
+        'text/x-php',
+        'application/x-httpd-php-source',
+        'text/x-php-source',
+        'application/x-perl',
+        'text/x-perl',
+        'application/x-shellscript',
+        'text/x-shellscript',
+        'application/x-python',
+        'text/x-python',
+        'application/x-ruby',
+        'text/x-ruby',
+        'application/x-msdos-program',
+        'application/octet-stream'
+    ];
+
+    // Check file extension
+    $fileExtension = pathinfo($filename, PATHINFO_EXTENSION);
+    print_r($fileExtension);
+    if (in_array(strtolower($fileExtension), $disallowedExtensions)) {
+        return false;
+    }
+
+    // // Check MIME type
+    // $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    // if (!$finfo) {
+    //     return false; // If finfo_open fails, consider the file invalid
+    // }
+
+    // $mimeType = finfo_file($finfo, $filename);
+    // finfo_close($finfo);
+
+    // if (in_array($mimeType, $disallowedMimeTypes)) {
+    //     print_r($mimeType);
+    //     return false;
+    // }
+
+    return true;
+}
+
+
+    phpinfo();
+
+
+if($_SERVER['REQUEST_METHOD'] == 'POST' && isset( $_POST['upload_test'] ) ) {
+    // echo 'hi';
+
+    echo "<pre>";
+
+    $file = $_FILES['file'];
+    $filename = $file['name'];
+
+    echo 'file uploaded:<br>';
+    print_r($file);
+    echo "<br>";
+
+    $fileExtension = pathinfo($filename, PATHINFO_EXTENSION);
+    print_r($fileExtension);
+
+    // Check MIME type
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    echo "<br>";
+
+    $mimeType = finfo_file($finfo, $file['tmp_name']);
+    finfo_close($finfo);
+
+    print_r($mimeType);
+    echo "<br>";
+    echo "</pre>";
+
+}
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test</title>
+</head>
+
+<body>
+    <form action="./test.php" method="post" enctype="multipart/form-data">
+        <div>
+            <label for="file">Upload file here</label>
+            <input type="file" name="file" id="file" required>
+        </div>
+        <input type="submit" name="upload_test" value="submit" />
+    </form>
+</body>
+
+</html>
+
+<?php exit(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

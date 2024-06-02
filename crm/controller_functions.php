@@ -110,9 +110,12 @@
         return $name;
     }
     
-    function format_date($date, $format) {
-        $timestamp = strtotime($date);
-        return date($format, $timestamp);
+    function format_date($date_str, $format) {
+        if (!empty($date_str)) {
+            return date($format, strtotime($date_str));
+        } else {
+            return '';
+        }
     }
     
     if(isset($_POST['filter_value'])) { // Filter data through date
@@ -198,8 +201,8 @@
                             <td class="text-center">
                                 <div class="clearfix">
                                     <div class="">
-                                        <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                        <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
+                                        <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
+                                        <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                         <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                     </div>
                                 </div>
@@ -287,8 +290,8 @@
                             <td class="text-center">
                                 <div class="clearfix">
                                     <div class="">
-                                        <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                        <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
+                                        <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
+                                        <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                         <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                     </div>
                                 </div>
@@ -375,8 +378,8 @@
                                 <td class="text-center">
                                     <div class="clearfix">
                                         <div class="">
-                                            <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                            <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
+                                            <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
+                                            <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                             <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                         </div>
                                     </div>
@@ -478,8 +481,8 @@
                         <td class="text-center">
                             <div class="clearfix">
                                 <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                    <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                 </div>
                             </div>
@@ -576,8 +579,8 @@
                         <td class="text-center">
                             <div class="clearfix">
                                 <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                    <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                 </div>
                             </div>
@@ -668,7 +671,7 @@
                         <td class="text-center">
                             <div class="clearfix">
                                 <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
                                     <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                 </div>
@@ -760,7 +763,7 @@
                         <td class="text-center">
                             <div class="clearfix">
                                 <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
                                     <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                 </div>
@@ -856,7 +859,7 @@
                         <td class="text-center">
                             <div class="clearfix">
                                 <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
                                     <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                 </div>
@@ -949,7 +952,7 @@
                         <td class="text-center">
                             <div class="clearfix">
                                 <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
                                     <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                 </div>
@@ -1042,7 +1045,7 @@
                         <td class="text-center">
                             <div class="clearfix">
                                 <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                     <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
                                     <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                 </div>
@@ -1148,7 +1151,7 @@
                             <td class="text-center">
                                 <div class="clearfix">
                                     <div class="">
-                                        <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
+                                        <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                         <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
                                         <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                     </div>
@@ -1236,7 +1239,7 @@
                             <td class="text-center">
                                 <div class="clearfix">
                                     <div class="">
-                                        <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_relationship_View.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
+                                        <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
                                         <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
                                         <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
                                     </div>
@@ -1596,7 +1599,7 @@
                             $crm_ids);
     
         if ($stmt->execute()) {
-            echo '<script> window.location.href = "../customer_relationship_View.php?view_id=' . $crm_ids . '";</script>';
+            echo '<script> window.location.href = "../customer_details.php?view_id=' . $crm_ids . '";</script>';
         } else {
             echo "Error: " . $stmt->error;
         }
@@ -2465,7 +2468,7 @@
                                             <a class="tooltips get-task-notes" data-id="' . $result['taskid'] . '" data-value="'.$result['crmid'].'" data-toggle="modal" href="#modalTaskNotes"><i class="bi bi-activity"></i> Notes</a>
                                         </li>
                                         <li>
-                                            <a href="customer_relationship_View.php?view_id=' . $result['crmid'] . '" class="tooltips"><i class="bi bi-activity"></i> View Contact</a>
+                                            <a href="customer_details.php?view_id=' . $result['crmid'] . '" class="tooltips"><i class="bi bi-activity"></i> View Contact</a>
                                         </li>
                                         <li>
                                             <a class="tooltips edit-assigned-task" data-id="' . $result['taskid'] . '" data-toggle="modal" href="#modalEditTaskForm"><i class="bi bi-activity"></i> View Task</a>
@@ -2529,7 +2532,7 @@
                                                 <a class="tooltips get-task-notes" data-id="' . $result['taskid'] . '" data-value="'.$crmid.'" data-toggle="modal" href="#modalTaskNotes"><i class="bi bi-activity"></i> Notes</a>
                                             </li>
                                             <li>
-                                                <a href="customer_relationship_View.php?view_id=' . $result['crmid'] . '" class="tooltips"><i class="bi bi-activity"></i> View Contact</a>
+                                                <a href="customer_details.php?view_id=' . $result['crmid'] . '" class="tooltips"><i class="bi bi-activity"></i> View Contact</a>
                                             </li>
                                             <li>
                                                 <a class="tooltips edit-assigned-task" data-id="' . $result['taskid'] . '" data-toggle="modal" href="#modalEditTaskForm"><i class="bi bi-activity"></i> View Task</a>
@@ -2639,7 +2642,7 @@
                                             </a>
                                             <ul class="dropdown-menu pull-right" style="z-index: 99999">
                                                 <li>
-                                                    <a href="customer_relationship_View.php?view_id='.$crmid.'">View Contact</a>
+                                                    <a href="customer_details.php?view_id='.$crmid.'">View Contact</a>
                                                 </li>
                                                 <li>
                                                     <a class="campaignDetails" data-toggle="modal" href="#modalCampaignDetails" data-id="'.$Campaign_Id.'">View</a> 

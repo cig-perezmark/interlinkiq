@@ -945,10 +945,10 @@
                     FROM 
                         tbl_MyProject_Services s 
                     LEFT JOIN 
-                        tbl_myproject_services_assigned a ON a.MyPro_PK = s.MyPro_id 
+                        tbl_MyProject_Services_Assigned a ON a.MyPro_PK = s.MyPro_id 
                     WHERE 
-                        s.user_cookies = 456 AND Project_status != 2");
-        // $stmt->bind_param('i', $_COOKIE['ID']);
+                        s.user_cookies = ? AND Project_status != 2");
+        $stmt->bind_param('i', $_COOKIE['ID']);
         $stmt->execute();
         $stmt->store_result();
         $stmt->bind_result($id, $project, $description, $start, $due);

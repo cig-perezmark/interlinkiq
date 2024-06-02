@@ -26,7 +26,7 @@
         }
         $stmt->close();
 
-        $details = $conn->prepare('SELECT c.id, c.name, r.account_website, r.account_about, r.account_product, r.account_service, r.account_industry, r.account_category, r.account_certification FROM tbl_customer_relationship r JOIN countries c ON r.account_country = c.id WHERE crm_id = ?');
+        $details = $conn->prepare('SELECT c.id, c.name, r.account_website, r.account_about, r.account_product, r.account_service, r.account_industry, r.account_category, r.account_certification FROM tbl_Customer_Relationship r JOIN countries c ON r.account_country = c.id WHERE crm_id = ?');
         if ($details === false) {
             echo 'Error preparing Statement: ' . $conn->error;
             exit;

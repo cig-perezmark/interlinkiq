@@ -409,7 +409,7 @@ error_reporting(0);
                                                                                 <th>Email</th>
                                                                                 <th>Phone</th>
                                                                                 <th>Fax</th>
-                                                                                <th></th>
+                                                                                <th width="5%"></th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -476,7 +476,7 @@ error_reporting(0);
                                                                                 <th>Date Scheduled</th>
                                                                                 <th>Deadline</th>
                                                                                 <th>Status</th>
-                                                                                <th></th>
+                                                                                <th width="5%"></th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -556,7 +556,7 @@ error_reporting(0);
                                                                                 <th>Assigned to</th>
                                                                                 <th>Date Added</th>
                                                                                 <th>Date Completed</th>
-                                                                                <th></th>
+                                                                                <th width="5%"></th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -623,7 +623,7 @@ error_reporting(0);
                                                                                 <th>Recipient</th>
                                                                                 <th>Subject</th>
                                                                                 <th>Message</th>
-                                                                                <!--<th></th>-->
+                                                                                <!--<th width="5%"></th>-->
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -674,7 +674,7 @@ error_reporting(0);
                                                                                 <th>Date</th>
                                                                                 <th>Added by</th>
                                                                                 <th>Notes</th>
-                                                                                <th></th>
+                                                                                <th width="5%"></th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -734,7 +734,7 @@ error_reporting(0);
                                                                                 <th>Date Added</th>
                                                                                 <th>Date End</th>
                                                                                 <th>Documents</th>
-                                                                                <th></th>
+                                                                                <th width="5%"></th>
                                                                             </tr>
                                                                         </thead>
                                                                         <tbody>
@@ -810,7 +810,7 @@ error_reporting(0);
                                                                                             <th>Message</th>
                                                                                             <th>Frequency</th>
                                                                                             <th>Auto Email</th>
-                                                                                            <th></th>
+                                                                                            <th width="5%"></th>
                                                                                         </tr>
                                                                                     </thead>
                                                                                     <tbody>
@@ -892,7 +892,7 @@ error_reporting(0);
                                                                                             <th>Message</th>
                                                                                             <th>Scheduled</th>
                                                                                             <th>Auto Email</th>
-                                                                                            <th></th>
+                                                                                            <th width="5%"></th>
                                                                                         </tr>
                                                                                     </thead>
                                                                                     <tbody>
@@ -1033,7 +1033,7 @@ error_reporting(0);
                                                                 <th>Description</th>
                                                                 <th>Request Date</th>
                                                                 <th>Desired Due Date</th>
-                                                                <th></th>
+                                                                <th width="5%"></th>
                                                             </tr>
                                                             </thead>
                                                             <tbody>
@@ -1996,7 +1996,6 @@ error_reporting(0);
             // View Task Status
             
         $(document).on('click', '.viewCampaignMessage', function(e) {
-            // $('#getCampaignMessage').modal('show')
             e.preventDefault();
             var id = $(this).data('id')
             console.log(id)
@@ -2014,7 +2013,6 @@ error_reporting(0);
             })
         })  
         $(document).on('click', '.viewEmailMessage', function(e) {
-            // $('#getCampaignMessage').modal('show')
             e.preventDefault();
             var id = $(this).data('id')
             console.log(id)

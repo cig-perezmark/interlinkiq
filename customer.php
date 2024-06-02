@@ -1240,7 +1240,7 @@
                                                                 $selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
                                                                 if ( mysqli_num_rows($selectRequirement2) > 0 ) {
                                                                     while($row = mysqli_fetch_array($selectRequirement2)) {
-                                                                        echo '<label class="mt-checkbox mt-checkbox-outline '; echo $current_client == 0 ? '':'hide'; echo '"> '.$row["name"].'
+                                                                        echo '<label class="mt-checkbox mt-checkbox-outline"> '.$row["name"].'
                                                                             <input type="checkbox" value="'.$row["ID"].'" name="document[]"  onchange="checked_Requirement(this, 2, 0, 0)" />
                                                                             <span></span>
                                                                         </label>';

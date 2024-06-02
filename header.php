@@ -1861,7 +1861,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         </a>
                     </li>
                     <?php endif?>
-                    <?php if(($current_client == 0 AND $switch_user_id <> 1106) OR $switch_user_id == 1360) { ?>
+                    <?php if(($current_client == 0 AND $switch_user_id <> 1106) OR $switch_user_id == 1360 OR $switch_user_id == 1453) { ?>
                         <li class="nav-item hide <?php echo $site === "tracking" ? "active" : ""; ?>">
                             <a href="tracking" class="nav-link">
                                 <i class="icon-target"></i>
@@ -2040,7 +2040,7 @@ License: You must have a valid license purchased only from themeforest(the above
                     </li>
                     <?php } ?>
 
-                    <?php if($current_userEmployerID == 256 || $current_userEmployerID == 254 || $user_id == 1 || $user_id == 2 || $user_id == 19 || $user_id == 117 || $user_id == 348 || $user_id == 163): ?>
+                    <?php $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseServices = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
                     <li class="nav-item <?php echo $site === "services" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('services', $current_userEmployerID, $current_userEmployeeID); } ?>">
                         <a href="services" class="nav-link">
                             <i class="icon-list"></i>
@@ -2048,7 +2048,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             <span class="selected"></span>
                         </a>
                     </li>
-                    <?php endif ?>
+                    <?php } ?>
 
                     <li class="nav-item <?php echo $site === "customer" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('customer', $current_userEmployerID, $current_userEmployeeID); } ?>">
                         <a href="customer" class="nav-link">
@@ -2095,41 +2095,40 @@ License: You must have a valid license purchased only from themeforest(the above
                     <?php endif; ?>
 
                     <?php if($current_userEmployeeID == 0 OR $current_userID == 95 OR $current_userID == 42 OR $current_userID == 88) { ?>
-                    <li class="nav-item <?php echo $site === "job-ticket" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('job-ticket', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="job-ticket" class="nav-link">
-                            <i class="icon-earphones-alt"></i>
-                            <span class="title">Job Ticket Tracker</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                        <li class="nav-item <?php echo $site === "job-ticket" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('job-ticket', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                            <a href="job-ticket" class="nav-link">
+                                <i class="icon-earphones-alt"></i>
+                                <span class="title">Job Ticket Tracker</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     <?php } else { ?>
-                    <li class="nav-item <?php echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "active open start" : ""; ?>">
-                        <a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="icon-earphones"></i>
-                            <span class="title">Job Ticket Tracker</span>
-                            <span class="selected"></span>
-                            <span class="arrow <?php echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "open" : ""; ?>"></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li class="nav-item <?php echo $site === "job-ticket-request" ? "active" : ""; ?>">
-                                <a href="job-ticket-request" class="nav-link ">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Request</span>
-                                    <span class="selected"></span>
-                                </a>
-                            </li>
-                            <?php
-                                        echo '<li class="nav-item '; $site === "job-ticket-service" ? "active" : ""; echo '">
-                                            <a href="job-ticket-service" class="nav-link ">
-                                                <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                                <span class="title">Service</span>
-                                                <span class="selected"></span>
-                                            </a>
-                                        </li>';
-                                    ?>
-
-                        </ul>
-                    </li>
+                        <li class="nav-item <?php echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "active open start" : ""; ?>">
+                            <a href="javascript:;" class="nav-link nav-toggle">
+                                <i class="icon-earphones"></i>
+                                <span class="title">Job Ticket Tracker</span>
+                                <span class="selected"></span>
+                                <span class="arrow <?php echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "open" : ""; ?>"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="nav-item <?php echo $site === "job-ticket-request" ? "active" : ""; ?>">
+                                    <a href="job-ticket-request" class="nav-link ">
+                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                        <span class="title">Request</span>
+                                        <span class="selected"></span>
+                                    </a>
+                                </li>
+                                <?php
+                                    echo '<li class="nav-item '; $site === "job-ticket-service" ? "active" : ""; echo '">
+                                        <a href="job-ticket-service" class="nav-link ">
+                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                            <span class="title">Service</span>
+                                            <span class="selected"></span>
+                                        </a>
+                                    </li>';
+                                ?>
+                            </ul>
+                        </li>
                     <?php } ?>
 
 

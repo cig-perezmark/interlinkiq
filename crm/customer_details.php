@@ -170,7 +170,7 @@
         $account_twitter    =   mysqli_real_escape_string($conn, $_POST['account_twitter']);
         $account_interlink  =   mysqli_real_escape_string($conn, $_POST['account_interlink']);
         $account_linkedin   =   mysqli_real_escape_string($conn, $_POST['account_linkedin']);
-        $account_directory  =   mysqli_real_escape_string($conn, $_POST['Account_Directory']);
+        // $account_directory  =   mysqli_real_escape_string($conn, $_POST['Account_Directory']);
         $account_status     =   mysqli_real_escape_string($conn, $_POST['account_status']);
 
         if ($account_status == 0) {
@@ -199,7 +199,6 @@
                                         account_twitter = ?,
                                         account_linkedin = ?,
                                         account_interlink = ?,
-                                        Account_Directory = ?,
                                         account_status = ?,
                                         flag = ?
                                     WHERE crm_id = ?");
@@ -208,7 +207,7 @@
             exit;
         }
 
-        $stmt->bind_param('sssssssssssssssssi', $account_rep, $account_name, $account_address, $account_country, $account_source, $parent_account, $account_email, $account_phone, $account_fax, $account_website, $account_facebook, $account_twitter, $account_linkedin, $account_interlink, $account_directory, $status, $flag, $id);
+        $stmt->bind_param('ssssssssssssssssi', $account_rep, $account_name, $account_address, $account_country, $account_source, $parent_account, $account_email, $account_phone, $account_fax, $account_website, $account_facebook, $account_twitter, $account_linkedin, $account_interlink, $status, $flag, $id);
 
         if($stmt->execute()) {
             echo 'Contact details updated successfully';
@@ -721,6 +720,52 @@
             echo "Error uploading file.";
         }
     }
+    
+    elseif(isset($_POST['add_fse'])) {
+        $user_id = $_COOKIE['ID'];
+        $contactid = $_POST['contact_id'];
+        $title = $_POST['title'];
+        $description = $_POST['description'];
+        $date = $_POST['date'];
+        $source = $_POST['source'];
+
+        $file = $_FILES['file']['name'];
+        $filename = pathinfo($file, PATHINFO_FILENAME);
+        $filename_parts = explode(".", $_FILES['file']['name']);
+        $extension = end($filename_parts);
+        $rand = rand(10, 1000000);
+        $to_File_Documents = $rand . " - " . $filename . "." . $extension;
+
+        $upload_dir = "../Customer_Relationship_files_Folder/";
+
+        // Check if the upload directory exists, if not, create it
+        if (!file_exists($upload_dir)) {
+            mkdir($upload_dir, 0777, true); // Create the directory with full permissions
+        }
+
+        $Documents = mysqli_real_escape_string($conn, $to_File_Documents);
+
+        // Debugging statements
+        if (!move_uploaded_file($_FILES['file']['tmp_name'], $upload_dir . $to_File_Documents)) {
+            echo "Error uploading file.";
+            print_r($_FILES);
+            exit;
+        }
+
+        $stmt = $conn->prepare("INSERT INTO tbl_Customer_Relationship_FSE (FSE_Title, FSE_Description, FSE_Documents, FSE_Event_Date, FSE_Source_Link, FSE_Addedby, crm_ids) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        if ($stmt === false) {
+            die('prepare() failed: ' . htmlspecialchars($conn->error));
+        }
+        $stmt->bind_param("sssssii", $title, $description, $Documents, $date, $source, $user_id, $contactid);
+        if ($stmt->execute()) {
+            echo "New notes added successfully";
+        } else {
+            echo "Error executing query: " . htmlspecialchars($stmt->error);
+        }
+
+        $stmt->close();
+        $conn->close();
+    }
 
     elseif(isset($_POST['update_references'])) {
         $reference_id  = $_POST['reference_id'];
@@ -945,10 +990,10 @@
                     FROM 
                         tbl_MyProject_Services s 
                     LEFT JOIN 
-                        tbl_myproject_services_assigned a ON a.MyPro_PK = s.MyPro_id 
+                        tbl_MyProject_Services_Assigned a ON a.MyPro_PK = s.MyPro_id 
                     WHERE 
-                        s.user_cookies = 456 AND Project_status != 2");
-        // $stmt->bind_param('i', $_COOKIE['ID']);
+                        s.user_cookies = ? AND Project_status != 2");
+        $stmt->bind_param('i', $_COOKIE['ID']);
         $stmt->execute();
         $stmt->store_result();
         $stmt->bind_result($id, $project, $description, $start, $due);

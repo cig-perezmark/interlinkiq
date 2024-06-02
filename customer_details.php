@@ -169,7 +169,7 @@
                                                 <div class="col-md-6">
                                                     <label class="control-label"><strong>Account Rep.</strong></label>
                                                     <input type="text" class="form-control" name="account_rep">
-                                                    <input type="hidden" class="form-control" name="id">
+                                                    <input type="hidden" class="form-control" name="id" value="<?=$contact_view_id?>">
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label class="control-label"><strong>Source/Tag</strong></label>
@@ -256,7 +256,7 @@
                                                 
                                                 <div class="col-md-2" id="status-container">
                                                 </div>
-                                                <div class="col-md-2" id="directory-container">
+                                                <div class="col-md-2 d-none" id="directory-container">
                                                 </div>
                                             </div>
                                         </div>
@@ -458,7 +458,7 @@
                             <div class="widget-thumb widget-bg-color-white margin-bottom-20 tabbable-line">
                                 <div class="d-flex justify-content-between">
                                     <h4 class="widget-thumb-heading text-uppercase">Emails</h4>
-                                    <div class="actions">
+                                    <div class="actions d-none">
                                         <div class="btn-group">
                                             <a class="btn dark btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions
                                                 <i class="fa fa-angle-down"></i>
@@ -803,7 +803,7 @@
                                         <label>Title</label>
                                     </div>
                                     <div class="col-md-12" >
-                                        <input class="form-control" type="text" name="contact_id" value="<?=$contact_view_id?>">
+                                        <input class="form-control" type="hidden" name="contact_id" value="<?=$contact_view_id?>">
                                         <input class="form-control" type="text" name="title" required />
                                     </div>
                                 </div>
@@ -849,7 +849,7 @@
                                         <label>Documents</label>
                                     </div>
                                     <div class="col-md-12" >
-                                        <input class="form-control" type="file" name="file" required />
+                                        <input class="form-control" id="fseFile" type="file" name="file" required />
                                     </div>
                                 </div>
                             </div>
@@ -2053,7 +2053,7 @@
                                 project.description,
                                 project.start,
                                 project.due,
-                                `<a href="interlink/mypro_task.php?view_id=${project.id}" target="_blank" class="btn btn-sm btn-primary" data-id="${project.document}">View</a>`,
+                                `<a href="/mypro_task.php?view_id=${project.id}" target="_blank" class="btn btn-sm btn-primary" data-id="${project.document}">View</a>`,
                             ]);
                         });
 
@@ -2220,7 +2220,7 @@
                         $('input[name="account_status"][value="' + response.status + '"]').prop('checked', true);
                         $('input[name="Account_Directory"][value="' + response.directory + '"]').prop('checked', true);
                         $('#status-container').html(generateStatusHtml(response));
-                        $('#directory-container').html(generateDirectoryHtml(response.directory));
+                        // $('#directory-container').html(generateDirectoryHtml(response.directory));
                     }
                 })
             }

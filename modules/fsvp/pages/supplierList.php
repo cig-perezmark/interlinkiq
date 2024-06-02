@@ -91,6 +91,10 @@ th {
 .liFP {
     cursor: default;
 }
+
+.p-0 {
+    padding: 0;
+}
 </style>
 
 <div class="d-flex margin-bottom-20" style="justify-content: end;">
@@ -112,7 +116,7 @@ th {
             </th>
             <th style="max-width: 80px">Supplier Agreement</th>
             <th style="max-width: 80px;">FSVP Compliance Statement</th>
-            <th class="text-center" style="width: 120px">Actions</th>
+            <!-- <th class="text-center" style="width: 120px">History</th> -->
         </tr>
     </thead>
     <tbody></tbody>
@@ -124,7 +128,8 @@ th {
         <form class="modal-content" role="form" id="evaluationForm">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">Foreign Supplier Evaluation Form</h4>
+                <h4 class="modal-title" data-efm="eval">Foreign Supplier Evaluation Form</h4>
+                <h4 class="modal-title" data-efm="reeval">Re-Evaluation Form</h4>
             </div>
             <div class="modal-body form-body">
                 <div class="row">
@@ -142,7 +147,7 @@ th {
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
+                        <div class="form-group" data-efm="eval">
                             <label for="importerSelect">Importer <span class="required">*</span></label>
                             <select name="importer" id="importerSelect">
                                 <option value="" selected disabled>Select importer</option>
@@ -157,6 +162,10 @@ th {
                                 ?>
                             </select>
                         </div>
+                        <div class="form-group" data-efm="reeval" style="display: none;">
+                            <label for="reefimporter">Importer <i class="text-muted">(auto-filled)</i></label>
+                            <input type="text" class="form-control bg-white" id="reefimporter" placeholder="Enter supplier address" readonly>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
@@ -165,13 +174,13 @@ th {
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <div class="form-group">
+                        <div class="form-group" data-efm="eval">
                             <label for="efDescription">Description</label>
                             <textarea name="description" id="efDescription" class="form-control" placeholder="Enter description"></textarea>
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <div class="form-group">
+                        <div class="form-group" data-efm="eval">
                             <label for="efEvaluation">Evaluation</label>
                             <textarea name="evaluation" id="efEvaluation" class="form-control" placeholder="Enter evaluation"></textarea>
                         </div>
@@ -193,7 +202,13 @@ th {
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <h5><strong>**Evaluation Consideration and Results</strong></h5>
+                        <h5 data-efm="eval"><strong>**Evaluation Consideration and Results</strong></h5>
+                        <h5 style="display: none;" data-efm="reeval">
+                            <div class="display:flex;align-items:center;">
+                                <strong>**Re-Evaluation</strong>
+                                <a href="javascript:void(0)" class="btn btn-link btn-smx p-0" id="viewPreviousEvalBtn">[View Previous Evaluation]</a>
+                            </div>
+                        </h5>
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
@@ -381,7 +396,7 @@ th {
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="row" data-efm="eval">
                     <div class="col-md-12">
                         <div class="form-group">
                             <label for="efInfo">Information related to the safety of the food</label>
@@ -401,7 +416,7 @@ th {
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" data-efm="eval">
                     <div class="col-md-12">
                         <div class="form-group margin-top-15x">
                             <label for="efAFE">Assessment of FSVP Evaluation</label>

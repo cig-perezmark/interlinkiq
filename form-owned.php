@@ -70,7 +70,7 @@
              	
                     <!--END SEARCH BAR-->
                     <?php if($current_client != 1): ?>
-                        <?php if($current_userEmployeeID == 0 OR $current_userEmployeeID == 64 OR $current_userEmployeeID == 81  OR $current_userEmployeeID == 78): ?>
+                        <?php if($current_userEmployeeID == 0 OR $current_userEmployeeID == 64 OR $current_userEmployeeID == 81  OR $current_userEmployeeID == 78 OR $_COOKIE['ID'] == 1106): ?>
     						<!--<div class="row">-->
     						<!--	<div class="col-lg-12">-->
           <!--                  		<div class="portlet-title" style="margin-bottom:10px;float:right">-->
@@ -135,6 +135,7 @@
                     	                    <ul class="dropdown-menu pull-right">
                         	                    <li>
                                                 	<a data-toggle="modal" data-target="#create_form">Generate Form</a>
+                                                	<a data-toggle="modal" data-target="<?php echo $FreeAccess == false ? '#exampleModal':'#modalService'; ?>"> Assign Form</a>
                                             	</li>
                                         	</ul>
                                     	</div>
@@ -680,7 +681,7 @@ if (mysqli_num_rows($record_result) > 0) {
                         <div class="col-md-12 form-group">
                             <label>Select Owner</label>
                             <?php
-                                $get_users = "SELECT * FROM `tbl_hr_employee` WHERE user_id = '$switch_user_id' AND status != 0 AND type_id = 1 ";
+                                $get_users = "SELECT * FROM `tbl_hr_employee` WHERE user_id = '$switch_user_id' AND status != 0 ";
                                 $user_result = mysqli_query($conn, $get_users);
                             ?>
                             <select id="form_owner"  class="form-control mt-multiselect btn btn-default" name="assigned_to_id[]" multiple="multiple">
@@ -690,7 +691,7 @@ if (mysqli_num_rows($record_result) > 0) {
                                         $user_form_result = mysqli_query($conn, $get_users_form);
                                         foreach($user_form_result as $user_list):
                                     ?>
-                                    <option value="<?= $user_list['employee_id'] ?>"><?= $user_list['email'] ?></option>
+                                    <option value="<?= $user_list['ID'] ?>"><?= $user_list['first_name'] .' '. $user_list['last_name'] ?></option>
                                 <?php endforeach;endforeach; ?>
                             </select>
                         </div>
@@ -1023,7 +1024,7 @@ $(document).ready(function(){
           success:function(data)
           {
             window.location.reload();
-            // console.log(data); 
+             //console.log(data); 
           }
         })
  });

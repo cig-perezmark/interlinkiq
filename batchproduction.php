@@ -4,11 +4,12 @@
     $breadcrumbs = '';
     $sub_breadcrumbs = '';
     
-    if(isset($_GET['fetchProducts'])) {
+    if(isset($_GET['fetchBatch'])) {
         include_once __DIR__ .'/database_iiq.php';
         include_once __DIR__ . '/alt-setup/setup.php';
         
         $result = mysqli_query( $conn,"SELECT * FROM tbl_products WHERE deleted = 0 AND user_id = $user_id" );
+
         $data = [];
         if ( mysqli_num_rows($result) > 0 ) {
             while($row = mysqli_fetch_array($result)) {
@@ -16,15 +17,6 @@
                 $url_base = "";
                 $image_main = "https://via.placeholder.com/40x40/EFEFEF/AAAAAA&text=No+Image";
 
-                if (!empty($data_image)) {
-
-                    $data_image_array = explode(", ", $data_image);
-                    if (!empty($data_image_array[0])) {
-                        $url_base = "//interlinkiq.com/uploads/products/";
-
-                        $image_main = $data_image_array[0];
-                    }
-                }
 
                 $data_category_id = $row['category'];
                 if ($data_category_id == 9) {
@@ -41,6 +33,8 @@
                     'image' => $url_base.$image_main,
                     'description' => htmlentities($row["description"]),
                     'name' => htmlentities($row["name"]),
+                    'code' => $row['code'],
+                    'formulation' => $row['formulation'],
                     'upc' => htmlentities($row["upc"]),
                     'manufactured_by' => htmlentities($row["manufactured_by"]),
                     'manufactured_for' => htmlentities($row["manufactured_for"]),
@@ -133,42 +127,67 @@
                                 </div>
                                     <div class="actions">
                                         <div class="btn-group">
+
                                             <a class="btn dark btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions
                                                 <i class="fa fa-angle-down"></i>
+
                                             </a>
                                             <ul class="dropdown-menu pull-right">
+
                                                 <li>
-                                                    <a data-toggle="modal" href="#modalNew" onclick="btnReset('modalNew')" >Add New</a>
+
+                                                <a data-toggle="modal" href="#modalNew" class="btn btn-light btn-shadow font-weight-bold mr-2" onclick="btnReset('modalNew')" >Add New</a>
+
+                                                    <!-- <a data-toggle="modal" href="#modalNew" onclick="btnReset('modalNew')" >Add New</a> -->
                                                 </li>
-                                                <?php if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163): ?>
+
+                                                <!-- <?php if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163): ?>
                                                     <li>
                                                         <a data-toggle="modal" data-target="#modalInstruction" onclick="btnInstruction()">Add New Instruction</a>
                                                     </li>
-                                                <?php endif; ?>
+                                                <?php endif; ?> -->
+
                                             </ul>
                                         </div>
                                     </div>
 
-
                                     <ul class="nav nav-tabs">
-
-                                        <li class="active ">
+                                        <li class="active">
 
                                             <a href="#tab_actions_pdetails" data-toggle="tab">Product Details</a>
                                         </li>
 
+
                                         <li>
-                                            <a href="#tab_actions_rr" data-toggle="tab">Roles and Responsibilities</a>
+                                            <a href="#tab_actions_Reference" data-toggle="tab">Reference Documents</a>
                                         </li>
 
                                         <li>
-                                            <a href="#tab_actions_materials" data-toggle="tab">Materials</a>
+                                            <a href="#tab_actions_Raw" data-toggle="tab">Raw Materials</a>
                                         </li>
-
+                                        
                                         <li>
-                                            <a href="#tab_actions_equipment" data-toggle="tab">Equipment</a>
+                                            <a href="#tab_actions_materials" data-toggle="tab">Packaging Materials</a>
                                         </li>
 
+                                        <li >
+                                            <a href="#tab_actions_Labels" data-toggle="tab">Labels</a>
+                                        </li>
+
+                                        <li >
+                                            <a href="#tab_actions_Processing_Equipment" data-toggle="tab">Processing Equipment</a>
+                                        </li>
+
+
+                                        <li >
+                                            <a href="#tab_actions_Production_Procedures" data-toggle="tab">Production Procedures</a>
+                                        </li>
+
+
+                                        <li class="hide">
+                                            <a href="#tab_actions_Deviation_Record" data-toggle="tab">Deviation Record</a>
+                                        </li>
+                                                                       
                                         <!-- <li>
                                             <a href="#tab_actions_ingredients" data-toggle="tab">Ingredients</a>
                                         </li> -->
@@ -185,67 +204,129 @@
 
                                 </div>
 
-
-
                         <div class="portlet-body">
 
-
                             <div class="tab-content">
-                                <div class="tab-pane active" id="tab_actions_pdetails">
 
+                                <div class="tab-pane active" id="tab_actions_pdetails">
                                     <table class="table table-bordered table-hover" id="productsTable">
                                         <thead>
-                                            <tr>
-
-                                                <th style="width: 5px;" >Product ID</th>
-                                                <th style="width: 180px;">Product Name</th>
-                                                <th style="width: 180px;">Description</th>
-                                                <th style="width: 90px;" >UPC Code</th>        
-                                                <!-- <th style="width: 60px;">Manufactured By</th>
-                                                <th style="width: 60px;">Manufactured For</th> -->
-                                                <th style="width: 60px;">Product Unit Weight</th>
-                                                <th style="width: 60px;">Packaging Dimension</th>
-                                                <th style="width: 90px;">Actions</th>
-
-
-                                                
-
+                                            <tr>                                                                                   
+                                                <th style="width: 20px;">Batch Record No.</th> 
+                                                <th style="width: 180px;">Product Name</th>                                               
+                                                <th style="width: 170px;">Product Code</th>
+                                                <th style="width: 150px;">Formula Code</th>
+                                                <th style="width: 135px;">Status</th>                                       
+                                                <th style="width: 90px;">Actions</th>                                               
                                             </tr>
-
                                             </thead>
                                             <tbody>
-
-
-                                            
-
 
                                             </tbody>
                                         </table>
                                 </div>
 
+                                <div class="tab-pane" id="tab_actions_Reference">
 
+                                            <table class="table table-bordered table-hover">
+                                                <thead>
+                                                    <tr>                                                                                          
+                                                        <th >SOP No.</th> 
+                                                        <th >Description</th>                                               
+                                                        <th >Document</th>
+                                                        <th >Verified by</th>
+                                                        <th >Date Verified </th>                                                                                           
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                <tr>
+                                                    <td class="text-left">123</td>
+                                                    <td class="text-left">Sample description</td>
+                                                    <td class="text-left">Sample document</td>
+                                                    <td class="text-left">Cindy Complience</td>
+                                                    <td class="text-left">2024-04-13 13:31:29</td>
 
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-left">456</td>
+                                                    <td class="text-left">Sample1 description</td>
+                                                    <td class="text-left">Sample1 document</td>
+                                                    <td class="text-left">Jonh Doe</td>
+                                                    <td class="text-left">2024-04-12 19:47:27</td>
+                                                </tr>
 
+                                                <tr>
+                                                    <td class="text-left">789</td>
+                                                    <td class="text-left">Sample2 description</td>
+                                                    <td class="text-left">Sample2 document</td>
+                                                    <td class="text-left">James Miller</td>
+                                                    <td class="text-left">2023-05-03 16:53:34</td>
+                                                </tr>
 
-                                <div class="tab-pane" id="tab_actions_rr">
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                <div class="tab-pane" id="tab_actions_Raw">
 
                                             <table class="table table-bordered table-hover" id="tableData_2">
                                                 <thead>
                                                     <tr>
                                                                                                                                    
-                                                        <th rowspan="2">Employee Name</th>
-                                                        <th rowspan="2">Position</th>
-                                                        <th rowspan="2">Responsibilities</th>
-                                               
-
+                                                        <th rowspan="2">Raw Materials Name</th>                                    
+                                                        <th rowspan="2">Lot No.</th>
+                                                        <th rowspan="2">Supplier Name</th>
+                                                        <th rowspan="2">Supplier Code</th>
+                                                        <th rowspan="2">Expiration Date</th>
+                                                        <th rowspan="2">Qty Staged</th>
+                                                        <th rowspan="2">Performed by</th>
+                                                        <th rowspan="2">Date Performed</th>
+                                                        <th rowspan="2">Verified by</th>                                                         
+                                                        <th rowspan="2">Date Verified </th> 
                                                     </tr>
-                                               
                                                 </thead>
                                                 <tbody>
 
+                                                <tr>
+                                                    <td class="text-left">Corn</td>
+                                                    <td class="text-left">156</td>
+                                                    <td class="text-left">Henry Sy</td>
+                                                    <td class="text-left">829</td>
+                                                    <td class="text-left">2025-05-03</td>
+                                                    <td class="text-left">4</td>
+                                                    <td class="text-left">John Doe</td>
+                                                    <td class="text-left">2023-02-01 19:12:28</td>
+                                                    <td class="text-left">Cindy Complience</td>
+                                                    <td class="text-left">2023-05-03 16:53:34</td>                                                                                                                                                         
+                                                </tr>
 
-                                                        
+                                                <tr>
+                                                    <td class="text-left">Minerals</td>
+                                                    <td class="text-left">1589</td>
+                                                    <td class="text-left">Juan Dele Cruz</td>
+                                                    <td class="text-left">55829</td>
+                                                    <td class="text-left">2024-05-03</td>
+                                                    <td class="text-left">6</td>
+                                                    <td class="text-left">John Doe</td>
+                                                    <td class="text-left">2024-05-03 16:53:34</td>
+                                                    <td class="text-left">Cindy Complience</td>
+                                                    <td class="text-left">2023-05-03 18:43:30</td>                                                                                                                                                         
+                                                </tr>
 
+                                                <tr>
+                                                    <td class="text-left">Coal</td>
+                                                    <td class="text-left">8541</td>
+                                                    <td class="text-left">James Tan</td>
+                                                    <td class="text-left">55829</td>
+                                                    <td class="text-left">2022-04-09</td>
+                                                    <td class="text-left">8</td>
+                                                    <td class="text-left">John Doe</td>
+                                                    <td class="text-left">2022-07-06 17:23:15</td>
+                                                    <td class="text-left">Cindy Complience</td>
+                                                    <td class="text-left">2023-08-03 11:21:10</td>                                                                                                                                                         
+                                                </tr>
+
+                                                   
 
                                                 </tbody>
                                                 </table>
@@ -257,20 +338,62 @@
                                         <thead>
                                             <tr>
 
-                                                <th style="width: 5px;" >RAW Materials</th>
-                                                <th style="width: 180px;">Description</th>
-                                                <th style="width: 280px;">Product Code (Supplier)</th>
-                                                <th style="width: 90px;" >Supplier Name</th>
-                                                <th style="width: 60px;">Attachments</th>
-                                                                              
-
+                                                <th >Packaging Materials Name</th>
+                                                <th >Description</th>
+                                                <th >Lot No.</th>
+                                                <th >Supplier Name</th>
+                                                <th >Supplier Code</th>
+                                                <th >Qty Staged</th>
+                                                <th >Performed by</th>
+                                                <th >Date Performed</th>
+                                                <th >Verified by</th>
+                                                <th >Date Verified</th>                                                                                                                                                                                                                      
                                             </tr>
 
                                             </thead>
                                             <tbody>
 
-
+                                            <tr>
+                                                <td class="text-left">Glass</td>
+                                                <td class="text-left">Sample Description</td>                                            
+                                                <td class="text-left">55829</td>
+                                                <td class="text-left">Andy Lee</td>
+                                                <td class="text-left">1564</td>
+                                                <td class="text-left">8</td>
+                                                <td class="text-left">John Doe</td>
+                                                <td class="text-left">2022-07-06 17:23:15</td>
+                                                <td class="text-left">Cindy Complience</td>
+                                                <td class="text-left">2023-08-03 11:21:10</td>                                                                                                                                                         
+                                            </tr> 
                                             
+                                            
+
+                                            <tr>
+                                                <td class="text-left">Plastic</td>
+                                                <td class="text-left">Sample1 Description</td>                                              
+                                                <td class="text-left">2225</td>
+                                                <td class="text-left">James Tan</td>
+                                                <td class="text-left">9457</td>
+                                                <td class="text-left">3</td>
+                                                <td class="text-left">John Doe</td>
+                                                <td class="text-left">2022-07-06 17:23:15</td>
+                                                <td class="text-left">Cindy Complience</td>
+                                                <td class="text-left">2023-08-03 11:21:10</td>                                                                                                                                                         
+                                            </tr> 
+
+
+                                            <tr>
+                                                <td class="text-left">Aluminum</td>
+                                                <td class="text-left">Sample2 Description</td>
+                                                <td class="text-left">56411</td>
+                                                <td class="text-left">Thom Dri</td>
+                                                <td class="text-left">6228</td>
+                                                <td class="text-left">2</td>
+                                                <td class="text-left">John Doe</td>
+                                                <td class="text-left">2022-07-06 17:23:15</td>
+                                                <td class="text-left">Cindy Complience</td>
+                                                <td class="text-left">2023-08-03 11:21:10</td>                                                                                                                                                         
+                                            </tr> 
 
 
                                             </tbody>
@@ -278,25 +401,196 @@
                                  </div>
 
 
-                                 <div class="tab-pane" id="tab_actions_equipment">
+                                 <div class="tab-pane" id="tab_actions_Labels">
                                  <table class="table table-bordered table-hover">
                                         <thead>
-                                            <tr>
-
-                                                <th style="width: 5px;" > Equipment ID No.</th>
-                                                <th style="width: 180px;">Processing Equipmet</th>
-                                                <th style="width: 280px;">Description</th>                                       
-                                                <th style="width: 60px;">Attachments</th>
-                                                                              
+                                            <tr>                                          
+                                                <th >Labels Name</th>
+                                                <th >Description</th>
+                                                <th >Lot No.</th>
+                                                <th >Supplier Name</th>
+                                                <th >Supplier Code</th>
+                                                <th >Qty Staged</th>
+                                                <th >Performed by</th>
+                                                <th >Date Performed</th>
+                                                <th >Verified by</th>
+                                                <th >Date Verified</th>                                                                             
 
                                             </tr>
 
                                             </thead>
                                             <tbody>
+                                
+                                            <tr>
+                                                <td class="text-left">Label Name1</td>
+                                                <td class="text-left">Sample1 Description</td>
+                                                <td class="text-left">456</td>
+                                                <td class="text-left">Thom Dri</td>
+                                                <td class="text-left">6228</td>
+                                                <td class="text-left">4</td>
+                                                <td class="text-left">John Doe</td>
+                                                <td class="text-left">2022-07-06 17:23:15</td>
+                                                <td class="text-left">Cindy Complience</td>
+                                                <td class="text-left">2023-08-03 11:21:10</td>                                                                                                                                                         
+                                            </tr> 
 
 
-                                            
+                                            <tr>
+                                                <td class="text-left">Label Name1</td>
+                                                <td class="text-left">Sample2 Description</td>
+                                                <td class="text-left">145</td>
+                                                <td class="text-left">James Tan</td>
+                                                <td class="text-left">455</td>
+                                                <td class="text-left">6</td>
+                                                <td class="text-left">John Doe</td>
+                                                <td class="text-left">2022-07-06 17:23:15</td>
+                                                <td class="text-left">Cindy Complience</td>
+                                                <td class="text-left">2023-08-03 11:21:10</td>                                                                                                                                                         
+                                            </tr> 
 
+                                            <tr>
+                                                <td class="text-left">Label Name1</td>
+                                                <td class="text-left">Sample3 Description</td>
+                                                <td class="text-left">893</td>
+                                                <td class="text-left">Andy Lee</td>
+                                                <td class="text-left">955</td>
+                                                <td class="text-left">8</td>
+                                                <td class="text-left">John Doe</td>
+                                                <td class="text-left">2022-07-06 17:23:15</td>
+                                                <td class="text-left">Cindy Complience</td>
+                                                <td class="text-left">2023-08-03 11:21:10</td>                                                                                                                                                         
+                                            </tr> 
+                                            </tbody>
+                                        </table>
+                                 </div>
+
+                                 <div class="tab-pane" id="tab_actions_Processing_Equipment">
+                                 <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>                                               
+                                                <th >Equipment Name</th>
+                                                <th >Description</th>
+                                                <th >Equipment ID No.</th>
+                                                <th >Calibration Date</th>
+                                                <th >Calibration Required</th>
+                                                <th >Performed by</th>
+                                                <th >Date Performed</th>
+                                               <th >Verified by</th>  
+                                               <th >Date Verified</th>                                                                                                                       
+                                            </tr>
+
+                                            </thead>
+                                            <tbody>
+
+                                            <tr>
+                                                <td class="text-left">EquipmentName1</td>
+                                                <td class="text-left">Sample1 Description</td>
+                                                <td class="text-left">456</td>
+                                                <td class="text-left">2024-07-04</td>  
+                                                <td class="text-left">Sample Calibration</td>                                               
+                                                <td class="text-left">John Doe</td>
+                                                <td class="text-left">2022-07-06 17:23:15</td>
+                                                <td class="text-left">Cindy Complience</td>
+                                                <td class="text-left">2022-08-03 11:21:10</td>                                                                                                                                                         
+                                            </tr> 
+
+                                            <tr>
+                                                <td class="text-left">Equipment Name2</td>
+                                                <td class="text-left">Sample2 Description</td>
+                                                <td class="text-left">516</td>
+                                                <td class="text-left">2023-04-08</td>  
+                                                <td class="text-left">Sample Calibration</td>                                               
+                                                <td class="text-left">John Doe</td>
+                                                <td class="text-left">2022-07-06 17:23:15</td>
+                                                <td class="text-left">Cindy Complience</td>
+                                                <td class="text-left">2022-08-03 11:21:10</td>                                                                                                                                                         
+                                            </tr> 
+
+                                            <tr>
+                                                <td class="text-left">Equipment Name3</td>
+                                                <td class="text-left">Sample3 Description</td>
+                                                <td class="text-left">698</td>
+                                                <td class="text-left">2023-08-03</td>  
+                                                <td class="text-left">Sample Calibration</td>                                               
+                                                <td class="text-left">John Doe</td>
+                                                <td class="text-left">2022-07-06 17:23:15</td>
+                                                <td class="text-left">Cindy Complience</td>
+                                                <td class="text-left">2022-08-03 11:21:10</td>                                                                                                                                                         
+                                            </tr> 
+
+
+                                            </tbody>
+                                        </table>
+                                 </div>
+
+
+                                 <div class="tab-pane" id="tab_actions_Production_Procedures">
+                                 <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>                                               
+                                                <th >Processing Step</th>
+                                                <th >Procedure Description</th>
+                                                <th >SOP Reference</th>
+                                                <th >Performed by</th>
+                                                <th >Date Performed</th>
+                                                <th >Verified by</th>
+                                                <th >Date Verified</th>                                                                                                                                                          
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                
+                                            <tr>                                               
+                                                <td class="text-left">Sample1 Processing Step</td>                                               
+                                                <td class="text-left">Sample1 Procedure Description</td>  
+                                                <td class="text-left">SOP Reference1</td>                                               
+                                                <td class="text-left">John Doe</td>
+                                                <td class="text-left">2024-07-06 17:23:15</td>
+                                                <td class="text-left">Cindy Complience</td>
+                                                <td class="text-left">2024-08-03 11:21:15</td>                                                                                                                                                         
+                                            </tr> 
+
+                                            <tr>                                               
+                                                <td class="text-left">Sample2 Processing Step</td>                                               
+                                                <td class="text-left">Sample2 Procedure Description</td>  
+                                                <td class="text-left">SOP Reference1</td>                                               
+                                                <td class="text-left">John Doe</td>
+                                                <td class="text-left">2023-06-06 17:23:15</td>
+                                                <td class="text-left">Cindy Complience</td>
+                                                <td class="text-left">2023-06-03 11:21:11</td>                                                                                                                                                         
+                                            </tr> 
+
+                                            <tr>                                               
+                                                <td class="text-left">Sample3 Processing Step</td>                                               
+                                                <td class="text-left">Sample3 Procedure Description</td>  
+                                                <td class="text-left">SOP Reference1</td>                                               
+                                                <td class="text-left">John Doe</td>
+                                                <td class="text-left">2022-05-06 17:23:15</td>
+                                                <td class="text-left">Cindy Complience</td>
+                                                <td class="text-left">2022-05-03 11:21:22</td>                                                                                                                                                         
+                                            </tr> 
+
+
+                                            </tbody>
+                                        </table>
+                                 </div>
+
+
+                                 <div class="tab-pane" id="tab_actions_Deviation_Record">
+                                 <table class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>                                               
+                                                <th >Equipment Name</th>
+                                                <th >Description</th>
+                                                <th >Equipment ID No.</th>
+                                                <th >Calibration Date</th>
+                                                <th >Calibration Required</th>
+                                                <th >Performed By/date/time</th>
+                                                <th >Verified by/date/time</th>                                                                                                                         
+                                            </tr>
+
+                                            </thead>
+                                            <tbody>
+                                
 
                                             </tbody>
                                         </table>
@@ -314,12 +608,19 @@
 
 
                         <div class="modal fade" id="modalNew" tabindex="-1" role="product" aria-hidden="true">
-                            <div class="modal-dialog modal-lg">
+               
+                            
+                            <div class="modal-dialog modal-lg ">
                                 <div class="modal-content">
+
                                     <form method="post" enctype="multipart/form-data" class="modalForm modalSave modalProduct">
-                                        <div class="modal-header tabbable-line">
-                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                            <h4 class="modal-title">New Product Form</h4>
+
+                                        <div class="modal-header tabbable-line bg-info">
+                                       
+                                        <button type="button" class="close info" data-dismiss="modal" aria-hidden="true"></button>
+
+                                            <h4 class="modal-title"><strong>Add New Batch</strong></h4>
+                                            
                                         </div>
                                         <div class="modal-body">
                                             <div class="tabbable tabbable-tabdrop">
@@ -330,1133 +631,279 @@
                                                     <li class="active">
                                                         <a href="#tabProduct" data-toggle="tab">Product Details</a>
                                                     </li>
+
                                                     <li>
-                                                        <a href="#tabProductDescription" data-toggle="tab">Roles and Responsibilities</a>
+                                                        <a href="#tabProductDescription" data-toggle="tab">Production Batch Record Issuance</a>
                                                     </li>
-                                                    <li>
+
+                                                    <li class="hide">
                                                         <a href="#tabAllergens" data-toggle="tab">Materials</a>
                                                     </li>
-                                                    <li>
+                                                    <li class="hide">
                                                         <a href="#tabDimensions" data-toggle="tab">Equipment</a>
                                                     </li>
-                                                    <li>
+
+                                                    <li class="hide">
                                                         <a href="#tabStorage" data-toggle="tab">Ingredients</a>
                                                     </li>
-                                                    <li>
+                                                    <li class="hide">
                                                         <a href="#tabManufacturing" data-toggle="tab">Records</a>
                                                     </li>
-                                                    <li>
+
+                                                    <li class="hide">
                                                         <a href="#tabExercises" data-toggle="tab">Production Yield</a>
                                                     </li>
-                                                    <li>
+
+                                                    <li class="hide">
                                                         <a href="#tabDocuments" data-toggle="tab">Representative</a>
                                                     </li>
-                                                    <li>
+
+                                                    <li class="hide">
                                                         <a href="#tabLabs" data-toggle="tab">Deviations and Approvals</a>
                                                     </li>
+
                                                     <li class="hide">
                                                         <a href="#tabLabel" data-toggle="tab">Label</a>
                                                     </li>
+
                                                     <li class="hide">
                                                         <a href="#tabFormulation" data-toggle="tab">Formulation</a>
                                                     </li>
+
                                                     <li class="hide">
                                                         <a href="#modalService" data-toggle="modal">FFVA</a>
                                                     </li>
                                                 </ul>
 
+
+
                                                 <div class="tab-content margin-top-20">
                                                     <div class="tab-pane active" id="tabProduct">
-                                                        <h4><strong>Product Detailsils</strong></h4>
-                                                        <div class="row margin-bottom-20">
-                                                            <div class="col-md-6 productMain">
-                                                                <p><strong>Main Product View</strong></p>
-                                                                <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                    <div class="fileinput-new thumbnail">
-                                                                        <img src="https://via.placeholder.com/400x250/EFEFEF/AAAAAA&text=Main+Product+View" class="img-responsive" alt="Avatar" />
-                                                                    </div>
-                                                                    <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                                                    <div>
-                                                                        <span class="btn default btn-file btn-xs">
-                                                                            <span class="fileinput-new"> Select image </span>
-                                                                            <span class="fileinput-exists"> Change </span>
-                                                                            <input class="form-control" type="file" name="image_main" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                                                        </span>
-                                                                        <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-md-6 productAngle">
-                                                                <div class="row">
-                                                                    <div class="col-sm-4">
-                                                                        <p><strong>Top View</strong></p>
-                                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                            <div class="fileinput-new thumbnail">
-                                                                                <img src="https://via.placeholder.com/120x90/EFEFEF/AAAAAA&text=no+image" class="img-responsive" alt="Avatar" />
-                                                                            </div>
-                                                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                                                            <div>
-                                                                                <span class="btn default btn-file btn-xs">
-                                                                                    <span class="fileinput-new"> Select image </span>
-                                                                                    <span class="fileinput-exists"> Change </span>
-                                                                                    <input class="form-control" type="file" name="image_top" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                                                                </span>
-                                                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="col-sm-4">
-                                                                        <p><strong>Front View</strong></p>
-                                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                            <div class="fileinput-new thumbnail">
-                                                                                <img src="https://via.placeholder.com/120x90/EFEFEF/AAAAAA&text=no+image" class="img-responsive" alt="Avatar" />
-                                                                            </div>
-                                                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                                                            <div>
-                                                                                <span class="btn default btn-file btn-xs">
-                                                                                    <span class="fileinput-new"> Select image </span>
-                                                                                    <span class="fileinput-exists"> Change </span>
-                                                                                    <input class="form-control" type="file" name="image_front" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                                                                </span>
-                                                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-sm-4">
-                                                                        <p><strong>Left View</strong></p>
-                                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                            <div class="fileinput-new thumbnail">
-                                                                                <img src="https://via.placeholder.com/120x90/EFEFEF/AAAAAA&text=no+image" class="img-responsive" alt="Avatar" />
-                                                                            </div>
-                                                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                                                            <div>
-                                                                                <span class="btn default btn-file btn-xs">
-                                                                                    <span class="fileinput-new"> Select image </span>
-                                                                                    <span class="fileinput-exists"> Change </span>
-                                                                                    <input class="form-control" type="file" name="image_left" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                                                                </span>
-                                                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row margin-top-20">
-                                                                    <div class="col-sm-4">
-                                                                        <p><strong>Bottom View</strong></p>
-                                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                            <div class="fileinput-new thumbnail">
-                                                                                <img src="https://via.placeholder.com/120x90/EFEFEF/AAAAAA&text=no+image" class="img-responsive" alt="Avatar" />
-                                                                            </div>
-                                                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                                                            <div>
-                                                                                <span class="btn default btn-file btn-xs">
-                                                                                    <span class="fileinput-new"> Select image </span>
-                                                                                    <span class="fileinput-exists"> Change </span>
-                                                                                    <input class="form-control" type="file" name="image_bottom" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                                                                </span>
-                                                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-sm-4">
-                                                                        <p><strong>Back View</strong></p>
-                                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                            <div class="fileinput-new thumbnail">
-                                                                                <img src="https://via.placeholder.com/120x90/EFEFEF/AAAAAA&text=no+image" class="img-responsive" alt="Avatar" />
-                                                                            </div>
-                                                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                                                            <div>
-                                                                                <span class="btn default btn-file btn-xs">
-                                                                                    <span class="fileinput-new"> Select image </span>
-                                                                                    <span class="fileinput-exists"> Change </span>
-                                                                                    <input class="form-control" type="file" name="image_back" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                                                                </span>
-                                                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-sm-4">
-                                                                        <p><strong>Right View</strong></p>
-                                                                        <div class="fileinput fileinput-new" data-provides="fileinput">
-                                                                            <div class="fileinput-new thumbnail">
-                                                                                <img src="https://via.placeholder.com/120x90/EFEFEF/AAAAAA&text=no+image" class="img-responsive" alt="Avatar" />
-                                                                            </div>
-                                                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                                                            <div>
-                                                                                <span class="btn default btn-file btn-xs">
-                                                                                    <span class="fileinput-new"> Select image </span>
-                                                                                    <span class="fileinput-exists"> Change </span>
-                                                                                    <input class="form-control" type="file" name="image_right" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                                                                </span>
-                                                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <label class="control-label hide">Product Images</label>
-                                                        <div class="row hide">
-                                                            <div class="col-md-12" id="displayProductImages">
-                                                                <div class="rowx g-1 productGallery" id="displayProductImages-row"></div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <input type="file" class="form-controlx borderx border-darkx" id="uploadProductImages" name="uploadProductImages[]" accept="image/png,image/PNG,image/jpg,image/jpeg" multiple>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row margin-top-20">
-                                                            <div class="col-md-12">
-                                                               <div class="form-group">
-                                                                    <label class="control-label">Labeling Instructions</label>
-                                                                    <textarea class="form-control" name="labeling_instructions" row="3" placeholder="Add labeling instructions"></textarea>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
+                                                                                                              
+                                                        <div class="row margin-bottom-10">
+                        
+                                                        </div>                                                                                                       
+                                                     
                                                         <div class="row">
-                                                            <div class="col-md-3">
+                                                            <div class="col-md-4">
                                                                 <div class="form-group">
-                                                                    <label class="control-label">Product Code</label>
-                                                                    <input class="form-control" type="text" name="code" placeholder="Enter product code" />
+                                                                    <label class="control-label">Batch Record No.</label>
+                                                                    <input class="form-control" type="text" name="b_record_no" placeholder="Enter Batch Record No." required />
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-9">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Product Name</label>
-                                                                    <input class="form-control" type="text" name="name" placeholder="Enter product name" required />
-                                                                </div>
-                                                            </div>
+                                                            <div class="col-md-8">
+
                                                             
-                                                            <?php 
-                                                                $supplierData = $conn->query("SELECT ID,name,vendor_code FROM tbl_supplier WHERE page = 2 AND user_id=$switch_user_id AND is_deleted = 0 ORDER BY name ASC");
-                                                                $supplierInfo = [];
-                                                                if($supplierData->num_rows) while($sr = $supplierData->fetch_assoc()) {
-                                                                    $supplierInfo[] = $sr;
-                                                                }
-                                                            ?>
-                                                            <div class="col-md-3">
                                                                 <div class="form-group">
-                                                                    <label class="control-label">Vendor Code</label>
-                                                                    <select class="form-control" name="vendor_code" disabled title="Automatically set when selecting a vendor name">
-                                                                        <option value="" selected disabled>--Select--</option>
-                                                                        <?php foreach($supplierInfo as $s) echo '<option value="'.$s['ID'].'">'.(isset($s['vendor_code']) ? $s['vendor_code'] : 'No vendor code').'</option>'; ?>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Vendor Name</label>
-                                                                    <select class="form-control mt-multiselect btn btn-default" id="supplierNameSelect" name="vendor_name">
-                                                                        <option value="" selected disabled>--Select--</option>
-                                                                        <?php foreach($supplierInfo as $s) echo '<option value="'.$s['ID'].'">'.$s['name'].'</option>'; ?>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Product Category</label>
-                                                                    <select class="form-control" name="category" required onchange="evaluateManufacturingDetails(event)">
-                                                                        <option value="" selected disabled>--Select category--</option>
+
+                                                                    <label class="control-label">Product Name</label>
+                                                                    <!-- <input class="form-control" type="text" name="name" placeholder="Enter product name" required /> -->
+                                                                    <select class="form-control" name="product_name">
+                                                                        <option value="0" selected disabled>--Select Product--</option>
+
                                                                         <?php
-                                                                            $selectProductCategory = mysqli_query( $conn,"SELECT * FROM tbl_products_category ORDER BY name" );
-                                                                            if ( mysqli_num_rows($selectProductCategory) > 0 ) {
-                                                                                while($rowPC = mysqli_fetch_array($selectProductCategory)) {
-                                                                                    $pc_ID = $rowPC['ID'];
-                                                                                    $pc_name = $rowPC['name'];
-                                                                                    echo '<option value="'. $pc_ID .'">'. $pc_name .'</option>';
+                                                                            $selectConditions = mysqli_query( $conn,"SELECT * FROM tbl_products WHERE deleted = 0 ORDER BY name" );
+                                                                            if ( mysqli_num_rows($selectConditions) > 0 ) {
+                                                                                while($rowConditions = mysqli_fetch_array($selectConditions)) {
+                                                                                    $conditions_ID = $rowConditions["ID"];
+                                                                                    $conditions_name = $rowConditions["name"];
+
+                                                                                    echo '<option value="'.$conditions_ID.'">'.$conditions_name.'</option>';
                                                                                 }
                                                                             }
                                                                         ?>
                                                                     </select>
+                                                                                                                                                                                          
+                                                               </div>
+                                                            </div>
+                                                            
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Product Code</label>
+                                                                    <input class="form-control" type="text" name="product_code" placeholder="Enter Product Code" required />
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-3">
+                                                            <div class="col-md-4">
                                                                 <div class="form-group">
-                                                                    <label class="control-label">(Specify if other)</label>
-                                                                    <input class="form-control" type="text" name="category_other" placeholder="(If not in list)" />
+                                                                    <label class="control-label">Formula Code</label>
+                                                                    <input class="form-control" type="text" name="formula_code" placeholder="Enter Formula Code" required />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Product Label</label>
+                                                                    <input class="form-control" type="text" name="product_label" placeholder="Enter Product Label" required />
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">MFG Date</label>
+                                                                    <input class="form-control" type="date" name="mfg_date" required />
+                                                                </div>
+                                                             </div>
+                                                            
+
+                                                             <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Expiry Date</label>
+                                                                    <input class="form-control" type="date" name="expiry_date" required />
+                                                                    
                                                                 </div>
                                                             </div>
                                                         </div>
 
+
                                                         <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Ingredient List</label>
-                                                                    <textarea class="form-control" name="ingredient" required placeholder="Enter product ingredients"></textarea>
-                                                                </div>
-                                                            </div>
                                                             <div class="col-md-6">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Description</label>
-                                                                    <textarea class="form-control" name="description" required placeholder="Add product description"></textarea>
+                                                                    <textarea class="form-control" name="description" required placeholder="Enter Description"></textarea>
+                                                            </div>
+                                                         </div>
+
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Batch Qty</label>
+                                                                    <textarea class="form-control" name="batch_qty" required placeholder="Enter Batch Qty"></textarea>
                                                                 </div>
                                                             </div>
                                                         </div>
 
-                                                        <h4><strong>Packaging Details</strong></h4>
+                                                        <!-- <h4><strong>Packaging</strong></h4> -->
                                                         <div class="row">
+
                                                             <div class="col-md-6">
+
                                                                 <div class="form-group">
-                                                                    <label class="control-label">Primary/Unit</label>
-                                                                    <input class="form-control" type="text" name="packaging_1" placeholder="Enter primary/unit packaging" />
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Secondary/Case</label>
-                                                                    <input class="form-control" type="text" name="packaging_2" placeholder="Enter secondary/case packaging" />
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Tertiary/Master Pack</label>
-                                                                    <input class="form-control" type="text" name="packaging_3" placeholder="Enter tertiary/master pack packaging" />
-                                                                </div>
-                                                                 <div class="form-group">
-                                                                    <label class="control-label">Packaging Temperature</label>
-                                                                    <input class="form-control" type="text" name="packaging_temperature" placeholder="Enter packaging temperature" />
-                                                                </div>
+                                                                    <label class="control-label">Packaging</label>
+                                                                    <input class="form-control" type="text" name="packaging" placeholder="Enter packaging" />
+                                                                </div>                                                                                                 
                                                             </div>
 
-
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-6"> 
                                                                 <div class="form-group">
-                                                                    <label class="control-label">Intended Use</label>
-                                                                    <select class="form-control" name="intended">
-                                                                        <option value="0" selected disabled>--Select intended use--</option>
+                                                                    <label class="control-label">Storage Conditions</label>
+                                                                    <select class="form-control" name="storage_conditions">
+                                                                        <option value="0" selected disabled>--Select Storage onditions--</option>
                                                                         <?php
-                                                                            $selectIntended = mysqli_query( $conn,"SELECT * FROM tbl_products_intended WHERE deleted = 0 ORDER BY name" );
-                                                                            if ( mysqli_num_rows($selectIntended) > 0 ) {
-                                                                                while($rowIntended = mysqli_fetch_array($selectIntended)) {
-                                                                                    $intended_ID = $rowIntended["ID"];
-                                                                                    $intended_name = $rowIntended["name"];
+                                                                            $selectConditions = mysqli_query( $conn,"SELECT * FROM tbl_storage_conditions WHERE deleted = 0 ORDER BY name" );
+                                                                            if ( mysqli_num_rows($selectConditions) > 0 ) {
+                                                                                while($rowConditions = mysqli_fetch_array($selectConditions)) {
+                                                                                    $conditions_ID = $rowConditions["ID"];
+                                                                                    $conditions_name = $rowConditions["name"];
 
-                                                                                    echo '<option value="'.$intended_ID.'">'.$intended_name.'</option>';
+                                                                                    echo '<option value="'.$conditions_ID.'">'.$conditions_name.'</option>';
                                                                                 }
                                                                             }
                                                                         ?>
                                                                     </select>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Intended Consumers</label>
-                                                                    <input class="form-control" type="text" name="intended_consumers" placeholder="Enter intended consumers" />
-                                                                </div>
-                                                                <div class="form-group">
-                                                                    <label>Product Claims</label>
-                                                                    <div class="mt-checkbox-list" style="column-count: 3;">
-                                                                        <?php
-                                                                            $selectClaims = mysqli_query( $conn,"SELECT * FROM tbl_products_claims WHERE deleted = 0 ORDER BY name" );
-                                                                            if ( mysqli_num_rows($selectClaims) > 0 ) {
-                                                                                while($rowClaims = mysqli_fetch_array($selectClaims)) {
-                                                                                    $claims_ID = $rowClaims["ID"];
-                                                                                    $claims_name = $rowClaims["name"];
 
-                                                                                    echo '<label class="mt-checkbox mt-checkbox-outline"> '.$claims_name.'
-                                                                                        <input type="checkbox" value="'.$claims_ID.'" name="claims[]">
-                                                                                        <span></span>
-                                                                                    </label>';
-                                                                                }
-                                                                            }
-                                                                        ?>
-                                                                    </div>
-                                                                </div>
+                                                                </div>                                       
                                                             </div>
-                                                        </div>
 
 
-                                                        
-                                                        <div class="row hide">
-                                                            <div class="col-md-12">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Packaging Material List</label>
-                                                                    <textarea class="form-control" name="material"></textarea>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="tab-pane" id="tabProductDescription">
-                                                        <h4><strong>Product Description, including Important Food Safety Characteristics</strong></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label"> Organoleptic/Sensory Characteristics </label>
-                                                                    <div class="chars-container">
-                                                                        <div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
-                                                                            <input type="text" name="physical_chars[]" class="form-control" style="flex-grow:1;" placeholder="e.g. Color, Flavor, Texture, Form" />
-                                                                            <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="physical_chars[]" data-placeholder="e.g. Color, Flavor, Texture, Form" onclick="addMoreChars(this)">
-                                                                         <i class="fa fa-plus"></i> Add more
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Physico - Chemical Characteristics</label>
-                                                                    <div class="chars-container">
-                                                                        <div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
-                                                                            <input type="text" name="physico_chem_char[]" class="form-control" style="flex-grow:1;" placeholder="e.g. Moisture/Fat/Ash%, Brix, etc." />
-                                                                            <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="physico_chem_char[]" data-placeholder="e.g. Moisture/Fat/Ash%, Brix, etc." onclick="addMoreChars(this)">
-                                                                         <i class="fa fa-plus"></i> Add more
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Microbiological Characteristics</label>
-                                                                    <div class="chars-container">
-                                                                        <div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
-                                                                            <input type="text" name="microbial_char[]" class="form-control" style="flex-grow:1;" placeholder="e.g. E.coli, Salmonella, Coliform, APC/TPC, Y&M, Listeria" />
-                                                                            <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
-                                                                        </div>
-                                                                    </div>
-                                                                    <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="microbial_char[]" data-placeholder="e.g. E.coli, Salmonella, Coliform, APC/TPC, Y&M, Listeria" onclick="addMoreChars(this)">
-                                                                         <i class="fa fa-plus"></i> Add more
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="tab-pane" id="tabAllergens">
-                                                        <h4><strong>Allergens</strong></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <div class="mt-checkbox-list">
-                                                                        <label class="mt-checkbox mt-checkbox-outline"> Milk
-                                                                            <input type="checkbox" value="1" name="allergen[]">
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-checkbox mt-checkbox-outline"> Eggs
-                                                                            <input type="checkbox" value="2" name="allergen[]">
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-checkbox mt-checkbox-outline"> Fish (e.g., bass, flounder, cod)
-                                                                            <input type="checkbox" value="3" name="allergen[]">
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-checkbox mt-checkbox-outline"> Crustacean shellfish (e.g., crab, lobster, shrimp)
-                                                                            <input type="checkbox" value="4" name="allergen[]">
-                                                                            <span></span>
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <div class="mt-checkbox-list">
-                                                                        <label class="mt-checkbox mt-checkbox-outline"> Tree nuts (e.g., almonds, walnuts, pecans)
-                                                                            <input type="checkbox" value="5" name="allergen[]">
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-checkbox mt-checkbox-outline"> Peanuts
-                                                                            <input type="checkbox" value="6" name="allergen[]">
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-checkbox mt-checkbox-outline"> Wheat
-                                                                            <input type="checkbox" value="7" name="allergen[]">
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-checkbox mt-checkbox-outline"> Soybeans
-                                                                            <input type="checkbox" value="8" name="allergen[]">
-                                                                            <span></span>
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <div class="mt-checkbox-list">
-                                                                        <label class="mt-checkbox mt-checkbox-outline"> Sesame
-                                                                            <input type="checkbox" value="9" name="allergen[]">
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-checkbox mt-checkbox-outline"> None
-                                                                            <input type="checkbox" value="10" name="allergen[]">
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-checkbox mt-checkbox-outline"> Other
-                                                                            <input type="checkbox" value="11" name="allergen[]">
-                                                                            <span></span>
-                                                                        </label>
-                                                                    </div>
-                                                                    <input class="form-control" type="text" name="allergen_other" placeholder="(Specify if Other)" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="tab-pane" id="tabDimensions">
-                                                        <h4><strong>Materials</strong></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Unit Dimension/s</label>
-                                                                    <input class="form-control" type="text" name="unit" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Box Dimension/s</label>
-                                                                    <input class="form-control" type="text" name="boxes" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Pallet Dimension/s</label>
-                                                                    <input class="form-control" type="text" name="pallet" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <h4><strong>Count</strong></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">How many units per carton/box?</label>
-                                                                    <input class="form-control" type="text" name="count_unit_box" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">How many units per pallet?</label>
-                                                                    <input class="form-control" type="text" name="count_unit_pallet" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">How many carton/box per pallet?</label>
-                                                                    <input class="form-control" type="text" name="count_unit_carton" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="tab-pane" id="tabStorage">
-                                                        <h4><strong>Storage</strong></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Shelf Life</label>
-                                                                    <input class="form-control" type="text" name="shelf" />
-                                                                </div>
-                                                            </div>
                                                             <div class="col-md-6">
                                                                 <div class="form-group">
-                                                                    <label class="control-label">Storage and Handling Requirement</label>
-                                                                    <input class="form-control" type="text" name="storage" />
+                                                                     <label class="control-label">Prepared by</label>
+                                                                     <input class="form-control" type="text" name="prepared_by" placeholder="Prepared by" />
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-3">
+
+                                                            <div class="col-md-6">
                                                                 <div class="form-group">
-                                                                    <label class="control-label">Storage/Warehouse Location</label>
-                                                                    <input class="form-control" type="text" name="warehouse" />
-                                                                </div>
+                                                                    <label class="control-label">Date Prepared</label>                                                                   
+                                                                    <input class="form-control" type="date" name="date_prepared" required />
+                                                                </div>  
                                                             </div>
-                                                            <div class="col-md-3">
+
+                                                            <div class="col-md-6">
                                                                 <div class="form-group">
-                                                                    <label class="control-label">UPC Code</label>
-                                                                    <input class="form-control" type="text" name="upc" />
+                                                                    <label class="control-label">Approved by</label>
+                                                                    <input class="form-control" type="text" name="approved_by" placeholder="Approved by" />
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-3">
+
+                                                            <div class="col-md-6">
                                                                 <div class="form-group">
-                                                                    <label class="control-label">GTIN Number</label>
-                                                                    <input class="form-control" type="text" name="gtin" />
+                                                                    <label class="control-label">Date Approved </label>
+                                                                    <input class="form-control" type="date" name="date_approved" required />
                                                                 </div>
-                                                            </div>
-                                                            <div class="col-md-3">
+                                                            </div>  
+
+
+
+                                                            <div class="col-md-6">
                                                                 <div class="form-group">
-                                                                    <label class="control-label">Lead Time</label>
-                                                                    <input class="form-control" type="text" name="lead" />
+                                                                    <label class="control-label">Stutus</label>
+                                                                    <input class="form-control" type="text" name="status" placeholder="Approved by" />
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Minimum Order Quantity</label>
-                                                                    <input class="form-control" type="text" name="moq" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <h4><strong>Distribution</strong></h4>
+
+                                                        </div>      
+                                                                                                                                                    
+                                                    </div>
+
+
+
+                                                <div class="tab-pane " id="tabProductDescription">
+
+                                                    <div class="row margin-bottom-10"></div>
+                                                        <!-- <h4><strong>Production Batch Record Issuance</strong></h4> -->
+
                                                         <div class="row">
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label>Type of Distribution</label>
-                                                                    <div class="mt-radio-inline">
-                                                                        <label class="mt-radio mt-radio-outline">
-                                                                            <input type="radio" name="export" value="0" checked=""> Local
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-radio mt-radio-outline">
-                                                                            <input type="radio" name="export" value="1"> International
-                                                                            <span></span>
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                            
                                                             <div class="col-md-8">
                                                                 <div class="form-group">
-                                                                    <label class="control-label">Specify the country</label>
-                                                                    <textarea class="form-control" name="countries"></textarea>
+                                                                    <label class="control-label">Issued by</label>
+                                                                    <div class="chars-container">
+                                                                        <div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
+                                                                            <input type="text" name="physical_chars[]" class="form-control" style="flex-grow:1;" placeholder="Issued by" />
+                                                                                                                                                    
+                                                                        </div>
+                                                                    </div>                                                                                                                                    
                                                                 </div>
                                                             </div>
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Date Issued</label>
+                                                                    <input class="form-control" type="date" name="mock_recall" value="'. $row['mock_recall'] .'" />
+                                                            </div>
+                                                            </div>
+
+                                                            <div class="col-md-8">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Accepted by</label>
+
+                                                                    <div class="chars-container">
+                                                                        <div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
+                                                                            <input type="text" name="microbial_char[]" class="form-control" style="flex-grow:1;" placeholder="Accepted by" />                                                                           
+                                                                        </div>
+                                                                    </div>                                                                  
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-4">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Date Accepted</label>
+                                                                    <input class="form-control" type="date" name="mock_recall" value="'. $row['mock_recall'] .'" />
+                                                            </div>
+                                                            </div>
+
+
                                                         </div>
+
                                                     </div>
-                                                    <div class="tab-pane" id="tabManufacturing">
-                                                        <h4><strong>Manufacturing Details</strong></h4>
-                                                        <div class="row" data-manufacturing-details="default">
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Manufactured by</label>
-                                                                    <input class="form-control" type="text" name="manufactured_by" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Manufactured for</label>
-                                                                    <input class="form-control" type="text" name="manufactured_for" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Distributed by</label>
-                                                                    <input class="form-control" type="text" name="distributed_by" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row hide" data-manufacturing-details="[27,28]">
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Enterprise Name</label>
-                                                                    <!-- mb = *manufactured/distributed* -->
-                                                                    <input class="form-control" type="text" name="mb_enterprise_name" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Lot Code</label>
-                                                                    <input class="form-control" type="text" name="mb_lot_code" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Manufactured Date</label>
-                                                                    <input class="form-control" type="date" name="mb_manufactured_date" />
-                                                                </div>
-                                                            </div>
-                                                             <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Expiry Date</label>
-                                                                    <input class="form-control" type="date" name="mb_expiry_date" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row hide" data-manufacturing-details="[29]">
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Supplier Name</label>
-                                                                    <input class="form-control" type="text" name="traded_supplier_name" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Supplied for</label>
-                                                                    <input class="form-control" type="text" name="traded_supplied_for" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Supplier-issued Lot Code</label>
-                                                                    <input class="form-control" type="text" name="traded_supplied_lot_code" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Manufactured Date</label>
-                                                                    <input class="form-control" type="date" name="traded_manufactured_date" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Expiry Date</label>
-                                                                    <input class="form-control" type="date" name="traded_expiry_date" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row hide" data-manufacturing-details="[30]">
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Manufactured by</label>
-                                                                    <input class="form-control" type="text" name="branded_manufactured_by" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Manufactured for</label>
-                                                                    <input class="form-control" type="text" name="branded_manufactured_for" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Manufactured Date</label>
-                                                                    <input class="form-control" type="date" name="branded_manufactured_date" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Expiry Date</label>
-                                                                    <input class="form-control" type="date" name="branded_expiry_date" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Lot Code assigned by Manufacturer</label>
-                                                                    <input class="form-control" type="text" name="branded_lot_code_by_manufacturer" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Lot code assigned by Enterprise</label>
-                                                                    <input class="form-control" type="text" name="branded_lot_code_by_enterprise" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <h4><strong>Receiving Details</strong></h4>
-                                                        <div class="row">
-                                                            <?php 
-                                                                $countriesArr = [];
-                                                                $countriesResult = $conn->query("SELECT iso2,name FROM countries");
-                                                                if($countriesResult->num_rows) while($row = $countriesResult->fetch_assoc()) {
-                                                                    $countriesArr[] = $row;
-                                                                }
-                                                            ?>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Country of Purchase</label>
-                                                                    <select class="form-control" name="country_of_purchase">
-                                                                        <option value="" selected disabled>--Select--</option>
-                                                                        <?php foreach($countriesArr as $c) echo '<option value="'.$c['iso2'].'">'.$c['name'].'</option>'; ?>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Country of Origin</label>
-                                                                    <select class="form-control" name="country_of_origin">
-                                                                        <option value="" selected disabled>--Select--</option>
-                                                                        <?php foreach($countriesArr as $c) echo '<option value="'.$c['iso2'].'">'.$c['name'].'</option>'; ?>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Delivered from</label>
-                                                                    <select class="form-control" name="delivered_from">
-                                                                        <option value="" selected disabled>--Select--</option>
-                                                                        <?php foreach($countriesArr as $c) echo '<option value="'.$c['iso2'].'">'.$c['name'].'</option>'; ?>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="tab-pane" id="tabExercises">
-                                                        <h4><strong>Exercises</strong></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Mock Recall Exercise</label>
-                                                                    <input class="form-control" type="date" name="mock_recall" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Product Trace Exercise</label>
-                                                                    <input class="form-control" type="date" name="product_trace" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+
+
+   
                                                     <div class="tab-pane" id="tabDocuments">
-                                                        <h4><strong>Documents</strong></h4>
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Product Specification</label>
-                                                                    <input class="form-control" type="file" name="specifcation" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Due Date</label>
-                                                                    <input class="form-control" type="date" name="specifcation_date" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Share to Marketplace?</label>
-                                                                    <div class="mt-radio-inline">
-                                                                        <label class="mt-radio mt-radio-outline"> No
-                                                                            <input type="radio" value="0" name="specifcation_radio" checked />
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-radio mt-radio-outline"> Yes
-                                                                            <input type="radio" value="1" name="specifcation_radio" />
-                                                                            <span></span>
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Packaging Artwork</label>
-                                                                    <input class="form-control" type="file" name="artwork" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Due Date</label>
-                                                                    <input class="form-control" type="date" name="artwork_date" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Share to Marketplace?</label>
-                                                                    <div class="mt-radio-inline">
-                                                                        <label class="mt-radio mt-radio-outline"> No
-                                                                            <input type="radio" value="0" name="artwork_radio" checked />
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-radio mt-radio-outline"> Yes
-                                                                            <input type="radio" value="1" name="artwork_radio" />
-                                                                            <span></span>
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Food Safety Plan/HACCP</label>
-                                                                    <input class="form-control" type="file" name="haccp" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Due Date</label>
-                                                                    <input class="form-control" type="date" name="haccp_date" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Share to Marketplace?</label>
-                                                                    <div class="mt-radio-inline">
-                                                                        <label class="mt-radio mt-radio-outline"> No
-                                                                            <input type="radio" value="0" name="haccp_radio" checked />
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-radio mt-radio-outline"> Yes
-                                                                            <input type="radio" value="1" name="haccp_radio" />
-                                                                            <span></span>
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Label</label>
-                                                                    <input class="form-control" type="file" name="label" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Due Date</label>
-                                                                    <input class="form-control" type="date" name="label_date" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Share to Marketplace?</label>
-                                                                    <div class="mt-radio-inline">
-                                                                        <label class="mt-radio mt-radio-outline"> No
-                                                                            <input type="radio" value="0" name="label_radio" checked />
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-radio mt-radio-outline"> Yes
-                                                                            <input type="radio" value="1" name="label_radio" />
-                                                                            <span></span>
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row">
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Formulation</label>
-                                                                    <input class="form-control" type="file" name="formulation" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Due Date</label>
-                                                                    <input class="form-control" type="date" name="formulation_date" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Share to Marketplace?</label>
-                                                                    <div class="mt-radio-inline">
-                                                                        <label class="mt-radio mt-radio-outline"> No
-                                                                            <input type="radio" value="0" name="formulation_radio" checked />
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-radio mt-radio-outline"> Yes
-                                                                            <input type="radio" value="1" name="formulation_radio" />
-                                                                            <span></span>
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="mt-repeater mt-repeater-docs">
-                                                            <div data-repeater-list="docs">
-                                                                <div class="mt-repeater-item row" data-repeater-item>
-                                                                    <div class="col-lg-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Document Name</label>
-                                                                            <input class="form-control" type="text" name="docs_label" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-lg-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Document</label>
-                                                                            <input class="form-control" type="file" name="docs_file" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-lg-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Date</label>
-                                                                            <input class="form-control" type="date" name="docs_date" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="col-lg-3">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Share to Marketplace?</label>
-                                                                            <div class="mt-radio-inline" style="position: relative;">
-                                                                                <label class="mt-radio mt-radio-outline"> No
-                                                                                    <input type="radio" value="0" name="docs_radio" checked />
-                                                                                    <span></span>
-                                                                                </label>
-                                                                                <label class="mt-radio mt-radio-outline"> Yes
-                                                                                    <input type="radio" value="1" name="docs_radio" />
-                                                                                    <span></span>
-                                                                                </label>
-                                                                                <a href="javascript:;" data-repeater-delete class="btn btn-danger" style="position: absolute; right: 0; top: 0;"><i class="fa fa-close"></i></a>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <a href="javascript:;" data-repeater-create class="btn btn-success mt-repeater-add btnEducation"><i class="fa fa-plus"></i> Add more Document</a>
-                                                        </div>
-
-
-                                                        <div class="row hidden">
-                                                            <div class="col-md-8">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Certificate of Origin</label>
-                                                                    <input class="form-control" type="file" name="origin" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Share to Marketplace?</label>
-                                                                    <div class="mt-radio-inline">
-                                                                        <label class="mt-radio mt-radio-outline"> No
-                                                                            <input type="radio" value="0" name="origin_radio" checked />
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-radio mt-radio-outline"> Yes
-                                                                            <input type="radio" value="1" name="origin_radio" />
-                                                                            <span></span>
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row hidden">
-                                                            <div class="col-md-8">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Finish Product Recall Procedures</label>
-                                                                    <input class="form-control" type="file" name="procedures" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Share to Marketplace?</label>
-                                                                    <div class="mt-radio-inline">
-                                                                        <label class="mt-radio mt-radio-outline"> No
-                                                                            <input type="radio" value="0" name="procedures_radio" checked />
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-radio mt-radio-outline"> Yes
-                                                                            <input type="radio" value="1" name="procedures_radio" />
-                                                                            <span></span>
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <div class="row hidden">
-                                                            <div class="col-md-8">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Certificate of Analysis</label>
-                                                                    <input class="form-control" type="file" name="analysis" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Share to Marketplace?</label>
-                                                                    <div class="mt-radio-inline">
-                                                                        <label class="mt-radio mt-radio-outline"> No
-                                                                            <input type="radio" value="0" name="analysis_radio" checked />
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-radio mt-radio-outline"> Yes
-                                                                            <input type="radio" value="1" name="analysis_radio" />
-                                                                            <span></span>
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row hidden">
-                                                            <div class="col-md-8">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Safety Data Sheet</label>
-                                                                    <input class="form-control" type="file" name="sheet" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Share to Marketplace?</label>
-                                                                    <div class="mt-radio-inline">
-                                                                        <label class="mt-radio mt-radio-outline"> No
-                                                                            <input type="radio" value="0" name="sheet_radio" checked />
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-radio mt-radio-outline"> Yes
-                                                                            <input type="radio" value="1" name="sheet_radio" />
-                                                                            <span></span>
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="row hidden">
-                                                            <div class="col-md-8">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Certificate of Guarantee</label>
-                                                                    <input class="form-control" type="file" name="guarantee" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Share to Marketplace?</label>
-                                                                    <div class="mt-radio-inline">
-                                                                        <label class="mt-radio mt-radio-outline"> No
-                                                                            <input type="radio" value="0" name="guarantee_radio" checked />
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-radio mt-radio-outline"> Yes
-                                                                            <input type="radio" value="1" name="guarantee_radio" />
-                                                                            <span></span>
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row hidden">
-                                                            <div class="col-md-8">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Certificate of Conformance</label>
-                                                                    <input class="form-control" type="file" name="conformance" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Share to Marketplace?</label>
-                                                                    <div class="mt-radio-inline">
-                                                                        <label class="mt-radio mt-radio-outline"> No
-                                                                            <input type="radio" value="0" name="conformance_radio" checked />
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-radio mt-radio-outline"> Yes
-                                                                            <input type="radio" value="1" name="conformance_radio" />
-                                                                            <span></span>
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="row hidden">
-                                                            <div class="col-md-8">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Product Liability Insurance</label>
-                                                                    <input class="form-control" type="file" name="insurance" />
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <div class="form-group">
-                                                                    <label class="control-label">Share to Marketplace?</label>
-                                                                    <div class="mt-radio-inline">
-                                                                        <label class="mt-radio mt-radio-outline"> No
-                                                                            <input type="radio" value="0" name="insurance_radio" checked />
-                                                                            <span></span>
-                                                                        </label>
-                                                                        <label class="mt-radio mt-radio-outline"> Yes
-                                                                            <input type="radio" value="1" name="insurance_radio" />
-                                                                            <span></span>
-                                                                        </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+    
+  
                                                     </div>
-                                                    <div class="tab-pane" id="tabLabs">
-                                                        <a href="#modalNewLab" data-toggle="modal" class="btn green" onclick="btnNew_Lab(1)">Add New Lab</a>
-                                                        <div class="table-scrollable">
-                                                            <table class="table table-bordered table-hover" id="tableLab_1">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Lot #</th>
-                                                                        <th>Lab</th>
-                                                                        <th>Analysis</th>
-                                                                        <th>Method</th>
-                                                                        <th>Sample Size</th>
-                                                                        <th>Unit</th>
-                                                                        <th class="text-center">Date Sent for Lab</th>
-                                                                        <th class="text-center">Date Received</th>
-                                                                        <th class="text-center">Action</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody></tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
+                        
                                                 </div>
                                             </div>
                                         </div>
@@ -1473,9 +920,10 @@
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
                                     <form method="post" enctype="multipart/form-data" class="modalForm modalUpdate">
-                                        <div class="modal-header">
+
+                                        <div class="modal-header bg-info">
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                            <h4 class="modal-title">Product Details</h4>
+                                            <h4 class="modal-title"><strong>Product Details</strong></h4>
                                         </div>
                                         <div class="modal-body"></div>
                                         <div class="modal-footer">
@@ -1651,7 +1099,7 @@
                     ],
                 });
                 
-                fetchProducts();
+                fetchBatch();
             });
             function widget_formRepeater() {
                 var FormRepeater=function(){
@@ -1724,7 +1172,7 @@
                         dataType: "html",
                         success: function(response){
                             // $('#mt_action_'+id).remove();
-                            fetchProducts();
+                            fetchBatch();
                         }
                     });
                     swal("Done!", "This item has been deleted.", "success");
@@ -1780,7 +1228,7 @@
                     success: function(response) {
                         if ($.trim(response)) {
                             msg = "Sucessfully Save!";
-                            fetchProducts();
+                            fetchBatch();
                             $('#modalNew').modal('hide');
                         } else {
                             msg = "Error!"
@@ -1826,7 +1274,7 @@
                     success: function(response) {
                         if ($.trim(response)) {
                             msg = "Sucessfully Save!";
-                            fetchProducts();
+                            fetchBatch();
                             $('#modalView').modal('hide');
                         } else {
                             msg = "Error!"
@@ -1885,7 +1333,7 @@
             }));
             
             var isFetching = false;
-            function fetchProducts() {
+            function fetchBatch() {
                 if(isFetching) {
                     console.log('Already fetching...');
                     return;
@@ -1895,7 +1343,7 @@
                 
                 $.ajax({    
                     type: "GET",
-                    url: "?fetchProducts",
+                    url: "?fetchBatch",
                     dataType: "json",                  
                     success: function(data){       
                         if(Array.isArray(data) && data.length) {
@@ -1903,27 +1351,28 @@
                             data.forEach((d) => {
                                 productDT.row.add([
 
-                                    `<span style="font-weight: 200;">${d.ID}</span>`,
-                                    `
-                                        <div style="display: flex; gap:1rem;">
-                                            <img src="${d.image}" style="width: 40px; height: 40px; object-fit: cover; object-position: center; border-radius:50% !important;" />
+                                    `<span style="font-weight: 200;">${d.ID}</span>`,                                
+                                   ` <div style="display: flex; gap:1rem;">
+                                            
                                             <div>
                                                 <span style="font-weight: 600;">${d.name}</span>
-                                            </div> 
-                                        </div>
-                                    `,
-                                    `<p class="text-muted" style="text-align:justify;">${d.description}</p>`,
-                                    `<span style="font-weight: 200;">${d.upc}</span>`,
+                                                
+                                            </div>    
+                                        </div>`,
+                                    
+                                    // `<p class="text-muted" style="text-align:justify;">${d.description}</p>`,
+                                    // `<span style="font-weight: 200;">${d.upc}</span>`,
                                     // `<span style="font-weight: 200;">${d.manufactured_by}</span>`,
                                     // `<span style="font-weight: 200;">${d.manufactured_for}</span>`,
-                                    `<span style="font-weight: 200;">${d.unit}</span>`,
-                                    `<span style="font-weight: 200;">${d.boxes}</span>`,
-                                    `
-                                        <div class="btn btn-circle" style="position: unset;">
-                                            <a href="#modalView" data-toggle="modal" data-id="${d.id}" class="btn btn-outline btn-circle btn-info font-weight-bold btn-pill btn-md btnView" onclick="btnView(${d.id})">View</a>
-                                            
-                                        </div>
-                                    `,
+                                    `<span style="font-weight: 200;">${d.code}</span>`,
+                                    `<span style="font-weight: 200;">${d.upc}</span>`,
+                                    `<div class="btn btn-circle" style="position: unset;">
+                                        <a class="btn btn-outline btn-circle font-weight-bold btn-pill btn-md">Pending</a>                                           
+                                     </div>`,                                   
+                                    `<div class="btn btn-circle" style="position: unset;">
+                                        <a href="#modalView" data-toggle="modal" data-id="${d.id}" class="btn btn-outline btn-circle btn-info font-weight-bold btn-pill btn-md btnView" onclick="btnView(${d.id})">View</a>                                        
+                                     </div>`,
+
                                 ]).draw();
                             });
                         }

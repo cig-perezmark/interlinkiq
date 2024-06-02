@@ -265,7 +265,6 @@
         <div class="col-lg-4 p-5 sign-in-container d-flex align-items-center">
           <form method="POST" class="form formSignIn w-100">
             <h1 class="text-white">Welcome Back</h1>
-            <p class="text-white">To keep connected with us, please login with your personal info</p>
 
             <h3 class="text-white">Login</h3>
             <div class="alert_msg text-white"></div>
@@ -321,6 +320,10 @@
             <div class="form-floating mb-3">
               <input type="text" class="form-control" id="email" name="email" placeholder="Email" required />
               <label for="email">Email</label>
+            </div>
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="phone" name="phone" placeholder="phone" required />
+              <label for="phone">Phone Number</label>
             </div>
             <div class="form-floating mb-3">
               <input type="password" class="form-control" id="password" name="password" placeholder="Password" required />

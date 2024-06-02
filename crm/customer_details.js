@@ -93,6 +93,7 @@ $(document).ready(function() {
             contentType: false, 
             data: formData,
             success: function(response) {
+                console.log(response)
                 $.bootstrapGrowl('Details updated!', {
                     ele: 'body',
                     type: 'success',
@@ -360,6 +361,7 @@ $(document).ready(function() {
             processData: false,
             contentType: false,
             success: function(response) {
+                console.log(response)
                 $.bootstrapGrowl('Contact Updated Successfully!', {
                     ele: 'body',
                     type: 'success',
@@ -419,6 +421,52 @@ $(document).ready(function() {
                 $('#addReference').modal('hide');
                 $('#referenceForm')[0].reset();
                 get_references()
+            },
+            error: function(xhr, status, error) {
+                alert("Error uploading file.");
+                console.error(xhr.responseText);
+            }
+        });
+    });
+    
+    $('#fseForm').submit(function(e) {
+        e.preventDefault();
+        var fileInput = $('#fseFile');
+        var file = fileInput[0].files[0];
+
+        if (!file) {
+            alert("Please select a file.");
+            return;
+        }
+
+        var allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'text/csv', 'application/msword', 'application/vnd.ms-excel'];
+        if (allowedTypes.indexOf(file.type) === -1) {
+            alert("Invalid file type. Please upload an image, PDF, CSV, Word document, or Excel spreadsheet.");
+            return;
+        }
+
+        var formData = new FormData(this);
+        formData.append('add_fse', 'add_fse');
+        $.ajax({
+            url: 'crm/customer_details.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $.bootstrapGrowl('FSE Added!', {
+                    ele: 'body',
+                    type: 'success',
+                    offset: { from: 'bottom', amount: 50 },
+                    align: 'right',
+                    width: 'auto',
+                    delay: 4000,
+                    allow_dismiss: true,
+                    stackup_spacing: 10
+                });
+                $('#fseModal').modal('hide');
+                $('#fseForm')[0].reset();
+                get_fse();
             },
             error: function(xhr, status, error) {
                 alert("Error uploading file.");

@@ -1,4 +1,5 @@
 <?php 
+    // phpinfo();
     $title = "My Profile";
     $site = "profile";
     $breadcrumbs = '';

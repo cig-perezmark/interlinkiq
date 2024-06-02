@@ -507,6 +507,70 @@
     }
 
 
+    //FILE UPLOAD VALIDATION
+    function fileValidation($type, $file, $path) {
+        // Type
+        // 0 - General / Exclude invalid file type
+        // 1 - Accept Image Only
+
+        $path = 'uploads/'.$path;
+        $files = $_FILES[$file]['name'];
+        $size = $_FILES[$file]['size'];
+        $tmp = $_FILES[$file]['tmp_name'];
+
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        if (!$finfo) {
+            return false; // If finfo_open fails, consider the file invalid
+        }
+        $mime = finfo_file($finfo, $tmp);
+        finfo_close($finfo);
+
+        // $mime = mime_content_type($tmp);
+        $mime_array = array(
+            'text/x-php',
+            'text/plain', 
+            'text/plain', 
+            'text/css', 
+            'text/html', 
+            'text/javascript', 
+            'application/json', 
+            'application/x-httpd-php', 
+            'application/rtf', 
+            'application/x-sh', 
+            'font/ttf', 
+            'font/woff', 
+            'font/woff2', 
+            'application/xhtml+xml', 
+            'application/xml', 
+            'text/xml', 
+            'application/atom+xml', 
+            'application/vnd.mozilla.xul+xml', 
+            'application/x-msdownload'
+        );
+        if ($type == 1) { $mime_array = array('image/png', 'image/jpeg', 'image/jpg'); }
+
+        $ext_array = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+        
+        $files = rand(1000,1000000) . ' - ' . $files;
+        $path = $path.$files;
+
+        $output = array(
+            "valid" => false,
+            "files" => $files,
+            "size" => $size,
+            "mime" => $mime
+        );
+        if ( ($type == 0 AND !in_array($mime, $mime_array)) OR ($type == 1 AND in_array($mime, $mime_array)) ) {
+            if(move_uploaded_file($tmp,$path)) {
+                $output['valid'] = true;
+            }
+        }
+        
+        return $output;
+    }
+
+
 	// LOGIN SECTION
 	if( isset($_GET['logout']) ) {
 		unset($_COOKIE['ID']);
@@ -547,6 +611,10 @@
                 unset($_COOKIE['client']);
                 setcookie('client', '', time() - 3600, '/'); // empty value and old timestamp
                 echo '<script>window.location.href = "Exim360"</script>';
+            } else if ($_COOKIE['client'] == 5)  {
+                unset($_COOKIE['client']);
+                setcookie('client', '', time() - 3600, '/'); // empty value and old timestamp
+                echo '<script>window.location.href = "Vikings"</script>';
             } else {
     			unset($_COOKIE['client']);
     	    	setcookie('client', '', time() - 3600, '/'); // empty value and old timestamp
@@ -799,6 +867,7 @@
 		$first_name = addslashes($_POST['first_name']);
 		$last_name = addslashes($_POST['last_name']);
 		$email = $_POST['email'];
+        $phone = addslashes($_POST['phone']);
 		$password = $_POST['password'];
 		$password_hash = password_hash($password, PASSWORD_DEFAULT);
 		$exist = false;
@@ -811,7 +880,42 @@
 			$sql = "INSERT INTO tbl_user (employee_id, first_name, last_name, email, password, client)
 			VALUES ( '$ID', '$first_name', '$last_name', '$email', '$password_hash', '$client')";
 			if (mysqli_query($conn, $sql)) {
-				// $last_id = mysqli_insert_id($conn);
+                $last_id = mysqli_insert_id($conn);
+                $sql = "INSERT INTO tbl_user_info (user_id, mobile) VALUES ('$last_id', '$phone')";
+                mysqli_query($conn, $sql);
+
+                $array_client = array(
+                    0 => 'CIG',
+                    1 => 'CannOS',
+                    2 => 'FoodSafety360',
+                    3 => 'SafeCannabis360',
+                    4 => 'Exim360',
+                    5 => 'Viking Atlantic Sales Group, LLC',
+                    6 => 'Swiss Food',
+                    7 => 'FSSC360'
+                );
+
+                $sender_name = 'Interlink IQ';
+                $sender_email = 'services@interlinkiq.com';
+                $sender[$sender_email] = $sender_name;
+
+                $recipients_name = 'Arnel Ryan';
+                $recipients_email = 'arnel@consultareinc.com';
+                $recipients[$recipients_email] = $recipients_name;
+
+                $subject = 'New User Registered from '.$array_client[$client];
+                $body = 'Hi Team,<br><br>
+
+                See details for our new user registered below<br><br>
+
+                Name: '.$first_name.' '.$last_name.'<br>
+                Email: '.$email.'<br>
+                Phone: '.$phone.'<br><br>
+
+                InterlinkIQ.com Team<br>
+                Consultare Inc. Group';
+
+                php_mailer_dynamic($sender, $recipients, $subject, $body);
 
 				// $to = $email;
 				// $user = $first_name .' '. $last_name;
@@ -2040,6 +2144,8 @@
                 $client_url = 'SafeCannabis360';
             } else if ($client == 4) {
                 $client_url = 'Exim360';
+            } else if ($client == 5) {
+                $client_url = 'Vikings';
             }
         }
 
@@ -2671,6 +2777,8 @@
                     $client_url = 'SafeCannabis360';
                 } else if ($client == 4) {
                     $client_url = 'Exim360';
+                } else if ($client == 5) {
+                    $client_url = 'Vikings';
                 }
 
                 $selectEnterprise = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE users_entities = $user_id" );
@@ -2750,6 +2858,18 @@
                         If you experience difficulties opening the website, kindly use this link instead <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">'. $base_url . $client_url .'?r=1&i='. $last_id .'</a><br><br>
 
                         Should you need assistance, kindly email <a href="mailto:exim360r@gmail.com" target="_blank">exim360r@gmail.com</a><br><br>
+
+                        Cann OS Team';
+                    } elseif ($_COOKIE['client'] == 5) {
+                        $subject = 'Welcome to Vikings Atlantic Sales Group, LLC!';
+                        $body = 'Hi '. $data_first_name .',<br><br>
+
+                        Your employer, '.$data_company.',<br><br>
+
+                        invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">Vikings Atlantic Sales Group, LLC</a> to connect with your assigned duties, work, and tasks. 
+                        If you experience difficulties opening the website, kindly use this link instead <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">'. $base_url . $client_url .'?r=1&i='. $last_id .'</a><br><br>
+
+                        Should you need assistance, kindly email <a href="mailto:vikingatlanticsalesgroupllc@gmail.com" target="_blank">vikingatlanticsalesgroupllc@gmail.com</a><br><br>
 
                         Cann OS Team';
                     } else {
@@ -2849,6 +2969,8 @@
                         $client_url = 'SafeCannabis360';
                     } else if ($client == 4) {
                         $client_url = 'Exim360';
+                    } else if ($client == 5) {
+                        $client_url = 'Vikings';
                     }
 
 					$position = array();
@@ -2910,7 +3032,7 @@
 
                             Cann OS Team';
                     	} else if ($_COOKIE['client'] == 2) {
-                            $subject = 'Welcome to Cann OS!';
+                            $subject = 'Welcome to FoodSafety360!';
                             $body = 'Hi '. $data_first_name .',<br><br>
 
                             Your employer, '.$data_company.',<br><br>
@@ -2920,29 +3042,41 @@
 
                             Should you need assistance, kindly email <a href="mailto:foodsafety360r@gmail.com" target="_blank">foodsafety360r@gmail.com</a><br><br>
 
-                            Cann OS Team';
+                            FoodSafety360 Team';
                         } else if ($_COOKIE['client'] == 3) {
-                            $subject = 'Welcome to Cann OS!';
+                            $subject = 'Welcome to FoodSafety360!';
                             $body = 'Hi '. $data_first_name .',<br><br>
 
                             Your employer, '.$data_company.',<br><br>
 
-                            invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">Food Safety 360</a> to connect with your assigned duties, work, and tasks. 
+                            invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">SafeCannabis360</a> to connect with your assigned duties, work, and tasks. 
                             If you experience difficulties opening the website, kindly use this link instead <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">'. $base_url . $client_url .'?r=1&i='. $last_id .'</a><br><br>
 
                             Should you need assistance, kindly email <a href="mailto:cannabis360r@gmail.com" target="_blank">cannabis360r@gmail.com</a><br><br>
 
-                            Cann OS Team';
+                            SafeCannabis360 Team';
                         } else if ($_COOKIE['client'] == 4) {
+                            $subject = 'Welcome to Exim360!';
+                            $body = 'Hi '. $data_first_name .',<br><br>
+
+                            Your employer, '.$data_company.',<br><br>
+
+                            invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">Exim360</a> to connect with your assigned duties, work, and tasks. 
+                            If you experience difficulties opening the website, kindly use this link instead <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">'. $base_url . $client_url .'?r=1&i='. $last_id .'</a><br><br>
+
+                            Should you need assistance, kindly email <a href="mailto:exim360r@gmail.com" target="_blank">exim360r@gmail.com</a><br><br>
+
+                            Cann OS Team';
+                        } else if ($_COOKIE['client'] == 5) {
                             $subject = 'Welcome to Cann OS!';
                             $body = 'Hi '. $data_first_name .',<br><br>
 
                             Your employer, '.$data_company.',<br><br>
 
-                            invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">Food Safety 360</a> to connect with your assigned duties, work, and tasks. 
+                            invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">Viking Atlantic Sales Group, LLC</a> to connect with your assigned duties, work, and tasks. 
                             If you experience difficulties opening the website, kindly use this link instead <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">'. $base_url . $client_url .'?r=1&i='. $last_id .'</a><br><br>
 
-                            Should you need assistance, kindly email <a href="mailto:exim360r@gmail.com" target="_blank">exim360r@gmail.com</a><br><br>
+                            Should you need assistance, kindly email <a href="mailto:vikingatlanticsalesgroupllc@gmail.com" target="_blank">vikingatlanticsalesgroupllc@gmail.com</a><br><br>
 
                             Cann OS Team';
                         } else {
@@ -3223,6 +3357,10 @@
                     $from = 'exim360r@gmail.com';
                     $name = 'Exim360';
                     $body .= 'Food Safety Procedure';
+                } else if ($_COOKIE['client'] == 5) {
+                    $from = 'vikingatlanticsalesgroupllc@gmail.com';
+                    $name = 'Vikings';
+                    $body .= 'Food Safety Procedure';
                 } else {
                     $from = 'services@interlinkiq.com';
                     $name = 'InterlinkIQ';
@@ -3402,24 +3540,15 @@
         $arr_item = array();
         $process = true;
 
+        $files = '';
 		$filetype = $_POST['filetype'];
 		if ($filetype == 1) {
-			$files = $_FILES['file']['name'];
-			if (!empty($files)) {
-				$path = 'uploads/hr/';
-                $filesize = $_FILES['file']['size'];
-				$tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-				$files = rand(1000,1000000) . ' - ' . $files;
-				$path = $path.$files;
-
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($tmp,$path);
-                } else {
-                    $process = false;
-                }
-			}
+			if (!empty($_FILES['file']['name'])) {
+                $fileValidation = fileValidation(0, 'file', 'hr/');
+                $files = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
+            }
 		} else {
 			$files = $_POST['fileurl'];
             $filesize = 0;
@@ -3526,24 +3655,16 @@
             $filetype = $_POST['filetype'];
             if ($filetype > 0) {
                 if ($filetype == 1) {
-                    $files = $_FILES['file']['name'];
-                    if (!empty($files)) {
-                        $path = 'uploads/';
-                        $filesize = $_FILES['file']['size'];
-                        $tmp = $_FILES['file']['tmp_name'];
-                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                        $files = rand(1000,1000000) . ' - ' . $files;
-                        $path = $path.$files;
+                    if (!empty($_FILES['file']['name'])) {
+                        $fileValidation = fileValidation(0, 'file', '');
+                        $files = $fileValidation['files'];
+                        $filesize = $fileValidation['size'];
+                        $process = $fileValidation['valid'];
 
-                        if(!in_array($ext, $invalid_extensions)) {
-                            move_uploaded_file($tmp,$path);
-
+                        if ($process == true) {
                             $filesize_tot = $filesize + $rowData["filesize"];
 
                             mysqli_query( $conn,"UPDATE tbl_hr_file SET filesize='". $filesize_tot ."', uploaded_date = '".$last_modified."' WHERE ID='". $ID ."'" );
-                        } else {
-                            $process = false;
                         }
                     }
                 } else {
@@ -4030,22 +4151,12 @@
 
 		$filetype = $_POST['filetype'];
 		if ($filetype == 1) {
-			$files = $_FILES['file']['name'];
-			if (!empty($files)) {
-				$path = 'uploads/';
-                $filesize = $_FILES['file']['size'];
-				$tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-				$files = rand(1000,1000000) . ' - ' . $files;
-				$path = $path.$files;
-
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($tmp,$path);
-                } else {
-                    $process = false;
-                }
-			}
+			if (!empty($_FILES['file']['name'])) {
+                $fileValidation = fileValidation(0, 'file', '');
+                $files = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
+            }
 		} else {
 			$files = $_POST['fileurl'];
             $filesize = 0;
@@ -4157,19 +4268,13 @@
                 $filetype = $_POST['filetype'];
                 if ($filetype > 0) {
                     if ($filetype == 1) {
-                        $files = $_FILES['file']['name'];
-                        if (!empty($files)) {
-                            $path = 'uploads/';
-                            $filesize = $_FILES['file']['size'];
-                            $tmp = $_FILES['file']['tmp_name'];
-                            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                            $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                            $files = rand(1000,1000000) . ' - ' . $files;
-                            $path = $path.$files;
+                        if (!empty($_FILES['file']['name'])) {
+                            $fileValidation = fileValidation(0, 'file', 'avatar/');
+                            $files = $fileValidation['files'];
+                            $filesize = $fileValidation['size'];
+                            $process = $fileValidation['valid'];
 
-                            if(!in_array($ext, $invalid_extensions)) {
-                                move_uploaded_file($tmp,$path);
-
+                            if ($process == true) {
                                 $filesize_tot = $filesize + $rowData["filesize"];
 
                                 mysqli_query( $conn,"UPDATE tbl_hr_job_description SET files='". $files ."', filetype='". $filetype ."', filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
@@ -4184,8 +4289,6 @@
                                 $files = $src.$url.rawurlencode($files).$embed;
 
                                 $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
-                            } else {
-                                $process = false;
                             }
                         }
                     } else {
@@ -6507,22 +6610,12 @@
 
 		$filetype = $_POST['filetype'];
 		if ($filetype == 1) {
-			$files = $_FILES['file']['name'];
-			if (!empty($files)) {
-				$path = 'uploads/';
-                $filesize = $_FILES['file']['size'];
-				$tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-				$files = rand(1000,1000000) . ' - ' . $files;
-				$path = $path.$files;
-
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($tmp,$path);
-                } else {
-                    $process = false;
-                }
-			}
+			if (!empty($_FILES['file']['name'])) {
+                $fileValidation = fileValidation(0, 'file', '');
+                $files = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
+            }
 		} else {
 			$files = $_POST['fileurl'];
             $filesize = 0;
@@ -6613,24 +6706,16 @@
                 $filetype = $_POST['filetype'];
                 if ($filetype > 0) {
                     if ($filetype == 1) {
-                        $files = $_FILES['file']['name'];
-                        if (!empty($files)) {
-                            $path = 'uploads/';
-                            $filesize = $_FILES['file']['size'];
-                            $tmp = $_FILES['file']['tmp_name'];
-                            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                            $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                            $files = rand(1000,1000000) . ' - ' . $files;
-                            $path = $path.$files;
+                        if (!empty($_FILES['file']['name'])) {
+                            $fileValidation = fileValidation(0, 'file', '');
+                            $files = $fileValidation['files'];
+                            $filesize = $fileValidation['size'];
+                            $process = $fileValidation['valid'];
 
-                            if(!in_array($ext, $invalid_extensions)) {
-                                move_uploaded_file($tmp,$path);
-
+                            if ($process == true) {
                                 $filesize_tot = $filesize + $rowData["filesize"];
 
                                 mysqli_query( $conn,"UPDATE tbl_hr_department SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
-                            } else {
-                                $process = false;
                             }
                         }
                     } else {
@@ -7326,8 +7411,8 @@
 							            	</select>
 							            </div>
 							        </div>
-					                <input type="hidden" name="prepared_signature_default_temp" value="'.$arnel_signature.'" />
-					                <img class="img img-fluid sign signature_default" src="'.$arnel_signature.'" />
+					                <input type="hidden" name="prepared_signature_default_temp" value="'.$empty_signature.'" />
+					                <img class="img img-fluid sign signature_default" src="'.$empty_signature.'" />
 					                <input type="file" class="form-control hide sign signature_upload" name="prepared_file" />
 					                <div class="hide sign signature_sign">
 					                	<input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
@@ -8384,8 +8469,8 @@
 									            	</select>
 									            </div>
 									        </div>
-							                <input type="hidden" name="prepared_signature_default_temp" value="'.$arnel_signature.'" />
-							                <img class="img img-fluid sign signature_default" src="'.$arnel_signature.'" />
+							                <input type="hidden" name="prepared_signature_default_temp" value="'.$empty_signature.'" />
+							                <img class="img img-fluid sign signature_default" src="'.$empty_signature.'" />
 							                <input type="file" class="form-control hide sign signature_upload" name="prepared_file" />
 							                <div class="hide sign signature_sign">
 							                	<input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
@@ -11692,20 +11777,12 @@
         $process = true;
 
 		$files = $_FILES['file']['name'];
-		if (!empty($files)) {
-			$path = 'uploads/ffva/';
-			$tmp = $_FILES['file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-			$files = rand(1000,1000000) . ' - ' . $files;
-			$path = $path.$files;
-
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($tmp,$path);
-            } else {
-                $process = false;
-            }
-		}
+		if (!empty($_FILES['file']['name'])) {
+            $fileValidation = fileValidation(0, 'file', 'ffva/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+        }
 
         if ($process == true) {
     		if ($area == 1) {
@@ -12909,7 +12986,7 @@
 	                        $selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
 	                        if ( mysqli_num_rows($selectRequirement2) > 0 ) {
 	                            while($rowReq = mysqli_fetch_array($selectRequirement2)) {
-	                                echo '<label class="mt-checkbox mt-checkbox-outline '; echo $current_client == 0 ? '':'hide'; echo '"> '.$rowReq["name"].'
+	                                echo '<label class="mt-checkbox mt-checkbox-outline"> '.$rowReq["name"].'
 	                                    <input type="checkbox" value="'.$rowReq["ID"].'" name="document[]"  onchange="checked_Requirement(this, 2, '.$id.', '; echo in_array($rowReq["ID"], $document_arr) ? '1' : '0'; echo ')" '; echo in_array($rowReq["ID"], $document_arr) ? 'checked' : ''; echo ' />
 	                                    <span></span>
 	                                </label>';
@@ -15906,26 +15983,20 @@
         $audit_report_validity_end = !empty($audit_report_validity[1]) ? $audit_report_validity[1] : '';
         $audit_report_file = $_FILES['audit_report_file']['name'];
         if (!empty($audit_report_file)) {
-            $audit_filesize = $_FILES['audit_report_file']['size'];
-            $audit_report_file_tmp = $_FILES['audit_report_file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($audit_report_file, PATHINFO_EXTENSION));
-            $audit_report_file = $random.' - '.$audit_report_file;
-            $audit_report_file_path = $path.$audit_report_file;
+            $fileValidation = fileValidation(0, 'audit_report_file', 'supplier/');
+            $audit_report_file = $fileValidation['files'];
+            $audit_filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($audit_report_file_tmp, $audit_report_file_path);
+            if ($process == true) {
                 array_push($audit_report, $audit_report_file);
-
                 $output = array (
                     'type'  =>  1,
                     'name' =>  $audit_report_file,
                     'size' =>  $audit_filesize,
                     'date' =>  $local_date
                 );
-                array_push($audit_arr_item, $output);
-            } else {
-                $process = false;
+                array_push($arr_item, $output);
             }
         } else {
             array_push($audit_report, '');
@@ -15942,17 +16013,13 @@
         $audit_certificate_validity_end = !empty($audit_certificate_validity[1]) ? $audit_certificate_validity[1] : '';
         $audit_certificate_file = $_FILES['audit_certificate_file']['name'];
         if (!empty($audit_certificate_file)) {
-            $audit_filesize = $_FILES['audit_certificate_file']['size'];
-            $audit_certificate_file_tmp = $_FILES['audit_certificate_file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($audit_certificate_file, PATHINFO_EXTENSION));
-            $audit_certificate_file = $random.' - '.$audit_certificate_file;
-            $audit_certificate_file_path = $path.$audit_certificate_file;
+            $fileValidation = fileValidation(0, 'audit_certificate_file', 'supplier/');
+            $audit_certificate_file = $fileValidation['files'];
+            $audit_filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($audit_certificate_file_tmp, $audit_certificate_file_path);
+            if ($process == true) {
                 array_push($audit_certificate, $audit_certificate_file);
-
                 $output = array (
                     'type'  =>  2,
                     'name' =>  $audit_certificate_file,
@@ -15960,8 +16027,6 @@
                     'date' =>  $local_date
                 );
                 array_push($audit_arr_item, $output);
-            } else {
-                $process = false;
             }
         } else {
             array_push($audit_certificate, '');
@@ -15978,17 +16043,13 @@
         $audit_action_validity_end = !empty($audit_action_validity[1]) ? $audit_action_validity[1] : '';
         $audit_action_file = $_FILES['audit_action_file']['name'];
         if (!empty($audit_action_file)) {
-            $audit_filesize = $_FILES['audit_action_file']['size'];
-            $audit_action_file_tmp = $_FILES['audit_action_file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($audit_action_file, PATHINFO_EXTENSION));
-            $audit_action_file = $random.' - '.$audit_action_file;
-            $audit_action_file_path = $path.$audit_action_file;
+            $fileValidation = fileValidation(0, 'audit_action_file', 'supplier/');
+            $audit_action_file = $fileValidation['files'];
+            $audit_filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($audit_action_file_tmp, $audit_action_file_path);
+            if ($process == true) {
                 array_push($audit_action, $audit_action_file);
-
                 $output = array (
                     'type'  =>  3,
                     'name' =>  $audit_action_file,
@@ -15996,8 +16057,6 @@
                     'date' =>  $local_date
                 );
                 array_push($audit_arr_item, $output);
-            } else {
-                $process = false;
             }
         } else {
             array_push($audit_action, '');
@@ -16103,10 +16162,14 @@
     								$tmp_docs = $_FILES['document_file']['tmp_name'][$i];
                                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                     $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+
+                                    $mime = mime_content_type($tmp_docs);
+                                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                                    
     								$file_docs = $random.' - '.$files;
     								$path_docs = $path.$file_docs;
 
-                                    if(!in_array($ext, $invalid_extensions)) {
+                                    if(!in_array($mime, $mime_array)) {
                                         move_uploaded_file($tmp_docs,$path_docs);
                                     } else {
                                         $process = false;
@@ -16131,10 +16194,14 @@
     							$tmp_docs = $_FILES['document_template']['tmp_name'][$i];
                                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                 $ext = strtolower(pathinfo($files_template, PATHINFO_EXTENSION));
+
+                                $mime = mime_content_type($tmp_docs);
+                                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                                
     							$file_docs_template = $random.' - '.$files_template;
     							$path_docs = $path.$file_docs;
 
-                                if(!in_array($ext, $invalid_extensions)) {
+                                if(!in_array($mime, $mime_array)) {
                                     move_uploaded_file($tmp_docs,$path_docs);
 
                                     $output = array (
@@ -16193,10 +16260,14 @@
                                     $tmp_docs = $_FILES['document_other_file']['tmp_name'][$i];
                                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                     $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+
+                                    $mime = mime_content_type($tmp_docs);
+                                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                                    
                                     $file_docs = $random.' - '.$files;
                                     $path_docs = $path.$file_docs;
 
-                                    if(!in_array($ext, $invalid_extensions)) {
+                                    if(!in_array($mime, $mime_array)) {
                                         move_uploaded_file($tmp_docs,$path_docs);
                                     } else {
                                         $process = false;
@@ -16221,10 +16292,14 @@
                                 $tmp_docs = $_FILES['document_other_template']['tmp_name'][$i];
                                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                 $ext = strtolower(pathinfo($files_template, PATHINFO_EXTENSION));
+
+                                $mime = mime_content_type($tmp_docs);
+                                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                                
                                 $file_docs_template = $random.' - '.$files_template;
                                 $path_docs = $path.$file_docs_template;
 
-                                if(!in_array($ext, $invalid_extensions)) {
+                                if(!in_array($mime, $mime_array)) {
                                     move_uploaded_file($tmp_docs,$path_docs);
 
                                     $output = array (
@@ -16491,28 +16566,32 @@
     						BeGreen Legal';
     					} else if ($_COOKIE['client'] == 2) {
                             $subject = 'Welcome to Food Safety 360!';
-                            $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'CannOS-Login" target="_blank">FoodSafety360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'CannOS-Login" target="_blank">https://interlinkiq.com/FoodSafety360</a>.<br><br>
+                            $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'CannOS-Login" target="_blank">FoodSafety360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'FoodSafety360" target="_blank">https://interlinkiq.com/FoodSafety360</a>.<br><br>
 
                             Should you need assistance, kindly email <a href="mailto:foodsafety360r@gmail.com" target="_blank">foodsafety360r@gmail.com.<br><br>
 
-                            Food Safety 360<br>
-                            BeGreen Legal';
+                            Food Safety 360';
                         } else if ($_COOKIE['client'] == 3) {
-                            $subject = 'Welcome to Food Safety 360!';
-                            $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'CannOS-Login" target="_blank">SafeCannabis360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'CannOS-Login" target="_blank">https://interlinkiq.com/SafeCannabis360</a>.<br><br>
+                            $subject = 'Welcome to SafeCannabis360!';
+                            $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'CannOS-Login" target="_blank">SafeCannabis360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'SafeCannabis360" target="_blank">https://interlinkiq.com/SafeCannabis360</a>.<br><br>
 
                             Should you need assistance, kindly email <a href="mailto:cannabis360r@gmail.com" target="_blank">cannabis360r@gmail.com.<br><br>
 
-                            Food Safety 360<br>
-                            BeGreen Legal';
+                            SafeCannabis360';
                         } else if ($_COOKIE['client'] == 4) {
-                            $subject = 'Welcome to Food Safety 360!';
-                            $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'CannOS-Login" target="_blank">Exim360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'CannOS-Login" target="_blank">https://interlinkiq.com/Exim360</a>.<br><br>
+                            $subject = 'Welcome to Exim360!';
+                            $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'CannOS-Login" target="_blank">Exim360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'Exim360" target="_blank">https://interlinkiq.com/Exim360</a>.<br><br>
 
                             Should you need assistance, kindly email <a href="mailto:exim360r@gmail.com" target="_blank">exim360r@gmail.com.<br><br>
 
-                            Food Safety 360<br>
-                            BeGreen Legal';
+                            Exim360';
+                        } else if ($_COOKIE['client'] == 5) {
+                            $subject = 'Welcome to Vikings!';
+                            $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'CannOS-Login" target="_blank">Viking Atlantic Sales Group, LLC</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'Vikings" target="_blank">https://interlinkiq.com/Vikings</a>.<br><br>
+
+                            Should you need assistance, kindly email <a href="mailto:vikingatlanticsalesgroupllc@gmail.com" target="_blank">vikingatlanticsalesgroupllc@gmail.com<br><br>
+
+                            Vikings Atlantic Sales Group, LLC';
                         } else {
     		    			$subject = 'You are invited!';
     		    			$body = 'Hi '.$user.',<br><br>
@@ -16616,35 +16695,41 @@
                                             Cann OS Team<br>
                                             BeGreenLegal';
     									} else if ($_COOKIE['client'] == 2) {
-                                            $subject = 'Welcome to Cann OS!';
+                                            $subject = 'Welcome to FoodSafety360!';
                                             $body = 'Hi '.$user.',<br><br>
                                 
                                             Your supplier FoodSafety360, invites you to <a href="'.$base_url.'FoodSafety360" target="_blank">Food Safety 360</a> to connect and manage your Food Safety operation(s).<br><br>
 
                                             Should you need assistance, kindly email <a href="mailto:foodsafety360r@gmail.com">foodsafety360r@gmail.com.</a><br><br>
                                 
-                                            Cann OS Team<br>
-                                            BeGreenLegal';
+                                            FoodSafety360';
                                         } else if ($_COOKIE['client'] == 3) {
-                                            $subject = 'Welcome to Cann OS!';
+                                            $subject = 'Welcome to SafeCannabis360!';
                                             $body = 'Hi '.$user.',<br><br>
                                 
-                                            Your supplier SafeCannabis360, invites you to <a href="'.$base_url.'SafeCannabis360" target="_blank">Food Safety 360</a> to connect and manage your Food Safety operation(s).<br><br>
+                                            Your supplier SafeCannabis360, invites you to <a href="'.$base_url.'SafeCannabis360" target="_blank">SafeCannabis360</a> to connect and manage your Food Safety operation(s).<br><br>
 
                                             Should you need assistance, kindly email <a href="mailto:cannabis360r@gmail.com">cannabis360r@gmail.com.</a><br><br>
                                 
-                                            Cann OS Team<br>
-                                            BeGreenLegal';
+                                            SafeCannabis360';
                                         } else if ($_COOKIE['client'] == 4) {
-                                            $subject = 'Welcome to Cann OS!';
+                                            $subject = 'Welcome to Exim360!';
                                             $body = 'Hi '.$user.',<br><br>
                                 
-                                            Your supplier Exim360, invites you to <a href="'.$base_url.'Exim360" target="_blank">Food Safety 360</a> to connect and manage your Food Safety operation(s).<br><br>
+                                            Your supplier Exim360, invites you to <a href="'.$base_url.'Exim360" target="_blank">Exim360</a> to connect and manage your Food Safety operation(s).<br><br>
 
                                             Should you need assistance, kindly email <a href="mailto:exim360r@gmail.com">exim360r@gmail.com.</a><br><br>
                                 
-                                            Cann OS Team<br>
-                                            BeGreenLegal';
+                                            Exim360';
+                                        } else if ($_COOKIE['client'] == 5) {
+                                            $subject = 'Welcome to Vikings!';
+                                            $body = 'Hi '.$user.',<br><br>
+                                
+                                            Your supplier Vikings, invites you to <a href="'.$base_url.'Vikings" target="_blank">Viking Atlantic Sales Group, LLC</a> to connect and manage your Food Safety operation(s).<br><br>
+
+                                            Should you need assistance, kindly email <a href="mailto:vikingatlanticsalesgroupllc@gmail.com">vikingatlanticsalesgroupllc@gmail.com</a><br><br>
+                                
+                                            Vikings Atlantic Sales Group, LLC';
                                         } else {
     		                    			$body = 'Hi '.$user.',<br><br>
     		                    
@@ -16844,26 +16929,20 @@
         $audit_report_validity_end = !empty($audit_report_validity[1]) ? $audit_report_validity[1] : '';
         $audit_report_file = $_FILES['audit_report_file']['name'];
         if (!empty($audit_report_file)) {
-            $audit_filesize = $_FILES['audit_report_file']['size'];
-            $audit_report_file_tmp = $_FILES['audit_report_file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($audit_report_file, PATHINFO_EXTENSION));
-            $audit_report_file = $random.' - '.$audit_report_file;
-            $audit_report_file_path = $path.$audit_report_file;
+            $fileValidation = fileValidation(0, 'audit_report_file', 'supplier/');
+            $audit_report_file = $fileValidation['files'];
+            $audit_filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($audit_report_file_tmp, $audit_report_file_path);
+            if ($process == true) {
                 array_push($audit_report, $audit_report_file);
-
                 $output = array (
                     'type'  =>  1,
                     'name' =>  $audit_report_file,
                     'size' =>  $audit_filesize,
                     'date' =>  $local_date
                 );
-                array_push($audit_arr_item, $output);
-            } else {
-                $process = false;
+                array_push($arr_item, $output);
             }
         } else {
             array_push($audit_report, $_POST['audit_report_file_tmp']);
@@ -16880,17 +16959,13 @@
         $audit_certificate_validity_end = !empty($audit_certificate_validity[1]) ? $audit_certificate_validity[1] : '';
         $audit_certificate_file = $_FILES['audit_certificate_file']['name'];
         if (!empty($audit_certificate_file)) {
-            $audit_filesize = $_FILES['audit_certificate_file']['size'];
-            $audit_certificate_file_tmp = $_FILES['audit_certificate_file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($audit_certificate_file, PATHINFO_EXTENSION));
-            $audit_certificate_file = $random.' - '.$audit_certificate_file;
-            $audit_certificate_file_path = $path.$audit_certificate_file;
+            $fileValidation = fileValidation(0, 'audit_certificate_file', 'supplier/');
+            $audit_certificate_file = $fileValidation['files'];
+            $audit_filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($audit_certificate_file_tmp, $audit_certificate_file_path);
+            if ($process == true) {
                 array_push($audit_certificate, $audit_certificate_file);
-
                 $output = array (
                     'type'  =>  2,
                     'name' =>  $audit_certificate_file,
@@ -16898,8 +16973,6 @@
                     'date' =>  $local_date
                 );
                 array_push($audit_arr_item, $output);
-            } else {
-                $process = false;
             }
         } else {
             array_push($audit_certificate, $_POST['audit_certificate_file_tmp']);
@@ -16916,17 +16989,13 @@
         $audit_action_validity_end = !empty($audit_action_validity[1]) ? $audit_action_validity[1] : '';
         $audit_action_file = $_FILES['audit_action_file']['name'];
         if (!empty($audit_action_file)) {
-            $audit_filesize = $_FILES['audit_action_file']['size'];
-            $audit_action_file_tmp = $_FILES['audit_action_file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($audit_action_file, PATHINFO_EXTENSION));
-            $audit_action_file = $random.' - '.$audit_action_file;
-            $audit_action_file_path = $path.$audit_action_file;
+            $fileValidation = fileValidation(0, 'audit_action_file', 'supplier/');
+            $audit_action_file = $fileValidation['files'];
+            $audit_filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($audit_action_file_tmp, $audit_action_file_path);
+            if ($process == true) {
                 array_push($audit_action, $audit_action_file);
-
                 $output = array (
                     'type'  =>  3,
                     'name' =>  $audit_action_file,
@@ -16934,8 +17003,6 @@
                     'date' =>  $local_date
                 );
                 array_push($audit_arr_item, $output);
-            } else {
-                $process = false;
             }
         } else {
             array_push($audit_action, $_POST['audit_action_file_tmp']);
@@ -17066,10 +17133,14 @@
                                     $tmp_docs = $_FILES['document_file']['tmp_name'][$i];
                                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                     $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+
+                                    $mime = mime_content_type($tmp_docs);
+                                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                                    
                                     $file_docs = $random.' - '.$files;
                                     $path_docs = $path.$file_docs;
 
-                                    if(!in_array($ext, $invalid_extensions)) {
+                                    if(!in_array($mime, $mime_array)) {
                                         move_uploaded_file($tmp_docs,$path_docs);
                                     } else {
                                         $process = false;
@@ -17094,10 +17165,14 @@
     							$tmp_docs = $_FILES['document_template']['tmp_name'][$i];
                                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                 $ext = strtolower(pathinfo($files_template, PATHINFO_EXTENSION));
+
+                                $mime = mime_content_type($tmp_docs);
+                                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                                
     							$file_docs_template = $random.' - '.$files_template;
     							$path_docs = $path.$file_docs_template;
 
-                                if(!in_array($ext, $invalid_extensions)) {
+                                if(!in_array($mime, $mime_array)) {
                                     move_uploaded_file($tmp_docs,$path_docs);
 
                                     $output = array (
@@ -17186,10 +17261,14 @@
                                     $tmp_docs = $_FILES['document_other_file']['tmp_name'][$i];
                                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                     $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+
+                                    $mime = mime_content_type($tmp_docs);
+                                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                                    
                                     $file_docs = $random.' - '.$files;
                                     $path_docs = $path.$file_docs;
 
-                                    if(!in_array($ext, $invalid_extensions)) {
+                                    if(!in_array($mime, $mime_array)) {
                                         move_uploaded_file($tmp_docs,$path_docs);
                                     } else {
                                         $process = false;
@@ -17214,10 +17293,14 @@
                                 $tmp_docs = $_FILES['document_other_template']['tmp_name'][$i];
                                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                 $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+
+                                $mime = mime_content_type($tmp_docs);
+                                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                                
                                 $file_docs_template = $random.' - '.$files_template;
                                 $path_docs = $path.$file_docs_template;
 
-                                if(!in_array($ext, $invalid_extensions)) {
+                                if(!in_array($mime, $mime_array)) {
                                     move_uploaded_file($tmp_docs,$path_docs);
 
                                     $output = array (
@@ -18148,16 +18231,12 @@
 		$material_spec_file = $_FILES['material_spec_file']['name'];
 		$material_spec_file_final = "";
 		if (!empty($material_spec_file)) {
-            $spec_filesize = $_FILES['material_spec_file']['size'];
-			$material_spec_file_tmp = $_FILES['material_spec_file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($material_spec_file, PATHINFO_EXTENSION));
-			$material_spec_file_final = $random.' - '.$material_spec_file;
-			$material_spec_file_path = $path.$material_spec_file_final;
+            $fileValidation = fileValidation(0, 'material_spec_file', 'supplier/');
+            $material_spec_file_final = $fileValidation['files'];
+            $spec_filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($material_spec_file_tmp, $material_spec_file_path);
-
+            if ($process == true) {
                 $output = array (
                     'type' =>  0,
                     'name' =>  $material_spec_file_final,
@@ -18165,8 +18244,6 @@
                     'date' =>  $local_date
                 );
                 array_push($arr_item, $output);
-            } else {
-                $process = false;
             }
 		}
 		// $material_spec_date_from = $_POST['material_spec_date_from'];
@@ -18205,10 +18282,14 @@
                 $material_file_doc_tmp = implode('*', $_FILES['material_other']['tmp_name'][$i]);
                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                 $ext = strtolower(pathinfo($material_file_doc, PATHINFO_EXTENSION));
+
+                $mime = mime_content_type($material_file_doc_tmp);
+                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                
 				$material_file_doc_final = $random.' - '.$material_file_doc_final;
 				$material_file_doc_path = $path.$material_file_doc_final;
 
-                if(!in_array($ext, $invalid_extensions)) {
+                if(!in_array($mime, $mime_array)) {
                     move_uploaded_file($material_file_doc_tmp, $material_file_doc_path);
 
                     $filesize += $spec_filesize_other;
@@ -18284,25 +18365,19 @@
 		$material_spec_file_final = $_POST['material_spec_file_temp'];
 		$material_spec_file = $_FILES['material_spec_file']['name'];
 		if (!empty($material_spec_file)) {
-            $spec_filesize = $_FILES['material_spec_file']['size'];
-			$material_spec_file_tmp = $_FILES['material_spec_file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($material_spec_file, PATHINFO_EXTENSION));
-			$material_spec_file_final = $random.' - '.$material_spec_file;
-			$material_spec_file_path = $path.$material_spec_file_final;
+            $fileValidation = fileValidation(0, 'material_spec_file', 'supplier/');
+            $material_spec_file_final = $fileValidation['files'];
+            $spec_filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($material_spec_file_tmp, $material_spec_file_path);
-
+            if ($process == true) {
                 $output = array (
-                    'type'  =>  0,
+                    'type' =>  0,
                     'name' =>  $material_spec_file_final,
                     'size' =>  $spec_filesize,
                     'date' =>  $local_date
                 );
                 array_push($arr_item, $output);
-            } else {
-                $process = false;
             }
 		}
 		// $material_spec_date_from = $_POST['material_spec_date_from'];
@@ -18341,10 +18416,14 @@
                 $material_file_doc_tmp = implode('*', $_FILES['material_other']['tmp_name'][$i]);
                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                 $ext = strtolower(pathinfo($material_file_doc, PATHINFO_EXTENSION));
+
+                $mime = mime_content_type($material_spec_file_tmp);
+                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                
 				$material_file_doc_final = $random.' - '.$material_file_doc;
 				$material_file_doc_path = $path.$material_file_doc_final;
 
-                if(!in_array($ext, $invalid_extensions)) {
+                if(!in_array($mime, $mime_array)) {
                     move_uploaded_file($material_file_doc_tmp, $material_file_doc_path);
 
                     $filesize += $spec_filesize_other;
@@ -18650,19 +18729,20 @@
 		$service_spec_file = $_FILES['service_spec_file']['name'];
 		$service_spec_file_final = "";
 		if (!empty($service_spec_file)) {
-            $spec_filesize = $_FILES['service_spec_file']['size'];
-			$service_spec_file_tmp = $_FILES['service_spec_file']['tmp_name'];
-			$service_spec_file_final = $random.' - '.$service_spec_file;
-			$service_spec_file_path = $path.$service_spec_file_final;
-			move_uploaded_file($service_spec_file_tmp, $service_spec_file_path);
+            $fileValidation = fileValidation(0, 'service_spec_file', 'supplier/');
+            $service_spec_file_final = $fileValidation['files'];
+            $spec_filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            $output = array (
-                'type'  =>  0,
-                'name' =>  $service_spec_file_final,
-                'size' =>  $spec_filesize,
-                'date' =>  $local_date
-            );
-            array_push($arr_item, $output);
+            if ($process == true) {
+                $output = array (
+                    'type'  =>  0,
+                    'name' =>  $service_spec_file_final,
+                    'size' =>  $spec_filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $output);
+            }
 		}
 		$service_spec_date_from = $_POST['service_spec_date_from'];
 		$service_spec_date_to = $_POST['service_spec_date_to'];
@@ -18681,6 +18761,10 @@
                 $service_file_doc_tmp = implode('*', $_FILES['service_other']['tmp_name'][$i]);
                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                 $ext = strtolower(pathinfo($service_file_doc_final, PATHINFO_EXTENSION));
+
+                $mime = mime_content_type($service_file_doc_tmp);
+                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                
 				$service_file_doc_final = $random.' - '.$service_file_doc_final;
 				$service_file_doc_path = $path.$service_file_doc_final;
 
@@ -18774,16 +18858,12 @@
         $service_spec_file_final = $_POST['service_spec_file_tmp'];
 		$service_spec_file = $_FILES['service_spec_file']['name'];
 		if (!empty($service_spec_file)) {
-            $spec_filesize = $_FILES['service_spec_file']['size'];
-			$service_spec_file_tmp = $_FILES['service_spec_file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($service_spec_file, PATHINFO_EXTENSION));
-			$service_spec_file_final = $random.' - '.$service_spec_file;
-			$service_spec_file_path = $path.$service_spec_file_final;
+            $fileValidation = fileValidation(0, 'service_spec_file', 'supplier/');
+            $service_spec_file_final = $fileValidation['files'];
+            $spec_filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($service_spec_file_tmp, $service_spec_file_path);
-
+            if ($process == true) {
                 $output = array (
                     'type'  =>  0,
                     'name' =>  $service_spec_file_final,
@@ -18791,8 +18871,6 @@
                     'date' =>  $local_date
                 );
                 array_push($arr_item, $output);
-            } else {
-                $process = false;
             }
 		}
 		$service_spec_date_from = $_POST['service_spec_date_from'];
@@ -18812,10 +18890,14 @@
                 $service_file_doc_tmp = implode('*', $_FILES['service_other']['tmp_name'][$i]);
                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                 $ext = strtolower(pathinfo($service_file_doc, PATHINFO_EXTENSION));
+
+                $mime = mime_content_type($service_file_doc_tmp);
+                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                
 				$service_file_doc_final = $random.' - '.$service_file_doc_final;
 				$service_file_doc_path = $path.$service_file_doc_final;
 
-                if(!in_array($ext, $invalid_extensions)) {
+                if(!in_array($mime, $mime_array)) {
                     move_uploaded_file($service_file_doc_tmp, $service_file_doc_path);
 
                     $filesize += $spec_filesize_other;
@@ -19528,7 +19610,7 @@
                         $selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE organic = 0 ORDER BY name" );
                         if ( mysqli_num_rows($selectRequirement2) > 0 ) {
                             while($rowReq = mysqli_fetch_array($selectRequirement2)) {
-                                echo '<label class="mt-checkbox mt-checkbox-outline '; echo $current_client == 0 ? '':'hide'; echo '"> '.$rowReq["name"].'
+                                echo '<label class="mt-checkbox mt-checkbox-outline"> '.$rowReq["name"].'
                                     <input type="checkbox" value="'.$rowReq["ID"].'" name="document[]"  onchange="checked_Requirement(this, 2, '.$id.', '; echo in_array($rowReq["ID"], $document_arr) ? '1' : '0'; echo ')" '; echo in_array($rowReq["ID"], $document_arr) ? 'checked' : ''; echo ' />
                                     <span></span>
                                 </label>';
@@ -21818,17 +21900,13 @@
         $audit_report_validity_end = !empty($audit_report_validity[1]) ? $audit_report_validity[1] : '';
         $audit_report_file = $_FILES['audit_report_file']['name'];
         if (!empty($audit_report_file)) {
-            $audit_filesize = $_FILES['audit_report_file']['size'];
-            $audit_report_file_tmp = $_FILES['audit_report_file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($audit_report_file, PATHINFO_EXTENSION));
-            $audit_report_file = $random.' - '.$audit_report_file;
-            $audit_report_file_path = $path.$audit_report_file;
+            $fileValidation = fileValidation(0, 'audit_report_file', 'supplier/');
+            $audit_report_file = $fileValidation['files'];
+            $audit_filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($audit_report_file_tmp, $audit_report_file_path);
+            if ($process == true) {
                 array_push($audit_report, $audit_report_file);
-
                 $output = array (
                     'type'  =>  1,
                     'name' =>  $audit_report_file,
@@ -21836,9 +21914,7 @@
                     'date' =>  $local_date
                 );
                 array_push($audit_arr_item, $output);
-            } else {
-                $process = false;
-            }   
+            } 
         } else {
             array_push($audit_report, '');
         }
@@ -21854,17 +21930,13 @@
         $audit_certificate_validity_end = !empty($audit_certificate_validity[1]) ? $audit_certificate_validity[1] : '';
         $audit_certificate_file = $_FILES['audit_certificate_file']['name'];
         if (!empty($audit_certificate_file)) {
-            $audit_filesize = $_FILES['audit_certificate_file']['size'];
-            $audit_certificate_file_tmp = $_FILES['audit_certificate_file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($audit_certificate_file, PATHINFO_EXTENSION));
-            $audit_certificate_file = $random.' - '.$audit_certificate_file;
-            $audit_certificate_file_path = $path.$audit_certificate_file;
+            $fileValidation = fileValidation(0, 'audit_certificate_file', 'supplier/');
+            $audit_certificate_file = $fileValidation['files'];
+            $audit_filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($audit_certificate_file_tmp, $audit_certificate_file_path);
+            if ($process == true) {
                 array_push($audit_certificate, $audit_certificate_file);
-
                 $output = array (
                     'type'  =>  2,
                     'name' =>  $audit_certificate_file,
@@ -21872,8 +21944,6 @@
                     'date' =>  $local_date
                 );
                 array_push($audit_arr_item, $output);
-            } else {
-                $process = false;
             }
         } else {
             array_push($audit_certificate, '');
@@ -21890,17 +21960,13 @@
         $audit_action_validity_end = !empty($audit_action_validity[1]) ? $audit_action_validity[1] : '';
         $audit_action_file = $_FILES['audit_action_file']['name'];
         if (!empty($audit_action_file)) {
-            $audit_filesize = $_FILES['audit_action_file']['size'];
-            $audit_action_file_tmp = $_FILES['audit_action_file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($audit_action_file, PATHINFO_EXTENSION));
-            $audit_action_file = $random.' - '.$audit_action_file;
-            $audit_action_file_path = $path.$audit_action_file;
+            $fileValidation = fileValidation(0, 'audit_action_file', 'supplier/');
+            $audit_action_file = $fileValidation['files'];
+            $audit_filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($audit_action_file_tmp, $audit_action_file_path);
+            if ($process == true) {
                 array_push($audit_action, $audit_action_file);
-
                 $output = array (
                     'type'  =>  3,
                     'name' =>  $audit_action_file,
@@ -21908,8 +21974,6 @@
                     'date' =>  $local_date
                 );
                 array_push($audit_arr_item, $output);
-            } else {
-                $process = false;
             }
         } else {
             array_push($audit_action, '');
@@ -22015,10 +22079,14 @@
                                         $tmp_docs = $_FILES['document_file']['tmp_name'][$i];
                                         $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                         $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+
+                                        $mime = mime_content_type($tmp_docs);
+                                        $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                                        
                                         $file_docs = $random.' - '.$files;
                                         $path_docs = $path.$file_docs;
 
-                                        if(!in_array($ext, $invalid_extensions)) {
+                                        if(!in_array($mime, $mime_array)) {
                                             move_uploaded_file($tmp_docs,$path_docs);
                                         } else {
                                             $process = false;
@@ -22108,10 +22176,14 @@
                                         $tmp_docs = $_FILES['document_other_file']['tmp_name'][$i];
                                         $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                         $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+
+                                        $mime = mime_content_type($tmp_docs);
+                                        $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                                        
                                         $file_docs = $random.' - '.$files;
                                         $path_docs = $path.$file_docs;
 
-                                        if(!in_array($ext, $invalid_extensions)) {
+                                        if(!in_array($mime, $mime_array)) {
                                             move_uploaded_file($tmp_docs,$path_docs);
                                         } else {
                                             $process = false;
@@ -22416,26 +22488,33 @@
                                 Cann OS Team<br>
                                 BeGreen Legal';
                             } else if ($_COOKIE['client'] == 2) {
-                                $subject = 'Welcome to Cann OS!';
+                                $subject = 'Welcome to FoodSafety360!';
                                 $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'FoodSafety360" target="_blank">Food Safe</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'FoodSafety360" target="_blank">https://interlinkiq.com/FoodSafety360</a>.<br><br>
 
                                 Should you need assistance, kindly email <a href="mailto:foodsafety360r@gmail.com" target="_blank">foodsafety360r@gmail.com</a>.<br><br>
 
                                 FoodSafety360 Team';
                             } else if ($_COOKIE['client'] == 3) {
-                                $subject = 'Welcome to Cann OS!';
-                                $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'SafeCannabis360" target="_blank">Food Safe</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'SafeCannabis360" target="_blank">https://interlinkiq.com/SafeCannabis360</a>.<br><br>
+                                $subject = 'Welcome to SafeCannabis360!';
+                                $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'SafeCannabis360" target="_blank">SafeCannabis360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'SafeCannabis360" target="_blank">https://interlinkiq.com/SafeCannabis360</a>.<br><br>
 
                                 Should you need assistance, kindly email <a href="mailto:cannabis360r@gmail.com" target="_blank">cannabis360r@gmail.com</a>.<br><br>
 
                                 SafeCannabis360 Team';
                             } else if ($_COOKIE['client'] == 4) {
                                 $subject = 'Welcome to Cann OS!';
-                                $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'Exim360" target="_blank">Food Safe</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'Exim360" target="_blank">https://interlinkiq.com/Exim360</a>.<br><br>
+                                $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'Exim360" target="_blank">Exim360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'Exim360" target="_blank">https://interlinkiq.com/Exim360</a>.<br><br>
 
                                 Should you need assistance, kindly email <a href="mailto:exim360r@gmail.com" target="_blank">exim360r@gmail.com</a>.<br><br>
 
                                 Exim360 Team';
+                            } else if ($_COOKIE['client'] == 5) {
+                                $subject = 'Welcome to Cann OS!';
+                                $body = 'Vikings, invites you to join <a href="'.$base_url.'Vikings" target="_blank">Vikings Atlantic Sales Group, LLC</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'Vikings" target="_blank">https://interlinkiq.com/Vikings</a>.<br><br>
+
+                                Should you need assistance, kindly email <a href="mailto:vikingatlanticsalesgroupllc@gmail.com" target="_blank">vikingatlanticsalesgroupllc@gmail.com</a>.<br><br>
+
+                                Vikings Team';
                             } else {
                                 $subject = $data_company.' Customer Invitation via InterlinkIQ.com';
                                 $body = 'Hi '.$user.',<br><br>
@@ -22556,6 +22635,13 @@
                                                 Should you need assistance, kindly email <a href="mailto:exim360r@gmail.com" target="_blank">exim360r@gmail.com</a>.<br><br>
 
                                                 Exim360 Team';
+                                            } else if ($_COOKIE['client'] == 5) {
+                                                $subject = 'Welcome to Cann OS!';
+                                                $body = 'Food Safety, invites you to join <a href="'.$base_url.'Vikings" target="_blank">Food Safe</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'Vikings" target="_blank">https://interlinkiq.com/Vikings</a>.<br><br>
+
+                                                Should you need assistance, kindly email <a href="mailto:vikingatlanticsalesgroupllc@gmail.com" target="_blank">vikingatlanticsalesgroupllc@gmail.com</a>.<br><br>
+
+                                                Vikings Team';
                                             } else {
                                                 $subject = $data_company.' Customer Invitation via InterlinkIQ.com';
                                                 $body = 'Hi '.$user.',<br><br>
@@ -22757,17 +22843,13 @@
         $audit_report_validity_end = !empty($audit_report_validity[1]) ? $audit_report_validity[1] : '';
         $audit_report_file = $_FILES['audit_report_file']['name'];
         if (!empty($audit_report_file)) {
-            $audit_filesize = $_FILES['audit_report_file']['size'];
-            $audit_report_file_tmp = $_FILES['audit_report_file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($audit_report_file, PATHINFO_EXTENSION));
-            $audit_report_file = $random.' - '.$audit_report_file;
-            $audit_report_file_path = $path.$audit_report_file;
+            $fileValidation = fileValidation(0, 'audit_report_file', 'supplier/');
+            $audit_report_file = $fileValidation['files'];
+            $audit_filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($audit_report_file_tmp, $audit_report_file_path);
+            if ($process == true) {
                 array_push($audit_report, $audit_report_file);
-
                 $output = array (
                     'type'  =>  1,
                     'name' =>  $audit_report_file,
@@ -22775,8 +22857,6 @@
                     'date' =>  $local_date
                 );
                 array_push($audit_arr_item, $output);
-            } else {
-                $process = false;
             }
         } else {
             array_push($audit_report, $_POST['audit_report_file_tmp']);
@@ -22793,17 +22873,13 @@
         $audit_certificate_validity_end = !empty($audit_certificate_validity[1]) ? $audit_certificate_validity[1] : '';
         $audit_certificate_file = $_FILES['audit_certificate_file']['name'];
         if (!empty($audit_certificate_file)) {
-            $audit_filesize = $_FILES['audit_certificate_file']['size'];
-            $audit_certificate_file_tmp = $_FILES['audit_certificate_file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($audit_certificate_file, PATHINFO_EXTENSION));
-            $audit_certificate_file = $random.' - '.$audit_certificate_file;
-            $audit_certificate_file_path = $path.$audit_certificate_file;
+            $fileValidation = fileValidation(0, 'audit_certificate_file', 'supplier/');
+            $audit_certificate_file = $fileValidation['files'];
+            $audit_filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($audit_certificate_file_tmp, $audit_certificate_file_path);
+            if ($process == true) {
                 array_push($audit_certificate, $audit_certificate_file);
-
                 $output = array (
                     'type'  =>  2,
                     'name' =>  $audit_certificate_file,
@@ -22811,8 +22887,6 @@
                     'date' =>  $local_date
                 );
                 array_push($audit_arr_item, $output);
-            } else {
-                $process = false;
             }
         } else {
             array_push($audit_certificate, $_POST['audit_certificate_file_tmp']);
@@ -22829,17 +22903,13 @@
         $audit_action_validity_end = !empty($audit_action_validity[1]) ? $audit_action_validity[1] : '';
         $audit_action_file = $_FILES['audit_action_file']['name'];
         if (!empty($audit_action_file)) {
-            $audit_filesize = $_FILES['audit_action_file']['size'];
-            $audit_action_file_tmp = $_FILES['audit_action_file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($audit_action_file, PATHINFO_EXTENSION));
-            $audit_action_file = $random.' - '.$audit_action_file;
-            $audit_action_file_path = $path.$audit_action_file;
+            $fileValidation = fileValidation(0, 'audit_action_file', 'supplier/');
+            $audit_action_file = $fileValidation['files'];
+            $audit_filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($audit_action_file_tmp, $audit_action_file_path);
+            if ($process == true) {
                 array_push($audit_action, $audit_action_file);
-
                 $output = array (
                     'type'  =>  3,
                     'name' =>  $audit_action_file,
@@ -22847,8 +22917,6 @@
                     'date' =>  $local_date
                 );
                 array_push($audit_arr_item, $output);
-            } else {
-                $process = false;
             }
         } else {
             array_push($audit_action, $_POST['audit_action_file_tmp']);
@@ -22983,10 +23051,14 @@
                                     $tmp_docs = $_FILES['document_file']['tmp_name'][$i];
                                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                     $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+
+                                    $mime = mime_content_type($tmp_docs);
+                                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                                    
                                     $file_docs = $random.' - '.$files;
                                     $path_docs = $path.$file_docs;
 
-                                    if(!in_array($ext, $invalid_extensions)) {
+                                    if(!in_array($mime, $mime_array)) {
                                         move_uploaded_file($tmp_docs,$path_docs);
                                     } else {
                                         $process = false;
@@ -23103,10 +23175,14 @@
                                     $tmp_docs = $_FILES['document_other_file']['tmp_name'][$i];
                                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                     $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+
+                                    $mime = mime_content_type($tmp_docs);
+                                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                                    
                                     $file_docs = $random.' - '.$files;
                                     $path_docs = $path.$file_docs;
 
-                                    if(!in_array($ext, $invalid_extensions)) {
+                                    if(!in_array($mime, $mime_array)) {
                                         move_uploaded_file($tmp_docs,$path_docs);
                                     } else {
                                         $process = false;
@@ -23874,10 +23950,14 @@
                                     $tmp_docs = $_FILES['document_file']['tmp_name'][$i];
                                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                     $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+
+                                    $mime = mime_content_type($tmp_docs);
+                                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                                    
                                     $file_docs = $random.' - '.$files;
                                     $path_docs = $path.$file_docs;
 
-                                    if(!in_array($ext, $invalid_extensions)) {
+                                    if(!in_array($mime, $mime_array)) {
                                         move_uploaded_file($tmp_docs,$path_docs);
                                     } else {
                                         $process = false;
@@ -23893,10 +23973,14 @@
                                 $tmp_docs = $_FILES['document_template']['tmp_name'][$i];
                                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                 $ext = strtolower(pathinfo($files_template, PATHINFO_EXTENSION));
+
+                                $mime = mime_content_type($tmp_docs);
+                                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                                
                                 $file_docs_template = $random.' - '.$files_template;
                                 $path_docs = $path.$file_docs_template;
 
-                                if(!in_array($ext, $invalid_extensions)) {
+                                if(!in_array($mime, $mime_array)) {
                                     move_uploaded_file($tmp_docs,$path_docs);
                                 } else {
                                     $process = false;
@@ -23967,10 +24051,14 @@
                                     $tmp_docs = $_FILES['document_other_file']['tmp_name'][$i];
                                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                     $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+
+                                    $mime = mime_content_type($tmp_docs);
+                                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                                    
                                     $file_docs = $random.' - '.$files;
                                     $path_docs = $path.$file_docs;
 
-                                    if(!in_array($ext, $invalid_extensions)) {
+                                    if(!in_array($mime, $mime_array)) {
                                         move_uploaded_file($tmp_docs,$path_docs);
                                     } else {
                                         $process = false;
@@ -23987,10 +24075,14 @@
                                 $tmp_docs = $_FILES['document_other_template']['tmp_name'][$i];
                                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                 $ext = strtolower(pathinfo($files_template, PATHINFO_EXTENSION));
+
+                                $mime = mime_content_type($tmp_docs);
+                                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                                
                                 $file_docs_template = $random.' - '.$files_template;
                                 $path_docs = $path.$file_docs_template;
 
-                                if(!in_array($ext, $invalid_extensions)) {
+                                if(!in_array($mime, $mime_array)) {
                                     move_uploaded_file($tmp_docs,$path_docs);
                                 } else {
                                     $process = false;
@@ -24789,19 +24881,10 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $filesize = $_FILES['file']['size'];
-                $path = 'uploads/supplier/';
-                $tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                $files = rand(1000,1000000) . ' - ' . $files;
-                $path = $path.$files;
-
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($tmp,$path);
-                } else {
-                    $process = false;
-                }
+                $fileValidation = fileValidation(0, 'file', 'supplier/');
+                $files = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
             }
         } else {
             $files = $_POST['fileurl'];
@@ -24904,20 +24987,13 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $filesize = $_FILES['file']['size'];
-                $path = 'uploads/supplier/';
-                $tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                $files = rand(1000,1000000) . ' - ' . $files;
-                $path = $path.$files;
+                $fileValidation = fileValidation(0, 'file', 'supplier/');
+                $files = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
 
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($tmp,$path);
-
+                if ($process == true) {
                     mysqli_query( $conn,"UPDATE tbl_supplier_regulatory set files='". $files ."', filetype='". $filetype ."' WHERE ID='". $ID ."'" );
-                } else {
-                    $process = false;
                 }
             }
         } else {
@@ -25615,16 +25691,12 @@
 		$material_spec_file = $_FILES['material_spec_file']['name'];
 		$material_spec_file_final = "";
 		if (!empty($material_spec_file)) {
-            $spec_filesize = $_FILES['material_spec_file']['size'];
-            $material_spec_file_tmp = $_FILES['material_spec_file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($material_spec_file, PATHINFO_EXTENSION));
-            $material_spec_file_final = $random.' - '.$material_spec_file;
-            $material_spec_file_path = $path.$material_spec_file_final;
+            $fileValidation = fileValidation(0, 'material_spec_file', 'supplier/');
+            $material_spec_file_final = $fileValidation['files'];
+            $spec_filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($material_spec_file_tmp, $material_spec_file_path);
-
+            if ($process == true) {
                 $output = array (
                     'type' =>  0,
                     'name' =>  $material_spec_file_final,
@@ -25632,8 +25704,6 @@
                     'date' =>  $local_date
                 );
                 array_push($arr_item, $output);
-            } else {
-                $process = false;
             }
         }
 		// $material_spec_date_from = $_POST['material_spec_date_from'];
@@ -25672,10 +25742,14 @@
                 $material_file_doc_tmp = implode('*', $_FILES['material_other']['tmp_name'][$i]);
                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                 $ext = strtolower(pathinfo($material_file_doc, PATHINFO_EXTENSION));
+
+                $mime = mime_content_type($material_file_doc_tmp);
+                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                
                 $material_file_doc_final = $random.' - '.$material_file_doc_final;
                 $material_file_doc_path = $path.$material_file_doc_final;
 
-                if(!in_array($ext, $invalid_extensions)) {
+                if(!in_array($mime, $mime_array)) {
                     move_uploaded_file($material_file_doc_tmp, $material_file_doc_path);
 
                     $filesize += $spec_filesize_other;
@@ -25759,25 +25833,19 @@
 		$material_spec_file_final = $_POST['material_spec_file_temp'];
 		$material_spec_file = $_FILES['material_spec_file']['name'];
 		if (!empty($material_spec_file)) {
-            $spec_filesize = $_FILES['material_spec_file']['size'];
-			$material_spec_file_tmp = $_FILES['material_spec_file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($material_spec_file, PATHINFO_EXTENSION));
-			$material_spec_file_final = $random.' - '.$material_spec_file;
-			$material_spec_file_path = $path.$material_spec_file_final;
+            $fileValidation = fileValidation(0, 'material_spec_file', 'supplier/');
+            $material_spec_file_final = $fileValidation['files'];
+            $spec_filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($material_spec_file_tmp, $material_spec_file_path);
-
+            if ($process == true) {
                 $output = array (
-                    'type'  =>  0,
+                    'type' =>  0,
                     'name' =>  $material_spec_file_final,
                     'size' =>  $spec_filesize,
                     'date' =>  $local_date
                 );
                 array_push($arr_item, $output);
-            } else {
-                $process = false;
             }
 		}
 		// $material_spec_date_from = $_POST['material_spec_date_from'];
@@ -25815,10 +25883,14 @@
                 $material_file_doc_tmp = implode('*', $_FILES['material_other']['tmp_name'][$i]);
                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                 $ext = strtolower(pathinfo($material_file_doc, PATHINFO_EXTENSION));
+
+                $mime = mime_content_type($material_file_doc_tmp);
+                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                
 				$material_file_doc_final = $random.' - '.$material_file_doc;
 				$material_file_doc_path = $path.$material_file_doc_final;
 
-                if(!in_array($ext, $invalid_extensions)) {
+                if(!in_array($mime, $mime_array)) {
                     move_uploaded_file($material_file_doc_tmp, $material_file_doc_path);
 
                     $filesize += $spec_filesize_other;
@@ -26085,25 +26157,19 @@
 		$service_spec_file = $_FILES['service_spec_file']['name'];
 		$service_spec_file_final = "";
 		if (!empty($service_spec_file)) {
-            $spec_filesize = $_FILES['service_spec_file']['size'];
-            $service_spec_file_tmp = $_FILES['service_spec_file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($service_spec_file, PATHINFO_EXTENSION));
-            $service_spec_file_final = $random.' - '.$service_spec_file;
-            $service_spec_file_path = $path.$service_spec_file_final;
+            $fileValidation = fileValidation(0, 'service_spec_file', 'supplier/');
+            $service_spec_file_final = $fileValidation['files'];
+            $spec_filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($service_spec_file_tmp, $service_spec_file_path);
-
+            if ($process == true) {
                 $output = array (
-                    'type' =>  0,
+                    'type'  =>  0,
                     'name' =>  $service_spec_file_final,
                     'size' =>  $spec_filesize,
                     'date' =>  $local_date
                 );
                 array_push($arr_item, $output);
-            } else {
-                $process = false;
             }
         }
 		$service_spec_date_from = $_POST['service_spec_date_from'];
@@ -26123,10 +26189,14 @@
                 $service_file_doc_tmp = implode('*', $_FILES['service_other']['tmp_name'][$i]);
                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                 $ext = strtolower(pathinfo($service_file_doc_final, PATHINFO_EXTENSION));
+
+                $mime = mime_content_type($service_file_doc_tmp);
+                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                
                 $service_file_doc_final = $random.' - '.$service_file_doc_final;
                 $service_file_doc_path = $path.$service_file_doc_final;
 
-                if(!in_array($ext, $invalid_extensions)) {
+                if(!in_array($mime, $mime_array)) {
                     move_uploaded_file($service_file_doc_tmp, $service_file_doc_path);
 
                     $filesize += $spec_filesize_other;
@@ -26199,16 +26269,12 @@
         $service_spec_file_final = $_POST['service_spec_file_tmp'];
         $service_spec_file = $_FILES['service_spec_file']['name'];
 		if (!empty($service_spec_file)) {
-            $spec_filesize = $_FILES['service_spec_file']['size'];
-            $service_spec_file_tmp = $_FILES['service_spec_file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($service_spec_file, PATHINFO_EXTENSION));
-            $service_spec_file_final = $random.' - '.$service_spec_file;
-            $service_spec_file_path = $path.$service_spec_file_final;
+            $fileValidation = fileValidation(0, 'service_spec_file', 'supplier/');
+            $service_spec_file_final = $fileValidation['files'];
+            $spec_filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($service_spec_file_tmp, $service_spec_file_path);
-
+            if ($process == true) {
                 $output = array (
                     'type'  =>  0,
                     'name' =>  $service_spec_file_final,
@@ -26216,8 +26282,6 @@
                     'date' =>  $local_date
                 );
                 array_push($arr_item, $output);
-            } else {
-                $process = false;
             }
         }
 		$service_spec_date_from = $_POST['service_spec_date_from'];
@@ -26237,10 +26301,14 @@
                 $service_file_doc_tmp = implode('*', $_FILES['service_other']['tmp_name'][$i]);
                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                 $ext = strtolower(pathinfo($service_file_doc, PATHINFO_EXTENSION));
+
+                $mime = mime_content_type($service_file_doc_tmp);
+                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                
                 $service_file_doc_final = $random.' - '.$service_file_doc_final;
                 $service_file_doc_path = $path.$service_file_doc_final;
 
-                if(!in_array($ext, $invalid_extensions)) {
+                if(!in_array($mime, $mime_array)) {
                     move_uploaded_file($service_file_doc_tmp, $service_file_doc_path);
 
                     $filesize += $spec_filesize_other;
@@ -26331,18 +26399,10 @@
 			$file = $_FILES['file']['name'];
 			$file_final = "";
 			if (!empty($file)) {
-                $filesize = $_FILES['file']['size'];
-				$file_tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-				$file_final = $random.' - '.$file;
-				$file_path = $path.$file_final;
-
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($file_tmp, $file_path);
-                } else {
-                    $process = false;
-                }
+                $fileValidation = fileValidation(0, 'file', 'supplier/');
+                $file_final = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
 			}
 		} else {
 			$file_final = $_POST['fileurl'];
@@ -26444,18 +26504,10 @@
 			$file = $_FILES['file']['name'];
 			$file_final = "";
 			if (!empty($file)) {
-                $filesize = $_FILES['file']['size'];
-				$file_tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-				$file_final = $random.' - '.$file;
-				$file_path = $path.$file_final;
-
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($file_tmp, $file_path);
-                } else {
-                    $process = false;
-                }
+                $fileValidation = fileValidation(0, 'file', 'supplier/');
+                $file_final = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
 			}
 		} else {
 			$file_final = $_POST['fileurl'];
@@ -27073,19 +27125,10 @@
 		$final_file = "";
 		$file = $_FILES['file']['name'];
 		if (!empty($file)) {
-			$path = 'uploads/job/';
-			$random = rand(1000,1000000);
-			$tmp_file = $_FILES['file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-			$final_file = $random.' - '.$file;
-			$path_file = $path.$final_file;
-
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($tmp_file,$path_file);
-            } else {
-                $process = false;
-            }
+            $fileValidation = fileValidation(0, 'file', 'job/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 		}
 
         if ($process == true) {
@@ -27130,20 +27173,13 @@
 		$final_file = "";
 		$file = $_FILES['file']['name'];
 		if (!empty($file)) {
-			$path = 'uploads/job/';
-			$random = rand(1000,1000000);
-			$tmp_file = $_FILES['file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-			$final_file = $random.' - '.$file;
-			$path_file = $path.$final_file;
+            $fileValidation = fileValidation(0, 'file', 'job/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($tmp_file,$path_file);
-
-                mysqli_query( $conn,"UPDATE tbl_job_listing set files='". $final_file ."' WHERE ID='". $ID ."'" );
-            } else {
-                $process = false;
+            if ($process == true) {
+                mysqli_query( $conn,"UPDATE tbl_job_listing set files='". $files ."' WHERE ID='". $ID ."'" );
             }
 		}
 
@@ -31224,19 +31260,10 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $path = 'uploads/eforms/';
-                $filesize = $_FILES['file']['size'];
-                $tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                $files = rand(1000,1000000) . ' - ' . $files;
-                $path = $path.$files;
-
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($tmp,$path);
-                } else {
-                    $process = false;
-                }
+                $fileValidation = fileValidation(0, 'file', 'eforms/');
+                $files = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
             }
         } else {
             $files = $_POST['fileurl'];
@@ -31407,22 +31434,15 @@
                 if ($filetype == 1) {
                     $files = $_FILES['file']['name'];
                     if (!empty($files)) {
-                        $path = 'uploads/eforms/';
-                        $filesize = $_FILES['file']['size'];
-                        $tmp = $_FILES['file']['tmp_name'];
-                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                        $files = rand(1000,1000000) . ' - ' . $files;
-                        $path = $path.$files;
+                        $fileValidation = fileValidation(0, 'file', 'eforms/');
+                        $files = $fileValidation['files'];
+                        $filesize = $fileValidation['size'];
+                        $process = $fileValidation['valid'];
 
-                        if(!in_array($ext, $invalid_extensions)) {
-                            move_uploaded_file($tmp,$path);
-
+                        if ($process == true) {
                             $filesize_tot = $filesize + $rowData["filesize"];
 
                             mysqli_query( $conn,"UPDATE tbl_eforms SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
-                        } else {
-                            $process = false;
                         }
                     }
                 } else {
@@ -31805,19 +31825,10 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $path = 'uploads/lib/';
-                $filesize = $_FILES['file']['size'];
-                $tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                $files = rand(1000,1000000) . ' - ' . $files;
-                $path = $path.$files;
-
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($tmp,$path);
-                } else {
-                    $process = false;
-                }
+                $fileValidation = fileValidation(0, 'file', 'lib/');
+                $files = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
             }
         } else {
             $files = $_POST['fileurl'];
@@ -31904,22 +31915,15 @@
                 if ($filetype == 1) {
                     $files = $_FILES['file']['name'];
                     if (!empty($files)) {
-                        $path = 'uploads/lib/';
-                        $filesize = $_FILES['file']['size'];
-                        $tmp = $_FILES['file']['tmp_name'];
-                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                        $files = rand(1000,1000000) . ' - ' . $files;
-                        $path = $path.$files;
+                        $fileValidation = fileValidation(0, 'file', 'lib/');
+                        $files = $fileValidation['files'];
+                        $filesize = $fileValidation['size'];
+                        $process = $fileValidation['valid'];
 
-                        if(!in_array($ext, $invalid_extensions)) {
-                            move_uploaded_file($tmp,$path);
-
+                        if ($process == true) {
                             $filesize_tot = $filesize + $rowData["filesize"];
 
                             mysqli_query( $conn,"UPDATE tbl_lib SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
-                        } else {
-                            $process = false;
                         }
                     }
                 } else {
@@ -32261,19 +32265,10 @@
 		if ($filetype == 1) {
 			$files = $_FILES['file']['name'];
 			if (!empty($files)) {
-				$path = 'uploads/archiving/';
-                $filesize = $_FILES['file']['size'];
-				$tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-				$files = rand(1000,1000000) . ' - ' . $files;
-				$path = $path.$files;
-
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($tmp,$path);
-                } else {
-                    $process = false;
-                }
+                $fileValidation = fileValidation(0, 'file', 'archiving/');
+                $files = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
 			}
 		} else {
 			$files = $_POST['fileurl'];
@@ -32360,22 +32355,15 @@
                 if ($filetype == 1) {
                     $files = $_FILES['file']['name'];
                     if (!empty($files)) {
-                        $path = 'uploads/archiving/';
-                        $filesize = $_FILES['file']['size'];
-                        $tmp = $_FILES['file']['tmp_name'];
-                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                        $files = rand(1000,1000000) . ' - ' . $files;
-                        $path = $path.$files;
+                        $fileValidation = fileValidation(0, 'file', 'archiving/');
+                        $files = $fileValidation['files'];
+                        $filesize = $fileValidation['size'];
+                        $process = $fileValidation['valid'];
 
-                        if(!in_array($ext, $invalid_extensions)) {
-                            move_uploaded_file($tmp,$path);
-
+                        if ($process == true) {
                             $filesize_tot = $filesize + $rowData["filesize"];
 
                             mysqli_query( $conn,"UPDATE tbl_archiving SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
-                        } else {
-                            $process = false;
                         }
                     }
                 } else {
@@ -33039,18 +33027,10 @@
 
 		$files = $_FILES['file']['name'];
 		if (!empty($files)) {
-			$path = 'uploads/services/';
-			$tmp = $_FILES['file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-			$files = rand(1000,1000000) . ' - ' . $files;
-			$path = $path.$files;
-
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($tmp,$path);
-            } else {
-                $process = false;
-            }
+            $fileValidation = fileValidation(0, 'file', 'services/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 		}
 
         if ($process == true) {
@@ -36458,18 +36438,13 @@
 		if ($type_id == 0) {
 			$file_upload = $_FILES['file']['name'];
 			if (!empty($file_upload)) {
-				$tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($file_upload, PATHINFO_EXTENSION));
-				$file_upload = $random . ' - ' . $file_upload;
-				$path = $path.$file_upload;
+                $fileValidation = fileValidation(0, 'file', 'instruction/');
+                $file_upload = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
 
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($tmp,$path);
-
+                if ($process == true) {
                     mysqli_query( $conn,"UPDATE tbl_pages_demo_video SET file_upload = '".$file_upload."' WHERE id = '".$last_id."'" );
-                } else {
-                    $process = false;
                 }
 			}
 		} else if ($type_id == 1 OR $type_id == 2) {
@@ -42666,6 +42641,10 @@
                                     $from = 'exim360r@gmail.com';
                                     $name = 'Exim360';
                                     $body .= '<br><br>Exim360';
+                                } else if ($_COOKIE['client'] == 5) {
+                                    $from = 'vikingatlanticsalesgroupllc@gmail.com';
+                                    $name = 'Vikings Atlantic Sales Group, LLC';
+                                    $body .= '<br><br>Vikings';
                                 } else {
                                     $from = 'services@interlinkiq.com';
                                     $name = 'InterlinkIQ';
@@ -42719,6 +42698,10 @@
                             $from = 'exim360r@gmail.com';
                             $name = 'Exim360';
                             $body .= '<br><br>Exim360';
+                        } else if ($_COOKIE['client'] == 5) {
+                            $from = 'vikingatlanticsalesgroupllc@gmail.com';
+                            $name = 'Vikings Atlantic Sales Group, LLC';
+                            $body .= '<br><br>Vikings';
                         } else {
                             $from = 'services@interlinkiq.com';
                             $name = 'InterlinkIQ';
@@ -44721,29 +44704,14 @@
 		$success = true;
 		$message = "Error";
 
-		if( !empty( $_FILES['file']['name'] ) ) {
-			$valid_extensions = array('jpeg', 'jpg', 'png'); // valid extensions
-			$path = 'uploads/avatar/'; // upload directory
-			$file = $_FILES['file']['name'];
-			$tmp = $_FILES['file']['tmp_name'];
-			// get uploaded file's extension
-			$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-			// can upload same image using rand function
-			$final_file = rand(1000,1000000).' - '.$file;
-			// check's valid format
-			if(in_array($ext, $valid_extensions)) {
-				$files = $final_file;
-				$path = $path.$final_file;
-				if(move_uploaded_file($tmp,$path)) {
-					$success = true;
-				}
-			} else {
-				$success = false;
-			}
-		}
+        if (!empty($_FILES['file']['name'])) {
+            $fileValidation = fileValidation(1, 'file', 'avatar/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
+        }
 
-		if ($success == true) {
-
+		if ($process == true) {
 			$selectData = mysqli_query( $conn,'SELECT * FROM tbl_user_info WHERE user_id="'. $ID .'"' );
 			if ( mysqli_num_rows($selectData) > 0 ) {
 				$rowData = mysqli_fetch_array($selectData);
@@ -44927,19 +44895,10 @@
 		$profile_tmp = $_POST['profile_tmp'];
 		$profile_file = $_FILES['profile']['name'];
 		if (!empty($profile_file)) {
-			$cv_file_tmp = $_FILES['profile']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($profile_file, PATHINFO_EXTENSION));
-			$path = 'uploads/avatar/';
-			$random = rand(1000,1000000);
-			$profile_file = $random . ' - ' . $profile_file;
-			$path = $path.$profile_file;
-
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($cv_file_tmp, $path);
-            } else {
-                $process = false;
-            }
+            $fileValidation = fileValidation(0, 'profile', 'avatar/');
+            $profile_file = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 		} else {
 			$profile_file = $profile_tmp;
 		}
@@ -44956,20 +44915,10 @@
 		$cv_tmp = $_POST['cv_tmp'];
 		$cv_file = $_FILES['cv']['name'];
 		if (!empty($cv_file)) {
-			$cv_file_tmp = $_FILES['cv']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($profile_file, PATHINFO_EXTENSION));
-			$path = 'uploads/job/';
-			$random = rand(1000,1000000);
-			$cv_file = $random . ' - ' . $cv_file;
-			$path = $path.$cv_file;
-
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($cv_file_tmp, $path);
-            } else {
-                $process = false;
-            }
-
+            $fileValidation = fileValidation(0, 'cv', 'avatar/');
+            $cv_file = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 		} else {
 			$cv_file = $cv_tmp;
 		}
@@ -44989,12 +44938,16 @@
 					$tmp = implode('*', $_FILES['education']['tmp_name'][$i]);
                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                     $ext = strtolower(pathinfo($profile_file, PATHINFO_EXTENSION));
+            
+                    $mime = mime_content_type($tmp);
+                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                    
 					$path = 'uploads/job/';
 					$random = rand(1000,1000000);
 					$files = $random . ' - ' . $files;
 					$path = $path.$files;
 
-                    if(!in_array($ext, $invalid_extensions)) {
+                    if(!in_array($mime, $mime_array)) {
                         move_uploaded_file($tmp, $path);
 
                         $output = array (
@@ -45278,24 +45231,10 @@
 
 		$success = false;
 		if( !empty( $_FILES['file']['name'] ) ) {
-			$valid_extensions = array('jpeg', 'jpg', 'png', 'gif', 'bmp' , 'pdf' , 'doc' , 'ppt'); // valid extensions
-			$path = 'uploads/'; // upload directory
-			$file = $_FILES['file']['name'];
-			$tmp = $_FILES['file']['tmp_name'];
-			// get uploaded file's extension
-			$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-			// can upload same image using rand function
-			$final_file = rand(1000,1000000).' - '.$file;
-			// check's valid format
-			if(in_array($ext, $valid_extensions)) {
-				$files = $final_file;
-				$path = $path.$final_file;
-				if(move_uploaded_file($tmp,$path)) {
-					$success = true;
-				}
-			} else {
-				$success = false;
-			}
+            $fileValidation = fileValidation(0, 'file', '');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $success = $fileValidation['valid'];
 		}
 
 		if ($success == true) {
@@ -45884,6 +45823,10 @@
                                             $from = 'exim360r@gmail.com';
                                             $name = 'Exim360';
                                             $body .= '<br><br>Exim360';
+                                        } else if ($_COOKIE['client'] == 5) {
+                                            $from = 'vikingatlanticsalesgroupllc@gmail.com';
+                                            $name = 'Vikings Atlantic Sales Group, LLC';
+                                            $body .= '<br><br>Vikings';
                                         } else {
                                             $from = 'services@interlinkiq.com';
                                             $name = 'InterlinkIQ';
@@ -45983,18 +45926,10 @@
 
 		$files = $_FILES['file']['name'];
 		if (!empty($files)) {
-			$path = 'uploads/pro_services/';
-			$tmp = $_FILES['file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-			$files = rand(1000,1000000) . ' - ' . $files;
-			$path = $path.$files;
-
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($tmp,$path);
-            } else {
-                $process = false;
-            }
+            $fileValidation = fileValidation(0, 'file', 'pro_services/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 		}
 
         if ($process == true) {
@@ -46591,18 +46526,10 @@
 
 		$files = $_FILES['file']['name'];
 		if (!empty($files)) {
-			$path = 'uploads/tracking/';
-			$tmp = $_FILES['file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-			$files = rand(1000,1000000) . ' - ' . $files;
-			$path = $path.$files;
-
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($tmp,$path);
-            } else {
-                $process = false;
-            }
+            $fileValidation = fileValidation(0, 'file', 'tracking/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 		}
 
         if ($process == true) {
@@ -46706,18 +46633,10 @@
 
         $files = $_FILES['file']['name'];
         if (!empty($files)) {
-            $path = 'uploads/pricing/';
-            $tmp = $_FILES['file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-            $files = rand(1000,1000000) . ' - ' . $files;
-            $path = $path.$files;
-
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($tmp,$path);
-            } else {
-                $process = false;
-            }
+            $fileValidation = fileValidation(0, 'file', 'pricing/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
         }
 
         if ($process == true) {
@@ -46923,7 +46842,7 @@
                                                     <li><a href="javascript:;" class="btnDelete" data-id="'. $item_ID .'" onclick="btnDelete('. $item_ID .')">Delete</a></li>
                                                     <li><a href="#modalReport" class="btnReport" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnReport('. $item_ID .')">Report</a></li>';
                                             
-    		                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366) {
+    		                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453) {
     		                                        	$output .= '<li><a href="#modalClone" data-toggle="modal" onclick="btnClone('. $item_ID .')">Clone</a></li>';
     		                                        }
 
@@ -47325,7 +47244,7 @@
                                         echo '<li><a href="javascript:;" class="btnDelete" data-id="'. $library_ID .'" onclick="btnDelete('. $library_ID .')">Delete</a></li>
                                         <li><a href="#modalReport" class="btnReport" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnReport('. $library_ID .')">Report</a></li>';
                                         
-                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366) {
+                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453) {
                                         	echo '<li><a href="#modalClone" data-toggle="modal" onclick="btnClone('. $library_ID .')">Clone</a></li>';
                                         }
                                         
@@ -47435,6 +47354,7 @@
 
                                                     $files = '';
                                                     $type = 'iframe';
+                                                    $target = '';
                                                     $file_extension = 'fa-youtube-play';
                                                     if (!empty($rowFiles["files"])) {
                                                         $arr_filename = explode(' | ', $rowFiles["files"]);
@@ -47461,6 +47381,10 @@
                                                         } else if ($str_filetype == 3) {
                                                             $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                             $file_extension = 'fa-google';
+                                                        } else if ($str_filetype == 4) {
+                                                            $files = preg_replace('#[^/]*$#', '', $str_filename);
+                                                            $file_extension = 'fa-strikethrough';
+                                                            $target = '_blank';
                                                         }
                                                     }
 
@@ -47488,7 +47412,7 @@
                                                                 <div class="mt-action-row">
                                                                     <div class="mt-action-info">
                                                                         <div class="mt-action-icon">
-                                                                            <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                                                            <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                                                         </div>
                                                                         <div class="mt-action-details" style="vertical-align: middle;">
                                                                             <span class="mt-action-author">'. htmlentities($file_name ?? '');
@@ -48947,6 +48871,7 @@
 
                                             $files = '';
                                             $type = 'iframe';
+                                            $target = '';
                                             $file_extension = 'fa-youtube-play';
                                             if (!empty($rowFiles["files"])) {
                                                 $arr_filename = explode(' | ', $rowFiles["files"]);
@@ -48973,6 +48898,10 @@
                                                 } else if ($str_filetype == 3) {
                                                     $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                     $file_extension = 'fa-google';
+                                                } else if ($str_filetype == 4) {
+                                                    $files = preg_replace('#[^/]*$#', '', $str_filename);
+                                                    $file_extension = 'fa-strikethrough';
+                                                    $target = '_blank';
                                                 }
                                             }
 
@@ -48988,7 +48917,7 @@
                                                     <div class="mt-action-row">
                                                         <div class="mt-action-info">
                                                             <div class="mt-action-icon">
-                                                                <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                                                <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                                             </div>
                                                             <div class="mt-action-details" style="vertical-align: middle;">
                                                                 <span class="mt-action-author">'. htmlentities($file_name ?? '');
@@ -50536,7 +50465,7 @@
 	        }
 	    }
 	}
-	if( isset($_GET['jstree_HTML2']) ) {
+	if( isset($_GET['jstree_HTML2_new']) ) {
 		if (!empty($_COOKIE['switchAccount'])) {
 			$portal_user = $_COOKIE['ID'];
 			$user_id = $_COOKIE['switchAccount'];
@@ -50831,6 +50760,533 @@
 
 		echo json_encode($result);
 	}
+    if( isset($_GET['jstree_HTML22']) ) {
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+        $collabUser = $_GET['jstree_HTML2'];
+        $current_userEmployeeID = employeeID($portal_user);
+        $current_userEmployerID = employerID($portal_user);
+
+        $hasLibrary = mysqli_query( $conn,"SELECT ID FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) > 0 ) {
+            // $resultTree = mysqli_query( $conn,"SELECT ID, name, collaborator_id FROM tbl_library WHERE parent_id = 0 AND deleted = 0 AND user_id = $user_id" );
+            $resultTree = mysqli_query( $conn,"SELECT 
+                ID AS mainID,
+                portal_user AS portal_userID,
+                parent_id AS parentID,
+                child_id AS childIDs,
+                type AS type,
+                free_access AS free_access,
+                collaborator_id AS parentCollab,
+                name AS parentName
+                FROM tbl_library
+
+                WHERE deleted = 0
+                AND user_id = $user_id
+                AND parent_id = 0
+
+                UNION ALL
+
+                SELECT 
+                ID AS mainID,
+                portal_user AS portal_userID,
+                CASE WHEN parent_id > 0 THEN 0 END AS parentID,
+                child_id AS childIDs,
+                type AS type,
+                free_access AS free_access,
+                collaborator_id AS parentCollab,
+                name AS parentName
+                FROM tbl_library
+
+                WHERE deleted = 0
+                AND user_id = $user_id
+                AND parent_id > 0
+                AND parent_id NOT IN (
+                    SELECT DISTINCT ID FROM tbl_library WHERE deleted = 0 AND user_id = $user_id
+                )
+
+                UNION ALL
+
+                SELECT 
+                ID AS mainID,
+                portal_user AS portal_userID,
+                parent_id AS parentID,
+                child_id AS childIDs,
+                type AS type,
+                free_access AS free_access,
+                collaborator_id AS parentCollab,
+                name AS parentName
+                FROM tbl_library
+
+                WHERE deleted = 0
+                AND user_id = $user_id
+                AND parent_id > 0
+                AND parent_id IN (
+                    SELECT DISTINCT ID FROM tbl_library WHERE deleted = 0 AND user_id = $user_id
+                )" );
+            // if ($collabUser == 1 AND !isset($_COOKIE['switchAccount'])) { $resultTree = mysqli_query( $conn,"SELECT ID, name, collaborator_id FROM tbl_library WHERE deleted = 0 AND collaborator_id <> '' AND user_id = $user_id" ); }
+            // if ($current_userEmployerID == 27) { $resultTree = mysqli_query( $conn,"SELECT ID, name, collaborator_id FROM tbl_library WHERE parent_id = 0 AND deleted = 0 AND user_id = $user_id" ); }
+        } else {
+            $customID = 116706101;
+            if ($_COOKIE['client'] == 3) { $customID = 116713042; }
+
+            $resultTree = mysqli_query( $conn,"SELECT ID, name, collaborator_id FROM tbl_library WHERE ID = $customID" );
+            $user_id = 163;
+            $current_userEmployeeID = employeeID($user_id);
+            $current_userEmployerID = employerID($user_id);
+            $collabUser = 0;
+        }
+
+        $result = array();
+        if ( mysqli_num_rows($resultTree) > 0 ) {
+            while($rowTree = mysqli_fetch_array($resultTree)) {
+                $library_ID = $rowTree["ID"];
+                $library_name = $rowTree["name"];
+                $library_collaborator_id = $rowTree["collaborator_id"];
+
+                $selectFile = mysqli_query( $conn,"WITH RECURSIVE cte (mainID, portal_userID, parentID, childIDs, type, free_access, parentCollab, parentName) AS
+                    (
+                        SELECT 
+                            t1.ID AS mainID,
+                            t1.portal_user AS portal_userID,
+                            t1.parent_id AS parentID,
+                            t1.child_id AS childIDs,
+                            t1.type AS type,
+                            t1.free_access AS free_access,
+                            t1.collaborator_id AS parentCollab,
+                            t1.name AS parentName
+                        FROM tbl_library AS t1
+                        WHERE t1.deleted = 0 AND t1.user_id = $user_id AND t1.parent_id = 0 AND t1.ID = $library_ID
+                        
+                        UNION ALL
+                        
+                        SELECT 
+                            t2.ID AS mainID,
+                            t2.portal_user AS portal_userID,
+                            t2.parent_id AS parentID,
+                            t2.child_id AS childIDs,
+                            t2.type AS type,
+                            t2.free_access AS free_access,
+                            t2.collaborator_id AS parentCollab,
+                            t2.name AS parentName
+                        FROM tbl_library AS t2
+                        JOIN cte ON cte.mainID = t2.parent_id
+                        WHERE t2.deleted = 0 AND t2.user_id = $user_id
+                    )
+                    SELECT 
+                    mainID, portal_userID, parentID, childIDs, type, free_access, parentCollab, parentName
+                    FROM cte
+
+                    ORDER BY FIELD(type,1,2,3,5,4) ASC, mainID ASC, parentID ASC" );
+                if ( mysqli_num_rows($selectFile) > 0 ) {
+                    $list_array = array();
+
+                    while($rowFile = mysqli_fetch_array($selectFile)) {
+                        $mainID = $rowFile["mainID"];
+                        $parentID = $rowFile["parentID"];
+                        $parentName = $rowFile["parentName"];
+                        $type_id = $rowFile["type"];
+
+                        $childIDs = $rowFile["childIDs"];
+                        $item_child = false;
+                        if (!empty($childIDs)) { $item_child = true; }
+
+                        $displayLibrary = false;
+                        if (mysqli_num_rows($hasLibrary) == 0) {
+                            if ($rowFile["portal_userID"] == $portal_user OR $rowFile["portal_userID"] == 163) {
+                                $displayLibrary = true;
+                            }
+                        } else {
+                            if ($rowFile["free_access"] == 0) {
+                                $displayLibrary = true;
+                            }
+                        }
+
+                        if ($displayLibrary == true) {
+                            if ($collabUser == 1) {
+                                if (!empty($library_collaborator_id)) {
+                                    $collab = json_decode($library_collaborator_id, true);
+                                    foreach ($collab as $key => $value) {
+                                        if ($current_userEmployerID == $key) {
+                                            if (in_array($current_userEmployeeID, $value['assigned_to_id'])) {
+                                                if (!in_array($mainID, $list_array)) {
+                                                    array_push($list_array, $mainID);
+
+                                                    $array_name_id = explode(", ", $parentName);
+                                                    // if ( count($array_name_id) == 4 AND $type_id == 0 ) {
+                                                    if ( count($array_name_id) == 4 ) {
+                                                        $data_name = array();
+
+                                                        $selectType = mysqli_query($conn,"SELECT * FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'");
+                                                        if ( mysqli_num_rows($selectType) > 0 ) {
+                                                            while($rowType = mysqli_fetch_array($selectType)) {
+                                                                array_push($data_name, $rowType["name"]);
+                                                            }
+                                                        }
+
+                                                        $selectCategory = mysqli_query($conn,"SELECT * FROM tbl_library_category WHERE ID = '".$array_name_id[1]."'");
+                                                        if ( mysqli_num_rows($selectCategory) > 0 ) {
+                                                            while($rowCategory = mysqli_fetch_array($selectCategory)) {
+                                                                array_push($data_name, $rowCategory["name"]);
+                                                            }
+                                                        }
+
+                                                        $selectScope = mysqli_query($conn,"SELECT * FROM tbl_library_scope WHERE ID = '".$array_name_id[2]."'");
+                                                        if ( mysqli_num_rows($selectScope) > 0 ) {
+                                                            while($rowScope = mysqli_fetch_array($selectScope)) {
+                                                                array_push($data_name, $rowScope["name"]);
+                                                            }
+                                                        }
+
+                                                        $selectModule = mysqli_query($conn,"SELECT * FROM tbl_library_module WHERE ID = '".$array_name_id[3]."'");
+                                                        if ( mysqli_num_rows($selectModule) > 0 ) {
+                                                            while($rowModule = mysqli_fetch_array($selectModule)) {
+                                                                array_push($data_name, $rowModule["name"]);
+                                                            }
+                                                        }
+
+                                                        $parentName = implode(" - ",$data_name);
+                                                    }
+
+                                                    if($parentID == 0) { $parentID = '#'; }
+
+                                                    $output = array(
+                                                        "id" => $mainID,
+                                                        "parent" => $parentID,
+                                                        "state" => 'close',
+                                                        "text" => htmlentities($parentName ?? '')
+                                                    );
+                                                    array_push($result, $output);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (!in_array($mainID, $list_array)) {
+                                    array_push($list_array, $mainID);
+
+                                    $array_name_id = explode(", ", $parentName);
+                                    if ( count($array_name_id) == 4 AND $type_id == 0 ) {
+                                        $data_name = array();
+
+                                        $selectType = mysqli_query($conn,"SELECT * FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'");
+                                        if ( mysqli_num_rows($selectType) > 0 ) {
+                                            while($rowType = mysqli_fetch_array($selectType)) {
+                                                array_push($data_name, $rowType["name"]);
+                                            }
+                                        }
+
+                                        $selectCategory = mysqli_query($conn,"SELECT * FROM tbl_library_category WHERE ID = '".$array_name_id[1]."'");
+                                        if ( mysqli_num_rows($selectCategory) > 0 ) {
+                                            while($rowCategory = mysqli_fetch_array($selectCategory)) {
+                                                array_push($data_name, $rowCategory["name"]);
+                                            }
+                                        }
+
+                                        $selectScope = mysqli_query($conn,"SELECT * FROM tbl_library_scope WHERE ID = '".$array_name_id[2]."'");
+                                        if ( mysqli_num_rows($selectScope) > 0 ) {
+                                            while($rowScope = mysqli_fetch_array($selectScope)) {
+                                                array_push($data_name, $rowScope["name"]);
+                                            }
+                                        }
+
+                                        $selectModule = mysqli_query($conn,"SELECT * FROM tbl_library_module WHERE ID = '".$array_name_id[3]."'");
+                                        if ( mysqli_num_rows($selectModule) > 0 ) {
+                                            while($rowModule = mysqli_fetch_array($selectModule)) {
+                                                array_push($data_name, $rowModule["name"]);
+                                            }
+                                        }
+
+                                        $parentName = implode(" - ",$data_name);
+                                    }
+
+                                    if($parentID == 0) { $parentID = '#'; }
+
+                                    $output = array(
+                                        "id" => $mainID,
+                                        "parent" => $parentID,
+                                        "state" => 'close',
+                                        "text" => htmlentities($parentName ?? '')
+                                    );
+                                    array_push($result, $output);
+                                }
+                            }
+                        }
+                     }
+                }
+            }
+        }
+
+        echo json_encode($result);
+    }
+    if( isset($_GET['jstree_HTML2']) ) {
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+        $collabUser = $_GET['jstree_HTML2'];
+        $current_userEmployeeID = employeeID($portal_user);
+        $current_userEmployerID = $user_id;
+        $result = array();
+
+        $hasLibrary = mysqli_query( $conn,"SELECT ID FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) > 0 ) {
+            $selectLibrary = mysqli_query( $conn,"
+                SELECT 
+                ID AS mainID,
+                portal_user AS portal_userID,
+                parent_id AS parentID,
+                child_id AS childIDs,
+                type AS type,
+                free_access AS free_access,
+                collaborator_id AS parentCollab,
+                name AS parentName
+                FROM tbl_library
+
+                WHERE deleted = 0
+                AND user_id = $user_id
+                AND parent_id = 0
+
+                UNION ALL
+
+                SELECT 
+                ID AS mainID,
+                portal_user AS portal_userID,
+                parent_id AS parentID,
+                child_id AS childIDs,
+                type AS type,
+                free_access AS free_access,
+                collaborator_id AS parentCollab,
+                name AS parentName
+                FROM tbl_library
+
+                WHERE deleted = 0
+                AND user_id = $user_id
+                AND parent_id > 0
+                AND parent_id IN (
+                    SELECT DISTINCT ID FROM tbl_library WHERE deleted = 0 AND user_id = $user_id
+                )
+            " );
+
+            if ($collabUser == 1) {
+                $selectLibrary = mysqli_query( $conn,"
+                    SELECT 
+                    ID AS mainID,
+                    portal_user AS portal_userID,
+                    parent_id AS parentID,
+                    child_id AS childIDs,
+                    type AS type,
+                    free_access AS free_access,
+                    collaborator_id AS parentCollab,
+                    name AS parentName
+                    FROM tbl_library
+
+                    WHERE deleted = 0
+                    AND user_id = $user_id
+                    AND parent_id = 0
+                    AND LENGTH(collaborator_id) > 0 
+                    AND collaborator_id LIKE '%\"$current_userEmployeeID\"%'
+                    -- AND JSON_EXTRACT(collaborator_id, '$.$user_id.assigned_to_id') LIKE '%\"$current_userEmployeeID\"%'
+
+                    UNION ALL
+
+                    SELECT 
+                    ID AS mainID,
+                    portal_user AS portal_userID,
+                    parent_id AS parentID,
+                    child_id AS childIDs,
+                    type AS type,
+                    free_access AS free_access,
+                    collaborator_id AS parentCollab,
+                    name AS parentName
+                    FROM tbl_library
+
+                    WHERE deleted = 0
+                    AND user_id = $user_id
+                    AND parent_id > 0
+                    AND parent_id IN (
+                        SELECT DISTINCT ID FROM tbl_library WHERE deleted = 0 AND user_id = $user_id
+                    )
+                " );
+            }
+        } else {
+            $customID = 116706101;
+            if ($_COOKIE['client'] == 3) { $customID = 116713042; }
+
+            $selectLibrary = mysqli_query( $conn,"SELECT ID AS mainID, name AS parentName, collaborator_id AS parentCollab FROM tbl_library WHERE ID = $customID" );
+            $user_id = 163;
+        }
+
+        $list_array = array();
+        if ( mysqli_num_rows($selectLibrary) > 0 ) {
+            while($rowLibrary = mysqli_fetch_array($selectLibrary)) {
+
+                if ( mysqli_num_rows($hasLibrary) == 0 ) {
+                    $library_ID = $rowLibrary["mainID"];
+                    $library_name = $rowLibrary["parentName"];
+                    $library_collaborator_id = $rowLibrary["parentCollab"];
+
+                    $selectChild = mysqli_query( $conn,"
+                        WITH RECURSIVE cte (mainID, portal_userID, parentID, childIDs, type, free_access, parentCollab, parentName) AS
+                        (
+                            SELECT 
+                                t1.ID AS mainID,
+                                t1.portal_user AS portal_userID,
+                                t1.parent_id AS parentID,
+                                t1.child_id AS childIDs,
+                                t1.type AS type,
+                                t1.free_access AS free_access,
+                                t1.collaborator_id AS parentCollab,
+                                t1.name AS parentName
+                            FROM tbl_library AS t1
+                            WHERE t1.deleted = 0 AND t1.user_id = $user_id AND t1.parent_id = 0 AND t1.ID = $library_ID
+                            
+                            UNION ALL
+                            
+                            SELECT 
+                                t2.ID AS mainID,
+                                t2.portal_user AS portal_userID,
+                                t2.parent_id AS parentID,
+                                t2.child_id AS childIDs,
+                                t2.type AS type,
+                                t2.free_access AS free_access,
+                                t2.collaborator_id AS parentCollab,
+                                t2.name AS parentName
+                            FROM tbl_library AS t2
+                            JOIN cte ON cte.mainID = t2.parent_id
+                            WHERE t2.deleted = 0 AND t2.user_id = $user_id
+                        )
+                        SELECT 
+                        mainID, portal_userID, parentID, childIDs, type, free_access, parentCollab, parentName
+                        FROM cte
+
+                        ORDER BY FIELD(type,1,2,3,5,4) ASC, mainID ASC, parentID ASC
+                    " );
+
+                    if ( mysqli_num_rows($selectChild) > 0 ) {
+                        while($rowChild = mysqli_fetch_array($selectChild)) {
+                            $mainID = $rowChild["mainID"];
+                            $parentID = $rowChild["parentID"];
+                            $parentName = $rowChild["parentName"];
+                            $type_id = $rowChild["type"];
+
+                            $childIDs = $rowChild["childIDs"];
+                            $item_child = false;
+                            if (!empty($childIDs)) { $item_child = true; }
+
+                            $displayLibrary = false;
+                            if (mysqli_num_rows($hasLibrary) == 0) {
+                                if ($rowChild["portal_userID"] == $portal_user OR $rowChild["portal_userID"] == 163) {
+                                    $displayLibrary = true;
+                                }
+                            } else {
+                                if ($rowChild["free_access"] == 0) {
+                                    $displayLibrary = true;
+                                }
+                            }
+
+                            if ($displayLibrary == true) {
+                                $array_name_id = explode(", ", $parentName);
+                                if ( count($array_name_id) == 4 AND $type_id == 0 ) {
+                                    $data_name = array();
+
+                                    $selectLibraryName = mysqli_query($conn,"
+                                        SELECT name FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'
+                                        UNION ALL
+                                        SELECT name FROM tbl_library_category WHERE ID = '".$array_name_id[1]."'
+                                        UNION ALL
+                                        SELECT name FROM tbl_library_scope WHERE ID = '".$array_name_id[2]."'
+                                        UNION ALL
+                                        SELECT name FROM tbl_library_module WHERE ID = '".$array_name_id[3]."'
+                                    ");
+                                    if ( mysqli_num_rows($selectLibraryName) > 0 ) {
+                                        while($rowLibraryName = mysqli_fetch_array($selectLibraryName)) {
+                                            array_push($data_name, $rowLibraryName["name"]);
+                                        }
+                                    }
+
+                                    $parentName = implode(" - ",$data_name);
+                                }
+
+                                if($parentID == 0) { $parentID = '#'; }
+
+                                $output = array(
+                                    "id" => $mainID,
+                                    "parent" => $parentID,
+                                    "state" => 'close',
+                                    "text" => htmlentities($parentName ?? '')
+                                );
+                                array_push($result, $output);
+                            }
+                         }
+                    }
+                } else {
+                    $mainID = $rowLibrary["mainID"];
+                    $parentID = $rowLibrary["parentID"];
+                    $parentName = $rowLibrary["parentName"];
+                    $type_id = $rowLibrary["type"];
+                    $parentCollab = $rowLibrary["parentCollab"];
+
+                    $displayLibrary = false;
+                    if (mysqli_num_rows($hasLibrary) == 0) {
+                        if ($rowLibrary["portal_userID"] == $portal_user OR $rowLibrary["portal_userID"] == 163) {
+                            $displayLibrary = true;
+                        }
+                    } else {
+                        if ($rowLibrary["free_access"] == 0) {
+                            $displayLibrary = true;
+                        }
+                    }
+
+                    if ($displayLibrary == true) {
+                        $array_name_id = explode(", ", $parentName);
+                        if ( count($array_name_id) == 4 AND $type_id == 0 ) {
+                            $data_name = array();
+
+                            $selectLibraryName = mysqli_query($conn,"
+                                SELECT name FROM tbl_library_type WHERE ID = '".$array_name_id[0]."'
+                                UNION ALL
+                                SELECT name FROM tbl_library_category WHERE ID = '".$array_name_id[1]."'
+                                UNION ALL
+                                SELECT name FROM tbl_library_scope WHERE ID = '".$array_name_id[2]."'
+                                UNION ALL
+                                SELECT name FROM tbl_library_module WHERE ID = '".$array_name_id[3]."'
+                            ");
+                            if ( mysqli_num_rows($selectLibraryName) > 0 ) {
+                                while($rowLibraryName = mysqli_fetch_array($selectLibraryName)) {
+                                    array_push($data_name, $rowLibraryName["name"]);
+                                }
+                            }
+
+                            $parentName = implode(" - ",$data_name);
+                        }
+
+                        if($parentID == 0) { $parentID = '#'; }
+
+                        $output = array(
+                            "id" => $mainID,
+                            "parent" => $parentID,
+                            "state" => 'close',
+                            "text" => htmlentities($parentName ?? '')
+                        );
+                        array_push($result, $output);
+                    }
+                }
+            }
+        }
+        echo json_encode($result);
+    }
 
 	// Item Section
     if( isset($_GET['modalChanges_Area']) ) {
@@ -51809,6 +52265,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -51882,6 +52339,9 @@
                     $files = $src.$url.rawurlencode($str_filename).$embed;
                 } else if ($str_filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
+                } else if ($str_filetype == 4) {
+                    $files = preg_replace('#[^/]*$#', '', $str_filename);
+                    $file_extension = 'fa-strikethrough';
                 }
             }
         }
@@ -51895,6 +52355,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -52029,19 +52490,10 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $path = 'uploads/library/';
-                $filesize = $_FILES['file']['size'];
-                $tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                $files = rand(1000,1000000) . ' - ' . $files;
-                $path = $path.$files;
-
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($tmp,$path);
-                } else {
-                    $process = false;
-                }
+                $fileValidation = fileValidation(0, 'file', 'library/');
+                $files = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
             }
         } else {
             $files = $_POST['fileurl'];
@@ -52123,6 +52575,7 @@
                         $filetype = $rowFiles['filetype'];
                         $files = $rowFiles["files"];
                         $type = 'iframe';
+                        $target = '';
                         $file_extension = 'fa-youtube-play';
                         if (!empty($files)) {
                             if ($filetype == 1) {
@@ -52137,6 +52590,10 @@
                             } else if ($filetype == 3) {
                                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                 $file_extension = 'fa-google';
+                            } else if ($str_filetype == 4) {
+                                $files = preg_replace('#[^/]*$#', '', $str_filename);
+                                $file_extension = 'fa-strikethrough';
+                                $target = '_blank';
                             }
                         }
 
@@ -52145,7 +52602,7 @@
                                 <div class="mt-action-row">
                                     <div class="mt-action-info">
                                         <div class="mt-action-icon">
-                                            <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                            <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                         </div>
                                         <div class="mt-action-details" style="vertical-align: middle;">
                                             <span class="mt-action-author">'.stripcslashes(htmlentities($file_name)).'</span>
@@ -52228,22 +52685,14 @@
                     if ($filetype == 1) {
                         $files = $_FILES['file']['name'];
                         if (!empty($files)) {
-                            $path = 'uploads/library/';
-                            $filesize = $_FILES['file']['size'];
-                            $tmp = $_FILES['file']['tmp_name'];
-                            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                            $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                            $files = rand(1000,1000000) . ' - ' . $files;
-                            $path = $path.$files;
-                            $str_filename = $files;
-                            $str_filetype = 1;
+                            $fileValidation = fileValidation(0, 'file', 'library/');
+                            $files = $fileValidation['files'];
+                            $filesize = $fileValidation['size'];
+                            $process = $fileValidation['valid'];
 
-                            if(!in_array($ext, $invalid_extensions)) {
-                                move_uploaded_file($tmp,$path);
+                            if ($process == true) {
                                 $filesize_tot = $filesize + $rowFiles["filesize"];
                                 mysqli_query( $conn,"UPDATE tbl_library_file SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
-                            } else {
-                                $process = false;
                             }
                         }
                     } else {
@@ -52270,6 +52719,7 @@
                     $filetype = $str_filetype;
                     $files = $str_filename;
                     $type = 'iframe';
+                    $target = '';
                     $file_extension = 'fa-file-image-o';
                     if (!empty($files)) {
                         if ($filetype == 1) {
@@ -52284,6 +52734,10 @@
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
+                        } else if ($str_filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $str_filename);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                     }
 
@@ -52291,7 +52745,7 @@
                         <div class="mt-action-row">
                             <div class="mt-action-info">
                                 <div class="mt-action-icon">
-                                    <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                    <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                 </div>
                                 <div class="mt-action-details" style="vertical-align: middle;">
                                     <span class="mt-action-author">'.stripcslashes(htmlentities($file_name)).'</span>
@@ -52598,6 +53052,7 @@
                         else if ($_COOKIE['client'] == 2) { $body .= '<br><br>FoodSafety360 Team'; }
                         else if ($_COOKIE['client'] == 3) { $body .= '<br><br>SafeCannabis360 Team'; }
                         else if ($_COOKIE['client'] == 4) { $body .= '<br><br>Exim360 Team'; }
+                        else if ($_COOKIE['client'] == 5) { $body .= '<br><br>Vikings Team'; }
                         
 		    			php_mailer_1($to, $user, $subject, $body, $from, $sender);
 					}
@@ -53057,6 +53512,10 @@
                 $from = 'exim360r@gmail.com';
                 $name = 'Exim360';
                 $body .= 'Exim360';
+            } else if ($_COOKIE['client'] == 5) {
+                $from = 'vikingatlanticsalesgroupllc@gmail.com';
+                $name = 'Vikings Atlantic Sales Group, LLC';
+                $body .= 'Vikings';
             } else {
                 $from = 'services@interlinkiq.com';
                 $name = 'InterlinkIQ';
@@ -53123,19 +53582,10 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $path = 'uploads/library/';
-                $filesize = $_FILES['file']['size'];
-                $tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                $files = rand(1000,1000000) . ' - ' . $files;
-                $path = $path.$files;
-
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($tmp,$path);
-                } else {
-                    $process = false;
-                }
+                $fileValidation = fileValidation(0, 'file', 'library/');
+                $files = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
             }
         } else {
             $files = $_POST['fileurl'];
@@ -53317,6 +53767,10 @@
                             $from = 'exim360r@gmail.com';
                             $name = 'Exim360';
                             $body .= 'Exim360';
+                        } else if ($_COOKIE['client'] == 5) {
+                            $from = 'vikingatlanticsalesgroupllc@gmail.com';
+                            $name = 'Vikings Atlantic Sales Group, LLC';
+                            $body .= 'Vikings';
                         } else {
                             $from = 'services@interlinkiq.com';
                             $name = 'InterlinkIQ';
@@ -53434,22 +53888,15 @@
                 if ($filetype == 1) {
                     $files = $_FILES['file']['name'];
                     if (!empty($files)) {
-                        $path = 'uploads/library/';
-                        $filesize = $_FILES['file']['size'];
-                        $tmp = $_FILES['file']['tmp_name'];
-                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                        $files = rand(1000,1000000) . ' - ' . $files;
-                        $path = $path.$files;
-
-                        if(!in_array($ext, $invalid_extensions)) {
-                            move_uploaded_file($tmp,$path);
-
+                        $fileValidation = fileValidation(0, 'file', 'library/');
+                        $files = $fileValidation['files'];
+                        $filesize = $fileValidation['size'];
+                        $process = $fileValidation['valid'];
+                        
+                        if ($process == true) {
                             $filesize_tot = $filesize + $rowData["filesize"];
 
                             mysqli_query( $conn,"UPDATE tbl_library_compliance SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
-                        } else {
-                            $process = false;
                         }
                     }
                 } else {
@@ -53539,18 +53986,10 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $path = 'uploads/library/';
-                $tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                $files = rand(1000,1000000) . ' - ' . $files;
-                $path = $path.$files;
-
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($tmp,$path);
-                } else {
-                    $process = false;
-                }
+                $fileValidation = fileValidation(0, 'file', 'library/');
+                $files = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
             }
         } else {
             $files = $_POST['fileurl'];
@@ -53671,6 +54110,10 @@
                             $from = 'exim360r@gmail.com';
                             $name = 'Exim360';
                             $body .= 'Exim360';
+                        } else if ($_COOKIE['client'] == 5) {
+                            $from = 'vikingatlanticsalesgroupllc@gmail.com';
+                            $name = 'Vikings Atlantic Sales Group, LLC';
+                            $body .= 'Vikings';
                         } else {
                             $from = 'services@interlinkiq.com';
                             $name = 'InterlinkIQ';
@@ -53733,19 +54176,13 @@
             if ($filetype == 1) {
                 $files = $_FILES['file']['name'];
                 if (!empty($files)) {
-                    $path = 'uploads/library/';
-                    $tmp = $_FILES['file']['tmp_name'];
-                    $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                    $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                    $files = rand(1000,1000000) . ' - ' . $files;
-                    $path = $path.$files;
-
-                    if(!in_array($ext, $invalid_extensions)) {
-                        move_uploaded_file($tmp,$path);
-
+                    $fileValidation = fileValidation(0, 'file', 'library/');
+                    $files = $fileValidation['files'];
+                    $filesize = $fileValidation['size'];
+                    $process = $fileValidation['valid'];
+                    
+                    if ($process == true) {
                         mysqli_query( $conn,"UPDATE tbl_library_compliance set files='". $files ."', filetype='". $filetype ."' WHERE ID='". $ID ."'" );
-                    } else {
-                        $process = false;
                     }
                 }
             } else {
@@ -54374,19 +54811,10 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $path = 'uploads/library/';
-                $filesize = $_FILES['file']['size'];
-                $tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                $files = rand(1000,1000000) . ' - ' . $files;
-                $path = $path.$files;
-
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($tmp,$path);
-                } else {
-                    $process = false;
-                }
+                $fileValidation = fileValidation(0, 'file', 'library/');
+                $files = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
             }
         } else {
             $files = $_POST['fileurl'];
@@ -54522,22 +54950,15 @@
                 if ($filetype == 1) {
                     $files = $_FILES['file']['name'];
                     if (!empty($files)) {
-                        $path = 'uploads/library/';
-                        $filesize = $_FILES['file']['size'];
-                        $tmp = $_FILES['file']['tmp_name'];
-                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                        $files = rand(1000,1000000) . ' - ' . $files;
-                        $path = $path.$files;
-
-                        if(!in_array($ext, $invalid_extensions)) {
-                            move_uploaded_file($tmp,$path);
-
+                        $fileValidation = fileValidation(0, 'file', 'library/');
+                        $files = $fileValidation['files'];
+                        $filesize = $fileValidation['size'];
+                        $process = $fileValidation['valid'];
+                        
+                        if ($process == true) {
                             $filesize_tot = $filesize + $rowReview["filesize"];
 
                             mysqli_query( $conn,"UPDATE tbl_library_review SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
-                        } else {
-                            $process = false;
                         }
                     }
                 } else {
@@ -54671,19 +55092,10 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $path = 'uploads/library/';
-                $filesize = $_FILES['file']['size'];
-                $tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                $files = rand(1000,1000000) . ' - ' . $files;
-                $path = $path.$files;
-
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($tmp,$path);
-                } else {
-                    $process = false;
-                }
+                $fileValidation = fileValidation(0, 'file', 'library/');
+                $files = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
             }
         } else {
             $files = $_POST['fileurl'];
@@ -54850,22 +55262,15 @@
                 if ($filetype == 1) {
                     $files = $_FILES['file']['name'];
                     if (!empty($files)) {
-                        $path = 'uploads/library/';
-                        $filesize = $_FILES['file']['size'];
-                        $tmp = $_FILES['file']['tmp_name'];
-                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                        $files = rand(1000,1000000) . ' - ' . $files;
-                        $path = $path.$files;
-
-                        if(!in_array($ext, $invalid_extensions)) {
-                            move_uploaded_file($tmp,$path);
-
+                        $fileValidation = fileValidation(0, 'file', 'library/');
+                        $files = $fileValidation['files'];
+                        $filesize = $fileValidation['size'];
+                        $process = $fileValidation['valid'];
+                        
+                        if ($process == true) {
                             $filesize_tot = $filesize + $rowReview["filesize"];
 
                             mysqli_query( $conn,"UPDATE tbl_library_review SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
-                        } else {
-                            $process = false;
                         }
                     }
                 } else {
@@ -54961,19 +55366,10 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $path = 'uploads/library/';
-                $filesize = $_FILES['file']['size'];
-                $tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                $files = rand(1000,1000000) . ' - ' . $files;
-                $path = $path.$files;
-
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($tmp,$path);
-                } else {
-                    $process = false;
-                }
+                $fileValidation = fileValidation(0, 'file', 'library/');
+                $files = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
             }
         } else {
             $files = $_POST['fileurl'];
@@ -55150,22 +55546,15 @@
                 if ($filetype == 1) {
                     $files = $_FILES['file']['name'];
                     if (!empty($files)) {
-                        $path = 'uploads/library/';
-                        $filesize = $_FILES['file']['size'];
-                        $tmp = $_FILES['file']['tmp_name'];
-                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                        $files = rand(1000,1000000) . ' - ' . $files;
-                        $path = $path.$files;
-
-                        if(!in_array($ext, $invalid_extensions)) {
-                            move_uploaded_file($tmp,$path);
-
+                        $fileValidation = fileValidation(0, 'file', 'library/');
+                        $files = $fileValidation['files'];
+                        $filesize = $fileValidation['size'];
+                        $process = $fileValidation['valid'];
+                        
+                        if ($process == true) {
                             $filesize_tot = $filesize + $rowReview["filesize"];
 
                             mysqli_query( $conn,"UPDATE tbl_library_review SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
-                        } else {
-                            $process = false;
                         }
                     }
                 } else {
@@ -55364,19 +55753,10 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $path = 'uploads/library/';
-                $filesize = $_FILES['file']['size'];
-                $tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                $files = rand(1000,1000000) . ' - ' . $files;
-                $path = $path.$files;
-
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($tmp,$path);
-                } else {
-                    $process = false;
-                }
+                $fileValidation = fileValidation(0, 'file', 'library/');
+                $files = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
             }
         } else {
             $files = $_POST['fileurl'];
@@ -55545,22 +55925,15 @@
                 if ($filetype == 1) {
                     $files = $_FILES['file']['name'];
                     if (!empty($files)) {
-                        $path = 'uploads/library/';
-                        $filesize = $_FILES['file']['size'];
-                        $tmp = $_FILES['file']['tmp_name'];
-                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                        $files = rand(1000,1000000) . ' - ' . $files;
-                        $path = $path.$files;
-
-                        if(!in_array($ext, $invalid_extensions)) {
-                            move_uploaded_file($tmp,$path);
-
+                        $fileValidation = fileValidation(0, 'file', 'library/');
+                        $files = $fileValidation['files'];
+                        $filesize = $fileValidation['size'];
+                        $process = $fileValidation['valid'];
+                        
+                        if ($process == true) {
                             $filesize_tot = $filesize + $rowData["filesize"];
 
                             mysqli_query( $conn,"UPDATE tbl_library_template SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
-                        } else {
-                            $process = false;
                         }
                     }
                 } else {
@@ -55776,19 +56149,10 @@
         if ($filetype == 1) {
             $files = $_FILES['file']['name'];
             if (!empty($files)) {
-                $path = 'uploads/library/';
-                $filesize = $_FILES['file']['size'];
-                $tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                $files = rand(1000,1000000) . ' - ' . $files;
-                $path = $path.$files;
-
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($tmp,$path);
-                } else {
-                    $process = false;
-                }
+                $fileValidation = fileValidation(0, 'file', 'library/');
+                $files = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
             }
         } else {
             $files = $_POST['fileurl'];
@@ -55959,22 +56323,15 @@
                 if ($filetype == 1) {
                     $files = $_FILES['file']['name'];
                     if (!empty($files)) {
-                        $path = 'uploads/library/';
-                        $filesize = $_FILES['file']['size'];
-                        $tmp = $_FILES['file']['tmp_name'];
-                        $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                        $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                        $files = rand(1000,1000000) . ' - ' . $files;
-                        $path = $path.$files;
-
-                        if(!in_array($ext, $invalid_extensions)) {
-                            move_uploaded_file($tmp,$path);
-
+                        $fileValidation = fileValidation(0, 'file', 'library/');
+                        $files = $fileValidation['files'];
+                        $filesize = $fileValidation['size'];
+                        $process = $fileValidation['valid'];
+                        
+                        if($process == true) {
                             $filesize_tot = $filesize + $rowData["filesize"];
 
                             mysqli_query( $conn,"UPDATE tbl_library_references SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
-                        } else {
-                            $process = false;
                         }
                     }
                 } else if ($filetype == 1) {
@@ -56189,19 +56546,10 @@
         $files = $_FILES['file']['name'];
         if ($type == 0) {
             if (!empty($files)) {
-                $path = 'uploads/library/';
-                $filesize = $_FILES['file']['size'];
-                $tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                $files = rand(1000,1000000) . ' - ' . $files;
-                $path = $path.$files;
-
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($tmp,$path);
-                } else {
-                    $process = false;
-                }
+                $fileValidation = fileValidation(0, 'file', 'library/');
+                $files = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
             }
         }
 
@@ -56336,17 +56684,12 @@
             }
             
             if (!empty($files)) {
-                $path = 'uploads/library/';
-                $filesize = $_FILES['file']['size'];
-                $tmp = $_FILES['file']['tmp_name'];
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                $files = rand(1000,1000000) . ' - ' . $files;
-                $path = $path.$files;
+                $fileValidation = fileValidation(0, 'file', 'library/');
+                $files = $fileValidation['files'];
+                $filesize = $fileValidation['size'];
+                $process = $fileValidation['valid'];
 
-                if(!in_array($ext, $invalid_extensions)) {
-                    move_uploaded_file($tmp,$path);
-
+                if ($process == true) {
                     $output = array (
                         'type'  =>  $type,
                         'name' =>  $files,
@@ -56361,8 +56704,6 @@
                     $data_files = $files;
 
                     mysqli_query( $conn,"UPDATE tbl_library_video SET files='". $files ."', filesize='". $filesize ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
-                } else {
-                    $process = false;
                 }
             }
 
@@ -56722,18 +57063,10 @@
 
 		$files = $_FILES['file']['name'];
 		if (!empty($files)) {
-			$path = 'uploads/task/';
-			$tmp = $_FILES['file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-			$files = rand(1000,1000000) . ' - ' . $files;
-			$path = $path.$files;
-
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($tmp,$path);
-            } else {
-                $process = false;
-            }
+            $fileValidation = fileValidation(0, 'file', 'task/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 		}
 
         if ($process == true) {
@@ -56819,6 +57152,10 @@
                                 $from = 'exim360r@gmail.com';
                                 $name = 'Exim360';
                                 $body .= 'Exim360';
+                            } else if ($_COOKIE['client'] == 5) {
+                                $from = 'vikingatlanticsalesgroupllc@gmail.com';
+                                $name = 'Vikings Atlantic Sales Group, LLC';
+                                $body .= 'Vikings';
                             } else {
                                 $from = 'services@interlinkiq.com';
                                 $name = 'InterlinkIQ';
@@ -56911,19 +57248,13 @@
 
 		$files = $_FILES['file']['name'];
         if (!empty($files)) {
-            $path = 'uploads/task/';
-            $tmp = $_FILES['file']['tmp_name'];
-            $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-            $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-            $files = rand(1000,1000000) . ' - ' . $files;
-            $path = $path.$files;
+            $fileValidation = fileValidation(0, 'file', 'task/');
+            $files = $fileValidation['files'];
+            $filesize = $fileValidation['size'];
+            $process = $fileValidation['valid'];
 
-            if(!in_array($ext, $invalid_extensions)) {
-                move_uploaded_file($tmp,$path);
-
+            if ($process == true) {
                 mysqli_query( $conn,"UPDATE tbl_MyProject_Services_History SET files='". $files ."' WHERE History_id='". $ID ."'" );
-            } else {
-                $process = false;
             }
         }
 
@@ -57007,6 +57338,10 @@
                             $from = 'exim360r@gmail.com';
                             $name = 'Exim360';
                             $body .= 'Exim360';
+                        } else if ($_COOKIE['client'] == 5) {
+                            $from = 'vikingatlanticsalesgroupllc@gmail.com';
+                            $name = 'Vikings Atlantic Sales Group, LLC';
+                            $body .= 'Vikings';
                         } else {
                             $from = 'services@interlinkiq.com';
                             $name = 'InterlinkIQ';

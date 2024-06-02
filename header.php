@@ -848,6 +848,17 @@ License: You must have a valid license purchased only from themeforest(the above
                                     echo '<a href="dashboard"><img src="/companyDetailsFolder/190391%20-%20SafeCannabis%20360%20(2).png" height="60px" alt="logo" /></a>';
                                 }
                                 
+                            } else if ($current_client == 5) {
+                                if ($switch_user_id == 1453) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="/companyDetailsFolder/574189 - Viking Atlantic Sales Group, LLC.png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="/companyDetailsFolder/574189 - Viking Atlantic Sales Group, LLC.png" height="60px" alt="logo" /></a>';
+                                }
+                                
                             } else {
                                 if (isset($_COOKIE['switchAccount'])) {
                                     echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
@@ -1378,7 +1389,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             <?php endif; ?>
                         </li>
                         <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-                            <?php if($user_id == 2 || $user_id == 1 || $user_id == 19 || $user_id == 43 || $user_id == 35 || $user_id == 54 || $user_id == 40 || $user_id == 41 || $user_id == 42 || $user_id == 178 || $user_id == 55 || $user_id == 100 || $user_id == 693 || $user_id == 88 || $user_id == 1027 || $user_id == 1360 || $user_id == 1365 || $user_id == 1366): ?>
+                            <?php if($user_id == 2 || $user_id == 1 || $user_id == 19 || $user_id == 43 || $user_id == 35 || $user_id == 54 || $user_id == 40 || $user_id == 41 || $user_id == 42 || $user_id == 178 || $user_id == 55 || $user_id == 100 || $user_id == 693 || $user_id == 88 || $user_id == 1027 || $user_id == 1360 || $user_id == 1365 || $user_id == 1366 || $user_id == 1453): ?>
                             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
 
                                 <i class="icon-bell"></i>
@@ -1756,7 +1767,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                 </li>
                                 <li class="divider"> </li>
                                 <?php
-                                        if ($current_userID == 34 || $current_userID == 163 || $current_userEmployerID == 27 || $current_userEmployerID == 464 || $current_userID == 1360 || $current_userID == 1365 || $current_userID == 1366) {
+                                        if ($current_userID == 34 || $current_userID == 163 || $current_userEmployerID == 27 || $current_userEmployerID == 464 || $current_userID == 1360 || $current_userID == 1365 || $current_userID == 1366 || $current_userID == 1453) {
                                             if ($current_userEmployeeID == 0 || ($current_userEmployeeID > 0 && $current_userAdminAccess == 1)) {
                                                 echo '<li><a href="sidebar"><i class="icon-login"></i> Sidebar Setting</a></li>';
                                             }
@@ -1850,7 +1861,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         </a>
                     </li>
                     <?php endif?>
-                    <?php if(($current_client == 0 AND $switch_user_id <> 1106) OR $switch_user_id == 1360) { ?>
+                    <?php if(($current_client == 0 AND $switch_user_id <> 1106) OR $switch_user_id == 1360 OR $switch_user_id == 1453) { ?>
                         <li class="nav-item hide <?php echo $site === "tracking" ? "active" : ""; ?>">
                             <a href="tracking" class="nav-link">
                                 <i class="icon-target"></i>
@@ -2029,7 +2040,7 @@ License: You must have a valid license purchased only from themeforest(the above
                     </li>
                     <?php } ?>
 
-                    <?php if($current_userEmployerID == 256 || $current_userEmployerID == 254 || $user_id == 1 || $user_id == 2 || $user_id == 19 || $user_id == 117 || $user_id == 348 || $user_id == 163): ?>
+                    <?php $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseServices = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
                     <li class="nav-item <?php echo $site === "services" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('services', $current_userEmployerID, $current_userEmployeeID); } ?>">
                         <a href="services" class="nav-link">
                             <i class="icon-list"></i>
@@ -2037,7 +2048,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             <span class="selected"></span>
                         </a>
                     </li>
-                    <?php endif ?>
+                    <?php } ?>
 
                     <li class="nav-item <?php echo $site === "customer" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('customer', $current_userEmployerID, $current_userEmployeeID); } ?>">
                         <a href="customer" class="nav-link">
@@ -2084,41 +2095,40 @@ License: You must have a valid license purchased only from themeforest(the above
                     <?php endif; ?>
 
                     <?php if($current_userEmployeeID == 0 OR $current_userID == 95 OR $current_userID == 42 OR $current_userID == 88) { ?>
-                    <li class="nav-item <?php echo $site === "job-ticket" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('job-ticket', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                        <a href="job-ticket" class="nav-link">
-                            <i class="icon-earphones-alt"></i>
-                            <span class="title">Job Ticket Tracker</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                        <li class="nav-item <?php echo $site === "job-ticket" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('job-ticket', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                            <a href="job-ticket" class="nav-link">
+                                <i class="icon-earphones-alt"></i>
+                                <span class="title">Job Ticket Tracker</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
                     <?php } else { ?>
-                    <li class="nav-item <?php echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "active open start" : ""; ?>">
-                        <a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="icon-earphones"></i>
-                            <span class="title">Job Ticket Tracker</span>
-                            <span class="selected"></span>
-                            <span class="arrow <?php echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "open" : ""; ?>"></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <li class="nav-item <?php echo $site === "job-ticket-request" ? "active" : ""; ?>">
-                                <a href="job-ticket-request" class="nav-link ">
-                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                    <span class="title">Request</span>
-                                    <span class="selected"></span>
-                                </a>
-                            </li>
-                            <?php
-                                        echo '<li class="nav-item '; $site === "job-ticket-service" ? "active" : ""; echo '">
-                                            <a href="job-ticket-service" class="nav-link ">
-                                                <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                                <span class="title">Service</span>
-                                                <span class="selected"></span>
-                                            </a>
-                                        </li>';
-                                    ?>
-
-                        </ul>
-                    </li>
+                        <li class="nav-item <?php echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "active open start" : ""; ?>">
+                            <a href="javascript:;" class="nav-link nav-toggle">
+                                <i class="icon-earphones"></i>
+                                <span class="title">Job Ticket Tracker</span>
+                                <span class="selected"></span>
+                                <span class="arrow <?php echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "open" : ""; ?>"></span>
+                            </a>
+                            <ul class="sub-menu">
+                                <li class="nav-item <?php echo $site === "job-ticket-request" ? "active" : ""; ?>">
+                                    <a href="job-ticket-request" class="nav-link ">
+                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                        <span class="title">Request</span>
+                                        <span class="selected"></span>
+                                    </a>
+                                </li>
+                                <?php
+                                    echo '<li class="nav-item '; $site === "job-ticket-service" ? "active" : ""; echo '">
+                                        <a href="job-ticket-service" class="nav-link ">
+                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                            <span class="title">Service</span>
+                                            <span class="selected"></span>
+                                        </a>
+                                    </li>';
+                                ?>
+                            </ul>
+                        </li>
                     <?php } ?>
 
 
@@ -2410,20 +2420,31 @@ License: You must have a valid license purchased only from themeforest(the above
                             <span class="selected"></span>
                         </a>
                     </li>
-
-
-                    <?php $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseProducts = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
-                    <!--<li class="nav-item <?php // echo $site === "batchproduction" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('products', $current_userEmployerID, $current_userEmployeeID); } ?>">-->
-                    <!--    <a href="batchproduction" class="nav-link">-->
-                    <!--        <i class="icon-wrench"></i>-->
-                    <!--        <span class="title">Batch Production</span>-->
-                    <!--        <span class="selected"></span>-->
-                    <!--    </a>-->
-                    <!--</li>-->
-                    <?php } ?>
-                   
-
                     
+                    
+                    <?php if($switch_user_id == 1362): ?>
+                    <li class="nav-item">
+                        <a href="batchproduction" class="nav-link" disabled>
+                            <i class="icon-wrench"></i>
+                            <span class="title">Batch Production</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+
+                    <?php
+                        // if($switch_user_id == 1362) {
+                        //     $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseProducts = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) {
+                        //         echo '<li class="nav-item '; echo $site === "batchproduction" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('products', $current_userEmployerID, $current_userEmployeeID); echo '">
+                        //             <a href="batchproduction" class="nav-link">
+                        //                 <i class="icon-wrench"></i>
+                        //                 <span class="title">Batch Production</span>
+                        //                 <span class="selected"></span>
+                        //             </a>
+                        //         </li>';
+                        //     }
+                        // }
+                    ?>
 
                     <li class="nav-item hide <?php echo $site === "ffva" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('ffva', $current_userEmployerID, $current_userEmployeeID); } ?>">
                         <a href="ffva" class="nav-link">
@@ -2594,6 +2615,93 @@ License: You must have a valid license purchased only from themeforest(the above
                     <?php endif ?>
                     <?php } ?>
 
+                    <?php if($switch_user_id == 1360): ?>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Environmental Monitoring Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Equipment Calibration Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Food Safety Culture Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Formula / Recipe Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">HACCP / Food Safety Plan Builder Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Laboratory Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Positive Product Release Program Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Residue Testing Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Risk Assessment</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Shelf Life Program Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Stability Program Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="coming-soon" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">Storage and Distribution Report Management</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                    <?php endif ?>
+                    
                     <?php if($switch_user_id == 1372): ?>
                         <li class="nav-item">
                             <a href="coming-soon" class="nav-link">

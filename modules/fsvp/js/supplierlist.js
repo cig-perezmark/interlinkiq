@@ -11,14 +11,14 @@ jQuery(function() {
 
     const supplierTable = Init.dataTable('#tableSupplierList', {
         columnDefs: [
-            {
-                orderable: false,
-                targets: [-1],
-            },
-            {
-                searchable: false,
-                targets: [-1],
-            },
+            // {
+            //     orderable: false,
+            //     targets: [-1],
+            // },
+            // {
+            //     searchable: false,
+            //     targets: [-1],
+            // },
             {
                 className: "dt-right",
             },
@@ -90,6 +90,31 @@ jQuery(function() {
         importerSelect.reset();
         openEvaluationForm(suppliersData[this.dataset.openevalform]);
     });
+    
+    $('#tableSupplierList').on('click', '[data-openreevalform]', function() {
+        const data = suppliersData[this.dataset.openreevalform];
+
+        if(!data) {
+            bootstrapGrowl('Unable to fetch data.', 'error');
+            return;
+        }
+        
+        switchEvalModalFn('reeval');
+        $('#viewPreviousEvalBtn').attr('data-evalid', this.dataset.preveval || '')
+
+        $('#effsname').val(data.evaluation.supplier_name || '');
+        $('#effsaddress').val(data.evaluation.supplier_address || '');
+        $('#reefimporter').val(data.evaluation.importer_name || '');
+        $('#efImporterAddress').val(data.evaluation.importer_address || '');
+        
+        $('#modalEvaluationForm').modal('show');
+    });
+    
+    $('#viewPreviousEvalBtn').on('click', function() {
+        fetchEvaluationData(this.dataset.evalid, () => {
+            $('#modalEvaluationForm').modal('hide');
+        });
+    })
 
     $('#tableSupplierList').on('click', '[data-opensafile]', function() {
         viewFile(suppliersData, this.dataset.opensafile, 'supplier_agreement');
@@ -100,26 +125,7 @@ jQuery(function() {
     });
 
     $('#tableSupplierList').on('click', '[data-view-eval]', function() {
-        const id = this.dataset.viewEval;
-
-        if(!id) {
-            bootstrapGrowl('Missing data.', 'error');
-            return;
-        }
-
-        $.ajax({
-            url: baseUrl + "viewEvaluationData=" + id,
-            type: "GET",
-            contentType: false,
-            processData: false,
-            success: function({data}) {
-                cachedEvalFormData = data;
-                viewEvaluationDetails(data);
-            },
-            error: function({responseJSON}) {
-                bootstrapGrowl(responseJSON.error || 'Error fetching data!', 'danger');
-            },
-        });
+        fetchEvaluationData(this.dataset.viewEval);
     });
 
     $('#modalEvaluationDetails').on('click', '[data-file]', function() {
@@ -159,6 +165,11 @@ jQuery(function() {
             document.getElementById('edStatus').outerHTML = '<span id="edStatus"></span>';
         });
     });
+
+    $('#modalEvaluationDetails').on('hide.bs.modal', function() {
+        // close file previews during modal hide
+        $('#evalFilePreviewClose').click();
+    })
 
     $('.asFileUpload').change(function() {
         const files = this.files;
@@ -424,12 +435,8 @@ jQuery(function() {
             data,
             success: function({data, message}) {
                 if(data) {
-                    cachedEvalFormData = data;
-                    const upd = suppliersData[data.supplier_id];
-                    upd['evaluation_id'] = data.id;
-                    upd['evaluation_date'] = data.evaluation_date;
-                    upd['evaluation_status'] = data.evaluation_status;
-                    renderDTRow(upd, 'data').draw();
+                    suppliersData[form.supplier.value] && (suppliersData[form.supplier.value].evaluation = data);
+                    renderDTRow(suppliersData[form.supplier.value], 'data').draw();
                 }
 
                 $('#modalEvaluationForm').modal('hide');
@@ -484,7 +491,7 @@ jQuery(function() {
                             </a>`;
                 break;
             case 'expired': 
-                evalBtn = `<button type="button"  class="btn red btn-sm btn-circle" title="Re-evaluate" data-reeval="true" data-openevalform="${d.id}">
+                evalBtn = `<button type="button"  class="btn red btn-sm btn-circle" title="Re-evaluate" data-reeval="true" data-openreevalform="${d.id}" data-preveval="${d.evaluation.id}">
                                 Re-evaluate
                             </button>`;
                 break;
@@ -503,11 +510,14 @@ jQuery(function() {
             evalBtn,
             sa,
             cs,
-            `
-                <div class="d-flex center">
-                    <button type="button" class="btn dark btn-outline btn-circle" title="View data">View</button>
-                </div>
-            `,
+            // `
+            //     <div class="d-flex center">
+            //         <div class="btn-group btn-group-circle btn-group-sm btn-group-solid hide">
+            //             <button type="button" class="btn dark btn-outline btn-circle btn-smx" title="View data">View</button>
+            //         </div>
+            //         <button type="button" class="btn dark btn-outline btn-circle btn-sm" title="View data">View</button>
+            //     </div>
+            // `,
         ];
         
         if(method == 'data') {
@@ -543,9 +553,36 @@ jQuery(function() {
         });
     }
 
+    function fetchEvaluationData(id, callback = null) {
+        if(!id) {
+            bootstrapGrowl('Missing data.', 'error');
+            return;
+        } else if(cachedEvalFormData && cachedEvalFormData.id == id) {
+            // reuse data
+            viewEvaluationDetails(cachedEvalFormData);
+            return;
+        }
+
+        $.ajax({
+            url: baseUrl + "viewEvaluationData=" + id,
+            type: "GET",
+            contentType: false,
+            processData: false,
+            success: function({data}) {
+                cachedEvalFormData = data;
+                callback && callback();
+                viewEvaluationDetails(data);
+            },
+            error: function({responseJSON}) {
+                bootstrapGrowl(responseJSON.error || 'Error fetching data!', 'danger');
+            },
+        });
+    }
+
     // init
     resetEvaluationForm();
     initSuppliers();
+    switchEvalModalFn();
 });
 
 // truncrate string into desired maximum length
@@ -690,4 +727,9 @@ function convertStringToTitleCase(str) {
     return str.replace(/(_|\b)(\w)/g, function(m, pre, char) {
         return (pre === '_' ? ' ' : pre) + char.toUpperCase();
     });
+}
+
+function switchEvalModalFn(mode = 'eval') {
+    $(`#modalEvaluationForm [data-efm]:not([data-efm=${mode}])`).hide();
+    $(`#modalEvaluationForm [data-efm=${mode}]`).show();
 }

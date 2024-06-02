@@ -137,7 +137,7 @@
 		</footer>
 		<!-- End Footer -->
 
-		<div id="preloader"></div>
+		<div id="preloaders"></div>
 		<!-- Vendor JS Files -->
 		<script src="assets/specialist/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 		<!--<script src="assets/specialist/vendor/aos/aos.js"></script>-->

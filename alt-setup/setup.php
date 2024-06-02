@@ -171,8 +171,7 @@ function uploadFile($path, $file, $newFilename = null) {
 //     return true;
 // }
 
-function isValidFile($filename)
-{
+function isValidFile($filename) {
     // List of disallowed extensions
     $disallowedExtensions = ['php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll'];
 

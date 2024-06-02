@@ -1390,7 +1390,6 @@ $(document).ready(function() {
         });
     });
     
-    
     get_user_contributions()
     function get_user_contributions() {
         $.ajax({
@@ -1562,7 +1561,6 @@ $(document).ready(function() {
             }
         });
     })
-
 
     $('#taskForm').on('submit', function(e) {
         e.preventDefault()

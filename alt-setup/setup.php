@@ -124,7 +124,7 @@ function uploadFile($path, $file, $newFilename = null) {
         $fileCount = count($file['tmp_name']);
 
         for ($i = 0; $i < $fileCount; $i++) {
-            if(!isValidFile($file['name'][$i])) {
+            if(!isValidFile($file['tmp_name'][$i])) {
                 throw new Exception('Invalid file.');
             }
             
@@ -140,7 +140,7 @@ function uploadFile($path, $file, $newFilename = null) {
         }
         return $filenameArr;
     } else {
-        if(!isValidFile($file['name'])) {
+        if(!isValidFile($file['tmp_name'])) {
             throw new Exception('Invalid file.');
         }
         
@@ -172,35 +172,39 @@ function uploadFile($path, $file, $newFilename = null) {
 // }
 
 function isValidFile($filename) {
-    // List of disallowed extensions
-    $disallowedExtensions = ['php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll'];
-
     // List of disallowed MIME types corresponding to disallowed extensions
     $disallowedMimeTypes = [
-        'application/x-php',
-        'application/x-httpd-php',
-        'application/php',
-        'text/php',
-        'text/x-php',
-        'application/x-httpd-php-source',
-        'text/x-php-source',
-        'application/x-perl',
-        'text/x-perl',
-        'application/x-shellscript',
-        'text/x-shellscript',
-        'application/x-python',
-        'text/x-python',
-        'application/x-ruby',
-        'text/x-ruby',
-        'application/x-msdos-program',
-        'application/octet-stream'
+        "application/x-php",
+        "application/x-httpd-php",
+        "application/php",
+        "text/php",
+        "text/x-php",
+        "application/x-httpd-php-source",
+        "text/x-php-source",
+        "application/x-perl",
+        "text/x-perl",
+        "application/x-shellscript",
+        "text/x-shellscript",
+        "application/x-python",
+        "text/x-python",
+        "application/x-ruby",
+        "text/x-ruby",
+        "application/x-msdos-program",
+        "application/octet-stream",
+        "text/plain",
+        "text/css",
+        "text/html",
+        "text/javascript",
+        "application/json",
+        "application/rtf",
+        "application/x-sh",
+        "application/xhtml+xml",
+        "application/xml",
+        "text/xml",
+        "application/atom+xml",
+        "application/vnd.mozilla.xul+xml",
+        "application/x-msdownload"
     ];
-
-    // Check file extension
-    $fileExtension = pathinfo($filename, PATHINFO_EXTENSION);
-    if (in_array(strtolower($fileExtension), $disallowedExtensions)) {
-        return false;
-    }
 
     // Check MIME type
     $finfo = finfo_open(FILEINFO_MIME_TYPE);

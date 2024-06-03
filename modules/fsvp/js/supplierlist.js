@@ -102,8 +102,8 @@ jQuery(function() {
         }
         
         switchEvalModalFn('reeval');
-        $('#viewPreviousEvalBtn').attr('data-evalid', this.dataset.preveval || '')
-        prevEvalId = this.dataset.preveval || '';
+        $('#viewPreviousEvalBtn').attr('data-evalid', this.dataset.record || '')
+        prevEvalId = this.dataset.record || '';
 
         $('#effsname').val(data.evaluation.supplier_name || '');
         $('#effsaddress').val(data.evaluation.supplier_address || '');
@@ -432,7 +432,7 @@ jQuery(function() {
         // l.start();
 
         if(prevEvalId !== null) {
-            data.append('previous_evaluation_id', prevEvalId);
+            data.append('prev_record_id', prevEvalId);
             url += "supplierReEvaluation";
         } else {
             url += "newSupplierEvaluation";
@@ -507,14 +507,12 @@ jQuery(function() {
                             </a>`;
                 break;
             case 'expired': 
-                evalBtn = `<button type="button"  class="btn red btn-sm btn-circle" title="Re-evaluate" data-reeval="true" data-openreevalform="${d.id}" data-preveval="${d.evaluation.id}">
+                evalBtn = `<button type="button" class="btn red btn-sm btn-circle" title="Re-evaluate" data-reeval="true" data-openreevalform="${d.id}" data-record="${d.evaluation.record_id}">
                                 Re-evaluate
                             </button>`;
                 break;
-            case 're_evaluated':
-                break;
             default: 
-                evalBtn = `<button type="button"  class="btn green btn-sm btn-circle" title="Evaluation form" data-openevalform="${d.id}">
+                evalBtn = `<button type="button" class="btn green btn-sm btn-circle" title="Evaluation form" data-openevalform="${d.id}">
                                 <i class="fa fa-search icon-margin-right"></i> Evaluate
                             </button>`;
                 break;

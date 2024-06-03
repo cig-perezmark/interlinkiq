@@ -689,49 +689,10 @@ if(isset($_GET['supplierReEvaluation']) && !empty($_POST['prev_record_id'])) {
         }
 
         $data = saveNewEvaluationRecord($conn, $_POST, $isValid['evaluation_id'], $recordId);
-
-        // $conn->begin_transaction();
-        // $dueDate = emptyIsNull($_POST['evaluation_due_date']);
-
-        // $params = [
-        //     'user_id'                       => $user_id,
-        //     'portal_user'                   => $portal_user,
-        //     'evaluation_id'                 => $recordId,
-        //     'evaluation_date'               => emptyIsNull($_POST['evaluation_date']),
-        //     'evaluation_due_date'           => $dueDate,
-        //     'sppp'                          => emptyIsNull($_POST['sppp']),
-        //     'import_alerts'                 => $_POST['import_alerts'] ?? NULL,
-        //     'recalls'                       => $_POST['recalls'] ?? NULL,
-        //     'warning_letters'               => $_POST['warning_letters'] ?? NULL,
-        //     'other_significant_ca'          => $_POST['other_significant_ca'] ?? NULL,
-        //     'suppliers_corrective_actions'  => $_POST['suppliers_corrective_actions'] ?? NULL,
-        // ];
-
-        // // evaluate due date if already expired
-        // if(isset($dueDate) && strtotime($dueDate) <= strtotime(date('Y-m-d'))) {
-        //     $params['status'] = 'expired';
-        // }
-
-        // $conn->insert("tbl_fsvp_reevaluations", $params);
-        // $id = $conn->getInsertId();
-        // saveEvalFiles($_POST, $conn, $id);
-
-        // $conn->commit();
-
-        // $data = $params;
-        // $data['id'] = $id;
-
-        // unset(
-        //     $data['sppp'],
-        //     $data['import_alerts'],
-        //     $data['recalls'],
-        //     $data['warning_letters'],
-        //     $data['other_significant_ca'],
-        //     $data['suppliers_corrective_actions'],
-        // );
         
         send_response([
             'data' => $data,
+            'message' => 'Saved successfully.'
         ]);
     } catch(Throwable $e) {
         $conn->rollback();

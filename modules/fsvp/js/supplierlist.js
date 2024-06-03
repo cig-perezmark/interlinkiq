@@ -102,7 +102,7 @@ jQuery(function() {
         }
         
         switchEvalModalFn('reeval');
-        $('#viewPreviousEvalBtn').attr('data-evalid', this.dataset.record || '')
+        $('#viewPreviousEvalBtn').attr('data-evalid', data.evaluation.id || '')
         prevEvalId = this.dataset.record || '';
 
         $('#effsname').val(data.evaluation.supplier_name || '');
@@ -115,9 +115,9 @@ jQuery(function() {
     });
     
     $('#viewPreviousEvalBtn').on('click', function() {
-        fetchEvaluationData(prevEvalId, () => {
+        fetchEvaluationData(this.dataset.evalid || '', () => {
             $('#modalEvaluationForm').modal('hide');
-        });
+        }, prevEvalId);
     })
 
     $('#tableSupplierList').on('click', '[data-opensafile]', function() {
@@ -570,7 +570,7 @@ jQuery(function() {
         });
     }
 
-    function fetchEvaluationData(id, callback = null) {
+    function fetchEvaluationData(id, callback = null, recordId = null) {
         if(!id) {
             bootstrapGrowl('Missing data.', 'error');
             return;
@@ -581,7 +581,7 @@ jQuery(function() {
         }
 
         $.ajax({
-            url: baseUrl + "viewEvaluationData=" + id,
+            url: baseUrl + "viewEvaluationData=" + id + (recordId ? ('&r=' + recordId) : ''),
             type: "GET",
             contentType: false,
             processData: false,

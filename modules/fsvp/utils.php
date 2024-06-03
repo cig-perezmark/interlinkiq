@@ -92,10 +92,15 @@ function getSupplierList($conn, $userId) {
  * also do the same in getEvaluationRecordID function
  */
 // evaluation data for every supplier in the supplier list page
-function getEvaluationData($conn, $evalId) {
+function getEvaluationData($conn, $evalId, $recordId = null) {
+    $cond = "eval.id = ?" . (!empty($recordId) ? " AND rec.id = ?" : "");
+    $params = [ $evalId];
+    !empty($recordId) && $params[] = $recordId;
+     
     $eval = $conn->execute("SELECT 
                 eval.id,
                 eval.evaluation,
+                rec.id AS record_id,
                 rec.status,
                 rec.evaluation_date,
                 rec.evaluation_due_date,
@@ -122,9 +127,10 @@ function getEvaluationData($conn, $evalId) {
             -- tbl_suppliers (original)
             LEFT JOIN tbl_supplier supp ON supp.ID = fsupp.supplier_id
             LEFT JOIN tbl_supplier imp ON imp.ID = fimp.importer_id 
-                WHERE eval.id = ? AND eval.deleted_at IS NULL
-            ORDER BY rec.evaluation_date DESC, rec.created_at DESC LIMIT 1", 
-        $evalId)->fetchAssoc(function($d) {
+                WHERE $cond AND eval.deleted_at IS NULL
+            ORDER BY rec.evaluation_date DESC, rec.created_at DESC LIMIT 1",
+            $params 
+        )->fetchAssoc(function($d) {
             $d['supplier_address'] = formatSupplierAddress($d['supplier_address']);
             $d['importer_address'] = formatSupplierAddress($d['importer_address']);
             return $d;
@@ -176,7 +182,7 @@ function getEvaluationRecordID($conn, $supplierId) {
             $data['importer_address'] = formatSupplierAddress($data['importer_address']);
             
             if($data['status'] == 'current') {
-                $data['status'] = updateCurrentEvalStatus($conn, $data['evaluation_due_date'], $data['id']);
+                $data['status'] = updateCurrentEvalStatus($conn, $data['evaluation_due_date'], $data['record_id']);
             }
         }
 
@@ -192,7 +198,7 @@ function updateCurrentEvalStatus($conn, $due, $id) {
     
     // already dued
     if($evalDueDate <= $current) {
-        $conn->update("tbl_fsvp_evaluations", ['status' => 'expired'], "id = $id");
+        $conn->update("tbl_fsvp_evaluation_records", ['status' => 'expired'], "id = $id");
         return 'expired';
     }
 

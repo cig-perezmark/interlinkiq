@@ -90,11 +90,11 @@ jQuery(function() {
         evalFormAlert.isShowing() && evalFormAlert.hide();
         resetEvaluationForm();
         importerSelect.reset();
-        openEvaluationForm(suppliersData[this.dataset.openevalform]);
+        openEvaluationForm(suppliersData[this.dataset.eval]);
     });
     
     $('#tableSupplierList').on('click', '[data-openreevalform]', function() {
-        const data = suppliersData[this.dataset.openreevalform];
+        const data = suppliersData[this.dataset.eval];
 
         if(!data) {
             bootstrapGrowl('Unable to fetch data.', 'error');
@@ -109,6 +109,7 @@ jQuery(function() {
         $('#effsaddress').val(data.evaluation.supplier_address || '');
         $('#reefimporter').val(data.evaluation.importer_name || '');
         $('#efImporterAddress').val(data.evaluation.importer_address || '');
+        $('#evaluationForm input[name="supplier"]').val(data.id || '');
         
         $('#modalEvaluationForm').modal('show');
     });
@@ -499,6 +500,8 @@ jQuery(function() {
         const cs = !d.compliance_statement || !d.compliance_statement.length ?  no : `<a href="javascript:void(0)" data-opencsfile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View </a>`;
         let evalBtn = '';
 
+        console.log(suppliersData[d.id]);
+
         switch(d.evaluation?.status) {
             case 'current': 
                 evalBtn = `<a href="javascript:void(0)" class="font-dark semibold" data-view-eval="${d.evaluation.id}" title="Click to view evaluation details"> 
@@ -507,12 +510,12 @@ jQuery(function() {
                             </a>`;
                 break;
             case 'expired': 
-                evalBtn = `<button type="button" class="btn red btn-sm btn-circle" title="Re-evaluate" data-reeval="true" data-openreevalform="${d.id}" data-record="${d.evaluation.record_id}">
+                evalBtn = `<button type="button" class="btn red btn-sm btn-circle" title="Re-evaluate" data-reeval="true" data-openreevalform data-eval="${d.id}" data-record="${d.evaluation.record_id}">
                                 Re-evaluate
                             </button>`;
                 break;
             default: 
-                evalBtn = `<button type="button" class="btn green btn-sm btn-circle" title="Evaluation form" data-openevalform="${d.id}">
+                evalBtn = `<button type="button" class="btn green btn-sm btn-circle" title="Evaluation form" data-openevalform data-eval="${d.id}">
                                 <i class="fa fa-search icon-margin-right"></i> Evaluate
                             </button>`;
                 break;
@@ -535,7 +538,7 @@ jQuery(function() {
         ];
         
         if(method == 'data') {
-            const index = $(`#tableSupplierList tr:has([data-openevalform=${d.id}])`).index();
+            const index = $(`#tableSupplierList tr:has([data-eval=${d.id}])`).index();
             supplierTable.dt.row(index).data(rowData);
         } else if(method == 'add') {
             supplierTable.dt.row.add(rowData);

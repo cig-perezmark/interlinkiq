@@ -26,6 +26,7 @@ if(isset($_GET["getProductsBySupplier"]) && !empty($_GET["getProductsBySupplier"
 if(isset($_GET["newSupplierToList"])) {
     try {
         $conn->begin_transaction();
+        $conn->escapeString = false;
         
         $supplierId = $_POST["supplier"];
         $supplierData = $conn->select("tbl_supplier", "address, name", ["ID" => $supplierId])->fetchAssoc(function ($d) {
@@ -638,14 +639,6 @@ if(isset($_GET['newSupplierEvaluation'])) {
             'importer_id'                   => $_POST['importer'],
             'description'                   => emptyIsNull($_POST['description']),
             'evaluation'                    => emptyIsNull($_POST['evaluation']),
-            'evaluation_date'               => emptyIsNull($_POST['evaluation_date']),
-            'evaluation_due_date'           => emptyIsNull($_POST['evaluation_due_date']),
-            'sppp'                          => emptyIsNull($_POST['sppp']),
-            'import_alerts'                 => $_POST['import_alerts'] ?? NULL,
-            'recalls'                       => $_POST['recalls'] ?? NULL,
-            'warning_letters'               => $_POST['warning_letters'] ?? NULL,
-            'other_significant_ca'          => $_POST['other_significant_ca'] ?? NULL,
-            'suppliers_corrective_actions'  => $_POST['suppliers_corrective_actions'] ?? NULL,
             'info_related'                  => emptyIsNull($_POST['info_related']),
             'rejection_date'                => emptyIsNull($_POST['rejection_date']),
             'approval_date'                 => emptyIsNull($_POST['approval_date']),
@@ -654,11 +647,11 @@ if(isset($_GET['newSupplierEvaluation'])) {
 
         $conn->insert("tbl_fsvp_evaluations", $params);
         $id = $conn->getInsertId();
-        saveEvalFiles($_POST, $conn, $id);
+        saveNewEvaluationRecord($conn, $_POST, $id);
         
         $conn->commit();
         send_response([
-            'data' => getEvaluationStatus($conn, $params['supplier_id']),
+            'data' => getEvaluationRecordID($conn, $params['supplier_id']),
             'message' => 'Saved successfully.',
         ]);
     } catch(Throwable $e) {
@@ -678,16 +671,16 @@ if(!empty($_GET['viewEvaluationData'])) {
 }
 
 // re evaluation
-if(isset($_GET['supplierReEvaluation']) && !empty($_POST['previous_evaluation_id'])) {
+if(isset($_GET['supplierReEvaluation']) && !empty($_POST['prev_record_id'])) {
     try {
         // verify evaluation id
-        $evalId = intval($_POST['previous_evaluation_id']) ?? null;
+        $recordId = intval($_POST['prev_record_id']) ?? null;
     
-        if(empty($evalId)) {
+        if(empty($recordId)) {
             throw new Exception("Invalid previous evaluation id.");
         }
 
-        $isValid = $conn->execute("SELECT id, evaluation_due_date FROM tbl_fsvp_evaluations WHERE id = ?", $evalId)->fetchAssoc();
+        $isValid = $conn->execute("SELECT id, evaluation_due_date, evaluation_id  FROM tbl_fsvp_evaluation_records WHERE id = ?", $recordId)->fetchAssoc();
 
         if(!count($isValid)) {
             throw new Exception("No matching previous record(s) found.");
@@ -695,45 +688,47 @@ if(isset($_GET['supplierReEvaluation']) && !empty($_POST['previous_evaluation_id
             throw new Exception('Previous evaluation data is currently active.');
         }
 
-        $conn->begin_transaction();
-        $dueDate = emptyIsNull($_POST['evaluation_due_date']);
+        $data = saveNewEvaluationRecord($conn, $_POST, $isValid['evaluation_id'], $recordId);
 
-        $params = [
-            'user_id'                       => $user_id,
-            'portal_user'                   => $portal_user,
-            'evaluation_id'                 => $evalId,
-            'evaluation_date'               => emptyIsNull($_POST['evaluation_date']),
-            'evaluation_due_date'           => $dueDate,
-            'sppp'                          => emptyIsNull($_POST['sppp']),
-            'import_alerts'                 => $_POST['import_alerts'] ?? NULL,
-            'recalls'                       => $_POST['recalls'] ?? NULL,
-            'warning_letters'               => $_POST['warning_letters'] ?? NULL,
-            'other_significant_ca'          => $_POST['other_significant_ca'] ?? NULL,
-            'suppliers_corrective_actions'  => $_POST['suppliers_corrective_actions'] ?? NULL,
-        ];
+        // $conn->begin_transaction();
+        // $dueDate = emptyIsNull($_POST['evaluation_due_date']);
 
-        // evaluate due date if already expired
-        if(isset($dueDate) && strtotime($dueDate) <= strtotime(date('Y-m-d'))) {
-            $params['status'] = 'expired';
-        }
+        // $params = [
+        //     'user_id'                       => $user_id,
+        //     'portal_user'                   => $portal_user,
+        //     'evaluation_id'                 => $recordId,
+        //     'evaluation_date'               => emptyIsNull($_POST['evaluation_date']),
+        //     'evaluation_due_date'           => $dueDate,
+        //     'sppp'                          => emptyIsNull($_POST['sppp']),
+        //     'import_alerts'                 => $_POST['import_alerts'] ?? NULL,
+        //     'recalls'                       => $_POST['recalls'] ?? NULL,
+        //     'warning_letters'               => $_POST['warning_letters'] ?? NULL,
+        //     'other_significant_ca'          => $_POST['other_significant_ca'] ?? NULL,
+        //     'suppliers_corrective_actions'  => $_POST['suppliers_corrective_actions'] ?? NULL,
+        // ];
 
-        $conn->insert("tbl_fsvp_reevaluations", $params);
-        $id = $conn->getInsertId();
-        saveEvalFiles($_POST, $conn, $id);
+        // // evaluate due date if already expired
+        // if(isset($dueDate) && strtotime($dueDate) <= strtotime(date('Y-m-d'))) {
+        //     $params['status'] = 'expired';
+        // }
 
-        $conn->commit();
+        // $conn->insert("tbl_fsvp_reevaluations", $params);
+        // $id = $conn->getInsertId();
+        // saveEvalFiles($_POST, $conn, $id);
 
-        $data = $params;
-        $data['id'] = $id;
+        // $conn->commit();
 
-        unset(
-            $data['sppp'],
-            $data['import_alerts'],
-            $data['recalls'],
-            $data['warning_letters'],
-            $data['other_significant_ca'],
-            $data['suppliers_corrective_actions'],
-        );
+        // $data = $params;
+        // $data['id'] = $id;
+
+        // unset(
+        //     $data['sppp'],
+        //     $data['import_alerts'],
+        //     $data['recalls'],
+        //     $data['warning_letters'],
+        //     $data['other_significant_ca'],
+        //     $data['suppliers_corrective_actions'],
+        // );
         
         send_response([
             'data' => $data,

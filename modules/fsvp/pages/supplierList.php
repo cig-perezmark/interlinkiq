@@ -428,6 +428,7 @@ th {
                     </div>
                 </div>
 
+                <?php if(false): ?>
                 <div class="row">
                     <div class="col-md-12">
                         <div>
@@ -440,6 +441,7 @@ th {
                         </div>
                     </div>
                 </div>
+                <?php endif; ?>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>

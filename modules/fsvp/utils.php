@@ -85,6 +85,12 @@ function getSupplierList($conn, $userId) {
     }
 }
 
+/**
+ * TODO:
+ * re-evaluate this query if issues occur
+ * specially the ORDER BY clause
+ * also do the same in getEvaluationRecordID function
+ */
 // evaluation data for every supplier in the supplier list page
 function getEvaluationData($conn, $evalId) {
     $eval = $conn->execute("SELECT 
@@ -116,20 +122,14 @@ function getEvaluationData($conn, $evalId) {
             -- tbl_suppliers (original)
             LEFT JOIN tbl_supplier supp ON supp.ID = fsupp.supplier_id
             LEFT JOIN tbl_supplier imp ON imp.ID = fimp.importer_id 
-                WHERE eval.id = ? AND eval.deleted_at IS NULL", 
+                WHERE eval.id = ? AND eval.deleted_at IS NULL
+            ORDER BY rec.evaluation_date DESC, rec.created_at DESC LIMIT 1", 
         $evalId)->fetchAssoc(function($d) {
             $d['supplier_address'] = formatSupplierAddress($d['supplier_address']);
             $d['importer_address'] = formatSupplierAddress($d['importer_address']);
             return $d;
         });
-
-    // update current evaluation status
-    // if($eval['status'] == 'current') {
-    //     $eval['status'] = updateCurrentEvalStatus($conn, $eval['evaluation_due_date'], $evalId);
-    // } else if($eval['status'] == 're_evaluated') {
-    //     // find re evaluation data
-    // }
-
+        
     // files
     $evalFileCategoriesToFetch = [];
     ($eval['import_alerts'] == 1) && ($evalFileCategoriesToFetch[] = 'import-alerts');
@@ -165,7 +165,8 @@ function getEvaluationRecordID($conn, $supplierId) {
             LEFT JOIN tbl_fsvp_importers FIMP ON FIMP.id = EVAL.importer_id
             LEFT JOIN tbl_supplier SUPP ON SUPP.ID = FSUPP.supplier_id
             LEFT JOIN tbl_supplier IMP ON IMP.ID = FIMP.importer_id
-            WHERE EVAL.supplier_id = ? AND EVAL.deleted_at IS NULL ORDER BY EVAL.created_at DESC LIMIT 1", 
+            WHERE EVAL.supplier_id = ? AND EVAL.deleted_at IS NULL 
+            ORDER BY REC.evaluation_date DESC, REC.created_at DESC LIMIT 1",
             $supplierId)->fetchAssoc();
 
         if(!count($data)) {

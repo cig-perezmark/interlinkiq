@@ -36,7 +36,7 @@ function getSupplierList($conn, $userId) {
     try {
         $recordType = 'supplier-list:';
 
-        $list = $conn->execute("SELECT fs.*, s.name, s.address FROM tbl_fsvp_suppliers fs 
+        $list = $conn->execute("SELECT fs.*, s.name, s.address FROM tbl_fsvp_suppliers fs
             LEFT JOIN tbl_supplier s ON s.ID = fs.supplier_id
             WHERE fs.user_id = ? AND fs.deleted_at IS NULL
             ORDER BY fs.created_at DESC
@@ -70,7 +70,7 @@ function getSupplierList($conn, $userId) {
                 'address' => $address,
                 'name' => $d['name'],
                 'id' => $d['id'],
-                'evaluation' => getEvaluationStatus($conn, $d['id']),
+                'evaluation' => getEvaluationRecordID($conn, $d['id']),
                 'food_imported' => $materialData,
                 'compliance_statement' => $csFile,
                 'supplier_agreement' => $saFiles,
@@ -89,16 +89,16 @@ function getSupplierList($conn, $userId) {
 function getEvaluationData($conn, $evalId) {
     $eval = $conn->execute("SELECT 
                 eval.id,
-                eval.status,
                 eval.evaluation,
-                eval.evaluation_date,
-                eval.evaluation_due_date,
-                eval.sppp,
-                eval.import_alerts,
-                eval.recalls,
-                eval.warning_letters,
-                eval.other_significant_ca,
-                eval.suppliers_corrective_actions,
+                rec.status,
+                rec.evaluation_date,
+                rec.evaluation_due_date,
+                rec.sppp,
+                rec.import_alerts,
+                rec.recalls,
+                rec.warning_letters,
+                rec.other_significant_ca,
+                rec.suppliers_corrective_actions,
                 eval.info_related,
                 eval.rejection_date,
                 eval.approval_date,
@@ -110,6 +110,7 @@ function getEvaluationData($conn, $evalId) {
                 imp.address AS importer_address,
                 fsupp.food_imported
             FROM tbl_fsvp_evaluations eval
+            LEFT JOIN tbl_fsvp_evaluation_records rec ON eval.id = rec.evaluation_id
             LEFT JOIN tbl_fsvp_suppliers fsupp ON eval.supplier_id = fsupp.id
             LEFT JOIN tbl_fsvp_importers fimp ON eval.importer_id = fimp.id
             -- tbl_suppliers (original)
@@ -123,11 +124,11 @@ function getEvaluationData($conn, $evalId) {
         });
 
     // update current evaluation status
-    if($eval['status'] == 'current') {
-        $eval['status'] = updateEvaluationStatus($conn, $eval['evaluation_due_date'], $evalId);
-    } else if($eval['status'] == 're_evaluated') {
-        // find re evaluation data
-    }
+    // if($eval['status'] == 'current') {
+    //     $eval['status'] = updateCurrentEvalStatus($conn, $eval['evaluation_due_date'], $evalId);
+    // } else if($eval['status'] == 're_evaluated') {
+    //     // find re evaluation data
+    // }
 
     // files
     $evalFileCategoriesToFetch = [];
@@ -146,19 +147,20 @@ function getEvaluationData($conn, $evalId) {
     return $eval;
 }
 
-function getEvaluationStatus($conn, $supplierId) {
+function getEvaluationRecordID($conn, $supplierId) {
     try {
-        $conn->begin_transaction();
         $data = $conn->execute("SELECT 
                 EVAL.id,
-                EVAL.status, 
-                EVAL.evaluation_date, 
-                EVAL.evaluation_due_date,
+                REC.id AS record_id,
+                REC.status, 
+                REC.evaluation_date, 
+                REC.evaluation_due_date,
                 IMP.name AS importer_name,
                 IMP.address AS importer_address,
                 SUPP.name AS supplier_name,
                 SUPP.address AS supplier_address
             FROM tbl_fsvp_evaluations EVAL
+            LEFT JOIN tbl_fsvp_evaluation_records REC ON EVAL.id = REC.evaluation_id
             LEFT JOIN tbl_fsvp_suppliers FSUPP ON FSUPP.id = EVAL.supplier_id
             LEFT JOIN tbl_fsvp_importers FIMP ON FIMP.id = EVAL.importer_id
             LEFT JOIN tbl_supplier SUPP ON SUPP.ID = FSUPP.supplier_id
@@ -173,23 +175,17 @@ function getEvaluationStatus($conn, $supplierId) {
             $data['importer_address'] = formatSupplierAddress($data['importer_address']);
             
             if($data['status'] == 'current') {
-                $data['status'] = updateEvaluationStatus($conn, $data['evaluation_due_date'], $data['id']);
-            } else if($data['status'] == 're_evaluated') {
-                // add code..
-            } else if($data['status'] == 'expired') {
-                
+                $data['status'] = updateCurrentEvalStatus($conn, $data['evaluation_due_date'], $data['id']);
             }
         }
 
-        $conn->commit();
         return $data;
     } catch(Throwable $e) {
-        $conn->rollback();
         throw $e;
     }
 }
 
-function updateEvaluationStatus($conn, $due, $id) {
+function updateCurrentEvalStatus($conn, $due, $id) {
     $evalDueDate = strtotime($due);
     $current = strtotime(date('Y-m-d'));
     
@@ -367,6 +363,63 @@ function saveEvalFiles($postData, $conn, $id) {
         saveEvaluationFile($postData, 'other_significant_ca'),
         saveEvaluationFile($postData, 'suppliers_corrective_actions'),
     ], function($r) { return is_array($r); }));
+}
+
+function saveNewEvaluationRecord($conn, $post, $evalId, $preRecordId = null) {
+    global $user_id, $portal_user;
+    try {
+
+        /**
+         * TODO:
+         * add a validation if the previous evaluation record is not yet expired, do not allow saving new record
+         */
+        
+        $conn->begin_transaction();
+        $dueDate = emptyIsNull($post['evaluation_due_date']);
+
+        $params = [
+            'user_id'                       => $user_id,
+            'portal_user'                   => $portal_user,
+            'evaluation_id'                 => $evalId,
+            'pre_record_id'                 => $preRecordId,
+            'evaluation_date'               => emptyIsNull($post['evaluation_date']),
+            'evaluation_due_date'           => $dueDate,
+            'sppp'                          => emptyIsNull($post['sppp']),
+            'import_alerts'                 => $post['import_alerts'] ?? NULL,
+            'recalls'                       => $post['recalls'] ?? NULL,
+            'warning_letters'               => $post['warning_letters'] ?? NULL,
+            'other_significant_ca'          => $post['other_sca'] ?? NULL,
+            'suppliers_corrective_actions'  => $post['supplier_corrective_actions'] ?? NULL,
+        ];
+
+        // evaluate due date if already expired
+        if(isset($dueDate) && strtotime($dueDate) <= strtotime(date('Y-m-d'))) {
+            $params['status'] = 'expired';
+        }
+
+        $conn->insert("tbl_fsvp_evaluation_records", $params);
+        $id = $conn->getInsertId();
+        saveEvalFiles($post, $conn, $id);
+
+        $conn->commit();
+
+        $data = $params;
+        $data['id'] = $id;
+
+        unset(
+            $data['sppp'],
+            $data['import_alerts'],
+            $data['recalls'],
+            $data['warning_letters'],
+            $data['other_significant_ca'],
+            $data['suppliers_corrective_actions'],
+        );
+        
+        return $data;
+    } catch(Throwable $e) {
+        $conn->rollback();
+        throw $e;
+    }
 }
 
 // schedule

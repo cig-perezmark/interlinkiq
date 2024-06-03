@@ -382,6 +382,7 @@ function saveNewEvaluationRecord($conn, $post, $evalId, $preRecordId = null) {
             'portal_user'                   => $portal_user,
             'evaluation_id'                 => $evalId,
             'pre_record_id'                 => $preRecordId,
+            'status'                        => 'current',
             'evaluation_date'               => emptyIsNull($post['evaluation_date']),
             'evaluation_due_date'           => $dueDate,
             'sppp'                          => emptyIsNull($post['sppp']),
@@ -404,9 +405,13 @@ function saveNewEvaluationRecord($conn, $post, $evalId, $preRecordId = null) {
         $conn->commit();
 
         $data = $params;
-        $data['id'] = $id;
+        $data['record_id'] = $id;
+        $data['id'] = $data['evaluation_id'];
 
         unset(
+            $data['user_id'],
+            $data['portal_user'],
+            $data['evaluation_id'],
             $data['sppp'],
             $data['import_alerts'],
             $data['recalls'],

@@ -128,7 +128,7 @@ function getEvaluationData($conn, $evalId, $recordId = null) {
             LEFT JOIN tbl_supplier supp ON supp.ID = fsupp.supplier_id
             LEFT JOIN tbl_supplier imp ON imp.ID = fimp.importer_id 
                 WHERE $cond AND eval.deleted_at IS NULL
-            ORDER BY rec.evaluation_date DESC, rec.created_at DESC LIMIT 1",
+            ORDER BY rec.pre_record_id DESC, rec.evaluation_date DESC, rec.created_at DESC LIMIT 1",
             $params 
         )->fetchAssoc(function($d) {
             $d['supplier_address'] = formatSupplierAddress($d['supplier_address']);
@@ -145,7 +145,7 @@ function getEvaluationData($conn, $evalId, $recordId = null) {
     ($eval['suppliers_corrective_actions'] == 1) && ($evalFileCategoriesToFetch[] = 'suppliers-corrective-actions');
 
     if(count($evalFileCategoriesToFetch) > 0) {
-        $eval['files'] = fetchEvaluationFiles($conn, $evalId, $evalFileCategoriesToFetch);
+        $eval['files'] = fetchEvaluationFiles($conn, $eval['record_id'], $evalFileCategoriesToFetch);
     }
 
     $eval['food_imported'] = getSupplierFoodImported($conn, $eval['food_imported']);
@@ -172,7 +172,7 @@ function getEvaluationRecordID($conn, $supplierId) {
             LEFT JOIN tbl_supplier SUPP ON SUPP.ID = FSUPP.supplier_id
             LEFT JOIN tbl_supplier IMP ON IMP.ID = FIMP.importer_id
             WHERE EVAL.supplier_id = ? AND EVAL.deleted_at IS NULL 
-            ORDER BY REC.evaluation_date DESC, REC.created_at DESC LIMIT 1",
+            ORDER BY REC.pre_record_id DESC, REC.evaluation_date DESC, REC.created_at DESC LIMIT 1",
             $supplierId)->fetchAssoc();
 
         if(!count($data)) {

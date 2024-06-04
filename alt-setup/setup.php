@@ -159,34 +159,6 @@ function uploadFile($path, $file, $newFilename = null) {
     throw new Exception("Failed to move uploaded file.");
 }
 
-// function isValidFile($filename)
-// {
-//     $disallowedExtensions = ['php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll'];
-function isValidFile($filename)
-{
-    // List of disallowed extensions
-    $disallowedExtensions = ['php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll'];
-
-//     $fileExtension = pathinfo($filename, PATHINFO_EXTENSION);
-//     if (in_array(strtolower($fileExtension), $disallowedExtensions)) {
-//         return false;
-//     }
-    
-//     return true;
-// }
-
-// function isValidFile($filename)
-// {
-//     $disallowedExtensions = ['php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll'];
-
-//     $fileExtension = pathinfo($filename, PATHINFO_EXTENSION);
-//     if (in_array(strtolower($fileExtension), $disallowedExtensions)) {
-//         return false;
-//     }
-    
-//     return true;
-// }
-
 function isValidFile($filename) {
     // List of disallowed MIME types corresponding to disallowed extensions
     $disallowedMimeTypes = [

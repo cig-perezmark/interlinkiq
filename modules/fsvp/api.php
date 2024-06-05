@@ -588,15 +588,30 @@ if(isset($_GET['fetchImportersForTable'])) {
             i.fsvpqi_id, 
             CONCAT(TRIM(emp.first_name), ' ', TRIM(emp.last_name)) AS fsvpqi_name,
             i.supplier_id,
-            sup.name AS supplier_name
+            sup.name AS supplier_name,
+            cbp.id AS cbp_id,
+            cbp.foods_info,
+            cbp.supplier_info,
+            cbp.determining_importer,
+            cbp.designated_importer,
+            cbp.cbp_entry_filer,
+            cbp.prev_record_id AS previous_cbp_record_id
         FROM 
             tbl_fsvp_importers i 
-            JOIN tbl_supplier imp ON imp.ID = i.importer_id
+            LEFT JOIN tbl_supplier imp ON imp.ID = i.importer_id
             LEFT JOIN tbl_supplier sup ON sup.ID = i.supplier_id
-            JOIN tbl_fsvp_qi qi ON qi.id = i.fsvpqi_id
-            JOIN tbl_hr_employee emp ON emp.ID = qi.employee_id
+            LEFT JOIN tbl_fsvp_qi qi ON qi.id = i.fsvpqi_id
+            LEFT JOIN tbl_hr_employee emp ON emp.ID = qi.employee_id
+            LEFT JOIN tbl_fsvp_cbp_records cbp ON cbp.importer_id = i.id
+            INNER JOIN (
+                SELECT importer_id, MAX(created_at) AS max_created_at
+                FROM tbl_fsvp_cbp_records
+                WHERE deleted_at IS NULL
+                GROUP BY importer_id
+            ) latest_cbp ON cbp.importer_id = latest_cbp.importer_id AND cbp.created_at = latest_cbp.max_created_at
         WHERE 
-            i.user_id = ?",
+            i.deleted_at IS NULL AND i.user_id = ?
+        ORDER BY cbp.created_at DESC",
         $user_id
     )->fetchAll(function($data) {
         return [
@@ -615,6 +630,15 @@ if(isset($_GET['fetchImportersForTable'])) {
             'fsvpqi' => [
                 'id' => $data['fsvpqi_id'],
                 'name' => $data['fsvpqi_name'],
+            ],
+            'cbp' => [
+                'id' => $data['cbp_id'],
+                'prev_id' => $data['previous_cbp_record_id'],
+                'foods_info' => $data['foods_info'],
+                'supplier_info' => $data['supplier_info'],
+                'determining_importer' => $data['determining_importer'],
+                'designated_importer' => $data['designated_importer'],
+                'cbp_entry_filer' => $data['cbp_entry_filer'],
             ]
         ];
     });

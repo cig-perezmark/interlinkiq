@@ -134,6 +134,10 @@ $(function() {
             }
         });
     });
+
+    $('#tableImporterList').on('click', '[data-opencbpfilingform]', function() {
+        $('#modalCBPFiling').modal('show');
+    })
 });
 
 function populateFSVPQISelect() {
@@ -215,12 +219,12 @@ function renderDTRow(importersData, d, table) {
         d.fda_registration,
         `<a href="#" title="View details">${d.fsvpqi.name}</a>`,
         d.evaluation_date,
-        `<button title="Evaluation form" type="button" class="btn green-soft btn-circle btn-sm">Open Form</button>`,
-        `
-            <div class="d-flex center">
-                <button type="button" class="btn-link">Open</button>
-            </div>
-        `,
+        `<button title="Evaluation form" type="button" class="btn green-soft btn-circle btn-sm" data-opencbpfilingform="${d.id}">Open Form</button>`,
+        // `
+        //     <div class="d-flex center">
+        //         <button type="button" class="btn-link">Open</button>
+        //     </div>
+        // `,
     ]);
     return table.dt;
 }

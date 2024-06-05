@@ -18,7 +18,7 @@
             <th>FSVPQI</th>
             <th>Evaluation Date</th>
             <th>FSVP CBP Filing Form</th>
-            <th>Actions</th>
+            <!-- <th>Actions</th> -->
         </tr>
     </thead>
     <tbody></tbody>
@@ -145,17 +145,105 @@
                 <h4 class="modal-title">FSVP CBP Filing Form</h4>
             </div>
             <div class="modal-body form-body">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Imported Food(s) / Food Product(s) Information</th>
-                            <th>Supplier Information</th>
-                            <th>Determining FSVP Importer</th>
-                            <th>Designated FSVP Importer</th>
-                            <th>CBP Entry Filer</th>
-                        </tr>
-                    </thead>
-                </table>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="">
+                                Imported Food(s)/Food Product(s) Information
+                                <div class="help-icon-group">
+                                    <i class="fa fa-question-circle"></i>
+                                    <p>
+                                        What food(s)/ food product(s) Import (receive)?
+                                        <br>
+                                        <mark>
+                                            [Note: List each food/food product. Be specific, e.g., can size; size packages; bulk weight]
+                                        </mark>
+                                        <br>
+                                        For each food listed, will the food or food product made from the imported food be offered for sale in the U.S.?
+                                    </p>
+                                </div>
+                            </label>
+                            <textarea name="" id="" class="form-control" placeholder="Imported Food(s)/Food Product(s) Information"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="">
+                                Supplier Information
+                                <div class="help-icon-group">
+                                    <i class="fa fa-question-circle"></i>
+                                    <p>
+                                        From whom do purchase the food (i.e., Supplier's name, address, etc.)?
+                                        <br>
+                                        Is the Supplier a U.S. company or a foreign company?
+                                        <br>
+                                        Does the importer from whom directly purchases the food fit the FSVP definition of the foreign Supplier (i.e., grower, manufacturer)?
+                                    </p>
+                                </div>
+                            </label>
+                            <textarea name="" id="" class="form-control" placeholder="Enter supplier information"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="">
+                                Determining FSVP Importer
+                                <div class="help-icon-group">
+                                    <i class="fa fa-question-circle"></i>
+                                    <p>
+                                        Describe the current buying arrangement(s) (i.e., name all parties involved in obtaining the food product, including foreign Supplier, if known)
+                                        <br>
+                                        At the time of entry, the importer of the food, or have you purchased or agreed to purchase the food (i.e., do you fit the definition of “U.S. owner or consignee” and, therefore, FSVP “importer” for this food)? **
+                                        <br>
+                                        Who else involved in this arrangement fits the FSVP definition of importer?
+                                        <br>
+                                        <mark>
+                                            [Note: Be specific, e.g., are there multiple purchasers for the same line entry of food, do you purchase food from a U.S. importer/
+                                            distributor?]
+                                        </mark>
+                                    </p>
+                                </div>
+                            </label>
+                            <textarea name="" id="" class="form-control" placeholder="Enter determining FSVP importer"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="">
+                                Designated FSVP Importer
+                                <div class="help-icon-group">
+                                    <i class="fa fa-question-circle"></i>
+                                    <p>
+                                        If more than one person/entity fits the definition of the importer, negotiate with others to determine who will carry out FSVP requirements.
+                                        <br>
+                                        <mark>
+                                            [Note: Place name below and formalize the understanding (i.e., create an agreement identifying FSVP importer)]
+                                        </mark>
+                                    </p>
+                                </div>
+                            </label>
+                            <textarea name="" id="" class="form-control" placeholder="Enter designated FSVP importer"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="">
+                                CBP Entry Filer
+                                <div class="help-icon-group">
+                                    <i class="fa fa-question-circle"></i>
+                                    <p>
+                                        Who fills out the CBP entry filing for this food/food product (i.e., name, address)?
+                                        <br>
+                                        <mark>
+                                            [Note: Provide a copy of the agreement/understanding identifying the FSVP Importer* to be identified in CBP entry filing (i.e., name, address, email, and DUNS number of agreed-upon FSVP importer)]
+                                        </mark>
+                                    </p>
+                                </div>
+                            </label>
+                            <textarea name="" id="" class="form-control" placeholder="Enter CBP entry filer"></textarea>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>

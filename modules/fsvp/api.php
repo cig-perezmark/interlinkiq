@@ -9,7 +9,7 @@ $currentTimestamp = date('Y-m-d H:i:s');
 // note: no filter for foreign suppliers yet
 // fetching supplier for dropdown
 if(isset($_GET["getProductsBySupplier"]) && !empty($_GET["getProductsBySupplier"])) {
-    $materials = $conn->select("tbl_supplier", "material", ["ID" => $_GET["getProductsBySupplier"]])->fetchAssoc();
+    $materials = $conn->select("tbl_supplier", "material, address", ["ID" => $_GET["getProductsBySupplier"]])->fetchAssoc();
     $mIds = $materials['material'];
     $data = [];
     
@@ -18,7 +18,8 @@ if(isset($_GET["getProductsBySupplier"]) && !empty($_GET["getProductsBySupplier"
     }
     
     send_response([
-        "materials"=> $data
+        "materials"=> $data,
+        'address' => formatSupplierAddress($materials['address']),
     ]);
 }
 
@@ -505,7 +506,7 @@ if(isset($_GET['fetchFSVPQI']) ) {
 
 // populating fsvpqis to dropdowns outside the fsvpqi page
 if(isset($_GET['myFSVPQIInRecords']) ) {
-    $result = $conn->execute("SELECT q.id, CONCAT(TRIM(e.first_name), ' ', TRIM(e.last_name)) AS name FROM tbl_fsvp_qi q JOIN tbl_hr_employee e ON q.employee_id = e.ID WHERE q.user_id = ? AND q.deleted_at IS NULL", $user_id)->fetchAll();
+    $result = $conn->execute("SELECT q.id, CONCAT(TRIM(e.first_name), ' ', TRIM(e.last_name)) AS name, email FROM tbl_fsvp_qi q JOIN tbl_hr_employee e ON q.employee_id = e.ID WHERE q.user_id = ? AND q.deleted_at IS NULL", $user_id)->fetchAll();
     send_response([
         'result' => $result,
     ]);

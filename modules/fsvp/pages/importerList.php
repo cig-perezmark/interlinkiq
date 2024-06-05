@@ -137,7 +137,7 @@
     </div>
 </div>
 
-<div class="modal fade in" id="modalCBPFiling" role="dialog" aria-hidden="true">
+<div class="modal fade in" id="modalCBPFiling" role="dialog" aria-hidden="true" tabindex="1">
     <div class="modal-dialog modal-lg">
         <form class="modal-content" role="form">
             <div class="modal-header">
@@ -150,17 +150,16 @@
                         <div class="form-group">
                             <label for="">
                                 Imported Food(s)/Food Product(s) Information
-                                <div class="help-icon-group">
+                                <div class="help-icon-group tooltips" data-html="true" data-placement="bottom" data-original-title="<div class='form-hint'>
+                                    What food(s)/ food product(s) Import (receive)?
+                                    <br>
+                                    <mark>
+                                        [Note: List each food/food product. Be specific, e.g., can size; size packages; bulk weight]
+                                    </mark>
+                                    <br>
+                                    For each food listed, will the food or food product made from the imported food be offered for sale in the U.S.?
+                                </div>">
                                     <i class="fa fa-question-circle"></i>
-                                    <p>
-                                        What food(s)/ food product(s) Import (receive)?
-                                        <br>
-                                        <mark>
-                                            [Note: List each food/food product. Be specific, e.g., can size; size packages; bulk weight]
-                                        </mark>
-                                        <br>
-                                        For each food listed, will the food or food product made from the imported food be offered for sale in the U.S.?
-                                    </p>
                                 </div>
                             </label>
                             <textarea name="" id="" class="form-control" placeholder="Imported Food(s)/Food Product(s) Information"></textarea>
@@ -170,15 +169,14 @@
                         <div class="form-group">
                             <label for="">
                                 Supplier Information
-                                <div class="help-icon-group">
+                                <div class="help-icon-group tooltips" data-html="true" data-placement="bottom" data-original-title="<div class='form-hint'>
+                                    From whom do purchase the food (i.e., Supplier's name, address, etc.)?
+                                    <br>
+                                    Is the Supplier a U.S. company or a foreign company?
+                                    <br>
+                                    Does the importer from whom directly purchases the food fit the FSVP definition of the foreign Supplier (i.e., grower, manufacturer)?
+                                </div>">
                                     <i class="fa fa-question-circle"></i>
-                                    <p>
-                                        From whom do purchase the food (i.e., Supplier's name, address, etc.)?
-                                        <br>
-                                        Is the Supplier a U.S. company or a foreign company?
-                                        <br>
-                                        Does the importer from whom directly purchases the food fit the FSVP definition of the foreign Supplier (i.e., grower, manufacturer)?
-                                    </p>
                                 </div>
                             </label>
                             <textarea name="" id="" class="form-control" placeholder="Enter supplier information"></textarea>
@@ -188,20 +186,19 @@
                         <div class="form-group">
                             <label for="">
                                 Determining FSVP Importer
-                                <div class="help-icon-group">
+                                <div class="help-icon-group tooltips" data-html="true" data-placement="bottom" data-original-title="<div class='form-hint'>
+                                    Describe the current buying arrangement(s) (i.e., name all parties involved in obtaining the food product, including foreign Supplier, if known)
+                                    <br>
+                                    At the time of entry, the importer of the food, or have you purchased or agreed to purchase the food (i.e., do you fit the definition of “U.S. owner or consignee” and, therefore, FSVP “importer” for this food)? **
+                                    <br>
+                                    Who else involved in this arrangement fits the FSVP definition of importer?
+                                    <br>
+                                    <mark>
+                                        [Note: Be specific, e.g., are there multiple purchasers for the same line entry of food, do you purchase food from a U.S. importer/
+                                        distributor?]
+                                    </mark>
+                                </div>">
                                     <i class="fa fa-question-circle"></i>
-                                    <p>
-                                        Describe the current buying arrangement(s) (i.e., name all parties involved in obtaining the food product, including foreign Supplier, if known)
-                                        <br>
-                                        At the time of entry, the importer of the food, or have you purchased or agreed to purchase the food (i.e., do you fit the definition of “U.S. owner or consignee” and, therefore, FSVP “importer” for this food)? **
-                                        <br>
-                                        Who else involved in this arrangement fits the FSVP definition of importer?
-                                        <br>
-                                        <mark>
-                                            [Note: Be specific, e.g., are there multiple purchasers for the same line entry of food, do you purchase food from a U.S. importer/
-                                            distributor?]
-                                        </mark>
-                                    </p>
                                 </div>
                             </label>
                             <textarea name="" id="" class="form-control" placeholder="Enter determining FSVP importer"></textarea>
@@ -211,15 +208,14 @@
                         <div class="form-group">
                             <label for="">
                                 Designated FSVP Importer
-                                <div class="help-icon-group">
+                                <div class="help-icon-group tooltips" data-html="true" data-placement="bottom" data-original-title="<div class='form-hint'>
+                                    If more than one person/entity fits the definition of the importer, negotiate with others to determine who will carry out FSVP requirements.
+                                    <br>
+                                    <mark>
+                                        [Note: Place name below and formalize the understanding (i.e., create an agreement identifying FSVP importer)]
+                                    </mark>
+                                </div>">
                                     <i class="fa fa-question-circle"></i>
-                                    <p>
-                                        If more than one person/entity fits the definition of the importer, negotiate with others to determine who will carry out FSVP requirements.
-                                        <br>
-                                        <mark>
-                                            [Note: Place name below and formalize the understanding (i.e., create an agreement identifying FSVP importer)]
-                                        </mark>
-                                    </p>
                                 </div>
                             </label>
                             <textarea name="" id="" class="form-control" placeholder="Enter designated FSVP importer"></textarea>
@@ -229,15 +225,13 @@
                         <div class="form-group">
                             <label for="">
                                 CBP Entry Filer
-                                <div class="help-icon-group">
+                                <div class="help-icon-group tooltips" data-html="true" data-placement="bottom" data-original-title="<div class='form-hint'>
+                                    Who fills out the CBP entry filing for this food/food product (i.e., name, address)?
+                                    <mark>
+                                        [Note: Provide a copy of the agreement/understanding identifying the FSVP Importer* to be identified in CBP entry filing (i.e., name, address, email, and DUNS number of agreed-upon FSVP importer)]
+                                    </mark>
+                                </div>">
                                     <i class="fa fa-question-circle"></i>
-                                    <p>
-                                        Who fills out the CBP entry filing for this food/food product (i.e., name, address)?
-                                        <br>
-                                        <mark>
-                                            [Note: Provide a copy of the agreement/understanding identifying the FSVP Importer* to be identified in CBP entry filing (i.e., name, address, email, and DUNS number of agreed-upon FSVP importer)]
-                                        </mark>
-                                    </p>
                                 </div>
                             </label>
                             <textarea name="" id="" class="form-control" placeholder="Enter CBP entry filer"></textarea>

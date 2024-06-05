@@ -99,15 +99,10 @@ function getSupplierList($conn, $userId) {
  * also do the same in getEvaluationRecordID function
  */
 // evaluation data for every supplier in the supplier list page
-function getEvaluationData($conn, $evalId, $recordId = null) {
-    $cond = "eval.id = ?" . (!empty($recordId) ? " AND rec.id = ?" : "");
-    $params = [ $evalId];
-    !empty($recordId) && $params[] = $recordId;
-     
+function getEvaluationData($conn, $evalId) {
     $eval = $conn->execute("SELECT 
                 eval.id,
                 eval.evaluation,
-                rec.id AS record_id,
                 rec.status,
                 rec.evaluation_date,
                 rec.evaluation_due_date,
@@ -189,7 +184,7 @@ function getEvaluationRecordID($conn, $supplierId) {
             $data['importer_address'] = formatSupplierAddress($data['importer_address']);
             
             if($data['status'] == 'current') {
-                $data['status'] = updateCurrentEvalStatus($conn, $data['evaluation_due_date'], $data['record_id']);
+                $data['status'] = updateCurrentEvalStatus($conn, $data['evaluation_due_date'], $data['id']);
             }
         }
 
@@ -205,7 +200,7 @@ function updateCurrentEvalStatus($conn, $due, $id) {
     
     // already dued
     if($evalDueDate <= $current) {
-        $conn->update("tbl_fsvp_evaluation_records", ['status' => 'expired'], "id = $id");
+        $conn->update("tbl_fsvp_evaluations", ['status' => 'expired'], "id = $id");
         return 'expired';
     }
 

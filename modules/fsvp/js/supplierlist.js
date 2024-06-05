@@ -429,8 +429,8 @@ jQuery(function() {
 
         const data = new FormData(form);
 
-        // var l = Ladda.create(this.querySelector('[type=submit]'));
-        // l.start();
+        var l = Ladda.create(this.querySelector('[type=submit]'));
+        l.start();
 
         if(prevEvalId !== null) {
             data.append('prev_record_id', prevEvalId);
@@ -462,7 +462,7 @@ jQuery(function() {
                 bootstrapGrowl(responseJSON.error || 'Error!', 'danger');
             },
             complete: function() {
-                // l.stop();
+                l.stop();
             }
         });
     });

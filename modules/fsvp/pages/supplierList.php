@@ -633,11 +633,11 @@ th {
                                         <i class="fa fa-external-link icon-margin-right"></i>
                                         View file
                                     </a>
-                                    <button type="button" class="btn btn-sm default btn-circle" id="vfUpdateBtn">
+                                    <button type="button" class="btn btn-sm default btn-circle hide" id="vfUpdateBtn">
                                         <i class="fa fa-edit icon-margin-right font-blue"></i>
                                         Update
                                     </button>
-                                    <button type="button" class="btn btn-sm default text-danger btn-circle" id="vfRemoveBtn">
+                                    <button type="button" class="btn btn-sm default text-danger btn-circle hide" id="vfRemoveBtn">
                                         <i class="fa fa-close icon-margin-right font-red"></i>
                                         Remove
                                     </button>

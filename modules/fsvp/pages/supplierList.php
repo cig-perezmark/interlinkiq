@@ -427,6 +427,21 @@ th {
                         </div>
                     </div>
                 </div>
+
+                <?php if(false): ?>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div>
+                            <div class="form-group">
+                                <label for="">Approved by:</label>
+                                <input type="text" class="form-control" style="width: 300px;" placeholder="Approver's name">
+                            </div>
+                            <p>Signature:</p>
+                            <div class="esign"></div>
+                        </div>
+                    </div>
+                </div>
+                <?php endif; ?>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
@@ -771,6 +786,10 @@ th {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                <a href="about:blank" target="_blank" class="btn blue">
+                    <!-- <i class="fa fa-pdf-o"></i> -->
+                    View PDF
+                </a>
             </div>
         </div>
     </div>

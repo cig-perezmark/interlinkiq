@@ -9,7 +9,7 @@ $currentTimestamp = date('Y-m-d H:i:s');
 // note: no filter for foreign suppliers yet
 // fetching supplier for dropdown
 if(isset($_GET["getProductsBySupplier"]) && !empty($_GET["getProductsBySupplier"])) {
-    $materials = $conn->select("tbl_supplier", "material", ["ID" => $_GET["getProductsBySupplier"]])->fetchAssoc();
+    $materials = $conn->select("tbl_supplier", "material, address", ["ID" => $_GET["getProductsBySupplier"]])->fetchAssoc();
     $mIds = $materials['material'];
     $data = [];
     
@@ -18,7 +18,8 @@ if(isset($_GET["getProductsBySupplier"]) && !empty($_GET["getProductsBySupplier"
     }
     
     send_response([
-        "materials"=> $data
+        "materials"=> $data,
+        'address' => formatSupplierAddress($materials['address']),
     ]);
 }
 
@@ -26,6 +27,7 @@ if(isset($_GET["getProductsBySupplier"]) && !empty($_GET["getProductsBySupplier"
 if(isset($_GET["newSupplierToList"])) {
     try {
         $conn->begin_transaction();
+        $conn->escapeString = false;
         
         $supplierId = $_POST["supplier"];
         $supplierData = $conn->select("tbl_supplier", "address, name", ["ID" => $supplierId])->fetchAssoc(function ($d) {
@@ -504,7 +506,7 @@ if(isset($_GET['fetchFSVPQI']) ) {
 
 // populating fsvpqis to dropdowns outside the fsvpqi page
 if(isset($_GET['myFSVPQIInRecords']) ) {
-    $result = $conn->execute("SELECT q.id, CONCAT(TRIM(e.first_name), ' ', TRIM(e.last_name)) AS name FROM tbl_fsvp_qi q JOIN tbl_hr_employee e ON q.employee_id = e.ID WHERE q.user_id = ? AND q.deleted_at IS NULL", $user_id)->fetchAll();
+    $result = $conn->execute("SELECT q.id, CONCAT(TRIM(e.first_name), ' ', TRIM(e.last_name)) AS name, email FROM tbl_fsvp_qi q JOIN tbl_hr_employee e ON q.employee_id = e.ID WHERE q.user_id = ? AND q.deleted_at IS NULL", $user_id)->fetchAll();
     send_response([
         'result' => $result,
     ]);
@@ -638,14 +640,6 @@ if(isset($_GET['newSupplierEvaluation'])) {
             'importer_id'                   => $_POST['importer'],
             'description'                   => emptyIsNull($_POST['description']),
             'evaluation'                    => emptyIsNull($_POST['evaluation']),
-            'evaluation_date'               => emptyIsNull($_POST['evaluation_date']),
-            'evaluation_due_date'           => emptyIsNull($_POST['evaluation_due_date']),
-            'sppp'                          => emptyIsNull($_POST['sppp']),
-            'import_alerts'                 => $_POST['import_alerts'] ?? NULL,
-            'recalls'                       => $_POST['recalls'] ?? NULL,
-            'warning_letters'               => $_POST['warning_letters'] ?? NULL,
-            'other_significant_ca'          => $_POST['other_significant_ca'] ?? NULL,
-            'suppliers_corrective_actions'  => $_POST['suppliers_corrective_actions'] ?? NULL,
             'info_related'                  => emptyIsNull($_POST['info_related']),
             'rejection_date'                => emptyIsNull($_POST['rejection_date']),
             'approval_date'                 => emptyIsNull($_POST['approval_date']),
@@ -654,28 +648,12 @@ if(isset($_GET['newSupplierEvaluation'])) {
 
         $conn->insert("tbl_fsvp_evaluations", $params);
         $id = $conn->getInsertId();
-
-        $evalFiles = array_map(function ($fileData) use($conn, $id) {
-            $conn->insert("tbl_fsvp_files", [
-                'record_id' => $id,
-                ...$fileData,
-            ]);
-            $fileData['id'] = $conn->getInsertId();
-            $fileData['filename'] = embedFileUrl($fileData['filename'], $fileData['path']);
-            unset($fileData['path']);
-            return $fileData;
-        }, array_filter([
-            saveEvaluationFile($_POST, 'import_alerts'),
-            saveEvaluationFile($_POST, 'recalls'),
-            saveEvaluationFile($_POST, 'warning_letters'),
-            saveEvaluationFile($_POST, 'other_significant_ca'),
-            saveEvaluationFile($_POST, 'suppliers_corrective_actions'),
-        ], function($r) { return is_array($r); }));
-
+        saveNewEvaluationRecord($conn, $_POST, $id);
+        
         $conn->commit();
         send_response([
-            'data' => getEvaluationStatus($conn, $params['supplier_id']),
-            'message' => 'Save successfully.',
+            'data' => getEvaluationRecordID($conn, $params['supplier_id']),
+            'message' => 'Saved successfully.',
         ]);
     } catch(Throwable $e) {
         $conn->rollback();
@@ -691,4 +669,36 @@ if(!empty($_GET['viewEvaluationData'])) {
     send_response([
         'data' => getEvaluationData($conn, $id),
     ]);
+}
+
+// re evaluation
+if(isset($_GET['supplierReEvaluation']) && !empty($_POST['prev_record_id'])) {
+    try {
+        // verify evaluation id
+        $recordId = intval($_POST['prev_record_id']) ?? null;
+    
+        if(empty($recordId)) {
+            throw new Exception("Invalid previous evaluation id.");
+        }
+
+        $isValid = $conn->execute("SELECT id, evaluation_due_date, evaluation_id  FROM tbl_fsvp_evaluation_records WHERE id = ?", $recordId)->fetchAssoc();
+
+        if(!count($isValid)) {
+            throw new Exception("No matching previous record(s) found.");
+        } else if(strtotime(date('Y-m-d') > strtotime($isValid['evaluation_due_date']))) {
+            throw new Exception('Previous evaluation data is currently active.');
+        }
+
+        $data = saveNewEvaluationRecord($conn, $_POST, $isValid['evaluation_id'], $recordId);
+        
+        send_response([
+            'data' => $data,
+            'message' => 'Saved successfully.'
+        ]);
+    } catch(Throwable $e) {
+        $conn->rollback();
+        send_response([
+            'message' => $e->getMessage(),
+        ], 500);
+    }
 }

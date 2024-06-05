@@ -21,14 +21,26 @@ $(function() {
     });
 
     // init
-    const fsvpqiSelect = Init.multiSelect($('#fsvpqiSelect'));
-    const supplierSelect = Init.multiSelect($('#supplierSelectDropdown'));
+    const fsvpqiSelect = Init.multiSelect($('#fsvpqiSelect'), {
+        onChange: function(option) {
+            $('#id_fsvpqiEmail').val(option.get(0).title || 'None');
+        }
+    });
+    const supplierSelect = Init.multiSelect($('#supplierSelectDropdown'), {
+        onChange: function(option, checked) {
+            const address = option.get(0).dataset.address || '';
+            $('#if_SupplierAddress').val(address);
+        }
+    });
     const importerSelect = Init.multiSelect($('#importerdd'), {
         onChange: function(option, checked, select) {
             const pList = $('#productsListSelection');
             pList.html('');
             pList.append(`<div class="stat-loading"> <img src="assets/global/img/loading.gif" alt="loading"> </div>`);
             $('#productsHelpBlock').addClass('d-none');
+            
+            const address = option.get(0).dataset.address || '';
+            $('#if_ImporterAddress').val(address);
 
             $.ajax({
                 url: baseUrl + "getProductsBySupplier=" + $(option).val(),
@@ -152,8 +164,8 @@ function populateFSVPQISelect() {
                     Object.values(result).forEach((d) => {
                         options.push({
                             label: d.name,
-                            title: d.name,
-                            value: d.id
+                            title: d.email,
+                            value: d.id,
                         });
                     });
                 }

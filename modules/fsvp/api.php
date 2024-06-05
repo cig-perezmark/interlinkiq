@@ -603,7 +603,7 @@ if(isset($_GET['fetchImportersForTable'])) {
             LEFT JOIN tbl_fsvp_qi qi ON qi.id = i.fsvpqi_id
             LEFT JOIN tbl_hr_employee emp ON emp.ID = qi.employee_id
             LEFT JOIN tbl_fsvp_cbp_records cbp ON cbp.importer_id = i.id
-            INNER JOIN (
+            RIGHT JOIN (
                 SELECT importer_id, MAX(created_at) AS max_created_at
                 FROM tbl_fsvp_cbp_records
                 WHERE deleted_at IS NULL
@@ -755,10 +755,20 @@ if(isset($_GET['newCBPRecord'])) {
         ];
 
         $conn->insert("tbl_fsvp_cbp_records", $values);
+        $id = $conn->getInsertId();
 
         $conn->commit();
         send_response([
             'message' => 'Successfully saved.',
+            'data' => [
+                'id' => $id,
+                'prev_id' => null,
+                'foods_info' => $values['foods_info'],
+                'supplier_info' => $values['supplier_info'],
+                'determining_importer' => $values['determining_importer'],
+                'designated_importer' => $values['designated_importer'],
+                'cbp_entry_filer' => $values['cbp_entry_filer'],
+            ]
         ]);
     } catch(Throwable $e) {
         $conn->rollback();

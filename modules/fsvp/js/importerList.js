@@ -161,8 +161,8 @@ $(function() {
 
         const data = new FormData(form);
 
-        // var l = Ladda.create(this.querySelector('[type=submit]'));
-        // l.start();
+        var l = Ladda.create(this.querySelector('[type=submit]'));
+        l.start();
 
         $.ajax({
             url,
@@ -171,8 +171,15 @@ $(function() {
             processData: false,
             data,
             success: function({data, message}) {
-                // 
+                // update data
+                importersData[form.importer.value].cbp = data;
+                const updatedData = importersData[form.importer.value];
+
+                console.log(updatedData, data)
+
+                renderDTRow(importersData, updatedData, importerListTable, 'modify');
                 $('#modalCBPFiling').modal('hide');
+                form.reset();
                 CBPFormAlert.isShowing() && CBPFormAlert.hide();
                 bootstrapGrowl(message || 'Saved!');
             },
@@ -180,7 +187,7 @@ $(function() {
                 bootstrapGrowl(responseJSON.error || 'Error!', 'danger');
             },
             complete: function() {
-                // l.stop();
+                l.stop();
             }
         });
     });
@@ -252,25 +259,39 @@ function fetchImporterListTable(importersData, table) {
     });
 }
 
-function renderDTRow(importersData, d, table) {
+function renderDTRow(importersData, d, table, method = 'add') {
     // save to local storage
     importersData[d.id] = d;
-    // const no = `<span style="font-weight:600;">No</span>`;
-    // const sa = !d.supplier_agreement || !d.supplier_agreement.length ? no : `<a href="javascript:void(0)" data-opensafile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View</a>`;
-    // const cs = !d.compliance_statement || !d.compliance_statement.length ?  no : `<a href="javascript:void(0)" data-opencsfile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View </a>`;
+    const importerName = `<span data-importerid="${d.id}">${d.importer.name || '(unnamed)'}</span>`;
+    let CBPButtons = '';
+
+    if(d.cbp) {
+        CBPButtons = `
+            <button type="button" class="btn btn-link">View</button>
+        <button type="button" class="btn green-soft btn-circle btn-sm" data-opencbpfilingform="${d.id}">New</button>`;
+    } else {
+        CBPButtons = `<button type="button" class="btn green-soft btn-circle btn-sm" data-opencbpfilingform="${d.id}">Open Form</button>`;
+    }
     
-    table.dt.row.add([
-        d.importer.name || '(unnamed)',
+    const rowData = [
+        importerName,
         d.duns_no,
         d.fda_registration,
         `<a href="#" title="View details">${d.fsvpqi.name}</a>`,
         d.evaluation_date,
-        `<button title="Evaluation form" type="button" class="btn green-soft btn-circle btn-sm" data-opencbpfilingform="${d.id}">Open Form</button>`,
+        CBPButtons,
         // `
         //     <div class="d-flex center">
         //         <button type="button" class="btn-link">Open</button>
         //     </div>
         // `,
-    ]);
+    ];
+
+    if(method == 'update') {
+        const index = $(`#tableImporterList tr:has([data-importerid=${d.id}])`).index();
+        table.dt.row(index).data(rowData);
+    } else if(method == 'add') {
+        table.dt.row.add(rowData);
+    }
     return table.dt;
 }

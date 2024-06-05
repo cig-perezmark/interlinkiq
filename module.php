@@ -136,12 +136,12 @@
                                                 <div class="img_cover margin-bottom-15">
                                                     <img src="data:image/png;base64,'.$p_file_attachment.'" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image\';"  />';
 
-                                                    if($_COOKIE['ID'] == 481){
+                                                    if($_COOKIE['ID'] == 163 OR $switch_user_id == 19){
                                                         echo '<button class="btn btn-danger upload-btn" data-id="'.$p_plugin_id.'" data-toggle="modal" data-target="#upload_file">Upload</button>';
                                                     }
                                                 echo '</div>';
 
-                                                if ($switch_user_id == 1 OR $switch_user_id == 19 OR $switch_user_id == 163 OR $switch_user_id == 464) {
+                                                if ($switch_user_id == 1 OR $switch_user_id == 19 OR $switch_user_id == 163) {
                                                     echo '<div class="text-center margin-bottom-15">
                                                         <a href="#modalViewModule" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnViewModule('.$p_plugin_id.')">View</a>
                                                         <a href="javascript:;" class="btn btn-danger btn-sm" onclick="btnDeleteModule('.$p_plugin_id.')">Delete</a>

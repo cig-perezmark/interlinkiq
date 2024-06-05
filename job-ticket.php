@@ -78,6 +78,7 @@
                                                             // if ($current_userEmployeeID == 0 OR $current_userAdminAccess == 1 OR $current_userID == 95 OR $current_userID == 42 OR $current_userID == 88) { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0 AND user_id = $current_userID" ); }
                                                             // else { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0 AND user_id = $current_userID" ); }
                                                             
+                                                            $counter = 1;
                                                             $sql_custom = '';
                                                             if ($switch_user_id != 34) {
                                                                 $sql_custom = ' WHERE r.switch_user_id = '.$switch_user_id;
@@ -159,7 +160,7 @@
                                                                     }
                                                                     
                                                                     echo '<tr id="tr_'. $row["s_ID"] .'">
-                                                                        <td>'. $row["s_ID"] .'</td>
+                                                                        <td>'. $counter++ .'</td>
                                                                         <td>'. $category[$category_id].'</td>
                                                                         <td>
                                                                             <p style="margin: 0;"><b>'. $row["s_title"] .'</b></p>
@@ -168,7 +169,7 @@
                                                                         echo '</td>
                                                                         <td>
                                                                             <p style="margin: 0;">'. $row["s_contact"] .'</p>
-                                                                            <p style="margin: 0;"><a href="mailto:'. $row["s_email"] .'" target="_blank">'. $row["email"] .'</a></p>
+                                                                            <p style="margin: 0;"><a href="mailto:'. $row["s_email"] .'" target="_blank">'. $row["s_email"] .'</a></p>
                                                                         </td>
                                                                         <td class="text-center">'. $row["s_last_modified"] .'</td>
                                                                         <td class="text-center">'. $row["s_due_date"] .'</td>
@@ -207,6 +208,7 @@
                                                             // if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 17 OR $current_userID == 185) { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 1 AND deleted = 0" ); }
                                                             // else { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 1 AND deleted = 0 AND user_id = $current_userID" ); }
                                 
+                                                            $counter = 1;
                                                             $sql_custom = '';
                                                             if ($switch_user_id != 34) {
                                                                 $sql_custom = ' WHERE r.switch_user_id = '.$switch_user_id;
@@ -280,7 +282,7 @@
                                                                     }
                                                                     
                                                                     echo '<tr id="tr_'. $row["s_ID"] .'">
-                                                                        <td>'. $row["s_ID"] .'</td>
+                                                                        <td>'. $counter++ .'</td>
                                                                         <td>'. $category[$category_id].'</td>
                                                                         <td>
                                                                             <p style="margin: 0;">'. $row["s_title"] .'</p>

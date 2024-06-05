@@ -859,6 +859,28 @@ License: You must have a valid license purchased only from themeforest(the above
                                     echo '<a href="dashboard"><img src="/companyDetailsFolder/574189 - Viking Atlantic Sales Group, LLC.png" height="60px" alt="logo" /></a>';
                                 }
                                 
+                            } else if ($current_client == 7) {
+                                if ($switch_user_id == 1469) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/388267 - Cannabis360.png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/388267 - Cannabis360.png" height="60px" alt="logo" /></a>';
+                                }
+                                
+                            } else if ($current_client == 8) {
+                                if ($switch_user_id == 1471) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/165028 - SafeSupplements 360.png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/165028 - SafeSupplements 360.png" height="60px" alt="logo" /></a>';
+                                }
+                                
                             } else {
                                 if (isset($_COOKIE['switchAccount'])) {
                                     echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
@@ -2939,6 +2961,13 @@ License: You must have a valid license purchased only from themeforest(the above
                             <span class="selected"></span>
                         </a>
                     </li>
+                    <li class="nav-item <?php echo $site === "app-store" ? "active" : ""; ?>">
+                        <a href="https://consultareinc.com/fda/fda-registration-information-sheet/" target="_blank" class="nav-link">
+                            <i class="icon-pencil" style="color: orange !important;"></i>
+                            <span class="title">FDA Registration</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
 
                     <?php
                         if($current_client == 0) {
@@ -2947,7 +2976,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                 echo '<li class="nav-item '; echo $site === "pricing" ? "active" : ""; echo '">
                                     <a href="pricing" class="nav-link">
                                         <i class="icon-tag" style="color: #ffff00;"></i>
-                                        <span class="title" style="color: #ffff00; font-weight: bold;">Pricing</span>
+                                        <span class="title" style="color: #ffff00; font-weight: bold;">Software Package</span>
                                         <span class="selected"></span>
                                     </a>
                                 </li>';

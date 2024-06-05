@@ -15,7 +15,7 @@
                     <div class="row">
                         <div class="col-md-12 text-center">
                             <h1 class="text-success sbold">COMING SOON</h1>
-                            <p>Something great is on the way!</p>
+                            <p>Users have the ability to adjust and personalize this management tool according to their requirements.</p>
                         </div>
                     </div>
                     <!-- END CONTENT BODY -->

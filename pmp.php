@@ -198,8 +198,8 @@
                                                     <tr>
                                                         <th>Job No.</th>
                                                         <th>Assignee</th>
-                                                        <th>Equiment Name</th>
-                                                        <th>Equiment Part Name</th>
+                                                        <th>Equipment Name</th>
+                                                        <th>Equipment Part Name</th>
                                                         <th>Maintenance Schedule</th>
                                                         <th>Status</th>
                                                         <th>Maintenance Action</th>

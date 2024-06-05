@@ -121,7 +121,6 @@
         display: block !important;
       }
 
-
       .login-container {
         background: url('uploads/login/bg/background web design 2.png');
         background-size: cover;

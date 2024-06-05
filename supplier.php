@@ -258,7 +258,7 @@
                                             <table class="table table-bordered table-hover" id="tableData_1">
                                                 <thead>
                                                     <tr>
-                                                        <th rowspan="2">Supplier Name</th>
+                                                        <th rowspan="2">Vendor Name</th>
                                                         <th rowspan="2">Category</th>
                                                         <th rowspan="2">Materials/Services</th>
 														<th rowspan="2">Specification File</th>
@@ -808,7 +808,7 @@
                                             <table class="table table-bordered table-hover" id="tableData_2">
                                                 <thead>
                                                     <tr>
-                                                        <th rowspan="2">Supplier Name</th>
+                                                        <th rowspan="2">Vendor Name</th>
                                                         <th rowspan="2">Category</th>
                                                         <th rowspan="2">Materials/Services</th>
 														<th rowspan="2">Specification File</th>
@@ -1513,7 +1513,7 @@
 											<table class="table table-bordered table-hover" id="tableData_req">
 												<thead>
 													<tr>
-														<th>Supplier Name</th>
+														<th>Vendor Name</th>
 														<th>Category</th>
 														<th class="text-center" style="width: 100px;">Compliance</th>
 														<th class="text-center" style="width: 135px;">Action</th>
@@ -1844,7 +1844,7 @@
                                                         <div class="row">
                                                             <div class="col-md-3">
                                                                 <div class="form-group">
-                                                                    <label class="control-label">Supplier/Vendor Name</label>
+                                                                    <label class="control-label">Vendor Name</label>
                                                                     <input class="form-control" type="text" name="supplier_name" required />
                                                                 </div>
                                                             </div>

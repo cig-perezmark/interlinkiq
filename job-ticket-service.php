@@ -86,6 +86,7 @@
                                                             // }
                                                             // $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0 AND user_id != $current_userID $sql_custom " );
                                                             
+                                                            $counter = 1;
                                                             $sql_custom = '';
                                                             if ($switch_user_id != 34) {
                                                                 $sql_custom .= ' AND r.switch_user_id = '.$switch_user_id;
@@ -172,7 +173,7 @@
                                                                     }
                                                                     
                                                                     echo '<tr id="tr_'. $row["s_ID"] .'">
-                                                                        <td>'. $row["s_ID"] .'</td>
+                                                                        <td>'. $counter++ .'</td>
                                                                         <td>'. $category[$category_id].'</td>
                                                                         <td>
                                                                             <p style="margin: 0;"><b>'. $row["s_title"] .'</b></p>
@@ -226,6 +227,7 @@
                                                             // }
                                                             // $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 1 AND deleted = 0 AND user_id != $current_userID $sql_custom " );
                                                             
+                                                            $counter = 1;
                                                             $sql_custom = '';
                                                             if ($switch_user_id != 34) {
                                                                 $sql_custom .= ' AND r.switch_user_id = '.$switch_user_id;
@@ -303,7 +305,7 @@
                                                                     }
                                                                     
                                                                     echo '<tr id="tr_'. $row["s_ID"] .'">
-                                                                        <td>'. $row["s_ID"] .'</td>
+                                                                        <td>'. $counter++ .'</td>
                                                                         <td>'. $category[$category_id].'</td>
                                                                         <td>
                                                                             <p style="margin: 0;">'. $row["s_title"] .'</p>

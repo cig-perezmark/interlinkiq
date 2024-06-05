@@ -78,8 +78,8 @@
                                                             // if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 17 OR $current_userID == 185) { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0" ); }
                                                             // else { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0 AND user_id = $current_userID" ); }
                                                             
+                                                            $counter = 1;
                                                             $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0 AND user_id = $current_userID" );
-                                                            
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 while($row = mysqli_fetch_array($result)) {
                                                                     $category_id = $row["category"];
@@ -114,7 +114,7 @@
                                                                     }
                                                                     
                                                                     echo '<tr id="tr_'. $row["ID"] .'">
-                                                                        <td>'. $row["ID"] .'</td>
+                                                                        <td>'. $counter++.'</td>
                                                                         <td>'. $category[$category_id].'</td>
                                                                         <td>
                                                                             <p style="margin: 0;"><b>'. $row["title"] .'</b></p>
@@ -162,8 +162,8 @@
                                                             // if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 17 OR $current_userID == 185) { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 1 AND deleted = 0" ); }
                                                             // else { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 1 AND deleted = 0 AND user_id = $current_userID" ); }
                                                             
+                                                            $counter = 1;
                                                             $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 1 AND deleted = 0 AND user_id = $current_userID" );
-                                                            
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 while($row = mysqli_fetch_array($result)) {
                                                                     $category_id = $row["category"];
@@ -189,7 +189,7 @@
                                                                     }
                                                                     
                                                                     echo '<tr id="tr_'. $row["ID"] .'">
-                                                                        <td>'. $row["ID"] .'</td>
+                                                                        <td>'. $counter++ .'</td>
                                                                         <td>'. $category[$category_id].'</td>
                                                                         <td>
                                                                             <p style="margin: 0;">'. $row["title"] .'</p>

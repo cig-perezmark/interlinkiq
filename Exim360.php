@@ -121,7 +121,12 @@
         display: block !important;
       }
 
-
+      .login-container {
+        background: url('uploads/login/bg/background web design 2.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
       .sign-in-container {
         background: url('uploads/login/bg/Exim.jpg');
         background-size: cover;
@@ -136,7 +141,7 @@
       }
       .sign-logo {
         max-height: 200px;
-        filter: brightness(0) invert(1);
+        filter: brightness(0);
         margin-bottom: -38px;
       }
       .error {
@@ -149,7 +154,7 @@
     <!-- Custom styles for this template -->
     <link href="custom.css" rel="stylesheet">
   </head>
-  <body class="d-flex flex-column align-items-center row-direction-column py-4x bg-body-tertiaryx bg-dark">
+  <body class="d-flex flex-column align-items-center row-direction-column py-4x bg-body-tertiaryx bg-dark login-container">
     
     <?php
       $confirm = false;
@@ -294,11 +299,11 @@
             <svg xmlns="//www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightning-fill" viewBox="0 0 16 16">
               <path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641z"></path>
             </svg>
-            <span class="text-white">Powered by:</span>
+            <span class="text-dark">Powered by:</span>
           </h5>
         </div>
         <div class="col-4 d-flex justify-content-center align-items-centerc text-centerx">
-          <img src="//interlinkiq.com/assets/img/interlinkiq%20v3.png" style="height: 70px; filter: brightness(0) invert(1);">
+          <img src="//interlinkiq.com/assets/img/interlinkiq%20v3.png" style="height: 70px;">
         </div>
       </div>
     </div>

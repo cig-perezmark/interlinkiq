@@ -622,7 +622,7 @@
             } else if ($_COOKIE['client'] == 8)  {
                 unset($_COOKIE['client']);
                 setcookie('client', '', time() - 3600, '/'); // empty value and old timestamp
-                echo '<script>window.location.href = "SafeSupplement360"</script>';
+                echo '<script>window.location.href = "SafeSupplements360"</script>';
             } else {
     			unset($_COOKIE['client']);
     	    	setcookie('client', '', time() - 3600, '/'); // empty value and old timestamp
@@ -901,7 +901,7 @@
                     5 => 'Viking Atlantic Sales Group, LLC',
                     6 => 'Swiss Food',
                     7 => 'Cannabis360',
-                    8 => 'SafeSupplement360'
+                    8 => 'SafeSupplements360'
                 );
 
                 $sender_name = 'Interlink IQ';
@@ -2158,7 +2158,7 @@
             } else if ($client == 7) {
                 $client_url = 'Cannabis360';
             } else if ($client == 8) {
-                $client_url = 'SafeSupplement360';
+                $client_url = 'SafeSupplements360';
             }
         }
 
@@ -2795,7 +2795,7 @@
                 } else if ($client == 7) {
                     $client_url = 'Cannabis360';
                 } else if ($client == 8) {
-                    $client_url = 'SafeSupplement360';
+                    $client_url = 'SafeSupplements360';
                 }
 
                 $selectEnterprise = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE users_entities = $user_id" );
@@ -2902,17 +2902,17 @@
 
                         Cannabis Team';
                     } elseif ($_COOKIE['client'] == 8) {
-                        $subject = 'Welcome to SafeSupplement360!';
+                        $subject = 'Welcome to SafeSupplements360!';
                         $body = 'Hi '. $data_first_name .',<br><br>
 
                         Your employer, '.$data_company.',<br><br>
 
-                        invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">SafeSupplement360</a> to connect with your assigned duties, work, and tasks. 
+                        invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">SafeSupplements360</a> to connect with your assigned duties, work, and tasks. 
                         If you experience difficulties opening the website, kindly use this link instead <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">'. $base_url . $client_url .'?r=1&i='. $last_id .'</a><br><br>
 
                         Should you need assistance, kindly email <a href="mailto:SafeSupplements360@gmail.com" target="_blank">SafeSupplements360@gmail.com</a><br><br>
 
-                        SafeSupplement360 Team';
+                        SafeSupplements360 Team';
                     } else {
 						$subject = 'You are invited!';
 						$body = 'Hi '. $data_first_name .',<br><br>
@@ -3015,7 +3015,7 @@
                     } else if ($client == 7) {
                         $client_url = 'Cannabis360';
                     } else if ($client == 8) {
-                        $client_url = 'SafeSupplement360';
+                        $client_url = 'SafeSupplements360';
                     }
 
 					$position = array();
@@ -3137,17 +3137,17 @@
 
                             Cannabis360 Team';
                         } else if ($_COOKIE['client'] == 8) {
-                            $subject = 'Welcome to SafeSupplement360!';
+                            $subject = 'Welcome to SafeSupplements360!';
                             $body = 'Hi '. $data_first_name .',<br><br>
 
                             Your employer, '.$data_company.',<br><br>
 
-                            invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">SafeSupplement360</a> to connect with your assigned duties, work, and tasks. 
+                            invites you to join <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">SafeSupplements360</a> to connect with your assigned duties, work, and tasks. 
                             If you experience difficulties opening the website, kindly use this link instead <a href="'. $base_url . $client_url .'?r=1&i='. $last_id .'" target="_blank">'. $base_url . $client_url .'?r=1&i='. $last_id .'</a><br><br>
 
                             Should you need assistance, kindly email <a href="mailto:SafeSupplements360@gmail.com" target="_blank">SafeSupplements360@gmail.com</a><br><br>
 
-                            SafeSupplement360 Team';
+                            SafeSupplements360 Team';
                         } else {
 							$subject = 'You are invited!';
 							$body = 'Hi '. $data_first_name .',<br><br>
@@ -3436,8 +3436,8 @@
                     $body .= 'Cannabis360';
                 } else if ($_COOKIE['client'] == 8) {
                     $from = 'SafeSupplements360@gmail.com';
-                    $name = 'SafeSupplement360';
-                    $body .= 'SafeSupplement360';
+                    $name = 'SafeSupplements360';
+                    $body .= 'SafeSupplements360';
                 } else {
                     $from = 'services@interlinkiq.com';
                     $name = 'InterlinkIQ';
@@ -16677,12 +16677,12 @@
 
                             Cannabis360';
                         } else if ($_COOKIE['client'] == 8) {
-                            $subject = 'Welcome to SafeSupplement360!';
-                            $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'SafeSupplement360" target="_blank">SafeSupplement360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'SafeSupplement360" target="_blank">https://interlinkiq.com/SafeSupplement360</a>.<br><br>
+                            $subject = 'Welcome to SafeSupplements360!';
+                            $body = 'Food Safety 360, invites you to join <a href="'.$base_url.'SafeSupplements360" target="_blank">SafeSupplements360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'SafeSupplements360" target="_blank">https://interlinkiq.com/SafeSupplements360</a>.<br><br>
 
                             Should you need assistance, kindly email <a href="mailto:SafeSupplements360@gmail.comm" target="_blank">SafeSupplements360@gmail.com<br><br>
 
-                            SafeSupplement360';
+                            SafeSupplements360';
                         } else {
     		    			$subject = 'You are invited!';
     		    			$body = 'Hi '.$user.',<br><br>
@@ -16831,14 +16831,14 @@
                                 
                                             Cannabis360';
                                         } else if ($_COOKIE['client'] == 8) {
-                                            $subject = 'Welcome to SafeSupplement360!';
+                                            $subject = 'Welcome to SafeSupplements360!';
                                             $body = 'Hi '.$user.',<br><br>
                                 
-                                            Your supplier SafeSupplement360, invites you to <a href="'.$base_url.'SafeSupplement360" target="_blank">SafeSupplement360</a> to connect and manage your Food Safety operation(s).<br><br>
+                                            Your supplier SafeSupplements360, invites you to <a href="'.$base_url.'SafeSupplements360" target="_blank">SafeSupplements360</a> to connect and manage your Food Safety operation(s).<br><br>
 
                                             Should you need assistance, kindly email <a href="mailto:SafeSupplements360@gmail.com">SafeSupplements360@gmail.com</a><br><br>
                                 
-                                            SafeSupplement360';
+                                            SafeSupplements360';
                                         } else {
     		                    			$body = 'Hi '.$user.',<br><br>
     		                    
@@ -19239,7 +19239,7 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label class="control-label">Supplier/Vendor Name</label>
+                                <label class="control-label">Vendor Name</label>
                                 <input class="form-control '; echo $page == 2 ? 'hide':''; echo '" type="text" name="supplier_name" value="'.$row["name"].'" required />';
 
                                 if ($page == 2) { echo '<input class="form-control" type="text" value="'.$enterprise_name.'" readonly disabled />'; }
@@ -22632,12 +22632,12 @@
 
                                 Cannabis360 Team';
                             } else if ($_COOKIE['client'] == 8) {
-                                $subject = 'Welcome to SafeSupplement360!';
-                                $body = 'SafeSupplement360, invites you to join <a href="'.$base_url.'SafeSupplement360" target="_blank">SafeSupplement360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'SafeSupplement360" target="_blank">https://interlinkiq.com/SafeSupplement360</a>.<br><br>
+                                $subject = 'Welcome to SafeSupplements360!';
+                                $body = 'SafeSupplements360, invites you to join <a href="'.$base_url.'SafeSupplements360" target="_blank">SafeSupplements360</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'SafeSupplements360" target="_blank">https://interlinkiq.com/SafeSupplements360</a>.<br><br>
 
                                 Should you need assistance, kindly email <a href="mailto:SafeSupplements360@gmail.com" target="_blank">SafeSupplements360@gmail.com</a>.<br><br>
 
-                                SafeSupplement360 Team';
+                                SafeSupplements360 Team';
                             } else {
                                 $subject = $data_company.' Customer Invitation via InterlinkIQ.com';
                                 $body = 'Hi '.$user.',<br><br>
@@ -22773,12 +22773,12 @@
 
                                                 Cannabis360 Team';
                                             } else if ($_COOKIE['client'] == 8) {
-                                                $subject = 'Welcome to SafeSupplement360!';
-                                                $body = 'Food Safety, invites you to join <a href="'.$base_url.'SafeSupplement360" target="_blank">Food Safe</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'SafeSupplement360" target="_blank">https://interlinkiq.com/SafeSupplement360</a>.<br><br>
+                                                $subject = 'Welcome to SafeSupplements360!';
+                                                $body = 'Food Safety, invites you to join <a href="'.$base_url.'SafeSupplements360" target="_blank">Food Safe</a> to connect and share documents. If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.'SafeSupplements360" target="_blank">https://interlinkiq.com/SafeSupplements360</a>.<br><br>
 
                                                 Should you need assistance, kindly email <a href="mailto:SafeSupplements360@gmail.com" target="_blank">SafeSupplements360@gmail.com</a>.<br><br>
 
-                                                SafeSupplement360 Team';
+                                                SafeSupplements360 Team';
                                             } else {
                                                 $subject = $data_company.' Customer Invitation via InterlinkIQ.com';
                                                 $body = 'Hi '.$user.',<br><br>
@@ -36501,6 +36501,7 @@
 		$type = '';
         $url = '';
         $file_url = '';
+        $icon_url = '';
 
 		// $selectData = mysqli_query( $conn,"SELECT * FROM tbl_pages_demo_video WHERE user_id = $current_userID AND page = '".$site."'" );
 		$selectData = mysqli_query( $conn,"SELECT * FROM tbl_pages_demo_video WHERE page = '".$site."'" );
@@ -36525,6 +36526,18 @@
 
         		$file_url = $src.$url.rawurlencode($file_upload).$embed;
             }
+
+            $icon = $row["icon"];
+            if (!empty($icon)) {
+                $fileExtension = fileExtension($icon);
+                $src = $fileExtension['src'];
+                $embed = $fileExtension['embed'];
+                $type = $fileExtension['type'];
+                $file_extension = $fileExtension['file_extension'];
+                $url = $base_url.'uploads/instruction/';
+
+                $icon_url = $src.$url.rawurlencode($icon).$embed;
+            }
         }
 
 		echo '<input class="form-control" type="hidden" name="page" value="'. $site .'" />
@@ -36548,13 +36561,20 @@
             <label class="col-md-3 control-label">Select File</label>
             <div class="col-md-8">
                 <input class="form-control '; echo !empty($file_upload) ? 'hide':''; echo '" type="file" name="file" />
-                <p class="'; echo !empty($file_upload) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_url.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($file_upload) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_url.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload New</button></p>
             </div>
         </div>
 		<div class="form-group selInstruction '; echo $type_id == 0 ? 'hide':''; echo '" id="selURL">
             <label class="col-md-3 control-label">Enter URL</label>
             <div class="col-md-8">
                 <input class="form-control" type="text" name="url" value="'.$youtube_link.'" placeholder="https://" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label">Select Icon</label>
+            <div class="col-md-8">
+                <input class="form-control '; echo !empty($icon) ? 'hide':''; echo '" type="file" name="icon" />
+                <p class="'; echo !empty($icon) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$icon_url.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload New</button></p>
             </div>
         </div>';
 
@@ -36602,6 +36622,15 @@
 		} else if ($type_id == 1 OR $type_id == 2) {
 			mysqli_query( $conn,"UPDATE tbl_pages_demo_video SET youtube_link = '".$youtube_link."' WHERE id = '".$last_id."'" );
 		}
+
+        $fileValidation = fileValidation(1, 'icon', 'instruction/');
+        $icon = $fileValidation['files'];
+        $filesize = $fileValidation['size'];
+        $process = $fileValidation['valid'];
+
+        if ($process == true) {
+            mysqli_query( $conn,"UPDATE tbl_pages_demo_video SET icon = '".$icon."' WHERE id = '".$last_id."'" );
+        }
 
         if ($process == true) {
     		$output = array(
@@ -42803,8 +42832,8 @@
                                     $body .= '<br><br>Cannabis360';
                                 } else if ($_COOKIE['client'] == 8) {
                                     $from = 'SafeSupplements360@gmail.com';
-                                    $name = 'SafeSupplement360';
-                                    $body .= '<br><br>SafeSupplement360';
+                                    $name = 'SafeSupplements360';
+                                    $body .= '<br><br>SafeSupplements360';
                                 } else {
                                     $from = 'services@interlinkiq.com';
                                     $name = 'InterlinkIQ';
@@ -42868,8 +42897,8 @@
                             $body .= '<br><br>Cannabis360';
                         } else if ($_COOKIE['client'] == 8) {
                             $from = 'SafeSupplements360@gmail.com';
-                            $name = 'SafeSupplement360';
-                            $body .= '<br><br>SafeSupplement360';
+                            $name = 'SafeSupplements360';
+                            $body .= '<br><br>SafeSupplements360';
                         } else {
                             $from = 'services@interlinkiq.com';
                             $name = 'InterlinkIQ';
@@ -46002,8 +46031,8 @@
                                             $body .= '<br><br>Cannabis360';
                                         } else if ($_COOKIE['client'] == 8) {
                                             $from = 'SafeSupplements360@gmail.com';
-                                            $name = 'SafeSupplement360';
-                                            $body .= '<br><br>SafeSupplement360';
+                                            $name = 'SafeSupplements360';
+                                            $body .= '<br><br>SafeSupplements360';
                                         } else {
                                             $from = 'services@interlinkiq.com';
                                             $name = 'InterlinkIQ';
@@ -53231,7 +53260,7 @@
                         else if ($_COOKIE['client'] == 4) { $body .= '<br><br>Exim360 Team'; }
                         else if ($_COOKIE['client'] == 5) { $body .= '<br><br>Vikings Team'; }
                         else if ($_COOKIE['client'] == 7) { $body .= '<br><br>Cannabis360 Team'; }
-                        else if ($_COOKIE['client'] == 8) { $body .= '<br><br>SafeSupplement360 Team'; }
+                        else if ($_COOKIE['client'] == 8) { $body .= '<br><br>SafeSupplements360 Team'; }
                         
 		    			php_mailer_1($to, $user, $subject, $body, $from, $sender);
 					}
@@ -53701,8 +53730,8 @@
                 $body .= 'Cannabis360';
             } else if ($_COOKIE['client'] == 8) {
                 $from = 'SafeSupplements360@gmail.com';
-                $name = 'SafeSupplement360';
-                $body .= 'SafeSupplement360';
+                $name = 'SafeSupplements360';
+                $body .= 'SafeSupplements360';
             } else {
                 $from = 'services@interlinkiq.com';
                 $name = 'InterlinkIQ';
@@ -53964,8 +53993,8 @@
                             $body .= 'Cannabis360';
                         } else if ($_COOKIE['client'] == 8) {
                             $from = 'SafeSupplements360@gmail.com';
-                            $name = 'SafeSupplement360';
-                            $body .= 'SafeSupplement360';
+                            $name = 'SafeSupplements360';
+                            $body .= 'SafeSupplements360';
                         } else {
                             $from = 'services@interlinkiq.com';
                             $name = 'InterlinkIQ';
@@ -54315,8 +54344,8 @@
                             $body .= 'Cannabis360';
                         } else if ($_COOKIE['client'] == 8) {
                             $from = 'SafeSupplements360@gmail.com';
-                            $name = 'SafeSupplement360';
-                            $body .= 'SafeSupplement360';
+                            $name = 'SafeSupplements360';
+                            $body .= 'SafeSupplements360';
                         } else {
                             $from = 'services@interlinkiq.com';
                             $name = 'InterlinkIQ';
@@ -57365,8 +57394,8 @@
                                 $body .= 'Cannabis360';
                             } else if ($_COOKIE['client'] == 8) {
                                 $from = 'SafeSupplements360@gmail.com';
-                                $name = 'SafeSupplement360';
-                                $body .= 'SafeSupplement360';
+                                $name = 'SafeSupplements360';
+                                $body .= 'SafeSupplements360';
                             } else {
                                 $from = 'services@interlinkiq.com';
                                 $name = 'InterlinkIQ';
@@ -57559,8 +57588,8 @@
                             $body .= 'Cannabis360';
                         } else if ($_COOKIE['client'] == 8) {
                             $from = 'SafeSupplements360@gmail.com';
-                            $name = 'SafeSupplement360';
-                            $body .= 'SafeSupplement360';
+                            $name = 'SafeSupplements360';
+                            $body .= 'SafeSupplements360';
                         } else {
                             $from = 'services@interlinkiq.com';
                             $name = 'InterlinkIQ';

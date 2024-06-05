@@ -4,7 +4,14 @@ include_once __DIR__ ."/../../alt-setup/setup.php";
 date_default_timezone_set('America/Chicago');
 
 function getSuppliersByUser($conn, $userId) {
-    return $conn->select("tbl_supplier", "ID as id, name", [ 'user_id'=> $userId, 'status'=>1, 'page'=>1])->fetchAll();
+    $y = 1;
+    return $conn->execute("SELECT ID as id, name, address FROM tbl_supplier WHERE user_id = ? AND status = 1 AND page = 1", $userId)
+        ->fetchAll(function($d) {
+            $d['address'] = formatSupplierAddress($d['address']);
+            return $d;
+        });
+    return $conn->select("tbl_supplier", "ID as id, name, address", [ 'user_id'=> $userId, 'status'=> $y, 'page'=>$y])
+        ->fetchAll();
 }
 
 function getImportersByUser($conn, $userId) {

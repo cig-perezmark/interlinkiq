@@ -102,8 +102,7 @@ function getSupplierList($conn, $userId) {
 function getEvaluationData($conn, $evalId, $recordId = null) {
     $cond = "eval.id = ?" . (!empty($recordId) ? " AND rec.id = ?" : "");
     $params = [ $evalId];
-    !empty($recordId) && $params[] = $recordId;
-     
+    !empty($recordId) && $params[] = $recordId;     
     $eval = $conn->execute("SELECT 
                 eval.id,
                 eval.evaluation,

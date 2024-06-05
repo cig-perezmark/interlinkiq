@@ -100,6 +100,42 @@ hr {
     align-items: center;
     justify-content: center;
 }
+
+label:has(.help-icon-group) {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.help-icon-group {
+    display: inline-block;
+    position: relative;
+}
+
+.help-icon-group p {
+    display: none;
+    position: absolute;
+    /* transform: translateY(100%); */
+    top: 100%;
+    left: 0;
+    z-index: 9;
+    min-width: 24rem;
+    margin: 0;
+    font-size: .85em;
+    padding: .5rem;
+    border: 1px solid grey;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.help-icon-group mark {
+    display: block;
+    margin-top: 1rem;
+}
+
+.help-icon-group:has(i:hover) p {
+    display: block;
+}
 </style>
 <link rel="stylesheet" href="modules/Init.style.css">
 

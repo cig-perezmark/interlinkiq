@@ -109,32 +109,27 @@ label:has(.help-icon-group) {
 
 .help-icon-group {
     display: inline-block;
-    position: relative;
 }
 
-.help-icon-group p {
-    display: none;
-    position: absolute;
-    /* transform: translateY(100%); */
-    top: 100%;
-    left: 0;
-    z-index: 9;
-    min-width: 24rem;
-    margin: 0;
-    font-size: .85em;
-    padding: .5rem;
+.tooltip:has(.form-hint) {
+    opacity: 1;
+}
+
+.tooltip-inner:has(.form-hint) {
+    padding: 0 !important;
+}
+
+.form-hint {
+    padding: .75rem;
+    background-color: #fafafa;
+    color: #000;
+    text-align: left;
     border: 1px solid grey;
-    border-radius: 5px;
-    background-color: #fff;
 }
 
-.help-icon-group mark {
+.form-hint mark {
     display: block;
-    margin-top: 1rem;
-}
-
-.help-icon-group:has(i:hover) p {
-    display: block;
+    margin: .5rem;
 }
 </style>
 <link rel="stylesheet" href="modules/Init.style.css">

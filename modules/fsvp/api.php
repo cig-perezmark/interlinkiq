@@ -667,7 +667,7 @@ if(isset($_GET['newSupplierEvaluation'])) {
 if(!empty($_GET['viewEvaluationData'])) {
     $id = $_GET['viewEvaluationData'];
     send_response([
-        'data' => getEvaluationData($conn, $id),
+        'data' => getEvaluationData($conn, $id, $recordId),
     ]);
 }
 

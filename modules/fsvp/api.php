@@ -6,6 +6,10 @@ include_once __DIR__ ."/utils.php";
 date_default_timezone_set('America/Chicago');
 $currentTimestamp = date('Y-m-d H:i:s');
 
+if(empty($user_id)) {
+    exit('Invalid session.');
+}
+
 // note: no filter for foreign suppliers yet
 // fetching supplier for dropdown
 if(isset($_GET["getProductsBySupplier"]) && !empty($_GET["getProductsBySupplier"])) {
@@ -700,6 +704,42 @@ if(isset($_GET['supplierReEvaluation']) && !empty($_POST['prev_record_id'])) {
         $conn->rollback();
         send_response([
             'message' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+// add new cbp record
+if(isset($_GET['newCBPRecord'])) {
+    try {
+        $importerId = $_POST['importer'];
+
+        if(empty($importerId)) {
+            throw new Exception('Importer is required.');
+        }
+
+        $conn->begin_transaction();
+
+        $values = [
+            'user_id'               => $user_id,
+            'portal_user'           => $portal_user,
+            'importer_id'           => $importerId,
+            'foods_info'            => $_POST['foods_info'],
+            'supplier_info'         => $_POST['supplier_info'],
+            'determining_importer'  => $_POST['determining_importer'],
+            'designated_importer'   => $_POST['designated_importer'],
+            'cbp_entry_filer'       => $_POST['cbp_entry_filer'],
+        ];
+
+        $conn->insert("tbl_fsvp_cbp_records", $values);
+
+        $conn->commit();
+        send_response([
+            'message' => 'Successfully saved.',
+        ]);
+    } catch(Throwable $e) {
+        $conn->rollback();
+        send_response([
+            'error' => $e->getMessage(),
         ], 500);
     }
 }

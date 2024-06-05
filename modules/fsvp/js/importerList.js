@@ -79,6 +79,8 @@ $(function() {
             });
         }
     });
+    const CBPFormAlert = Init.createAlert($('#modalCBPFiling .modal-body'));
+
     populateFSVPQISelect();
     fetchImporterListTable(importersData, importerListTable);
     // events
@@ -136,8 +138,52 @@ $(function() {
     });
 
     $('#tableImporterList').on('click', '[data-opencbpfilingform]', function() {
+        $('#CBPFilingForm [name=importer]').val(this.dataset.opencbpfilingform || '');
         $('#modalCBPFiling').modal('show');
-    })
+    });
+
+    // cbp modal hide event
+    $('#modalCBPFiling').on('hidden.bs.modal', function() {
+        $('#CBPFilingForm [name=importer]').val('');
+    });
+
+    // submitting CBP forms
+    $('#CBPFilingForm').submit(function(e) {
+        e.preventDefault();
+
+        const form = e.target;
+        let url = baseUrl + 'newCBPRecord';
+
+        if(form.importer.value == '') {
+            CBPFormAlert.setContent('<strong>Error!</strong> Importer not found.').show();
+            return;
+        }
+
+        const data = new FormData(form);
+
+        // var l = Ladda.create(this.querySelector('[type=submit]'));
+        // l.start();
+
+        $.ajax({
+            url,
+            type: "POST",
+            contentType: false,
+            processData: false,
+            data,
+            success: function({data, message}) {
+                // 
+                $('#modalCBPFiling').modal('hide');
+                CBPFormAlert.isShowing() && CBPFormAlert.hide();
+                bootstrapGrowl(message || 'Saved!');
+            },
+            error: function({responseJSON}) {
+                bootstrapGrowl(responseJSON.error || 'Error!', 'danger');
+            },
+            complete: function() {
+                // l.stop();
+            }
+        });
+    });
 });
 
 function populateFSVPQISelect() {

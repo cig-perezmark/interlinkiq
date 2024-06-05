@@ -139,7 +139,7 @@
 
 <div class="modal fade in" id="modalCBPFiling" role="dialog" aria-hidden="true" tabindex="1">
     <div class="modal-dialog modal-lg">
-        <form class="modal-content" role="form">
+        <form class="modal-content" role="form" id="CBPFilingForm">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                 <h4 class="modal-title">FSVP CBP Filing Form</h4>
@@ -148,7 +148,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="">
+                            <label for="cfFoodInfo">
                                 Imported Food(s)/Food Product(s) Information
                                 <div class="help-icon-group tooltips" data-html="true" data-placement="bottom" data-original-title="<div class='form-hint'>
                                     What food(s)/ food product(s) Import (receive)?
@@ -162,12 +162,13 @@
                                     <i class="fa fa-question-circle"></i>
                                 </div>
                             </label>
-                            <textarea name="" id="" class="form-control" placeholder="Imported Food(s)/Food Product(s) Information"></textarea>
+                            <textarea name="foods_info" id="cfFoodInfo" class="form-control" placeholder="Imported Food(s)/Food Product(s) Information"></textarea>
+                            <input type="hidden" name="importer">
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="">
+                            <label for="cfSupplierInfo">
                                 Supplier Information
                                 <div class="help-icon-group tooltips" data-html="true" data-placement="bottom" data-original-title="<div class='form-hint'>
                                     From whom do purchase the food (i.e., Supplier's name, address, etc.)?
@@ -179,12 +180,12 @@
                                     <i class="fa fa-question-circle"></i>
                                 </div>
                             </label>
-                            <textarea name="" id="" class="form-control" placeholder="Enter supplier information"></textarea>
+                            <textarea name="supplier_info" id="cfSupplierInfo" class="form-control" placeholder="Enter supplier information"></textarea>
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="">
+                            <label for="cfDetImporter">
                                 Determining FSVP Importer
                                 <div class="help-icon-group tooltips" data-html="true" data-placement="bottom" data-original-title="<div class='form-hint'>
                                     Describe the current buying arrangement(s) (i.e., name all parties involved in obtaining the food product, including foreign Supplier, if known)
@@ -201,12 +202,12 @@
                                     <i class="fa fa-question-circle"></i>
                                 </div>
                             </label>
-                            <textarea name="" id="" class="form-control" placeholder="Enter determining FSVP importer"></textarea>
+                            <textarea name="determining_importer" id="cfDetImporter" class="form-control" placeholder="Enter determining FSVP importer"></textarea>
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="">
+                            <label for="cfDesImporter">
                                 Designated FSVP Importer
                                 <div class="help-icon-group tooltips" data-html="true" data-placement="bottom" data-original-title="<div class='form-hint'>
                                     If more than one person/entity fits the definition of the importer, negotiate with others to determine who will carry out FSVP requirements.
@@ -218,12 +219,12 @@
                                     <i class="fa fa-question-circle"></i>
                                 </div>
                             </label>
-                            <textarea name="" id="" class="form-control" placeholder="Enter designated FSVP importer"></textarea>
+                            <textarea name="designated_importer" id="cfDesImporter" class="form-control" placeholder="Enter designated FSVP importer"></textarea>
                         </div>
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="">
+                            <label for="cfEntryFiler">
                                 CBP Entry Filer
                                 <div class="help-icon-group tooltips" data-html="true" data-placement="bottom" data-original-title="<div class='form-hint'>
                                     Who fills out the CBP entry filing for this food/food product (i.e., name, address)?
@@ -234,14 +235,14 @@
                                     <i class="fa fa-question-circle"></i>
                                 </div>
                             </label>
-                            <textarea name="" id="" class="form-control" placeholder="Enter CBP entry filer"></textarea>
+                            <textarea name="cbp_entry_filer" id="cfEntryFiler" class="form-control" placeholder="Enter CBP entry filer"></textarea>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                <button type="button" class="btn green">Submit </button>
+                <button type="submit" class="btn green">Submit </button>
             </div>
         </form>
     </div>

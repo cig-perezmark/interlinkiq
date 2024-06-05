@@ -2094,8 +2094,9 @@ License: You must have a valid license purchased only from themeforest(the above
                         </li>
                     <?php endif; ?>
 
+                    <!--if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('job-ticket', $current_userEmployerID, $current_userEmployeeID); }-->
                     <?php if($current_userEmployeeID == 0 OR $current_userID == 95 OR $current_userID == 42 OR $current_userID == 88) { ?>
-                        <li class="nav-item <?php echo $site === "job-ticket" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('job-ticket', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                        <li class="nav-item <?php echo $site === "job-ticket" ? "active " : ""; ?>">
                             <a href="job-ticket" class="nav-link">
                                 <i class="icon-earphones-alt"></i>
                                 <span class="title">Job Ticket Tracker</span>

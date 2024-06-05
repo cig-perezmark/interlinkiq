@@ -26,7 +26,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.122.0">
-    <title>Safe Cannabis 360 - Login</title>
+    <title>Cannabis 360 - Login</title>
 
     <link rel="canonical" href="//getbootstrap.com/docs/5.3/examples/sign-in/">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@docsearch/css@3">
@@ -202,7 +202,7 @@
     <div class="container text-center">
       <div class="row justify-content-center">
         <div class="col-lg-6">
-          <img class="w-100 sign-logo" src="uploads/login/icon/SafeCannabis 360.png" />
+          <img class="w-100 sign-logo" src="uploads/login/icon/Cannabis 360.png" />
         </div>
       </div>
     </div>
@@ -327,7 +327,7 @@
 
         var formData = new FormData(this);
         formData.append('btnSignIn',true);
-        formData.append('client',3);
+        formData.append('client',7);
 
         // var l = Ladda.create(document.querySelector('#btnSave_Attached'));
         // l.start();
@@ -368,7 +368,7 @@
           
         var formData = new FormData(this);
         formData.append('btn_SignUp',true);
-        formData.append('client',3);
+        formData.append('client',7);
 
         $.ajax({
           url: "function.php",

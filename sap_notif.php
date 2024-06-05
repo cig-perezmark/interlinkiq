@@ -1296,7 +1296,7 @@
     // if ($current_minute == 0 AND $current_hour == 0 AND $current_weekday == 1 OR $current_weekday == 5) {
     if ($current_minute == 0 AND $current_hour == 0) {
         if ($current_weekday == 1 OR $current_weekday == 5) {
-            $selectCRM = mysqli_query( $conn,"SELECT * FROM tbl_Customer_Relationship_Task WHERE Task_Status != 3" );
+            $selectCRM = mysqli_query( $conn,"SELECT * FROM tbl_Customer_Relationship_Task WHERE Task_Status != 3");
             $mail_sent = 0;
             $from_email = 'services@interlinkiq.com';
             $from_user = 'Interlink IQ';
@@ -1323,7 +1323,7 @@
 
                     Kindly update the status once done<br><br>
 
-                    <a href="'. $base_url .'customer_relationship_View.php?view_id='.$crm_ids.'#tasks" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+                    <a href="'. $base_url .'customer_details.php?view_id='.$crm_ids.'#tasks" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
 
                     // if ($mail_sent > 0) {
                     //     php_mailer_2($Assigned_to, '', $subject, $body, $from_email, $from_user);

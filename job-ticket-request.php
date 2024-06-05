@@ -11,6 +11,32 @@
 
     include_once ('header.php'); 
 ?>
+<style type="text/css">
+    /* DataTable*/
+    .dt-buttons {
+        margin: unset !important;
+        float: left !important;
+        margin-left: 15px !important;
+    }
+    div.dt-button-collection .dt-button.active:after {
+        position: absolute;
+        top: 50%;
+        margin-top: -10px;
+        right: 1em;
+        display: inline-block;
+        content: "✓";
+        color: inherit;
+    }
+    .table {
+        width: 100% !important;
+    }
+    .table-scrollable .dataTable td>.btn-group, .table-scrollable .dataTable th>.btn-group {
+        position: relative;
+    }
+    .table thead tr th {
+        vertical-align: middle;
+    }
+</style>
 
                     <div class="row">
                         <div class="col-md-12">
@@ -32,7 +58,7 @@
                                 <div class="portlet-body">
                                     <div class="tab-content">
                                         <div class="tab-pane active" id="tab_actions_assigned">
-                                            <div class="table-scrollable">
+                                            <div class="table-scrollablex">
                                                 <table class="table table-bordered table-hover" id="tableDataServicesAssigned">
                                                     <thead>
                                                         <tr>
@@ -49,8 +75,10 @@
                                                     <tbody>
                                                         <?php
                                                             // $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0 AND user_id = $current_userID AND (assigned_to_id IS NULL OR assigned_to_id = '')" );
-                                                            if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 17 OR $current_userID == 185) { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0" ); }
-                                                            else { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0 AND user_id = $current_userID" ); }
+                                                            // if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 17 OR $current_userID == 185) { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0" ); }
+                                                            // else { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0 AND user_id = $current_userID" ); }
+                                                            
+                                                            $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0 AND user_id = $current_userID" );
                                                             
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 while($row = mysqli_fetch_array($result)) {
@@ -117,7 +145,7 @@
                                             </div>
                                         </div>
                                         <div class="tab-pane" id="tab_actions_completed">
-                                            <div class="table-scrollable">
+                                            <div class="table-scrollablex">
                                                 <table class="table table-bordered table-hover" id="tableDataServicesComplete">
                                                     <thead>
                                                         <tr>
@@ -131,8 +159,10 @@
                                                     </thead>
                                                     <tbody>
                                                         <?php
-                                                            if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 17 OR $current_userID == 185) { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 1 AND deleted = 0" ); }
-                                                            else { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 1 AND deleted = 0 AND user_id = $current_userID" ); }
+                                                            // if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 17 OR $current_userID == 185) { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 1 AND deleted = 0" ); }
+                                                            // else { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 1 AND deleted = 0 AND user_id = $current_userID" ); }
+                                                            
+                                                            $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 1 AND deleted = 0 AND user_id = $current_userID" );
                                                             
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 while($row = mysqli_fetch_array($result)) {
@@ -210,6 +240,40 @@
         <?php include_once ('footer.php'); ?>
 
         <script type="text/javascript">
+            $(document).ready(function(){
+                $('#tableDataServicesAssigned, #tableDataServicesComplete').DataTable({
+                    dom: 'lBfrtip',
+                    lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+                    buttons: [
+                        {
+                            extend: 'print',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdf',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'csv',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'excel',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        'colvis'
+                    ]
+                });
+            });
+            
             function btnDone(id) {
                 swal({
                     title: "Are you sure?",

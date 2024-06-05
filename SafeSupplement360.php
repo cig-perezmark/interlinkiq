@@ -26,7 +26,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.122.0">
-    <title>Safe Cannabis 360 - Login</title>
+    <title>Safe Supplement 360 - Login</title>
 
     <link rel="canonical" href="//getbootstrap.com/docs/5.3/examples/sign-in/">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@docsearch/css@3">
@@ -122,8 +122,14 @@
       }
 
 
+      .login-container {
+        background: url('uploads/login/bg/background web design 2.png');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
       .sign-in-container {
-        background: url('uploads/login/bg/Cannabis backgroud.jpg');
+        background: url('uploads/login/bg/SafeSupplement.png');
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
@@ -136,7 +142,7 @@
       }
       .sign-logo {
         max-height: 200px;
-        filter: brightness(0) invert(1);
+        filter: brightness(0);
         margin-bottom: -38px;
       }
       .error {
@@ -149,8 +155,8 @@
     <!-- Custom styles for this template -->
     <link href="custom.css" rel="stylesheet">
   </head>
-  <body class="d-flex flex-column align-items-center row-direction-column py-4x bg-body-tertiaryx bg-dark">
-      
+  <body class="d-flex flex-column align-items-center row-direction-column py-4x bg-body-tertiaryx bg-dark login-container">
+
     <?php
       $confirm = false;
       $predefine = false;
@@ -180,10 +186,10 @@
           $data_employee_id = $rowUser['employee_id'];
 
           if ( !empty($data_employee_id) ) {
-            mysqli_query( $conn,"UPDATE tbl_hr_employee set status='1' WHERE ID='". $data_employee_id ."'" );
+            mysqli_query( $conn,"UPDATE tbl_hr_employee set status = 1 WHERE ID = $data_employee_id" );
           }
 
-          mysqli_query( $conn,"UPDATE tbl_user set is_verified='1' WHERE ID='". $ID ."'" );
+          mysqli_query( $conn,"UPDATE tbl_user set is_verified = 1 WHERE ID = $ID" );
           $confirm = true;
         }
       }
@@ -202,7 +208,7 @@
     <div class="container text-center">
       <div class="row justify-content-center">
         <div class="col-lg-6">
-          <img class="w-100 sign-logo" src="uploads/login/icon/SafeCannabis 360.png" />
+          <img class="w-100 sign-logo" src="uploads/login/icon/SafeSupplements 360.png" />
         </div>
       </div>
     </div>
@@ -211,9 +217,9 @@
       <div class="row justify-content-center">
         <div class="col-lg-4 p-5 sign-in-container d-flex align-items-center">
           <form method="POST" class="form formSignIn w-100">
-            <h1 class="text-white">Welcome Back</h1>
+            <h1>Welcome Back</h1>
 
-            <h3 class="text-white">Login</h3>
+            <h3>Login</h3>
             <div class="alert_msg text-white"></div>
 
             <div class="input-group mb-3">
@@ -239,14 +245,14 @@
               </div>
             </div>
 
-            <button class="btn btn-primary w-100 py-2" type="submit" style="background: #5AD15B; border-color: #5AD15B;">
+            <button class="btn btn-primary w-100 py-2" type="submit" style="background: #F3AD29; border-color: #F3AD29;">
               Login
               <svg xmlns="//www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
                 <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
               </svg>
             </button>
-            <a href="#" class="text-white">Forgot Password?</a>
+            <a href="#" class="text-dark">Forgot Password?</a>
           </form>
         </div>
         <div class="col-lg-4 p-5 sign-up-container">
@@ -281,7 +287,7 @@
               <label for="confirm_password">Confirm Password</label>
             </div>
 
-            <button class="btn btn-primary w-100 py-2" type="submit" style="background: #4DB850; border-color: #4DB850;">SIGN UP</button>
+            <button class="btn btn-primary w-100 py-2" type="submit" style="background: #F2BD3D; border-color: #F2BD3D;">SIGN UP</button>
           </form>
         </div>
       </div>
@@ -294,11 +300,11 @@
             <svg xmlns="//www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightning-fill" viewBox="0 0 16 16">
               <path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641z"></path>
             </svg>
-            <span class="text-white">Powered by:</span>
+            <span class="text-dark">Powered by:</span>
           </h5>
         </div>
         <div class="col-4 d-flex justify-content-center align-items-centerc text-centerx">
-          <img src="//interlinkiq.com/assets/img/interlinkiq%20v3.png" style="height: 70px; filter: brightness(0) invert(1);">
+          <img src="//interlinkiq.com/assets/img/interlinkiq%20v3.png" style="height: 70px;">
         </div>
       </div>
     </div>
@@ -327,7 +333,7 @@
 
         var formData = new FormData(this);
         formData.append('btnSignIn',true);
-        formData.append('client',3);
+        formData.append('client',8);
 
         // var l = Ladda.create(document.querySelector('#btnSave_Attached'));
         // l.start();
@@ -368,7 +374,7 @@
           
         var formData = new FormData(this);
         formData.append('btn_SignUp',true);
-        formData.append('client',3);
+        formData.append('client',8);
 
         $.ajax({
           url: "function.php",

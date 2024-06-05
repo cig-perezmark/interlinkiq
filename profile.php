@@ -1184,7 +1184,7 @@
                                                                             }
                                                                         ?>
                                                                     </td>
-                                                                    <td><a href="customer_relationship_View.php?view_id=<?php echo $rowPending['crm_ids'] ?>#tasks">
+                                                                    <td><a href="customer_details.php?view_id=<?php echo $rowPending['crm_ids'] ?>#tasks">
                                                                         <?php
                                                                             $crm_ids = $rowPending['crm_ids'];
                                                                             $queryAccount = "SELECT * FROM tbl_Customer_Relationship  where crm_id = $crm_ids";
@@ -1222,7 +1222,7 @@
                                                                             }
                                                                         ?>
                                                                     </td>
-                                                                    <td><a href="customer_relationship_View.php?view_id=<?php echo $rowInprogress['crm_ids'] ?>#tasks">
+                                                                    <td><a href="customer_details.php?view_id=<?php echo $rowInprogress['crm_ids'] ?>#tasks">
                                                                         <?php
                                                                             $crm_ids = $rowInprogress['crm_ids'];
                                                                             $queryAccount = "SELECT * FROM tbl_Customer_Relationship  where crm_id = $crm_ids";
@@ -1260,7 +1260,7 @@
                                                                             }
                                                                         ?>
                                                                     </td>
-                                                                    <td> <a href="customer_relationship_View.php?view_id=<?php echo $rowDone['crm_ids'] ?>#tasks">
+                                                                    <td> <a href="customer_details.php?view_id=<?php echo $rowDone['crm_ids'] ?>#tasks">
                                                                         <?php
                                                                             $crm_ids = $rowDone['crm_ids'];
                                                                             $queryAccount = "SELECT * FROM tbl_Customer_Relationship  where crm_id = $crm_ids";

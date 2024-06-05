@@ -1909,7 +1909,7 @@
                             campaignsTable.DataTable().clear().draw();
                         }
                         campaigns.forEach(function(campaign) {
-                            let status = campaign.status == 1 ? "Suspended" : "Active";
+                            let status = campaign.status == 0 ? "Suspended" : "Active";
                             var email_frequency = parseInt(campaign.frequency);
                             var frequency = '';
 

@@ -4,7 +4,14 @@ include_once __DIR__ ."/../../alt-setup/setup.php";
 date_default_timezone_set('America/Chicago');
 
 function getSuppliersByUser($conn, $userId) {
-    return $conn->select("tbl_supplier", "ID as id, name", [ 'user_id'=> $userId, 'status'=>1, 'page'=>1])->fetchAll();
+    $y = 1;
+    return $conn->execute("SELECT ID as id, name, address FROM tbl_supplier WHERE user_id = ? AND status = 1 AND page = 1", $userId)
+        ->fetchAll(function($d) {
+            $d['address'] = formatSupplierAddress($d['address']);
+            return $d;
+        });
+    return $conn->select("tbl_supplier", "ID as id, name, address", [ 'user_id'=> $userId, 'status'=> $y, 'page'=>$y])
+        ->fetchAll();
 }
 
 function getImportersByUser($conn, $userId) {
@@ -122,9 +129,10 @@ function getEvaluationData($conn, $evalId) {
             -- tbl_suppliers (original)
             LEFT JOIN tbl_supplier supp ON supp.ID = fsupp.supplier_id
             LEFT JOIN tbl_supplier imp ON imp.ID = fimp.importer_id 
-                WHERE eval.id = ? AND eval.deleted_at IS NULL
-            ORDER BY rec.evaluation_date DESC, rec.created_at DESC LIMIT 1", 
-        $evalId)->fetchAssoc(function($d) {
+                WHERE $cond AND eval.deleted_at IS NULL
+            ORDER BY rec.pre_record_id DESC, rec.evaluation_date DESC, rec.created_at DESC LIMIT 1",
+            $params 
+        )->fetchAssoc(function($d) {
             $d['supplier_address'] = formatSupplierAddress($d['supplier_address']);
             $d['importer_address'] = formatSupplierAddress($d['importer_address']);
             return $d;
@@ -139,7 +147,7 @@ function getEvaluationData($conn, $evalId) {
     ($eval['suppliers_corrective_actions'] == 1) && ($evalFileCategoriesToFetch[] = 'suppliers-corrective-actions');
 
     if(count($evalFileCategoriesToFetch) > 0) {
-        $eval['files'] = fetchEvaluationFiles($conn, $evalId, $evalFileCategoriesToFetch);
+        $eval['files'] = fetchEvaluationFiles($conn, $eval['record_id'], $evalFileCategoriesToFetch);
     }
 
     $eval['food_imported'] = getSupplierFoodImported($conn, $eval['food_imported']);
@@ -166,7 +174,7 @@ function getEvaluationRecordID($conn, $supplierId) {
             LEFT JOIN tbl_supplier SUPP ON SUPP.ID = FSUPP.supplier_id
             LEFT JOIN tbl_supplier IMP ON IMP.ID = FIMP.importer_id
             WHERE EVAL.supplier_id = ? AND EVAL.deleted_at IS NULL 
-            ORDER BY REC.evaluation_date DESC, REC.created_at DESC LIMIT 1",
+            ORDER BY REC.pre_record_id DESC, REC.evaluation_date DESC, REC.created_at DESC LIMIT 1",
             $supplierId)->fetchAssoc();
 
         if(!count($data)) {

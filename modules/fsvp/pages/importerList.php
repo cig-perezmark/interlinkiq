@@ -42,7 +42,7 @@
                                 <?php
                                     $suppliers = getSuppliersByUser($conn, $switch_user_id);
                                     foreach($suppliers as $supplier) {
-                                        echo '<option value="'.$supplier['id'].'">'.$supplier['name'].'</option>';
+                                        echo '<option value="'.$supplier['id'].'" data-address="'.$supplier['address'].'">'.$supplier['name'].'</option>';
                                     }
                                 ?>
                             </select>
@@ -50,8 +50,8 @@
                     </div>
                     <div class="col-md-5">
                         <div class="form-group">
-                            <label class="text-muted">Address</label>
-                            <input type="text" class="form-control bg-white" placeholder="Select an importer to fill this field" readonly>
+                            <label class="text-muted">Address <i class="text-muted">(auto-filled)</i></label>
+                            <input type="text" class="form-control bg-white" id="if_ImporterAddress" placeholder="Select an importer to fill this field" readonly>
                         </div>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                                 <?php
                                     $suppliers = getSuppliersByUser($conn, $switch_user_id);
                                     foreach($suppliers as $supplier) {
-                                        echo '<option value="'.$supplier['id'].'">'.$supplier['name'].'</option>';
+                                        echo '<option value="'.$supplier['id'].'" data-address="'.$supplier['address'].'">'.$supplier['name'].'</option>';
                                     }
                                 ?>
                             </select>
@@ -86,8 +86,8 @@
                     </div>
                     <div class="col-md-5">
                         <div class="form-group">
-                            <label class="text-muted">Address</label>
-                            <input type="text" class="form-control bg-white" placeholder="Select a supplier to fill this field" readonly>
+                            <label class="text-muted">Address <i class="text-muted">(auto-filled)</i></label>
+                            <input type="text" class="form-control bg-white" id="if_SupplierAddress" placeholder="Select a supplier to fill this field" readonly>
                         </div>
                     </div>
                 </div>
@@ -101,8 +101,8 @@
                     </div>
                     <div class="col-md-5">
                         <div class="form-group">
-                            <label class="text-muted">Email</label>
-                            <input type="text" class="form-control bg-white" placeholder="Select a FSVPQI to fill this field" readonly>
+                            <label class="text-muted">Email <i class="text-muted">(auto-filled)</i></label>
+                            <input type="text" class="form-control bg-white" id="id_fsvpqiEmail" placeholder="Select a FSVPQI to fill this field" readonly>
                         </div>
                     </div>
                 </div>

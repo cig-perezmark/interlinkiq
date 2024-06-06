@@ -26,13 +26,48 @@
                         <?php endif; ?>
                         </span>- 
                             <?php
-                                $sql = "SELECT * FROM tbl_pages_demo_video WHERE page = '$site' AND user_id = '$switch_user_id' OR page = '$site' AND user_id = '163' OR page = '$site' AND user_id = '$current_userEmployerID' " ; 
-                                $result = mysqli_query ($conn, $sql);
-                                while ($row = mysqli_fetch_assoc($result)){?>   
-                                    <!--<a data-toggle="modal" data-target="#view_video" class="view_videos"  file_name="<?= $row['youtube_link'] ?>"><?= $row['file_title'] ?></a>-->
-                                    <a class="view_videos" data-src="<?= $row['youtube_link'] ?>" data-fancybox><i class="fa fa-youtube"></i><?= $row['file_title'] ?></a>
-                                    <?= "/" ?>
-                            <?php } ?>
+                                // $sql = "SELECT * FROM tbl_pages_demo_video WHERE page = '$site' AND user_id = '$switch_user_id' OR page = '$site' AND user_id = '163' OR page = '$site' AND user_id = '$current_userEmployerID' " ; 
+                                // $result = mysqli_query ($conn, $sql);
+                                // while ($row = mysqli_fetch_assoc($result)){
+                                //     // echo '<a data-toggle="modal" data-target="#view_video" class="view_videos"  file_name="'.$row['youtube_link'].'">'.$row['file_title'].'</a>';
+                                //     echo '<a class="view_videos" data-src='.$row['youtube_link'].'" data-fancybox><i class="fa fa-youtube"></i>'.$row['file_title'].'</a>';
+                                // }
+                                
+                                
+                                if($current_client == 0) {
+                                    // $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site' AND (user_id = $switch_user_id OR user_id = $current_userEmployerID OR user_id = 163)");
+                                    $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site'");
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                        $type_id = $row["type"];
+                                        $file_title = $row["file_title"];
+                                        $video_url = $row["youtube_link"];
+                                        
+                                        $file_upload = $row["file_upload"];
+                                        if (!empty($file_upload)) {
+                            	            $fileExtension = fileExtension($file_upload);
+                            				$src = $fileExtension['src'];
+                            				$embed = $fileExtension['embed'];
+                            				$type = $fileExtension['type'];
+                            				$file_extension = $fileExtension['file_extension'];
+                            	            $url = $base_url.'uploads/instruction/';
+                            
+                                    		$file_url = $src.$url.rawurlencode($file_upload).$embed;
+                                        }
+                                        
+                                        $icon = $row["icon"];
+                                        if (!empty($icon)) { echo '<img src="'.$src.$url.rawurlencode($icon).'" style="width: 32px; height: 32px; object-fit: contain; object-position: center;" />'; }
+                                        if ($type_id == 0) {
+                                            echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'">'.$file_title.'</a>';
+                                        } else {
+                                            echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox>'.$file_title.'</a>';
+                                        }
+                                    }
+                                    
+                                    if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163) {
+                                        echo ' <a data-toggle="modal" data-target="#modalInstruction" class="btn btn-circle btn-success btn-xs" onclick="btnInstruction()">Add New Instruction</a>';
+                                    }
+                                }
+                            ?>
                     </div>
                 </div>
                 <div class="portlet-body">

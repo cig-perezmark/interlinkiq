@@ -357,6 +357,12 @@
 
         <script type="text/javascript">
             $(document).ready(function(){
+                var i = '<?php echo isset($_GET['i']) ? $_GET['i']:''; ?>';
+                if (i != '') {
+                    $('#modalView').modal('show');
+                    btnView(i);
+                }
+                
                 $('#tableDataServicesAssigned, #tableDataServicesComplete').DataTable({
                     dom: 'lBfrtip',
                     lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],

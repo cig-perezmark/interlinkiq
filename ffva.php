@@ -131,109 +131,62 @@
                                         <span class="caption-subject font-dark bold uppercase">FFVA Module</span>
 
                                         <?php
-
                                             if($current_client == 0) {
-
                                                 // $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site' AND (user_id = $switch_user_id OR user_id = $current_userEmployerID OR user_id = 163)");
-
                                                 $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site'");
-
                                                 while ($row = mysqli_fetch_assoc($result)) {
-
-                                                    $type_id = $row["type"];
-
-                                                    $file_title = $row["file_title"];
-
+                                                    $type_id = $row["type"];                                    $file_actitle = $row["file_title"];
                                                     $video_url = $row["youtube_link"];
-
                                                     
-
                                                     $file_upload = $row["file_upload"];
-
                                                     if (!empty($file_upload)) {
-
                                         	            $fileExtension = fileExtension($file_upload);
-
                                         				$src = $fileExtension['src'];
-
                                         				$embed = $fileExtension['embed'];
-
                                         				$type = $fileExtension['type'];
-
                                         				$file_extension = $fileExtension['file_extension'];
-
                                         	            $url = $base_url.'uploads/instruction/';
-
                                         
-
                                                 		$file_url = $src.$url.rawurlencode($file_upload).$embed;
-
                                                     }
-
                                                     
-
+                                                    $icon = $row["icon"];
+                                                    if (!empty($icon)) { echo '<img src="'.$src.$url.rawurlencode($icon).'" style="width: 32px; height: 32px; object-fit: contain; object-position: center;" />'; }
                                                     if ($type_id == 0) {
-
-                                                		echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i> '.$file_title.'</a>';
-
-                                                	} else {
-
-                                                		echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><i class="fa fa-youtube"></i> '.$file_title.'</a>';
-
-                                                	}
-
-	                                            }
-
-                                                
-
-                                                if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163) {
-
-                                                    echo ' <a data-toggle="modal" data-target="#modalInstruction" class="btn btn-circle btn-success btn-xs" onclick="btnInstruction()">Add New Instruction</a>';
-
+                                                        echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'">'.$file_title.'</a>';
+                                                    } else {
+                                                        echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox>'.$file_title.'</a>';
+                                                    }
                                                 }
-
+                                                
+                                                if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163) {
+                                                    echo ' <a data-toggle="modal" data-target="#modalInstruction" class="btn btn-circle btn-success btn-xs" onclick="btnInstruction()">Add New Instruction</a>';
+                                                }
                                             }
-
                                         ?>
 
                                     </div>
 
                                     <ul class="nav nav-tabs">
-
                                         <li class="active">
-
                                             <a href="#tabSupplier" data-toggle="tab">Suppliers</a>
-
                                         </li>
-
                                         <li>
-
                                             <a href="#tabIngredients" data-toggle="tab">Ingredients</a>
-
                                         </li>
 
                                         <?php if($FreeAccess == false): ?>
-
                                             <li>
-
                                                 <a href="#tabReferences" data-toggle="tab">References</a>
-
                                             </li>
-
                                         <?php endif ?>
 
                                         <li>
-
                                             <a href="#tabKatva" data-toggle="tab">Key Activity Types</a>
-
                                         </li>
-
                                         <li>
-
                                             <a href="/e-forms/Forms/ffva/home?user_id=<?=$switch_user_id?>" target="_blank">Report</a>
-
                                         </li>
-
                                     </ul>
 
                                 </div>
@@ -245,841 +198,420 @@
                                         <div class="tab-pane active" id="tabSupplier">
 
                                             <?php
-
                                                 if ($current_userID == 481 || $current_userEmployeeID == 0 || isset($_COOKIE['switchAccount'])) { 
-
                                                     echo '<div class="btn-group btn-group-circle pull-right margin-bottom-15">
-
                                                         <a href="'; echo $FreeAccess == false ? '#modalNew':'#modalService';  echo '" class="btn btn-success" data-toggle="modal" onclick="btnNew(1)">Add New FFVA - Supplier</a>
-
                                                         <a href="'; echo $FreeAccess == false ? '#modalHistory':'#modalService';  echo '" class="btn btn-outline dark" data-toggle="modal" onclick="btnHistory(1)">History</a>
-
                                                         <a href="'; echo $FreeAccess == false ? '#modalArchived':'#modalService';  echo '" class="btn btn-danger" data-toggle="modal" onclick="btnArchived(1)">Archive</a>
-
                                                     </div>';
-
                                                 }
-
                                             ?>
 
                                             <?php if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163): ?>
-
                                                 <a data-toggle="modal" data-target="#modal_video">Add Video</a>
-
                                             <?php endif; ?>
 
                                             <table class="table table-bordered table-hover" id="tableData_1">
-
                                                 <thead>
-
                                                     <tr>
-
                                                         <th rowspan="2">ID#</th>
-
                                                         <th rowspan="2">Supplier Name</th>
 
-
-
                                                         <?php
-
                                                             if ($current_userEmployerID == 34 OR $current_userEmployerID == 1) {
-
                                                                 echo '<th rowspan="2" class="text-center">Int. Reviewer</th>
-
                                                                 <th rowspan="2" class="text-center">Int. Verifier</th>';
-
                                                             }
-
-
 
                                                             if ($FreeAccess != 1) {
-
                                                                 echo '<th rowspan="2" class="text-center">Attached File</th>';
-
                                                             }
-
                                                         ?>
 
-                                                        
-
                                                         <th rowspan="2" class="text-center">Vulnerability</th>
-
                                                         <th colspan="2" class="text-center">Validity</th>
-
                                                         <th rowspan="2" style="width: 90px;" class="text-center">Status</th>
-
                                                         <th rowspan="2" style="width: 210px;"></th>
-
                                                     </tr>
-
                                                     <tr>
-
                                                         <th class="text-center">From</th>
-
                                                         <th class="text-center">To</th>
-
                                                     </tr>
-
                                                 </thead>
-
                                                 <tbody>
 
                                                     <?php
-
                                                         // $resultSupplier = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE type = 1 AND updated = 0 AND user_id = $switch_user_id" );
-
                                                         $resultSupplier = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE archived = 0 AND deleted = 0 AND type = 1 AND updated = 0 AND user_id = $switch_user_id" );
-
                                                         if ( mysqli_num_rows($resultSupplier) > 0 ) {
 
                                                             while($rowSupplier = mysqli_fetch_array($resultSupplier)) {
-
                                                                 $supplier_user_id = $rowSupplier["user_id"];
-
                                                                 $supplier_reviewed_by = $rowSupplier["reviewed_by"];
-
                                                                 $supplier_approved_by = $rowSupplier["approved_by"];
-
-
-
                                                                 $int_review_assigned_name = '';
-
                                                                 $int_review_assigned = $rowSupplier["int_review_assigned"];
-
                                                                 $int_review_status = $rowSupplier["int_review_status"];
-
                                                                 $int_review_comment = $rowSupplier["int_review_comment"];
 
-
-
                                                                 if (!empty($int_review_assigned)) {
-
                                                                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $int_review_assigned" );
 
                                                                     if ( mysqli_num_rows($selectUser) > 0 ) {
-
                                                                         $rowUser = mysqli_fetch_array($selectUser);
-
                                                                         $int_review_assigned_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
-
                                                                     }
-
                                                                 }
 
-
-
-                                                                
-
                                                                 $int_verify_assigned_name = '';
-
                                                                 $int_verify_assigned = $rowSupplier["int_verify_assigned"];
-
                                                                 $int_verify_status = $rowSupplier["int_verify_status"];
-
                                                                 $int_verify_comment = $rowSupplier["int_verify_comment"];
 
-
-
                                                                 if (!empty($int_verify_assigned)) {
-
                                                                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $int_verify_assigned" );
 
                                                                     if ( mysqli_num_rows($selectUser) > 0 ) {
-
                                                                         $rowUser = mysqli_fetch_array($selectUser);
-
                                                                         $int_verify_assigned_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
-
                                                                     }
-
                                                                 }
 
-                                                                
-
                                                                 $supplier_id = $rowSupplier["ID"];
-
                                                                 $supplier_company = $rowSupplier["company"];
 
-
-
                                                                 $status = "Drafted";
-
                                                                 // if (empty($int_review_assigned)) { $status = 'Drafted'; }
-
                                                                 if (!empty($int_review_assigned) AND $int_review_status == 1) { $status = 'Reviewed'; }
-
                                                                 if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1) { $status = 'Approved by CIG'; }
-
                                                                 if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1 AND !empty($rowSupplier['approved_date'])) { $status = "Approved by Client"; }
 
-
-
                                                                 $data_last_modified = $rowSupplier['last_modified'];
-
                                                                 $data_last_modified = new DateTime($data_last_modified);
-
                                                                 $data_last_modified = $data_last_modified->format('M d, Y');
-
-                                                                                                        
-
                                                                 $due_date = date('Y-m-d', strtotime('+1 year', strtotime($data_last_modified)) );
-
                                                                 $due_date = new DateTime($due_date);
-
                                                                 $due_date = $due_date->format('M d, Y');
-
-
-
-
-
                                                                 $likelihood_rate = $rowSupplier["likelihood_rate"];
-
                                                                 $likelihood_rate_arr = explode(', ', $likelihood_rate);
-
-
-
                                                                 $consequence_rate = $rowSupplier["consequence_rate"];
-
                                                                 $consequence_rate_arr = explode(', ', $consequence_rate);
 
 
-
-
-
                                                                 // Likelihood
-
                                                                 $index = 0;
-
                                                                 $count = 0;
-
                                                                 $sum = 0;
-
                                                                 $total_likelihood = 0;
-
                                                                 $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood" );
-
+                                                                
                                                                 if ( mysqli_num_rows($selectLikelihood) > 0 ) {
-
                                                                     while($rowLikelihood = mysqli_fetch_array($selectLikelihood)) {
-
                                                                         $likelihood_type_arr = explode(', ', $rowLikelihood["type"]);
 
                                                                         if (in_array($rowSupplier["type"], $likelihood_type_arr)) {
-
                                                                             if (empty($likelihood_rate_arr[$index])) { $sum += 1; }
-
                                                                             else { $sum += $likelihood_rate_arr[$index]; }
-
-                                                                            
-
+                                                                           
                                                                             $index++;
-
                                                                             $count++;
-
                                                                         }
-
                                                                     }
-
                                                                 }
-
-
 
                                                                 if (!empty($rowSupplier["likelihood_element_other"])) {
-
                                                                     $likelihood_element_other = explode(' | ', $rowSupplier["likelihood_element_other"]);
-
                                                                     $likelihood_rate_other = explode(', ', $rowSupplier["likelihood_rate_other"]);
-
-
-
                                                                     $index = 0;
-
                                                                     foreach ($likelihood_element_other as $value) {
-
                                                                         $sum += $likelihood_rate_other[$index];
-
                                                                         $index++;
-
                                                                         $count++;
-
                                                                     }
-
                                                                 }
-
-
-
                                                                 $total_likelihood = $sum / $count;
 
-
-
-
-
                                                                 // Consequence
-
                                                                 $index = 0;
-
                                                                 $count = 0;
-
                                                                 $sum = 0;
-
                                                                 $total_consequence = 0;
-
                                                                 $selectConsequence = mysqli_query( $conn,"SELECT * FROM tbl_ffva_consequence" );
-
                                                                 if ( mysqli_num_rows($selectConsequence) > 0 ) {
-
                                                                     while($rowConsequence = mysqli_fetch_array($selectConsequence)) {
-
                                                                         $sum += $consequence_rate_arr[$index];
-
                                                                         $index++;
-
                                                                         $count++;
-
                                                                     }
-
                                                                 }
-
-
 
                                                                 if (!empty($rowSupplier["consequence_element_other"])) {
-
                                                                     $consequence_element_other = explode(' | ', $rowSupplier["consequence_element_other"]);
-
                                                                     $consequence_rate_other = explode(', ', $rowSupplier["consequence_rate_other"]);
-
-
-
                                                                     $index = 0;
-
                                                                     foreach ($consequence_element_other as $value) {
-
                                                                         $sum += $consequence_rate_other[$index];
-
                                                                         $index++;
-
                                                                         $count++;
-
                                                                     }
-
                                                                 }
-
-
-
                                                                 $total_consequence = $sum / $count;
 
-
-
-
-
                                                                 // Matrix
-
                                                                 $plot_x = 1;
-
                                                                 $plot_y = 1;
 
-
-
                                                                 if (round($total_likelihood) > 0) { $plot_x = round($total_likelihood); }
-
                                                                 if (round($total_consequence) > 0) { $plot_y = round($total_consequence); }
 
-
-
                                                                 if ($plot_x == 1 && $plot_y == 1) { $vulnerability = 1; }
-
                                                                 else if ($plot_x == 1 && $plot_y == 2) { $vulnerability = 1; }
-
                                                                 else if ($plot_x == 1 && $plot_y == 3) { $vulnerability = 1; }
-
                                                                 else if ($plot_x == 1 && $plot_y == 4) { $vulnerability = 2; }
-
                                                                 else if ($plot_x == 1 && $plot_y == 5) { $vulnerability = 2; }
-
                                                                 else if ($plot_x == 2 && $plot_y == 1) { $vulnerability = 1; }
-
                                                                 else if ($plot_x == 2 && $plot_y == 2) { $vulnerability = 1; }
-
                                                                 else if ($plot_x == 2 && $plot_y == 3) { $vulnerability = 2; }
-
                                                                 else if ($plot_x == 2 && $plot_y == 4) { $vulnerability = 2; }
-
                                                                 else if ($plot_x == 2 && $plot_y == 5) { $vulnerability = 3; }
-
                                                                 else if ($plot_x == 3 && $plot_y == 1) { $vulnerability = 2; }
-
                                                                 else if ($plot_x == 3 && $plot_y == 2) { $vulnerability = 2; }
-
                                                                 else if ($plot_x == 3 && $plot_y == 3) { $vulnerability = 2; }
-
                                                                 else if ($plot_x == 3 && $plot_y == 4) { $vulnerability = 3; }
-
                                                                 else if ($plot_x == 3 && $plot_y == 5) { $vulnerability = 3; }
-
                                                                 else if ($plot_x == 4 && $plot_y == 1) { $vulnerability = 2; }
-
                                                                 else if ($plot_x == 4 && $plot_y == 2) { $vulnerability = 2; }
-
                                                                 else if ($plot_x == 4 && $plot_y == 3) { $vulnerability = 3; }
-
                                                                 else if ($plot_x == 4 && $plot_y == 4) { $vulnerability = 3; }
-
                                                                 else if ($plot_x == 4 && $plot_y == 5) { $vulnerability = 3; }
-
                                                                 else if ($plot_x == 5 && $plot_y == 1) { $vulnerability = 3; }
-
                                                                 else if ($plot_x == 5 && $plot_y == 2) { $vulnerability = 3; }
-
                                                                 else if ($plot_x == 5 && $plot_y == 3) { $vulnerability = 3; }
-
                                                                 else if ($plot_x == 5 && $plot_y == 4) { $vulnerability = 3; }
-
                                                                 else if ($plot_x == 5 && $plot_y == 5) { $vulnerability = 3; }
-
                                                                 else { $vulnerability = 0; }
 
-
-
                                                                 if ($vulnerability == 1) { $vulnerability_result = '<span class="font-green-jungle bold">Low Risk</span>'; }
-
                                                                 else if ($vulnerability == 2) { $vulnerability_result = '<span class="font-yellow-gold bold">Medium Risk</span>'; }
-
                                                                 else if ($vulnerability == 3) { $vulnerability_result = '<span class="font-red-thunderbird bold">High Risk</span>'; }
-
                                                                 else { $vulnerability_result = ""; }
-
                                                                 
-
                                                                 $file_files = $rowSupplier["files"];
 
                                                                 if(!empty($file_files)) {
-
                                                                     $fileExtension = fileExtension($file_files);
-
                                                                     $src = $fileExtension['src'];
-
                                                                     $embed = $fileExtension['embed'];
-
                                                                     $type = $fileExtension['type'];
-
                                                                     $file_extension = $fileExtension['file_extension'];
-
                                                                     $url = $base_url.'uploads/ffva/';
-
                                                                 }
-
-
 
                                                                 echo '<tr id="tr_'.$supplier_id.'">
-
                                                                     <td>'.$supplier_id.'</td>
-
                                                                     <td>'.htmlentities($supplier_company).'</td>';
 
-
-
                                                                     if ($current_userEmployerID == 34 OR $current_userEmployerID == 1) {
-
                                                                         echo '<td class="text-center int_review_status">';
-
                                                                             if (!empty($int_review_assigned_name)) {  echo $int_review_assigned_name .'<br>'; }
-
                                                                             echo '<a href="#modalViewInt" class="btn btn-link btn-sm" data-toggle="modal" onClick="btnInt('.$supplier_id.', 1, 1)">View</a>';
 
-
-
                                                                             if($int_review_status == 1) { echo '<span class="label label-sm label-success">Accepted</span>'; }
-
                                                                             else if ($int_review_status == 2) { echo '<span class="label label-sm label-danger">Rejected</span><br><small>Reason: <i>'.htmlentities($int_review_comment).'</i></small>'; }
-
                                                                         echo '</td>
-
                                                                         <td class="text-center int_verify_status">';
-
                                                                             if (!empty($int_verify_assigned_name)) {  echo $int_verify_assigned_name .'<br>'; }
-
                                                                             // if ($current_userEmployeeID == 0) { echo '<a href="#modalViewInt" class="btn btn-link btn-sm" data-toggle="modal" onClick="btnInt('.$supplier_id.', 2, 1)">View</a>'; }
-
                                                                             if ($int_review_status == 1) { echo '<a href="#modalViewInt" class="btn btn-link btn-sm" data-toggle="modal" onClick="btnInt('.$supplier_id.', 2, 1)">View</a>'; }
-
                                                                             
-
                                                                             if($int_verify_status == 1) { echo '<span class="label label-sm label-success">Accepted</span>'; }
-
                                                                             else if ($int_verify_status == 2) { echo '<span class="label label-sm label-danger">Rejected</span><br><small>Reason: <i>'.htmlentities($int_verify_comment).'</i></small>'; }
-
                                                                         echo '</td>';
-
                                                                     }
-
                                                                     
-
                                                                     if ($FreeAccess != 1) {
-
                                                                         echo '<td class="text-center">';
-
                                                                             if(!empty($file_files)) { echo '<a data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link btn-sm">View</a>'; } 
 
-
-
                                                                             if ($supplier_reviewed_by == $current_userID) {
-
                                                                                 echo '<a href="#modalFile" class="btn btn-link btn-sm" data-toggle="modal" onclick="btnFile('.$supplier_id.', 1)">Upload</a>';
-
                                                                             } else if ($supplier_approved_by == $current_userID) {
-
                                                                                 echo '<a href="#modalFile" class="btn btn-link btn-sm" data-toggle="modal" onclick="btnFile('.$supplier_id.', 2)">Upload</a>';
-
                                                                             }
-
                                                                         echo '</td>';
-
                                                                     }
-
-
 
                                                                     echo '<td class="text-center">'.$vulnerability_result.'</td>
-
                                                                     <td class="text-center">'.$data_last_modified.'</td>
-
                                                                     <td class="text-center">'.$due_date.'</td>
-
                                                                     <td class="text-center">'.$status.'</td>
-
                                                                     <td class="text-center">';
-
                                                                         if (isset($_COOKIE['switchAccount']) || $current_userEmployeeID == 0 || $current_userID == 481) {
-
                                                                             echo '<div class="btn-group btn-group-circle">
-
                                                                                 <a href="pdf_ffva?id='.$supplier_id.'&signed=1" class="btn btn-outline dark btn-sm" target="_blank" title="PDF"><i class="fa fa-fw fa-file-pdf-o"></i></a>
-
                                                                                 <a href="pdf_ffva_excel?id='.$supplier_id.'&signed=1" class="btn green-jungle btn-sm" target="_blank" title="Excel"><i class="fa fa-fw fa-file-excel-o"></i></a>
-
                                                                                 <a href="#modalView" class="btn dark btn-sm hide" data-toggle="modal" onclick="btnView('.$supplier_id.')" title="View"><i class="fa fa-fw fa-search"></i></a>
-
                                                                                 <a href="#modalEdit" class="btn btn-success btn-sm" data-toggle="modal" onclick="btnEdit('.$supplier_id.')" title="Edit"><i class="fa fa-fw fa-pencil"></i></a>
-
                                                                                 <a href="javascript:;" class="btn btn-danger btn-sm" data-toggle="modal" onclick="btnDelete('.$supplier_id.', 1)" title="Delete"><i class="fa fa-fw fa-trash"></i></a>
-
                                                                                 <a href="javascript:;" class="btn btn-info btn-sm" data-toggle="modal" onclick="btnArchive('.$supplier_id.', 1)" title="Archive"><i class="fa fa-fw fa-file-archive-o"></i></a>';
 
-
-
                                                                                 if ($supplier_reviewed_by == $current_userID) {
-
                                                                                     echo '<a href="#modalSign" class="btn btn-danger btn-sm" data-toggle="modal" onclick="btnSign('.$supplier_id.', 1)"><i class="fa fa-fw fa-edit"></i></a>';
-
                                                                                 } else if ($supplier_approved_by == $current_userID) {
-
                                                                                     echo '<a href="#modalSign" class="btn btn-danger btn-sm" data-toggle="modal" onclick="btnSign('.$supplier_id.', 2)"><i class="fa fa-fw fa-edit"></i></a>';
-
                                                                                 }
 
-
-
                                                                             echo '</div>';
-
                                                                         } else {
-
                                                                             echo '<a href="pdf_ffva?id='.$supplier_id.'" class="btn btn-outline dark btn-sm" target="_blank" title="PDF"><i class="fa fa-fw fa-file-pdf-o"></i></a>';
-
                                                                         }
-
                                                                     echo '</td>
-
                                                                 </tr>';
-
                                                             }
-
                                                         }
-
                                                     ?>
-
                                                 </tbody>
-
                                             </table>
-
                                         </div>
-
                                         <div class="tab-pane" id="tabIngredients">
-
                                             <?php
-
                                                 if ($current_userID == 481 || $current_userEmployeeID == 0 || isset($_COOKIE['switchAccount'])) { 
-
                                                     echo '<div class="btn-group btn-group-circle pull-right margin-bottom-15">
-
                                                         <a href="'; echo $FreeAccess == false ? '#modalNew':'#modalService';  echo '" class="btn btn-success" data-toggle="modal" onclick="btnNew(2)">Add New FFVA - Ingredient</a>
-
                                                         <a href="'; echo $FreeAccess == false ? '#modalHistory':'#modalService';  echo '" class="btn btn-outline dark" data-toggle="modal" onclick="btnHistory(2)">History</a>
-
                                                         <a href="'; echo $FreeAccess == false ? '#modalArchived':'#modalService';  echo '" class="btn btn-danger" data-toggle="modal" onclick="btnArchived(2)">Archive</a>
-
                                                     </div>';
-
                                                 }
-
                                             ?>
-
                                             <table class="table table-bordered table-hover" id="tableData_2">
-
                                                 <thead>
-
                                                     <tr>
-
                                                         <th rowspan="2">ID#</th>
-
                                                         <th rowspan="2">Ingredients Name</th>
 
-
-
                                                         <?php
-
                                                             if ($current_userEmployerID == 34 OR $current_userEmployerID == 1) {
-
                                                                 echo '<th rowspan="2" class="text-center">Int. Reviewer</th>
-
                                                                 <th rowspan="2" class="text-center">Int. Verifier</th>';
-
                                                             }
-
-
 
                                                             if ($FreeAccess != 1) {
-
                                                                 echo '<th rowspan="2" class="text-center">Attached File</th>';
-
                                                             }
-
                                                         ?>
-
                                                         
-
                                                         <th rowspan="2" class="text-center">Vulnerability</th>
-
                                                         <th colspan="2" class="text-center">Validity</th>
-
                                                         <th rowspan="2" style="width: 90px;" class="text-center">Status</th>
-
                                                         <th rowspan="2" style="width: 210px;"></th>
-
                                                     </tr>
-
                                                     <tr>
-
                                                         <th class="text-center">From</th>
-
                                                         <th class="text-center">To</th>
-
                                                     </tr>
-
                                                 </thead>
-
                                                 <tbody>
-
                                                     <?php
-
                                                         $resultSupplier = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE archived = 0 AND deleted = 0 AND type = 2 AND updated = 0 AND user_id = $switch_user_id" );
-
                                                         if ( mysqli_num_rows($resultSupplier) > 0 ) {
-
                                                             while($rowSupplier = mysqli_fetch_array($resultSupplier)) {
-
                                                                 $supplier_user_id = $rowSupplier["user_id"];
-
                                                                 $supplier_reviewed_by = $rowSupplier["reviewed_by"];
-
                                                                 $supplier_approved_by = $rowSupplier["approved_by"];
 
-
-
                                                                 $int_review_assigned_name = '';
-
                                                                 $int_review_assigned = $rowSupplier["int_review_assigned"];
-
                                                                 $int_review_status = $rowSupplier["int_review_status"];
-
                                                                 $int_review_comment = $rowSupplier["int_review_comment"];
 
-
-
                                                                 if (!empty($int_review_assigned)) {
-
                                                                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $int_review_assigned" );
-
                                                                     if ( mysqli_num_rows($selectUser) > 0 ) {
-
                                                                         $rowUser = mysqli_fetch_array($selectUser);
-
                                                                         $int_review_assigned_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
-
                                                                     }
-
                                                                 }
-
-
 
                                                                 $int_verify_assigned_name = '';
-
                                                                 $int_verify_assigned = $rowSupplier["int_verify_assigned"];
-
                                                                 $int_verify_status = $rowSupplier["int_verify_status"];
-
                                                                 $int_verify_comment = $rowSupplier["int_verify_comment"];
 
-
-
                                                                 if (!empty($int_verify_assigned)) {
-
                                                                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $int_verify_assigned" );
-
                                                                     if ( mysqli_num_rows($selectUser) > 0 ) {
-
                                                                         $rowUser = mysqli_fetch_array($selectUser);
-
                                                                         $int_verify_assigned_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
-
                                                                     }
-
                                                                 }
-
                                                                 
-
                                                                 $supplier_id = $rowSupplier["ID"];
-
                                                                 $supplier_company = $rowSupplier["company"];
-
                                                                 $supplier_product = $rowSupplier["product"];
 
-
-
                                                                 $status = "Drafted";
-
                                                                 // if (empty($int_review_assigned)) { $status = 'Drafted'; }
-
                                                                 if (!empty($int_review_assigned) AND $int_review_status == 1) { $status = 'Reviewed'; }
-
                                                                 if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1) { $status = 'Approved by CIG'; }
-
                                                                 if (!empty($int_review_assigned) AND $int_review_status == 1 AND !empty($int_verify_assigned) AND $int_verify_status == 1 AND !empty($rowSupplier['approved_date'])) { $status = "Approved by Client"; }
 
-
-
                                                                 $data_last_modified = $rowSupplier['last_modified'];
-
                                                                 $data_last_modified = new DateTime($data_last_modified);
-
                                                                 $data_last_modified = $data_last_modified->format('M d, Y');
-
                                                                                                         
-
                                                                 $due_date = date('Y-m-d', strtotime('+1 year', strtotime($data_last_modified)) );
-
                                                                 $due_date = new DateTime($due_date);
-
                                                                 $due_date = $due_date->format('M d, Y');
 
 
-
-
-
                                                                 $likelihood_rate = $rowSupplier["likelihood_rate"];
-
                                                                 $likelihood_rate_arr = explode(', ', $likelihood_rate);
 
-
-
                                                                 $consequence_rate = $rowSupplier["consequence_rate"];
-
                                                                 $consequence_rate_arr = explode(', ', $consequence_rate);
 
 
-
-
-
                                                                 // Likelihood
-
                                                                 $index = 0;
-
                                                                 $count = 0;
-
                                                                 $sum = 0;
-
                                                                 $total_likelihood = 0;
-
                                                                 $selectLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood" );
-
                                                                 if ( mysqli_num_rows($selectLikelihood) > 0 ) {
-
                                                                     while($rowLikelihood = mysqli_fetch_array($selectLikelihood)) {
-
                                                                         $likelihood_type_arr = explode(', ', $rowLikelihood["type"]);
-
                                                                         if (in_array($rowSupplier["type"], $likelihood_type_arr)) {
-
                                                                             if (empty($likelihood_rate_arr[$index])) { $sum += 1; }
-
                                                                             else { $sum += $likelihood_rate_arr[$index]; }
-
                                                                             
-
                                                                             $index++;
-
                                                                             $count++;
-
                                                                         }
-
                                                                     }
-
                                                                 }
 
-
-
                                                                 if (!empty($rowSupplier["likelihood_element_other"])) {
-
                                                                     $likelihood_element_other = explode(' | ', $rowSupplier["likelihood_element_other"]);
-
                                                                     $likelihood_rate_other = explode(', ', $rowSupplier["likelihood_rate_other"]);
-
-
-
                                                                     $index = 0;
 
                                                                     foreach ($likelihood_element_other as $value) {
-
                                                                         $sum += $likelihood_rate_other[$index];
-
                                                                         $index++;
-
                                                                         $count++;
-
                                                                     }
-
                                                                 }
-
-
 
                                                                 $total_likelihood = $sum / $count;
 
 
-
-
-
                                                                 // Consequence
-
                                                                 $index = 0;
-
                                                                 $count = 0;
-
                                                                 $sum = 0;
-
                                                                 $total_consequence = 0;
-
                                                                 $selectConsequence = mysqli_query( $conn,"SELECT * FROM tbl_ffva_consequence" );
-
                                                                 if ( mysqli_num_rows($selectConsequence) > 0 ) {
-
                                                                     while($rowConsequence = mysqli_fetch_array($selectConsequence)) {
 
                                                                         $sum += $consequence_rate_arr[$index];
@@ -3687,353 +3219,179 @@
             }));
 
             function btnView(id) {
-
                 $.ajax({
-
                     type: "GET",
-
                     url: "function.php?modalView_FFVA="+id,
-
                     dataType: "html",
-
                     success: function(data){
-
                         $("#modalView .modal-body").html(data);
 
-
-
                         questionaireRateSummary(3);
-
                     }
-
                 });
-
             }
-
             function btnDelete(id, table) {
-
                 swal({
-
                     title: "Are you sure?",
-
                     text: "Write some reason on it!",
-
                     type: "input",
-
                     showCancelButton: true,
-
                     closeOnConfirm: false,
-
                     inputPlaceholder: "Reason"
-
                 }, function (inputValue) {
-
                     if (inputValue === false) return false;
-
                     if (inputValue === "") {
-
                         swal.showInputError("You need to write something!");
-
                         return false
-
                     }
-
-                    $.ajax({
-
+                    $.ajax(
                         type: "GET",
-
                         url: "function.php?btnDelete_FFVA="+id+"&reason="+inputValue,
-
                         dataType: "html",
-
                         success: function(response){
-
                             $('#tableData_'+table+' tbody #tr_'+id).remove();
-
                         }
-
                     });
-
                     swal("Notification Sent!", "You wrote: " + inputValue, "success");
-
                 });
-
             }
-
             function btnArchive(id, table) {
-
                 swal({
-
                     title: "Are you sure?",
-
                     text: "Your item will be archived!",
-
                     type: "warning",
-
                     showCancelButton: true,
-
                     confirmButtonClass: "btn-danger",
-
                     confirmButtonText: "Yes, confirm!",
-
                     closeOnConfirm: false
-
                 }, function () {
-
                     $.ajax({
-
                         type: "GET",
-
                         url: "function.php?btnArchive_FFVA="+id,
-
                         dataType: "html",
-
                         success: function(response){
-
                             $('#tableData_'+table+' tbody #tr_'+id).remove();
-
                         }
-
                     });
-
                     swal("Done!", "This item has been achived.", "success");
-
                 });
-
             }
-
             function btnRevert(id, table) {
-
                 swal({
-
                     title: "Are you sure?",
-
                     text: "Your item will be reverted!",
-
                     type: "warning",
-
                     showCancelButton: true,
-
                     confirmButtonClass: "btn-danger",
-
                     confirmButtonText: "Yes, confirm!",
-
                     closeOnConfirm: false
-
                 }, function () {
-
                     $.ajax({
-
                         type: "GET",
-
                         url: "function.php?btnRevert_FFVA="+id,
-
                         dataType: "html",
-
                         success: function(response){
-
                             $('#tableData_archived tbody #tr_'+id).remove();
-
                         }
-
                     });
-
                     swal("Done!", "This item has been reverted.", "success");
-
                 });
-
             }
-
             function btnTemplate(id, tab) {
-
                 var free_access = '<?php echo $FreeAccess; ?>';
-
                 swal({
-
                     title: "Are you sure?",
-
                     text: "Your item will be drafted!",
-
                     type: "warning",
-
                     showCancelButton: true,
-
                     confirmButtonClass: "btn-danger",
-
                     confirmButtonText: "Yes, confirm!",
-
                     closeOnConfirm: false
-
                 }, function () {
-
                     $.ajax({
-
                         type: "GET",
-
                         url: "function.php?btnTemplate_FFVA="+id+"&tab="+tab,
-
                         dataType: "html",
-
                         success: function(response){
-
                             if ($.trim(response)) {
-
                                 msg = "Sucessfully Save!";
-
                                 var obj = jQuery.parseJSON(response);
-
                                 var html = '<tr id="tr_'+obj.ID+'">';
-
                                     html += '<td>'+obj.ID+'</td>';
-
                                     html += '<td>'+obj.company+'</td>';
 
-
-
                                     if (obj.user_id == 5) {
-
                                         html += '<td class="text-center int_review_status"><a href="#modalViewInt" class="btn btn-link btn-sm" data-toggle="modal" onClick="btnInt('+obj.ID+', 1, 1)">View</a></td>';
-
                                         html += '<td class="text-center int_verify_status"></td>';
-
                                     }
-
-
 
                                     if (free_access != 1) {
-
                                         html += '<td class="text-center"></td>';
-
                                     }
-
                                     
-
                                     html += '<td class="text-center">'+obj.vulnerability_result+'</td>';
-
                                     html += '<td class="text-center">'+obj.last_modified+'</td>';
-
                                     html += '<td class="text-center">'+obj.due_date+'</td>';
-
                                     html += '<td class="text-center">'+obj.status+'</td>';
-
                                     html += '<td class="text-center">';
-
                                         html += '<div class="btn-group btn-group-circle">';
-
                                             html += '<a href="pdf_ffva?id='+obj.ID+'&signed=1" class="btn btn-outline dark btn-sm" target="_blank" title="PDF"><i class="fa fa-fw fa-file-pdf-o"></i></a>';
-
                                             html += '<a href="pdf_ffva_excel?id='+obj.ID+'&signed=1" class="btn green-jungle btn-sm" target="_blank" title="Excel"><i class="fa fa-fw fa-file-excel-o"></i></a>';
-
                                             html += '<a href="#modalView" class="btn dark btn-sm hide" data-toggle="modal" onclick="btnView('+obj.ID+')" title="View"><i class="fa fa-fw fa-search"></i></a>';
-
                                             html += '<a href="#modalEdit" class="btn btn-success btn-sm" data-toggle="modal" onclick="btnEdit('+obj.ID+')" title="Edit"><i class="fa fa-fw fa-pencil"></i></a>';
-
                                             html += '<a href="javascript:;" class="btn btn-danger btn-sm" data-toggle="modal" onclick="btnDelete('+obj.ID+', '+obj.tab+')" title="Delete"><i class="fa fa-fw fa-trash"></i></a>';
-
                                             html += '<a href="javascript:;" class="btn btn-info btn-sm" data-toggle="modal" onclick="btnArchive('+obj.ID+', '+obj.tab+')" title="Archive"><i class="fa fa-fw fa-file-archive-o"></i></a>';
-
                                         html += '</div>';
-
                                     html += '</td>';
-
                                 html += '</tr>';
-
                                 $('#tableData_'+obj.tab+' tbody').append(html);
-
                                 $('#modalArchived').modal('hide');
-
                             } else {
-
                                 msg = "Error!"
-
                             }
 
-
-
                             bootstrapGrowl(msg);
-
                         }
-
                     });
-
                     swal("Done!", "This item has been drafted.", "success");
-
                 });
-
             }
-
-
 
             function btnRef(id, type) {
-
                 $.ajax({
-
                     type: "GET",
-
                     url: "function.php?modalRef_FFVA="+id+"&type="+type,
-
                     dataType: "html",
-
                     success: function(data){
-
                         $("#modalRef .modal-body").html(data);
-
                     }
-
                 });
-
             }
-
             $(".modalRef").on('submit',(function(e) {
-
                 e.preventDefault();
 
-
-
                 formObj = $(this);
-
                 if (!formObj.validate().form()) return false;
 
-
-
                 if (inputInvalid('modalRef') > 0) { return false; }
-
                     
-
                 var formData = new FormData(this);
-
                 formData.append('btnRef_FFVA',true);
 
-
-
                 var l = Ladda.create(document.querySelector('#btnRef_FFVA'));
-
                 l.start();
 
-
-
                 $.ajax({
-
                     url: "function.php",
-
                     type: "POST",
-
                     data: formData,
-
                     contentType: false,
-
                     processData:false,
-
                     cache: false,
-
                     success: function(response) {
-
                         if ($.trim(response)) {
-
                             msg = "Sucessfully Save!";
-
                             var obj = jQuery.parseJSON(response);
-
                             var html = '<td>';
 
                                 html += obj.content;
@@ -4041,885 +3399,444 @@
                                 html += '<a href="#modalRef" class="btn btn-link btn-sm" data-toggle="modal" onclick="btnRef('+obj.ID+', 1)"><i class="fa fa-pencil"></i> [edit]</a>';
 
                             html += '</td>';
-
                             $('#tableDataRef_'+obj.type+' tbody .tr_'+obj.ID+' > td:last-child').html(html);
-
                             $('#modalRef').modal('hide');
-
                         } else {
-
                             msg = "Error!"
-
                         }
-
                         l.stop();
 
-
-
                         bootstrapGrowl(msg);
-
                     }
-
                 });
-
             }));
 
-
-
             function btnSign(id, area) {
-
                 $.ajax({
-
                     type: "GET",
-
                     url: "function.php?modalSign_FFVA="+id+"&area="+area,
-
                     dataType: "html",
-
                     success: function(data){
-
                         $("#modalSign .modal-body").html(data);
 
-
-
                         widget_signature();
-
                     }
-
                 });
-
-            }
-
-            $(".modalSign").on('submit',(function(e) {
-
+            }            $(".modalSign").on('submit',(function(e) {
                 e.preventDefault();
-
-
 
                 var sigData = $('#modalSign .signature').jSignature('getData');
 
-
-
                 formObj = $(this);
-
                 if (!formObj.validate().form()) return false;
-
-
 
                 if (inputInvalid('modalSign') > 0) { return false; }
-
                     
-
                 var formData = new FormData(this);
-
                 formData.append('btnSign_FFVA',true);
-
                 formData.append('sigData', sigData);
 
-
-
                 var l = Ladda.create(document.querySelector('#btnSign_FFVA'));
-
                 l.start();
 
-
-
                 $.ajax({
-
                     url: "function.php",
-
                     type: "POST",
-
                     data: formData,
-
                     contentType: false,
-
                     processData:false,
-
                     cache: false,
-
                     success: function(response) {
-
                         if ($.trim(response)) {
-
                             msg = "Sucessfully Save!";
-
                             $('#modalSign').modal('hide');
-
                         } else {
-
                             msg = "Error!"
-
                         }
-
                         l.stop();
 
-
-
                         bootstrapGrowl(msg);
-
                     }
-
                 });
-
             }));
-
-
 
             function btnFile(id, area) {
-
                 $.ajax({
-
                     type: "GET",
-
                     url: "function.php?modalFile_FFVA="+id+"&area="+area,
-
                     dataType: "html",
-
                     success: function(data){
-
                         $("#modalFile .modal-body").html(data);
-
                     }
-
                 });
-
             }
-
             $(".modalFile").on('submit',(function(e) {
-
                 e.preventDefault();
 
-
-
                 formObj = $(this);
-
                 if (!formObj.validate().form()) return false;
-
-
 
                 if (inputInvalid('modalFile') > 0) { return false; }
-
                     
-
                 var formData = new FormData(this);
-
                 formData.append('btnFile_FFVA',true);
 
-
-
                 var l = Ladda.create(document.querySelector('#btnFile_FFVA'));
-
                 l.start();
 
-
-
                 $.ajax({
-
                     url: "function.php",
-
                     type: "POST",
-
                     data: formData,
-
                     contentType: false,
-
                     processData:false,
-
                     cache: false,
-
                     success: function(response) {
-
                         if ($.trim(response)) {
-
                             msg = "Sucessfully Save!";
-
                             var obj = jQuery.parseJSON(response);
-
                             $('#tr_'+obj.ID+' td:nth-child(3)').html(obj.attached);
-
                             $('#modalFile').modal('hide');
-
                         } else {
-
                             msg = "Error!"
-
                         }
-
                         l.stop();
 
-
-
                         bootstrapGrowl(msg);
-
                     }
-
                 });
-
             }));
-
-
 
             function selStatus(val) {
-
                 if (val == 2) {
-
                     $('.intComment').removeClass('hide');
-
                     $('.intComment textarea').prop('required', true);
 
-
-
                     $('.intVerify').addClass('hide');
-
                     $('.intVerify select').prop('required', false);
-
                 } else if (val == 1) {
-
                     $('.intComment').addClass('hide');
-
                     $('.intComment textarea').prop('required', false);
-
-
 
                     $('.intVerify').removeClass('hide');
-
                     $('.intVerify select').prop('required', true);
-
                 } else {
-
                     $('.intComment').addClass('hide');
-
                     $('.intComment textarea').prop('required', false);
 
-
-
                     $('.intVerify').addClass('hide');
-
                     $('.intVerify select').prop('required', false);
-
                 }
-
             }
-
             function btnInt(id, type, tab) {
-
                 $.ajax({
-
                     type: "GET",
-
                     url: "function.php?modalInt_FFVA="+id+"&type="+type+"&tab="+tab,
-
                     dataType: "html",
-
                     success: function(data){
-
                         $("#modalViewInt .modal-body").html(data);
 
-
-
                         selectMulti();
-
                     }
-
                 });
-
             }
-
             $(".modalViewInt").on('submit',(function(e) {
-
                 e.preventDefault();
 
-
-
                 formObj = $(this);
-
                 if (!formObj.validate().form()) return false;
 
-
-
                 if (inputInvalid('modalViewInt') > 0) { return false; }
-
                     
-
                 var formData = new FormData(this);
-
                 formData.append('btnSaveInt_FFVA',true);
 
-
-
                 var l = Ladda.create(document.querySelector('#btnSaveInt_FFVA'));
-
                 l.start();
 
-
-
                 $.ajax({
-
                     url: "function.php",
-
                     type: "POST",
-
                     data: formData,
-
                     contentType: false,
-
                     processData:false,
-
                     cache: false,
-
                     success: function(response) {
-
                         if ($.trim(response)) {
-
                             msg = "Sucessfully Save!";
-
                             var obj = jQuery.parseJSON(response);
-
                             if (obj.type == 1) { $('#tableData_'+obj.tab+' tbody #tr_'+obj.ID+' .int_review_status').html(obj.int_column); }
-
                             else if (obj.type == 2) { $('#tableData_'+obj.tab+' tbody #tr_'+obj.ID+' .int_verify_status').html(obj.int_column); }
-
                             $('#modalViewInt').modal('hide');
-
                         } else {
-
                             msg = "Error!"
-
                         }
-
                         l.stop();
 
-
-
                         bootstrapGrowl(msg);
-
                     }
-
                 });
-
             }));
 
-
-
             function selectType(e) {
-
                 if (e.value == 1) {
-
                     $(e).parent().parent().parent().find('.sign').addClass('hide');
-
                     $(e).parent().parent().parent().find('.signature_sign').removeClass('hide');
-
                 } else if (e.value == 2) {
-
                     $(e).parent().parent().parent().find('.sign').addClass('hide');
-
                     $(e).parent().parent().parent().find('.signature_upload').removeClass('hide');
-
                 } else {
-
                     $(e).parent().parent().parent().find('.sign').addClass('hide');
-
                     $(e).parent().parent().parent().find('.signature_default').removeClass('hide');
-
                 }
-
             }
-
             function selectVulnerability(modal, id) {
-
                 if (id.value == 1) {
-
                     $(id).next('textarea').removeClass('hide');
-
                 }
-
                 else {
-
                     $(id).next('textarea').addClass('hide');
-
                 }
-
             }
-
             function selectExplanation(modal, id) {
-
                 if (id.value == 1) {
-
                     $(id).next('select').removeClass('hide');
-
                     $(id).parent().find('textarea').removeClass('hide');
-
                 } else {
-
                     $(id).next('select').addClass('hide');
-
                     $(id).parent().find('textarea').addClass('hide');
-
                 }
-
             }
 
             function btnAddKatva(modal) {
-
                 let x = Math.floor((Math.random() * 100) + 1);
-
                 var step = $('#tableDataKatva_'+modal+' .katva_step').val();
-
                 var description = $('#tableDataKatva_'+modal+' .katva_description').val();
-
                 var actionable = $('#tableDataKatva_'+modal+' .katva_actionable').val();
-
                 var mitigation = $('#tableDataKatva_'+modal+' .katva_mitigation').val();
 
-
-
                 var vulnerability = $('#tableDataKatva_'+modal+' .katva_vulnerability').val();
-
                 var vulnerability_Other = $('#tableDataKatva_'+modal+' .katva_vulnerability_other').val();
-
                 if (vulnerability == 1) { vulnerability_text = $('#tableDataKatva_'+modal+' .katva_vulnerability_other').val(); }
-
                 else if (vulnerability == 0) { vulnerability_text = "Key Activity Types"; }
 
-
-
                 var explanation = $('#tableDataKatva_'+modal+' .katva_explanation').val();
-
                 var explanation_option = $('#tableDataKatva_'+modal+' .katva_explanation_option').val();
-
                 var explanation_comment = $('#tableDataKatva_'+modal+' .katva_explanation_comment').val();
 
-
-
                 if (explanation == 0) { explanation_text = "No"; }
-
                 else if (explanation == 1) {
-
                     explanation_text = "";
-
                     if (explanation_option == 1) { explanation_text += "Bulk Liquid Receiving and Loading"; }
-
                     else if (explanation_option == 2) { explanation_text += "Liquid Storage and Handling"; }
-
                     else if (explanation_option == 3) { explanation_text += "Secondary Ingredient Handling"; }
-
                     else if (explanation_option == 4) { explanation_text += "Mixing and Similar Activities"; }
-
                 }
-
-
 
                 if (step != "" && description != "" && actionable != "" && mitigation != "") {
-
                     var html = '<tr class="tr_'+x+'">';
-
                         html += '<td><textarea class="form-control" placeholder="Enter process step here" name="katva_step_'+modal+'[]" required>'+step+'</textarea></td>';
-
                         html += '<td><textarea class="form-control" placeholder="Enter description here" name="katva_description_'+modal+'[]" require>'+description+'</textarea></td>';
 
-
-
                         html += '<td>';
-
                             html += '<select class="form-control" onchange="selectVulnerability(1, this)" name="katva_vulnerability_'+modal+'[]">';
-
                                 html += '<option value="0" '; if (vulnerability == 0) { html += 'SELECTED'; } html += '>Key Activity Types</option>';
-
                                 html += '<option value="1" '; if (vulnerability == 1) { html += 'SELECTED'; } html += '>Other</option>';
-
                             html += '</select>';
-
                             html += '<textarea class="form-control margin-top-15 '; if (vulnerability == 0) { html += 'hide'; } html += '" placeholder="Enter vulnerability assessment here" name="katva_vulnerability_text_'+modal+'[]">'+vulnerability_Other+'</textarea>';
-
                         html += '</td>';
-
                         html += '<td>';
-
                             html += '<select class="form-control" onchange="selectExplanation(1, this)" name="katva_explanation_'+modal+'[]">';
-
                                 html += '<option value="0" '; if (explanation == 0) { html += 'SELECTED'; } html += '>No</option>';
-
                                 html += '<option value="1" '; if (explanation == 1) { html += 'SELECTED'; } html += '>Yes</option>';
-
                             html += '</select>';
-
                             html += '<select class="form-control margin-top-15 '; if (explanation == 0) { html += 'hide'; } html += '" name="katva_explanation_option_'+modal+'[]">';
-
                                 html += '<option value="">Select</option>';
-
                                 html += '<option value="1" '; if (explanation_option == 1) { html += 'SELECTED'; } html += '>Bulk Liquid Receiving and Loading</option>';
-
                                 html += '<option value="2" '; if (explanation_option == 2) { html += 'SELECTED'; } html += '>Liquid Storage and Handling</option>';
-
                                 html += '<option value="3" '; if (explanation_option == 3) { html += 'SELECTED'; } html += '>Secondary Ingredient Handling</option>';
-
                                 html += '<option value="4" '; if (explanation_option == 4) { html += 'SELECTED'; } html += '>Mixing and Similar Activities</option>';
-
                             html += '</select>';
-
                             html += '<textarea class="form-control margin-top-15 '; if (explanation == 0) { html += 'hide'; } html += '" placeholder="Enter explanation here" name="katva_explanation_comment_'+modal+'[]">'+explanation_comment+'</textarea>';
-
                         html += '</td>';
-
-
 
                         html += '<td><textarea class="form-control" placeholder="Enter actionable process step here" name="katva_actionable_'+modal+'[]" required>'+actionable+'</textarea></td>';
-
                         html += '<td><textarea class="form-control" placeholder="Enter mitigation strategies here" name="katva_mitigation_'+modal+'[]" required>'+mitigation+'</textarea></td>';
-
                         html += '<td class="text-center"><a href="javascript:;" class="btn btn-danger btn-circle" onclick="btnRemoveKatva('+modal+', '+x+')">Remove</a></td>';
-
                     html += '</tr>';
-
                     $('#tableDataKatva_'+modal+' tbody').append(html);
-
                 }
-
             }
-
             function btnRemoveKatva(modal, x) {
-
                 $('#tableDataKatva_'+modal+' tbody .tr_'+x).remove();
-
             }
-
             function btnDeleteKatva(id) {
-
                 swal({
-
                     title: "Are you sure?",
-
                     text: "Write some reason on it!",
-
                     type: "input",
-
                     showCancelButton: true,
-
                     closeOnConfirm: false,
-
                     inputPlaceholder: "Reason"
-
                 }, function (inputValue) {
-
                     if (inputValue === false) return false;
-
                     if (inputValue === "") {
-
                         swal.showInputError("You need to write something!");
-
                         return false
-
                     }
-
                     $.ajax({
-
                         type: "GET",
-
                         url: "function.php?btnDeleteKatva_FFVA="+id+"&reason="+inputValue,
-
                         dataType: "html",
-
                         success: function(response){
-
                             $('#tableDataKatva tbody #tr_'+id).remove();
-
                         }
-
                     });
-
                     swal("Notification Sent!", "You wrote: " + inputValue, "success");
-
                 });
-
             }
-
             function btnNewKatva(modal) {
-
                 $.ajax({
-
                     type: "GET",
-
                     url: "function.php?modalNewKatva_FFVA="+modal,
-
                     dataType: "html",
-
                     success: function(data){
-
                         $("#modalNewKatva .modal-body").html(data);
 
-
-
                         widget_signature();
-
                         selectMulti();
-
                     }
-
                 });
-
             }
-
             $(".modalNewKatva").on('submit',(function(e) {
-
                 e.preventDefault();
 
-
-
                 var prepared_sigData = $('#modalNewKatva .prepared_signature').jSignature('getData');
-
                 var reviewed_sigData = $('#modalNewKatva .reviewed_signature').jSignature('getData');
-
                 var approved_sigData = $('#modalNewKatva .approved_signature').jSignature('getData');
 
-
-
                 formObj = $(this);
-
                 if (!formObj.validate().form()) return false;
 
-
-
                 if (inputInvalid('modalNewKatva') > 0) { return false; }
-
                     
-
                 var formData = new FormData(this);
-
                 formData.append('btnSaveKatva_FFVA',true);
-
                 formData.append('prepared_sigData', prepared_sigData);
-
                 formData.append('reviewed_sigData', reviewed_sigData);
-
                 formData.append('approved_sigData', approved_sigData);
 
-
-
                 var l = Ladda.create(document.querySelector('#btnSaveKatva_FFVA'));
-
                 l.start();
 
-
-
                 $.ajax({
-
                     url: "function.php",
-
                     type: "POST",
-
                     data: formData,
-
                     contentType: false,
-
                     processData:false,
-
                     cache: false,
-
                     success: function(response) {
-
                         if ($.trim(response)) {
-
                             msg = "Sucessfully Save!";
-
                             var obj = jQuery.parseJSON(response);
-
                             var html = '<tr id="tr_'+obj.ID+'">';
-
                                 html += '<td>'+obj.ID+'</td>';
-
                                 html += '<td>'+obj.product+'</td>';
-
                                 html += '<td>'+obj.facility+'</td>';
-
                                 html += '<td>'+obj.address+'</td>';
-
                                 html += '<td>'+obj.status+'</td>';
-
                                 html += '<td class="text-center">';
-
                                     html += '<div class="btn-group btn-group-circle">';
-
                                         html += '<a href="pdf_katva?id='+obj.ID+'" class="btn btn-outline btn-circle dark btn-sm" target="_blank">PDF</a>';
-
                                         html += '<a href="#modalViewKatva" class="btn btn-outline btn-success btn-sm" data-toggle="modal" onclick="btnViewKatva('+obj.ID+')">Edit</a>';
-
                                         html += '<a href="javascript:;" class="btn dark btn-sm" onclick="btnDeleteKatva('+obj.ID+')">Delete</a>';
-
                                     html += '</div>';
-
                                 html += '</td>';
-
                             html += '</tr>';
-
-
 
                             $('#tableDataKatva tbody').append(html);
 
-
-
                             $('#modalNewKatva').modal('hide');
-
                         } else {
-
                             msg = "Error!"
-
                         }
-
                         l.stop();
 
-
-
                         bootstrapGrowl(msg);
-
                     }
-
                 });
-
             }));
-
             function btnViewKatva(id) {
-
                 $.ajax({
-
                     type: "GET",
-
                     url: "function.php?modalViewKatva_FFVA="+id,
-
                     dataType: "html",
-
                     success: function(data){
-
                         $("#modalViewKatva .modal-body").html(data);
 
-
-
                         widget_signature();
-
                         selectMulti();
-
                     }
-
                 });
-
             }
-
             $(".modalViewKatva").on('submit',(function(e) {
-
                 e.preventDefault();
 
-
-
                 var prepared_sigData = $('#modalViewKatva .prepared_signature').jSignature('getData');
-
                 var reviewed_sigData = $('#modalViewKatva .reviewed_signature').jSignature('getData');
-
                 var approved_sigData = $('#modalViewKatva .approved_signature').jSignature('getData');
 
-
-
                 formObj = $(this);
-
                 if (!formObj.validate().form()) return false;
 
-
-
                 if (inputInvalid('modalViewKatva') > 0) { return false; }
-
                     
-
                 var formData = new FormData(this);
-
                 formData.append('btnUpdateKatva_FFVA',true);
-
                 formData.append('prepared_sigData', prepared_sigData);
-
                 formData.append('reviewed_sigData', reviewed_sigData);
-
                 formData.append('approved_sigData', approved_sigData);
 
-
-
                 var l = Ladda.create(document.querySelector('#btnUpdateKatva_FFVA'));
-
                 l.start();
 
-
-
                 $.ajax({
-
                     url: "function.php",
-
                     type: "POST",
-
                     data: formData,
-
                     contentType: false,
-
                     processData:false,
-
                     cache: false,
-
                     success: function(response) {
-
                         if ($.trim(response)) {
-
                             msg = "Sucessfully Save!";
-
                             var obj = jQuery.parseJSON(response);
-
                            var html = '<td>'+obj.ID+'</td>';
-
                             html += '<td>'+obj.product+'</td>';
-
                             html += '<td>'+obj.facility+'</td>';
-
                             html += '<td>'+obj.address+'</td>';
-
                             html += '<td>'+obj.status+'</td>';
-
                             html += '<td class="text-center">';
-
                                 html += '<div class="btn-group btn-group-circle">';
-
                                     html += '<a href="pdf_katva?id='+obj.ID+'" class="btn btn-outline btn-circle dark btn-sm" target="_blank">PDF</a>';
-
                                     html += '<a href="#modalViewKatva" class="btn btn-outline btn-success btn-sm" data-toggle="modal" onclick="btnViewKatva('+obj.ID+')">Edit</a>';
-
                                     html += '<a href="javascript:;" class="btn dark btn-sm" onclick="btnDeleteKatva('+obj.ID+')">Delete</a>';
-
                                 html += '</div>';
-
                             html += '</td>';
-
-
 
                             $('#tableDataKatva tbody #tr_'+obj.ID).html(html);
 
-
-
                             $('#modalViewKatva').modal('hide');
-
                         } else {
-
                             msg = "Error!"
-
                         }
-
                         l.stop();
 
-
-
                         bootstrapGrowl(msg);
-
                     }
-
                 });
-
             }));
-
         </script>
-
     </body>
-
 </html>

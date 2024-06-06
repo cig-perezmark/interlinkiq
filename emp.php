@@ -23,14 +23,47 @@
                         <i class=" icon-layers font-dark"></i>
                         <span class="caption-subject font-dark bold uppercase">Interlink E-Forms</span>
                         <?php
+                            // if($current_client == 0) {
+                            //     $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site' AND (user_id = $switch_user_id OR user_id = $current_userEmployerID OR user_id = 163)");
+                            //     while ($row = mysqli_fetch_assoc($result)) {
+                            //         echo ' - <a class="view_videos" data-src="'.$row['youtube_link'].'" data-fancybox><i class="fa fa-youtube"></i> '.$row['file_title'].'</a>';
+                            //     }
+                                
+                            //     if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163) {
+                            //         echo ' <a href="#modal_video" class="btn btn-circle btn-success btn-xs" data-toggle="modal">Add Demo Video</a>';
+                            //     }
+                            // }
                             if($current_client == 0) {
-                                $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site' AND (user_id = $switch_user_id OR user_id = $current_userEmployerID OR user_id = 163)");
+                                // $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site' AND (user_id = $switch_user_id OR user_id = $current_userEmployerID OR user_id = 163)");
+                                $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site'");
                                 while ($row = mysqli_fetch_assoc($result)) {
-                                    echo ' - <a class="view_videos" data-src="'.$row['youtube_link'].'" data-fancybox><i class="fa fa-youtube"></i> '.$row['file_title'].'</a>';
+                                    $type_id = $row["type"];
+                                    $file_title = $row["file_title"];
+                                    $video_url = $row["youtube_link"];
+                                    
+                                    $file_upload = $row["file_upload"];
+                                    if (!empty($file_upload)) {
+                        	            $fileExtension = fileExtension($file_upload);
+                        				$src = $fileExtension['src'];
+                        				$embed = $fileExtension['embed'];
+                        				$type = $fileExtension['type'];
+                        				$file_extension = $fileExtension['file_extension'];
+                        	            $url = $base_url.'uploads/instruction/';
+                        
+                                		$file_url = $src.$url.rawurlencode($file_upload).$embed;
+                                    }
+                                    
+                                    $icon = $row["icon"];
+                                    if (!empty($icon)) { echo '<img src="'.$src.$url.rawurlencode($icon).'" style="width: 32px; height: 32px; object-fit: contain; object-position: center;" />'; }
+                                    if ($type_id == 0) {
+                                        echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'">'.$file_title.'</a>';
+                                    } else {
+                                        echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox>'.$file_title.'</a>';
+                                    }
                                 }
                                 
                                 if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163) {
-                                    echo ' <a href="#modal_video" class="btn btn-circle btn-success btn-xs" data-toggle="modal">Add Demo Video</a>';
+                                    echo ' <a data-toggle="modal" data-target="#modalInstruction" class="btn btn-circle btn-success btn-xs" onclick="btnInstruction()">Add New Instruction</a>';
                                 }
                             }
                         ?>

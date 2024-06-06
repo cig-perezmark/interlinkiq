@@ -132,6 +132,11 @@ label:has(.help-icon-group) {
     margin: .5rem;
     padding: .45rem;
 }
+
+div.form-control {
+    height: auto;
+    min-height: 34px;
+}
 </style>
 <link rel="stylesheet" href="modules/Init.style.css">
 

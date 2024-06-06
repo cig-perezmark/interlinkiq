@@ -585,6 +585,7 @@ if(isset($_GET['fetchImportersForTable'])) {
             i.evaluation_date,
             i.importer_id, 
             imp.name AS importer_name, 
+            imp.address AS importer_address,
             i.fsvpqi_id, 
             CONCAT(TRIM(emp.first_name), ' ', TRIM(emp.last_name)) AS fsvpqi_name,
             i.supplier_id,
@@ -595,7 +596,8 @@ if(isset($_GET['fetchImportersForTable'])) {
             cbp.determining_importer,
             cbp.designated_importer,
             cbp.cbp_entry_filer,
-            cbp.prev_record_id AS previous_cbp_record_id
+            cbp.prev_record_id AS previous_cbp_record_id,
+            cbp.created_at AS cbp_date
         FROM 
             tbl_fsvp_importers i 
             LEFT JOIN tbl_supplier imp ON imp.ID = i.importer_id
@@ -622,6 +624,7 @@ if(isset($_GET['fetchImportersForTable'])) {
             'importer' => [
                 'id' => $data['importer_id'],
                 'name' => $data['importer_name'],
+                'address' => formatSupplierAddress($data['importer_address']),
             ],
             'supplier' => [
                 'id' => $data['supplier_id'],
@@ -639,6 +642,7 @@ if(isset($_GET['fetchImportersForTable'])) {
                 'determining_importer' => $data['determining_importer'],
                 'designated_importer' => $data['designated_importer'],
                 'cbp_entry_filer' => $data['cbp_entry_filer'],
+                'date' => date('Y-m-d', strtotime($data['cbp_date'])),
             ]
         ];
     });

@@ -53,7 +53,7 @@ function showHint($hint) {
             <th>FSVPQI</th>
             <th>Evaluation Date</th>
             <th>FSVP CBP Filing Form</th>
-            <!-- <th>Actions</th> -->
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody></tbody>
@@ -256,7 +256,7 @@ function showHint($hint) {
                     <div class="col-md-4">
                         <div class="form-group">
                             <label>Date</label>
-                            <div class="form-control" data-viewcbp="address"></div>
+                            <div class="form-control" data-viewcbp="date"></div>
                         </div>
                     </div>
                     <div class="col-md-12">

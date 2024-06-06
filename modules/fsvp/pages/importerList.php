@@ -1,3 +1,38 @@
+<?php
+
+$hints = array(
+    "foods_info"            => "<div class='form-hint'>
+                                    What food(s)/ food product(s) Import (receive)?<br>
+                                    <mark>Note: List each food/food product. Be specific, e.g., can size; size packages; bulk weight.</mark><br>
+                                    For each food listed, will the food or food product made from the imported food be offered for sale in the U.S.?
+                                </div>",
+    "supplier_info"         => "<div class='form-hint'>
+                                    From whom do purchase the food (i.e., Supplier's name, address, etc.)?<br>
+                                    Is the Supplier a U.S. company or a foreign company?<br>
+                                    Does the importer from whom directly purchases the food fit the FSVP definition of the foreign Supplier (i.e., grower, manufacturer)?
+                                </div>",   
+    "determining_importer"   => "<div class='form-hint'>
+                                    Describe the current buying arrangement(s) (i.e., name all parties involved in obtaining the food product, including foreign Supplier, if known)<br>
+                                    At the time of entry, the importer of the food, or have you purchased or agreed to purchase the food (i.e., do you fit the definition of “U.S. owner or consignee” and, therefore, FSVP “importer” for this food)? **<br>
+                                    Who else involved in this arrangement fits the FSVP definition of importer?<br>
+                                    <mark>Note: Be specific, e.g., are there multiple purchasers for the same line entry of food, do you purchase food from a U.S. importer/distributor?</mark>
+                                </div>",
+    "designated_importer"   => "<div class='form-hint'>
+                                    If more than one person/entity fits the definition of the importer, negotiate with others to determine who will carry out FSVP requirements.<br>
+                                    <mark>Note: Place name below and formalize the understanding (i.e., create an agreement identifying FSVP importer).</mark>
+                                </div>",   
+    "cbp_entry_filer"       => "<div class='form-hint'>
+                                    Who fills out the CBP entry filing for this food/food product (i.e., name, address)?
+                                    <mark>Note: Provide a copy of the agreement/understanding identifying the FSVP Importer* to be identified in CBP entry filing (i.e., name, address, email, and DUNS number of agreed-upon FSVP importer).</mark>
+                                </div>",   
+);
+
+function showHint($hint) {
+    echo '<div class="help-icon-group tooltips" data-html="true" data-placement="bottom" data-original-title="'.$hint.'"><i class="fa fa-question-circle"></i></div>';
+}
+
+?>
+
 <div class="d-flex margin-bottom-20" style="justify-content: end;">
     <a href="#modalNewImporter" data-toggle="modal" class="btn green">
         <i class="fa fa-plus"></i>
@@ -150,17 +185,7 @@
                         <div class="form-group">
                             <label for="cfFoodInfo">
                                 Imported Food(s)/Food Product(s) Information
-                                <div class="help-icon-group tooltips" data-html="true" data-placement="bottom" data-original-title="<div class='form-hint'>
-                                    What food(s)/ food product(s) Import (receive)?
-                                    <br>
-                                    <mark>
-                                        [Note: List each food/food product. Be specific, e.g., can size; size packages; bulk weight]
-                                    </mark>
-                                    <br>
-                                    For each food listed, will the food or food product made from the imported food be offered for sale in the U.S.?
-                                </div>">
-                                    <i class="fa fa-question-circle"></i>
-                                </div>
+                                <?= showHint($hints['foods_info']) ?>
                             </label>
                             <textarea name="foods_info" id="cfFoodInfo" class="form-control" placeholder="Imported Food(s)/Food Product(s) Information"></textarea>
                             <input type="hidden" name="importer">
@@ -170,15 +195,7 @@
                         <div class="form-group">
                             <label for="cfSupplierInfo">
                                 Supplier Information
-                                <div class="help-icon-group tooltips" data-html="true" data-placement="bottom" data-original-title="<div class='form-hint'>
-                                    From whom do purchase the food (i.e., Supplier's name, address, etc.)?
-                                    <br>
-                                    Is the Supplier a U.S. company or a foreign company?
-                                    <br>
-                                    Does the importer from whom directly purchases the food fit the FSVP definition of the foreign Supplier (i.e., grower, manufacturer)?
-                                </div>">
-                                    <i class="fa fa-question-circle"></i>
-                                </div>
+                                <?= showHint($hints['supplier_info']) ?>
                             </label>
                             <textarea name="supplier_info" id="cfSupplierInfo" class="form-control" placeholder="Enter supplier information"></textarea>
                         </div>
@@ -187,20 +204,7 @@
                         <div class="form-group">
                             <label for="cfDetImporter">
                                 Determining FSVP Importer
-                                <div class="help-icon-group tooltips" data-html="true" data-placement="bottom" data-original-title="<div class='form-hint'>
-                                    Describe the current buying arrangement(s) (i.e., name all parties involved in obtaining the food product, including foreign Supplier, if known)
-                                    <br>
-                                    At the time of entry, the importer of the food, or have you purchased or agreed to purchase the food (i.e., do you fit the definition of “U.S. owner or consignee” and, therefore, FSVP “importer” for this food)? **
-                                    <br>
-                                    Who else involved in this arrangement fits the FSVP definition of importer?
-                                    <br>
-                                    <mark>
-                                        [Note: Be specific, e.g., are there multiple purchasers for the same line entry of food, do you purchase food from a U.S. importer/
-                                        distributor?]
-                                    </mark>
-                                </div>">
-                                    <i class="fa fa-question-circle"></i>
-                                </div>
+                                <?= showHint($hints['determining_importer']) ?>
                             </label>
                             <textarea name="determining_importer" id="cfDetImporter" class="form-control" placeholder="Enter determining FSVP importer"></textarea>
                         </div>
@@ -209,15 +213,7 @@
                         <div class="form-group">
                             <label for="cfDesImporter">
                                 Designated FSVP Importer
-                                <div class="help-icon-group tooltips" data-html="true" data-placement="bottom" data-original-title="<div class='form-hint'>
-                                    If more than one person/entity fits the definition of the importer, negotiate with others to determine who will carry out FSVP requirements.
-                                    <br>
-                                    <mark>
-                                        [Note: Place name below and formalize the understanding (i.e., create an agreement identifying FSVP importer)]
-                                    </mark>
-                                </div>">
-                                    <i class="fa fa-question-circle"></i>
-                                </div>
+                                <?= showHint($hints['designated_importer']) ?>
                             </label>
                             <textarea name="designated_importer" id="cfDesImporter" class="form-control" placeholder="Enter designated FSVP importer"></textarea>
                         </div>
@@ -226,14 +222,7 @@
                         <div class="form-group">
                             <label for="cfEntryFiler">
                                 CBP Entry Filer
-                                <div class="help-icon-group tooltips" data-html="true" data-placement="bottom" data-original-title="<div class='form-hint'>
-                                    Who fills out the CBP entry filing for this food/food product (i.e., name, address)?
-                                    <mark>
-                                        [Note: Provide a copy of the agreement/understanding identifying the FSVP Importer* to be identified in CBP entry filing (i.e., name, address, email, and DUNS number of agreed-upon FSVP importer)]
-                                    </mark>
-                                </div>">
-                                    <i class="fa fa-question-circle"></i>
-                                </div>
+                                <?= showHint($hints['cbp_entry_filer']) ?>
                             </label>
                             <textarea name="cbp_entry_filer" id="cfEntryFiler" class="form-control" placeholder="Enter CBP entry filer"></textarea>
                         </div>
@@ -245,6 +234,92 @@
                 <button type="submit" class="btn green">Submit </button>
             </div>
         </form>
+    </div>
+</div>
+
+
+<div class="modal fade in" id="modalViewCBP" role="dialog" aria-hidden="true" tabindex="1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">View FSVP CBP Filing Form Data</h4>
+            </div>
+            <div class="modal-body form-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label>Importer Name:</label>
+                            <div class="form-control" data-viewcbp="importer"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Date</label>
+                            <div class="form-control" data-viewcbp="address"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Address:</label>
+                            <div class="form-control" data-viewcbp="address"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>
+                                Imported Food(s)/Food Product(s) Information
+                                <?= showHint($hints['foods_info']) ?>
+                            </label>
+                            <div class="form-control" data-viewcbp="foods_info"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>
+                                Supplier Information
+                                <?= showHint($hints['supplier_info']) ?>
+                            </label>
+                            <div class="form-control" data-viewcbp="supplier_info"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>
+                                Determining FSVP Importer
+                                <?= showHint($hints['determining_importer']) ?>
+                            </label>
+                            <div class="form-control" data-viewcbp="determining_importer"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>
+                                Designated FSVP Importer
+                                <?= showHint($hints['designated_importer']) ?>
+                            </label>
+                            <div class="form-control" data-viewcbp="designated_importer"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>
+                                CBP Entry Filer
+                                <?= showHint($hints['cbp_entry_filer']) ?>
+                            </label>
+                            <div class="form-control" data-viewcbp="cbp_entry_filer"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                <a href="about:blank" target="_blank" class="btn blue">
+                    <!-- <i class="fa fa-pdf-o"></i> -->
+                    View PDF
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 

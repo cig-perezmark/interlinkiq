@@ -100,6 +100,43 @@ hr {
     align-items: center;
     justify-content: center;
 }
+
+label:has(.help-icon-group) {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.help-icon-group {
+    display: inline-block;
+}
+
+.tooltip:has(.form-hint) {
+    opacity: 1;
+}
+
+.tooltip-inner:has(.form-hint) {
+    padding: 0 !important;
+}
+
+.form-hint {
+    padding: .75rem;
+    background-color: #fafafa;
+    color: #000;
+    text-align: left;
+    border: 1px solid grey;
+}
+
+.form-hint mark {
+    display: block;
+    margin: .5rem;
+    padding: .45rem;
+}
+
+div.form-control {
+    height: auto;
+    min-height: 34px;
+}
 </style>
 <link rel="stylesheet" href="modules/Init.style.css">
 

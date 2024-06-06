@@ -95,7 +95,7 @@ class mysqli_extended extends mysqli implements CRUD {
                             if($t === 's') {
                                 $value = &$a;
                                 if($this->stripTags ) $value = strip_tags($value);
-                                if($this->escapeString) $value = mysqli_real_escape_string($this, $value);
+                                if($this->escapeString && !is_array(json_decode($value, true))) $value = mysqli_real_escape_string($this, $value);
                                 $args_ref[] = $value;
                             } else {
                                 $args_ref[] = &$a;

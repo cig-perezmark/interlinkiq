@@ -130,6 +130,7 @@ label:has(.help-icon-group) {
 .form-hint mark {
     display: block;
     margin: .5rem;
+    padding: .45rem;
 }
 </style>
 <link rel="stylesheet" href="modules/Init.style.css">

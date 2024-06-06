@@ -6,6 +6,10 @@ include_once __DIR__ ."/utils.php";
 date_default_timezone_set('America/Chicago');
 $currentTimestamp = date('Y-m-d H:i:s');
 
+if(empty($user_id)) {
+    exit('Invalid session.');
+}
+
 // note: no filter for foreign suppliers yet
 // fetching supplier for dropdown
 if(isset($_GET["getProductsBySupplier"]) && !empty($_GET["getProductsBySupplier"])) {
@@ -581,18 +585,35 @@ if(isset($_GET['fetchImportersForTable'])) {
             i.evaluation_date,
             i.importer_id, 
             imp.name AS importer_name, 
+            imp.address AS importer_address,
             i.fsvpqi_id, 
             CONCAT(TRIM(emp.first_name), ' ', TRIM(emp.last_name)) AS fsvpqi_name,
             i.supplier_id,
-            sup.name AS supplier_name
+            sup.name AS supplier_name,
+            cbp.id AS cbp_id,
+            cbp.foods_info,
+            cbp.supplier_info,
+            cbp.determining_importer,
+            cbp.designated_importer,
+            cbp.cbp_entry_filer,
+            cbp.prev_record_id AS previous_cbp_record_id,
+            cbp.created_at AS cbp_date
         FROM 
             tbl_fsvp_importers i 
-            JOIN tbl_supplier imp ON imp.ID = i.importer_id
+            LEFT JOIN tbl_supplier imp ON imp.ID = i.importer_id
             LEFT JOIN tbl_supplier sup ON sup.ID = i.supplier_id
-            JOIN tbl_fsvp_qi qi ON qi.id = i.fsvpqi_id
-            JOIN tbl_hr_employee emp ON emp.ID = qi.employee_id
+            LEFT JOIN tbl_fsvp_qi qi ON qi.id = i.fsvpqi_id
+            LEFT JOIN tbl_hr_employee emp ON emp.ID = qi.employee_id
+            LEFT JOIN tbl_fsvp_cbp_records cbp ON cbp.importer_id = i.id
+            RIGHT JOIN (
+                SELECT importer_id, MAX(created_at) AS max_created_at
+                FROM tbl_fsvp_cbp_records
+                WHERE deleted_at IS NULL
+                GROUP BY importer_id
+            ) latest_cbp ON cbp.importer_id = latest_cbp.importer_id AND cbp.created_at = latest_cbp.max_created_at
         WHERE 
-            i.user_id = ?",
+            i.deleted_at IS NULL AND i.user_id = ?
+        ORDER BY cbp.created_at DESC",
         $user_id
     )->fetchAll(function($data) {
         return [
@@ -603,6 +624,7 @@ if(isset($_GET['fetchImportersForTable'])) {
             'importer' => [
                 'id' => $data['importer_id'],
                 'name' => $data['importer_name'],
+                'address' => formatSupplierAddress($data['importer_address']),
             ],
             'supplier' => [
                 'id' => $data['supplier_id'],
@@ -611,6 +633,16 @@ if(isset($_GET['fetchImportersForTable'])) {
             'fsvpqi' => [
                 'id' => $data['fsvpqi_id'],
                 'name' => $data['fsvpqi_name'],
+            ],
+            'cbp' => [
+                'id' => $data['cbp_id'],
+                'prev_id' => $data['previous_cbp_record_id'],
+                'foods_info' => $data['foods_info'],
+                'supplier_info' => $data['supplier_info'],
+                'determining_importer' => $data['determining_importer'],
+                'designated_importer' => $data['designated_importer'],
+                'cbp_entry_filer' => $data['cbp_entry_filer'],
+                'date' => date('Y-m-d', strtotime($data['cbp_date'])),
             ]
         ];
     });
@@ -666,8 +698,9 @@ if(isset($_GET['newSupplierEvaluation'])) {
 // viewing evaluation data
 if(!empty($_GET['viewEvaluationData'])) {
     $id = $_GET['viewEvaluationData'];
+    $recordId = emptyIsNull($_GET['r'] ?? NULL);
     send_response([
-        'data' => getEvaluationData($conn, $id),
+        'data' => getEvaluationData($conn, $id, $recordId),
     ]);
 }
 
@@ -699,6 +732,52 @@ if(isset($_GET['supplierReEvaluation']) && !empty($_POST['prev_record_id'])) {
         $conn->rollback();
         send_response([
             'message' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+// add new cbp record
+if(isset($_GET['newCBPRecord'])) {
+    try {
+        $importerId = $_POST['importer'];
+
+        if(empty($importerId)) {
+            throw new Exception('Importer is required.');
+        }
+
+        $conn->begin_transaction();
+
+        $values = [
+            'user_id'               => $user_id,
+            'portal_user'           => $portal_user,
+            'importer_id'           => $importerId,
+            'foods_info'            => $_POST['foods_info'],
+            'supplier_info'         => $_POST['supplier_info'],
+            'determining_importer'  => $_POST['determining_importer'],
+            'designated_importer'   => $_POST['designated_importer'],
+            'cbp_entry_filer'       => $_POST['cbp_entry_filer'],
+        ];
+
+        $conn->insert("tbl_fsvp_cbp_records", $values);
+        $id = $conn->getInsertId();
+
+        $conn->commit();
+        send_response([
+            'message' => 'Successfully saved.',
+            'data' => [
+                'id' => $id,
+                'prev_id' => null,
+                'foods_info' => $values['foods_info'],
+                'supplier_info' => $values['supplier_info'],
+                'determining_importer' => $values['determining_importer'],
+                'designated_importer' => $values['designated_importer'],
+                'cbp_entry_filer' => $values['cbp_entry_filer'],
+            ]
+        ]);
+    } catch(Throwable $e) {
+        $conn->rollback();
+        send_response([
+            'error' => $e->getMessage(),
         ], 500);
     }
 }

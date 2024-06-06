@@ -79,6 +79,8 @@ $(function() {
             });
         }
     });
+    const CBPFormAlert = Init.createAlert($('#modalCBPFiling .modal-body'));
+
     populateFSVPQISelect();
     fetchImporterListTable(importersData, importerListTable);
     // events
@@ -128,6 +130,82 @@ $(function() {
             },
             error: function({responseText}) {
                 bootstrapGrowl(responseText || 'Error!', 'danger');
+            },
+            complete: function() {
+                l.stop();
+            }
+        });
+    });
+
+    $('#tableImporterList').on('click', '[data-opencbpfilingform]', function() {
+        $('#CBPFilingForm [name=importer]').val(this.dataset.opencbpfilingform || '');
+        $('#modalCBPFiling').modal('show');
+    });
+
+    // viewing cbp data
+    $('#tableImporterList').on('click', '[data-viewcbpform]', function() {
+        const data = importersData[this.dataset.viewcbpform]; 
+        if(!data) {
+            bootstrapGrowl('Record not found.', 'error');
+            return;
+        }
+
+        $('#modalViewCBP [data-viewcbp=importer]').text(data.importer.name);
+        $('#modalViewCBP [data-viewcbp=date]').text(data.cbp.date);
+        $('#modalViewCBP [data-viewcbp=address]').text(data.importer.address);
+        $('#modalViewCBP [data-viewcbp=foods_info]').text(data.cbp.foods_info);
+        $('#modalViewCBP [data-viewcbp=supplier_info]').text(data.cbp.supplier_info);
+        $('#modalViewCBP [data-viewcbp=determining_importer]').text(data.cbp.determining_importer);
+        $('#modalViewCBP [data-viewcbp=designated_importer]').text(data.cbp.designated_importer);
+        $('#modalViewCBP [data-viewcbp=cbp_entry_filer]').text(data.cbp.cbp_entry_filer);
+        
+        $('#modalViewCBP').modal('show')
+    });
+
+    // cbp modal hide event
+    $('#modalCBPFiling').on('hidden.bs.modal', function() {
+        $('#CBPFilingForm [name=importer]').val('');
+    });
+    
+
+    // submitting CBP forms
+    $('#CBPFilingForm').submit(function(e) {
+        e.preventDefault();
+
+        const form = e.target;
+        let url = baseUrl + 'newCBPRecord';
+
+        if(form.importer.value == '') {
+            CBPFormAlert.setContent('<strong>Error!</strong> Importer not found.').show();
+            return;
+        }
+
+        const data = new FormData(form);
+
+        var l = Ladda.create(this.querySelector('[type=submit]'));
+        l.start();
+
+        $.ajax({
+            url,
+            type: "POST",
+            contentType: false,
+            processData: false,
+            data,
+            success: function({data, message}) {
+                // update data
+                importersData[form.importer.value].cbp = data;
+                const updatedData = importersData[form.importer.value];
+
+                console.log(updatedData, data)
+
+                renderDTRow(importersData, updatedData, importerListTable, 'modify');
+                $('#modalCBPFiling').modal('hide');
+                form.reset();
+                CBPFormAlert.isShowing() && CBPFormAlert.hide();
+                bootstrapGrowl(message || 'Saved!');
+            },
+            error: function({responseJSON}) {
+                bootstrapGrowl(responseJSON.error || 'Error!', 'danger');
             },
             complete: function() {
                 l.stop();
@@ -202,25 +280,42 @@ function fetchImporterListTable(importersData, table) {
     });
 }
 
-function renderDTRow(importersData, d, table) {
+function renderDTRow(importersData, d, table, method = 'add') {
     // save to local storage
     importersData[d.id] = d;
-    // const no = `<span style="font-weight:600;">No</span>`;
-    // const sa = !d.supplier_agreement || !d.supplier_agreement.length ? no : `<a href="javascript:void(0)" data-opensafile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View</a>`;
-    // const cs = !d.compliance_statement || !d.compliance_statement.length ?  no : `<a href="javascript:void(0)" data-opencsfile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View </a>`;
+    const importerName = `<span data-importerid="${d.id}">${d.importer.name || '(unnamed)'}</span>`;
+    let CBPButtons = '';
+
+    if(d.cbp) {
+        CBPButtons = `
+            <div class="d-flex center">
+                <button type="button" class="btn btn-link btn-sm" data-viewcbpform="${d.id}">View</button>|
+                <button type="button" class="btn btn-link btn-sm" data-opencbpfilingform="${d.id}">Update</button>
+            </div>
+        `;
+    } else {
+        CBPButtons = `<button type="button" class="btn green-soft btn-circle btn-sm" data-opencbpfilingform="${d.id}">Open Form</button>`;
+    }
     
-    table.dt.row.add([
-        d.importer.name || '(unnamed)',
+    const rowData = [
+        importerName,
         d.duns_no,
         d.fda_registration,
         `<a href="#" title="View details">${d.fsvpqi.name}</a>`,
         d.evaluation_date,
-        `<button title="Evaluation form" type="button" class="btn green-soft btn-circle btn-sm">Open Form</button>`,
+        CBPButtons,
         `
             <div class="d-flex center">
-                <button type="button" class="btn-link">Open</button>
+                <button type="button" class="btn green btn-circle btn-sm">View</button>
             </div>
         `,
-    ]);
+    ];
+
+    if(method == 'update') {
+        const index = $(`#tableImporterList tr:has([data-importerid=${d.id}])`).index();
+        table.dt.row(index).data(rowData);
+    } else if(method == 'add') {
+        table.dt.row.add(rowData);
+    }
     return table.dt;
 }

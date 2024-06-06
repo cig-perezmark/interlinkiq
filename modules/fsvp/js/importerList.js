@@ -142,10 +142,31 @@ $(function() {
         $('#modalCBPFiling').modal('show');
     });
 
+    // viewing cbp data
+    $('#tableImporterList').on('click', '[data-viewcbpform]', function() {
+        const data = importersData[this.dataset.viewcbpform]; 
+        if(!data) {
+            bootstrapGrowl('Record not found.', 'error');
+            return;
+        }
+
+        $('#modalViewCBP [data-viewcbp=importer]').text(data.importer.name);
+        $('#modalViewCBP [data-viewcbp=date]').text(data.cbp.date);
+        $('#modalViewCBP [data-viewcbp=address]').text(data.importer.address);
+        $('#modalViewCBP [data-viewcbp=foods_info]').text(data.cbp.foods_info);
+        $('#modalViewCBP [data-viewcbp=supplier_info]').text(data.cbp.supplier_info);
+        $('#modalViewCBP [data-viewcbp=determining_importer]').text(data.cbp.determining_importer);
+        $('#modalViewCBP [data-viewcbp=designated_importer]').text(data.cbp.designated_importer);
+        $('#modalViewCBP [data-viewcbp=cbp_entry_filer]').text(data.cbp.cbp_entry_filer);
+        
+        $('#modalViewCBP').modal('show')
+    });
+
     // cbp modal hide event
     $('#modalCBPFiling').on('hidden.bs.modal', function() {
         $('#CBPFilingForm [name=importer]').val('');
     });
+    
 
     // submitting CBP forms
     $('#CBPFilingForm').submit(function(e) {
@@ -267,8 +288,11 @@ function renderDTRow(importersData, d, table, method = 'add') {
 
     if(d.cbp) {
         CBPButtons = `
-            <button type="button" class="btn btn-link">View</button>
-        <button type="button" class="btn green-soft btn-circle btn-sm" data-opencbpfilingform="${d.id}">New</button>`;
+            <div class="d-flex center">
+                <button type="button" class="btn btn-link btn-sm" data-viewcbpform="${d.id}">View</button>|
+                <button type="button" class="btn btn-link btn-sm" data-opencbpfilingform="${d.id}">Update</button>
+            </div>
+        `;
     } else {
         CBPButtons = `<button type="button" class="btn green-soft btn-circle btn-sm" data-opencbpfilingform="${d.id}">Open Form</button>`;
     }
@@ -280,11 +304,11 @@ function renderDTRow(importersData, d, table, method = 'add') {
         `<a href="#" title="View details">${d.fsvpqi.name}</a>`,
         d.evaluation_date,
         CBPButtons,
-        // `
-        //     <div class="d-flex center">
-        //         <button type="button" class="btn-link">Open</button>
-        //     </div>
-        // `,
+        `
+            <div class="d-flex center">
+                <button type="button" class="btn green btn-circle btn-sm">View</button>
+            </div>
+        `,
     ];
 
     if(method == 'update') {

@@ -4,13 +4,16 @@
     </a>
 </div>
 
-<table class="table table-bordered table-hover" id="tableSupplierList">
+<table class="table table-bordered table-hover" id="tableIngredients">
     <thead>
         <tr>
-            <th>Product Name</th>
-            <th>Importer</th>
+            <th>Importer Name</th>
+            <th>Product</th>
             <th>Description</th>
+            <th>Ingredients List</th>
             <th>Brand Name</th>
+            <th>Intended Use</th>
+            <!-- <th>FSVP Activity Worksheet</th> -->
             <th data-nosort="true">Actions</th>
         </tr>
     </thead>
@@ -124,3 +127,5 @@
         </form>
     </div>
 </div>
+
+<script defer src="modules/fsvp/js/ingredientsRegister.js"></script>

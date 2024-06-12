@@ -4,7 +4,7 @@ include_once __DIR__ ."/../../alt-setup/setup.php";
 date_default_timezone_set('America/Chicago');
 
 function ForeignSupplierSQLClause($firstAnd = true) {
-    return ($firstAnd ? "AND " : " ") . "TRIM(SUBSTRING_INDEX(address, ',', 1)) NOT LIKE 'US' AND TRIM(SUBSTRING_INDEX(address, '|', 1)) NOT LIKE 'US'";
+    return ($firstAnd ? " AND " : " ") . "TRIM(SUBSTRING_INDEX(address, ',', 1)) NOT LIKE 'US' AND TRIM(SUBSTRING_INDEX(address, '|', 1)) NOT LIKE 'US'";
 }
 
 function getSuppliersByUser($conn, $userId) {

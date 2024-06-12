@@ -1,8 +1,12 @@
 <?php
+    if(isset($_GET['pdf'])) {
+        include __DIR__ .'/pdf.php';
+        exit();
+    }
+
     include_once __DIR__ . '/../../header.php';
     include_once __DIR__ .'/utils.php';
 
-    // $autofill__ = '<i class="text-muted">(auto-filled)</i>';
     function autofill() {
         return '<i class="text-muted">(auto-filled)</i>';
     }
@@ -191,6 +195,7 @@ div.form-control {
 <script>
 var baseUrl = 'fsvp?api&';
 Init.baseUrl = 'fsvp?api&';
+Init.URL = 'fsvp';
 </script>
 <script>
 </script>

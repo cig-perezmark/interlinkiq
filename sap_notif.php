@@ -117,6 +117,57 @@
 ?>
 
 <?php
+    // Select and update the task that has pass 3 weeks upon its added date
+    $task_mail_status = 1;
+    $expire_task = $conn->prepare("SELECT crmt_id AS list_id FROM tbl_Customer_Relationship_Task WHERE mail_status = ? AND Task_added < NOW() - INTERVAL 3 WEEK");
+
+    if ($expire_task === false) {
+        echo 'Error statement: '.$conn->error;
+        exit;
+    }
+
+    $expire_task->bind_param('i', $task_mail_status);
+    $expire_task->execute();
+    $result = $expire_task->get_result();
+
+    if ($result === false) {
+        echo 'Error retrieving result: '.$conn->error;
+        exit;
+    }
+
+    $ids = [];
+    while ($row = $result->fetch_assoc()) {
+        $ids[] = $row['list_id'];
+    }
+
+    if (!empty($ids)) {
+        $ids_list = implode(',', $ids);
+        $new_mail_status = 0; // Assuming the new mail_status value is 1
+
+        $update_query = "UPDATE tbl_Customer_Relationship_Task SET mail_status = ? WHERE crmt_id IN ($ids_list)";
+        $update_stmt = $conn->prepare($update_query);
+
+        if ($update_stmt === false) {
+            echo 'Error preparing update statement: '.$conn->error;
+            exit;
+        }
+
+        $update_stmt->bind_param('i', $new_mail_status);
+        $update_stmt->execute();
+
+        if ($update_stmt->affected_rows > 0) {
+            echo 'Mail status updated successfully for '. $update_stmt->affected_rows .' records.';
+        } else {
+            echo 'No records updated.';
+        }
+    } else {
+        echo 'No tasks found to update.';
+    }
+
+    $expire_task->close();
+    
+    // End select and update
+    
     // Auto update the campaign if the contact status = Manual and flag = 0
     $flag1 = 0;
     $status1 = 'Manual';
@@ -469,40 +520,32 @@
 
     $chunkSize = 1000; // Adjust the chunk size as needed
     $offset = 0;
-
-    $stopStmt = $conn->prepare("UPDATE tbl_Customer_Relationship_Campaign SET Auto_Send_Status = 0 WHERE Campaign_Id = ?");
-
+    
+    $stopStmt = $conn->prepare("UPDATE tbl_Customer_Relationship_Campaign 
+                                SET Auto_Send_Status = 0 
+                                WHERE Campaign_Id IN (
+                                    SELECT Campaign_Id 
+                                    FROM tbl_Customer_Relationship_Campaign 
+                                    WHERE Campaign_added < DATE_SUB(CURDATE(), INTERVAL 90 DAY)
+                                    LIMIT ?, ?
+                                )");
+    
     if (!$stopStmt) {
         die('Prepare failed: ' . $conn->error);
     }
-
+    
     while (true) {
-        $stmt = $conn->prepare("
-            SELECT Campaign_Id 
-            FROM tbl_Customer_Relationship_Campaign 
-            WHERE Campaign_added < DATE_SUB(CURDATE(), INTERVAL 90 DAY)
-            LIMIT ?, ?
-        ");
-        if (!$stmt) {
-            die('Prepare failed: ' . $conn->error);
-        }
-
-        $stmt->bind_param('ii', $offset, $chunkSize);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows === 0) {
+        $stopStmt->bind_param('ii', $offset, $chunkSize);
+        $stopStmt->execute();
+    
+        $affectedRows = $stopStmt->affected_rows;
+        if ($affectedRows === 0) {
             break;
         }
-
-        while ($campaign = $result->fetch_assoc()) {
-            $stopStmt->bind_param('i', $campaign['Campaign_Id']);
-            $stopStmt->execute();
-        }
+    
         $offset += $chunkSize;
-        $stmt->close();
     }
-
+    
     $stopStmt->close();
 
     while (true) {
@@ -1296,7 +1339,7 @@
     // if ($current_minute == 0 AND $current_hour == 0 AND $current_weekday == 1 OR $current_weekday == 5) {
     if ($current_minute == 0 AND $current_hour == 0) {
         if ($current_weekday == 1 OR $current_weekday == 5) {
-            $selectCRM = mysqli_query( $conn,"SELECT * FROM tbl_Customer_Relationship_Task WHERE Task_Status != 3");
+            $selectCRM = mysqli_query( $conn,"SELECT * FROM tbl_Customer_Relationship_Task WHERE Task_Status != 3 mail_status = 1");
             $mail_sent = 0;
             $from_email = 'services@interlinkiq.com';
             $from_user = 'Interlink IQ';

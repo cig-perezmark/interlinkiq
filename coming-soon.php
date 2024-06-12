@@ -14,7 +14,7 @@
 
                     <div class="row">
                         <div class="col-md-12 text-center">
-                            <h1 class="text-success sbold">COMING SOON</h1>
+                            <h1 class="text-success sbold">CONTACT US</h1>
                             <p>Users have the ability to adjust and personalize this management tool according to their requirements.</p>
                         </div>
                     </div>

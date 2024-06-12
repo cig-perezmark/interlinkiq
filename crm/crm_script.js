@@ -732,21 +732,75 @@ $(document).ready(function() {
         var to = $('#date-to').val();
         if (!from.length || !to.length) {
             alert('Date input are required');
+            return;
         }
-        destroy_dataTable()
+        
+        if ($.fn.DataTable.isDataTable('#dataTable_1')) {
+            $('#dataTable_1').DataTable().destroy();
+            $('#dataTable_1').addClass('d-none');
+        }
+        if ($.fn.DataTable.isDataTable('#dataTable_2')) {
+            $('#dataTable_2').DataTable().destroy();
+            $('#dataTable_2').addClass('d-none');
+        }
         $('#site_activities_loading, #spinner-text').removeClass('d-none');
-        $.post({
-            url: "crm/controller_functions.php",
-            data: {
-                filter_range: true,
-                from: from,
-                to: to
+        
+        $('#dataTable_2').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "crm/controller_functions.php",
+                "type": "POST",
+                "data": {
+                    filter_range: true,
+                    from: from,
+                    to: to
+                }
             },
-            success: function(response) {
-                
+            "columns": [
+                { "data": "crm_id", "render": function(data, type, row) {
+                    return `<label class="mt-checkbox ${row.checkbox_display || ''}">
+                                <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="${data || ''}"/>
+                                <span></span>
+                            </label>`;
+                }},
+                { "data": "account_name", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "account_email", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "contact_phone", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "Account_Source", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "status", "render": function(data, type, row) {
+                    return `<span class="contact-status">${data || ''}</span>`;
+                }},
+                { "data": "activity_date", "render": function(data, type, row) {
+                    if (data === 'Expired') {
+                        return '<span class="font-red bold">Expired Campaign</span>';
+                    } else {
+                        return data || '';
+                    }
+                }},
+                { "data": "performer_name", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "crm_id", "render": function(data, type, row) {
+                    return `<div class="clearfix">
+                                <div class="">
+                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm red tooltips activity-history" id="${data || ''}" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
+                                </div>
+                            </div>`;
+                }}
+            ],
+            "initComplete": function(settings, json) {
                 $('#dataTable_2').removeClass('d-none');
-                $('#dataTable_2 tbody').html(response);
-                initializeDataTable('#dataTable_2');
                 $('#site_activities_loading, #spinner-text').addClass('d-none');
             }
         });
@@ -757,30 +811,75 @@ $(document).ready(function() {
         if(isChecked == true) {
             var column = $(this).attr('data-value');
             var value = $(this).val();
-            destroy_dataTable()
+            if ($.fn.DataTable.isDataTable('#dataTable_1')) {
+                $('#dataTable_1').DataTable().destroy();
+                $('#dataTable_1').addClass('d-none');
+            }
+            if ($.fn.DataTable.isDataTable('#dataTable_2')) {
+                $('#dataTable_2').DataTable().destroy();
+                $('#dataTable_2').addClass('d-none');
+            }
             $('#site_activities_loading, #spinner-text').removeClass('d-none');
-        
-            $.post({
-                url: "crm/controller_functions.php",
-                data: {
-                    filter_value: true,
-                    column: column,
-                    value: value
+            
+            $('#dataTable_2').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "crm/controller_functions.php",
+                    "type": "POST",
+                    "data": {
+                        filter_value: true,
+                        column: column,
+                        value: value
+                    }
                 },
-                success: function(response) {
-                    // $('#dataTable_1 tbody').html(response);
-                    $('#dataTable_1').removeClass('d-none');
-                    $('#dataTable_1 tbody').html(response);
-                    initializeDataTable('#dataTable_1');
-                    
+                "columns": [
+                    { "data": "crm_id", "render": function(data, type, row) {
+                        return `<label class="mt-checkbox ${row.checkbox_display || ''}">
+                                    <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="${data || ''}"/>
+                                    <span></span>
+                                </label>`;
+                    }},
+                    { "data": "account_name", "render": function(data, type, row) {
+                        return data || '';
+                    }},
+                    { "data": "account_email", "render": function(data, type, row) {
+                        return data || '';
+                    }},
+                    { "data": "contact_phone", "render": function(data, type, row) {
+                        return data || '';
+                    }},
+                    { "data": "Account_Source", "render": function(data, type, row) {
+                        return data || '';
+                    }},
+                    { "data": "status", "render": function(data, type, row) {
+                        return `<span class="contact-status">${data || ''}</span>`;
+                    }},
+                    { "data": "activity_date", "render": function(data, type, row) {
+                        if (data === 'Expired') {
+                            return '<span class="font-red bold">Expired Campaign</span>';
+                        } else {
+                            return data || '';
+                        }
+                    }},
+                    { "data": "performer_name", "render": function(data, type, row) {
+                        return data || '';
+                    }},
+                    { "data": "crm_id", "render": function(data, type, row) {
+                        return `<div class="clearfix">
+                                    <div class="">
+                                        <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                        <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                        <a class="btn btn-sm red tooltips activity-history" id="${data || ''}" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
+                                    </div>
+                                </div>`;
+                    }}
+                ],
+                "initComplete": function(settings, json) {
+                    $('#dataTable_2').removeClass('d-none');
                     $('#site_activities_loading, #spinner-text').addClass('d-none');
-                    $(this).prop('checked', false);
                 }
-            })
-        } else if(isChecked == false) {
-            $('#site_activities_loading, #spinner-text').removeClass('d-none');
-            destroy_dataTable()
-            load_data()
+            });
         }
     })
     
@@ -788,32 +887,107 @@ $(document).ready(function() {
         var isChecked = $(this).prop('checked');
         if(isChecked == true) {
             var value = $(this).val();
+            if ($.fn.DataTable.isDataTable('#dataTable_1')) {
+                $('#dataTable_1').DataTable().destroy();
+                $('#dataTable_1').addClass('d-none');
+            }
+            if ($.fn.DataTable.isDataTable('#dataTable_2')) {
+                $('#dataTable_2').DataTable().destroy();
+                $('#dataTable_2').addClass('d-none');
+            }
+            $('#site_activities_loading, #spinner-text').removeClass('d-none');
             
-            destroy_dataTable()
-            $('#site_activities_loading, #spinner-text').removeClass('d-none');
-        
-            $.post({
-                url: "crm/controller_functions.php",
-                data: {
-                    filter_campaign: true,
-                    slug: value
+            $('#dataTable_2').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "crm/controller_functions.php",
+                    "type": "POST",
+                    "data": {
+                        filter_campaign: true,
+                        slug: value
+                    }
                 },
-                success: function(response) {
-                    // $('#dataTable_1 tbody').html(response);
-                $('#dataTable_1').removeClass('d-none');
-                $('#dataTable_1 tbody').html(response);
-                initializeDataTable('#dataTable_1');
-                
-                $('#site_activities_loading, #spinner-text').addClass('d-none');
-                    $(this).prop('checked', false);
+                "columns": [
+                    { "data": "crm_id", "render": function(data, type, row) {
+                        return `<label class="mt-checkbox ${row.checkbox_display || ''}">
+                                    <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="${data || ''}"/>
+                                    <span></span>
+                                </label>`;
+                    }},
+                    { "data": "account_name", "render": function(data, type, row) {
+                        return data || '';
+                    }},
+                    { "data": "account_email", "render": function(data, type, row) {
+                        return data || '';
+                    }},
+                    { "data": "contact_phone", "render": function(data, type, row) {
+                        return data || '';
+                    }},
+                    { "data": "Account_Source", "render": function(data, type, row) {
+                        return data || '';
+                    }},
+                    { "data": "status", "render": function(data, type, row) {
+                        return `<span class="contact-status">${data || ''}</span>`;
+                    }},
+                    { "data": "activity_date", "render": function(data, type, row) {
+                        if (data === 'Expired') {
+                            return '<span class="font-red bold">Expired Campaign</span>';
+                        } else {
+                            return data || '';
+                        }
+                    }},
+                    { "data": "performer_name", "render": function(data, type, row) {
+                        return data || '';
+                    }},
+                    { "data": "crm_id", "render": function(data, type, row) {
+                        return `<div class="clearfix">
+                                    <div class="">
+                                        <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                        <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                        <a class="btn btn-sm red tooltips activity-history" id="${data || ''}" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
+                                    </div>
+                                </div>`;
+                    }}
+                ],
+                "initComplete": function(settings, json) {
+                    $('#dataTable_2').removeClass('d-none');
+                    $('#site_activities_loading, #spinner-text').addClass('d-none');
                 }
-            })
-        } else if(isChecked == false) {
-            $('#site_activities_loading, #spinner-text').removeClass('d-none');
-            destroy_dataTable()
-            load_data()
+            });
         }
-    })
+    });
+    
+    // $('.filter_value_campaign').on('click', function(e) {
+    //     var isChecked = $(this).prop('checked');
+    //     if(isChecked == true) {
+    //         var value = $(this).val();
+            
+    //         destroy_dataTable()
+    //         $('#site_activities_loading, #spinner-text').removeClass('d-none');
+        
+    //         $.post({
+    //             url: "crm/controller_functions.php",
+    //             data: {
+    //                 filter_campaign: true,
+    //                 slug: value
+    //             },
+    //             success: function(response) {
+    //                 // $('#dataTable_1 tbody').html(response);
+    //             $('#dataTable_1').removeClass('d-none');
+    //             $('#dataTable_1 tbody').html(response);
+    //             initializeDataTable('#dataTable_1');
+                
+    //             $('#site_activities_loading, #spinner-text').addClass('d-none');
+    //                 $(this).prop('checked', false);
+    //             }
+    //         })
+    //     } else if(isChecked == false) {
+    //         $('#site_activities_loading, #spinner-text').removeClass('d-none');
+    //         destroy_dataTable()
+    //         load_data()
+    //     }
+    // })
     
     $(document).on('click', '.contactHistory', function(e) {
         e.preventDefault()
@@ -850,36 +1024,9 @@ $(document).ready(function() {
     
     $('#searchParent').on('submit', function(e) {
         e.preventDefault();
-        var searchVal = $('#searchValue').val();
-        
-        if ($.fn.DataTable.isDataTable('#dataTable_1')) {
-            $('#dataTable_1').DataTable().destroy();
-            $('#dataTable_1').addClass('d-none');
-        }
-        if ($.fn.DataTable.isDataTable('#dataTable_2')) {
-            $('#dataTable_2').DataTable().destroy();
-            $('#dataTable_2').addClass('d-none');
-        }
-        $('#site_activities_loading, #spinner-text').removeClass('d-none');
-        $.post({
-            url: "crm/controller_functions.php",
-            data: {
-                search_contact: true,
-                searchVal: searchVal,
-            },
-            success: function(response) {
-                $('#dataTable_2').removeClass('d-none');
-                $('#dataTable_2 tbody').html(response);
-                initializeDataTable('#dataTable_2');
-                $('#site_activities_loading, #spinner-text').addClass('d-none');
-            }
-        });
-    });
+        var parentValue = $('#searchParentValue').val();
 
-    $('#searchForm').on('submit', function(e) {
-        e.preventDefault();
-        var searchVal = $('#searchValue').val();
-        
+        // Destroy any existing DataTable instance to initialize a new one
         if ($.fn.DataTable.isDataTable('#dataTable_1')) {
             $('#dataTable_1').DataTable().destroy();
             $('#dataTable_1').addClass('d-none');
@@ -889,16 +1036,62 @@ $(document).ready(function() {
             $('#dataTable_2').addClass('d-none');
         }
         $('#site_activities_loading, #spinner-text').removeClass('d-none');
-        $.post({
-            url: "crm/controller_functions.php",
-            data: {
-                search_parent: true,
-                searchVal: searchVal,
+
+        // Initialize the DataTable with server-side processing
+        $('#dataTable_2').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "crm/controller_functions.php",
+                "type": "POST",
+                "data": {
+                    search_parent: true,
+                    searchVal: parentValue,
+                }
             },
-            success: function(response) {
+            "columns": [
+                { "data": "crm_id", "render": function(data, type, row) {
+                    return `<label class="mt-checkbox ${row.checkbox_display || ''}">
+                                <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="${data || ''}"/>
+                                <span></span>
+                            </label>`;
+                }},
+                { "data": "account_name", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "account_email", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "contact_phone", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "Account_Source", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "status", "render": function(data, type, row) {
+                    return `<span class="contact-status">${data || ''}</span>`;
+                }},
+                { "data": "activity_date", "render": function(data, type, row) {
+                    if (data === 'Expired') {
+                        return '<span class="font-red bold">Expired Campaign</span>';
+                    } else {
+                        return data || '';
+                    }
+                }},
+                { "data": "performer_name", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "crm_id", "render": function(data, type, row) {
+                    return `<div class="clearfix">
+                                <div class="">
+                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm red tooltips activity-history" id="${data || ''}" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
+                                </div>
+                            </div>`;
+                }}
+            ],
+            "initComplete": function(settings, json) {
                 $('#dataTable_2').removeClass('d-none');
-                $('#dataTable_2 tbody').html(response);
-                initializeDataTable('#dataTable_2');
                 $('#site_activities_loading, #spinner-text').addClass('d-none');
             }
         });
@@ -907,7 +1100,7 @@ $(document).ready(function() {
     $('#searchFormEmail').on('submit', function(e) {
         e.preventDefault();
         var searchVal = $('#searchEmailValue').val();
-        
+
         if ($.fn.DataTable.isDataTable('#dataTable_1')) {
             $('#dataTable_1').DataTable().destroy();
             $('#dataTable_1').addClass('d-none');
@@ -917,16 +1110,61 @@ $(document).ready(function() {
             $('#dataTable_2').addClass('d-none');
         }
         $('#site_activities_loading, #spinner-text').removeClass('d-none');
-        $.post({
-            url: "crm/controller_functions.php",
-            data: {
-                search_contact_email: true,
-                searchEmailVal: searchVal,
+
+        $('#dataTable_2').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "crm/controller_functions.php",
+                "type": "POST",
+                "data": {
+                    search_contact_email: true,
+                    searchEmailVal: searchVal,
+                }
             },
-            success: function(response) {
+            "columns": [
+                { "data": "crm_id", "render": function(data, type, row) {
+                    return `<label class="mt-checkbox ${row.checkbox_display || ''}">
+                                <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="${data || ''}"/>
+                                <span></span>
+                            </label>`;
+                }},
+                { "data": "account_name", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "account_email", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "contact_phone", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "Account_Source", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "status", "render": function(data, type, row) {
+                    return `<span class="contact-status">${data || ''}</span>`;
+                }},
+                { "data": "activity_date", "render": function(data, type, row) {
+                    if (data === 'Expired') {
+                        return '<span class="font-red bold">Expired Campaign</span>';
+                    } else {
+                        return data || '';
+                    }
+                }},
+                { "data": "performer_name", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "crm_id", "render": function(data, type, row) {
+                    return `<div class="clearfix">
+                                <div class="">
+                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm red tooltips activity-history" id="${data || ''}" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
+                                </div>
+                            </div>`;
+                }}
+            ],
+            "initComplete": function(settings, json) {
                 $('#dataTable_2').removeClass('d-none');
-                $('#dataTable_2 tbody').html(response);
-                initializeDataTable('#dataTable_2');
                 $('#site_activities_loading, #spinner-text').addClass('d-none');
             }
         });
@@ -935,7 +1173,7 @@ $(document).ready(function() {
     $('#searchFormNo').on('submit', function(e) {
         e.preventDefault();
         var searchVal = $('#searchNoValue').val();
-        
+
         if ($.fn.DataTable.isDataTable('#dataTable_1')) {
             $('#dataTable_1').DataTable().destroy();
             $('#dataTable_1').addClass('d-none');
@@ -945,16 +1183,136 @@ $(document).ready(function() {
             $('#dataTable_2').addClass('d-none');
         }
         $('#site_activities_loading, #spinner-text').removeClass('d-none');
-        $.post({
-            url: "crm/controller_functions.php",
-            data: {
-                search_contact_phone: true,
-                searchPhoneVal: searchVal,
+
+        $('#dataTable_2').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "crm/controller_functions.php",
+                "type": "POST",
+                "data": {
+                    search_contact_phone: true,
+                    searchPhoneVal: searchVal,
+                }
             },
-            success: function(response) {
+            "columns": [
+                { "data": "crm_id", "render": function(data, type, row) {
+                    return `<label class="mt-checkbox ${row.checkbox_display || ''}">
+                                <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="${data || ''}"/>
+                                <span></span>
+                            </label>`;
+                }},
+                { "data": "account_name", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "account_email", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "contact_phone", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "Account_Source", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "status", "render": function(data, type, row) {
+                    return `<span class="contact-status">${data || ''}</span>`;
+                }},
+                { "data": "activity_date", "render": function(data, type, row) {
+                    if (data === 'Expired') {
+                        return '<span class="font-red bold">Expired Campaign</span>';
+                    } else {
+                        return data || '';
+                    }
+                }},
+                { "data": "performer_name", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "crm_id", "render": function(data, type, row) {
+                    return `<div class="clearfix">
+                                <div class="">
+                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm red tooltips activity-history" id="${data || ''}" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
+                                </div>
+                            </div>`;
+                }}
+            ],
+            "initComplete": function(settings, json) {
                 $('#dataTable_2').removeClass('d-none');
-                $('#dataTable_2 tbody').html(response);
-                initializeDataTable('#dataTable_2');
+                $('#site_activities_loading, #spinner-text').addClass('d-none');
+            }
+        });
+    });
+    
+    $('#searchForm').on('submit', function(e) {
+        e.preventDefault();
+        var searchVal = $('#searchValue').val();
+
+        // Destroy any existing DataTable instance to initialize a new one
+        if ($.fn.DataTable.isDataTable('#dataTable_1')) {
+            $('#dataTable_1').DataTable().destroy();
+            $('#dataTable_1').addClass('d-none');
+        }
+        if ($.fn.DataTable.isDataTable('#dataTable_2')) {
+            $('#dataTable_2').DataTable().destroy();
+            $('#dataTable_2').addClass('d-none');
+        }
+        $('#site_activities_loading, #spinner-text').removeClass('d-none');
+
+        // Initialize the DataTable with server-side processing
+        $('#dataTable_2').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "crm/controller_functions.php",
+                "type": "POST",
+                "data": {
+                    search_contact: true,
+                    searchVal: searchVal,
+                }
+            },
+            "columns": [
+                { "data": "crm_id", "render": function(data, type, row) {
+                    return `<label class="mt-checkbox ${row.checkbox_display || ''}">
+                                <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="${data || ''}"/>
+                                <span></span>
+                            </label>`;
+                }},
+                { "data": "account_name", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "account_email", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "contact_phone", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "Account_Source", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "status", "render": function(data, type, row) {
+                    return `<span class="contact-status">${data || ''}</span>`;
+                }},
+                { "data": "activity_date", "render": function(data, type, row) {
+                    if (data === 'Expired') {
+                        return '<span class="font-red bold">Expired Campaign</span>';
+                    } else {
+                        return data || '';
+                    }
+                }},
+                { "data": "performer_name", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "crm_id", "render": function(data, type, row) {
+                    return `<div class="clearfix">
+                                <div class="">
+                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm red tooltips activity-history" id="${data || ''}" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
+                                </div>
+                            </div>`;
+                }}
+            ],
+            "initComplete": function(settings, json) {
+                $('#dataTable_2').removeClass('d-none');
                 $('#site_activities_loading, #spinner-text').addClass('d-none');
             }
         });
@@ -973,16 +1331,62 @@ $(document).ready(function() {
             $('#dataTable_2').addClass('d-none');
         }
         $('#site_activities_loading, #spinner-text').removeClass('d-none');
-        $.post({
-            url: "crm/controller_functions.php",
-            data: {
-                search_contact_source: true,
-                searchSourceVal: searchVal,
+        
+        $('#dataTable_2').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "crm/controller_functions.php",
+                "type": "POST",
+                "data": {
+                    search_contact_source: true,
+                    searchSourceVal: searchVal,
+                }
             },
-            success: function(response) {
+            "columns": [
+                { "data": "crm_id", "render": function(data, type, row) {
+                    return `<label class="mt-checkbox ${row.checkbox_display || ''}">
+                                <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="${data || ''}"/>
+                                <span></span>
+                            </label>`;
+                }},
+                { "data": "account_name", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "account_email", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "contact_phone", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "Account_Source", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "status", "render": function(data, type, row) {
+                    return `<span class="contact-status">${data || ''}</span>`;
+                }},
+                { "data": "activity_date", "render": function(data, type, row) {
+                    if (data === 'Expired') {
+                        return '<span class="font-red bold">Expired Campaign</span>';
+                    } else {
+                        return data || '';
+                    }
+                }},
+                { "data": "performer_name", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "crm_id", "render": function(data, type, row) {
+                    return `<div class="clearfix">
+                                <div class="">
+                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm red tooltips activity-history" id="${data || ''}" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
+                                </div>
+                            </div>`;
+                }}
+            ],
+            "initComplete": function(settings, json) {
                 $('#dataTable_2').removeClass('d-none');
-                $('#dataTable_2 tbody').html(response);
-                initializeDataTable('#dataTable_2');
                 $('#site_activities_loading, #spinner-text').addClass('d-none');
             }
         });

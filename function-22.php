@@ -632,8 +632,8 @@
         if ( mysqli_num_rows($selectEmail) > 0 ) {
             while($rowUser = mysqli_fetch_array($selectEmail)) {
                 $ID = $rowUser['ID'];
-                $first_name = htmlentities($rowUser['first_name']);
-                $last_name = htmlentities($rowUser['last_name']);
+                $first_name = $rowUser['first_name'];
+                $last_name = $rowUser['last_name'];
                 $password_verify = $rowUser['password'];
                 $client = $rowUser['client'];
                 $is_verified = $rowUser['is_verified'];
@@ -890,7 +890,7 @@
                     WHERE email = '".$email."'
                 " );
                 if ( mysqli_num_rows($selectData) == 0 ) {
-                    $message = 'Thank you for trying to create an account. Access is by invitation only. For further assistance, please contact <a href="mailto:csuccess@consultareinc.com" target="_blank">csuccess@consultareinc.com</a> or call <a href="tel:1-202-982-3002" target="_blank">1-202-982-3002</a>.';
+                    $message = 'Incorrect details. Please try again!';
                     $exist = true;
                 }
             }
@@ -2814,7 +2814,7 @@
                         invites you to join <a href="'. $base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">'.$client_name.'</a> to connect with your assigned duties, work, and tasks. 
                         If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">'.$base_url.$client_url.'?r=1&i='.$last_id.'</a><br><br>
 
-                        Should you need assistance, kindly call 202-982-3002 or email <a href="mailto:'.$client_email.'" target="_blank">'.$client_email.'</a><br><br>
+                        Should you need assistance, kindly email <a href="mailto:'.$client_email.'" target="_blank">'.$client_email.'</a><br><br>
 
                         '.$client_name.' Team';
                     }
@@ -2960,7 +2960,7 @@
                             invites you to join <a href="'. $base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">'.$client_name.'</a> to connect with your assigned duties, work, and tasks. 
                             If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">'.$base_url.$client_url.'?r=1&i='.$last_id.'</a><br><br>
 
-                            Should you need assistance, kindly call 202-982-3002 or email <a href="mailto:'.$client_email.'" target="_blank">'.$client_email.'</a><br><br>
+                            Should you need assistance, kindly email <a href="mailto:'.$client_email.'" target="_blank">'.$client_email.'</a><br><br>
 
                             '.$client_name.' Team';
                         }
@@ -30866,9 +30866,9 @@
         if ( mysqli_num_rows($selectData) > 0 ) {
             while($row = mysqli_fetch_array($selectData)) {
                 $ID = $row['ID'];
-                $record = htmlentities($row['record']);
-                $files_date = htmlentities($row['files_date']);
-                $verified_by = htmlentities($row['verified_by']);
+                $record = $row['record'];
+                $files_date = $row['files_date'];
+                $verified_by = $row['verified_by'];
 
                 echo '<tr id="tr_'. $ID .'">
                     <td>'. $record .'</td>
@@ -30901,9 +30901,9 @@
         if ( mysqli_num_rows($result) > 0 ) {
             while($row = mysqli_fetch_array($result)) {
                 $ID = $row['ID'];
-                $record = htmlentities($row['record']);
-                $files_date = htmlentities($row['files_date']);
-                $verified_by = htmlentities($row['verified_by']);
+                $record = $row['record'];
+                $files_date = $row['files_date'];
+                $verified_by = $row['verified_by'];
 
                 echo '<tr id="tr_'. $ID .'">
                     <td>'. $record .'</td>
@@ -30996,7 +30996,7 @@
 
                 $employee_id_arr = explode(", ", $assigned_to_id);
                 foreach($employee_id_arr as $key) {    
-                    $selectEmployee = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_hr_employee WHERE ID = $key" );
+                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $key" );
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         $rowEmployee = mysqli_fetch_array($selectEmployee);
                         $employee_name = $rowEmployee["first_name"].' '.$rowEmployee["last_name"];
@@ -31012,16 +31012,16 @@
             
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
-                $selectData = mysqli_query( $conn,'SELECT ID, record, file_date, verified_by FROM tbl_eforms WHERE user_id="'. $user_id .'" AND ID="'. $last_id .'" ORDER BY ID LIMIT 1' );
+                $selectData = mysqli_query( $conn,'SELECT * FROM tbl_eforms WHERE user_id="'. $user_id .'" AND ID="'. $last_id .'" ORDER BY ID LIMIT 1' );
                 if ( mysqli_num_rows($selectData) > 0 ) {
                     $rowData = mysqli_fetch_array($selectData);
                     $data_ID = $rowData['ID'];
-                    $data_record = htmlentities($rowData['record']);
-                    $data_files_date = htmlentities($rowData['files_date']);
-                    $data_verified = htmlentities($rowData['verified_by']);
+                    $data_record = $rowData['record'];
+                    $data_files_date = $rowData['files_date'];
+                    $data_verified = $rowData['verified_by'];
 
                     if (!empty($assigned_to_id)) {
-                        $selectUser = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $user_id" );
+                        $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $user_id" );
                         if ( mysqli_num_rows($selectUser) > 0 AND (intval($filled_out) == 0 OR intval($signed) == 0)) {
                             $rowUser = mysqli_fetch_array($selectUser);
                             $user_name = $rowUser['first_name'].' '.$rowUser['last_name'];
@@ -31111,7 +31111,7 @@
 
             $employee_id_arr = explode(", ", $assigned_to_id);
             foreach($employee_id_arr as $key) {    
-                $selectEmployee = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_hr_employee WHERE ID = $key" );
+                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $key" );
                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                     $rowEmployee = mysqli_fetch_array($selectEmployee);
                     $employee_name = $rowEmployee["first_name"].' '.$rowEmployee["last_name"];
@@ -31124,13 +31124,13 @@
 
         mysqli_query( $conn,"UPDATE tbl_eforms set portal_user='". $portal_user ."', department_id='". $department_id ."', record='". $record ."', assigned_to_id='". $assigned_to_id ."', description='". $description ."', filled_out='". $filled_out ."', filled_out_reason='". $filled_out_reason ."', signed='". $signed ."', signed_reason='". $signed_reason ."', frequency='". $frequency ."', frequency_other='". $frequency_other ."', compliance='". $compliance ."', compliance_reason='". $compliance_reason ."', verified_by='". $verified ."', notes='". $notes ."' WHERE ID='". $ID ."'" );
 
-        $selectData = mysqli_query( $conn,'SELECT ID, record, file_date, verified_by, file_history, filesize FROM tbl_eforms WHERE ID="'. $ID .'" ORDER BY ID LIMIT 1' );
+        $selectData = mysqli_query( $conn,'SELECT * FROM tbl_eforms WHERE ID="'. $ID .'" ORDER BY ID LIMIT 1' );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $rowData = mysqli_fetch_array($selectData);
             $data_ID = $rowData['ID'];
-            $data_record = htmlentities($rowData['record']);
-            $data_files_date = htmlentities($rowData['files_date']);
-            $data_verified = htmlentities($rowData['verified_by']);
+            $data_record = $rowData['record'];
+            $data_files_date = $rowData['files_date'];
+            $data_verified = $rowData['verified_by'];
 
             $files = '';
             $arr_item = array();
@@ -31175,7 +31175,7 @@
 
             if ($process == true) {
                 if (!empty($assigned_to_id)) {
-                    $selectUser = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $user_id" );
+                    $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $user_id" );
                     if ( mysqli_num_rows($selectUser) > 0 AND (intval($filled_out) == 0 OR intval($signed) == 0)) {
                         $rowUser = mysqli_fetch_array($selectUser);
                         $user_name = $rowUser['first_name'].' '.$rowUser['last_name'];

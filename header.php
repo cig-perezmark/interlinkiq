@@ -98,33 +98,33 @@
             $rowUser = mysqli_fetch_array($selectUser);
             $current_userID = $rowUser['ID'];
             $current_userEmployeeID = $rowUser['employee_id'];
-            $current_userFName = $rowUser['first_name'];
-            $current_userLName = $rowUser['last_name'];
-            $current_userEmail = $rowUser['email'];
+            $current_userFName = htmlentities($rowUser['first_name']);
+            $current_userLName = htmlentities($rowUser['last_name']);
+            $current_userEmail = htmlentities($rowUser['email']);
             $current_userType = $rowUser['type'];
         }
 
         $selectUserInfo = mysqli_query( $conn,"SELECT * from tbl_user_info WHERE user_id = $user_id" );
         if ( mysqli_num_rows($selectUserInfo) > 0 ) {
             $rowUserInfo = mysqli_fetch_array($selectUserInfo);
-            $current_userMobile = $rowUserInfo['mobile'];
-            $current_userInterest = $rowUserInfo['interest'];
-            $current_userAddress = $rowUserInfo['address'];
-            $current_userDLicense = $rowUserInfo['driver_license'];
-            $current_userOccupation = $rowUserInfo['occupation'];
-            $current_userAbout = $rowUserInfo['about'];
-            $current_userWebsite = $rowUserInfo['website'];
-            $current_userAvatar = $rowUserInfo['avatar'];
+            $current_userMobile = htmlentities($rowUserInfo['mobile']);
+            $current_userInterest = htmlentities($rowUserInfo['interest']);
+            $current_userAddress = htmlentities($rowUserInfo['address']);
+            $current_userDLicense = htmlentities($rowUserInfo['driver_license']);
+            $current_userOccupation = htmlentities($rowUserInfo['occupation']);
+            $current_userAbout = htmlentities($rowUserInfo['about']);
+            $current_userWebsite = htmlentities($rowUserInfo['website']);
+            $current_userAvatar = htmlentities($rowUserInfo['avatar']);
             if (!empty($rowUserInfo['privacy'])) { $current_userPrivacy = $rowUserInfo['privacy']; }
         }
 
         $selectSM = mysqli_query( $conn,"SELECT * from tbl_user_social_media WHERE user_id = $user_id" );
         if ( mysqli_num_rows($selectSM) > 0 ) {
             $rowSM = mysqli_fetch_array($selectSM);
-            $current_userLinkedIn = $rowSM['linkedin'];
-            $current_userFacebook = $rowSM['facebook'];
-            $current_userTwitter = $rowSM['twitter'];
-            $current_userPage = $rowSM['page'];
+            $current_userLinkedIn = htmlentities($rowSM['linkedin']);
+            $current_userFacebook = htmlentities($rowSM['facebook']);
+            $current_userTwitter = htmlentities($rowSM['twitter']);
+            $current_userPage = htmlentities($rowSM['page']);
         }
         
         if ($current_userEmployeeID > 0) {
@@ -150,7 +150,7 @@
                 $rowEnterprise = mysqli_fetch_array($selectEnterprise);
                 $enterp_id = $rowEnterprise['enterp_id'];
                 $enterp_logo = $rowEnterprise['BrandLogos'];
-                $enterp_name = $rowEnterprise['businessname'];
+                $enterp_name = htmlentities($rowEnterprise['businessname']);
                 $enterp_userID = $rowEnterprise['users_entities'];
             }
         } else {
@@ -159,7 +159,7 @@
                 $rowEnterprise = mysqli_fetch_array($selectEnterprise);
                 $enterp_id = $rowEnterprise['enterp_id'];
                 $enterp_logo = $rowEnterprise['BrandLogos'];
-                $enterp_name = $rowEnterprise['businessname'];
+                $enterp_name = htmlentities($rowEnterprise['businessname']);
                 $enterp_userID = $rowEnterprise['users_entities'];
             }
                 
@@ -368,7 +368,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
         if (mysqli_num_rows($selectUserSwitch) > 0) {
             $rowUserSwitch=mysqli_fetch_array($selectUserSwitch);
-            $current_userEmail=$rowUserSwitch['email'];
+            $current_userEmail=htmlentities($rowUserSwitch['email']);
         }
     }
 
@@ -892,6 +892,17 @@ License: You must have a valid license purchased only from themeforest(the above
                                     echo '<a href="dashboard"><img src="companyDetailsFolder/175668 - FS_RGB_R_Stacked_SiennaTuscany.jpg" height="60px" alt="logo" /></a>';
                                 }
                                 
+                            } else if ($current_client == 10) {
+                                if ($switch_user_id == 1479) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/852876 - New Focuss Logo.png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/852876 - New Focuss Logo.png" height="60px" alt="logo" /></a>';
+                                }
+                                
                             } else {
                                 if (isset($_COOKIE['switchAccount'])) {
                                     echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
@@ -1071,7 +1082,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <span class="position-relative me-2">
                                         <img class="d-flex justify-content-center border border-default bg-white img-circle" style="width:80px; height:80px; object-fit: contain;" src="'.$base_url.'uploads/avatar/'.$current_userAvatar.'" alt="Avatar" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/150x150/EFEFEF/AAAAAA.png?text=no+image\';" />
                                     </span>
-                                    <h4 class="bold ms-3">'.$row['first_name']. " " . $row['last_name'].'</h4>
+                                    <h4 class="bold ms-3">'.htmlentities($row['first_name']). " " . htmlentities($row['last_name']).'</h4>
                                 </div>
                                 <div class="input-icon right">
                                     <i class="fa fa-search"></i>
@@ -1117,8 +1128,8 @@ License: You must have a valid license purchased only from themeforest(the above
                                 if ( mysqli_num_rows($selectNote) > 0 ) {
                                     while($rowNote = mysqli_fetch_array($selectNote)) {
                                         $note_ID = $rowNote['ID'];
-                                        $note_user_id = $rowNote['user_id'];
-                                        $note_description = $rowNote['description'];
+                                        $note_user_id = htmlentities($rowNote['user_id']);
+                                        $note_description = htmlentities($rowNote['description']);
                                         $note_last_modified = $rowNote['last_modified'];
 
                                         echo '<div class="userResult" id="note_'.$note_ID.'">
@@ -1252,7 +1263,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
                                                         while($rowSpeak = mysqli_fetch_array($selectSpeak)) {
                                                             $speak_ID = $rowSpeak['ID'];
-                                                            $speak_comment = stripcslashes($rowSpeak['comment']);
+                                                            $speak_comment = htmlentities(stripcslashes($rowSpeak['comment']));
 
                                                             $speak_last_modified = $rowSpeak['last_modified'];
                                                             $speak_last_modified = new DateTime($speak_last_modified);
@@ -1394,7 +1405,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                         <span class="details">
                                                             <span class="label label-sm label-icon label-success">
                                                                 <i class="fa fa-check"></i>
-                                                            </span> <?= $row['first_name'].' '.$row['last_name'] ?> </span>
+                                                            </span> <?= htmlentities($row['first_name']).' '.htmlentities($row['last_name']) ?> </span>
                                                     </a>
                                                 <?php endforeach; ?>
                                             </li>
@@ -1876,7 +1887,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         </a>
                     </li>
                     <?php endif?>
-                    <?php if(($current_client == 0 AND $switch_user_id <> 1106) OR $switch_user_id == 1360 OR $switch_user_id == 1453) { ?>
+                    <?php if(($current_client == 0 AND $switch_user_id <> 1106) OR $switch_user_id == 1360 OR $switch_user_id == 1366 OR $switch_user_id == 1453 OR $switch_user_id == 1482 OR $switch_user_id == 1365 OR $switch_user_id == 1477 OR $switch_user_id == 145) { ?>
                         <li class="nav-item hide <?php echo $site === "tracking" ? "active" : ""; ?>">
                             <a href="tracking" class="nav-link">
                                 <i class="icon-target"></i>
@@ -2186,7 +2197,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                     $menuDown_ID = $rowMenuDown['ID'];
                                                     $menuDown_collab = $rowMenuDown['collab'];
                                                     $menuDown_url = $rowMenuDown['url'];
-                                                    $menuDown_description = $rowMenuDown['description'];
+                                                    $menuDown_description = htmlentities($rowMenuDown['description']);
 
                                                     $output .= '<li class="nav-item '; if ($site == $menuDown_url) { $output .= 'active'; } if ($menuDown_collab == 1 AND $current_userEmployeeID > 0) { $output .= menu($menuDown_url, $current_userEmployerID, $current_userEmployeeID); } $output .= '">
                                                         <a href="'.$menuDown_url.'" class="nav-link ">
@@ -2213,7 +2224,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     $menu_collab = $rowMenu['collab'];
                                     $menu_icon = $rowMenu['icon'];
                                     $menu_url = $rowMenu['url'];
-                                    $menu_description = $rowMenu['description'];
+                                    $menu_description = htmlentities($rowMenu['description']);
 
                                     $selectMenuSubs = mysqli_query( $conn,"SELECT * FROM tbl_menu_subscription WHERE deleted = 0 AND type = 2 AND menu_id = $menu_ID AND user_id = $switch_user_id" );
                                     if ( mysqli_num_rows($selectMenuSubs) > 0 ) {
@@ -2275,7 +2286,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     $menu_collab = $rowMenu['collab'];
                                     $menu_icon = $rowMenu['icon'];
                                     $menu_url = $rowMenu['url'];
-                                    $menu_description = $rowMenu['description'];
+                                    $menu_description = htmlentities($rowMenu['description']);
 
                                     $selectMenuSubs = mysqli_query( $conn,"SELECT * FROM tbl_menu_subscription WHERE deleted = 0 AND type = 1 AND menu_id = $menu_ID AND user_id = $switch_user_id" );
                                     if ( mysqli_num_rows($selectMenuSubs) > 0 ) {
@@ -2631,7 +2642,7 @@ License: You must have a valid license purchased only from themeforest(the above
                     <?php endif ?>
                     <?php } ?>
 
-                    <?php if($switch_user_id == 1360): ?>
+                    <?php if($switch_user_id == 1360 OR $switch_user_id == 1365 OR $switch_user_id == 1366 OR $switch_user_id == 1453 OR $switch_user_id == 1482 OR $switch_user_id == 1477): ?>
                         <li class="nav-item">
                             <a href="coming-soon" class="nav-link">
                                 <i class="icon-docs"></i>
@@ -3015,7 +3026,7 @@ License: You must have a valid license purchased only from themeforest(the above
                     <li class="nav-item hide">
                         <a href="<?php echo $row['app_url']; ?>" target="_blank" class="nav-link">
                             <i class="icon-layers"></i>
-                            <span class="title"><?php echo $row['application_name']; ?></span>
+                            <span class="title"><?php echo htmlentities($row['application_name']); ?></span>
                             <span class="selected"></span>
                         </a>
                     </li>

@@ -1,10 +1,10 @@
 <?php 
-    // phpinfo();
     $title = "My Profile";
     $site = "profile";
     $breadcrumbs = '';
     $sub_breadcrumbs = 'Profile';
-
+    error_reporting(E_ALL);
+    ini_set('display_errors', 0);
     if ($sub_breadcrumbs) {
         $breadcrumbs .= '<li><span>'. $sub_breadcrumbs .'</span><i class="fa fa-angle-right"></i></li>';
     }
@@ -12,7 +12,11 @@
 
     include_once ('header.php'); 
 ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
+    * {
+        word-wrap: break-word;
+    }
     #signature {
         width: 300px;
         height: 150px;
@@ -24,9 +28,8 @@
     .countup {
       text-align: center;
       margin-bottom:30px;
-      display:none;
       position:relative;
-      margin-top:100px;
+      margin-top:60px;
     }
     .countup .timeel {
       display: inline-block;
@@ -51,6 +54,9 @@
        margin-bottom:20px;
 
     }
+    .page-container-bg-solid .tabbable-line>.tab-content {
+    border-top: 1px solid transparent;
+}
 
 </style>
 
@@ -607,29 +613,53 @@
                                     </div>
                                     <?php if ($current_client == 0) { ?>
                                         <div class="col-md-12">
-                                            <!-- BEGIN PORTLET -->
-                                            
-                                            <!-- Begin Clockin -->
                                             <?php 
-                                            if($current_userEmployerID = 34) {
-                                            if ($current_userID == 3 OR $current_userID == 456 OR $current_userID == 66 OR $current_userID == 387) { ?>
-                                                <button id="btn-confirm" class="btn btn-circle btn-success" style="margin-bottom:50px;width:200px:hegiht:50px;font-size:20px;"><i class="fa fa-clock-o" aria-hidden="true"></i> Start Working</button>
-                                                <input id="clockintime" type="hidden" value="">
-                                                <input id="timein_current_user_id" type="hidden" value="<?php echo $current_userID ?>">
-                                                <input id="current_userfullname" type="hidden" value="<?php echo $current_userFName .' '. $current_userLName;?>">
-                                                <input id="trigger" type="hidden" value="IN">
-                                                <div class="countup" id="countup1">
-                                                    <span style="border-radius: 10px 0 0 10px;" class="timeel years">00</span>
-                                                    <span class="timeel timeRefYears">years</span>
-                                                    <span style="border-radius: 10px 0 0 10px;" class="timeel days">00</span>
-                                                    <span class="timeel timeRefDays">days</span>
-                                                    <span style="border-radius: 10px 0 0 10px;" class="timeel hours">00</span>
-                                                    <span class="timeel timeRefHours">hours</span>
-                                                    <span style="border-radius: 10px 0 0 10px;" class="timeel minutes">00</span>
-                                                    <span class="timeel timeRefMinutes">minutes</span>
-                                                    <span style="border-radius: 10px 0 0 10px;" class="timeel seconds">00</span>
-                                                    <span class="timeel timeRefSeconds">seconds</span>
-                                                </div>
+                                                if($current_userEmployerID == 34) {
+                                                    $currentDateTime = new DateTime();
+                                                    $currentDateTime->setTimezone(new DateTimeZone('America/Chicago'));
+                                                    $dateToday = $currentDateTime->format('Y-m-d');
+                                                    
+                                                    // Settting up time in CST zone 
+                                                    date_default_timezone_set('America/Chicago');
+                                                    
+                                                    // Get the most recent 'IN' and 'OUT' records for today
+                                                    $is_timein = "SELECT time_in_datetime FROM tbl_timein WHERE DATE(time_in_datetime) = '$dateToday' AND action = 'IN' AND user_id = {$current_userEmployeeID} ORDER BY time_in_datetime DESC LIMIT 1";
+                                                    $checktimein = mysqli_query($conn, $is_timein);
+                                                    $timeInDateTime = ($checktimein && mysqli_num_rows($checktimein) > 0) ? mysqli_fetch_assoc($checktimein)['time_in_datetime'] : null;
+                                                    
+                                                    $is_timeout = "SELECT time_in_datetime FROM tbl_timein WHERE DATE(time_in_datetime) = '$dateToday' AND action = 'OUT' AND user_id = {$current_userEmployeeID} ORDER BY time_in_datetime DESC LIMIT 1";
+                                                    $checktimeout = mysqli_query($conn, $is_timeout);
+                                                    $timeOutDateTime = ($checktimeout && mysqli_num_rows($checktimeout) > 0) ? mysqli_fetch_assoc($checktimeout)['time_in_datetime'] : null;
+                                                    
+                                                    $is_intoday = is_null($timeInDateTime) || (!is_null($timeOutDateTime) && $timeOutDateTime > $timeInDateTime) ? 'IN' : 'OUT';
+                                                    
+                                                    ?>
+                                                    
+                                                    <?php
+                                                    if($is_intoday == 'IN') {
+                                                        echo '<button id="btn-start" class="btn btn-circle btn-success" style="margin-bottom:10px;width:200px;height:50px;font-size:20px;"><i class="fa fa-clock-o" aria-hidden="true"></i> Start Working</button><br>
+                                                        <input id="timein_current_user_id" type="hidden" value="'. $current_userEmployeeID .'">
+                                                        <input id="current_userfullname" type="hidden" value="'. $current_userFName .' '. $current_userLName .'">
+                                                        <input id="trigger" type="hidden" value="'. $is_intoday .'">
+                                                        <input id="timeref" type="hidden" value="'. strtotime('tomorrow', strtotime($dateToday)) .'">';
+                                                    } else {
+                                                        echo '<button id="btn-stop" class="btn btn-circle btn-danger center-item-control" style="margin-bottom:50px;width:200px;height:50px;font-size:20px;"><i class="fa fa-clock-o" aria-hidden="true"></i> Stop Working</button>
+                                                        <input id="clockintime" type="hidden" value="' .$timeInDateTime. '">
+                                                        <input id="time_spent" type="hidden" value="">
+                                                        <input id="timein_current_user_id" type="hidden" value="'. $current_userEmployeeID .'">
+                                                        <input id="current_userfullname" type="hidden" value="' .$current_userFName .' '. $current_userLName.' ">
+                                                        <input id="trigger" type="hidden" value="'. $is_intoday.'">
+                                                        <input id="timerefout" type="hidden" value="0">
+                                                        <div class="countup" id="countup1">
+                                                            <span style="border-radius: 10px 0 0 10px;" class="timeel hours">00</span>
+                                                            <span class="timeel timeRefHours">hours</span>
+                                                            <span style="border-radius: 10px 0 0 10px;" class="timeel minutes">00</span>
+                                                            <span class="timeel timeRefMinutes">minutes</span>
+                                                            <span style="border-radius: 10px 0 0 10px;" class="timeel seconds">00</span>
+                                                            <span class="timeel timeRefSeconds">seconds</span>
+                                                        </div>';
+                                                }
+                                            ?>
                                                 <!-- End Clockin -->
                                                 <div class="portlet light projects-widget">
                                                     <div class="portlet-title">
@@ -645,46 +675,49 @@
                                                                 <table class="table table-bordered table-hover">
                                                                     <?php 
                                                                         $query = "SELECT t.date, t.IN, t.OUT
-                                                                          FROM (
-                                                                            SELECT DATE(recorded_time) AS date,
-                                                                                   MIN(CASE WHEN action = 'IN' THEN TIME(recorded_time) END) AS 'IN',
-                                                                                   MAX(CASE WHEN action = 'OUT' THEN TIME(recorded_time) END) AS 'OUT',
-                                                                                   user_id, id 
-                                                                            FROM tbl_timein
-                                                                            WHERE tbl_timein.user_id = {$_COOKIE['ID']}
-                                                                            GROUP BY DATE(recorded_time)
-                                                                            ORDER BY recorded_time DESC
-                                                                          ) AS t";
+                                                                            FROM ( 
+                                                                                SELECT 
+                                                                                DATE(time_in_datetime) AS date, 
+                                                                                MIN(CASE WHEN action = 'IN' THEN time_in_datetime END) AS 'IN', 
+                                                                                MAX(CASE WHEN action = 'OUT' THEN time_in_datetime END) AS 'OUT', user_id 
+                                                                                FROM tbl_timein 
+                                                                                WHERE (tbl_timein.time_in_datetime >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) OR DATE(tbl_timein.time_in_datetime) = CURRENT_DATE()) AND user_id = $current_userEmployeeID
+                                                                                GROUP BY DATE(time_in_datetime)
+                                                                                ORDER BY DATE(time_in_datetime) DESC
+                                                                            ) AS t";
                                                                     
                                                                         $resultQuery = mysqli_query($conn, $query);
                                                                     ?>
                                                                     <thead>
                                                                         <tr role="row">
-                                                                        <?php while($rowQuery = mysqli_fetch_array($resultQuery)) { ?>
-                                                                            <th class="text-bold text-center bg-light" tabindex="0" aria-controls="timein_summary_table" rowspan="1" colspan="2"><?=$rowQuery['date']?></th>
-                                                                        <?php } ?>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <tr role="row" class="odd">
+                                                                        <?php
+                                                                        if ($resultQuery) {
+                                                                            while($rowQuery = mysqli_fetch_array($resultQuery)) { ?>
+                                                                                <th class="text-bold text-center bg-light" tabindex="0" aria-controls="timein_summary_table" rowspan="1" colspan="2"><?=$rowQuery['date']?></th>
+                                                                            <?php } ?>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr role="row" class="odd">
                                                                             <?php 
                                                                                 mysqli_data_seek($resultQuery, 0);
-                                                                                while($rowQuery = mysqli_fetch_array($resultQuery)) { ?>
-                                                                                    <td class="text-center"><span class="text-success">IN</span><br>
-                                                                                    <?php if(!empty($rowQuery['IN'])): ?>
-                                                                                    <span class="bold"><?=$rowQuery['IN']?></span>
-                                                                                    <?php else: ?>
-                                                                                    -
-                                                                                    <?php endif ?>
-                                                                                    </td>
-                                                                                    <td class="text-center"><span class="text-danger">OUT</span><br>
-                                                                                     <?php if(!empty($rowQuery['OUT'])): ?>
-                                                                                    <span class="bold"><?=$rowQuery['OUT']?></span>
-                                                                                    <?php else: ?>
-                                                                                    -
-                                                                                    <?php endif ?>
-                                                                                    </td>
-                                                                            <?php } ?>
+                                                                                while($rowQuery = mysqli_fetch_array($resultQuery)) { 
+                                                                                ?>
+                                                                                <td class="text-center"><span class="text-success">IN</span><br>
+                                                                                <?php if(!empty($rowQuery['IN'])): ?>
+                                                                                <span class="bold"><?= date('h:i A', strtotime($rowQuery['IN']))?></span>
+                                                                                <?php else: ?>
+                                                                                -
+                                                                                <?php endif ?>
+                                                                                </td>
+                                                                                <td class="text-center"><span class="text-danger">OUT</span><br>
+                                                                                 <?php if(!empty($rowQuery['OUT'])): ?>
+                                                                                <span class="bold"><?= date('h:i A', strtotime($rowQuery['OUT']))?></span>
+                                                                                <?php else: ?>
+                                                                                -
+                                                                                <?php endif ?>
+                                                                                </td>
+                                                                            <?php } } ?>
                                                                         </tr>
                                                                     </tbody>
                                                                 </table>
@@ -692,8 +725,104 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            <?php  } } ?>
+                                            <?php } ?>
                                             <!-- END PORTLET -->
+                                        </div>
+                                        <div class="col-md-12">
+                                        <?php
+                                            if($current_userEmployerID == 34) {
+                                                if ($current_userID == 456 OR $current_userID == 34 OR $current_userID == 32 OR $current_userID == 43) {?>
+                                                    <!-- BEGIN PORTLET -->
+                                                    <div class="portlet light tasks-widget">
+                                                        <div class="portlet-title">
+                                                            <div class="caption caption-md">
+                                                                <i class="icon-bar-chart theme-font hide"></i>
+                                                                <span class="caption-subject font-blue-madison bold uppercase">For Approval</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="portlet-body">
+                                                            <div class="tabbable-line">
+                                                                <ul class="nav nav-tabs ">
+                                                                    <li class="active">
+                                                                        <a href="#fatl" data-toggle="tab"> For Approval Timeout Logs </a>
+                                                                    </li>
+                                                                    <li>
+                                                                        <a href="#atl" data-toggle="tab"> Approved Timeout Logs </a>
+                                                                    </li>
+                                                                </ul>
+                                                                <div class="tab-content">
+                                                                    <div class="tab-pane active" id="fatl">
+                                                                        <table class="table table-striped table-bordered table-hover" id="table_fatl">
+                                                                            <thead>
+                                                                                <tr role="row">
+                                                                                    <th class="hide"></th>
+                                                                                    <th>Name</th>
+                                                                                    <th>Date</th>
+                                                                                    <th>Timeout</th>
+                                                                                    <th>Reason</th>
+                                                                                    <th class="text-center">Action</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <?php
+                                                                                $for_approval = "SELECT timeid, userid, employee_name, correspond_date, actual_timeout, incident_explanation, is_approved FROM tbl_time_approval WHERE is_approved = 'No' ORDER BY correspond_date DESC";
+                                                                                $result = mysqli_query($conn, $for_approval);
+                                                                                
+                                                                                while($timout_approval = mysqli_fetch_array($result)){ ?>
+                                                                                    <tr role="row">
+                                                                                        <td class="to_userid<?=$timout_approval['timeid']?>" id="<?=$timout_approval['userid']?>" style="display:none"><?=$timout_approval['userid']?></td>
+                                                                                        <td class="to_emp_name<?=$timout_approval['timeid']?>" id="<?=$timout_approval['employee_name']?>"><?=$timout_approval['employee_name']?></td>
+                                                                                        <td class="to_date<?=$timout_approval['timeid']?>" id="<?=$timout_approval['correspond_date']?>"><?=$timout_approval['correspond_date']?></td>
+                                                                                        <td class="to_timeout<?=$timout_approval['timeid']?>" id="<?=$timout_approval['actual_timeout']?>"><?=$timout_approval['actual_timeout']?></td>
+                                                                                        <td class="to_explanation<?=$timout_approval['timeid']?>" id="<?=$timout_approval['incident_explanation']?>"><?=$timout_approval['incident_explanation']?></td>
+                                                                                        <td class="text-center"><button type="button" class="btn btn-primary approveTimeout" id="<?=$timout_approval['timeid']?>">Approve</button></td>
+                                                                                    </tr>
+                                                                                <?php } ?>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                    <div class="tab-pane" id="atl">
+                                                                        <table class="table table-bordered table-hover" id="table_atl">
+                                                                            <thead>
+                                                                                <tr>
+                                                                                    <th>Name</th>
+                                                                                    <th>Date</th>
+                                                                                    <th>Timeout</th>
+                                                                                    <th>Reason</th>
+                                                                                    <th class="text-center">Action</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <?php
+                                                                                $for_approval = "SELECT timeid, userid, employee_name, correspond_date, actual_timeout, incident_explanation, is_approved FROM tbl_time_approval WHERE is_approved = 'Yes' ORDER BY correspond_date DESC";
+                                                                                $result = mysqli_query($conn, $for_approval);
+                                                                                
+                                                                                while($timout_approval = mysqli_fetch_array($result)){ ?>
+                                                                                    <tr>
+                                                                                        <td><?=$timout_approval['employee_name']?></td>
+                                                                                        <td><?=$timout_approval['correspond_date']?></td>
+                                                                                        <td><?=$timout_approval['actual_timeout']?></td>
+                                                                                        <td><?=$timout_approval['incident_explanation']?></td>
+                                                                                        <td class="text-center"><span class="text-success">Approved</span></td>
+                                                                                    </tr>
+                                                                                <?php } ?>
+                                                                            </tbody>
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            <!--<div class="task-footer">-->
+                                                            <!--    <div class="btn-arrow-link text-right">-->
+                                                            <!--        <a data-toggle="modal" href="#modalTask">See All Tasks</a>-->
+                                                            <!--    </div>-->
+                                                            <!--</div>-->
+                                                        </div>
+                                                    </div>
+                                                    <!-- END PORTLET -->
+                                                <?php }
+                                            }
+                                        ?>
                                         </div>
                                         <div class="col-md-12">
                                             <!-- BEGIN PORTLET -->
@@ -709,7 +838,7 @@
                                                     <div class="task-content">
                                                         <?php if($_COOKIE['ID']== 185 || $_COOKIE['ID']== 95 || $_COOKIE['ID']== 42 || $_COOKIE['ID']== 88 || $_COOKIE['ID']== 35 || $_COOKIE['ID']== 228 || $_COOKIE['ID']== 208 || $_COOKIE['ID']== 43 || $_COOKIE['ID']== 38): ?>
                                                         <!--Marketing-->
-                                                        <div class="row">
+                                                        <div class="row hide">
                                                             <div class="col-md-3">
                                                                 <div class="dashboard-stat2 counterup_1">
                                                                     <div class="display" style="position: relative;">
@@ -761,7 +890,7 @@
                                                         </div>
                                                         
                                                         <!--Category-->
-                                                        <div class="row">
+                                                        <div class="row hide">
                                                             <div class="col-md-3">
                                                                 <div class="dashboard-stat2 counterup_1">
                                                                     <div class="display" style="position: relative;">
@@ -816,7 +945,7 @@
                                                         </div>
                                                         
                                                         <!--Call Summary-->
-                                                        <div class="row">
+                                                        <div class="row hide">
                                                             <div class="col-md-3">
                                                                 <div class="dashboard-stat2 counterup_1">
                                                                     <div class="display" style="position: relative;">
@@ -970,7 +1099,7 @@
                                                         <?php endif; ?>
                                                         <div class="mt-actions"></div>
                                                         <h4>Contacts Relationship Management</h4><br>
-                                                        <table class="table table-bordered table-hover" id="sample_4">
+                                                        <table class="table table-bordered table-hover" id="sample_1_2">
                                                             <thead>
                                                                 <tr>
                                                                     <th>No.</th>
@@ -999,25 +1128,25 @@
                                                                             $resultUser = mysqli_query($conn, $queryUser);
                                                                                                         
                                                                             while($rowUser = mysqli_fetch_array($resultUser)){ 
-                                                                                echo $rowUser['first_name'];
+                                                                                echo htmlentities($rowUser['first_name']);
                                                                                 echo ' ';
-                                                                                echo $rowUser['last_name'];
+                                                                                echo htmlentities($rowUser['last_name']);
                                                                             }
                                                                         ?>
                                                                     </td>
-                                                                    <td><a href="customer_relationship_View.php?view_id=<?php echo $rowPending['crm_ids'] ?>#tasks">
+                                                                    <td><a href="customer_details.php?view_id=<?php echo $rowPending['crm_ids'] ?>#tasks">
                                                                         <?php
                                                                             $crm_ids = $rowPending['crm_ids'];
                                                                             $queryAccount = "SELECT * FROM tbl_Customer_Relationship  where crm_id = $crm_ids";
                                                                             $resultAccount = mysqli_query($conn, $queryAccount);
                                                                                                         
                                                                             while($rowAccount = mysqli_fetch_array($resultAccount)){ 
-                                                                                echo $rowAccount['account_name'];
+                                                                                echo htmlentities($rowAccount['account_name']);
                                                                             }
                                                                         ?></a>
                                                                     </td>
-                                                                    <td><?php echo $rowPending['assign_task']; ?></td>
-                                                                    <td><?php echo $rowPending['Task_Description']; ?></td>
+                                                                    <td><?php echo htmlentities($rowPending['assign_task']); ?></td>
+                                                                    <td><?php echo htmlentities($rowPending['Task_Description']); ?></td>
                                                                     <td><?php echo $rowPending['Task_added']; ?></td>
                                                                     <td><?php echo $rowPending['Deadline']; ?></td>
                                                                     <td><b style="color:red;">Pending</b></td>
@@ -1037,25 +1166,25 @@
                                                                             $resultUser = mysqli_query($conn, $queryUser);
                                                                                                         
                                                                             while($rowUser = mysqli_fetch_array($resultUser)){ 
-                                                                                echo $rowUser['first_name'];
+                                                                                echo htmlentities($rowUser['first_name']);
                                                                                 echo ' ';
-                                                                                echo $rowUser['last_name'];
+                                                                                echo htmlentities($rowUser['last_name']);
                                                                             }
                                                                         ?>
                                                                     </td>
-                                                                    <td><a href="customer_relationship_View.php?view_id=<?php echo $rowInprogress['crm_ids'] ?>#tasks">
+                                                                    <td><a href="customer_details.php?view_id=<?php echo $rowInprogress['crm_ids'] ?>#tasks">
                                                                         <?php
                                                                             $crm_ids = $rowInprogress['crm_ids'];
                                                                             $queryAccount = "SELECT * FROM tbl_Customer_Relationship  where crm_id = $crm_ids";
                                                                             $resultAccount = mysqli_query($conn, $queryAccount);
                                                                                                         
                                                                             while($rowAccount = mysqli_fetch_array($resultAccount)){ 
-                                                                                echo $rowAccount['account_name'];
+                                                                                echo htmlentities($rowAccount['account_name']);
                                                                             }
                                                                         ?></a>
                                                                     </td>
-                                                                    <td><?php echo $rowInprogress['assign_task']; ?></td>
-                                                                    <td><?php echo $rowInprogress['Task_Description']; ?></td>
+                                                                    <td><?php echo htmlentities($rowInprogress['assign_task']); ?></td>
+                                                                    <td><?php echo htmlentities($rowInprogress['Task_Description']); ?></td>
                                                                     <td><?php echo $rowInprogress['Task_added']; ?></td>
                                                                     <td><?php echo $rowInprogress['Deadline']; ?></td>
                                                                     <td><b style="color:orange;">Inprogress</b></td>
@@ -1075,25 +1204,25 @@
                                                                             $resultUser = mysqli_query($conn, $queryUser);
                                                                                                         
                                                                             while($rowUser = mysqli_fetch_array($resultUser)){ 
-                                                                                echo $rowUser['first_name'];
+                                                                                echo htmlentities($rowUser['first_name']);
                                                                                 echo ' ';
-                                                                                echo $rowUser['last_name'];
+                                                                                echo htmlentities($rowUser['last_name']);
                                                                             }
                                                                         ?>
                                                                     </td>
-                                                                    <td> <a href="customer_relationship_View.php?view_id=<?php echo $rowDone['crm_ids'] ?>#tasks">
+                                                                    <td> <a href="customer_details.php?view_id=<?php echo $rowDone['crm_ids'] ?>#tasks">
                                                                         <?php
                                                                             $crm_ids = $rowDone['crm_ids'];
                                                                             $queryAccount = "SELECT * FROM tbl_Customer_Relationship  where crm_id = $crm_ids";
                                                                             $resultAccount = mysqli_query($conn, $queryAccount);
                                                                                                         
                                                                             while($rowAccount = mysqli_fetch_array($resultAccount)){ 
-                                                                                echo $rowAccount['account_name'];
+                                                                                echo htmlentities($rowAccount['account_name']);
                                                                             }
                                                                         ?></a>
                                                                     </td>
-                                                                    <td><?php echo $rowDone['assign_task']; ?></td>
-                                                                    <td><?php echo $rowDone['Task_Description']; ?></td>
+                                                                    <td><?php echo htmlentities($rowDone['assign_task']); ?></td>
+                                                                    <td><?php echo htmlentities($rowDone['Task_Description']); ?></td>
                                                                     <td><?php echo $rowDone['Task_added']; ?></td>
                                                                     <td><?php echo $rowDone['Deadline']; ?></td>
                                                                     <td><b style="color:green;">Done</b></td>
@@ -1136,77 +1265,110 @@
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>';
+                                                            
+                                                                    $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = $current_userEmployeeID" ); // 83
+                                                                    if ( mysqli_num_rows($selectUser) > 0 ) {
+                                                                        $rowUser = mysqli_fetch_array($selectUser);
 
-                                                                    $selectTrainings = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE status = 1 AND deleted = 0 AND user_id = $current_userEmployerID" );
-                                                                    if ( mysqli_num_rows($selectTrainings) > 0 ) {
-                                                                        while($rowTraining = mysqli_fetch_array($selectTrainings)) {
-                                                                            $training_ID = $rowTraining['ID'];
-                                                                            $title = $rowTraining['title'];
-                                                                            
-                                                                            $data_last_modified = $rowTraining['last_modified'];
-                                                                            $data_last_modified = new DateTime($data_last_modified);
-                                                                            $data_last_modified = $data_last_modified->format('M d, Y');
+                                                                        $selectTrainings = mysqli_query( $conn,"SELECT 
+                                                                            *
+                                                                            FROM (
+                                                                                SELECT
+                                                                                t.ID AS t_ID,
+                                                                                t.title AS t_title,
+                                                                                t.job_description_id AS t_job_description_id,
+                                                                                replace(t.quiz_id , ' ','') AS t_quiz_id,
+                                                                                t.last_modified AS t_last_modified,
+                                                                                t.frequency AS t_frequency,
+                                                                                q.ID AS q_ID,
+                                                                                q.quiz_id AS q_quiz_id,
+                                                                                q.result AS q_result,
+                                                                                q.last_modified AS q_last_modified
+                                                                                FROM tbl_hr_trainings AS t
+                                                                                
+                                                                                LEFT JOIN (
+                                                                                    SELECT * 
+                                                                                    FROM tbl_hr_quiz_result 
+                                                                                    WHERE ID IN 
+                                                                                    ( 
+                                                                                    SELECT MAX(ID) 
+                                                                                    FROM tbl_hr_quiz_result
+                                                                                    WHERE user_id = $current_userID
+                                                                                    GROUP BY quiz_id 
+                                                                                    )
+                                                                                ) AS q
+                                                                                ON FIND_IN_SET(q.quiz_id, t.quiz_id) > 0
+                                                                                
+                                                                                WHERE t.status = 1
+                                                                                AND t.deleted = 0
+                                                                                AND t.user_id = $current_userEmployerID
+                                                                            ) AS r" );
+                                                                        if ( mysqli_num_rows($selectTrainings) > 0 ) {
+                                                                            while($rowTraining = mysqli_fetch_array($selectTrainings)) {
+                                                                                $training_ID = $rowTraining['t_ID'];
+                                                                                $title = htmlentities($rowTraining['t_title']);
+                                                                                $array_rowTraining = explode(", ", $rowTraining["t_job_description_id"]);
 
-                                                                            $found = null;
-                                                                            $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $current_userEmployeeID" );
-                                                                            if ( mysqli_num_rows($selectEmployee) > 0 ) {
-                                                                                $rowEmployee = mysqli_fetch_array($selectEmployee);
-                                                                                $array_row = explode(", ", $rowEmployee["job_description_id"]);
-                                                                                $array_rowTraining = explode(", ", $rowTraining["job_description_id"]);
-                                                                                foreach($array_row as $emp_JD) {
-                                                                                    if (in_array($emp_JD,$array_rowTraining)) {
-                                                                                        $found = true;
+                                                                                $array_frequency = array(
+                                                                                    0 => '+1 month',
+                                                                                    1 => '+3 month',
+                                                                                    2 => '+6 month',
+                                                                                    3 => '+1 year'
+                                                                                );
+
+                                                                                $found = null;
+                                                                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $current_userEmployeeID" );
+                                                                                if ( mysqli_num_rows($selectEmployee) > 0 ) {
+                                                                                    $rowEmployee = mysqli_fetch_array($selectEmployee);
+                                                                                    $array_row = explode(", ", $rowEmployee["job_description_id"]);
+                                                                                    foreach($array_row as $emp_JD) {
+                                                                                        if (in_array($emp_JD,$array_rowTraining)) {
+                                                                                            $found = true;
+                                                                                        }
                                                                                     }
                                                                                 }
-                                                                            }
 
-                                                                            $trainingStatus = "Not Yet Started";
-                                                                            $trainingResult = 0;
-                                                                            $completed_date = '';
-                                                                            $due_date = '';
-                                                                            $pdf_quiz = '';
-                                                                            $selectQuizResult = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_result WHERE user_id = $current_userID " );
-                                                                            if ( mysqli_num_rows($selectQuizResult) > 0 ) {
-                                                                                while($rowQuizResult = mysqli_fetch_array($selectQuizResult)) {
-                                                                                    $trainingResultID = $rowQuizResult['ID'];
-                                                                                    $trainingQuizID = $rowQuizResult['quiz_id'];
+                                                                                if ( $found == true ) {
+                                                                                    $trainingStatus = "Not Yet Started";
+                                                                                    $trainingResult = 0;
+                                                                                    $completed_date = '';
+                                                                                    $due_date = '';
+                                                                                    $pdf_quiz = '';
+                                                                                    if (!empty($rowTraining['t_quiz_id'])) {
+                                                                                        $trainingQuizID = $rowTraining['q_quiz_id'];
+                                                                                        $trainingResult = $rowTraining['q_result'];
+                                                                                        $pdf_quiz = $rowTraining['q_ID'];
 
-                                                                                    if (!empty($rowTraining['quiz_id'])) {
-                                                                                        $array_quiz_id = explode(', ', $rowTraining['quiz_id']);
-                                                                                        if (in_array($trainingQuizID, $array_quiz_id)) {
-                                                                                            $trainingResult = $rowQuizResult['result'];
-                                                                                            $pdf_quiz = $trainingResultID;
+                                                                                        if ($trainingResult == 100) {
+                                                                                            $trainingStatus = "Completed";
 
-                                                                                            if ($trainingResult == 100) { $trainingStatus = "Completed"; }
-                                                                                            else { $trainingStatus = "Not Yet Started"; }
-                                                                            
-                                                                                            $completed_date = $rowQuizResult['last_modified'];
+                                                                                            $completed_date = $rowTraining['q_last_modified'];
                                                                                             $completed_date = new DateTime($completed_date);
                                                                                             $completed_date = $completed_date->format('M d, Y');
-                                                                            
-                                                                                            $due_date = date('Y-m-d', strtotime('+1 year', strtotime($completed_date)) );
+
+                                                                                            $due_date = date('Y-m-d', strtotime($array_frequency[$rowTraining['t_frequency']], strtotime($completed_date)) );
                                                                                             $due_date = new DateTime($due_date);
                                                                                             $due_date = $due_date->format('M d, Y');
+
+                                                                                            if (date('Y-m-d') > date('Y-m-d', strtotime($array_frequency[$rowTraining['t_frequency']], strtotime($completed_date)) )) {
+                                                                                                $trainingStatus = '<i class="text-danger sbold">Pass Due</i>';
+                                                                                            }
                                                                                         }
                                                                                     }
 
+                                                                                    echo '<tr id="tr_'.$training_ID.'">
+                                                                                        <td >'. $title .'</td>
+                                                                                        <td class="text-center">'; echo $trainingResult == 100 ? $completed_date:''; echo '</td>
+                                                                                        <td class="text-center">'; echo $trainingResult == 100 ? $due_date:''; echo '</td>
+                                                                                        <td>'.$trainingStatus.'</td>
+                                                                                        <td class="text-center">'; echo $trainingResult == 100 ? '<a href="pdf?id='.$pdf_quiz.'" target="_blank" class="btn btn-circle btn-success">View</a>':''; echo '</td>
+                                                                                        <td class="text-center"><a href="#modalView" class="btn btn-circle btn-success" data-toggle="modal" onclick="btnView('.$training_ID.')">View</a></td>
+                                                                                    </tr>';
                                                                                 }
-                                                                            }
-
-                                                                            if ( $found == true ) {
-                                                                                echo '<tr id="tr_'.$training_ID.'">
-                                                                                    <td >'. $title .'</td>
-                                                                                    <td class="text-center">'; echo $trainingResult == 100 ? $completed_date:''; echo '</td>
-                                                                                    <td class="text-center">'; echo $trainingResult == 100 ? $due_date:''; echo '</td>
-                                                                                    <td>'.$trainingStatus.'</td>
-                                                                                    <td class="text-center">'; echo $trainingResult == 100 ? '<a href="pdf?id='.$pdf_quiz.'" target="_blank" class="btn btn-circle btn-success">View</a>':''; echo '</td>
-                                                                                    <td class="text-center hide">'.$trainingResult.'%</td>
-                                                                                    <td class="text-center"><a href="#modalView" class="btn btn-circle btn-success" data-toggle="modal" onclick="btnView('.$rowTraining["ID"].')">View</a></td>
-                                                                                </tr>';
                                                                             }
                                                                         }
                                                                     }
-
+                                                                
                                                                 echo '</tbody>
                                                             </table>
                                                         </div>
@@ -1257,25 +1419,84 @@
                     </div>
                     
                     <!-- Start MODALS FOR Start working button confirmation -->
-                    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="mi-modal">
+                    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="mi-start-modal">
                       <div class="modal-dialog modal-sm">
                         <div class="modal-content">
                           <div class="modal-header">
-                            <div id="start-working-modal-message">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                 <h4 class="modal-title" id="myModalLabel">Are you sure you want to start working?</h4>
                                 <h5>If you click yes you will be tagged as present for today</h5>
-                            </div>
-                            <div id="stop-working-modal-message" style='display:none;'>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="myModalLabel">Are you sure you want to <span style="font-weight:bold;color:red;">STOP</span> working?</h4>
-                                <h5>If you click yes you will be tagged as present for today</h5>
-                            </div>
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-default" id="modal-btn-si">YES</button>
-                            <button type="button" class="btn btn-primary" id="modal-btn-no">CANCEL</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" id="modal-btn-no">CANCEL</button>
                           </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="mi-stop-modal">
+                      <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel">Are you sure you want to <span style="font-weight:bold;color:red;">STOP</span> working?</h4>
+                                <h5>By Clicking yes you agreed to stop working</h5>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default stopWorkingToday" id="modal-btn-stop">YES</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" id="modal-btn-no">CANCEL</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="timeoutApproval">
+                      <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                        <form method="post" class="form-horizontal" id="timeoutApprovalForm">
+                          <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel">Time Out Approval</h4>
+                          </div>
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                       <label>Date</label>
+                                       <input type="hidden" class="form-control" name="userid" value="<?=$current_userEmployeeID?>">
+                                       <input type="hidden" class="form-control" name="emp_name" value="<?=$current_userFName .' '. $current_userLName?>">
+                                       <input type="date" class="form-control" name="date" id="time" required>
+                                   </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                       <label>Actual Timeout</label>
+                                       <input type="time" class="form-control" name="timeout" step="1" required>
+                                       <!--<span class="text-danger">Make sure to input CST timezone</span>-->
+                                   </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                       <label>Actual Timein Today</label>
+                                       <input type="time" class="form-control" name="timein" step="1" required>
+                                       <!--<span class="text-danger">Make sure to input CST timezone</span>-->
+                                   </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-6">
+                                       <label>Reason</label>
+                                       <textarea class="form-control" name="reason" rows="3" style="width: 567px; height: 196px;" required></textarea>
+                                   </div>
+                                </div>
+                               <div class="form-group">
+                                    
+                               </div>
+                            </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal" id="modal-btn-no">CANCEL</button>
+                            <button type="submit" class="btn btn-primary" id="sendForApproval">SUBMIT</button>
+                          </div>
+                          </form>
                         </div>
                       </div>
                     </div>
@@ -1303,13 +1524,150 @@
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN PAGE LEVEL SCRIPTS -->
         <script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>
-        
         <!-- END PAGE LEVEL SCRIPTS -->
+        <script>
+            var TableDatatablesRowreorderTimeIn = function () {
+                var initTable1 = function () {
+                    var table = $('#table_fatl');
+            
+                    var oTable = table.dataTable({
+            
+                        // Internationalisation. For more info refer to http://datatables.net/manual/i18n
+                        "language": {
+                            "aria": {
+                                "sortAscending": ": activate to sort column ascending",
+                                "sortDescending": ": activate to sort column descending"
+                            },
+                            "emptyTable": "No data available in table",
+                            "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                            "infoEmpty": "No entries found",
+                            "infoFiltered": "(filtered1 from _MAX_ total entries)",
+                            "lengthMenu": "_MENU_ entries",
+                            "search": "Search:",
+                            "zeroRecords": "No matching records found"
+                        },
+            
+                        // Or you can use remote translation file
+                        //"language": {
+                        //   url: '//cdn.datatables.net/plug-ins/3cfcc339e89/i18n/Portuguese.json'
+                        //},
+            
+                        // setup buttons extentension: http://datatables.net/extensions/buttons/
+                        buttons: [
+                            { extend: 'print', className: 'btn default' },
+                            { extend: 'pdf', className: 'btn red' },
+                            { extend: 'csv', className: 'btn green ' }
+                        ],
+            
+                        // setup rowreorder extension: http://datatables.net/extensions/rowreorder/
+                        // rowReorder: {
+            
+                        // },
+            
+                        "order": [
+                            [1, 'desc']
+                        ],
+                        
+                        "lengthMenu": [
+                            [5, 10, 15, 20, -1],
+                            [5, 10, 15, 20, "All"] // change per page values here
+                        ],
+                        // set the initial value
+                        "pageLength": 10,
+            
+                        "dom": "<'row' <'col-md-12'B>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>", // horizobtal scrollable datatable
+            
+                        // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
+                        // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js). 
+                        // So when dropdowns used the scrollable div should be removed. 
+                        //"dom": "<'row' <'col-md-12'T>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
+                    });
+                }
+            
+                var initTable2 = function () {
+                    var table = $('#table_atl');
+            
+                    var oTable = table.dataTable({
+            
+                        // Internationalisation. For more info refer to http://datatables.net/manual/i18n
+                        "language": {
+                            "aria": {
+                                "sortAscending": ": activate to sort column ascending",
+                                "sortDescending": ": activate to sort column descending"
+                            },
+                            "emptyTable": "No data available in table",
+                            "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+                            "infoEmpty": "No entries found",
+                            "infoFiltered": "(filtered1 from _MAX_ total entries)",
+                            "lengthMenu": "_MENU_ entries",
+                            "search": "Search:",
+                            "zeroRecords": "No matching records found"
+                        },
+            
+                        // Or you can use remote translation file
+                        //"language": {
+                        //   url: '//cdn.datatables.net/plug-ins/3cfcc339e89/i18n/Portuguese.json'
+                        //},
+            
+                        buttons: [
+                            { extend: 'print', className: 'btn default' },
+                            { extend: 'pdf', className: 'btn red' },
+                            { extend: 'csv', className: 'btn green ' }
+                        ],
+                        
+                        "order": [
+                            [1, 'desc']
+                        ],
+            
+                        // setup colreorder extension: http://datatables.net/extensions/colreorder/
+                        // colReorder: {
+                        //     reorderCallback: function () {
+                        //         console.log( 'callback' );
+                        //     }
+                        // },
+            
+                        // // setup rowreorder extension: http://datatables.net/extensions/rowreorder/
+                        // rowReorder: {
+            
+                        // },
+                        "lengthMenu": [
+                            [5, 10, 15, 20, -1],
+                            [5, 10, 15, 20, "All"] // change per page values here
+                        ],
+                        // set the initial value
+                        "pageLength": 10,
+            
+                        "dom": "<'row' <'col-md-12'B>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>", // horizobtal scrollable datatable
+            
+                        // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
+                        // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js). 
+                        // So when dropdowns used the scrollable div should be removed. 
+                        //"dom": "<'row' <'col-md-12'T>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
+                    });
+                }
+                return {
+            
+                    //main function to initiate the module
+                    init: function () {
+            
+                        if (!jQuery().dataTable) {
+                            return;
+                        }
+            
+                        initTable1();
+                        initTable2();
+                    }
+            
+                };
+            
+            }();
+            
+            jQuery(document).ready(function() {
+                TableDatatablesRowreorderTimeIn.init();
+            });
+        </script>
         <script type="text/javascript">
             $(document).ready(function() {
-                
-                
-                
                 var id = '<?php echo $current_userEmployeeID; ?>';
                 $.ajax({
                     url: 'function.php?profile_project='+id,
@@ -1600,18 +1958,19 @@
                 });
             }));
             
-              // Start modal confirmation script from clock in function;
+             // Start modal confirmation script from clock in function;
             var modalConfirm = function(callback){
   
-              $("#btn-confirm").on("click", function(){
-                $("#mi-modal").modal('show');
-              });
-              $("#btn-confirm-stopworking").on("click", function(){
-                 alert("stop working"); 
+              $("#btn-stop").on("click", function(){
+                $("#mi-stop-modal").modal('show');
               });
               
-              $("#btn-stop-working").on("click", function(){
-                $("#stop-modal").modal('show');
+              $("#btn-start").on("click", function(){
+                $("#mi-start-modal").modal('show');
+              });
+              
+              $("#btn-reason").on("click", function(){
+                $("#timeoutApproval").modal('show');
               });
             
               $("#modal-btn-si").on("click", function(){
@@ -1627,114 +1986,206 @@
             
             modalConfirm(function(confirm){
               if(confirm){
-                  
-                var currentstatus =  $('#trigger').val();
-                
-
-
-
-                
-                var date = new Date();
-            	var current_date = date.getFullYear()+"-"+(date.getMonth()+1)+"-"+ date.getDate();
-            	var current_time = date.getHours()+":"+date.getMinutes()+":"+ date.getSeconds();
-            	var date_time = current_date+" "+current_time;	
-            	document.querySelector('#clockintime').value = date_time;
-            	
-            	var current_user_timein = document.querySelector('#timein_current_user_id').value;
-            	var fullname = document.querySelector('#current_userfullname').value;
-            	var action= document.querySelector('#trigger').value;
-            	
+                var current_user_timein = document.querySelector('#timein_current_user_id').value;
+                var fullname = document.querySelector('#current_userfullname').value;
+                var action = document.querySelector('#trigger').value;
+                var timeref = document.querySelector('#timeref').value;
+                $('#mi-start-modal').modal('hide');
            
                 $.ajax({
-            		url: "timein_records.php",
-            		type: "POST",
-            		data: {current_user_id:current_user_timein,
-            		       fullname_user:fullname,
-            		       user_action:action
-            		},
-            		cache: false,
-            // 		dataType: "json",
-            		success: function(dataResult){
-            			var dataResult = JSON.parse(dataResult);
-            			if(dataResult.statusCode==200){
-            			    alert("Record Saved!");	
-            			    if(currentstatus == "OUT")
-            			    {
-            			        $('#trigger').val("IN");
-            			        document.querySelector('#btn-confirm').innerHTML = '<i class="fa fa-clock-o" aria-hidden="true"></i> Start Working';
-                                document.querySelector('#btn-confirm').classList.remove("btn-danger");
-                                document.querySelector('#btn-confirm').classList.add("btn-success");
-                                document.querySelector('#btn-confirm').classList.remove("center-item-control");
-                                $("#stop-working-modal-message").hide();
-                                $("#start-working-modal-message").show();
-                                $("#countup1").hide();
-                                
-            			    }
-            			    else{
-            			        $('#trigger').val("OUT");
-                			    document.querySelector('#btn-confirm').innerHTML = '<i class="fa fa-clock-o" aria-hidden="true"></i> Stop Working';
-                                document.querySelector('#btn-confirm').classList.remove("btn-success");
-                                document.querySelector('#btn-confirm').classList.add("btn-danger");
-                                document.querySelector('#btn-confirm').classList.add("center-item-control");
-                                
-                                 $("#stop-working-modal-message").show();
-                                 $("#start-working-modal-message").hide();
-                                 
-                                 
-                                 $("#countup1").show();
-                                // START Count time clockin / working function
-             
-                                  // Month Day, Year Hour:Minute:Second, id-of-element-container
-                                var clockintime = document.querySelector('#clockintime').value;
-                                countUpFromTime(clockintime, 'countup1'); // ****** Change this line!
-                          
-                                function countUpFromTime(countFrom, id) {
-                                  countFrom = new Date(countFrom).getTime();
-                                  var now = new Date(),
-                                      countFrom = new Date(countFrom),
-                                      timeDifference = (now - countFrom);
-                                    
-                                  var secondsInADay = 60 * 60 * 1000 * 24,
-                                      secondsInAHour = 60 * 60 * 1000;
-                                    
-                                  days = Math.floor(timeDifference / (secondsInADay) * 1);
-                                  years = Math.floor(days / 365);
-                                  if (years > 1){ days = days - (years * 365) }
-                                  hours = Math.floor((timeDifference % (secondsInADay)) / (secondsInAHour) * 1);
-                                  mins = Math.floor(((timeDifference % (secondsInADay)) % (secondsInAHour)) / (60 * 1000) * 1);
-                                  secs = Math.floor((((timeDifference % (secondsInADay)) % (secondsInAHour)) % (60 * 1000)) / 1000 * 1);
-                                
-                                  var idEl = document.getElementById(id);
-                                  idEl.getElementsByClassName('years')[0].innerHTML = years;
-                                  idEl.getElementsByClassName('days')[0].innerHTML = days;
-                                  idEl.getElementsByClassName('hours')[0].innerHTML = hours;
-                                  idEl.getElementsByClassName('minutes')[0].innerHTML = mins;
-                                  idEl.getElementsByClassName('seconds')[0].innerHTML = secs;
-                                
-                                  clearTimeout(countUpFromTime.interval);
-                                  countUpFromTime.interval = setTimeout(function(){ countUpFromTime(countFrom, id); }, 1000);
-                                }
-                                
-                                // END Count time clockin / working function
-      
-            			    }
-            			}
-            			else if(dataResult.statusCode==201){
-            				alert("Error occured !");
-            				alert(current_user_timein);
-            			}
-            			console.log(dataResult);
-            		}
-            		
-            	});
-       
-              }else{
-                //Action when No is Clicked
-                
+                    url: "timein_records.php",
+                    type: "POST",
+                    data: {current_user_id:current_user_timein,
+                           fullname_user:fullname,
+                           user_action:action, reset_timeref:timeref
+                    },
+                    cache: false,
+                    success: function(dataResult){
+                        var dataResult = JSON.parse(dataResult);
+                        if(dataResult.statusCode==200){
+                            location.reload();
+                        }
+                    }
+                    
+                });
               }
             });
             // End modal confirmation script from clock in function;
+            $('.stopWorkingToday').on('click', function(e){
+                $('#modal-btn-stop').attr('disabled', true);
+                // $('#modal-btn-stop').addClass('hide');
+                $('#mi-stop-modal').modal('hide');
+                var current_user_timein = document.querySelector('#timein_current_user_id').value;
+                var fullname = document.querySelector('#current_userfullname').value;
+                var action= document.querySelector('#trigger').value;
+                var timerefout = document.querySelector('#timerefout').value;
+           
+                $.ajax({
+                    url: "timein_records.php",
+                    type: "POST",
+                    data: {current_user_id:current_user_timein,
+                           fullname_user:fullname,
+                           user_action:action, reset_timeref:timerefout
+                    },
+                    cache: false,
+                    success: function(dataResult){
+                        var dataResult = JSON.parse(dataResult);
+                        if(dataResult.statusCode==200){
+                            location.reload();
+                        }
+                    }
+                });
+            })
             
+            $('#timeoutApprovalForm').on('submit', function(e){
+                e.preventDefault()
+                $('#sendForApproval').text('Sending ...').attr('disabled', true);
+                $('#sendForApproval').removeClass('btn-primary').attr('disabled', true);
+                $('#sendForApproval').addClass('btn-default').attr('disabled', true);
+                $.ajax({
+                    url: "time_approval.php",
+                    type: "POST",
+                    data: $(this).serialize(),
+                    cache: false,
+                    success: function(dataResult){
+                        var dataResult = JSON.parse(dataResult);
+                        if(dataResult.statusCode==200){
+                            Swal.fire({
+                              icon: 'success',
+                              title: 'Approval Request Sent',
+                              text: 'Kindly wait the HR approved your timeout approval request!',
+                              showConfirmButton: false,
+                              timer: 1500,
+                              padding: '4em'
+                            })
+                            $("#timeoutApproval").modal('hide');
+                            setTimeout(function(){
+                            window.location.reload();
+                            }, 1400);
+                        }
+                        else if(dataResult.statusCode==201){
+                            alert("Error occured !");
+                            console.log(dataResult);
+                            location.reload();
+                        }
+                    }
+                });
+            })
+            $('.approveTimeout').on('click', function(e){
+                let timeid = $(this).attr('id');
+                let userid = $('.to_userid'+timeid).attr('id');
+                let emp_name = $('.to_emp_name'+timeid).attr('id');
+                let date = $('.to_date'+timeid).attr('id');
+                let timeout = $('.to_timeout'+timeid).attr('id');
+                let explanation = $('.to_explanation'+timeid).attr('id');
+           
+                $.ajax({
+                    url: "approved_time.php",
+                    type: "POST",
+                    data: {timeid:timeid, userid:userid, emp_name:emp_name, date:date, timeout:timeout, explanation:explanation},
+                    cache: false,
+                    success: function(dataResult){
+                        var dataResult = JSON.parse(dataResult);
+                        if(dataResult.statusCode==200){
+                            Swal.fire({
+                              icon: 'success',
+                              title: 'Cheers',
+                              text: emp_name + 'approval request has been Approved!',
+                              showConfirmButton: false,
+                              timer: 1500,
+                              padding: '4em'
+                            })
+                            setTimeout(function(){
+                            window.location.reload();
+                            }, 1400);
+                        }
+                        else if(dataResult.statusCode==201){
+                            alert("Error occured !");
+                            alert(current_user_timein);
+                            location.reload();
+                        }
+                    }
+                });
+            })
+            
+            var timein = document.getElementById('clockintime').value;
+            var givenDate = new Date(timein);
+            
+            // Deduct 1 day and 5 hours from the given date
+            // givenDate.setHours(givenDate.getHours() - 5);
+            
+            var updateInterval = setInterval(function() {
+              var currentDate = new Date();
+              var timeDiff = currentDate - givenDate;
+              var secondsDiff = Math.floor(timeDiff / 1000);
+              var minutesDiff = Math.floor(secondsDiff / 60);
+              var hoursDiff = Math.floor(minutesDiff / 60);
+              var daysDiff = Math.floor(hoursDiff / 24);
+            
+              // Calculate the remaining hours, minutes, and seconds
+              var remainingHours = hoursDiff % 24;
+              var remainingMinutes = minutesDiff % 60;
+              var remainingSeconds = secondsDiff % 60;
+            
+              // Update the HTML elements with the new values
+              document.querySelector('.timeel.hours').textContent = formatTime(remainingHours);
+              document.querySelector('.timeel.minutes').textContent = formatTime(remainingMinutes);
+              document.querySelector('.timeel.seconds').textContent = formatTime(remainingSeconds);
+            
+              // Enable the button when the counter hits 8 hours
+              if (hoursDiff >= 8) {
+                document.getElementById('btn-stop').disabled = false;
+              } else {
+                document.getElementById('btn-stop').disabled = false; 
+                var is_due = document.getElementById("time_spent").value = hoursDiff
+              }
+            }, 1000);
+            
+            const timeSpentInput = document.getElementById("time_spent");
+            const timeSpentValue = timeSpentInput.value;
+            console.log(timeSpentValue)
+            if(timeSpentValue >= 8) {
+                Swal.fire({
+                  title: 'Great! You Spent a total of 8 hours for todays work',
+                  text: "Do you want to stop working?",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Yes',
+                  cancelButtonBtn: 'No',
+                  reverseButtons: true
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    var current_user_timein = document.querySelector('#timein_current_user_id').value;
+                    var fullname = document.querySelector('#current_userfullname').value;
+                    var action= document.querySelector('#trigger').value;
+                    $.ajax({
+                        url: "timein_records.php",
+                        type: "POST",
+                        data: {current_user_id:current_user_timein,
+                               fullname_user:fullname,
+                               user_action:action
+                        },
+                        cache: false,
+                        success: function(dataResult){
+                            var dataResult = JSON.parse(dataResult);
+                            if(dataResult.statusCode==200){
+                                location.reload();
+                            }
+                            else if(dataResult.statusCode==201){
+                                alert("Error occured !");
+                                alert(current_user_timein);
+                                location.reload();
+                            }
+                        }
+                    });
+                  }
+                })
+            }
+            function formatTime(value) {
+              return value.toString().padStart(2, '0');
+            }
         </script>
     </body>
 </html>

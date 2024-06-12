@@ -117,25 +117,19 @@
 
 
                     <div class="row">
-
                         <div class="col-md-12">
-
                             <div class="portlet light ">
-
                                 <div class="portlet-title tabbable-line">
-
                                     <div class="caption">
-
-                                        <i class="icon-doc font-dark"></i>
-
+                                        <span class="icon-doc font-dark"></span>
                                         <span class="caption-subject font-dark bold uppercase">FFVA Module</span>
-
                                         <?php
                                             if($current_client == 0) {
                                                 // $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site' AND (user_id = $switch_user_id OR user_id = $current_userEmployerID OR user_id = 163)");
                                                 $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site'");
                                                 while ($row = mysqli_fetch_assoc($result)) {
-                                                    $type_id = $row["type"];                                    $file_actitle = $row["file_title"];
+                                                    $type_id = $row["type"];
+                                                    $file_actitle = $row["file_title"];
                                                     $video_url = $row["youtube_link"];
                                                     
                                                     $file_upload = $row["file_upload"];
@@ -151,11 +145,12 @@
                                                     }
                                                     
                                                     $icon = $row["icon"];
-                                                    if (!empty($icon)) { echo '<img src="'.$src.$url.rawurlencode($icon).'" style="width: 32px; height: 32px; object-fit: contain; object-position: center;" />'; }
-                                                    if ($type_id == 0) {
-                                                        echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'">'.$file_title.'</a>';
-                                                    } else {
-                                                        echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox>'.$file_title.'</a>';
+                                                    if (!empty($icon)) { 
+                                                        if ($type_id == 0) {
+                                                            echo ' <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                                        } else {
+                                                            echo ' <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                                        }
                                                     }
                                                 }
                                                 
@@ -2776,8 +2771,6 @@
 
                 else if (x == 5 && y == 5) { vulnerability = 3; }
 
-
-
                 if (vulnerability == 1) { vulnerability_result = "Low Risk"; }
 
                 else if (vulnerability == 2) { vulnerability_result = "Medium Risk: Action is needed with occasional monitoring to mitigate the risk."; }
@@ -2790,430 +2783,222 @@
 
             }
 
-
-
             function widget_signature() {
-
                 $(".signature").jSignature({
-
                     'background-color': 'transparent',
-
                     'decor-color': 'transparent',
-
                 });
 
                 $("canvas").attr('width','300');
-
                 $("canvas").attr('height','150');
-
                 $("canvas").width(300);
-
                 $("canvas").height(150);
-
                 btnClear();
-
             }
 
             function btnClear(e) {
-
                 if (e) {
-
                     $(e).next('.signature').jSignature("clear");
-
                 } else {
-
                     $('.signature').jSignature("clear");
-
                 }
-
             }
 
-
-
             function btnHistory(id) {
-
                 $.ajax({
-
                     type: "GET",
-
                     url: "function.php?modalHistory_FFVA="+id,
-
                     dataType: "html",
-
                     success: function(data){
-
                         $("#modalHistory .modal-body").html(data);
-
                     }
-
                 });
-
             }
 
             function btnArchived(id) {
-
                 $.ajax({
-
                     type: "GET",
-
                     url: "function.php?modalArchived_FFVA="+id,
-
                     dataType: "html",
-
                     success: function(data){
-
                         $("#modalArchived .modal-body #tableData_archived tbody").html(data);
-
                     }
-
                 });
-
             }
 
-
-
             function btnNew(id) {
-
                 $.ajax({
-
                     type: "GET",
-
                     url: "function.php?modalNew_FFVA="+id,
-
                     dataType: "html",
-
                     success: function(data){
-
                         $("#modalNew .modal-body").html(data);
 
-
-
                         widget_signature();
-
                         selectMulti();
-
                         questionaireRateSummary(1);
-
                     }
-
                 });
-
             }
 
             $(".modalNew").on('submit',(function(e) {
-
                 var free_access = '<?php echo $FreeAccess; ?>';
 
                 e.preventDefault();
 
-
-
                 var prepared_sigData = $('#tabAssigned .prepared_signature').jSignature('getData');
-
                 var reviewed_sigData = $('#tabAssigned .reviewed_signature').jSignature('getData');
-
                 var approved_sigData = $('#tabAssigned .approved_signature').jSignature('getData');
-
-
 
                 formObj = $(this);
 
                 if (!formObj.validate().form()) return false;
-
-
-
                 if (inputInvalid('modalNew') > 0) { return false; }
 
-                    
-
                 var formData = new FormData(this);
-
                 formData.append('btnSave_FFVA',true);
-
                 formData.append('prepared_sigData', prepared_sigData);
-
                 formData.append('reviewed_sigData', reviewed_sigData);
-
                 formData.append('approved_sigData', approved_sigData);
-
-
 
                 var l = Ladda.create(document.querySelector('#btnSave_FFVA'));
 
                 l.start();
-
-
-
                 $.ajax({
-
                     url: "function.php",
-
                     type: "POST",
-
                     data: formData,
-
                     contentType: false,
-
                     processData:false,
-
                     cache: false,
-
                     success: function(response) {
-
                         if ($.trim(response)) {
-
                             msg = "Sucessfully Save!";
-
                             var obj = jQuery.parseJSON(response);
-
                             var html = '<tr id="tr_'+obj.ID+'">';
-
                                 html += '<td>'+obj.ID+'</td>';
-
                                 html += '<td>'+obj.company+'</td>';
 
-
-
                                 if (obj.user_id == 5) {
-
                                     html += '<td class="text-center int_review_status"><a href="#modalViewInt" class="btn btn-link btn-sm" data-toggle="modal" onClick="btnInt('+obj.ID+', 1, 1)">View</a></td>';
-
                                     html += '<td class="text-center int_verify_status"></td>';
-
                                 }
-
                                 
-
                                 if (free_access != 1) {
-
                                     html += '<td class="text-center"></td>';
-
                                 }
-
                                 
-
                                 html += '<td class="text-center">'+obj.vulnerability_result+'</td>';
-
                                 html += '<td class="text-center">'+obj.last_modified+'</td>';
-
                                 html += '<td class="text-center">'+obj.due_date+'</td>';
-
                                 html += '<td class="text-center">'+obj.status+'</td>';
-
                                 html += '<td class="text-center">';
-
                                     html += '<div class="btn-group btn-group-circle">';
-
                                         html += '<a href="pdf_ffva?id='+obj.ID+'&signed=1" class="btn btn-outline dark btn-sm" target="_blank" title="PDF"><i class="fa fa-fw fa-file-pdf-o"></i></a>';
-
                                         html += '<a href="pdf_ffva_excel?id='+obj.ID+'&signed=1" class="btn green-jungle btn-sm" target="_blank" title="Excel"><i class="fa fa-fw fa-file-excel-o"></i></a>';
-
                                         html += '<a href="#modalView" class="btn dark btn-sm hide" data-toggle="modal" onclick="btnView('+obj.ID+')" title="View"><i class="fa fa-fw fa-search"></i></a>';
-
                                         html += '<a href="#modalEdit" class="btn btn-success btn-sm" data-toggle="modal" onclick="btnEdit('+obj.ID+')" title="Edit"><i class="fa fa-fw fa-pencil"></i></a>';
-
                                         html += '<a href="javascript:;" class="btn btn-danger btn-sm" data-toggle="modal" onclick="btnDelete('+obj.ID+', '+obj.tab+')" title="Delete"><i class="fa fa-fw fa-trash"></i></a>';
-
                                         html += '<a href="javascript:;" class="btn btn-info btn-sm" data-toggle="modal" onclick="btnArchive('+obj.ID+', '+obj.tab+')" title="Archive"><i class="fa fa-fw fa-file-archive-o"></i></a>';
-
                                     html += '</div>';
-
                                 html += '</td>';
-
                             html += '</tr>';
-
                             $('#tableData_'+obj.tab+' tbody').append(html);
-
                             $('#modalNew').modal('hide');
-
                         } else {
-
                             msg = "Error!"
-
                         }
-
                         l.stop();
 
-
-
                         bootstrapGrowl(msg);
-
                     }
-
                 });
-
             }));
-
             function btnEdit(id) {
-
                 $.ajax({
-
                     type: "GET",
-
                     url: "function.php?modalEdit_FFVA="+id,
-
                     dataType: "html",
-
                     success: function(data){
-
                         $("#modalEdit .modal-body").html(data);
 
-
-
                         widget_signature();
-
                         selectMulti();
-
                         questionaireRateSummary(2);
-
                     }
-
                 });
-
             }
 
             $(".modalEdit").on('submit',(function(e) {
-
                 var free_access = '<?php echo $FreeAccess; ?>';
-
                 e.preventDefault();
-
-
-
                 var prepared_sigData = $('#tabAssigned_2 .prepared_signature').jSignature('getData');
-
                 var reviewed_sigData = $('#tabAssigned_2 .reviewed_signature').jSignature('getData');
-
                 var approved_sigData = $('#tabAssigned_2 .approved_signature').jSignature('getData');
-
-
 
                 formObj = $(this);
 
                 if (!formObj.validate().form()) return false;
-
-
-
                 if (inputInvalid('modalEdit') > 0) { return false; }
 
-                    
-
                 var formData = new FormData(this);
-
                 formData.append('btnUpdate_FFVA',true);
-
                 formData.append('prepared_sigData', prepared_sigData);
-
                 formData.append('reviewed_sigData', reviewed_sigData);
-
                 formData.append('approved_sigData', approved_sigData);
 
-
-
                 var l = Ladda.create(document.querySelector('#btnUpdate_FFVA'));
-
                 l.start();
 
-
-
                 $.ajax({
-
                     url: "function.php",
-
                     type: "POST",
-
                     data: formData,
-
                     contentType: false,
-
                     processData:false,
-
                     cache: false,
-
                     success: function(response) {
-
                         if ($.trim(response)) {
-
                             msg = "Sucessfully Save!";
-
                             var obj = jQuery.parseJSON(response);
-
                             var html = '<tr id="tr_'+obj.ID+'">';
-
                                 html += '<td>'+obj.ID+'</td>';
-
                                 html += '<td>'+obj.company+'</td>';
 
-
-
                                 if (obj.user_id == 5) {
-
                                     html += '<td class="text-center int_review_status"><a href="#modalViewInt" class="btn btn-link btn-sm" data-toggle="modal" onClick="btnInt('+obj.ID+', 1, 1)">View</a></td>';
-
                                     html += '<td class="text-center int_verify_status"></td>';
-
                                 }
-
                                 
-
                                 if (free_access != 1) {
-
                                     html += '<td class="text-center"></td>';
-
                                 }
-
                                 
-
                                 html += '<td class="text-center">'+obj.vulnerability_result+'</td>';
-
                                 html += '<td class="text-center">'+obj.last_modified+'</td>';
-
                                 html += '<td class="text-center">'+obj.due_date+'</td>';
-
                                 html += '<td class="text-center">'+obj.status+'</td>';
-
                                 html += '<td class="text-center">';
-
                                     html += '<div class="btn-group btn-group-circle">';
-
                                         html += '<a href="pdf_ffva?id='+obj.ID+'&signed=1" class="btn btn-outline dark btn-sm" target="_blank" title="PDF"><i class="fa fa-fw fa-file-pdf-o"></i></a>';
-
                                         html += '<a href="pdf_ffva_excel?id='+obj.ID+'&signed=1" class="btn green-jungle btn-sm" target="_blank" title="Excel"><i class="fa fa-fw fa-file-excel-o"></i></a>';
-
                                         html += '<a href="#modalView" class="btn dark btn-sm hide" data-toggle="modal" onclick="btnView('+obj.ID+')" title="View"><i class="fa fa-fw fa-search"></i></a>';
-
                                         html += '<a href="#modalEdit" class="btn btn-success btn-sm" data-toggle="modal" onclick="btnEdit('+obj.ID+')" title="Edit"><i class="fa fa-fw fa-pencil"></i></a>';
-
                                         html += '<a href="javascript:;" class="btn btn-danger btn-sm" data-toggle="modal" onclick="btnDelete('+obj.ID+', '+obj.tab+')" title="Delete"><i class="fa fa-fw fa-trash"></i></a>';
-
                                         html += '<a href="javascript:;" class="btn btn-info btn-sm" data-toggle="modal" onclick="btnArchive('+obj.ID+', '+obj.tab+')" title="Archive"><i class="fa fa-fw fa-file-archive-o"></i></a>';
-
                                     html += '</div>';
-
                                 html += '</td>';
-
                             html += '</tr>';
-
                             $('#tableData_'+obj.tab+' tbody').append(html);
-
                             $('#tableData_'+obj.tab+' tbody #tr_'+obj.ffva_ID).remove();
-
                             $('#modalEdit').modal('hide');
-
                         } else {
-
                             msg = "Error!"
-
                         }
-
                         l.stop();
 
-
-
                         bootstrapGrowl(msg);
-
                     }
-
                 });
 
             }));
@@ -3244,7 +3029,7 @@
                         swal.showInputError("You need to write something!");
                         return false
                     }
-                    $.ajax(
+                    $.ajax({
                         type: "GET",
                         url: "function.php?btnDelete_FFVA="+id+"&reason="+inputValue,
                         dataType: "html",

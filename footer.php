@@ -96,8 +96,8 @@
                                                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                             while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                                 $rowEmployeeID = $rowEmployee["ID"];
-                                                                $rowEmployeeFName = $rowEmployee["first_name"];
-                                                                $rowEmployeeLName = $rowEmployee["last_name"];
+                                                                $rowEmployeeFName = htmlentities($rowEmployee["first_name"]);
+                                                                $rowEmployeeLName = htmlentities($rowEmployee["last_name"]);
                                                                 $rowEmployeeSelected = "";
 
                                                                 // Base on Current Page
@@ -492,37 +492,37 @@
                                             <label>Endorse To</label>
                                             <select class="form-control mt-multiselect" name="assigned_to[]" multiple="multiple">
                                                 <?php
-                                                                        $selectEmployeee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $current_userEmployerID ORDER BY first_name" );
-                                                                        if ( mysqli_num_rows($selectEmployeee) > 0 ) {
-                                                                            while($rowEmployee = mysqli_fetch_array($selectEmployeee)) {
-                                                                                echo '<option value="'. $rowEmployee["ID"] .'">'. $rowEmployee["first_name"] .' '. $rowEmployee["last_name"] .'</option>';
-                                                                            }
-                                                                        }
-                                                                    ?>
+                                                    $selectEmployeee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $current_userEmployerID ORDER BY first_name" );
+                                                    if ( mysqli_num_rows($selectEmployeee) > 0 ) {
+                                                        while($rowEmployee = mysqli_fetch_array($selectEmployeee)) {
+                                                            echo '<option value="'. $rowEmployee["ID"] .'">'. htmlentities($rowEmployee["first_name"]) .' '. htmlentities($rowEmployee["last_name"]) .'</option>';
+                                                        }
+                                                    }
+                                                ?>
                                             </select>
                                         </div>
                                         <div class="form-group hide">
                                             <label>Copy To</label>
                                             <select class="form-control mt-multiselect" name="copy_to[]" multiple="multiple">
                                                 <?php
-                                                                        $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE is_verified = 1 AND is_active = 1 AND ID IN ($current_userEmployerID, 189) ORDER BY first_name" );
-                                                                        if ( mysqli_num_rows($selectUser) > 0 ) {
-                                                                            while($rowUser = mysqli_fetch_array($selectUser)) {
-                                                                                echo '<option value="'. $rowUser["ID"] .'">'. $rowUser["first_name"] .' '. $rowUser["last_name"] .'</option>';
-                                                                            }
-                                                                        }
-                                                                        $selectEmployeee = mysqli_query( $conn,"SELECT USER.ID AS userID, USER.employee_id AS userEMPID, USER.first_name AS userFN, USER.last_name AS userLN, USER.email AS userEmail, USER.is_verified AS userVerified, USER.is_active AS userActive, EMPLOYEE.ID AS empID, EMPLOYEE.user_id AS empUSERID, EMPLOYEE.suspended AS empSUSPENDED, EMPLOYEE.status AS empSTATUS, EMPLOYEE.verified AS empVERIFIED
-                    														FROM tbl_user AS USER
-                    														INNER JOIN tbl_hr_employee AS EMPLOYEE
-                    														ON USER.employee_id = EMPLOYEE.ID
-                    														WHERE USER.is_verified = 1 AND USER.is_active = 1 AND EMPLOYEE.user_id = $current_userEmployerID AND EMPLOYEE.suspended = 0 AND EMPLOYEE.status = 1 AND EMPLOYEE.verified = 0
-                    														ORDER BY USER.first_name" );
-                                                                        if ( mysqli_num_rows($selectEmployeee) > 0 ) {
-                                                                            while($rowEmployee = mysqli_fetch_array($selectEmployeee)) {
-                                                                                echo '<option value="'. $rowEmployee["userID"] .'">'. $rowEmployee["userFN"] .' '. $rowEmployee["userLN"] .'</option>';
-                                                                            }
-                                                                        }
-                                                                    ?>
+                                                    $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE is_verified = 1 AND is_active = 1 AND ID IN ($current_userEmployerID, 189) ORDER BY first_name" );
+                                                    if ( mysqli_num_rows($selectUser) > 0 ) {
+                                                        while($rowUser = mysqli_fetch_array($selectUser)) {
+                                                            echo '<option value="'. $rowUser["ID"] .'">'. htmlentities($rowUser["first_name"]) .' '. htmlentities($rowUser["last_name"]) .'</option>';
+                                                        }
+                                                    }
+                                                    $selectEmployeee = mysqli_query( $conn,"SELECT USER.ID AS userID, USER.employee_id AS userEMPID, USER.first_name AS userFN, USER.last_name AS userLN, USER.email AS userEmail, USER.is_verified AS userVerified, USER.is_active AS userActive, EMPLOYEE.ID AS empID, EMPLOYEE.user_id AS empUSERID, EMPLOYEE.suspended AS empSUSPENDED, EMPLOYEE.status AS empSTATUS, EMPLOYEE.verified AS empVERIFIED
+														FROM tbl_user AS USER
+														INNER JOIN tbl_hr_employee AS EMPLOYEE
+														ON USER.employee_id = EMPLOYEE.ID
+														WHERE USER.is_verified = 1 AND USER.is_active = 1 AND EMPLOYEE.user_id = $current_userEmployerID AND EMPLOYEE.suspended = 0 AND EMPLOYEE.status = 1 AND EMPLOYEE.verified = 0
+														ORDER BY USER.first_name" );
+                                                    if ( mysqli_num_rows($selectEmployeee) > 0 ) {
+                                                        while($rowEmployee = mysqli_fetch_array($selectEmployeee)) {
+                                                            echo '<option value="'. $rowEmployee["userID"] .'">'. $rowEmployee["userFN"] .' '. $rowEmployee["userLN"] .'</option>';
+                                                        }
+                                                    }
+                                                ?>
                                             </select>
                                         </div>
                                         <div class="form-group">
@@ -1279,46 +1279,48 @@
                         
                             const myTimeout = setTimeout(googleExtras, 5000);
                         
-                        
+                
                             var id = '<?php echo $current_userID; ?>';
                             // setInterval(function() {
-                            $.ajax({
-                                type: "GET",
-                                url: "function.php?modalChat_Refresh=" + id,
-                                dataType: "html",
-                                success: function(data) {
-                                    var countNotif = $('#countNotif');
-                                    var sendMessage2 = $('#sendMessage2').hasClass('in');
+                            // $.ajax({
+                            //     type: "GET",
+                            //     url: "function.php?modalChat_Refresh=" + id,
+                            //     dataType: "html",
+                            //     success: function(data) {
+                            //         // alert(data); 
+                            //         var countNotif = $('#countNotif');
+                            //         var sendMessage2 = $('#sendMessage2').hasClass('in');
                         
-                                    if (data > 0) {
-                                        if (countNotif.html() != data) {
-                                            $('#countNotif').removeClass('hide');
-                                            countNotif.html(data);
-                                            offCanvasChat(id);
+                            //         if (data > 0) {
+                            //             if (countNotif.html() != data) {
+                            //                 $('#countNotif').removeClass('hide');
+                            //                 countNotif.html(data);
+                            //                 // offCanvasChat(id);
                         
-                                            if (sendMessage2 == true) {
-                                                var to_id = $('#sendMessage2 input[name*="to_id"]').val();
-                                                var from_id = $('#sendMessage2 input[name*="from_id"]').val();
+                            //                 if (sendMessage2 == true) {
+                            //                     var to_id = $('#sendMessage2 input[name*="to_id"]').val();
+                            //                     var from_id = $('#sendMessage2 input[name*="from_id"]').val();
                         
-                                                sendChat(to_id, from_id)
-                                            }
-                                        }
-                                    } else {
-                                        if (countNotif.html() != data) {
-                                            $('#countNotif').addClass('hide');
-                                            countNotif.html(data);
-                                            offCanvasChat(id);
+                            //                     // sendChat(to_id, from_id)
+                            //                 }
+                            //             }
+                            //         } else {
+                            //             if (countNotif.html() != data) {
+                            //                 $('#countNotif').addClass('hide');
+                            //                 countNotif.html(data);
+                            //                 // offCanvasChat(id); 
                         
-                                            if (sendMessage2 == true) {
-                                                var to_id = $('#sendMessage2 input[name*="to_id"]').val();
-                                                var from_id = $('#sendMessage2 input[name*="from_id"]').val();
+                            //                 // alert(offCanvasChat(id)); 
+                            //                 if (sendMessage2 == true) {
+                            //                     var to_id = $('#sendMessage2 input[name*="to_id"]').val();
+                            //                     var from_id = $('#sendMessage2 input[name*="from_id"]').val();
                         
-                                                sendChat(to_id, from_id)
-                                            }
-                                        }
-                                    }
-                                }
-                            });
+                            //                     // sendChat(to_id, from_id)
+                            //                 }
+                            //             }
+                            //         }
+                            //     }
+                            // });
                             // }, 1000);
                         });
                         

@@ -127,7 +127,7 @@
                             <div class="portlet light">
                                 <div class="portlet-title tabbable-line">
                                     <div class="caption">
-                                        <i class="icon-notebook font-dark"></i>
+                                        <span class="icon-notebook font-dark"></span>
                                         <span class="caption-subject font-dark bold uppercase">List of Job Descriptions</span>
                                         <?php
                                             if($current_client == 0) {
@@ -151,11 +151,12 @@
                                                     }
                                                     
                                                     $icon = $row["icon"];
-                                                    if (!empty($icon)) { echo '<img src="'.$src.$url.rawurlencode($icon).'" style="width: 32px; height: 32px; object-fit: contain; object-position: center;" />'; }
-                                                    if ($type_id == 0) {
-                                                        echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'">'.$file_title.'</a>';
-                                                    } else {
-                                                        echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox>'.$file_title.'</a>';
+                                                    if (!empty($icon)) { 
+                                                        if ($type_id == 0) {
+                                                            echo ' <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                                        } else {
+                                                            echo ' <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                                        }
                                                     }
 	                                            }
                                             }

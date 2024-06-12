@@ -1,7 +1,7 @@
 <?php 
-$date_default_tx = new DateTime(null, new DateTimeZone(date_default_timezone_get()));
-$date_default_tx->setTimeZone(new DateTimeZone('America/Chicago'));
-$today_tx = $date_default_tx->format('Y-m-d');
+    $date_default_tx = new DateTime(null, new DateTimeZone(date_default_timezone_get()));
+    $date_default_tx->setTimeZone(new DateTimeZone('America/Chicago'));
+    $today_tx = $date_default_tx->format('Y-m-d');
     $title = "Contacts Relationship Management";
     $site = "Customer_Relationship_Management";
     $breadcrumbs = '';
@@ -13,6 +13,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
     $breadcrumbs .= '<li><span>'. $title .'</span></li>';
 
     include_once ('header.php'); 
+    
 ?>
 <style type="text/css">
     /*Loader*/
@@ -300,7 +301,7 @@ $today_tx = $date_default_tx->format('Y-m-d');
                                         <form id="searchParent">
                                             <label>Contact Parent</label>
                                             <div class="input-group" style="margin-bottom:1rem">
-                                                <input type="text" class="form-control" id="searchValue" placeholder="Search customer name">
+                                                <input type="text" class="form-control" id="searchParentValue" placeholder="Search customer name">
                                                 <span class="input-group-btn">
                                                     <button type="submit" class="btn green" type="button"><i class="fa fa-search"></i></button>
                                                 </span>

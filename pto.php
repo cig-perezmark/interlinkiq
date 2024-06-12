@@ -19,21 +19,13 @@
             <div class="portlet light portlet-fit ">
                 <div class="portlet-title">
                     <div class="caption">
-                        <i class=" icon-layers font-green"></i>
+                        <span class=" icon-layers font-green"></span>
                         <span class="caption-subject font-green bold uppercase">PTO Dashboard
                         <?php if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163): ?>
                             (<a data-toggle="modal" data-target="#modal_video">Add Video</a>)
                         <?php endif; ?>
                         </span>- 
                             <?php
-                                // $sql = "SELECT * FROM tbl_pages_demo_video WHERE page = '$site' AND user_id = '$switch_user_id' OR page = '$site' AND user_id = '163' OR page = '$site' AND user_id = '$current_userEmployerID' " ; 
-                                // $result = mysqli_query ($conn, $sql);
-                                // while ($row = mysqli_fetch_assoc($result)){
-                                //     // echo '<a data-toggle="modal" data-target="#view_video" class="view_videos"  file_name="'.$row['youtube_link'].'">'.$row['file_title'].'</a>';
-                                //     echo '<a class="view_videos" data-src='.$row['youtube_link'].'" data-fancybox><i class="fa fa-youtube"></i>'.$row['file_title'].'</a>';
-                                // }
-                                
-                                
                                 if($current_client == 0) {
                                     // $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site' AND (user_id = $switch_user_id OR user_id = $current_userEmployerID OR user_id = 163)");
                                     $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site'");
@@ -55,11 +47,12 @@
                                         }
                                         
                                         $icon = $row["icon"];
-                                        if (!empty($icon)) { echo '<img src="'.$src.$url.rawurlencode($icon).'" style="width: 32px; height: 32px; object-fit: contain; object-position: center;" />'; }
-                                        if ($type_id == 0) {
-                                            echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'">'.$file_title.'</a>';
-                                        } else {
-                                            echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox>'.$file_title.'</a>';
+                                        if (!empty($icon)) { 
+                                            if ($type_id == 0) {
+                                                echo ' <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                            } else {
+                                                echo ' <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                            }
                                         }
                                     }
                                     

@@ -80,7 +80,7 @@
                                         <div class="portlet light ">
                                             <div class="portlet-title  tabbable-tabdrop tabbable-line">
                                                 <div class="caption caption-md">
-                                                    <i class="icon-globe theme-font hide"></i>
+                                                    <span class="icon-globe theme-font hide"></span>
                                                     <span class="caption-subject font-dark bold uppercase">Enterprise Details</span>
                                                     <?php
                                                         if($current_client == 0) {
@@ -103,11 +103,14 @@
                                                             		$file_url = $src.$url.rawurlencode($file_upload).$embed;
                                                                 }
                                                                 
-                                                                if ($type_id == 0) {
-                                                            		echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i> '.$file_title.'</a>';
-                                                            	} else {
-                                                            		echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><i class="fa fa-youtube"></i> '.$file_title.'</a>';
-                                                            	}
+                                                                $icon = $row["icon"];
+                                                                if (!empty($icon)) { 
+                                                                    if ($type_id == 0) {
+                                                                        echo ' <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                                                    } else {
+                                                                        echo ' <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                                                    }
+                                                                }
             	                                            }
                                                             
                                                             if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163) {

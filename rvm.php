@@ -34,7 +34,7 @@
                                     'fileExists' => (int) $httpResponseCode == 200,
                                     'fileSize' => (int) $fileSize
                                 ];
-                            }
+                            } 
 
                             for ($i = 22; $i <= 22; $i++) {
 
@@ -544,7 +544,7 @@
                                                         if ( mysqli_num_rows($result) > 0 ) {
                                                             while($row = mysqli_fetch_array($result)) {
                                                                 $ID = $row['ID'];
-                                                                $name = $row['name'];
+                                                                $name = htmlentities($row['name']);
                                                                 $records = 0;
 
                                                                 $selectEForm = mysqli_query( $conn,'SELECT * FROM tbl_eforms WHERE user_id="'.$switch_user_id.'" AND department_id="'. $ID .'"' );
@@ -645,9 +645,9 @@
                                                     if ( mysqli_num_rows($result) > 0 ) {
                                                         while($row = mysqli_fetch_array($result)) {
                                                             $ID = $row['ID'];
-                                                            $record = $row['record'];
-                                                            $files_date = $row['files_date'];
-                                                            $verified_by = $row['verified_by'];
+                                                            $record = htmlentities($row['record']);
+                                                            $files_date = htmlentities($row['files_date']);
+                                                            $verified_by = htmlentities($row['verified_by']);
 
                                                             echo '<tr id="tr_'. $ID .'">
                                                                 <td>'. $record .'</td>
@@ -696,7 +696,7 @@
                                                                 $result = mysqli_query($conn,"SELECT * FROM tbl_eforms_department WHERE user_id = $switch_user_id ORDER BY name");
                                                                 while($row = mysqli_fetch_array($result)) {
                                                                     $ID = $row['ID'];
-                                                                    $name = $row['name'];
+                                                                    $name = htmlentities($row['name']);
                                                                     echo '<option value="'. $ID .'">'. $name .'</option>';
                                                                 }
                                                             ?>
@@ -720,8 +720,8 @@
                                                                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                                         $rowEmployeeID = $rowEmployee["ID"];
-                                                                        $rowEmployeeFName = $rowEmployee["first_name"];
-                                                                        $rowEmployeeLName = $rowEmployee["last_name"];
+                                                                        $rowEmployeeFName = htmlentities($rowEmployee["first_name"]);
+                                                                        $rowEmployeeLName = htmlentities($rowEmployee["last_name"]);
 
                                                                         echo '<option value="'. $rowEmployeeID .'">'. $rowEmployeeFName .' '. $rowEmployeeLName .'</option>';
                                                                     }

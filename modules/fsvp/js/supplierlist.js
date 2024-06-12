@@ -737,6 +737,9 @@ function viewEvaluationDetails(data) {
     modal.find('[data-ed=approval_date]').html(data.approval_date || none);
     modal.find('[data-ed=assessment]').html(data.assessment || none);
 
+    // update view ppdf button
+    $('#pdfEvaluationForm').attr('data-src', (Init.URL || 'fsvp') + '?pdf=evaluation_form&r=' + data.rhash);
+
     modal.modal('show');
 }
 

@@ -237,7 +237,6 @@ function showHint($hint) {
     </div>
 </div>
 
-
 <div class="modal fade in" id="modalViewCBP" role="dialog" aria-hidden="true" tabindex="1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

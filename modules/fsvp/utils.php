@@ -148,6 +148,7 @@ function getEvaluationData($conn, $evalId, $recordId = null) {
         )->fetchAssoc(function($d) {
             $d['supplier_address'] = formatSupplierAddress($d['supplier_address']);
             $d['importer_address'] = formatSupplierAddress($d['importer_address']);
+            $d['rhash'] = md5($d['record_id']);
             return $d;
         });
         

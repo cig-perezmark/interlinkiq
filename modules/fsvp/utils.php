@@ -3,9 +3,18 @@
 include_once __DIR__ ."/../../alt-setup/setup.php";
 date_default_timezone_set('America/Chicago');
 
+function ForeignSupplierSQLClause($firstAnd = true) {
+    return ($firstAnd ? "AND " : " ") . "TRIM(SUBSTRING_INDEX(address, ',', 1)) NOT LIKE 'US' AND TRIM(SUBSTRING_INDEX(address, '|', 1)) NOT LIKE 'US'";
+}
+
 function getSuppliersByUser($conn, $userId) {
     $y = 1;
-    return $conn->execute("SELECT ID as id, name, address FROM tbl_supplier WHERE user_id = ? AND status = 1 AND page = 1", $userId)
+    return $conn->execute("SELECT ID as id, name, address 
+        FROM tbl_supplier 
+        WHERE user_id = ? AND status = 1 AND page = 1
+        -- AND TRIM(SUBSTRING_INDEX(address, ',', 1)) NOT LIKE 'US' AND
+		-- TRIM(SUBSTRING_INDEX(address, '|', 1)) NOT LIKE 'US'
+    ", $userId)
         ->fetchAll(function($d) {
             $d['address'] = formatSupplierAddress($d['address']);
             return $d;

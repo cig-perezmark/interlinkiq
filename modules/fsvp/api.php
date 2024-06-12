@@ -781,3 +781,47 @@ if(isset($_GET['newCBPRecord'])) {
         ], 500);
     }
 }
+
+if(isset($_GET['foreignSuppliersMaterials'])) {
+    $fsClause = ForeignSupplierSQLClause();
+    
+    $result = $conn->execute("SELECT
+            MAT.ID AS id,
+            MAT.material_name,
+            SUPP.name AS supplier_name
+        FROM tbl_supplier SUPP
+        RIGHT JOIN tbl_supplier_material MAT
+            ON MAT.ID IN (SUPP.material)
+        WHERE
+            1 = 1
+            $fsClause
+    ")->fetchAll();
+
+    send_response([
+        'data' => $result,
+    ]);
+}
+
+if(isset($_POST['search-foreignMaterials'])) {
+    $fsClause = ForeignSupplierSQLClause();
+    $search = mysqli_real_escape_string($conn, $_POST['search-foreignMaterials']);
+    
+    $result = $conn->execute("SELECT
+            MAT.ID AS id,
+            MAT.material_name,
+            MAT.description,
+            SUPP.name AS supplier_name
+        FROM tbl_supplier SUPP
+        RIGHT JOIN tbl_supplier_material MAT
+            ON MAT.ID IN (SUPP.material)
+        WHERE
+            MAT.material_name LIKE '%$search%' AND SUPP.user_id = ?"
+        // $fsClause, 
+        ,$user_id
+    )->fetchAll();
+
+    send_response([
+        'results' => $result,
+        'count' => count($result),
+    ]);
+}

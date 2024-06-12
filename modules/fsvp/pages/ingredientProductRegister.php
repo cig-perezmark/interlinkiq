@@ -32,14 +32,16 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="">Find product </label>
-                            <select name="" id="" class="form-control"></select>
+                            <label for="productSelect2">Find product </label>
+                            <select name="" id="productSelect2" class="form-control">
+                                <option value="" selected disabled>Select product</option>
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="">Importer </label>
-                            <input type="text" class="form-control">
+                            <label for="">Product Name <?= autofill() ?></label>
+                            <textarea name="" id="iprProductName" class="form-control" readonly></textarea>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -50,19 +52,30 @@
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="">Description </label>
-                            <input type="text" class="form-control">
+                            <label for="">Importer <?= autofill() ?></label>
+                            <textarea name="" id="iprImporter" class="form-control" style="height: 42px;" readonly></textarea>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="">Description <?= autofill() ?></label>
+                            <textarea name="" id="iprDescription" class="form-control" readonly></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
                         <div class="form-group">
                             <label for="">Ingredients List </label>
-                            <input type="text" class="form-control">
+                            <textarea name="" id="iprIngredientsList" class="form-control"></textarea>
                         </div>
                     </div>
                 </div>
-                <hr>
+                <!-- <hr> -->
                 <div class="row">
+                    <div class="col-md-12 margin-bottom-10">
+                        <strong>Foreign Supplier Activity Worksheet</strong>
+                        <hr>
+                    </div>
+
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Food Product Description(s), <br>including Important Food Safety Characteristics:</label>

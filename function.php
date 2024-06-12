@@ -531,9 +531,9 @@
         // 1 - Accept Image Only
 
         $path = 'uploads/'.$path;
-        $files = $_FILES[$file]['name'];
+        $files = addslashes($_FILES[$file]['name']);
         $size = $_FILES[$file]['size'];
-        $tmp = $_FILES[$file]['tmp_name'];
+        $tmp = addslashes($_FILES[$file]['tmp_name']);
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         if (!$finfo) {
@@ -579,7 +579,7 @@
             "mime" => $mime
         );
         if ( ($type == 0 AND !in_array($mime, $mime_array)) OR ($type == 1 AND in_array($mime, $mime_array)) ) {
-            if(move_uploaded_file($tmp,$path)) {
+            if(move_uploaded_file(stripcslashes($tmp),stripcslashes($path))) {
                 $output['valid'] = true;
             }
         }
@@ -31868,8 +31868,10 @@
         mysqli_close($conn);
     }
     if( isset($_GET['modalViewDepartment_archiving']) ) {
-        $id = $_GET['modalViewDepartment_archiving'];
-        $FreeAccess = $_GET['freeaccess'];
+        $ID = $_GET['modalViewDepartment_archiving'];
+
+        $FreeAccess = false;
+        if ($_GET['freeaccess'] == 1) { $FreeAccess = true; }
 
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
@@ -31880,27 +31882,40 @@
             $user_id = employerID($portal_user);
         }
 
-        $selectData = mysqli_query( $conn,"SELECT * FROM tbl_archiving WHERE user_id=$user_id AND department_id = $id ORDER BY files_date DESC" );
+        $selectData = mysqli_query( $conn,"SELECT ID, record, files_date, deleted, reason FROM tbl_archiving WHERE user_id = $user_id AND department_id = $ID ORDER BY record" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             while($row = mysqli_fetch_array($selectData)) {
                 $ID = $row['ID'];
-                $record = $row['record'];
+                $record = htmlentities($row['record']);
                 $files_date = $row['files_date'];
 
+                $approval = '';
+                if ($row['reason'] == 0 AND !empty($row['reason'])) {
+                    $reason_array = explode(" | ", $row['reason']);
+                    $reason = htmlentities($reason_array[1]);
+                    $approval = '<br><i class="help-block">User requested to delete this item because '.$reason.'</i>
+                    <div class="remark_action">
+                        <a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnAccept('.$ID.')">Accept</a>
+                         | 
+                        <a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnReject('.$ID.')">Reject</a>
+                    </div>';
+                }
+
                 echo '<tr id="tr_'. $ID .'">
-                    <td>'. htmlentities($record) .'</td>
-                    <td class="text-center">'. $files_date .'</td>
+                    <td>'.$record.$approval.'</td>
+                    <td class="text-center">'.$files_date.'</td>
                     <td class="text-center">';
 
-                        if ($FreeAccess == 1) {
-                            echo '<a href="#modalViewFile" class="btn btn-success btn-sm btnView btn-circle" data-toggle="modal" onclick="btnView('. $ID .')">View</a>';
-                        } else {
+                        if ($FreeAccess == false) {
                             echo '<div class="btn-group btn-group-circle">
-                                <a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit('. $ID.')">Edit</a>
-                                <a href="#modalViewFile" class="btn btn-success btn-sm btnView" data-toggle="modal" onclick="btnView('. $ID .')">View</a>
+                                <a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit('. $ID.')">'.$FreeAccess.' Edit</a>
+                                <a href="#modalViewFile" class="btn btn-success btn-sm btnView" data-toggle="modal" onclick="btnView('. $ID .', '.$FreeAccess.')">View</a>
+                                <a href="javascript:;" class="btn btn-danger btn-sm btnDelete" onclick="btnDelete('. $ID .', '.$FreeAccess.')">Delete</a>
                             </div>';
+                        } else {
+                            echo '<a href="#modalViewFile" class="btn btn-success btn-sm btnView btn-circle" data-toggle="modal" onclick="btnView('. $ID .', '.$FreeAccess.')">View</a>';
                         }
-                        
+
                     echo '</td>
                 </tr>';
             }
@@ -31909,31 +31924,54 @@
         mysqli_close($conn);
     }
     if( isset($_GET['modalViewDepartmentViewAll_archiving']) ) {
-        $id = $_GET['modalViewDepartmentViewAll_archiving'];
-        $id = employerID($id);
-        $FreeAccess = $_GET['freeaccess'];
+        $ID = $_GET['modalViewDepartmentViewAll_archiving'];
 
-        $result = mysqli_query( $conn,"SELECT * FROM tbl_archiving WHERE user_id=$id ORDER BY files_date DESC" );
-        if ( mysqli_num_rows($result) > 0 ) {
-            while($row = mysqli_fetch_array($result)) {
+        $FreeAccess = false;
+        if ($_GET['freeaccess'] == 1) { $FreeAccess = true; }
+
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
+        $selectData = mysqli_query( $conn,"SELECT ID, record, files_date, deleted, reason FROM tbl_archiving WHERE user_id = $user_id ORDER BY record" );
+        if ( mysqli_num_rows($selectData) > 0 ) {
+            while($row = mysqli_fetch_array($selectData)) {
                 $ID = $row['ID'];
-                $record = $row['record'];
+                $record = htmlentities($row['record']);
                 $files_date = $row['files_date'];
 
+                $approval = '';
+                if ($row['reason'] == 0 AND !empty($row['reason'])) {
+                    $reason_array = explode(" | ", $row['reason']);
+                    $reason = htmlentities($reason_array[1]);
+                    $approval = '<br><i class="help-block">User requested to delete this item because '.$reason.'</i>
+                    <div class="remark_action">
+                        <a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnAccept('.$ID.')">Accept</a>
+                         | 
+                        <a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnReject('.$ID.')">Reject</a>
+                    </div>';
+                }
+
                 echo '<tr id="tr_'. $ID .'">
-                    <td>'. htmlentities($record) .'</td>
-                    <td class="text-center">'. $files_date .'</td>
+                    <td>'.$record.$approval.'</td>
+                    <td class="text-center">'.$files_date.'</td>
                     <td class="text-center">';
 
-                        if ($FreeAccess == 1) {
-                            echo '<a href="#modalViewFile" class="btn btn-success btn-sm btnView btn-circle" data-toggle="modal" onclick="btnView('. $ID .')">View</a>';
-                        } else {
+                        if ($FreeAccess == false) {
                             echo '<div class="btn-group btn-group-circle">
-                                <a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit('. $ID.')">Edit</a>
-                                <a href="#modalViewFile" class="btn btn-success btn-sm btnView" data-toggle="modal" onclick="btnView('. $ID .')">View</a>
+                                <a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit('. $ID.')">'.$FreeAccess.' Edit</a>
+                                <a href="#modalViewFile" class="btn btn-success btn-sm btnView" data-toggle="modal" onclick="btnView('. $ID .', '.$FreeAccess.')">View</a>
+                                <a href="javascript:;" class="btn btn-danger btn-sm btnDelete" onclick="btnDelete('. $ID .', '.$FreeAccess.')">Delete</a>
                             </div>';
+                        } else {
+                            echo '<a href="#modalViewFile" class="btn btn-success btn-sm btnView btn-circle" data-toggle="modal" onclick="btnView('. $ID .', '.$FreeAccess.')">View</a>';
                         }
-                        
+
                     echo '</td>
                 </tr>';
             }
@@ -32003,7 +32041,7 @@
     if( isset($_GET['btnAccept_archiving']) ) {
         $ID = $_GET['btnAccept_archiving'];
 
-        mysqli_query( $conn,"UPDATE tbl_archiving SET deleted = 1, reason = '' WHERE ID = $ID");
+        mysqli_query( $conn,"UPDATE tbl_archiving SET deleted = 1 WHERE ID = $ID");
     }
     if( isset($_GET['btnReject_archiving']) ) {
         $ID = $_GET['btnReject_archiving'];

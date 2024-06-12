@@ -566,6 +566,7 @@
                                 html += '<td class="text-center">'+obj.last_modified+'</td>';
                                 html += '<td class="text-center">'+obj.due_date+'</td>';
                                 html += '<td class="text-center">'+obj.status+'</td>';
+                                html += '<td class="text-center"></td>';
                                 html += '<td class="text-center">';
                                     html += '<div class="btn-group btn-group-circle">';
                                         html += '<a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-id="'+obj.ID+'" data-toggle="modal" onclick="btnView('+obj.ID+')">View</a>';

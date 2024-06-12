@@ -12,15 +12,13 @@ function getSuppliersByUser($conn, $userId) {
     return $conn->execute("SELECT ID as id, name, address 
         FROM tbl_supplier 
         WHERE user_id = ? AND status = 1 AND page = 1
-        -- AND TRIM(SUBSTRING_INDEX(address, ',', 1)) NOT LIKE 'US' AND
-		-- TRIM(SUBSTRING_INDEX(address, '|', 1)) NOT LIKE 'US'
     ", $userId)
         ->fetchAll(function($d) {
             $d['address'] = formatSupplierAddress($d['address']);
             return $d;
         });
-    return $conn->select("tbl_supplier", "ID as id, name, address", [ 'user_id'=> $userId, 'status'=> $y, 'page'=>$y])
-        ->fetchAll();
+    // return $conn->select("tbl_supplier", "ID as id, name, address", [ 'user_id'=> $userId, 'status'=> $y, 'page'=>$y])
+    //     ->fetchAll();
 }
 
 function getImportersByUser($conn, $userId) {
@@ -371,10 +369,7 @@ function saveEvaluationFile($postData, $name) {
 
 function saveEvalFiles($postData, $conn, $id) {
     return array_map(function ($fileData) use($conn, $id) {
-        $conn->insert("tbl_fsvp_files", [
-            'record_id' => $id,
-            ...$fileData,
-        ]);
+        $conn->insert("tbl_fsvp_files", array_merge(['record_id' => $id], $fileData));
         $fileData['id'] = $conn->getInsertId();
         $fileData['filename'] = embedFileUrl($fileData['filename'], $fileData['path']);
         unset($fileData['path']);

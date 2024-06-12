@@ -396,11 +396,10 @@ if(isset($_GET['newFSVPQI'])) {
 
         if(isset($_POST['c_pcqi_certified']) && $_POST['c_pcqi_certified'] == 'true') {
             $d = saveFSVPQICertificate($_POST, 'c_pcqi_certified');
-            $conn->insert('tbl_fsvp_files', [
+            $conn->insert('tbl_fsvp_files', array_merge([
                 'record_id' => $id,
                 'record_type' => "$type:pcqi-certificate",
-                ...$d,
-            ]);
+            ], $d));
             $d['id'] = $conn->getInsertId();
             $d['filename'] = embedFileUrl($d['filename'], $d['path']);
             $filesData['pcqi-certificate'] = $d;
@@ -408,11 +407,10 @@ if(isset($_GET['newFSVPQI'])) {
 
         if(isset($_POST['c_food_quality_auditing']) && $_POST['c_food_quality_auditing'] == 'true') {
             $d = saveFSVPQICertificate($_POST, 'c_food_quality_auditing');
-            $conn->insert('tbl_fsvp_files', [
+            $conn->insert('tbl_fsvp_files', array_merge([
                 'record_id' => $id,
                 'record_type' => "$type:food-quality-auditing",
-                ...$d,
-            ]);
+            ], $d));
             $d['id'] = $conn->getInsertId();
             $d['filename'] = embedFileUrl($d['filename'], $d['path']);
             $filesData['food-quality-auditing'] = $d;
@@ -420,11 +418,10 @@ if(isset($_GET['newFSVPQI'])) {
         
         if(isset($_POST['c_haccp_training']) && $_POST['c_haccp_training'] == 'true') {
             $d = saveFSVPQICertificate($_POST, 'c_haccp_training');
-            $conn->insert('tbl_fsvp_files', [
+            $conn->insert('tbl_fsvp_files', array_merge([
                 'record_id' => $id,
                 'record_type' => "$type:haccp-training",
-                ...$d,
-            ]);
+            ], $d));
             $d['id'] = $conn->getInsertId();
             $d['filename'] = embedFileUrl($d['filename'], $d['path']);
             $filesData['haccp-training'] = $d;
@@ -432,11 +429,10 @@ if(isset($_GET['newFSVPQI'])) {
 
         if(isset($_POST['c_fs_training_certificate']) && $_POST['c_fs_training_certificate'] == 'true') {
             $d = saveFSVPQICertificate($_POST, 'c_fs_training_certificate');
-            $conn->insert('tbl_fsvp_files', [
+            $conn->insert('tbl_fsvp_files', array_merge([
                 'record_id' => $id,
                 'record_type' => "$type:food-safety-training-certificate",
-                ...$d,
-            ]);
+            ], $d));
             $d['id'] = $conn->getInsertId();
             $d['filename'] = embedFileUrl($d['filename'], $d['path']);
             $filesData['food-safety-training-certificate'] = $d;
@@ -444,11 +440,10 @@ if(isset($_GET['newFSVPQI'])) {
 
         if(isset($_POST['c_gfsi_certificate']) && $_POST['c_gfsi_certificate'] == 'true') {
             $d = saveFSVPQICertificate($_POST, 'c_gfsi_certificate');
-            $conn->insert('tbl_fsvp_files', [
+            $conn->insert('tbl_fsvp_files', array_merge([
                 'record_id' => $id,
                 'record_type' => "$type:gfsi-certificate",
-                ...$d,
-            ]);
+            ], $d));
             $d['id'] = $conn->getInsertId();
             $d['filename'] = embedFileUrl($d['filename'], $d['path']);
             $filesData['gfsi-certificate'] = $d;

@@ -1,24 +1,17 @@
 <?php
 
 $data = $conn->execute("SELECT 
-    REC.*,
+    CBP.*,
     IMP.name as importer_name,
-    IMP.address as importer_address,
-    SUPP.name as supplier_name,
-    SUPP.address as supplier_address,
-    EVAL.assessment
-    FROM tbl_fsvp_evaluation_records REC
-    LEFT JOIN tbl_fsvp_evaluations EVAL ON EVAL.id = REC.evaluation_id
+    IMP.address as importer_address
+    FROM tbl_fsvp_cbp_records CBP
     -- importer
-    LEFT JOIN tbl_fsvp_importers F_IMP ON F_IMP.id = EVAL.importer_id
+    LEFT JOIN tbl_fsvp_importers F_IMP ON F_IMP.id = CBP.importer_id
     LEFT JOIN tbl_supplier IMP ON IMP.ID = F_IMP.importer_id
-    -- supplier
-    LEFT JOIN tbl_fsvp_suppliers F_SUPP ON F_SUPP.id = EVAL.supplier_id
-    LEFT JOIN tbl_supplier SUPP ON SUPP.ID = F_SUPP.supplier_id
-    WHERE MD5(REC.id) = ?
+    WHERE MD5(CBP.id) = ?
 ", $recordId)->fetchAssoc(function($d) {
     $d['importer_address' ] = formatSupplierAddress($d['importer_address']);
-    $d['supplier_address' ] = formatSupplierAddress($d['supplier_address']);
+    // $d['supplier_address' ] = formatSupplierAddress($d['supplier_address']);
     return $d;
 });
 
@@ -80,11 +73,11 @@ $html = $css . '
     <h3 style="text-align:center;">'.$title.'</h3>
     <table>
         <tr>
-            <td>Importer Name:</td>
-            <td>Date:</td>
+            <td>Importer Name: '.($data['importer_name'] ?? '').'</td>
+            <td>Date: '.(date('Ymd', strtotime($data['created_at']))).'</td>
         </tr>
         <tr>
-            <td colspan="2">Address:</td>
+            <td colspan="2">Address: '.($data['importer_address']).'</td>
         </tr>
     </table>
     <p>Supplier information for FSVP importer
@@ -99,11 +92,11 @@ $html = $css . '
             <td>CBP Entry Filer</td>
         </tr>
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>'.($data['foods_info'] ?? 'None').'</td>
+            <td>'.($data['supplier_info'] ?? 'None').'</td>
+            <td>'.($data['determining_importer'] ?? 'None').'</td>
+            <td>'.($data['designated_importer'] ?? 'None').'</td>
+            <td>'.($data['cbp_entry_filer'] ?? 'None').'</td>
         </tr>
         <tr>
             <td colspan="5">*The Supplier identified as the FSVP “importer” in the CBP entry filing. FDA will see as responsible for complying with the FSVP rule.

@@ -30996,7 +30996,7 @@
 
                 $employee_id_arr = explode(", ", $assigned_to_id);
                 foreach($employee_id_arr as $key) {    
-                    $selectEmployee = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_hr_employee WHERE ID = $key" );
+                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $key" );
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         $rowEmployee = mysqli_fetch_array($selectEmployee);
                         $employee_name = $rowEmployee["first_name"].' '.$rowEmployee["last_name"];
@@ -31012,7 +31012,7 @@
             
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
-                $selectData = mysqli_query( $conn,'SELECT ID, record, file_date, verified_by FROM tbl_eforms WHERE user_id="'. $user_id .'" AND ID="'. $last_id .'" ORDER BY ID LIMIT 1' );
+                $selectData = mysqli_query( $conn,'SELECT * FROM tbl_eforms WHERE user_id="'. $user_id .'" AND ID="'. $last_id .'" ORDER BY ID LIMIT 1' );
                 if ( mysqli_num_rows($selectData) > 0 ) {
                     $rowData = mysqli_fetch_array($selectData);
                     $data_ID = $rowData['ID'];
@@ -31021,7 +31021,7 @@
                     $data_verified = htmlentities($rowData['verified_by']);
 
                     if (!empty($assigned_to_id)) {
-                        $selectUser = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $user_id" );
+                        $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $user_id" );
                         if ( mysqli_num_rows($selectUser) > 0 AND (intval($filled_out) == 0 OR intval($signed) == 0)) {
                             $rowUser = mysqli_fetch_array($selectUser);
                             $user_name = $rowUser['first_name'].' '.$rowUser['last_name'];
@@ -31111,7 +31111,7 @@
 
             $employee_id_arr = explode(", ", $assigned_to_id);
             foreach($employee_id_arr as $key) {    
-                $selectEmployee = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_hr_employee WHERE ID = $key" );
+                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $key" );
                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                     $rowEmployee = mysqli_fetch_array($selectEmployee);
                     $employee_name = $rowEmployee["first_name"].' '.$rowEmployee["last_name"];
@@ -31124,7 +31124,7 @@
 
         mysqli_query( $conn,"UPDATE tbl_eforms set portal_user='". $portal_user ."', department_id='". $department_id ."', record='". $record ."', assigned_to_id='". $assigned_to_id ."', description='". $description ."', filled_out='". $filled_out ."', filled_out_reason='". $filled_out_reason ."', signed='". $signed ."', signed_reason='". $signed_reason ."', frequency='". $frequency ."', frequency_other='". $frequency_other ."', compliance='". $compliance ."', compliance_reason='". $compliance_reason ."', verified_by='". $verified ."', notes='". $notes ."' WHERE ID='". $ID ."'" );
 
-        $selectData = mysqli_query( $conn,'SELECT ID, record, file_date, verified_by, file_history, filesize FROM tbl_eforms WHERE ID="'. $ID .'" ORDER BY ID LIMIT 1' );
+        $selectData = mysqli_query( $conn,'SELECT * FROM tbl_eforms WHERE ID="'. $ID .'" ORDER BY ID LIMIT 1' );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $rowData = mysqli_fetch_array($selectData);
             $data_ID = $rowData['ID'];
@@ -31175,7 +31175,7 @@
 
             if ($process == true) {
                 if (!empty($assigned_to_id)) {
-                    $selectUser = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $user_id" );
+                    $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $user_id" );
                     if ( mysqli_num_rows($selectUser) > 0 AND (intval($filled_out) == 0 OR intval($signed) == 0)) {
                         $rowUser = mysqli_fetch_array($selectUser);
                         $user_name = $rowUser['first_name'].' '.$rowUser['last_name'];
@@ -31940,6 +31940,75 @@
         }
 
         mysqli_close($conn);
+    }
+    if( isset($_GET['btnDelete_archiving']) ) {
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
+        $ID = $_GET['btnDelete_archiving'];
+        $reason = addslashes($_GET['reason']);
+
+        $message = array();
+        array_push($message, $portal_user);
+        array_push($message, $reason);
+        $message = implode(" | ",$message);
+
+        mysqli_query( $conn,"UPDATE tbl_archiving SET reason = '".$message."' WHERE ID = $ID" );
+
+
+        // EMAIL NOTIFICATION
+        
+        // Data
+        $selectData = mysqli_query( $conn,"SELECT record FROM tbl_archiving WHERE ID = $ID" );
+        if ( mysqli_num_rows($selectData) > 0 ) {
+            $rowData = mysqli_fetch_array($selectData);
+            $data_record = htmlentities($rowData['record']);
+        }
+
+        // Requester
+        $selectUserReq = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $portal_user" );
+        if ( mysqli_num_rows($selectUserReq) > 0 ) {
+            $rowUserReq = mysqli_fetch_array($selectUserReq);
+            $user_name_req = htmlentities($rowUserReq['first_name']) .' '. htmlentities($rowUserReq['last_name']);
+            $user_email_req = htmlentities($rowUserReq['email']);
+            $sender[$user_email_req] = $user_name_req;
+        }
+
+        // Receiver (Employer)
+        $selectUser = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $user_id" );
+        if ( mysqli_num_rows($selectUser) > 0 ) {
+            $rowUser = mysqli_fetch_array($selectUser);
+            $user_name = htmlentities($rowUser['first_name']) .' '. htmlentities($rowUser['last_name']);
+            $user_email = htmlentities($rowUser['email']);
+            $recipients[$user_email] = $user_name;
+        }
+
+        $subject = 'Delete Request for Archive Item';
+        $body = 'Hi '.$user_name.'!<br><br>
+
+        '.$user_name_req.' is requesting to delete <b>'.$data_record.'</b> in Archive Module. The reason is '.$reason.'.<br><br>
+
+        Please click the button below to view the item<br><br>
+
+        <a href="'.$base_url.'archive?i='. $ID .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+
+        php_mailer_dynamic($sender, $recipients, $subject, $body);
+    }
+    if( isset($_GET['btnAccept_archiving']) ) {
+        $ID = $_GET['btnAccept_archiving'];
+
+        mysqli_query( $conn,"UPDATE tbl_archiving SET deleted = 1, reason = '' WHERE ID = $ID");
+    }
+    if( isset($_GET['btnReject_archiving']) ) {
+        $ID = $_GET['btnReject_archiving'];
+
+        mysqli_query( $conn,"UPDATE tbl_archiving SET deleted = 0, reason = '' WHERE ID = $ID");
     }
     if( isset($_POST['btnSave_archiving']) ) {
         if (!empty($_COOKIE['switchAccount'])) {
@@ -32813,7 +32882,7 @@
                     $recipients['csuccess@consultareinc.com'] = 'Christopher Santianez';
                     $recipients['chris@consultareinc.com'] = 'Customer Success';
                     $subject = 'New Job Ticket';
-                    $body = 'Hi '.$user.'<br><br>
+                    $body = 'Good day!<br><br>
 
                     Please check your Job Ticket Tracker<br><br>
 
@@ -53691,6 +53760,7 @@
                         $library_type = $rowLibrary["type"];
                     }
                     $array_library_type = array(
+                        0 => 'Main',
                         1 => 'Programs',
                         2 => 'Policy',
                         3 => 'Procedure',

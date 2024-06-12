@@ -132,22 +132,35 @@
                                             </thead>
                                             <tbody>
                                                 <?php
-                                                    $result = mysqli_query( $conn,"SELECT * FROM tbl_archiving WHERE user_id=$switch_user_id ORDER BY files_date DESC" );
+                                                    $result = mysqli_query( $conn,"SELECT ID, record, files_date, deleted, reason FROM tbl_archiving WHERE deleted = 0 AND user_id = $switch_user_id ORDER BY record" );
                                                     if ( mysqli_num_rows($result) > 0 ) {
                                                         while($row = mysqli_fetch_array($result)) {
                                                             $ID = $row['ID'];
-                                                            $record = $row['record'];
+                                                            $record = htmlentities($row['record']);
                                                             $files_date = $row['files_date'];
 
+                                                            $approval = '';
+                                                            if ($row['reason'] == 0 AND !empty($row['reason'])) {
+                                                                $reason_array = explode(" | ", $row['reason']);
+                                                                $reason = htmlentities($reason_array[1]);
+                                                                $approval = '<br><i class="help-block">User requested to delete this item because '.$reason.'</i>
+                                                                <div class="remark_action">
+                                                                    <a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnAccept('.$ID.')">Accept</a>
+                                                                     | 
+                                                                    <a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnReject('.$ID.')">Reject</a>
+                                                                </div>';
+                                                            }
+
                                                             echo '<tr id="tr_'. $ID .'">
-                                                                <td>'. htmlentities($record) .'</td>
-                                                                <td class="text-center">'. $files_date .'</td>
+                                                                <td>'.$record.$approval.'</td>
+                                                                <td class="text-center">'.$files_date.'</td>
                                                                 <td class="text-center">';
-                                                                
+
                                                                     if ($FreeAccess == false) {
                                                                         echo '<div class="btn-group btn-group-circle">
                                                                             <a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit('. $ID.')">Edit</a>
                                                                             <a href="#modalViewFile" class="btn btn-success btn-sm btnView" data-toggle="modal" onclick="btnView('. $ID .', '.$FreeAccess.')">View</a>
+                                                                            <a href="javascript:;" class="btn btn-danger btn-sm btnDelete" onclick="btnDelete('. $ID .', '.$FreeAccess.')">Delete</a>
                                                                         </div>';
                                                                     } else {
                                                                         echo '<a href="#modalViewFile" class="btn btn-success btn-sm btnView btn-circle" data-toggle="modal" onclick="btnView('. $ID .', '.$FreeAccess.')">View</a>';
@@ -297,6 +310,12 @@
 
         <script type="text/javascript">
             $(document).ready(function(){
+                var i = '<?php echo isset($_GET['i']) ? $_GET['i']:''; ?>';
+                if (i != '') {
+                    $('#modalViewFile').modal('show');
+                    btnView(i, 0);
+                }
+                
                 $.fn.modal.Constructor.prototype.enforceFocus = function() {};
 
                 $('.select2').select2();
@@ -321,6 +340,75 @@
                 }
             }
 
+            function btnDelete(id) {
+                swal({
+                    title: "Are you sure?",
+                    text: "Write some reason on it!",
+                    type: "input",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    inputPlaceholder: "Reason"
+                }, function (inputValue) {
+                    if (inputValue === false) return false;
+                    if (inputValue === "") {
+                        swal.showInputError("You need to write something!");
+                        return false
+                    }
+                    $.ajax({
+                        type: "GET",
+                        url: "function.php?btnDelete_archiving="+id+"&reason="+inputValue,
+                        dataType: "html",
+                        success: function(response){
+                            // $('.panel_'+id+' > .panel-heading h4 a').append('<i class="fa fa-warning font-red" style="margin-left: 5px;"></i>');
+                        }
+                    });
+                    swal("Notification Sent!", "You wrote: " + inputValue, "success");
+                });
+            }
+            function btnAccept(id) {
+                swal({
+                    title: "Are you sure?",
+                    text: "Please confirm if the data are correct!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-success",
+                    confirmButtonText: "Yes, confirm it!",
+                    closeOnConfirm: false
+                },
+                function(){
+                    $.ajax({
+                        type: "GET",
+                        url: "function.php?btnAccept_archiving="+id,
+                        dataType: "html",
+                        success: function(response){
+                            $('#tr_'+id+' .remark_action').html('<span class="text-success">Accepted!</span>');
+                        }
+                    });
+                    swal("Accepted!", "Data is accepted", "success");
+                });
+            }
+            function btnReject(id) {
+                swal({
+                    title: "Are you sure?",
+                    text: "Please confirm if the data are correct!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-success",
+                    confirmButtonText: "Yes, reject it!",
+                    closeOnConfirm: false
+                },
+                function(){
+                    $.ajax({
+                        type: "GET",
+                        url: "function.php?btnReject_archiving="+id,
+                        dataType: "html",
+                        success: function(response){
+                            $('#tr_'+id+' .remark_action').html('<span class="text-danger">Rejected!</span>');
+                        }
+                    });
+                    swal("Rejected!", "Data is rejected", "success");
+                });
+            }
             function btnEdit(id) {
                 $.ajax({
                     type: "GET",
@@ -414,6 +502,7 @@
                                     result += '<div class="btn-group btn-group-circle">';
                                         result += '<a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit('+obj.ID+')">Edit</a>';
                                         result += '<a href="#modalViewFile" class="btn btn-success btn-sm btnView" data-toggle="modal" onclick="btnView('+obj.ID+')">View</a>';
+                                        result += '<a href="javascript:;" class="btn btn-danger btn-sm btnDelete" onclick="btnDelete('+obj.ID+')">Delete</a>';
                                     result += '</div>';
                                 result += '</td>';
                             result += '</tr>';
@@ -469,6 +558,7 @@
                                 result += '<div class="btn-group btn-group-circle">';
                                     result += '<a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit('+obj.ID+')">Edit</a>';
                                     result += '<a href="#modalViewFile" class="btn btn-success btn-sm btnView" data-toggle="modal" onclick="btnView('+obj.ID+')">View</a>';
+                                    result += '<a href="javascript:;" class="btn btn-danger btn-sm btnDelete" onclick="btnDelete('+obj.ID+')">Delete</a>';
                                 result += '</div>';
                             result += '</td>';
 

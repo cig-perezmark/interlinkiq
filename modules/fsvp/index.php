@@ -1,6 +1,15 @@
 <?php
+    if(isset($_GET['pdf'])) {
+        include __DIR__ .'/pdf.php';
+        exit();
+    }
+
     include_once __DIR__ . '/../../header.php';
     include_once __DIR__ .'/utils.php';
+
+    function autofill() {
+        return '<i class="text-muted">(auto-filled)</i>';
+    }
 ?>
 <link href="assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
 <link href="assets/global/plugins/jquery-notific8/jquery.notific8.min.css" rel="stylesheet" type="text/css" />
@@ -186,6 +195,7 @@ div.form-control {
 <script>
 var baseUrl = 'fsvp?api&';
 Init.baseUrl = 'fsvp?api&';
+Init.URL = 'fsvp';
 </script>
 <script>
 </script>

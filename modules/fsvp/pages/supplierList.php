@@ -786,7 +786,7 @@ th {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                <a href="about:blank" target="_blank" class="btn blue">
+                <a href="javascript:void(0)" data-fancybox data-src="" data-type="iframe" class="btn blue" id="pdfEvaluationForm">
                     <!-- <i class="fa fa-pdf-o"></i> -->
                     View PDF
                 </a>

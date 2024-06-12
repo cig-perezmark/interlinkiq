@@ -15,6 +15,15 @@ if(isset($_GET['pdf'])) {
             
             include_once __DIR__ .'/pdfs/evaluation_form.php';
             break;
+        case 'cbp':
+            $recordId = $_GET['r'] ?? null;
+
+            if(empty($recordId)) {
+                die('Record not found.');
+            }
+            
+            include_once __DIR__ .'/pdfs/cbp_filing_form.php';
+            break;
         default:
             echo 'default';
             break;

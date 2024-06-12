@@ -631,6 +631,7 @@ if(isset($_GET['fetchImportersForTable'])) {
             ],
             'cbp' => [
                 'id' => $data['cbp_id'],
+                'ihash' => md5($data['cbp_id']),
                 'prev_id' => $data['previous_cbp_record_id'],
                 'foods_info' => $data['foods_info'],
                 'supplier_info' => $data['supplier_info'],
@@ -761,6 +762,7 @@ if(isset($_GET['newCBPRecord'])) {
             'message' => 'Successfully saved.',
             'data' => [
                 'id' => $id,
+                'ihash' => md5($id),
                 'prev_id' => null,
                 'foods_info' => $values['foods_info'],
                 'supplier_info' => $values['supplier_info'],

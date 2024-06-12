@@ -289,7 +289,7 @@ function renderDTRow(importersData, d, table, method = 'add') {
     if(d.cbp) {
         CBPButtons = `
             <div class="d-flex center">
-                <button type="button" class="btn btn-link btn-sm" data-viewcbpform="${d.id}">View</button>|
+                <a href="${(Init.URL || 'fsvp') + '?pdf=cbp&r=' + d.cbp.ihash}" class="btn btn-link btn-sm" target="_blank" data-viewcbpformx="${d.id}">View</a>|
                 <button type="button" class="btn btn-link btn-sm" data-opencbpfilingform="${d.id}">Update</button>
             </div>
         `;

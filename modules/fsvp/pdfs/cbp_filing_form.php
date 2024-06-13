@@ -15,6 +15,10 @@ $data = $conn->execute("SELECT
     return $d;
 });
 
+if(empty($data)) {
+    die('Record not found.');
+}
+
 // header('Content-Type: application/json');
 // echo json_encode($data);
 // exit();

@@ -631,6 +631,7 @@ if(isset($_GET['fetchImportersForTable'])) {
         
         return [
             'id' => $data['id'],
+            'rhash' => md5($data['id']),
             'duns_no' => $data['duns_no'],
             'fda_registration' => $data['fda_registration'],
             'evaluation_date' => $data['evaluation_date'],

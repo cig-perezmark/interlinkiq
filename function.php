@@ -24512,7 +24512,7 @@
                 $embed = $fileExtension['embed'];
                 $type = $fileExtension['type'];
                 $file_extension = $fileExtension['file_extension'];
-                $url = $base_url.'uploads/supplier';
+                $url = $base_url.'uploads/supplier/';
 
                 $files = $src.$url.rawurlencode($files).$embed;
             } else if ($filetype == 3) {

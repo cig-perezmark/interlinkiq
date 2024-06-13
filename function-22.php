@@ -531,9 +531,9 @@
         // 1 - Accept Image Only
 
         $path = 'uploads/'.$path;
-        $files = $_FILES[$file]['name'];
+        $files = addslashes($_FILES[$file]['name']);
         $size = $_FILES[$file]['size'];
-        $tmp = $_FILES[$file]['tmp_name'];
+        $tmp = addslashes($_FILES[$file]['tmp_name']);
 
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         if (!$finfo) {
@@ -579,7 +579,7 @@
             "mime" => $mime
         );
         if ( ($type == 0 AND !in_array($mime, $mime_array)) OR ($type == 1 AND in_array($mime, $mime_array)) ) {
-            if(move_uploaded_file($tmp,$path)) {
+            if(move_uploaded_file(stripcslashes($tmp),stripcslashes($path))) {
                 $output['valid'] = true;
             }
         }
@@ -632,8 +632,8 @@
         if ( mysqli_num_rows($selectEmail) > 0 ) {
             while($rowUser = mysqli_fetch_array($selectEmail)) {
                 $ID = $rowUser['ID'];
-                $first_name = $rowUser['first_name'];
-                $last_name = $rowUser['last_name'];
+                $first_name = htmlentities($rowUser['first_name']);
+                $last_name = htmlentities($rowUser['last_name']);
                 $password_verify = $rowUser['password'];
                 $client = $rowUser['client'];
                 $is_verified = $rowUser['is_verified'];
@@ -890,7 +890,7 @@
                     WHERE email = '".$email."'
                 " );
                 if ( mysqli_num_rows($selectData) == 0 ) {
-                    $message = 'Incorrect details. Please try again!';
+                    $message = 'Thank you for trying to create an account. Access is by invitation only. For further assistance, please contact <a href="mailto:csuccess@consultareinc.com" target="_blank">csuccess@consultareinc.com</a> or call <a href="tel:1-202-982-3002" target="_blank">1-202-982-3002</a>.';
                     $exist = true;
                 }
             }
@@ -2814,7 +2814,7 @@
                         invites you to join <a href="'. $base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">'.$client_name.'</a> to connect with your assigned duties, work, and tasks. 
                         If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">'.$base_url.$client_url.'?r=1&i='.$last_id.'</a><br><br>
 
-                        Should you need assistance, kindly email <a href="mailto:'.$client_email.'" target="_blank">'.$client_email.'</a><br><br>
+                        Should you need assistance, kindly call 202-982-3002 or email <a href="mailto:'.$client_email.'" target="_blank">'.$client_email.'</a><br><br>
 
                         '.$client_name.' Team';
                     }
@@ -2960,7 +2960,7 @@
                             invites you to join <a href="'. $base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">'.$client_name.'</a> to connect with your assigned duties, work, and tasks. 
                             If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">'.$base_url.$client_url.'?r=1&i='.$last_id.'</a><br><br>
 
-                            Should you need assistance, kindly email <a href="mailto:'.$client_email.'" target="_blank">'.$client_email.'</a><br><br>
+                            Should you need assistance, kindly call 202-982-3002 or email <a href="mailto:'.$client_email.'" target="_blank">'.$client_email.'</a><br><br>
 
                             '.$client_name.' Team';
                         }
@@ -30866,9 +30866,9 @@
         if ( mysqli_num_rows($selectData) > 0 ) {
             while($row = mysqli_fetch_array($selectData)) {
                 $ID = $row['ID'];
-                $record = $row['record'];
-                $files_date = $row['files_date'];
-                $verified_by = $row['verified_by'];
+                $record = htmlentities($row['record']);
+                $files_date = htmlentities($row['files_date']);
+                $verified_by = htmlentities($row['verified_by']);
 
                 echo '<tr id="tr_'. $ID .'">
                     <td>'. $record .'</td>
@@ -30901,9 +30901,9 @@
         if ( mysqli_num_rows($result) > 0 ) {
             while($row = mysqli_fetch_array($result)) {
                 $ID = $row['ID'];
-                $record = $row['record'];
-                $files_date = $row['files_date'];
-                $verified_by = $row['verified_by'];
+                $record = htmlentities($row['record']);
+                $files_date = htmlentities($row['files_date']);
+                $verified_by = htmlentities($row['verified_by']);
 
                 echo '<tr id="tr_'. $ID .'">
                     <td>'. $record .'</td>
@@ -31016,9 +31016,9 @@
                 if ( mysqli_num_rows($selectData) > 0 ) {
                     $rowData = mysqli_fetch_array($selectData);
                     $data_ID = $rowData['ID'];
-                    $data_record = $rowData['record'];
-                    $data_files_date = $rowData['files_date'];
-                    $data_verified = $rowData['verified_by'];
+                    $data_record = htmlentities($rowData['record']);
+                    $data_files_date = htmlentities($rowData['files_date']);
+                    $data_verified = htmlentities($rowData['verified_by']);
 
                     if (!empty($assigned_to_id)) {
                         $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $user_id" );
@@ -31128,9 +31128,9 @@
         if ( mysqli_num_rows($selectData) > 0 ) {
             $rowData = mysqli_fetch_array($selectData);
             $data_ID = $rowData['ID'];
-            $data_record = $rowData['record'];
-            $data_files_date = $rowData['files_date'];
-            $data_verified = $rowData['verified_by'];
+            $data_record = htmlentities($rowData['record']);
+            $data_files_date = htmlentities($rowData['files_date']);
+            $data_verified = htmlentities($rowData['verified_by']);
 
             $files = '';
             $arr_item = array();
@@ -31868,8 +31868,10 @@
         mysqli_close($conn);
     }
     if( isset($_GET['modalViewDepartment_archiving']) ) {
-        $id = $_GET['modalViewDepartment_archiving'];
-        $FreeAccess = $_GET['freeaccess'];
+        $ID = $_GET['modalViewDepartment_archiving'];
+
+        $FreeAccess = false;
+        if ($_GET['freeaccess'] == 1) { $FreeAccess = true; }
 
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
@@ -31880,27 +31882,40 @@
             $user_id = employerID($portal_user);
         }
 
-        $selectData = mysqli_query( $conn,"SELECT * FROM tbl_archiving WHERE user_id=$user_id AND department_id = $id ORDER BY files_date DESC" );
+        $selectData = mysqli_query( $conn,"SELECT ID, record, files_date, deleted, reason FROM tbl_archiving WHERE user_id = $user_id AND department_id = $ID ORDER BY record" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             while($row = mysqli_fetch_array($selectData)) {
                 $ID = $row['ID'];
-                $record = $row['record'];
+                $record = htmlentities($row['record']);
                 $files_date = $row['files_date'];
 
+                $approval = '';
+                if ($row['reason'] == 0 AND !empty($row['reason'])) {
+                    $reason_array = explode(" | ", $row['reason']);
+                    $reason = htmlentities($reason_array[1]);
+                    $approval = '<br><i class="help-block">User requested to delete this item because '.$reason.'</i>
+                    <div class="remark_action">
+                        <a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnAccept('.$ID.')">Accept</a>
+                         | 
+                        <a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnReject('.$ID.')">Reject</a>
+                    </div>';
+                }
+
                 echo '<tr id="tr_'. $ID .'">
-                    <td>'. htmlentities($record) .'</td>
-                    <td class="text-center">'. $files_date .'</td>
+                    <td>'.$record.$approval.'</td>
+                    <td class="text-center">'.$files_date.'</td>
                     <td class="text-center">';
 
-                        if ($FreeAccess == 1) {
-                            echo '<a href="#modalViewFile" class="btn btn-success btn-sm btnView btn-circle" data-toggle="modal" onclick="btnView('. $ID .')">View</a>';
-                        } else {
+                        if ($FreeAccess == false) {
                             echo '<div class="btn-group btn-group-circle">
-                                <a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit('. $ID.')">Edit</a>
-                                <a href="#modalViewFile" class="btn btn-success btn-sm btnView" data-toggle="modal" onclick="btnView('. $ID .')">View</a>
+                                <a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit('. $ID.')">'.$FreeAccess.' Edit</a>
+                                <a href="#modalViewFile" class="btn btn-success btn-sm btnView" data-toggle="modal" onclick="btnView('. $ID .', '.$FreeAccess.')">View</a>
+                                <a href="javascript:;" class="btn btn-danger btn-sm btnDelete" onclick="btnDelete('. $ID .', '.$FreeAccess.')">Delete</a>
                             </div>';
+                        } else {
+                            echo '<a href="#modalViewFile" class="btn btn-success btn-sm btnView btn-circle" data-toggle="modal" onclick="btnView('. $ID .', '.$FreeAccess.')">View</a>';
                         }
-                        
+
                     echo '</td>
                 </tr>';
             }
@@ -31909,37 +31924,129 @@
         mysqli_close($conn);
     }
     if( isset($_GET['modalViewDepartmentViewAll_archiving']) ) {
-        $id = $_GET['modalViewDepartmentViewAll_archiving'];
-        $id = employerID($id);
-        $FreeAccess = $_GET['freeaccess'];
+        $ID = $_GET['modalViewDepartmentViewAll_archiving'];
 
-        $result = mysqli_query( $conn,"SELECT * FROM tbl_archiving WHERE user_id=$id ORDER BY files_date DESC" );
-        if ( mysqli_num_rows($result) > 0 ) {
-            while($row = mysqli_fetch_array($result)) {
+        $FreeAccess = false;
+        if ($_GET['freeaccess'] == 1) { $FreeAccess = true; }
+
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
+        $selectData = mysqli_query( $conn,"SELECT ID, record, files_date, deleted, reason FROM tbl_archiving WHERE user_id = $user_id ORDER BY record" );
+        if ( mysqli_num_rows($selectData) > 0 ) {
+            while($row = mysqli_fetch_array($selectData)) {
                 $ID = $row['ID'];
-                $record = $row['record'];
+                $record = htmlentities($row['record']);
                 $files_date = $row['files_date'];
 
+                $approval = '';
+                if ($row['reason'] == 0 AND !empty($row['reason'])) {
+                    $reason_array = explode(" | ", $row['reason']);
+                    $reason = htmlentities($reason_array[1]);
+                    $approval = '<br><i class="help-block">User requested to delete this item because '.$reason.'</i>
+                    <div class="remark_action">
+                        <a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnAccept('.$ID.')">Accept</a>
+                         | 
+                        <a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnReject('.$ID.')">Reject</a>
+                    </div>';
+                }
+
                 echo '<tr id="tr_'. $ID .'">
-                    <td>'. htmlentities($record) .'</td>
-                    <td class="text-center">'. $files_date .'</td>
+                    <td>'.$record.$approval.'</td>
+                    <td class="text-center">'.$files_date.'</td>
                     <td class="text-center">';
 
-                        if ($FreeAccess == 1) {
-                            echo '<a href="#modalViewFile" class="btn btn-success btn-sm btnView btn-circle" data-toggle="modal" onclick="btnView('. $ID .')">View</a>';
-                        } else {
+                        if ($FreeAccess == false) {
                             echo '<div class="btn-group btn-group-circle">
-                                <a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit('. $ID.')">Edit</a>
-                                <a href="#modalViewFile" class="btn btn-success btn-sm btnView" data-toggle="modal" onclick="btnView('. $ID .')">View</a>
+                                <a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit('. $ID.')">'.$FreeAccess.' Edit</a>
+                                <a href="#modalViewFile" class="btn btn-success btn-sm btnView" data-toggle="modal" onclick="btnView('. $ID .', '.$FreeAccess.')">View</a>
+                                <a href="javascript:;" class="btn btn-danger btn-sm btnDelete" onclick="btnDelete('. $ID .', '.$FreeAccess.')">Delete</a>
                             </div>';
+                        } else {
+                            echo '<a href="#modalViewFile" class="btn btn-success btn-sm btnView btn-circle" data-toggle="modal" onclick="btnView('. $ID .', '.$FreeAccess.')">View</a>';
                         }
-                        
+
                     echo '</td>
                 </tr>';
             }
         }
 
         mysqli_close($conn);
+    }
+    if( isset($_GET['btnDelete_archiving']) ) {
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
+        $ID = $_GET['btnDelete_archiving'];
+        $reason = addslashes($_GET['reason']);
+
+        $message = array();
+        array_push($message, $portal_user);
+        array_push($message, $reason);
+        $message = implode(" | ",$message);
+
+        mysqli_query( $conn,"UPDATE tbl_archiving SET reason = '".$message."' WHERE ID = $ID" );
+
+
+        // EMAIL NOTIFICATION
+        
+        // Data
+        $selectData = mysqli_query( $conn,"SELECT record FROM tbl_archiving WHERE ID = $ID" );
+        if ( mysqli_num_rows($selectData) > 0 ) {
+            $rowData = mysqli_fetch_array($selectData);
+            $data_record = htmlentities($rowData['record']);
+        }
+
+        // Requester
+        $selectUserReq = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $portal_user" );
+        if ( mysqli_num_rows($selectUserReq) > 0 ) {
+            $rowUserReq = mysqli_fetch_array($selectUserReq);
+            $user_name_req = htmlentities($rowUserReq['first_name']) .' '. htmlentities($rowUserReq['last_name']);
+            $user_email_req = htmlentities($rowUserReq['email']);
+            $sender[$user_email_req] = $user_name_req;
+        }
+
+        // Receiver (Employer)
+        $selectUser = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $user_id" );
+        if ( mysqli_num_rows($selectUser) > 0 ) {
+            $rowUser = mysqli_fetch_array($selectUser);
+            $user_name = htmlentities($rowUser['first_name']) .' '. htmlentities($rowUser['last_name']);
+            $user_email = htmlentities($rowUser['email']);
+            $recipients[$user_email] = $user_name;
+        }
+
+        $subject = 'Delete Request for Archive Item';
+        $body = 'Hi '.$user_name.'!<br><br>
+
+        '.$user_name_req.' is requesting to delete <b>'.$data_record.'</b> in Archive Module. The reason is '.$reason.'.<br><br>
+
+        Please click the button below to view the item<br><br>
+
+        <a href="'.$base_url.'archive?i='. $ID .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+
+        php_mailer_dynamic($sender, $recipients, $subject, $body);
+    }
+    if( isset($_GET['btnAccept_archiving']) ) {
+        $ID = $_GET['btnAccept_archiving'];
+
+        mysqli_query( $conn,"UPDATE tbl_archiving SET deleted = 1 WHERE ID = $ID");
+    }
+    if( isset($_GET['btnReject_archiving']) ) {
+        $ID = $_GET['btnReject_archiving'];
+
+        mysqli_query( $conn,"UPDATE tbl_archiving SET deleted = 0, reason = '' WHERE ID = $ID");
     }
     if( isset($_POST['btnSave_archiving']) ) {
         if (!empty($_COOKIE['switchAccount'])) {
@@ -32813,7 +32920,7 @@
                     $recipients['csuccess@consultareinc.com'] = 'Christopher Santianez';
                     $recipients['chris@consultareinc.com'] = 'Customer Success';
                     $subject = 'New Job Ticket';
-                    $body = 'Hi '.$user.'<br><br>
+                    $body = 'Good day!<br><br>
 
                     Please check your Job Ticket Tracker<br><br>
 
@@ -53691,6 +53798,7 @@
                         $library_type = $rowLibrary["type"];
                     }
                     $array_library_type = array(
+                        0 => 'Main',
                         1 => 'Programs',
                         2 => 'Policy',
                         3 => 'Procedure',

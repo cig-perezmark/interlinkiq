@@ -1,5 +1,7 @@
 <?php
     include_once ('database_iiq.php');
+    $base_url = "https://interlinkiq.com/";
+    define('UPLOAD_DIR', 'uploads/ffva_sig/');
     
     function employerID($ID) {
         global $conn;
@@ -25,6 +27,7 @@
     $result = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE ID = $id" );
     if ( mysqli_num_rows($result) > 0 ) {
         $row = mysqli_fetch_array($result);
+        $likelihood_user_id = $row["user_id"];
         $likelihood_type = $row["type"];
 
         $likelihood_answer = $row["likelihood_answer"];
@@ -55,12 +58,25 @@
         $prepared_signature = $row["prepared_signature"];
         $prepared_position = $row["prepared_position"];
         $prepared_date = $row["prepared_date"];
+        if (!empty($prepared_signature)) {
+            $img = str_replace('data:image/png;base64,', '', $prepared_signature);
+            $img = str_replace(' ', '+', $img);
+            $data = base64_decode($img);
+            $prepared_signature = UPLOAD_DIR . uniqid() . '.png';
+            $success = file_put_contents($prepared_signature, $data);
+        }
+        
+        $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $likelihood_user_id" );
+        if ( mysqli_num_rows($selectEnterprise) > 0 ) {
+            $rowEnterprise = mysqli_fetch_array($selectEnterprise);
+            $enterp_logo = htmlentities($rowEnterprise['BrandLogos']);
+        }
 
         $selectUser = mysqli_query( $conn,"SELECT * from tbl_user WHERE ID = $prepared_by" );
         if ( mysqli_num_rows($selectUser) > 0 ) {
             $rowUser = mysqli_fetch_array($selectUser);
-            $current_userFName = $rowUser['first_name'];
-            $current_userLName = $rowUser['last_name'];
+            $current_userFName = htmlentities($rowUser['first_name']);
+            $current_userLName = htmlentities($rowUser['last_name']);
         }
 
         $enterp_name = "";
@@ -68,7 +84,7 @@
             $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $prepared_by" );
             if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                 $rowEnterprise = mysqli_fetch_array($selectEnterprise);
-                $enterp_name = $rowEnterprise['businessname'];
+                $enterp_name = htmlentities($rowEnterprise['businessname']);
             }
         }
 
@@ -76,30 +92,44 @@
         // $reviewed_by = employerID($row["reviewed_by"]);
         $reviewed_by = $row["reviewed_by"];
         $reviewed_signature = $row["reviewed_signature"];
-        $reviewed_position = $row["reviewed_position"];
+        $reviewed_position = htmlentities($row["reviewed_position"]);
         $reviewed_date = $row["reviewed_date"];
+        if (!empty($reviewed_signature)) {
+            $img = str_replace('data:image/png;base64,', '', $reviewed_signature);
+            $img = str_replace(' ', '+', $img);
+            $data = base64_decode($img);
+            $reviewed_signature = UPLOAD_DIR . uniqid() . '.png';
+            $success = file_put_contents($reviewed_signature, $data);
+        }
 
         $reviewed_enterp_name = "";
         if(!empty($reviewed_by)) {
             $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $reviewed_by" );
             if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                 $rowEnterprise = mysqli_fetch_array($selectEnterprise);
-                $reviewed_enterp_name = $rowEnterprise['businessname'];
+                $reviewed_enterp_name = htmlentities($rowEnterprise['businessname']);
             }
         }
 
         // $approved_by = employerID($row["approved_by"]);
         $approved_by = $row["approved_by"];
         $approved_signature = $row["approved_signature"];
-        $approved_position = $row["approved_position"];
+        $approved_position = htmlentities($row["approved_position"]);
         $approved_date = $row["approved_date"];
+        if (!empty($approved_signature)) {
+            $img = str_replace('data:image/png;base64,', '', $approved_signature);
+            $img = str_replace(' ', '+', $img);
+            $data = base64_decode($img);
+            $approved_signature = UPLOAD_DIR . uniqid() . '.png';
+            $success = file_put_contents($approved_signature, $data);
+        }
 
         $approved_enterp_name = "";
         if(!empty($approved_by)) {
             $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $approved_by" );
             if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                 $rowEnterprise = mysqli_fetch_array($selectEnterprise);
-                $approved_enterp_name = $rowEnterprise['businessname'];
+                $approved_enterp_name = htmlentities($rowEnterprise['businessname']);
             }
         }
     }
@@ -218,9 +248,10 @@
     else if ($vulnerability == 3) { $vulnerability_result = "High Risk: Urgent action is required and regular monitoring may be needed!"; }
 
 
+
     $html = '
     <p style="text-align: center;">
-        <img src="https://interlinkiq.com/companyDetailsFolder/'.$reviewed_enterp_logo.'" onerror="this.onerror=null;this.src=\'https://placehold.co/100x100/FFF/000\'"; height="50" style="display: none;" /><br>';
+        <img src="https://interlinkiq.com/companyDetailsFolder/'.$enterp_logo.'" onerror="this.onerror=null;this.src=\'https://placehold.co/100x100/FFF/000\'"; height="50" style="text-align: center; margin-left: auto; margin-right: auto;" /><br>';
 
         if ($likelihood_type == 1) { $html .= '<b>Vulnerability Assessment for Food Fraud - Supplier</b>'; }
         else { $html .= '<b>Vulnerability Assessment for Food Fraud - Ingredients</b>'; }
@@ -231,25 +262,25 @@
         if ($likelihood_type == 1) {
             $html .= '<tr style="background-color: #e1e5ec;">
                 <td colspan="2"><b>Supplier Company Name</b></td>
-                <td colspan="5">'.$row["company"].'</td>
+                <td colspan="5">'.htmlentities($row["company"]).'</td>
             </tr>
             <tr style="background-color: #e1e5ec;">
                 <td colspan="2"><b>Website</b></td>
-                <td colspan="5"><a href="'.$row["website"].'" target="_blank">'.$row["website"].'</a></td>
+                <td colspan="5"><a href="'.htmlentities($row["website"]).'" target="_blank">'.htmlentities($row["website"]).'</a></td>
             </tr>
             <tr style="background-color: #e1e5ec;">
                 <td colspan="2"><b>Headquarters</b></td>
-                <td colspan="5">'.$row["headquarters"].'</td>
+                <td colspan="5">'.htmlentities($row["headquarters"]).'</td>
             </tr>
             <tr style="background-color: #e1e5ec;">
                 <td style="text-align: center;"><b>Tel. No.</b></td>
                 <td style="text-align: center;"><b>Email</b></td>
-                <td colspan="2" style="text-align: center;">T: <a href="tel:'.$row["telephone"].'">'.$row["telephone"].'</a></td>
-                <td colspan="3" style="text-align: center;"><a href="mailto:'.$row["email"].'">'.$row["email"].'</a></td>
+                <td colspan="2" style="text-align: center;">T: <a href="tel:'.htmlentities($row["telephone"]).'">'.htmlentities($row["telephone"]).'</a></td>
+                <td colspan="3" style="text-align: center;"><a href="mailto:'.htmlentities($row["email"]).'">'.htmlentities($row["email"]).'</a></td>
             </tr>
             <tr style="background-color: #e1e5ec;">
                 <td colspan="2"><b>Contact Person</b></td>
-                <td colspan="5">'.$row["person"].'</td>
+                <td colspan="5">'.htmlentities($row["person"]).'</td>
             </tr>';
         }
         
@@ -348,11 +379,11 @@
     <table cellpadding="7" cellspacing="0" border="1">
         <tr>
             <td colspan="4">Product or ingredient or raw material</td>
-            <td colspan="3" style="background-color: #ffd965;">'.$row["product"].'</td>
+            <td colspan="3" style="background-color: #ffd965;">'.htmlentities($row["product"]).'</td>
         </tr>
         <tr>
             <td colspan="4">Ingredient(s) or raw material(s) group</td>
-            <td colspan="3" style="background-color: #92d050;">'.$row["assessment"].'</td>
+            <td colspan="3" style="background-color: #92d050;">'.htmlentities($row["assessment"]).'</td>
         </tr>
     </table>
 
@@ -440,7 +471,7 @@
                     $resultRef = mysqli_query( $conn,"SELECT * FROM tbl_ffva_reference WHERE type = 1 AND element = $likelihood_ID" );
                     if ( mysqli_num_rows($resultRef) > 0 ) {
                         $rowRef = mysqli_fetch_array($resultRef);
-                        $ref_content = $rowRef["content"];
+                        $ref_content = htmlentities($rowRef["content"]);
                     }
 
                     if (empty($likelihood_answer_arr[$index])) { $likelihood_answer_arr[$index] = 0; }
@@ -558,7 +589,7 @@
                 $resultRef = mysqli_query( $conn,"SELECT * FROM tbl_ffva_reference WHERE type = 2 AND element = $consequence_ID" );
                 if ( mysqli_num_rows($resultRef) > 0 ) {
                     $rowRef = mysqli_fetch_array($resultRef);
-                    $ref_content = $rowRef["content"];
+                    $ref_content = htmlentities($rowRef["content"]);
                 }
 
                 $html .= '<tr>
@@ -652,7 +683,7 @@
         if ( mysqli_num_rows($selectPrevention) > 0 ) {
             while($rowPrevention = mysqli_fetch_array($selectPrevention)) {
                 $prevention_ID = $rowPrevention["ID"];
-                $prevention_name = $rowPrevention["name"];
+                $prevention_name = htmlentities($rowPrevention["name"]);
 
                 $html .= '<tr>
                     <td style="width: 5%; text-align: center;">';
@@ -746,40 +777,40 @@
     $html .= '</table>
     <p></p>
 
-    <table cellpadding="7" cellspacing="0" border="1" style="text-align: center;">';
+    <table id="exTable" cellpadding="7" cellspacing="0" border="1" style="text-align: center;">';
         if ($signed == 1) {
             $html .= '<tr>
-                <td rowspan="2" style="background-color: #a8d08d; text-align: left; vertical-align: top;"><b>Prepared by</b></td>
-                <td colspan="2" style="text-align: center; vertical-align: center;">';
-                    if (!empty($prepared_signature)) { $html .= '<img src="'.$prepared_signature.'" onerror="this.onerror=null;this.src=\'https://placehold.co/100x100/FFF/000\'"; height="60" border="0" style="text-align: center; margin-left: auto; margin-right: auto;"/><br>'; }
+                <td rowspan="2" style="background-color: #a8d08d; text-align: center; vertical-align: middle;"><b>Prepared by</b></td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;">';
+                    if (!empty($prepared_signature)) { $html .= '<img src="'.$base_url.$prepared_signature.'" onerror="this.onerror=null;this.src=\'https://placehold.co/100x100/FFF/000\'"; height="60" border="0" style="text-align: center; margin-left: auto; margin-right: auto;"/><br>'; }
 
                     $selectUserEnterprise = mysqli_query( $conn,"SELECT * from tbl_user WHERE is_verified = 1 AND is_active = 1 AND ID = '".$prepared_by."'" );
                     if ( mysqli_num_rows($selectUserEnterprise) > 0 ) {
                         $rowUserEnt = mysqli_fetch_array($selectUserEnterprise);
                         $currentEnt_userID = $rowUserEnt['ID'];
-                        $currentEnt_userFName = $rowUserEnt['first_name'];
-                        $currentEnt_userLName = $rowUserEnt['last_name'];
+                        $currentEnt_userFName = htmlentities($rowUserEnt['first_name']);
+                        $currentEnt_userLName = htmlentities($rowUserEnt['last_name']);
 
                         $html .= '<b>'.$currentEnt_userFName.' '.$currentEnt_userLName.'</b>';
                     }
                 $html .= '</td>
-                <td colspan="2" style="text-align: center;">Date</td>
-                <td colspan="2" style="text-align: center;">'.$prepared_date.'</td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;">Date</td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;">'.$prepared_date.'</td>
             </tr>
             <tr>
-                <td colspan="2" style="text-align: center;">'.$prepared_position.'</td>
-                <td colspan="4" style="text-align: center;">'.$enterp_name.'</td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;">'.$prepared_position.'</td>
+                <td colspan="4" style="text-align: center; vertical-align: middle;">'.$enterp_name.'</td>
             </tr>';
         } else {
             $html .= '<tr>
-                <td rowspan="2" style="background-color: #a8d08d; text-align: left; vertical-align: top;"><b>Prepared by</b></td>
-                <td colspan="2" style="text-align: center; vertical-align: center;"></td>
-                <td colspan="2" style="text-align: center; vertical-align: center;">Date</td>
-                <td colspan="2" style="text-align: center; vertical-align: center;"></td>
+                <td rowspan="2" style="background-color: #a8d08d; text-align: center; vertical-align: middle;"><b>Prepared by</b></td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;"></td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;">Date</td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;"></td>
             </tr>
             <tr>
-                <td colspan="2" style="text-align: center; vertical-align: center;"></td>
-                <td colspan="4" style="text-align: center; vertical-align: center;"></td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;"></td>
+                <td colspan="4" style="text-align: center; vertical-align: middle;"></td>
             </tr>';
         }
     $html .= '</table>
@@ -789,39 +820,39 @@
     <table cellpadding="7" cellspacing="0" border="1" style="text-align: center;">';
         if ($signed == 1) {
             $html .= '<tr>
-                <td rowspan="2" style="background-color: #a8d08d; text-align: left; vertical-align: top;"><b>Reviewed by</b></td>
-                <td colspan="2" style="text-align: center; vertical-align: center;">';
+                <td rowspan="2" style="background-color: #a8d08d; text-align: center; vertical-align: middle;"><b>Reviewed by</b></td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;">';
                     if ($signed == 1) {
-                    	if (!empty($reviewed_signature)) { $html .= '<img src="'.$reviewed_signature.'" onerror="this.onerror=null;this.src=\'https://placehold.co/100x100/FFF/000\'"; height="60" border="0" style="text-align: center; margin-left: auto; margin-right: auto;" /><br>'; }
+                        if (!empty($reviewed_signature)) { $html .= '<img src="'.$base_url.$reviewed_signature.'" onerror="this.onerror=null;this.src=\'https://placehold.co/100x100/FFF/000\'"; height="60" border="0" style="text-align: center; margin-left: auto; margin-right: auto;"/><br>'; }
 
                         $selectUserEnterprise = mysqli_query( $conn,"SELECT * from tbl_user WHERE is_verified = 1 AND is_active = 1 AND ID = '".$reviewed_by."'" );
                         if ( mysqli_num_rows($selectUserEnterprise) > 0 ) {
                             $rowUserEnt = mysqli_fetch_array($selectUserEnterprise);
                             $currentEnt_userID = $rowUserEnt['ID'];
-                            $currentEnt_userFName = $rowUserEnt['first_name'];
-                            $currentEnt_userLName = $rowUserEnt['last_name'];
+                            $currentEnt_userFName = htmlentities($rowUserEnt['first_name']);
+                            $currentEnt_userLName = htmlentities($rowUserEnt['last_name']);
 
                             $html .= '<b>'.$currentEnt_userFName.' '.$currentEnt_userLName.'</b>';
                         }
                     }
                 $html .= '</td>
-                <td colspan="2" style="text-align: center;">Date</td>
-                <td colspan="2" style="text-align: center;">'.$reviewed_date.'</td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;">Date</td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;">'.$reviewed_date.'</td>
             </tr>
             <tr>
-                <td colspan="2" style="text-align: center;">'.$reviewed_position.'</td>
-                <td colspan="4" style="text-align: center;">'.$reviewed_enterp_name.'</td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;">'.$reviewed_position.'</td>
+                <td colspan="4" style="text-align: center; vertical-align: middle;">'.$reviewed_enterp_name.'</td>
             </tr>';
         } else {
             $html .= '<tr>
-                <td rowspan="2" style="background-color: #a8d08d; text-align: left; vertical-align: top;"><b>Reviewed by</b></td>
-                <td colspan="2" style="text-align: center; vertical-align: center;"></td>
-                <td colspan="2" style="text-align: center; vertical-align: center;">Date</td>
-                <td colspan="2" style="text-align: center; vertical-align: center;"></td>
+                <td rowspan="2" style="background-color: #a8d08d; text-align: left; vertical-align: middle;"><b>Reviewed by</b></td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;"></td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;">Date</td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;"></td>
             </tr>
             <tr>
-                <td colspan="2" style="text-align: center; vertical-align: center;"></td>
-                <td colspan="4" style="text-align: center; vertical-align: center;"></td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;"></td>
+                <td colspan="4" style="text-align: center; vertical-align: middle;"></td>
             </tr>';
         }
     $html .= '</table>
@@ -831,46 +862,46 @@
     <table cellpadding="7" cellspacing="0" border="1" style="text-align: center;">';
         if ($signed == 1) {
             $html .= '<tr>
-                <td rowspan="2" style="background-color: #a8d08d; text-align: left; vertical-align: top;"><b>Approved by</b></td>
-                <td colspan="2" style="text-align: center; vertical-align: center;">';
+                <td rowspan="2" style="background-color: #a8d08d; text-align: center; vertical-align: middle;"><b>Approved by</b></td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;">';
                     if ($signed == 1) {
-                    	if (!empty($approved_signature)) { $html .= '<img src="'.$approved_signature.'" onerror="this.onerror=null;this.src=\'https://placehold.co/100x100/FFF/000\'"; height="60" border="0" style="text-align: center; margin-left: auto; margin-right: auto;" /><br>'; }
+                        if (!empty($approved_signature)) { $html .= '<img src="'.$base_url.$approved_signature.'" onerror="this.onerror=null;this.src=\'https://placehold.co/100x100/FFF/000\'"; height="60" border="0" style="text-align: center; margin-left: auto; margin-right: auto;"/><br>'; }
 
                         $selectUserEnterprise = mysqli_query( $conn,"SELECT * from tbl_user WHERE is_verified = 1 AND is_active = 1 AND ID = '".$approved_by."'" );
                         if ( mysqli_num_rows($selectUserEnterprise) > 0 ) {
                             $rowUserEnt = mysqli_fetch_array($selectUserEnterprise);
                             $currentEnt_userID = $rowUserEnt['ID'];
-                            $currentEnt_userFName = $rowUserEnt['first_name'];
-                            $currentEnt_userLName = $rowUserEnt['last_name'];
+                            $currentEnt_userFName = htmlentities($rowUserEnt['first_name']);
+                            $currentEnt_userLName = htmlentities($rowUserEnt['last_name']);
 
                             $html .= '<b>'.$currentEnt_userFName.' '.$currentEnt_userLName.'</b>';
                         }
                     }
                 $html .= '</td>
-                <td colspan="2" style="text-align: center;">Date</td>
-                <td colspan="2" style="text-align: center;">'.$approved_date.'</td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;">Date</td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;">'.$approved_date.'</td>
             </tr>
             <tr>
-                <td colspan="2" style="text-align: center;">'.$approved_position.'</td>
-                <td colspan="4" style="text-align: center;">'.$approved_enterp_name.'</td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;">'.$approved_position.'</td>
+                <td colspan="4" style="text-align: center; vertical-align: middle;">'.$approved_enterp_name.'</td>
             </tr>';
         } else {
             $html .= '<tr>
-                <td rowspan="2" style="background-color: #a8d08d; text-align: left; vertical-align: top;"><b>Approved by</b></td>
-                <td colspan="2" style="text-align: center; vertical-align: center;"></td>
-                <td colspan="2" style="text-align: center; vertical-align: center;">Date</td>
-                <td colspan="2" style="text-align: center; vertical-align: center;"></td>
+                <td rowspan="2" style="background-color: #a8d08d; text-align: left; vertical-align: middle;"><b>Approved by</b></td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;"></td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;">Date</td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;"></td>
             </tr>
             <tr>
-                <td colspan="2" style="text-align: center; vertical-align: center;"></td>
-                <td colspan="4" style="text-align: center; vertical-align: center;"></td>
+                <td colspan="2" style="text-align: center; vertical-align: middle;"></td>
+                <td colspan="4" style="text-align: center; vertical-align: middle;"></td>
             </tr>';
         }
     $html .= '</table>';
 
-    $final_name = $row["product"];
-    if ($likelihood_type == 1) { $final_name = $row["company"]; }
+    $final_name = htmlentities($row["product"]);
+    if ($likelihood_type == 1) { $final_name = htmlentities($row["company"]); }
     header('Content-Type: application/vnd.ms-excel');
-	header('Content-Disposition: attachment; filename='.$row["code"].'-'.$final_name.'-'.$prepared_date.'.xls');
+	header('Content-Disposition: attachment; filename='.htmlentities($row["code"]).'-'.$final_name.'-'.$prepared_date.'.xls');
 	echo $html;
 ?>

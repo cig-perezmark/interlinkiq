@@ -147,6 +147,7 @@ jQuery(function() {
         modal.find('[data-evalfile=due_date]').text(data.expiration_date);
         modal.find('#evalFileIframe').prop('src', data.src);
         modal.find('#evalFileIframeAnchor').attr('data-src', data.src);
+        Init.idFancyBoxType(data.src, modal.find('#evalFileIframeAnchor'));
 
         if(this.dataset.file == 'suppliers_corrective_actions') {
             modal.find('.evalFileCommentRow').show();
@@ -662,6 +663,7 @@ function showFileInfo(fileInfo) {
 
         $('.file-viewer').attr('src', fileInfo.src);
         $('.view-anchor').attr('data-src', fileInfo.src);
+        Init.idFancyBoxType(fileInfo.src, $('.view-anchor'));
     } catch(err) {
         console.error(err)
         bootstrapGrowl('Error reading data.', 'error')

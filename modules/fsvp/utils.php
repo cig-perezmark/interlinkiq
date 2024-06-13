@@ -294,7 +294,7 @@ function embedFileUrl($file, $url) {
         (strtolower($extension) == "xls" || strtolower($extension) == "xlsb" || strtolower($extension) == "xlsm" || strtolower($extension) == "xlsx" OR strtolower($extension) == "csv" OR strtolower($extension) == "xlsx")
     ) {
         $src = 'https://view.officeapps.live.com/op/embed.aspx?src=';
-        $embed = '&embedded=true&isIframe=true';
+        $embed = '&embedded=true';
         
         return $src.$pageUrl.'/'.$url.'/'.rawurlencode($file).$embed;
         // return [
@@ -303,7 +303,12 @@ function embedFileUrl($file, $url) {
         // ];
     }
 
-    return $url.'/'.rawurlencode($file);
+    $etc = '';
+    if(strtolower($extension) == "pdf") {
+        $etc = '?fancybox_type=no_iframe';
+    }
+
+    return $url.'/'.rawurlencode($file).$etc;
 }
 
 function prepareFileInfo($data) {

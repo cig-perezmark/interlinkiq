@@ -175,7 +175,14 @@
                     this.timeout = timeout;
                 }
             };
-        } 
+        },
+        idFancyBoxType(src, jqEl) {
+            if(src.search('fancybox_type=no_iframe')) {
+                jqEl.removeAttr('data-type');
+            } else {
+                jqEl.attr('data-type', 'iframe');
+            }
+        }
     };
 
     if(typeof window !== 'undefined') {

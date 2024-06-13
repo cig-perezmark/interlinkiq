@@ -501,8 +501,6 @@ jQuery(function() {
         const cs = !d.compliance_statement || !d.compliance_statement.length ?  no : `<a href="javascript:void(0)" data-opencsfile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View </a>`;
         let evalBtn = '';
 
-        console.log(suppliersData[d.id]);
-
         switch(d.evaluation?.status) {
             case 'current': 
                 evalBtn = `<a href="javascript:void(0)" class="font-dark semibold" data-view-eval="${d.evaluation.id}" title="Click to view evaluation details"> 

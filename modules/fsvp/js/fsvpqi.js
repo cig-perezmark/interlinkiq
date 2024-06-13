@@ -135,11 +135,11 @@ function renderDTRow(set, d, table) {
         fileCellHtml(d.certifications['haccp-training'], d.id),
         fileCellHtml(d.certifications['food-safety-training-certificate'], d.id),
         fileCellHtml(d.certifications['gfsi-certificate'], d.id),
-        `
-            <div class="d-flex center">
-                <button type="button" class="btn-link">Open</button>
-            </div>
-        `,
+        // `
+        //     <div class="d-flex center">
+        //         <button type="button" class="btn-link">Open</button>
+        //     </div>
+        // `,
     ]);
     return table.dt;
 }
@@ -163,8 +163,15 @@ function fetchFSVPQIData(dataSet, table) {
 }
 
 function fileCellHtml(fileData, id) {
+    let fancyBoxAttr = '';
+    if(fileData) {
+        fancyBoxAttr = `data-fancybox data-src="${fileData.src}"`;
+        if(!fileData.src.search('fancybox_type=no_iframe')) {
+            fancyBoxAttr += `data-type="iframe"`;
+        }
+    }
+    
     return !fileData 
         ? `<span class="fa fa-close text-danger"></span>` 
-        // ? `<span style="font-weight:600;">No</span>` 
-        : `<a href="javascript:void(0)" data-opensafile="${id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View</a>`;
+        : `<a href="javascript:void(0)" ${fancyBoxAttr} class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View</a>`;
 }

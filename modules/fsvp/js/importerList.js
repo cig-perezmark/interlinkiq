@@ -306,7 +306,7 @@ function renderDTRow(importersData, d, table, method = 'add') {
         CBPButtons,
         `
             <div class="d-flex center">
-                <button type="button" class="btn green btn-circle btn-sm">View</button>
+                <a href="${(Init.URL || 'fsvp') + '?pdf=importer_information&r=' + d.rhash}" class="btn green btn-circle btn-sm" target="_blank">View</a>
             </div>
         `,
     ];

@@ -196,8 +196,6 @@ $(function() {
                 importersData[form.importer.value].cbp = data;
                 const updatedData = importersData[form.importer.value];
 
-                console.log(updatedData, data)
-
                 renderDTRow(importersData, updatedData, importerListTable, 'modify');
                 $('#modalCBPFiling').modal('hide');
                 form.reset();
@@ -311,7 +309,7 @@ function renderDTRow(importersData, d, table, method = 'add') {
         `,
     ];
 
-    if(method == 'update') {
+    if(method == 'modify') {
         const index = $(`#tableImporterList tr:has([data-importerid=${d.id}])`).index();
         table.dt.row(index).data(rowData);
     } else if(method == 'add') {

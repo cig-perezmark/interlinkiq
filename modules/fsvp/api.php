@@ -599,18 +599,36 @@ if(isset($_GET['fetchImportersForTable'])) {
             LEFT JOIN tbl_supplier sup ON sup.ID = i.supplier_id
             LEFT JOIN tbl_fsvp_qi qi ON qi.id = i.fsvpqi_id
             LEFT JOIN tbl_hr_employee emp ON emp.ID = qi.employee_id
-            LEFT JOIN tbl_fsvp_cbp_records cbp ON cbp.importer_id = i.id
-            RIGHT JOIN (
-                SELECT importer_id, MAX(created_at) AS max_created_at
-                FROM tbl_fsvp_cbp_records
-                WHERE deleted_at IS NULL
-                GROUP BY importer_id
-            ) latest_cbp ON cbp.importer_id = latest_cbp.importer_id AND cbp.created_at = latest_cbp.max_created_at
+            LEFT JOIN (
+                SELECT 
+                    cbp_inner.importer_id, 
+                    MAX(cbp_inner.created_at) AS latest_cbp_date
+                FROM 
+                    tbl_fsvp_cbp_records cbp_inner
+                GROUP BY 
+                    cbp_inner.importer_id
+            ) cbp_max ON cbp_max.importer_id = i.id
+            LEFT JOIN tbl_fsvp_cbp_records cbp ON cbp.importer_id = i.id AND cbp.created_at = cbp_max.latest_cbp_date
         WHERE 
-            i.deleted_at IS NULL AND i.user_id = ?
-        ORDER BY cbp.created_at DESC",
+            i.deleted_at IS NULL AND i.user_id = ?",
         $user_id
     )->fetchAll(function($data) {
+        $cbpData = null;
+
+        if(!empty($data["cbp_id"])) {
+            $cbpData = [
+                'id' => $data['cbp_id'],
+                'ihash' => md5($data['cbp_id']),
+                'prev_id' => $data['previous_cbp_record_id'],
+                'foods_info' => $data['foods_info'],
+                'supplier_info' => $data['supplier_info'],
+                'determining_importer' => $data['determining_importer'],
+                'designated_importer' => $data['designated_importer'],
+                'cbp_entry_filer' => $data['cbp_entry_filer'],
+                'date' => date('Y-m-d', strtotime($data['cbp_date'])),
+            ];
+        }
+        
         return [
             'id' => $data['id'],
             'duns_no' => $data['duns_no'],
@@ -629,17 +647,7 @@ if(isset($_GET['fetchImportersForTable'])) {
                 'id' => $data['fsvpqi_id'],
                 'name' => $data['fsvpqi_name'],
             ],
-            'cbp' => [
-                'id' => $data['cbp_id'],
-                'ihash' => md5($data['cbp_id']),
-                'prev_id' => $data['previous_cbp_record_id'],
-                'foods_info' => $data['foods_info'],
-                'supplier_info' => $data['supplier_info'],
-                'determining_importer' => $data['determining_importer'],
-                'designated_importer' => $data['designated_importer'],
-                'cbp_entry_filer' => $data['cbp_entry_filer'],
-                'date' => date('Y-m-d', strtotime($data['cbp_date'])),
-            ]
+            'cbp' => $cbpData
         ];
     });
 

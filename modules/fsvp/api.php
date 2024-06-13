@@ -546,6 +546,7 @@ if(isset($_GET['newImporter']) ) {
             'message' => 'Saved successfully.',
             'data' => [
                 'id' => $id,
+                'rhash' => md5($id),
                 'duns_no' => $insertData['duns_no'],
                 'fda_registration' => $insertData['fda_registration'],
                 'evaluation_date' => $insertData['evaluation_date'],

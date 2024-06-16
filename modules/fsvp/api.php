@@ -817,7 +817,8 @@ if(isset($_POST['search-foreignMaterials'])) {
             MAT.ID AS id,
             MAT.material_name,
             MAT.description,
-            SUPP.name AS supplier_name
+            SUPP.name AS supplier_name,
+            SUPP.ID as supplier_id
         FROM tbl_supplier SUPP
         RIGHT JOIN tbl_supplier_material MAT
             ON MAT.ID IN (SUPP.material)
@@ -831,4 +832,41 @@ if(isset($_POST['search-foreignMaterials'])) {
         'results' => $result,
         'count' => count($result),
     ]);
+}
+
+if(isset($_GET['ingredientProductRegister'])) {
+    try {
+        $conn->begin_transaction();
+
+        $conn->execute("INSERT INTO tbl_fsvp_ingredients_product_register(
+                user_id,
+                portal_user,
+                product_id,
+                importer_id,
+                brand_name,
+                ingredients_list
+            ) VALUE(?,?,?,?,?,?)",
+            $user_id,
+            $portal_user,
+            emptyIsNull($_POST['product_id']),
+            emptyIsNull($_POST['importer']),
+            emptyIsNull($_POST['brand_name']),
+            emptyIsNull($_POST['ingredients']),
+        );
+
+        $id = $conn->getInsertId();
+
+        $conn->commit();
+        send_response([
+            'message' => 'Successfully registered.',
+            'data' => [
+                'id'=> $id,
+            ],
+        ]);
+    } catch(Throwable $e) {
+        $conn->rollback();
+        send_response([
+            'error' => $e->getMessage(),
+        ], 500);
+    }
 }

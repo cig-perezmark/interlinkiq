@@ -844,14 +844,16 @@ if(isset($_GET['ingredientProductRegister'])) {
                 product_id,
                 importer_id,
                 brand_name,
-                ingredients_list
-            ) VALUE(?,?,?,?,?,?)",
+                ingredients_list,
+                intended_use
+            ) VALUE(?,?,?,?,?,?,?)",
             $user_id,
             $portal_user,
             emptyIsNull($_POST['product_id']),
             emptyIsNull($_POST['importer']),
             emptyIsNull($_POST['brand_name']),
             emptyIsNull($_POST['ingredients']),
+            emptyIsNull($_POST['intended_use']),
         );
 
         $id = $conn->getInsertId();
@@ -869,4 +871,30 @@ if(isset($_GET['ingredientProductRegister'])) {
             'error' => $e->getMessage(),
         ], 500);
     }
+}
+
+if(isset($_GET['ingredientProductsRegisterData'])) {
+    $results = $conn->execute("SELECT 
+            ipr.id,
+            ipr.product_id,
+            mat.material_name AS product_name,
+            mat.description,
+            ipr.brand_name,
+            ipr.ingredients_list,
+            ipr.intended_use,
+            sup.ID as importer_id,
+            sup.name AS importer_name
+        FROM tbl_fsvp_ingredients_product_register ipr
+        LEFT JOIN tbl_supplier_material mat ON mat.ID = ipr.product_id
+        LEFT JOIN tbl_supplier sup ON sup.ID = ipr.importer_id
+        WHERE ipr.user_id = ? AND ipr.deleted_at IS NULL 
+        ORDER BY ipr.created_at DESC
+    ", $user_id)->fetchAll(function($data) {
+        $data['rhash'] = md5($data['id']);
+        return $data;
+    });
+
+    send_response([
+        'results' => $results,
+    ]);
 }

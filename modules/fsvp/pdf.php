@@ -37,6 +37,15 @@ if(isset($_GET['pdf'])) {
             
             include_once __DIR__ .'/pdfs/importer_info.php';
             break;
+        case 'ipr':
+            $recordId = $_GET['r'] ?? null;
+
+            if(empty($recordId)) {
+                die('Record not found.');
+            }
+            
+            include_once __DIR__ .'/pdfs/ingredient_product_register.php';
+            break;
         default:
             echo 'default';
             break;

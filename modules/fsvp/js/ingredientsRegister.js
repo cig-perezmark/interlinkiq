@@ -17,33 +17,54 @@ $(function () {
             }
         ]
     });
+    const regFormAlert = Init.createAlert($('#IngProdRegForm .modal-body'));
 
-    // const productDropdown = Init.multiSelect($('#productSelect2'), {
-    //     onChange: function(option) {
-    //         // ...
-    //     }
-    // });
-
-    // getMaterials();
+    // init
     initMemberSearch();
+
+    $('#IngProdRegForm').on('submit', function(e) {
+        e.preventDefault();
+
+        const form = e.target;
+        let url = Init.baseUrl + 'ingredientProductRegister';
+
+        if(form.product_id.value.trim() == '') {
+            regFormAlert.isShowing() && regFormAlert.hide();
+            regFormAlert.setContent('<strong>Error!</strong> Please select a product first!').show();
+            return;
+        } 
+
+        const data = new FormData(form);
+
+        // var l = Ladda.create(this.querySelector('[type=submit]'));
+        // l.start();
+
+        $.ajax({
+            url,
+            type: "POST",
+            contentType: false,
+            processData: false,
+            data,
+            success: function({data, message}) {
+
+                $('#modalIngProdReg').modal('hide');
+
+                // reset the form
+                $(form.product_id).val('').trigger('change');
+                form.reset();
+
+                regFormAlert.isShowing() && regFormAlert.hide();
+                bootstrapGrowl(message || 'Successfully saved!');
+            },
+            error: function({responseJSON}) {
+                bootstrapGrowl(responseJSON.error || 'Error!', 'danger');
+            },
+            complete: function() {
+                // l.stop();
+            }
+        });
+    });
 });
-
-// function getMaterials() {
-//     $.ajax({
-//         url: baseUrl + "foreignSuppliersMaterials",
-//         type: "GET",
-//         contentType: false,
-//         processData: false,
-//         success: function({data}) {
-//             console.log(data)
-//         },
-//         error: function() {
-//             bootstrapGrowl('Error!');
-//         },
-//     });
-// }
-
-
 
 function initMemberSearch() {
     const searchEmpDropdown = $("#productSelect2");
@@ -65,6 +86,7 @@ function initMemberSearch() {
         // form.find('[data-phone]').val(data.phone);
         // form.find('[data-avatar]').attr('src', data.avatar);
         $('#iprImporter').val(data.supplier_name);
+        $('#iprImporterId').val(data.supplier_id);
         $('#iprDescription').val(data.description);
         $('#iprProductName').val(data.material_name);
         return data.material_name || data.text;

@@ -10,6 +10,10 @@
     function autofill() {
         return '<i class="text-muted">(auto-filled)</i>';
     }
+
+    function required() {
+        return '<span class="required">*</span>';
+    }
 ?>
 <link href="assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
 <link href="assets/global/plugins/jquery-notific8/jquery.notific8.min.css" rel="stylesheet" type="text/css" />

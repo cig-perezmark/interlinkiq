@@ -18,9 +18,11 @@ $(function () {
         ]
     });
     const regFormAlert = Init.createAlert($('#IngProdRegForm .modal-body'));
+    let ProductRegisterData = [];
 
     // init
     initMemberSearch();
+    fetchProductRegisterData(ProductRegisterData, ingredientsTable);
 
     $('#IngProdRegForm').on('submit', function(e) {
         e.preventDefault();
@@ -65,6 +67,49 @@ $(function () {
         });
     });
 });
+
+function fetchProductRegisterData(dataset, table) {
+    $.ajax({
+        url: Init.baseUrl + "ingredientProductsRegisterData",
+        type: "GET",
+        contentType: false,
+        processData: false,
+        success: function({results}) {
+            if(results) {
+                table.dt.clear();
+                results.forEach((d) => renderDTRow(dataset, d, table));
+                table.dt.draw();
+            }
+
+            if(!data.length) {
+                bootstrapGrowl('No items to display.')
+            }
+        },
+        error: function() {
+            bootstrapGrowl('Error fetching records!', 'error');
+        },
+    });
+}
+
+function renderDTRow(dataset, rowData, table, action = 'create') {
+    dataset[rowData.id] = rowData;
+    // console.log
+    
+    table.dt.row.add([
+        rowData.importer_name,
+        rowData.product_name,
+        rowData.description,
+        rowData.ingredients_list,
+        rowData.brand_name,
+        rowData.intended_use,
+        `
+            <div class="d-flex center">
+                <a href="${(Init.URL || 'fsvp') + '?pdf=ipr&r=' + rowData.rhash}" class="btn green btn-circle btn-sm btn-outline" target="_blank">View</a>
+            </div>
+        `,
+    ]);
+    return table.dt;
+}
 
 function initMemberSearch() {
     const searchEmpDropdown = $("#productSelect2");

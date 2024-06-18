@@ -41,19 +41,32 @@ if(isset($_GET["newSupplierToList"])) {
             ];
         });
 
-        $foodImported = json_encode($_POST['food_imported'] ?? []);
+        $foodImported = $_POST['food_imported'] ?? [];
 
         // initializing record
-        $conn->execute("INSERT INTO tbl_fsvp_suppliers (user_id, portal_user, supplier_id, food_imported, supplier_agreement, compliance_statement) VALUE (?,?,?,?,?,?)", [
+        $conn->execute("INSERT INTO tbl_fsvp_suppliers (user_id, portal_user, supplier_id, supplier_agreement, compliance_statement) VALUE (?,?,?,?,?)", [
             $user_id,
             $portal_user,
             $supplierId,
-            $foodImported,
             $_POST['supplier_agreement'] ?? 0,
             $_POST['compliance_statement'] ?? 0,
         ]);
 
         $id = $conn->getInsertId();
+        $foodParams = [];
+        $foodValues = [];
+
+        // register products/food imported data
+        foreach($foodImported as $food) {
+            $foodValues = array_merge($foodValues, [$user_id, $portal_user, $id, $food]);
+            $foodParams[] = "(?,?,?,?)";
+        }
+
+        if(count($foodParams)) {
+            $sql = "INSERT INTO tbl_fsvp_ingredients_product_register(user_id, portal_user, supplier_id, product_id ) VALUES " . implode(',', $foodParams);
+            $conn->execute($sql, $foodValues);
+        }
+        
         $fileInsertQuery = "INSERT tbl_fsvp_files(record_id, record_type, filename, path, document_date, expiration_date, note, uploaded_at) VALUES (?,?,?,?,?,?,?,?)";
         $filesRecords = [];
         $params = [];
@@ -97,7 +110,7 @@ if(isset($_GET["newSupplierToList"])) {
         }
         
         // food imported names
-        $mIds = implode(', ', json_decode($foodImported));
+        $mIds = implode(', ', $foodImported);
         $materialData = $conn->select("tbl_supplier_material", "material_name AS name, ID as id", "ID in ($mIds)")->fetchAll();
 
         $conn->commit();

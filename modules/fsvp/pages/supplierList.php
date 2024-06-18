@@ -460,11 +460,11 @@ th {
             </div>
             <div class="modal-body form-body">
                 <div class="row">
-                    <div class="col-md-7 margin-bottom-20">
+                    <div class="col-md-12 margin-bottom-20">
                         <div class="form-group">
-                            <label for="findSupplierDd">Find supplier </label>
+                            <label for="findSupplierDd">Foreign Supplier <?= required() ?></label>
                             <select name="supplier" id="findSupplierDd" class="supplierdd">
-                                <option value="" selected disabled>Select supplier name</option>
+                                <option value="" selected disabled>Search supplier name</option>
                                 <?php
                                     $suppliers = getSuppliersByUser($conn, $switch_user_id);
                                     foreach($suppliers as $supplier) {
@@ -476,7 +476,7 @@ th {
                     </div>
                     <div class="col-md-12 margin-bottom-20">
                         <div>
-                            <strong>Food imported:</strong>
+                            <strong>Food/Product(s) imported:</strong>
                             <hr>
                             <p class="help-block" id="materialListHelpBlock">Please select a supplier first.</p>
                         </div>

@@ -164,14 +164,15 @@ div.form-control {
                     </span>
                 </div>
                 <ul class="nav nav-tabs fsvp-tabs">
-                    <li <?= isset($_GET['supplier_list']) || !count($_GET) ? 'class="active"' : '' ?>><a href="?supplier_list">Supplier List</a></li>
-                    <li <?= isset($_GET['ingredient_product_register']) ? 'class="active"' : '' ?>><a href="?ingredient_product_register">Ingredient Product Register</a></li>
-                    <li <?= isset($_GET['fsvpqi_register']) ? 'class="active"' : '' ?>><a href="?fsvpqi_register">FSVPQI Register</a></li>
+                    <li <?= isset($_GET['supplier_list']) || !count($_GET) ? 'class="active"' : '' ?>><a href="?supplier_list">Foreign Suppliers List</a></li>
+                    <li <?= isset($_GET['importer_list']) ? 'class="active"' : '' ?>><a href="?importer_list">Importers List</a></li>
+                    <li <?= isset($_GET['activities']) ? 'class="active"' : '' ?>><a href="?activities">Activities Worksheet</a></li>
+                    <li <?= isset($_GET['ingredient_product_register']) ? 'class="active"' : '' ?>><a href="?ingredient_product_register">Ingredient Product Registry</a></li>
+                    <li <?= isset($_GET['fsvpqi_register']) ? 'class="active"' : '' ?>><a href="?fsvpqi_register">FSVPQI Registry</a></li>
                     <li <?= isset($_GET['fsvp_team']) ? 'class="active"' : '' ?>>
                         <span class="badge badge-danger"> </span>
                         <a href="?fsvp_team">FSVP Team</a>
                     </li>
-                    <li <?= isset($_GET['importer_list']) ? 'class="active"' : '' ?>><a href="?importer_list">Importer List</a></li>
                 </ul>
             </div>
             <div class="portlet-body">
@@ -186,6 +187,8 @@ div.form-control {
                     include_once __DIR__ . '/pages/fsvpTeam.php';
                 } else if(isset($_GET['importer_list'])) {
                     include_once __DIR__ . '/pages/importerList.php';
+                } else if(isset($_GET['activities'])) {
+                    include_once __DIR__ . '/pages/activitiesWorksheet.php';
                 }
             ?>
             </div>

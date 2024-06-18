@@ -46,36 +46,80 @@ function formatSupplierAddress($add) {
     }, [ $a2, $a3, $a4, $a1, $a5 ]), function($a) { return !empty($a); }));
 }
 
+// foreign suppliers
 function getSupplierList($conn, $userId) {
     try {
         $recordType = 'supplier-list:';
 
-        $list = $conn->execute("SELECT fs.*, s.name, s.address FROM tbl_fsvp_suppliers fs
-            LEFT JOIN tbl_supplier s ON s.ID = fs.supplier_id
-            WHERE fs.user_id = ? AND fs.deleted_at IS NULL
-            ORDER BY fs.created_at DESC
-        ", $userId)->fetchAll();
+        $sql = "SELECT 
+                    tbl_fsvp_suppliers.id,
+                    tbl_fsvp_suppliers.supplier_id,
+                    tbl_supplier.name,
+                    tbl_supplier.address,
+                    tbl_fsvp_suppliers.supplier_agreement,
+                    tbl_fsvp_suppliers.compliance_statement,
+                    'FSVP Supplier' AS source
+                FROM 
+                    tbl_fsvp_suppliers
+                JOIN 
+                    tbl_supplier ON tbl_fsvp_suppliers.supplier_id = tbl_supplier.ID
+                WHERE 
+                    tbl_fsvp_suppliers.user_id = ?
+
+                UNION
+
+                SELECT 
+                    NULL,
+                    tbl_supplier.ID,
+                    tbl_supplier.name,
+                    tbl_supplier.address,
+                    NULL,
+                    NULL,
+                    'Foreign Supplier' AS source
+                FROM 
+                    tbl_supplier
+                WHERE 
+                    TRIM(SUBSTRING_INDEX(tbl_supplier.address, ',', 1)) NOT LIKE 'US' AND TRIM(SUBSTRING_INDEX(tbl_supplier.address, '|', 1)) NOT LIKE 'US' 
+                    AND tbl_supplier.user_id = 464
+                    AND tbl_supplier.is_deleted = 0
+                    AND tbl_supplier.`status` = 1
+                    AND tbl_supplier.ID NOT IN (
+                        SELECT supplier_id 
+                        FROM tbl_fsvp_suppliers
+                        WHERE tbl_fsvp_suppliers.user_id = ?
+                    );
+        ";
+
+        $list = $conn->execute($sql, $userId, $userId)->fetchAll();
     
         $data = [];
         foreach ($list as $d) {
             $address = formatSupplierAddress($d["address"]);
-            $mIds = implode(', ', json_decode($d['food_imported']));
-            $materialData = $conn->select("tbl_supplier_material", "material_name AS name, ID as id", "ID in ($mIds)")->fetchAll();
-    
-            // fetching stored files
-            $mFiles = $conn->select("tbl_fsvp_files","*", "deleted_at IS NULL AND record_type LIKE '$recordType%' AND record_id = " . $d['id'])->fetchAll();
+
+            // fetch imported products data
+            $importedProducts = $conn->execute("SELECT product_id FROM tbl_fsvp_ingredients_product_register WHERE supplier_id = ? AND user_id = ? AND deleted_at IS NULL", $d["id"], $userId)->fetchAll(function ($d) { return $d['product_id']; });
+            
+            $materialData = [];
+            if(count($importedProducts) > 0) {
+                $mIds = implode(', ', $importedProducts) ?? '';
+                $materialData = $conn->select("tbl_supplier_material", "material_name AS name, ID as id", "ID in ($mIds)")->fetchAll();
+            }
     
             $saFiles = [];
             $csFile = [];
-    
-            if(count($mFiles) > 0) {
-                foreach ($mFiles as $mFile) {
-                    $fileData = prepareFileInfo($mFile);
-                    
-                    if($mFile['record_type'] == 'supplier-list:supplier-agreement') {
-                        $saFiles[] = $fileData;
-                    } else if($mFile['record_type'] == 'supplier-list:compliance-statement') {
-                        $csFile[] = $fileData;
+            
+            // fetching stored files
+            if(!empty($d['id'])) {
+                $mFiles = $conn->select("tbl_fsvp_files","*", "deleted_at IS NULL AND record_type LIKE '$recordType%' AND record_id = " . $d['id'])->fetchAll();
+                if(count($mFiles) > 0) {
+                    foreach ($mFiles as $mFile) {
+                        $fileData = prepareFileInfo($mFile);
+                        
+                        if($mFile['record_type'] == 'supplier-list:supplier-agreement') {
+                            $saFiles[] = $fileData;
+                        } else if($mFile['record_type'] == 'supplier-list:compliance-statement') {
+                            $csFile[] = $fileData;
+                        }
                     }
                 }
             }

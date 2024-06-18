@@ -9,6 +9,7 @@ jQuery(function() {
     let suppliersData = {};
     let cachedEvalFormData = null;
     let prevEvalId = null;
+    let editDetailsTRIndex = null;
 
     const supplierTable = Init.dataTable('#tableSupplierList', {
         columnDefs: [
@@ -29,53 +30,12 @@ jQuery(function() {
             },
             {
                 visible: false,
-                targets: [2] 
+                targets: [1] 
             },
         ]
     });
     const supplierSelect = Init.multiSelect($('.supplierdd'), {
-        onChange: function(option, checked, select) {
-            const mList = $('#materialListSelection');
-            mList.html('');
-            mList.append(`<div class="stat-loading"> <img src="assets/global/img/loading.gif" alt="loading"> </div>`);
-            $('#materialListHelpBlock').addClass('d-none');
-
-            $.ajax({
-                url: baseUrl + "getProductsBySupplier=" + $(option).val(),
-                type: "GET",
-                contentType: false,
-                processData: false,
-                success: function({materials}) {
-                    if (materials && Array.isArray(materials)) {
-                        if (!materials.length) {
-                            $('#materialListHelpBlock').text('No materials found.');
-                            return;
-                        } else {
-                            $('#materialListHelpBlock').text('Tick on the checkboxes to select.');
-                        }
-
-                        materials.forEach((m) => {
-                            const substr = m.description.substring(0, 32);
-
-                            mList.append(`
-                                <label class="mt-checkbox mt-checkbox-outline "> ${m.name}
-                                    <p title="${m.description}" class="small text-muted" style="padding: 0; margin:0;">${(m.description.length > 32 ? substr + '...' : m.description) || ''}</p>
-                                    <input type="checkbox" value="${m.id}" name="food_imported[]"">
-                                    <span></span>
-                                </label>
-                            `);
-                        });
-                    }
-                },
-                error: function() {
-                    bootstrapGrowl('Error!');
-                },
-                complete: function() {
-                    mList.find('.stat-loading').remove();
-                    $('#materialListHelpBlock').removeClass('d-none');
-                }
-            });
-        }
+        onChange: supplierDdOnchange
     });
     const importerSelect = Init.multiSelect($('#importerSelect'), {
         onChange: function(option, checked, select) {
@@ -130,6 +90,20 @@ jQuery(function() {
 
     $('#tableSupplierList').on('click', '[data-view-eval]', function() {
         fetchEvaluationData(this.dataset.viewEval);
+    });
+
+    $('#tableSupplierList').on('click', '[data-edit-foreign-supplier]', function() {
+        const supplierId = this.dataset.editForeignSupplier;
+        
+        supplierSelect.reset();
+        $('#materialListSelection').html('');
+        $('#materialListHelpBlock').text('Please select a supplier first.');
+        
+        // simulate multiselect dropdown selectopn
+        supplierDdOnchange($(`.supplierdd option[value=${supplierId}]`));
+        $(`.supplierdd`).multiselect('select', [supplierId]);
+        editDetailsTRIndex = this.closest('tr');
+        $('#modalNewSupplier').modal('show');
     });
 
     $('#modalEvaluationDetails').on('click', '[data-file]', function() {
@@ -285,7 +259,7 @@ jQuery(function() {
             data: formData,
             success: function({data, message}) {
                 if(data) {
-                    renderDTRow(data).draw();
+                    renderDTRow(data, editDetailsTRIndex ? 'data' : 'add').draw();
                 }
 
                 supplierSelect.reset();
@@ -499,6 +473,7 @@ jQuery(function() {
         const no = `<span style="font-weight:600;">No</span>`;
         const sa = !d.supplier_agreement || !d.supplier_agreement.length ? no : `<a href="javascript:void(0)" data-opensafile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View</a>`;
         const cs = !d.compliance_statement || !d.compliance_statement.length ?  no : `<a href="javascript:void(0)" data-opencsfile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View </a>`;
+        const na = '<i class="text-muted">(N/A)</i>';
         let evalBtn = '';
 
         switch(d.evaluation?.status) {
@@ -519,26 +494,38 @@ jQuery(function() {
                             </button>`;
                 break;
         }
+
+        let actionBtn = '';
+        if(d.id) {
+            actionBtn = `
+                <div class="d-flex center">
+                    <div class="btn-group btn-group-circle btn-group-sm btn-group-solid">
+                        <button type="button" class="btn blue btn-outline btn-circle btn-smx" title="View data">View</button>
+                        <button type="button" class="btn dark btn-circle btn-sm" title="PDF Document">PDF</button>
+                    </div>
+                </div>
+            `;
+        } else {
+            actionBtn = `
+                <div class="d-flex center">
+                    <button type="button" class="btn green btn-circle btn-sm" title="PDF Document" data-edit-foreign-supplier="${d.supplier_id}">Edit details</button>
+                </div>`;
+        }
+        
         const rowData = [
-            d.name,
-            d.food_imported.map((x) => x.name).join(', '),
+            d.id ? d.name : `<a href="javascript:void(0)" data-edit-foreign-supplier="${d.supplier_id}">${d.name}</a>`,
             d.address,
-            evalBtn,
-            sa,
-            cs,
-            // `
-            //     <div class="d-flex center">
-            //         <div class="btn-group btn-group-circle btn-group-sm btn-group-solid hide">
-            //             <button type="button" class="btn dark btn-outline btn-circle btn-smx" title="View data">View</button>
-            //         </div>
-            //         <button type="button" class="btn dark btn-outline btn-circle btn-sm" title="View data">View</button>
-            //     </div>
-            // `,
+            d.id ? d.food_imported.map((x) => x.name).join(', ') : na,
+            d.id ? evalBtn : na,
+            d.id ? sa : na,
+            d.id ? cs : na,
+            // actionBtn,
         ];
         
         if(method == 'data') {
             const index = $(`#tableSupplierList tr:has([data-eval=${d.id}])`).index();
-            supplierTable.dt.row(index).data(rowData);
+            supplierTable.dt.row(editDetailsTRIndex ?? index).data(rowData);
+            editDetailsTRIndex = null;
         } else if(method == 'add') {
             supplierTable.dt.row.add(rowData);
         }
@@ -593,6 +580,51 @@ jQuery(function() {
                 bootstrapGrowl(responseJSON.error || 'Error fetching data!', 'danger');
             },
         });
+    }
+
+    function supplierDdOnchange(option) {
+        const mList = $('#materialListSelection');
+        mList.html('');
+        mList.append(`<div class="stat-loading"> <img src="assets/global/img/loading.gif" alt="loading"> </div>`);
+        $('#materialListHelpBlock').addClass('d-none');
+
+        $.ajax({
+            url: baseUrl + "getProductsBySupplier=" + $(option).val(),
+            type: "GET",
+            contentType: false,
+            processData: false,
+            success: function({materials}) {
+                if (materials && Array.isArray(materials)) {
+                    if (!materials.length) {
+                        $('#materialListHelpBlock').text('No materials found.');
+                        return;
+                    } else {
+                        $('#materialListHelpBlock').text('Tick on the checkboxes to select.');
+                    }
+
+                    materials.forEach((m) => {
+                        const substr = m.description.substring(0, 32);
+
+                        mList.append(`
+                            <label class="mt-checkbox mt-checkbox-outline "> ${m.name}
+                                <p title="${m.description}" class="small text-muted" style="padding: 0; margin:0;">${(m.description.length > 32 ? substr + '...' : m.description) || ''}</p>
+                                <input type="checkbox" value="${m.id}" name="food_imported[]"">
+                                <span></span>
+                            </label>
+                        `);
+                    });
+                }
+            },
+            error: function() {
+                bootstrapGrowl('Error!');
+            },
+            complete: function() {
+                mList.find('.stat-loading').remove();
+                $('#materialListHelpBlock').removeClass('d-none');
+            }
+        });
+
+        editDetailsTRIndex = null;
     }
 
     // init

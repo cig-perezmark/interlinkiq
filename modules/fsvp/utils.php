@@ -128,6 +128,7 @@ function getSupplierList($conn, $userId) {
                 'address' => $address,
                 'name' => $d['name'],
                 'id' => $d['id'],
+                'supplier_id' => $d['supplier_id'],
                 'evaluation' => getEvaluationRecordID($conn, $d['id']),
                 'food_imported' => $materialData,
                 'compliance_statement' => $csFile,

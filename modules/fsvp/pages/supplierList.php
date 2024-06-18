@@ -108,15 +108,15 @@ th {
     <thead>
         <tr>
             <th>Supplier Name</th>
-            <th>Food Imported</th>
             <th style="width: 220px;">Address</th>
+            <th>Food Imported</th>
             <th style="max-width: 140px">
                 Evaluation Date <br>
                 <small class="text-muted margin-top-10 font-grey-salsa" style="font-weight: normal;line-height: 98%;display: inline-block;">Click the date to view evaluation details.</small>
             </th>
             <th style="max-width: 80px">Supplier Agreement</th>
             <th style="max-width: 80px;">FSVP Compliance Statement</th>
-            <!-- <th class="text-center" style="width: 120px">History</th> -->
+            <!-- <th class="text-center" style="width: 120px">Actions</th> -->
         </tr>
     </thead>
     <tbody></tbody>

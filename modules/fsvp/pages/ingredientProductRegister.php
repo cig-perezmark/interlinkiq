@@ -1,6 +1,7 @@
 <div class="d-flex margin-bottom-20" style="justify-content: end;">
-    <a href="#modalIngProdReg" data-toggle="modal" class="btn green">
+    <a href="#modalIngProdReg" id="iprAddProductBtn" data-toggle="modal" class="btn green">
         <i class="fa fa-plus"></i>
+        Add product
     </a>
 </div>
 
@@ -13,8 +14,7 @@
             <th>Ingredients List</th>
             <th>Brand Name</th>
             <th>Intended Use</th>
-            <!-- <th>FSVP Activity Worksheet</th> -->
-            <th data-nosort="true">Actions</th>
+            <th class="text-center">Actions</th>
         </tr>
     </thead>
     <tbody></tbody>
@@ -52,15 +52,30 @@
                     </div>
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="iprImporter">Importer <?= autofill() ?></label>
-                            <textarea id="iprImporter" class="form-control" style="height: 42px;" readonly placeholder="Auto-filled by product search"></textarea>
-                            <input type="hidden" name="importer" id="iprImporterId">
+                            <label for="">Description <?= autofill() ?></label>
+                            <textarea name="" id="iprDescription" class="form-control" readonly placeholder="Auto-filled by product search"></textarea>
                         </div>
                     </div>
                     <div class="col-md-12">
+                        <!-- <div class="form-group">
+                            <label for="iprImporter">Importer</label>
+                            <textarea id="iprImporter" class="form-control" style="height: 42px;" placeholder="Auto-filled by product search"></textarea>
+                            <input type="hidden" name="importer" id="iprImporterId">
+                        </div> -->
                         <div class="form-group">
-                            <label for="">Description <?= autofill() ?></label>
-                            <textarea name="" id="iprDescription" class="form-control" readonly placeholder="Auto-filled by product search"></textarea>
+                            <label for="importerSelect">Importer <?= required() ?></label>
+                            <select name="importer" id="importerSelect">
+                                <option value="" selected disabled>Select importer</option>
+                                <?php
+                                    $suppliers = getImportersByUser($conn, $switch_user_id);
+                                    foreach($suppliers as $supplier) {
+                                        echo '<option value="'.$supplier['id'].'" data-address="'.$supplier['address'].'">'.$supplier['name'].'</option>';
+                                    }
+                                    if(count($suppliers) == 0) {
+                                        echo'';
+                                    }
+                                ?>
+                            </select>
                         </div>
                     </div>
                     <div class="col-md-12">

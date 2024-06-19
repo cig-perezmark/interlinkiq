@@ -10,30 +10,42 @@ if(empty($user_id)) {
     exit('Invalid session.');
 }
 
-// note: no filter for foreign suppliers yet
-// fetching supplier for dropdown
 if(isset($_GET["getProductsByForeignSupplier"]) && !empty($_GET["getProductsByForeignSupplier"])) {
     $foreignSupplierId = $_GET["getProductsByForeignSupplier"] ?? 0;
-    $materials = $conn->execute("SELECT ipr.id,
-        mat.material_name AS name,
-        mat.description,
-        sup.address
-        FROM tbl_fsvp_ingredients_product_register ipr
-        LEFT JOIN tbl_supplier_material mat ON mat.ID = ipr.product_id
-        LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.id = ipr.supplier_id
-        LEFT JOIN tbl_supplier sup ON sup.ID = fsup.supplier_id
-        WHERE mat.active = 1 AND ipr.user_id = ? AND ipr.supplier_id = ? AND ipr.deleted_at IS NULL
-    ", $user_id, $foreignSupplierId)->fetchAll();
-    
+
+    $materials = [];
     $address = "";
     $data = array();
-    foreach($materials as $material) {
-        $address = $material["address"];
-        $data[] = [
-            'id' => $material['id'],
-            'name' => $material['name'],
-            'description' => $material['description'],
-        ];
+
+    if(isset($_GET['raw']) && $_GET['raw'] == 'true') {
+        $materials = $conn->select("tbl_supplier", "material, address", ["ID" => $foreignSupplierId])->fetchAssoc();
+        $mIds = $materials['material'];
+
+        if(!empty($mIds)) {
+            $data = $conn->select("tbl_supplier_material", "material_name AS name, ID as id, description", "ID in ($mIds) AND active = 1")->fetchAll();
+        }
+        
+        $address = formatSupplierAddress($materials['address']);
+    } else {
+        $materials = $conn->execute("SELECT ipr.id,
+            mat.material_name AS name,
+            mat.description,
+            sup.address
+            FROM tbl_fsvp_ingredients_product_register ipr
+            LEFT JOIN tbl_supplier_material mat ON mat.ID = ipr.product_id
+            LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.id = ipr.supplier_id
+            LEFT JOIN tbl_supplier sup ON sup.ID = fsup.supplier_id
+            WHERE mat.active = 1 AND ipr.user_id = ? AND ipr.supplier_id = ? AND ipr.deleted_at IS NULL
+        ", $user_id, $foreignSupplierId)->fetchAll();
+
+        foreach($materials as $material) {
+            $address = $material["address"];
+            $data[] = [
+                'id' => $material['id'],
+                'name' => $material['name'],
+                'description' => $material['description'],
+            ];
+        }
     }
     
     send_response([

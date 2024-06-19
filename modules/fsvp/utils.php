@@ -8,7 +8,6 @@ function ForeignSupplierSQLClause($firstAnd = true) {
 }
 
 function getSuppliersByUser($conn, $userId) {
-    $y = 1;
     return $conn->execute("SELECT ID as id, name, address 
         FROM tbl_supplier 
         WHERE user_id = ? AND status = 1 AND page = 1
@@ -17,8 +16,23 @@ function getSuppliersByUser($conn, $userId) {
             $d['address'] = formatSupplierAddress($d['address']);
             return $d;
         });
-    // return $conn->select("tbl_supplier", "ID as id, name, address", [ 'user_id'=> $userId, 'status'=> $y, 'page'=>$y])
-    //     ->fetchAll();
+}
+
+// to populate importers dropdown in the new importer form (importer list tab)
+function getRawImportersByUser($conn, $userId) {
+    return $conn->execute(
+        "SELECT sup.ID as id, sup.name, sup.address
+         FROM tbl_supplier sup
+         LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.supplier_id <> sup.ID
+         WHERE sup.user_id = ?
+         AND sup.ID <> fsup.supplier_id
+         AND sup.status = 1 AND sup.page = 1
+         AND (TRIM(SUBSTRING_INDEX(sup.address, ',', 1)) LIKE 'US' OR TRIM(SUBSTRING_INDEX(sup.address, '|', 1)) LIKE 'US')",
+        $userId
+    )->fetchAll(function($data) { 
+        $data['address'] = formatSupplierAddress($data['address']);
+        return $data;
+    });
 }
 
 function getImportersByUser($conn, $userId) {
@@ -142,6 +156,26 @@ function getSupplierList($conn, $userId) {
             'error' => $e->getMessage(),
         ], 500);
     }
+}
+
+function getForeignSuppliersOnly($conn, $userId) {
+    $results = $conn->execute("SELECT 
+                    tbl_fsvp_suppliers.id,
+                    tbl_fsvp_suppliers.supplier_id,
+                    tbl_supplier.name,
+                    tbl_supplier.address
+                FROM 
+                    tbl_fsvp_suppliers
+                JOIN 
+                    tbl_supplier ON tbl_fsvp_suppliers.supplier_id = tbl_supplier.ID
+                WHERE 
+                    tbl_fsvp_suppliers.user_id = ?", 
+    $userId)->fetchAll(function ($d) {
+        $d['address'] = formatSupplierAddress($d['address']);
+        return $d;
+    });
+
+    return $results;
 }
 
 /**

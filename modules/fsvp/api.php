@@ -948,11 +948,17 @@ if(isset($_GET['ingredientProductsRegisterData'])) {
             sup.name AS importer_name
         FROM tbl_fsvp_ingredients_product_register ipr
         LEFT JOIN tbl_supplier_material mat ON mat.ID = ipr.product_id
-        LEFT JOIN tbl_supplier sup ON sup.ID = ipr.importer_id
+        LEFT JOIN tbl_fsvp_ipr_imported_by imb ON ipr.id = imb.product_id
+        LEFT JOIN tbl_fsvp_importers imp ON imp.id = imb.importer_id
+        LEFT JOIN tbl_supplier sup ON sup.ID = imp.importer_id
+        LEFT JOIN tbl_fsvp_suppliers fsup ON ipr.supplier_id = fsup.id
         WHERE ipr.user_id = ? AND ipr.deleted_at IS NULL 
+            AND fsup.deleted_at IS NULL
         ORDER BY ipr.created_at DESC
     ", $user_id)->fetchAll(function($data) {
-        $data['rhash'] = md5($data['id']);
+        if(!empty($data["importer_id"])) {
+            $data['rhash'] = md5($data['id']);
+        }
         return $data;
     });
 

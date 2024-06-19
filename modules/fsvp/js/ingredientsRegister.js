@@ -36,7 +36,7 @@ $(function () {
         const form = e.target;
         let url = Init.baseUrl + 'ingredientProductRegister';
 
-        if(form.product_id.value.trim() == '') {
+        if(form.ipr_id.value.trim() == '') {
             regFormAlert.isShowing() && regFormAlert.hide();
             regFormAlert.setContent('<strong>Error!</strong> Please select a product first!').show();
             return;

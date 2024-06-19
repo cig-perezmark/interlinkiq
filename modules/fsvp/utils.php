@@ -64,9 +64,12 @@ function getRawImportersByUser($conn, $userId) {
 
 function getImportersByUser($conn, $userId) {
     return $conn->execute(
-        "SELECT imp.id, sup.name, sup.address FROM tbl_fsvp_importers imp 
+        "SELECT imp.id, sup.name, sup.address 
+         FROM tbl_fsvp_importers imp 
          JOIN tbl_supplier sup ON sup.ID = imp.importer_id
-         WHERE imp.user_id = ? AND deleted_at IS NULL",
+         WHERE imp.user_id = ? 
+         AND deleted_at IS NULL
+        ",
         $userId
     )->fetchAll(function($data) { 
         $data['address'] = formatSupplierAddress($data['address']);

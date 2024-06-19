@@ -30,20 +30,17 @@ $(function() {
         onChange: function(option, checked) {
             const address = option.get(0).dataset.address || '';
             $('#if_SupplierAddress').val(address);
-        }
-    });
-    const importerSelect = Init.multiSelect($('#importerdd'), {
-        onChange: function(option, checked, select) {
+
+            // render products importer
+            // const foreignSupplierId = option.attr('value');
+
             const pList = $('#productsListSelection');
             pList.html('');
             pList.append(`<div class="stat-loading"> <img src="assets/global/img/loading.gif" alt="loading"> </div>`);
             $('#productsHelpBlock').addClass('d-none');
-            
-            const address = option.get(0).dataset.address || '';
-            $('#if_ImporterAddress').val(address);
 
             $.ajax({
-                url: baseUrl + "getProductsBySupplier=" + $(option).val(),
+                url: baseUrl + "getProductsByForeignSupplier=" + $(option).val(),
                 type: "GET",
                 contentType: false,
                 processData: false,
@@ -77,6 +74,13 @@ $(function() {
                     $('#productsHelpBlock').removeClass('d-none');
                 }
             });
+        }
+    });
+    const importerSelect = Init.multiSelect($('#importerdd'), {
+        onChange: function(option, checked, select) {
+            
+            const address = option.get(0).dataset.address || '';
+            $('#if_ImporterAddress').val(address);
         }
     });
     const CBPFormAlert = Init.createAlert($('#modalCBPFiling .modal-body'));

@@ -19,13 +19,25 @@ function getSuppliersByUser($conn, $userId) {
 }
 
 function getRawSuppliersByUser($conn, $userId) {
-    return $conn->execute("SELECT sup.ID as id, sup.name, sup.address 
-        FROM tbl_supplier sup
-        LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.supplier_id <> sup.ID
-        WHERE sup.user_id = ? AND sup.status = 1 AND sup.page = 1
-        AND fsup.supplier_id <> sup.ID
-        AND TRIM(SUBSTRING_INDEX(sup.address, ',', 1)) NOT LIKE 'US' AND TRIM(SUBSTRING_INDEX(sup.address, '|', 1)) NOT LIKE 'US'
-    ", $userId)
+    $sql = "SELECT 
+                tbl_supplier.ID as id,
+                tbl_supplier.name,
+                tbl_supplier.address
+            FROM 
+                tbl_supplier
+            WHERE 
+                TRIM(SUBSTRING_INDEX(tbl_supplier.address, ',', 1)) NOT LIKE 'US' AND TRIM(SUBSTRING_INDEX(tbl_supplier.address, '|', 1)) NOT LIKE 'US' 
+                AND tbl_supplier.user_id = 464
+                AND tbl_supplier.is_deleted = 0
+                AND tbl_supplier.status = 1
+                AND tbl_supplier.ID NOT IN (
+                    SELECT supplier_id 
+                    FROM tbl_fsvp_suppliers
+                    WHERE tbl_fsvp_suppliers.user_id = ?
+                );
+    ";
+    
+    return $conn->execute($sql, $userId)
         ->fetchAll(function($d) {
             $d['address'] = formatSupplierAddress($d['address']);
             return $d;
@@ -39,7 +51,7 @@ function getRawImportersByUser($conn, $userId) {
          FROM tbl_supplier sup
          LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.supplier_id <> sup.ID
          WHERE sup.user_id = ?
-         AND sup.ID <> fsup.supplier_id
+         AND (sup.ID <> fsup.supplier_id OR  fsup.id IS NULL)
          AND sup.status = 1 AND sup.page = 1
          AND (TRIM(SUBSTRING_INDEX(sup.address, ',', 1)) LIKE 'US' OR TRIM(SUBSTRING_INDEX(sup.address, '|', 1)) LIKE 'US')",
         $userId

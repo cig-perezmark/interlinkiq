@@ -30,9 +30,6 @@ $(function () {
     initMemberSearch();
     fetchInitialData(ProductRegisterData, ingredientsTable, ImportersSelectionData);
 
-    // reposition add prooduct button to the datatable toolbar
-    // $('.dataTables_wrapper .dt-buttons').append($('#iprAddProductBtn').attr('class', 'dt-button buttons-collection'))
-
     $('#IngProdRegForm').on('submit', function(e) {
         e.preventDefault();
 
@@ -47,8 +44,8 @@ $(function () {
 
         const data = new FormData(form);
 
-        // var l = Ladda.create(this.querySelector('[type=submit]'));
-        // l.start();
+        var l = Ladda.create(this.querySelector('[type=submit]'));
+        l.start();
 
         $.ajax({
             url,
@@ -63,6 +60,7 @@ $(function () {
                 // reset the form
                 $(form.product_id).val('').trigger('change');
                 form.reset();
+                fetchInitialData(ProductRegisterData, ingredientsTable, ImportersSelectionData);
 
                 regFormAlert.isShowing() && regFormAlert.hide();
                 bootstrapGrowl(message || 'Successfully saved!');
@@ -71,11 +69,38 @@ $(function () {
                 bootstrapGrowl(responseJSON.error || 'Error!', 'danger');
             },
             complete: function() {
-                // l.stop();
+                l.stop();
             }
         });
     });
 
+    $('#tableIngredients').on('click', '[data-editipr]', function() {
+        const id = this.dataset.editipr;
+        const data = ProductRegisterData[id];
+
+        $('#modalIngProdReg .form-group:has(#productSelect2)').hide();
+        $('#modalIngProdReg [name=product_id]').val(data.id);
+        $('#modalIngProdReg [name=ipr_id]').val(data.ipr_id);
+        $('#iprProductName').val(data.product_name);
+        $('#iprDescription').val(data.product_name);
+        $('#iprBrandName').val(data.brand_name || '');
+        $('#iprIngredientsList').val(data.ingredients_list || '');
+        $('#iprIntendedUse').val(data.intended_use || '');
+        $('#importerSelect').multiselect('select', [data.importer_id])
+        $('#iprTitle').text('Edit Details');
+
+        $('#modalIngProdReg').modal('show');
+    });
+
+    $('#modalIngProdReg').on('hidden.bs.modal', function() {
+        $('#modalIngProdReg .form-group:has(#productSelect2)').show();
+        $('#modalIngProdReg .form-control').val('');
+        $('#modalIngProdReg [name=product_id]').val('');
+        $('#modalIngProdReg [name=ipr_id]').val('');
+        $('#importerSelect').multiselect('select', '')
+        $('#iprTitle').text('Add Product');
+        importerSelect.reset();
+    });
 });
 
 function fetchInitialData(dataset, table, importersData) {
@@ -139,7 +164,7 @@ function renderDTRow(dataset, rowData, table, action = 'create') {
         actionBtn = `
             <div class="d-flex center">
                 <div class="btn-group btn-group-circle btn-group-sm btn-group-solid">
-                    <a href="#" class="btn blue btn-circle btn-sm btn-outline">Edit</a>
+                    <a href="#" class="btn blue btn-circle btn-sm btn-outline" data-editipr="${rowData.id}">Edit</a>
                     <a href="${(Init.URL || 'fsvp') + '?pdf=ipr&r=' + rowData.rhash}" class="btn dark btn-circle btn-sm" target="_blank" title="PDF Document">PDF</a>
                 </div>
             </div>
@@ -147,7 +172,7 @@ function renderDTRow(dataset, rowData, table, action = 'create') {
     } else {
         actionBtn = `
             <div class="d-flex center">
-                <a href="#" class="btn dark btn-circle btn-sm btn-outline">Edit details</a>
+                <a href="#" class="btn dark btn-circle btn-sm btn-outline" data-editipr="${rowData.id}">Edit details</a>
             </div>
         `;
     }
@@ -179,10 +204,9 @@ function initMemberSearch() {
     }
 
     function formatProductSelection(data) {
-        $('#iprImporter').val(data.supplier_name);
-        $('#iprImporterId').val(data.supplier_id);
         $('#iprDescription').val(data.description);
         $('#iprProductName').val(data.material_name);
+        $('#IngProdRegForm [name="ipr_id"]').val(data.id);
         return data.material_name || data.text;
     }
 

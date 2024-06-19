@@ -914,34 +914,65 @@ if(isset($_POST['search-foreignMaterials'])) {
 if(isset($_GET['ingredientProductRegister'])) {
     try {
         $conn->begin_transaction();
+        $returnData = [];
 
-        $conn->execute("INSERT INTO tbl_fsvp_ingredients_product_register(
-                user_id,
-                portal_user,
-                product_id,
-                importer_id,
-                brand_name,
-                ingredients_list,
-                intended_use
-            ) VALUE(?,?,?,?,?,?,?)",
-            $user_id,
-            $portal_user,
-            emptyIsNull($_POST['product_id']),
-            emptyIsNull($_POST['importer']),
-            emptyIsNull($_POST['brand_name']),
-            emptyIsNull($_POST['ingredients']),
-            emptyIsNull($_POST['intended_use']),
-        );
+        if(!empty($_POST['product_id'])) {
+            // for update (edit details form)
 
-        $id = $conn->getInsertId();
+            $isProductIdExist = $conn->execute("SELECT id FROM tbl_fsvp_ipr_imported_by WHERE id = ?", $_POST['product_id'])->fetchAll();
+            if(count($isProductIdExist) == 0) {
+                throw new Exception('Imported product does not exists.');
+            }
+
+            $conn->execute("UPDATE tbl_fsvp_ipr_imported_by SET
+                    portal_user = ?,
+                    importer_id = ?,
+                    brand_name = ?,
+                    ingredients_list = ?,
+                    intended_use = ?
+                    WHERE id = ? AND user_id = ?",
+                $portal_user,
+                emptyIsNull($_POST['importer']),
+                emptyIsNull($_POST['brand_name']),
+                emptyIsNull($_POST['ingredients']),
+                emptyIsNull($_POST['intended_use']),
+                $_POST['product_id'],
+                $user_id
+            );
+            
+            $returnData = [
+                'message' => 'Successfully updated.'
+            ];
+        } else {
+            $conn->execute("INSERT INTO tbl_fsvp_ipr_imported_by(
+                    user_id,
+                    portal_user,
+                    product_id,
+                    importer_id,
+                    brand_name,
+                    ingredients_list,
+                    intended_use
+                ) VALUE(?,?,?,?,?,?,?)",
+                $user_id,
+                $portal_user,
+                emptyIsNull($_POST['ipr_id']),
+                emptyIsNull($_POST['importer']),
+                emptyIsNull($_POST['brand_name']),
+                emptyIsNull($_POST['ingredients']),
+                emptyIsNull($_POST['intended_use']),
+            );
+
+            $id = $conn->getInsertId();
+            $returnData = [
+                'message' => 'Successfully registered.',
+                'data' => [
+                    'id'=> $id,
+                ],
+            ];
+        }
 
         $conn->commit();
-        send_response([
-            'message' => 'Successfully registered.',
-            'data' => [
-                'id'=> $id,
-            ],
-        ]);
+        send_response($returnData);
     } catch(Throwable $e) {
         $conn->rollback();
         send_response([
@@ -954,26 +985,25 @@ if(isset($_GET['ingredientProductRegister'])) {
 if(isset($_GET['ingredientProductsRegisterData'])) {
     $results = $conn->execute("SELECT 
             iby.id,
-            iby.product_id,
+            ipr.id AS ipr_id, -- ingredient product registry record id
             mat.material_name AS product_name,
             mat.description,
             iby.brand_name,
             iby.ingredients_list,
             iby.intended_use,
             iby.importer_id,
-            sup.name AS importer_name
+            isup.name AS importer_name
         FROM tbl_fsvp_ipr_imported_by iby
         LEFT JOIN tbl_fsvp_ingredients_product_register ipr ON ipr.id = iby.product_id
-        LEFT JOIN tbl_supplier_material mat ON mat.ID = ipr.product_id
-        LEFT JOIN tbl_fsvp_ipr_imported_by imb ON ipr.id = imb.product_id
-        LEFT JOIN tbl_fsvp_importers imp ON imp.id = imb.importer_id
-        LEFT JOIN tbl_supplier sup ON sup.ID = imp.importer_id
+        LEFT JOIN tbl_fsvp_importers imp ON imp.id = iby.importer_id
         LEFT JOIN tbl_fsvp_suppliers fsup ON ipr.supplier_id = fsup.id
+        LEFT JOIN tbl_supplier_material mat ON mat.ID = ipr.product_id
+        LEFT JOIN tbl_supplier isup ON isup.ID = imp.importer_id
         WHERE iby.user_id = ? 
             AND iby.deleted_at IS NULL 
             AND ipr.deleted_at IS NULL 
-            AND imp.deleted_at IS NULL 
             AND fsup.deleted_at IS NULL
+            AND imp.deleted_at IS NULL
         ORDER BY iby.created_at DESC
     ", $user_id)->fetchAll(function($data) {
         if(!empty($data["importer_id"])) {

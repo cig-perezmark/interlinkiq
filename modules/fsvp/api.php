@@ -12,18 +12,33 @@ if(empty($user_id)) {
 
 // note: no filter for foreign suppliers yet
 // fetching supplier for dropdown
-if(isset($_GET["getProductsBySupplier"]) && !empty($_GET["getProductsBySupplier"])) {
-    $materials = $conn->select("tbl_supplier", "material, address", ["ID" => $_GET["getProductsBySupplier"]])->fetchAssoc();
-    $mIds = $materials['material'];
-    $data = [];
+if(isset($_GET["getProductsByForeignSupplier"]) && !empty($_GET["getProductsByForeignSupplier"])) {
+    $foreignSupplierId = $_GET["getProductsByForeignSupplier"] ?? 0;
+    $materials = $conn->execute("SELECT ipr.id,
+        mat.material_name AS name,
+        mat.description,
+        sup.address
+        FROM tbl_fsvp_ingredients_product_register ipr
+        LEFT JOIN tbl_supplier_material mat ON mat.ID = ipr.product_id
+        LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.id = ipr.supplier_id
+        LEFT JOIN tbl_supplier sup ON sup.ID = fsup.supplier_id
+        WHERE mat.active = 1 AND ipr.user_id = ? AND ipr.supplier_id = ? AND ipr.deleted_at IS NULL
+    ", $user_id, $foreignSupplierId)->fetchAll();
     
-    if(!empty($mIds)) {
-        $data = $conn->select("tbl_supplier_material", "material_name AS name, ID as id, description", "ID in ($mIds) AND active = 1")->fetchAll();
+    $address = "";
+    $data = array();
+    foreach($materials as $material) {
+        $address = $material["address"];
+        $data[] = [
+            'id' => $material['id'],
+            'name' => $material['name'],
+            'description' => $material['description'],
+        ];
     }
     
     send_response([
         "materials"=> $data,
-        'address' => formatSupplierAddress($materials['address']),
+        'address' => formatSupplierAddress($address),
     ]);
 }
 
@@ -542,11 +557,33 @@ if(isset($_GET['newImporter']) ) {
             'evaluation_date' =>  $_POST['evaluation_date'],
             'duns_no' =>  $_POST['duns_no'],
             'fda_registration' =>  $_POST['fda_registration'],
-            'products' => json_encode($_POST['importer_products'] ?? []),
         ];
         $conn->insert("tbl_fsvp_importers", $insertData);
 
         $id = $conn->getInsertId();
+
+        if(count($_POST['importer_products'])) {
+            $productsParams = [];
+            $productsValues = [];
+            $importerId = $id;
+
+            foreach($_POST['importer_products'] as $productId) {
+                $productsParams[] = '(?,?,?,?)';
+                $productsValues = array_merge($productsValues, [
+                    $user_id,
+                    $portal_user,
+                    $importerId,
+                    $productId,
+                ]);
+            }
+
+            if(count($productsValues)) {
+                $sql = "INSERT INTO tbl_fsvp_ipr_imported_by(user_id,portal_user,importer_id,product_id) VALUES ";
+                $sql .= implode(', ', $productsParams);
+                $conn->execute($sql, $productsValues);
+            }
+        }
+        
         $importerName = $conn->select("tbl_supplier", 'name', "ID = " . $insertData['importer_id'])->fetchAssoc()['name'] ?? null;
         $fsvpqiName = $conn->execute("SELECT CONCAT(TRIM(emp.first_name), ' ', TRIM(emp.last_name)) as name FROM tbl_fsvp_qi qi JOIN tbl_hr_employee emp ON emp.ID = qi.employee_id WHERE qi.id = ?", $insertData['fsvpqi_id'])->fetchAssoc()['name'] ?? null;
         

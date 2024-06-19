@@ -16,6 +16,9 @@ $(function() {
             },{
                 className: 'text-center',
                 targets: [3, 5]
+            }, {
+                visible: false,
+                targets: [2,3]
             }
         ]
     });
@@ -301,6 +304,7 @@ function renderDTRow(importersData, d, table, method = 'add') {
     
     const rowData = [
         importerName,
+        d.supplier.name || '',
         d.duns_no,
         d.fda_registration,
         `<a href="#" title="View details">${d.fsvpqi.name}</a>`,

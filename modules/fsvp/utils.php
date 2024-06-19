@@ -34,6 +34,7 @@ function getRawSuppliersByUser($conn, $userId) {
                     SELECT supplier_id 
                     FROM tbl_fsvp_suppliers
                     WHERE tbl_fsvp_suppliers.user_id = ?
+                    AND tbl_fsvp_suppliers.deleted_at IS NULL
                 );
     ";
     
@@ -105,6 +106,7 @@ function getSupplierList($conn, $userId) {
                     tbl_supplier ON tbl_fsvp_suppliers.supplier_id = tbl_supplier.ID
                 WHERE 
                     tbl_fsvp_suppliers.user_id = ?
+                    AND tbl_fsvp_suppliers.deleted_at IS NULL
 
                 UNION
 
@@ -127,6 +129,7 @@ function getSupplierList($conn, $userId) {
                         SELECT supplier_id 
                         FROM tbl_fsvp_suppliers
                         WHERE tbl_fsvp_suppliers.user_id = ?
+                        AND tbl_fsvp_suppliers.deleted_at IS NULL
                     );
         ";
 
@@ -195,7 +198,8 @@ function getForeignSuppliersOnly($conn, $userId) {
                 JOIN 
                     tbl_supplier ON tbl_fsvp_suppliers.supplier_id = tbl_supplier.ID
                 WHERE 
-                    tbl_fsvp_suppliers.user_id = ?", 
+                    tbl_fsvp_suppliers.user_id = ? 
+                    AND tbl_fsvp_suppliers.deleted_at IS NULL", 
     $userId)->fetchAll(function ($d) {
         $d['address'] = formatSupplierAddress($d['address']);
         return $d;

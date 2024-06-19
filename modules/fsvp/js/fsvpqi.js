@@ -25,7 +25,7 @@ jQuery(function() {
         ]
     });
     
-    Init.multiSelect($('#fsvpqiSelect'));
+    const fsvpqiSelect = Init.multiSelect($('#fsvpqiSelect'));
     populateFSVPQISelect(alert);
     fetchFSVPQIData(fsvpqiData, tableFSVPQI);
 
@@ -44,6 +44,8 @@ jQuery(function() {
         }
 
         const data = new FormData(form); 
+        var l = Ladda.create(this.querySelector('[type=submit]'));
+        l.start();
 
         $.ajax({
             url: Init.baseUrl + "newFSVPQI",
@@ -55,9 +57,10 @@ jQuery(function() {
                 renderDTRow(fsvpqiData, data, tableFSVPQI);
                 tableFSVPQI.dt.draw();
 
+                fsvpqiSelect.reset();
                 form.reset();
-                $(form.fsvpqi).val('').trigger('change');
                 $('#modalFSVPQIReg').modal('hide');
+
                 bootstrapGrowl(message || 'Saved successfully.');
                 populateFSVPQISelect(alert);
             },
@@ -65,7 +68,7 @@ jQuery(function() {
                 bootstrapGrowl(responseJSON.info || responseJSON.message || 'Error saving data.');
             },
             complete: function() {
-                // 
+                l.stop();
             }
         });
     });

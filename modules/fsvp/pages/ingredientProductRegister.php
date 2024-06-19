@@ -32,15 +32,17 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="productSelect2">Find product <?= required() ?></label>
-                            <select name="product_id" id="productSelect2" class="form-control">
+                            <label for="productSelect2">Food/Product Name <?= required() ?></label>
+                            <select id="productSelect2" class="form-control">
                                 <option value="" selected disabled>Select product</option>
                             </select>
+                            <small class="help-block">Select imported food/product from foreign suppliers. Try "sugar"</small>
                         </div>
+                        <input type="hidden" name="product_id">
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label for="iprProductName">Product Name <?= autofill() ?></label>
+                            <label for="iprProductName">Food/Product Name <?= autofill() ?></label>
                             <textarea id="iprProductName" class="form-control" readonly placeholder="Auto-filled by product search"></textarea>
                         </div>
                     </div>
@@ -63,19 +65,8 @@
                             <input type="hidden" name="importer" id="iprImporterId">
                         </div> -->
                         <div class="form-group">
-                            <label for="importerSelect">Importer <?= required() ?></label>
-                            <select name="importer" id="importerSelect">
-                                <option value="" selected disabled>Select importer</option>
-                                <?php
-                                    $suppliers = getImportersByUser($conn, $switch_user_id);
-                                    foreach($suppliers as $supplier) {
-                                        echo '<option value="'.$supplier['id'].'" data-address="'.$supplier['address'].'">'.$supplier['name'].'</option>';
-                                    }
-                                    if(count($suppliers) == 0) {
-                                        echo'';
-                                    }
-                                ?>
-                            </select>
+                            <label for="importerSelect">Importer Name<?= required() ?></label>
+                            <select name="importer" id="importerSelect"></select>
                         </div>
                     </div>
                     <div class="col-md-12">

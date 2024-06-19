@@ -50,9 +50,9 @@ function getRawImportersByUser($conn, $userId) {
     return $conn->execute(
         "SELECT sup.ID as id, sup.name, sup.address
          FROM tbl_supplier sup
-         LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.supplier_id <> sup.ID
+         LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.user_id = sup.user_id AND fsup.supplier_id = sup.ID
          WHERE sup.user_id = ?
-         AND (sup.ID <> fsup.supplier_id OR  fsup.id IS NULL)
+         AND (fsup.id IS NULL OR sup.ID <> fsup.supplier_id)
          AND sup.status = 1 AND sup.page = 1
          AND (TRIM(SUBSTRING_INDEX(sup.address, ',', 1)) LIKE 'US' OR TRIM(SUBSTRING_INDEX(sup.address, '|', 1)) LIKE 'US')",
         $userId

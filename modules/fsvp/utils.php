@@ -18,6 +18,20 @@ function getSuppliersByUser($conn, $userId) {
         });
 }
 
+function getRawSuppliersByUser($conn, $userId) {
+    return $conn->execute("SELECT sup.ID as id, sup.name, sup.address 
+        FROM tbl_supplier sup
+        LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.supplier_id <> sup.ID
+        WHERE sup.user_id = ? AND sup.status = 1 AND sup.page = 1
+        AND fsup.supplier_id <> sup.ID
+        AND TRIM(SUBSTRING_INDEX(sup.address, ',', 1)) NOT LIKE 'US' AND TRIM(SUBSTRING_INDEX(sup.address, '|', 1)) NOT LIKE 'US'
+    ", $userId)
+        ->fetchAll(function($d) {
+            $d['address'] = formatSupplierAddress($d['address']);
+            return $d;
+        });
+}
+
 // to populate importers dropdown in the new importer form (importer list tab)
 function getRawImportersByUser($conn, $userId) {
     return $conn->execute(

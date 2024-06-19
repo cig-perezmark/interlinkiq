@@ -954,13 +954,13 @@ if(isset($_GET['ingredientProductRegister'])) {
 if(isset($_GET['ingredientProductsRegisterData'])) {
     $results = $conn->execute("SELECT 
             iby.id,
-            -- ipr.product_id,
+            iby.product_id,
             mat.material_name AS product_name,
             mat.description,
             iby.brand_name,
             iby.ingredients_list,
             iby.intended_use,
-            -- sup.ID as importer_id,
+            iby.importer_id,
             sup.name AS importer_name
         FROM tbl_fsvp_ipr_imported_by iby
         LEFT JOIN tbl_fsvp_ingredients_product_register ipr ON ipr.id = iby.product_id

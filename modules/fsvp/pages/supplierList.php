@@ -98,7 +98,7 @@ th {
 </style>
 
 <div class="d-flex margin-bottom-20" style="justify-content: end;">
-    <a href="#modalNewSupplier" data-toggle="modal" class="btn green">
+    <a href="#modalNewSupplier" data-toggle="modal" class="btn green hide">
         <i class="fa fa-plus"></i>
         New
     </a>
@@ -466,7 +466,7 @@ th {
                             <select name="supplier" id="findSupplierDd" class="supplierdd">
                                 <option value="" selected disabled>Search supplier name</option>
                                 <?php
-                                    $suppliers = getSuppliersByUser($conn, $switch_user_id);
+                                    $suppliers = getRawSuppliersByUser($conn, $switch_user_id);
                                     foreach($suppliers as $supplier) {
                                         echo '<option value="'.$supplier['id'].'">'.$supplier['name'].'</option>';
                                     }

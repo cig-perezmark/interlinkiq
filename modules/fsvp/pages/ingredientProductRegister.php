@@ -26,7 +26,7 @@
         <form class="modal-content" role="form" id="IngProdRegForm">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">Ingredient Product Register Form: Add Product</h4>
+                <h4 class="modal-title">Ingredient Product Register Form: <span id="iprTitle">Add Product</span></h4>
             </div>
             <div class="modal-body form-body">
                 <div class="row">
@@ -38,6 +38,7 @@
                             </select>
                             <small class="help-block">Select imported food/product from foreign suppliers. Try "sugar"</small>
                         </div>
+                        <input type="hidden" name="ipr_id">
                         <input type="hidden" name="product_id">
                     </div>
                     <div class="col-md-6">
@@ -59,11 +60,6 @@
                         </div>
                     </div>
                     <div class="col-md-12">
-                        <!-- <div class="form-group">
-                            <label for="iprImporter">Importer</label>
-                            <textarea id="iprImporter" class="form-control" style="height: 42px;" placeholder="Auto-filled by product search"></textarea>
-                            <input type="hidden" name="importer" id="iprImporterId">
-                        </div> -->
                         <div class="form-group">
                             <label for="importerSelect">Importer Name<?= required() ?></label>
                             <select name="importer" id="importerSelect"></select>

@@ -24,10 +24,11 @@ $(function () {
     const regFormAlert = Init.createAlert($('#IngProdRegForm .modal-body'));
     const importerSelect = Init.multiSelect($('#importerSelect'));
     let ProductRegisterData = [];
+    let ImportersSelectionData = []
 
     // init
     initMemberSearch();
-    fetchProductRegisterData(ProductRegisterData, ingredientsTable);
+    fetchInitialData(ProductRegisterData, ingredientsTable, ImportersSelectionData);
 
     // reposition add prooduct button to the datatable toolbar
     // $('.dataTables_wrapper .dt-buttons').append($('#iprAddProductBtn').attr('class', 'dt-button buttons-collection'))
@@ -77,17 +78,21 @@ $(function () {
 
 });
 
-function fetchProductRegisterData(dataset, table) {
+function fetchInitialData(dataset, table, importersData) {
     $.ajax({
         url: Init.baseUrl + "ingredientProductsRegisterData",
         type: "GET",
         contentType: false,
         processData: false,
-        success: function({results}) {
+        success: function({results, importers}) {
             if(results) {
                 table.dt.clear();
                 results.forEach((d) => renderDTRow(dataset, d, table));
                 table.dt.draw();
+            }
+
+            if(importers) {
+                populateImporterDropdown(importers, importersData);
             }
 
             if(!results.length) {
@@ -100,6 +105,30 @@ function fetchProductRegisterData(dataset, table) {
     });
 }
 
+function populateImporterDropdown(dataset, importersData) {
+    if(Array.isArray(dataset)) {
+        const options = [{
+            label: dataset.length ? 'Select an importer' : 'No data available.',
+            title: dataset.length ? 'Select an importer' : 'No data available.',
+            value: '',
+            selected: true,
+            disabled: true,
+        }];
+        
+        dataset.forEach(d => {
+            importersData[d.id] = d;
+
+            options.push({
+                label: d.name,
+                title: d.name,
+                value: d.id,
+            });
+        });
+
+        options.length && $('#importerSelect').multiselect('dataprovider', options);
+    }
+}
+
 function renderDTRow(dataset, rowData, table, action = 'create') {
     const na = '<i class="text-muted">(N/A)</i>';
     dataset[rowData.id] = rowData;
@@ -107,18 +136,25 @@ function renderDTRow(dataset, rowData, table, action = 'create') {
     let actionBtn = '';
 
     if(rowData.rhash) {
-        actionBtn =  `
+        actionBtn = `
             <div class="d-flex center">
-                <a href="${(Init.URL || 'fsvp') + '?pdf=ipr&r=' + rowData.rhash}" class="btn green btn-circle btn-sm btn-outline" target="_blank">View</a>
+                <div class="btn-group btn-group-circle btn-group-sm btn-group-solid">
+                    <a href="#" class="btn blue btn-circle btn-sm btn-outline">Edit</a>
+                    <a href="${(Init.URL || 'fsvp') + '?pdf=ipr&r=' + rowData.rhash}" class="btn dark btn-circle btn-sm" target="_blank" title="PDF Document">PDF</a>
+                </div>
             </div>
         `;
     } else {
-        actionBtn = na;
+        actionBtn = `
+            <div class="d-flex center">
+                <a href="#" class="btn dark btn-circle btn-sm btn-outline">Edit details</a>
+            </div>
+        `;
     }
     
     table.dt.row.add([
         rowData.importer_name || na,
-        rowData.product_name || na,
+        rowData.product_name ? `<strong>${rowData.product_name}</strong>` : na,
         rowData.description || na,
         rowData.ingredients_list || na,
         rowData.brand_name || na,
@@ -136,17 +172,13 @@ function initMemberSearch() {
         return `<div class="select2-result-repository clearfix">
             <div class="select2-result-repository__meta" style="margin-left: 0;"> 
                 <div class="select2-result-repository__title">${data.material_name}</div>
-                <div class="select2-result-repository__description">${data.description}</div>
+                <div class="select2-result-repository__description">Description: ${data.description}</div>
+                <div class="select2-result-repository__description">Foreign Supplier: ${data.supplier_name}</div>
             </div>
         </div>`;
     }
 
     function formatProductSelection(data) {
-        // form.find('[data-name]').val(data.name);
-        // form.find('[data-title]').val(data.position);
-        // form.find('[data-email]').val(data.email);
-        // form.find('[data-phone]').val(data.phone);
-        // form.find('[data-avatar]').attr('src', data.avatar);
         $('#iprImporter').val(data.supplier_name);
         $('#iprImporterId').val(data.supplier_id);
         $('#iprDescription').val(data.description);

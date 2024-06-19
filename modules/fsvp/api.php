@@ -944,6 +944,26 @@ if(isset($_GET['ingredientProductRegister'])) {
                 'message' => 'Successfully updated.'
             ];
         } else {
+            $iprId = emptyIsNull($_POST['ipr_id']);
+            $importerId = emptyIsNull($_POST['importer']);
+
+            $existingRecord = $conn->execute("SELECT iby.id FROM tbl_fsvp_ipr_imported_by iby WHERE iby.importer_id = ? AND iby.product_id = ?", $importerId, $iprId)->fetchAll();
+
+            if(count($existingRecord)) {
+                throw new Exception("The selected product has already been added to the importer.");
+            }
+
+            $mySupplier = $conn->execute("SELECT ipr.id
+                FROM tbl_fsvp_importers imp
+                JOIN tbl_fsvp_ingredients_product_register ipr ON ipr.id = ?
+                WHERE imp.user_id = ? AND imp.id = ? AND imp.deleted_at IS NULL
+                AND imp.supplier_id = ipr.supplier_id
+            ", $iprId, $user_id, $importerId)->fetchAll();
+
+            if(!count($mySupplier)) {
+                throw new Exception("The foreign supplier of the selected product is not linked with the current importer.");
+            }
+            
             $conn->execute("INSERT INTO tbl_fsvp_ipr_imported_by(
                     user_id,
                     portal_user,
@@ -955,8 +975,8 @@ if(isset($_GET['ingredientProductRegister'])) {
                 ) VALUE(?,?,?,?,?,?,?)",
                 $user_id,
                 $portal_user,
-                emptyIsNull($_POST['ipr_id']),
-                emptyIsNull($_POST['importer']),
+                $iprId,
+                $importerId,
                 emptyIsNull($_POST['brand_name']),
                 emptyIsNull($_POST['ingredients']),
                 emptyIsNull($_POST['intended_use']),

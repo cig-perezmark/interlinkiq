@@ -14,15 +14,23 @@ $(function () {
             },{
                 className: 'text-center',
                 targets: [3, 5]
+            },{
+                visible: false,
+                targets: [2, 5]
             }
-        ]
+        ],
+        pageLength: -1
     });
     const regFormAlert = Init.createAlert($('#IngProdRegForm .modal-body'));
+    const importerSelect = Init.multiSelect($('#importerSelect'));
     let ProductRegisterData = [];
 
     // init
     initMemberSearch();
     fetchProductRegisterData(ProductRegisterData, ingredientsTable);
+
+    // reposition add prooduct button to the datatable toolbar
+    // $('.dataTables_wrapper .dt-buttons').append($('#iprAddProductBtn').attr('class', 'dt-button buttons-collection'))
 
     $('#IngProdRegForm').on('submit', function(e) {
         e.preventDefault();
@@ -66,6 +74,7 @@ $(function () {
             }
         });
     });
+
 });
 
 function fetchProductRegisterData(dataset, table) {
@@ -81,7 +90,7 @@ function fetchProductRegisterData(dataset, table) {
                 table.dt.draw();
             }
 
-            if(!data.length) {
+            if(!results.length) {
                 bootstrapGrowl('No items to display.')
             }
         },
@@ -92,21 +101,29 @@ function fetchProductRegisterData(dataset, table) {
 }
 
 function renderDTRow(dataset, rowData, table, action = 'create') {
+    const na = '<i class="text-muted">(N/A)</i>';
     dataset[rowData.id] = rowData;
-    // console.log
-    
-    table.dt.row.add([
-        rowData.importer_name,
-        rowData.product_name,
-        rowData.description,
-        rowData.ingredients_list,
-        rowData.brand_name,
-        rowData.intended_use,
-        `
+
+    let actionBtn = '';
+
+    if(rowData.rhash) {
+        actionBtn =  `
             <div class="d-flex center">
                 <a href="${(Init.URL || 'fsvp') + '?pdf=ipr&r=' + rowData.rhash}" class="btn green btn-circle btn-sm btn-outline" target="_blank">View</a>
             </div>
-        `,
+        `;
+    } else {
+        actionBtn = na;
+    }
+    
+    table.dt.row.add([
+        rowData.importer_name || na,
+        rowData.product_name || na,
+        rowData.description || na,
+        rowData.ingredients_list || na,
+        rowData.brand_name || na,
+        rowData.intended_use || na,
+        actionBtn,
     ]);
     return table.dt;
 }

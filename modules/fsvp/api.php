@@ -579,6 +579,7 @@ if(isset($_GET['newImporter']) ) {
             $productsValues = [];
             $importerId = $id;
 
+            
             foreach($_POST['importer_products'] as $productId) {
                 $productsParams[] = '(?,?,?,?)';
                 $productsValues = array_merge($productsValues, [
@@ -588,10 +589,11 @@ if(isset($_GET['newImporter']) ) {
                     $productId,
                 ]);
             }
-
+            
             if(count($productsValues)) {
                 $sql = "INSERT INTO tbl_fsvp_ipr_imported_by(user_id,portal_user,importer_id,product_id) VALUES ";
                 $sql .= implode(', ', $productsParams);
+                // throw new Exception(json_encode([$sql, $productsValues]));
                 $conn->execute($sql, $productsValues);
             }
         }
@@ -600,7 +602,12 @@ if(isset($_GET['newImporter']) ) {
         $fsvpqiName = $conn->execute("SELECT CONCAT(TRIM(emp.first_name), ' ', TRIM(emp.last_name)) as name FROM tbl_fsvp_qi qi JOIN tbl_hr_employee emp ON emp.ID = qi.employee_id WHERE qi.id = ?", $insertData['fsvpqi_id'])->fetchAssoc()['name'] ?? null;
         
         if(isset($insertData['supplier_id'])) {
-            $supplierName = $conn->select("tbl_supplier", 'name', "ID = " . $insertData['supplier_id'])->fetchAssoc()['name'] ?? null;
+            // $supplierName = $conn->select("tbl_supplier", 'name', "ID = " . $insertData['supplier_id'])->fetchAssoc()['name'] ?? null;
+            $supplierName = $conn->execute("SELECT sup.name 
+                FROM tbl_fsvp_suppliers fsup 
+                LEFT JOIN tbl_supplier sup ON fsup.supplier_id = sup.ID
+                WHERE fsup.id = ?
+            ", $insertData['supplier_id'])->fetchAssoc()['name'] ?? null;
         }
 
         $conn->commit();
@@ -659,7 +666,8 @@ if(isset($_GET['fetchImportersForTable'])) {
         FROM 
             tbl_fsvp_importers i 
             LEFT JOIN tbl_supplier imp ON imp.ID = i.importer_id
-            LEFT JOIN tbl_supplier sup ON sup.ID = i.supplier_id
+            LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.id = i.supplier_id
+            LEFT JOIN tbl_supplier sup ON sup.ID = fsup.supplier_id    
             LEFT JOIN tbl_fsvp_qi qi ON qi.id = i.fsvpqi_id
             LEFT JOIN tbl_hr_employee emp ON emp.ID = qi.employee_id
             LEFT JOIN (
@@ -875,17 +883,24 @@ if(isset($_POST['search-foreignMaterials'])) {
     $fsClause = ForeignSupplierSQLClause();
     $search = mysqli_real_escape_string($conn, $_POST['search-foreignMaterials']);
     
-    $result = $conn->execute("SELECT
-            MAT.ID AS id,
-            MAT.material_name,
-            MAT.description,
-            SUPP.name AS supplier_name,
-            SUPP.ID as supplier_id
-        FROM tbl_supplier SUPP
-        RIGHT JOIN tbl_supplier_material MAT
-            ON MAT.ID IN (SUPP.material)
-        WHERE
-            MAT.material_name LIKE '%$search%' AND SUPP.user_id = ?"
+    $sql = "SELECT
+                ipr.id,
+                MAT.material_name,
+                MAT.description,
+                SUPP.name AS supplier_name,
+                SUPP.ID as supplier_id
+            FROM tbl_fsvp_ingredients_product_register ipr 
+            LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.id = ipr.supplier_id
+            LEFT JOIN tbl_supplier SUPP ON SUPP.ID = fsup.supplier_id
+            LEFT JOIN tbl_supplier_material MAT ON MAT.ID = ipr.product_id
+            WHERE
+                MAT.material_name LIKE '%$search%'
+                AND ipr.user_id = ?
+                AND fsup.deleted_at IS NULL
+                AND ipr.deleted_at IS NULL
+    ";
+    
+    $result = $conn->execute($sql
         // $fsClause, 
         ,$user_id
     )->fetchAll();
@@ -935,26 +950,31 @@ if(isset($_GET['ingredientProductRegister'])) {
     }
 }
 
+// verified or imported products (with importer id)
 if(isset($_GET['ingredientProductsRegisterData'])) {
     $results = $conn->execute("SELECT 
-            ipr.id,
-            ipr.product_id,
+            iby.id,
+            -- ipr.product_id,
             mat.material_name AS product_name,
             mat.description,
-            ipr.brand_name,
-            ipr.ingredients_list,
-            ipr.intended_use,
-            sup.ID as importer_id,
+            iby.brand_name,
+            iby.ingredients_list,
+            iby.intended_use,
+            -- sup.ID as importer_id,
             sup.name AS importer_name
-        FROM tbl_fsvp_ingredients_product_register ipr
+        FROM tbl_fsvp_ipr_imported_by iby
+        LEFT JOIN tbl_fsvp_ingredients_product_register ipr ON ipr.id = iby.product_id
         LEFT JOIN tbl_supplier_material mat ON mat.ID = ipr.product_id
         LEFT JOIN tbl_fsvp_ipr_imported_by imb ON ipr.id = imb.product_id
         LEFT JOIN tbl_fsvp_importers imp ON imp.id = imb.importer_id
         LEFT JOIN tbl_supplier sup ON sup.ID = imp.importer_id
         LEFT JOIN tbl_fsvp_suppliers fsup ON ipr.supplier_id = fsup.id
-        WHERE ipr.user_id = ? AND ipr.deleted_at IS NULL 
+        WHERE iby.user_id = ? 
+            AND iby.deleted_at IS NULL 
+            AND ipr.deleted_at IS NULL 
+            AND imp.deleted_at IS NULL 
             AND fsup.deleted_at IS NULL
-        ORDER BY ipr.created_at DESC
+        ORDER BY iby.created_at DESC
     ", $user_id)->fetchAll(function($data) {
         if(!empty($data["importer_id"])) {
             $data['rhash'] = md5($data['id']);
@@ -964,5 +984,6 @@ if(isset($_GET['ingredientProductsRegisterData'])) {
 
     send_response([
         'results' => $results,
+        'importers' => getImportersByUser($conn, $user_id),
     ]);
 }

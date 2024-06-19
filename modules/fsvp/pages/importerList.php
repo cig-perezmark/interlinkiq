@@ -48,6 +48,7 @@ function showHint($hint) {
     <thead>
         <tr>
             <th>Importer Name</th>
+            <th>Supplier Name</th>
             <th>DUNS No.</th>
             <th>FDA Registration No.</th>
             <th>FSVPQI</th>

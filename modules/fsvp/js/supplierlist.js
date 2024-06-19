@@ -589,7 +589,7 @@ jQuery(function() {
         $('#materialListHelpBlock').addClass('d-none');
 
         $.ajax({
-            url: baseUrl + "getProductsBySupplier=" + $(option).val(),
+            url: baseUrl + "raw=true&getProductsByForeignSupplier=" + $(option).val(),
             type: "GET",
             contentType: false,
             processData: false,

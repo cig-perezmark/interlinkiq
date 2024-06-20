@@ -1020,6 +1020,7 @@ if(isset($_GET['ingredientProductRegister'])) {
 if(isset($_GET['ingredientProductsRegisterData'])) {
     $results = $conn->execute("SELECT 
             iby.id,
+            MD5(iby.id) as rhash,
             ipr.id AS ipr_id, -- ingredient product registry record id
             mat.material_name AS product_name,
             mat.description,
@@ -1040,12 +1041,7 @@ if(isset($_GET['ingredientProductsRegisterData'])) {
             AND fsup.deleted_at IS NULL
             AND imp.deleted_at IS NULL
         ORDER BY iby.created_at DESC
-    ", $user_id)->fetchAll(function($data) {
-        if(!empty($data["importer_id"])) {
-            $data['rhash'] = md5($data['id']);
-        }
-        return $data;
-    });
+    ", $user_id)->fetchAll();
 
     send_response([
         'results' => $results,

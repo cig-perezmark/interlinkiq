@@ -1183,3 +1183,34 @@ if(isset($_GET['activitiesWorksheetsInitialData'])) {
         'results' => $results,
     ]);
 }
+
+if(isset($_GET['fetchImporterBySupplier'])) {
+    try {
+        $supplierId = $_GET['fetchImporterBySupplier'] ?? null;
+
+        if(empty($supplierId)) {
+            throw new Exception("No supplier data has been acquired.");
+        }
+
+        $mySuppliers = $conn->execute("SELECT imp.id, sup.name, sup.address
+            FROM tbl_fsvp_importers imp 
+            LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.id = imp.supplier_id
+            LEFT JOIN tbl_supplier sup ON imp.importer_id = sup.ID
+            WHERE imp.user_id = ? 
+                AND imp.deleted_at IS NULL
+                AND fsup.deleted_at IS NULL
+                AND imp.supplier_id = ?
+        ", $user_id, $supplierId)->fetchAll(function($data) {
+            $data['address'] = formatSupplierAddress($data['address']);
+            return $data;
+        });
+
+        send_response([
+            'result' => $mySuppliers,
+        ]);
+    } catch(Throwable $e) {
+        send_response([
+            'error' => $e->getMessage(), 
+        ], 500);
+    }
+}

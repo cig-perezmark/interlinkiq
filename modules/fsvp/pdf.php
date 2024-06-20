@@ -2,7 +2,7 @@
 
 include_once __DIR__ .'/utils.php';
 
-function txt($value, $default = 'None') {
+function txt($value, $default = 'N/A') {
     return empty($value) ? $default : $value;
 }
 

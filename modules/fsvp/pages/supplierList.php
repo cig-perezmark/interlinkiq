@@ -148,9 +148,9 @@ th {
                     </div>
                     <div class="col-md-6">
                         <div class="form-group" data-efm="eval">
-                            <label for="importerSelect">Importer <span class="required">*</span></label>
+                            <label for="importerSelect">Importer Name <span class="required">*</span></label>
                             <select name="importer" id="importerSelect">
-                                <option value="" selected disabled>Select importer</option>
+                                <option value="" selected disabled>Select an importer</option>
                                 <?php
                                     $suppliers = getImportersByUser($conn, $switch_user_id);
                                     foreach($suppliers as $supplier) {

@@ -700,6 +700,42 @@ function showFileInfo(fileInfo) {
     }
 }
 
+function repopulateImporterSelect(supplierId) {
+    $.ajax({
+        url: Init.baseUrl + "fetchImporterBySupplier=" + supplierId,
+        type: "GET",
+        contentType: false,
+        processData: false,
+        success: function({result}) {
+            if(result) {
+                const options = [{
+                    label: result.length ? 'Select an importer' : 'No data available.',
+                    title: result.length ? 'Select an importer' : 'No data available.',
+                    value: '',
+                    selected: true,
+                    disabled: true,
+                }];
+
+                Object.values(result).forEach((d) => {
+                    options.push({
+                        label: d.name,
+                        title: d.namme,
+                        value: d.id,
+                        attributes: {
+                            address: d.address
+                        }
+                    });
+                });    
+
+                $('#importerSelect').multiselect('dataprovider', options);
+            }
+        },
+        error: function() {
+            bootstrapGrowl('Error fetching data.');
+        },
+    });
+}
+
 // opening the evaluation form
 function openEvaluationForm(data) {
     if(!data) {
@@ -710,6 +746,9 @@ function openEvaluationForm(data) {
     $('#effsaddress').val(data.address || '')
     $('#effsname').val(data.name || '')
     $('#evaluationForm input[name="supplier"]').val(data.id || '');
+
+    // set importer dropdown items to importers under the selected supplier
+    repopulateImporterSelect(data.id);
     
     $('#modalEvaluationForm').modal('show');
 }

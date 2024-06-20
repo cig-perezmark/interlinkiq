@@ -1037,6 +1037,133 @@ if(isset($_GET['ingredientProductsRegisterData'])) {
     ]);
 }
 
+// if(isset($_GET['fetchImporterSuppliers'])) {
+//     $results = $conn->execute("SELECT 
+//             *
+//         FROM 
+//     ", $user_id)->fetchAll(function($data) {});
+// }
+
 if(isset($_GET['newActivityWorksheet'])) {
-    send_response($_POST);
+    try {
+        $importerId = $_POST['importer_id'] ?? null;
+        $supplierId = $_POST['supplier_id'] ?? null;
+        $fsvpqiId = $_POST['fsvpqi_id'] ?? null;
+
+        if(empty($importerId) || empty($supplierId) || empty($fsvpqiId)) {
+            throw new Exception("Error: Incomplete data provided.");
+        }
+
+        $conn->begin_transaction();
+
+        $isValid = $conn->execute("SELECT IF(COUNT(*) = 1, 'true', 'false') AS isValid
+            FROM tbl_fsvp_importers 
+            WHERE supplier_id = ?
+                AND id = ?
+                AND fsvpqi_id = ?
+                AND user_id = ? 
+                AND deleted_at IS NULL", 
+            $supplierId, $importerId, $fsvpqiId, $user_id
+        )->fetchAssoc()['isValid'] == 'true';
+
+        if(!$isValid) {
+            throw new Exception('Incorrect details.');
+        }
+        
+        $sql = "INSERT INTO tbl_fsvp_activities_worksheets (
+                user_id,
+                portal_user,
+                importer_id,
+                fsvpqi_id,
+                supplier_id,
+                verification_date,
+                supplier_evaluation_date,
+                approval_date,
+                fdfsc,
+                pdipm,
+                fshc,
+                dfsc,
+                vaf,
+                justification_vaf,
+                verification_records,
+                assessment_results,
+                corrective_actions,
+                reevaluation_date
+            ) VALUE (" . (implode(',', array_fill(0, 18, '?'))) . ")
+        ";
+        $values = [
+            $user_id,
+            $portal_user,
+            $importerId,
+            $fsvpqiId,
+            $supplierId,
+            emptyIsNull($_POST['verification_date']),
+            emptyIsNull($_POST['supplier_evaluation_date']),
+            emptyIsNull($_POST['approval_date']),
+            emptyIsNull($_POST['fdfsc']),
+            emptyIsNull($_POST['pdipm']),
+            emptyIsNull($_POST['fshc']),
+            emptyIsNull($_POST['dfsc']),
+            emptyIsNull($_POST['vaf']),
+            emptyIsNull($_POST['justification_vaf']),
+            emptyIsNull($_POST['verification_records']),
+            emptyIsNull($_POST['assessment_results']),
+            emptyIsNull($_POST['corrective_actions']),
+            emptyIsNull($_POST['reevaluation_date']),
+        ];
+
+        $conn->execute($sql, $values);
+        $id = $conn->getInsertId();
+        
+        $conn->commit();
+        send_response([
+            'message' => 'Recorded successfully!',
+            'id' => $id,
+        ]);
+    } catch(Throwable $e) {
+        $conn->rollback();
+        send_response([
+            'error'=> $e->getMessage(),
+        ], 500);
+    }    
+}
+
+if(isset($_GET['activitiesWorksheetsInitialData'])) {
+    $results = $conn->execute("SELECT 
+            aw.id,
+            MD5(aw.id) AS rhash,
+            imp.name AS importer_name,
+            sup.name AS supplier_name,
+            CONCAT(TRIM(emp.first_name), ' ', TRIM(emp.last_name)) AS qi_name,
+            aw.approval_date,
+            aw.reevaluation_date AS evaluation_date,
+            GROUP_CONCAT(sm.material_name SEPARATOR ', ') AS products
+        FROM tbl_fsvp_activities_worksheets aw
+
+        -- fsvp tables
+        LEFT JOIN tbl_fsvp_importers fimp ON fimp.id = aw.importer_id
+        LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.id = aw.supplier_id
+        LEFT JOIN tbl_fsvp_qi fqi ON fqi.id = aw.fsvpqi_id
+
+        -- products
+        LEFT JOIN tbl_fsvp_ipr_imported_by iby ON aw.importer_id = iby.importer_id
+        LEFT JOIN tbl_fsvp_ingredients_product_register ipr ON ipr.id = iby.product_id
+        LEFT JOIN tbl_supplier_material sm ON sm.ID = ipr.product_id
+
+        -- references
+        LEFT JOIN tbl_supplier imp ON imp.ID = fimp.importer_id
+        LEFT JOIN tbl_supplier sup ON sup.ID = fsup.supplier_id
+        LEFT JOIN tbl_hr_employee emp ON emp.ID = fqi.employee_id
+
+        -- conditions
+        WHERE aw.user_id = ?
+            AND aw.deleted_at IS NULL
+            
+        -- other clauses
+        GROUP BY iby.importer_id
+    ", $user_id)->fetchAll();
+
+    send_response([
+        'results' => $results,
+    ]);
 }

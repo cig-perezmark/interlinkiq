@@ -168,9 +168,10 @@ function fetchFSVPQIData(dataSet, table) {
 function fileCellHtml(fileData, id) {
     let fancyBoxAttr = '';
     if(fileData) {
-        fancyBoxAttr = `data-fancybox data-src="${fileData.src}"`;
-        if(!fileData.src.search('fancybox_type=no_iframe')) {
-            fancyBoxAttr += `data-type="iframe"`;
+        const src = fileData.src ?? fileData.filename;
+        fancyBoxAttr = `data-fancybox data-src="${src}"`;
+        if(!src.search('fancybox_type=no_iframe')) {
+            fancyBoxAttr += `  data-type="iframe"`;
         }
     }
     

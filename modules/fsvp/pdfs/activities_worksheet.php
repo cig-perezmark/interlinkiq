@@ -10,9 +10,7 @@ $data = $conn->execute("SELECT
         aw.*,
 
         CONCAT(TRIM(emp.first_name), ' ', TRIM(emp.last_name)) AS qi_approval,
-        aw.approval_date,
-        aw.reevaluation_date AS evaluation_date,
-        GROUP_CONCAT(sm.material_name) AS products
+        GROUP_CONCAT(sm.material_name SEPARATOR ', ') AS products
     FROM tbl_fsvp_activities_worksheets aw
 
     -- fsvp tables
@@ -105,82 +103,82 @@ $html = $css . '
     <table>
         <tr>
             <td style="width:25%;font-weight:bold;">Importer Name:</td>
-            <td style="width:75%"></td>
+            <td style="width:75%">'.txt($data['importer_name']).'</td>
         </tr>
         <tr>
             <td style="font-weight:bold;">Verification Date:</td>
-            <td></td>
+            <td>'.txt($data['verification_date']).'</td>
         </tr>
         <tr>
             <td style="font-weight:bold;">Supplier Evaluation Date:</td>
-            <td></td>
+            <td>'.txt($data['supplier_evaluatiton_date']).'</td>
         </tr>
         <tr>
             <td style="font-weight:bold;">Address:</td>
-            <td></td>
+            <td>'.txt($data['importer_address']).'</td>
         </tr>
         <tr>
             <td style="font-weight:bold;">QI Approval:</td>
-            <td></td>
+            <td>'.txt($data['qi_approval']).'</td>
         </tr>
         <tr>
             <td style="font-weight:bold;">Approval Date:</td>
-            <td></td>
+            <td>'.txt($data['approval_date']).'</td>
         </tr>
     </table>
     <p></p>
     <table>
         <tr>
             <td style="width:25%;font-weight:bold;">Foreign Supplier Name:</td>
-            <td style="width:75%"></td>
+            <td style="width:75%">'.txt($data['supplier_name']).'</td>
         </tr>
         <tr>
             <td style="font-weight:bold;">Foreign Supplier Address:</td>
-            <td></td>
+            <td>'.txt($data['supplier_address']).'</td>
         </tr>
         <tr>
             <td style="font-weight:bold;">Food Product Imported:</td>
-            <td></td>
+            <td>'.txt($data['products']).'</td>
         </tr>
         <tr>
             <td style="font-weight:bold;">Food Product Description(s), including Important Food Safety Characteristics:</td>
-            <td></td>
+            <td>'.txt($data['fdfsc']).'</td>
         </tr>
         <tr>
             <td style="font-weight:bold;">Process Description (Ingredients/Packaging Materials):</td>
-            <td></td>
+            <td>'.txt($data['pdipm']).'</td>
         </tr>
         <tr>
             <td style="font-weight:bold;">Food Safety Hazard(s) Controlled by Foreign Supplier:</td>
-            <td></td>
+            <td>'.txt($data['fshc']).'</td>
         </tr>
         <tr>
             <td style="font-weight:bold;">Description of Foreign Supplier Control(s):</td>
-            <td></td>
+            <td>'.txt($data['dfsc']).'</td>
         </tr>
         <tr>
             <td style="font-weight:bold;">Verification Activity(ies) and Frequency:</td>
-            <td></td>
+            <td>'.txt($data['vaf']).'</td>
         </tr>
         <tr>
             <td style="font-weight:bold;">Justification for Verification Activity(ies) and Frequency:</td>
-            <td></td>
+            <td>'.txt($data['justification_vaf']).'</td>
         </tr>
         <tr>
             <td style="font-weight:bold;">Verification Records (i.e audit summaries, test results):</td>
-            <td></td>
+            <td>'.txt($data['verification_records']).'</td>
         </tr>
         <tr>
             <td style="font-weight:bold;">Assessment of Results of Verification Activity(ies):</td>
-            <td></td>
+            <td>'.txt($data['assessment_results']).'</td>
         </tr>
         <tr>
             <td style="font-weight:bold;">Corrective Action(s), if needed:</td>
-            <td></td>
+            <td>'.txt($data['corrective_actions']).'</td>
         </tr>
         <tr>
             <td style="font-weight:bold;">Re-evaluation Date:</td>
-            <td></td>
+            <td>'.txt($data['reevaluation_date']).'</td>
         </tr>
     </table>
     <p></p>Comments:

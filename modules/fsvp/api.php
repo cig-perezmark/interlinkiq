@@ -545,9 +545,8 @@ if(isset($_GET['fetchFSVPQI']) ) {
 
 // populating fsvpqis to dropdowns outside the fsvpqi page
 if(isset($_GET['myFSVPQIInRecords']) ) {
-    $result = $conn->execute("SELECT q.id, CONCAT(TRIM(e.first_name), ' ', TRIM(e.last_name)) AS name, email FROM tbl_fsvp_qi q JOIN tbl_hr_employee e ON q.employee_id = e.ID WHERE q.user_id = ? AND q.deleted_at IS NULL", $user_id)->fetchAll();
     send_response([
-        'result' => $result,
+        'result' => myFSVPQIs($conn, $user_id),
     ]);
 }
 
@@ -1036,4 +1035,8 @@ if(isset($_GET['ingredientProductsRegisterData'])) {
         'results' => $results,
         'importers' => getImportersByUser($conn, $user_id),
     ]);
+}
+
+if(isset($_GET['newActivityWorksheet'])) {
+    send_response($_POST);
 }

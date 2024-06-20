@@ -8,9 +8,10 @@ function ForeignSupplierSQLClause($firstAnd = true) {
 }
 
 function getSuppliersByUser($conn, $userId) {
-    return $conn->execute("SELECT ID as id, name, address 
-        FROM tbl_supplier 
-        WHERE user_id = ? AND status = 1 AND page = 1
+    return $conn->execute("SELECT sup.ID as id, sup.name, sup.address 
+        FROM tbl_fsvp_suppliers fsup
+        LEFT JOIN tbl_supplier sup ON sup.ID = fsup.supplier_id 
+        WHERE fsup.user_id = ? AND sup.status = 1 AND sup.page = 1 AND fsup.deleted_at IS NULL
     ", $userId)
         ->fetchAll(function($d) {
             $d['address'] = formatSupplierAddress($d['address']);
@@ -75,6 +76,10 @@ function getImportersByUser($conn, $userId) {
         $data['address'] = formatSupplierAddress($data['address']);
         return $data;
     });
+}
+
+function myFSVPQIs($conn, $userId) {
+    return $conn->execute("SELECT q.id, CONCAT(TRIM(e.first_name), ' ', TRIM(e.last_name)) AS name, email FROM tbl_fsvp_qi q JOIN tbl_hr_employee e ON q.employee_id = e.ID WHERE q.user_id = ? AND q.deleted_at IS NULL", $userId)->fetchAll();
 }
 
 function getRealFileName($fileName) {

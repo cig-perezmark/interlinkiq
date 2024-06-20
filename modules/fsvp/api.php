@@ -1134,7 +1134,6 @@ if(isset($_GET['newActivityWorksheet'])) {
         $conn->commit();
         send_response([
             'message' => 'Recorded successfully!',
-            'id' => $id,
         ]);
     } catch(Throwable $e) {
         $conn->rollback();
@@ -1176,7 +1175,7 @@ if(isset($_GET['activitiesWorksheetsInitialData'])) {
             AND aw.deleted_at IS NULL
             
         -- other clauses
-        GROUP BY iby.importer_id
+        GROUP BY aw.id
     ", $user_id)->fetchAll();
 
     send_response([
@@ -1211,6 +1210,42 @@ if(isset($_GET['fetchImporterBySupplier'])) {
     } catch(Throwable $e) {
         send_response([
             'error' => $e->getMessage(), 
+        ], 500);
+    }
+}
+
+if(isset($_GET['fetchProductsBySupplierAndImporter'])) {
+    try {
+        $supplierId = emptyIsNull($_POST['supplier']);
+        $importerId = emptyIsNull($_POST['importer']);
+    
+        if(empty($supplierId)) {
+            throw new Exception("You must select a foreign supplier.");
+        }
+        
+        if(empty($importerId) || !$importerId) {
+            throw new Exception("You must select an importer.");
+        }
+        
+        $results = $conn->execute("SELECT
+                GROUP_CONCAT(mat.material_name SEPARATOR ', ') AS products
+            FROM tbl_fsvp_ipr_imported_by iby
+            LEFT JOIN tbl_fsvp_ingredients_product_register ipr ON ipr.id = iby.product_id
+            LEFT JOIN tbl_supplier_material mat ON mat.ID = ipr.product_id
+            WHERE iby.importer_id = ?
+                AND ipr.supplier_id = ?
+                AND iby.user_id = ?
+                AND iby.deleted_at IS NULL
+            GROUP BY iby.importer_id
+        ", $importerId, $supplierId, $user_id)->fetchAssoc();
+
+        send_response([
+            'results' => $results['products']
+        ]);
+            
+    } catch(Throwable $e) {
+        send_response([
+            'error' => $e->getMessage(),
         ], 500);
     }
 }

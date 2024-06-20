@@ -1,5 +1,7 @@
 <?php
 
+
+
 include_once __DIR__ ."/../../alt-setup/setup.php";
 date_default_timezone_set('America/Chicago');
 
@@ -8,7 +10,7 @@ function ForeignSupplierSQLClause($firstAnd = true) {
 }
 
 function getSuppliersByUser($conn, $userId) {
-    return $conn->execute("SELECT sup.ID as id, sup.name, sup.address 
+    return $conn->execute("SELECT fsup.id, sup.name, sup.address 
         FROM tbl_fsvp_suppliers fsup
         LEFT JOIN tbl_supplier sup ON sup.ID = fsup.supplier_id 
         WHERE fsup.user_id = ? AND sup.status = 1 AND sup.page = 1 AND fsup.deleted_at IS NULL

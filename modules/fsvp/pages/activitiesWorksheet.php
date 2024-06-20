@@ -73,7 +73,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Address <?= autofill() ?></label>
-                            <textarea class="form-control" placeholder="Select an importer to fill this field" readonly></textarea>
+                            <textarea class="form-control" placeholder="Select an importer to fill this field" id="awImporterAddress" readonly></textarea>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -136,7 +136,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Address <?= autofill() ?></label>
-                            <textarea class="form-control" placeholder="Select an importer to fill this field" readonly></textarea>
+                            <textarea class="form-control" placeholder="Select an importer to fill this field" id="awForeignSupplierAddress" readonly></textarea>
                         </div>
                     </div>
                 </div>

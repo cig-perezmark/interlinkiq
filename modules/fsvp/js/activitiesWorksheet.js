@@ -1,12 +1,27 @@
 jQuery(function() {
     const datatableAW = Init.dataTable($('#tableActivitiesWorksheet'));
-    const supplierSelect = Init.multiSelect($('#awForeignSupplierSelect'));
+    const supplierSelect = Init.multiSelect($('#awForeignSupplierSelect'), {
+        onChange: function(option) {
+            const address = $('#awForeignSupplierSelect option:selected').attr('data-address') || '';
+            $('#awForeignSupplierAddress').val(address);
+
+            const supplierId = $(option).val();
+            const importerId = $('#awImporterSelect').val() || '';
+
+            populateFoodProducts(supplierId, importerId);
+        }
+    });
     const fsvpqiSelect = Init.multiSelect($('#awFSVPQISelect'));
     const importerSelect = Init.multiSelect($('#awImporterSelect'), {
         onChange: function(option) {
             const id = $(option).val();
+            const address = $('#awImporterSelect option:selected').attr('data-address') || '';
+            $('#awImporterAddress').val(address);
 
-            console.log(id)
+            supplierSelect.reset();
+            fsvpqiSelect.reset();
+            $('#awForeignSupplierAddress').val('');
+            $('#awProductsImported').val('');
         }
     });
 
@@ -22,7 +37,6 @@ jQuery(function() {
         const data = new FormData(form);
         let url = Init.baseUrl + 'newActivityWorksheet';
 
-
         $.ajax({
             url,
             type: "POST",
@@ -30,16 +44,15 @@ jQuery(function() {
             processData: false,
             data,
             success: function({data, message}) {
+                fetchInitialData(ActivitiesWorksheetData, datatableAW);
 
-                // $('#modalIngProdReg').modal('hide');
-
-                // // reset the form
-                // $(form.product_id).val('').trigger('change');
-                // form.reset();
-                // fetchInitialData(ProductRegisterData, ingredientsTable, ImportersSelectionData);
-
-                // regFormAlert.isShowing() && regFormAlert.hide();
-                // bootstrapGrowl(message || 'Successfully saved!');
+                form.reset();
+                importerSelect.reset();
+                supplierSelect.reset();
+                fsvpqiSelect.reset();
+                
+                $('#modalActWorksheet').modal('hide');
+                bootstrapGrowl(message || 'Successfully saved!');
             },
             error: function({responseJSON}) {
                 bootstrapGrowl(responseJSON.error || 'Error!', 'danger');
@@ -121,4 +134,32 @@ function renderDTRow(dataset, rowData, table, mode = 'add') {
 function showLoadingToolbar(mode = true) {
     $('.tab-toolbar #newAWBtn')[mode ? 'hide' : 'show']();
     $('.tab-toolbar .stat-loading')[!mode ? 'hide' : 'show']();
-} 
+}
+
+function populateFoodProducts(supplierId, importerId) {
+    const foodImportedSelect = $('#awProductsImported');
+    foodImportedSelect.val('');
+    
+    const data = new FormData();
+    data.append('supplier', supplierId);
+    data.append('importer', importerId);
+
+    $.ajax({
+        url: Init.baseUrl + "fetchProductsBySupplierAndImporter",
+        type: "POST",
+        contentType: false,
+        processData: false,
+        data,
+        success: function({results}) {
+            if(results) {
+                foodImportedSelect.val(results);
+            } else {
+                foodImportedSelect.val('Unable to find imported products. Kindly check if the selected importer is currently linked to the foreign supplier.');
+            }
+        },
+        error: function() {
+            foodImportedSelect.val('');
+            bootstrapGrowl('Error fetching records!', 'error');
+        },
+    });
+}

@@ -15,7 +15,7 @@ $(function() {
                 className: "dt-right",
             },{
                 className: 'text-center',
-                targets: [3, 5]
+                targets: [3,4,5,6]
             }, {
                 visible: false,
                 targets: [2,3]
@@ -312,7 +312,10 @@ function renderDTRow(importersData, d, table, method = 'add') {
         CBPButtons,
         `
             <div class="d-flex center">
-                <a href="${(Init.URL || 'fsvp') + '?pdf=importer_information&r=' + d.rhash}" class="btn green btn-circle btn-sm" target="_blank">View</a>
+                <a href="${(Init.URL || 'fsvp') + '?pdf=importer_information&r=' + d.rhash}" class="btn dark btn-circle btn-sm" target="_blank">
+                    <i class="fa fa-file-pdf-o hide"></i>
+                    PDF
+                </a>
             </div>
         `,
     ];

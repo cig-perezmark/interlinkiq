@@ -53,7 +53,7 @@ function showHint($hint) {
             <th>FDA Registration No.</th>
             <th>FSVPQI</th>
             <th>Evaluation Date</th>
-            <th>FSVP CBP Filing Form</th>
+            <th>CBP Filing Form</th>
             <th>Actions</th>
         </tr>
     </thead>

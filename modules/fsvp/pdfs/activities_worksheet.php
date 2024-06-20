@@ -40,62 +40,10 @@ $data = $conn->execute("SELECT
     return $d;
 });
 
-if(empty($data)) {
-    die('Record not found.');
-}
-
-// header('Content-Type: application/json');
-// echo json_encode($data);
-// exit();
-
-require_once __DIR__ . '/../../../assets/TCPDF/tcpdf.php';
+debugger($data);
 
 $title = 'FOREIGN SUPPLIER VERIFICATION ACTIVITY(IES) WORKSHEET';
-$css = '
-    <style>
-        table { width: 100%; padding: 5px; }
-        td, th { border: 1px solid black; }
-    </style>
-';
-
-
-// custom TCPDF class
-class TCPDF2 extends TCPDF {
-    public function __construct() {
-        parent::__construct('P', 'pt', 'Letter');
-    }
-    // auto cleaning 
-    public function __destruct() {
-        $this->endPage();
-        $this->close();
-        parent::__destruct();
-    }
-    // override header 
-    public function Header() {
-        // global $haccpResource, $enterp_name, $enterp_address, $supersedes;
-        // $pageNo = $this->getAliasNumPage();
-        // $totalPage = $this->getAliasNbPages();
-        // $this->SetY(20);
-        $html = '
-            <table width="100%">
-                <tr>
-                    <td style="color:gray;">Header</td>
-                </tr>
-            </table>
-        ';
-        $this->writeHTML($html);
-    }
-}
-
-$pdf = new TCPDF2();
-$pdf->SetCreator('Consultare Inc.');
-$pdf->SetAuthor('InterlinkIQ.com');
 $pdf->SetTitle($title);
-$pdf->SetSubject('Foreign Supplier Verification Program Evaluation');
-$pdf->SetPrintHeader(true);
-// $pdf->SetMargins(MARGIN_LEFT, MARGIN_TOP, MARGIN_RIGHT, MARGIN_BOTTOM);
-$pdf->SetFont('helvetica', '', 10);
-// $pdf->setAutoPageBreak(true, MARGIN_BOTTOM);
 
 $pdf->AddPage('L');
 $html = $css . '

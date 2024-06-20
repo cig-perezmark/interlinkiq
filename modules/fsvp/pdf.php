@@ -46,6 +46,15 @@ if(isset($_GET['pdf'])) {
             
             include_once __DIR__ .'/pdfs/ingredient_product_register.php';
             break;
+        case 'activities-worksheet':
+            $recordId = $_GET['r'] ?? null;
+
+            if(empty($recordId)) {
+                die('Record not found.');
+            }
+            
+            include_once __DIR__ .'/pdfs/activities_worksheet.php';
+            break;
         default:
             echo 'default';
             break;

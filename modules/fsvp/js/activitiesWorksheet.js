@@ -95,7 +95,7 @@ function renderDTRow(dataset, rowData, table, mode = 'add') {
                 <div class="btn-group btn-group-circle btn-group-sm btn-group-solid hide">
                     <a href="#" class="btn blue btn-circle btn-sm btn-outline" data-editipr="${rowData.id}">Edit</a>
                     </div>
-                    <a href="${(Init.URL || 'fsvp') + '?pdf=ipr&r=' + rowData.rhash}" class="btn dark btn-circle btn-sm" target="_blank" title="PDF Document">PDF</a>
+                    <a href="${(Init.URL || 'fsvp') + '?pdf=activities-worksheet&r=' + rowData.rhash}" class="btn dark btn-circle btn-sm" target="_blank" title="PDF Document">PDF</a>
             </div>
         `;
     } else {

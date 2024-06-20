@@ -251,15 +251,18 @@ function getEvaluationData($conn, $evalId, $recordId = null) {
                 supp.address AS supplier_address,
                 imp.name AS importer_name, 
                 imp.address AS importer_address,
-                fsupp.food_imported
+                GROUP_CONCAT(sm.ID) AS food_imported
             FROM tbl_fsvp_evaluations eval
             LEFT JOIN tbl_fsvp_evaluation_records rec ON eval.id = rec.evaluation_id
             LEFT JOIN tbl_fsvp_suppliers fsupp ON eval.supplier_id = fsupp.id
             LEFT JOIN tbl_fsvp_importers fimp ON eval.importer_id = fimp.id
+            LEFT JOIN tbl_fsvp_ingredients_product_register ipr ON ipr.supplier_id = fsupp.id
             -- tbl_suppliers (original)
             LEFT JOIN tbl_supplier supp ON supp.ID = fsupp.supplier_id
             LEFT JOIN tbl_supplier imp ON imp.ID = fimp.importer_id 
+            LEFT JOIN tbl_supplier_material sm ON sm.ID = ipr.product_id
                 WHERE $cond AND eval.deleted_at IS NULL
+            GROUP BY eval.id
             ORDER BY rec.pre_record_id DESC, rec.evaluation_date DESC, rec.created_at DESC LIMIT 1",
             $params 
         )->fetchAssoc(function($d) {
@@ -340,9 +343,8 @@ function updateCurrentEvalStatus($conn, $due, $id) {
 
 function getSupplierFoodImported($conn, $foodIds) {
     // not: empty array  or string
-    if(!empty($foodIds) && count(($foodIds = json_decode($foodIds))) > 0) {
-        $ids = implode(',', $foodIds);
-        return $conn->select("tbl_supplier_material", "material_name AS name, description", "ID in ($ids) AND active = 1")->fetchAll();
+    if(!empty($foodIds)) {
+        return $conn->select("tbl_supplier_material", "material_name AS name, description", "ID in ($foodIds) AND active = 1")->fetchAll();
     }
     
     return null;

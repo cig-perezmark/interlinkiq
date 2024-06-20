@@ -307,7 +307,7 @@ function renderDTRow(importersData, d, table, method = 'add') {
         d.supplier.name || '',
         d.duns_no,
         d.fda_registration,
-        `<a href="#" title="View details">${d.fsvpqi.name}</a>`,
+        d.fsvpqi.name,
         d.evaluation_date,
         CBPButtons,
         `

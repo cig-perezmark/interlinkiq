@@ -559,11 +559,27 @@ if(isset($_GET['newImporter']) ) {
             throw new Exception('Incomplete fields.');
         }
 
+        $supplierId = $_POST['supplier'] ?? null;
+        $importerId = $_POST['importer'];
+
+        $isExisting = $conn->execute("SELECT 
+                IF(COUNT(*) > 0, 'true', 'false') AS hasRecords 
+            FROM tbl_fsvp_importers
+            WHERE user_id =  ?
+                AND supplier_id = ? 
+                AND importer_id = ?
+                AND deleted_at IS NULL
+        ", $user_id, $supplierId, $importerId)->fetchAssoc()['hasRecords'] == 'true';
+
+        if($isExisting) {
+            throw new Exception('Error: Importer and foreign supplier data already exist.');
+        }
+
         $insertData = [
             'user_id' => $user_id,
             'portal_user' => $portal_user,
-            'importer_id' => $_POST['importer'],
-            'supplier_id' => $_POST['supplier'] ?? null,
+            'importer_id' => $importerId,
+            'supplier_id' => $supplierId,
             'fsvpqi_id' =>  $_POST['fsvpqi'],
             'evaluation_date' =>  $_POST['evaluation_date'],
             'duns_no' =>  $_POST['duns_no'],

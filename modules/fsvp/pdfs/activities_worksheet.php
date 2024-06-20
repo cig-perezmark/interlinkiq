@@ -33,7 +33,7 @@ $data = $conn->execute("SELECT
         AND aw.deleted_at IS NULL
         
     -- other clauses
-    GROUP BY iby.importer_id
+    GROUP BY aw.id
 ", $recordId)->fetchAssoc(function($d) {
     $d['importer_address' ] = formatSupplierAddress($d['importer_address']);
     $d['supplier_address' ] = formatSupplierAddress($d['supplier_address']);
@@ -111,7 +111,7 @@ $html = $css . '
         </tr>
         <tr>
             <td style="font-weight:bold;">Supplier Evaluation Date:</td>
-            <td>'.txt($data['supplier_evaluatiton_date']).'</td>
+            <td>'.txt($data['supplier_evaluation_date']).'</td>
         </tr>
         <tr>
             <td style="font-weight:bold;">Address:</td>

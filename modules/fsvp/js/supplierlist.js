@@ -48,7 +48,6 @@ jQuery(function() {
         resetEvaluationForm();
         importerSelect.reset();
 
-        prevEvalId = this.dataset.record || '';
         editDetailsTRIndex = this.closest('tr');
         $('#evaluationForm [name="eval"]').val(data.id);
 
@@ -81,7 +80,6 @@ jQuery(function() {
         $('#efImporterAddress').val(data.importer_address || '');
         $('#evaluationForm input[name="supplier"]').val(data.supplier_id || '');
         $('#evaluationForm input[name="importer"]').val(data.importer_id || '');
-        // $('#evaluationForm input[name="rowdata"]').val(data.id || '');
         
         $('#modalEvaluationForm').modal('show');
     });
@@ -434,8 +432,8 @@ jQuery(function() {
             data,
             success: function({data, message}) {
                 if(data) {
-                    suppliersData[form.rowdata.value] && (suppliersData[form.rowdata.value].evaluation = data);
-                    renderDTRow(suppliersData[form.rowdata.value], 'data').draw();
+                    suppliersData[form.eval.value] && (suppliersData[form.eval.value].evaluation = data);
+                    renderDTRow(suppliersData[form.eval.value], 'data').draw();
                 }
 
                 $('#modalEvaluationForm').modal('hide');

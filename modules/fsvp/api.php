@@ -758,10 +758,6 @@ if(isset($_GET['newSupplierEvaluation'])) {
         $conn->begin_transaction();
         $evalId = $_POST['eval'] ?? null;
 
-        if(empty($_POST['importer'])) {
-            throw new Exception('Importer is required.');
-        }
-
         if(empty($_POST['supplier'])) {
             throw new Exception('No foreign supplier is acquired.');
         }
@@ -771,26 +767,32 @@ if(isset($_GET['newSupplierEvaluation'])) {
         }
 
         $params = [
-            'user_id'                       => $user_id,
-            'portal_user'                   => $portal_user,
-            'description'                   => emptyIsNull($_POST['description']),
-            'evaluation'                    => emptyIsNull($_POST['evaluation']),
-            'info_related'                  => emptyIsNull($_POST['info_related']),
-            'rejection_date'                => emptyIsNull($_POST['rejection_date']),
-            'approval_date'                 => emptyIsNull($_POST['approval_date']),
-            'assessment'                    => emptyIsNull($_POST['assessment']),
+            $portal_user,
+            emptyIsNull($_POST['description']),
+            emptyIsNull($_POST['evaluation']),
+            emptyIsNull($_POST['info_related']),
+            emptyIsNull($_POST['rejection_date']),
+            emptyIsNull($_POST['approval_date']),
+            emptyIsNull($_POST['assessment']),
+            $evalId,
+            $user_id,
         ];
 
         $conn->execute("UPDATE tbl_fsvp_evaluations SET 
                 portal_user = ?,
-            WHERE id = ?
+                description = ?,
+                evaluation = ?,
+                info_related = ?,
+                rejection_date = ?,
+                approval_date = ?,
+                assessment = ?
+            WHERE id = ? AND user_id = ?
         ", $params);
-        $id = $conn->getInsertId();
-        saveNewEvaluationRecord($conn, $_POST, $id);
+        $evalData = saveNewEvaluationRecord($conn, $_POST, $evalId);
         
         $conn->commit();
         send_response([
-            'data' => getEvaluationRecordID($conn, $params['supplier_id']),
+            'data' => getEvaluationRecordID($conn, $evalId, $evalData['id']),
             'message' => 'Saved successfully.',
         ]);
     } catch(Throwable $e) {
@@ -1063,13 +1065,6 @@ if(isset($_GET['ingredientProductsRegisterData'])) {
         'importers' => getImportersByUser($conn, $user_id),
     ]);
 }
-
-// if(isset($_GET['fetchImporterSuppliers'])) {
-//     $results = $conn->execute("SELECT 
-//             *
-//         FROM 
-//     ", $user_id)->fetchAll(function($data) {});
-// }
 
 if(isset($_GET['newActivityWorksheet'])) {
     try {

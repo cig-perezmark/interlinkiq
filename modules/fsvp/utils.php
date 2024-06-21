@@ -260,12 +260,6 @@ function getForeignSuppliersOnly($conn, $userId) {
     return $results;
 }
 
-/**
- * TODO:
- * re-evaluate this query if issues occur
- * specially the ORDER BY clause
- * also do the same in getEvaluationRecordID function
- */
 // evaluation data for every supplier in the supplier list page
 function getEvaluationData($conn, $evalId, $recordId = null) {
     $cond = "eval.id = ?" . (!empty($recordId) ? " AND rec.id = ?" : "");

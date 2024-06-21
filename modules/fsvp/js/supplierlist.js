@@ -10,27 +10,16 @@ jQuery(function() {
     let cachedEvalFormData = null;
     let prevEvalId = null;
     let editDetailsTRIndex = null;
+    let tempId = 1;
 
-    const supplierTable = Init.dataTable('#tableSupplierList', {
+    let supplierTable = Init.dataTable('#tableSupplierList', {
         columnDefs: [
-            // {
-            //     orderable: false,
-            //     targets: [-1],
-            // },
-            // {
-            //     searchable: false,
-            //     targets: [-1],
-            // },
             {
                 className: "dt-right",
             },
             {
                 className: "text-center",
-                targets: [3,4,5] 
-            },
-            {
-                visible: false,
-                targets: [1] 
+                targets: [3,4] 
             },
         ]
     });
@@ -44,13 +33,32 @@ jQuery(function() {
         }
     });
     const evalFormAlert = Init.createAlert($('#evaluationForm .modal-body'));
+    
     $('.esign').eSign();
 
     $('#tableSupplierList').on('click', '[data-openevalform]', function() {
+        const data = suppliersData[this.dataset.eval];
+
+        if(!data) {
+            bootstrapGrowl('Unable to fetch data.', 'error');
+            return;
+        }
+
         evalFormAlert.isShowing() && evalFormAlert.hide();
         resetEvaluationForm();
         importerSelect.reset();
-        openEvaluationForm(suppliersData[this.dataset.eval]);
+
+        prevEvalId = this.dataset.record || '';
+        editDetailsTRIndex = this.closest('tr');
+        $('#evaluationForm [name="eval"]').val(data.id);
+
+        $('#effsname').val(data.supplier_name || '');
+        $('#effsaddress').val(data.supplier_address || '');
+        $('#reefimporter').val(data.importer_name || '');
+        $('#efImporterAddress').val(data.importer_address || '');
+        $('#evaluationForm input[name="supplier"]').val(data.supplier_id || '');
+        $('#evaluationForm input[name="importer"]').val(data.importer_id || '');
+        $('#modalEvaluationForm').modal('show');
     });
     
     $('#tableSupplierList').on('click', '[data-openreevalform]', function() {
@@ -63,13 +71,17 @@ jQuery(function() {
         
         switchEvalModalFn('reeval');
         $('#viewPreviousEvalBtn').attr('data-evalid', data.evaluation.id || '')
+        $('#evaluationForm [name="eval"]').val(data.id);
         prevEvalId = this.dataset.record || '';
+        editDetailsTRIndex = this.closest('tr');
 
-        $('#effsname').val(data.evaluation.supplier_name || '');
-        $('#effsaddress').val(data.evaluation.supplier_address || '');
-        $('#reefimporter').val(data.evaluation.importer_name || '');
-        $('#efImporterAddress').val(data.evaluation.importer_address || '');
-        $('#evaluationForm input[name="supplier"]').val(data.id || '');
+        $('#effsname').val(data.supplier_name || '');
+        $('#effsaddress').val(data.supplier_address || '');
+        $('#reefimporter').val(data.importer_name || '');
+        $('#efImporterAddress').val(data.importer_address || '');
+        $('#evaluationForm input[name="supplier"]').val(data.supplier_id || '');
+        $('#evaluationForm input[name="importer"]').val(data.importer_id || '');
+        // $('#evaluationForm input[name="rowdata"]').val(data.id || '');
         
         $('#modalEvaluationForm').modal('show');
     });
@@ -422,13 +434,12 @@ jQuery(function() {
             data,
             success: function({data, message}) {
                 if(data) {
-                    suppliersData[form.supplier.value] && (suppliersData[form.supplier.value].evaluation = data);
-                    renderDTRow(suppliersData[form.supplier.value], 'data').draw();
+                    suppliersData[form.rowdata.value] && (suppliersData[form.rowdata.value].evaluation = data);
+                    renderDTRow(suppliersData[form.rowdata.value], 'data').draw();
                 }
 
                 $('#modalEvaluationForm').modal('hide');
                 resetEvaluationForm();
-                importerSelect.reset();
                 evalFormAlert.isShowing() && evalFormAlert.hide();
 
                 bootstrapGrowl(message || 'Saved!');
@@ -446,8 +457,59 @@ jQuery(function() {
         prevEvalId = null;
         switchEvalModalFn();
     });
+
+    $('#toggleEvaluationBtn').click(function() {
+        $('#viewEvaluationsCheck').click();
+    });
+
+    $('#viewEvaluationsCheck').on('change', function() {
+        const btnLabel = $('#toggleEvaluationBtn span[data-label]');
+        if(this.checked) {
+            btnLabel.text("View Suppliers List");
+            // viewing supplier evaluation data
+            initEvaluations();
+        } else {
+            btnLabel.text("View Evaluations Data");
+            initSuppliers();
+        }
+    });
+
+    function refreshSupplierDT(headers, centerColumns) {
+        // destroy datatable
+        $('#fstToolbar').append($('#toggleEvaluationBtn').attr('class', 'dt-button buttons-collection').hide());
+        $('#tableSupplierList').empty();
+        supplierTable.dt.destroy();
+        suppliersData = [];
+
+        // setting new headers
+        $('#tableSupplierList thead').html(headers);
+
+        // re initialize
+        supplierTable = Init.dataTable('#tableSupplierList', {
+            columnDefs: [
+                {
+                    className: "dt-right",
+                },
+                {
+                    className: "text-center",
+                    targets: centerColumns 
+                },
+            ]
+        });
+        $('.dataTables_wrapper .dt-buttons').append($('#toggleEvaluationBtn').attr('class', 'dt-button buttons-collection').show())
+    }
     
-    function initSuppliers() {
+    function initSuppliers() {     
+        refreshSupplierDT(`
+            <tr>
+                <th>Supplier Name</th>
+                <th>Address</th>
+                <th>Food Imported</th>
+                <th style="max-width: 80px">Supplier Agreement</th>
+                <th style="max-width: 80px;">FSVP Compliance Statement</th>
+            </tr>
+        `, [3,4]);
+
         $.ajax({
             url: baseUrl + "suppliersByUser",
             type: "GET",
@@ -467,64 +529,120 @@ jQuery(function() {
         });
     }
 
+    function initEvaluations() {
+        refreshSupplierDT(`
+            <tr>
+                <th>Supplier Name</th>
+                <th>Importer</th>
+                <th>Status</th>
+                <th>Last Evaluation</th>
+                <th>Due Date</th>
+                <th>Actions</th>
+            </tr>
+        `, [2,3,4,5]);
+
+        $.ajax({
+            url: baseUrl + "evaluationsByUser",
+            type: "GET",
+            contentType: false,
+            processData: false,
+            success: function({data}) {
+                if(data) {
+                    supplierTable.dt.clear().draw();
+                    data.forEach((d) => renderDTRow(d));
+                    supplierTable.dt.draw();
+                    // fancyBoxes();      
+                }
+            },
+            error: function() {
+                bootstrapGrowl('Error fetching records!');
+            },
+        });
+    }
+
     function renderDTRow(d, method = 'add') {
+        if(!d.id) {
+            // create a temporary id when null
+            tempId++;
+        }
+        const temporaryRecordId = 'temp_id_' + tempId;
         // save to local storage
-        suppliersData[d.id] = d;
+        suppliersData[d.id || temporaryRecordId] = d;
+
         const no = `<span style="font-weight:600;">No</span>`;
-        const sa = !d.supplier_agreement || !d.supplier_agreement.length ? no : `<a href="javascript:void(0)" data-opensafile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View</a>`;
-        const cs = !d.compliance_statement || !d.compliance_statement.length ?  no : `<a href="javascript:void(0)" data-opencsfile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View </a>`;
         const na = '<i class="text-muted">(N/A)</i>';
         let evalBtn = '';
+        let rowData = [];
 
-        switch(d.evaluation?.status) {
-            case 'current': 
-                evalBtn = `<a href="javascript:void(0)" class="font-dark semibold" data-view-eval="${d.evaluation.id}" title="Click to view evaluation details"> 
-                                ${d.evaluation.evaluation_date}
-                                <i class="fa fa-check-circle font-green-jungle" style="margin-left:.75rem"></i>
-                            </a>`;
-                break;
-            case 'expired': 
-                evalBtn = `<button type="button" class="btn red btn-sm btn-circle" title="Re-evaluate" data-reeval="true" data-openreevalform data-eval="${d.id}" data-record="${d.evaluation.record_id}">
-                                Re-evaluate
-                            </button>`;
-                break;
-            default: 
-                evalBtn = `<button type="button" class="btn green btn-sm btn-circle" title="Evaluation form" data-openevalform data-eval="${d.id}">
+        if($('#viewEvaluationsCheck').prop('checked') == true) {
+            let status = '';
+            // displaying evaluations data
+            switch(d.evaluation?.status) {
+                case 'current': 
+                    evalBtn = `
+                        <div class="d-flex center">
+                            <div class="btn-group btn-group-circle btn-group-sm btn-group-solid">
+                                <button type="button" class="btn blue btn-outline btn-circle btn-sm" data-view-eval="${d.id}" title="View data">View</button>
+                                <a href="${(Init.URL || 'fsvp') + '?pdf=evaluation_form&r=' + d.rhash}" target="_blank" class="btn dark btn-circle btn-sm" title="PDF Document">PDF</a>
+                            </div>
+                        </div>
+                    `;
+                    status = `<span class="badge badge-success">current</span>`;
+                    break;
+                case 'expired': 
+                    evalBtn = `
+                        <div class="d-flex center">
+                            <div class="btn-group btn-group-circle btn-group-sm btn-group-solid">
+                                <button type="button" class="btn red btn-sm btn-circle btn-outline" title="Re-evaluate" data-reeval="true" data-openreevalform data-eval="${d.id}" data-record="${d.evaluation.record_id}">Evaluate</button>
+                                <a href="${(Init.URL || 'fsvp') + '?pdf=evaluation_form&r=' + d.rhash}" target="_blank" class="btn dark btn-circle btn-sm" title="PDF Document">PDF</a>
+                            </div>
+                        </div>
+                    `;
+                    status = `<span class="badge badge-danger">expired</span>`;
+                    break;
+                default: 
+                    evalBtn = `
+                        <div class="d-flex center">
+                            <button type="button" class="btn green btn-sm btn-circle" title="Evaluation form" data-openevalform="${temporaryRecordId}" data-eval="${d.id}">
                                 <i class="fa fa-search icon-margin-right"></i> Evaluate
-                            </button>`;
-                break;
-        }
-
-        let actionBtn = '';
-        if(d.id) {
-            actionBtn = `
-                <div class="d-flex center">
-                    <div class="btn-group btn-group-circle btn-group-sm btn-group-solid">
-                        <button type="button" class="btn blue btn-outline btn-circle btn-smx" title="View data">View</button>
-                        <button type="button" class="btn dark btn-circle btn-sm" title="PDF Document">PDF</button>
-                    </div>
-                </div>
-            `;
+                            </button>
+                        </div>
+                    `;
+                    status = na;
+                    break;
+            }
+            
+            rowData = [
+                d.supplier_name,
+                d.importer_name,
+                status,
+                d.evaluation?.evaluation_date || na,
+                d.evaluation?.evaluation_due_date || na,
+                evalBtn,
+            ];
         } else {
-            actionBtn = `
-                <div class="d-flex center">
-                    <button type="button" class="btn green btn-circle btn-sm" title="PDF Document" data-edit-foreign-supplier="${d.supplier_id}">Edit details</button>
-                </div>`;
-        }
+            const sa = !d.supplier_agreement || !d.supplier_agreement.length ? no : `<a href="javascript:void(0)" data-opensafile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View</a>`;
+            const cs = !d.compliance_statement || !d.compliance_statement.length ?  no : `<a href="javascript:void(0)" data-opencsfile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View </a>`;
         
-        const rowData = [
-            d.id ? d.name : `<a href="javascript:void(0)" data-edit-foreign-supplier="${d.supplier_id}">${d.name}</a>`,
-            d.address,
-            d.id ? d.food_imported.map((x) => x.name).join(', ') : na,
-            d.id ? evalBtn : na,
-            d.id ? sa : na,
-            d.id ? cs : na,
-            // actionBtn,
-        ];
+            // displaying suppliers list
+            rowData = [
+                d.id ? d.name : `<a href="javascript:void(0)" data-edit-foreign-supplier="${d.supplier_id}">${d.name}</a>`,
+                d.address,
+                d.id ? d.food_imported.map((x) => x.name).join(', ') : na,
+                d.id ? sa : na,
+                d.id ? cs : na,
+            ];
+        }
         
         if(method == 'data') {
-            const index = $(`#tableSupplierList tr:has([data-eval=${d.id}])`).index();
-            supplierTable.dt.row(editDetailsTRIndex ?? index).data(rowData);
+            // const rowId = $('#evaluationForm [name="rowdata"]').val() || null;
+
+            // if(!rowId) {
+            //     bootstrapGrowl('Unable to update the table. Please refresh the page.', 'error');
+            // }
+
+            // const index = $(`#tableSupplierList tr:has([data-eval=${rowId}])`).index();
+            supplierTable.dt.row(editDetailsTRIndex).data(rowData);
             editDetailsTRIndex = null;
         } else if(method == 'add') {
             supplierTable.dt.row.add(rowData);
@@ -702,7 +820,7 @@ function showFileInfo(fileInfo) {
 
 function repopulateImporterSelect(supplierId) {
     $.ajax({
-        url: Init.baseUrl + "fetchImporterBySupplier=" + supplierId,
+        url: Init.baseUrl + "fetchImporterBySupplier=" + (supplierId || 0) ,
         type: "GET",
         contentType: false,
         processData: false,
@@ -743,12 +861,17 @@ function openEvaluationForm(data) {
         return;
     }
 
-    $('#effsaddress').val(data.address || '')
-    $('#effsname').val(data.name || '')
-    $('#evaluationForm input[name="supplier"]').val(data.id || '');
+    $('#effsaddress').val(data.supplier_address || '')
+    $('#effsname').val(data.supplier_name || '')
+    $('#evaluationForm input[name="supplier"]').val(data.supplier_id || '');
+
+    $('#effsname').val(data.evaluation.supplier_name || '');
+    $('#effsaddress').val(data.evaluation.supplier_address || '');
+    $('#reefimporter').val(data.evaluation.importer_name || '');
+    $('#efImporterAddress').val(data.evaluation.importer_address || '');
 
     // set importer dropdown items to importers under the selected supplier
-    repopulateImporterSelect(data.id);
+    repopulateImporterSelect(data.supplier_id);
     
     $('#modalEvaluationForm').modal('show');
 }

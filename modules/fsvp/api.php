@@ -10,20 +10,47 @@ if(empty($user_id)) {
     exit('Invalid session.');
 }
 
-// note: no filter for foreign suppliers yet
-// fetching supplier for dropdown
-if(isset($_GET["getProductsBySupplier"]) && !empty($_GET["getProductsBySupplier"])) {
-    $materials = $conn->select("tbl_supplier", "material, address", ["ID" => $_GET["getProductsBySupplier"]])->fetchAssoc();
-    $mIds = $materials['material'];
-    $data = [];
-    
-    if(!empty($mIds)) {
-        $data = $conn->select("tbl_supplier_material", "material_name AS name, ID as id, description", "ID in ($mIds) AND active = 1")->fetchAll();
+if(isset($_GET["getProductsByForeignSupplier"]) && !empty($_GET["getProductsByForeignSupplier"])) {
+    $foreignSupplierId = $_GET["getProductsByForeignSupplier"] ?? 0;
+
+    $materials = [];
+    $address = "";
+    $data = array();
+
+    if(isset($_GET['raw']) && $_GET['raw'] == 'true') {
+        $materials = $conn->select("tbl_supplier", "material, address", ["ID" => $foreignSupplierId])->fetchAssoc();
+        $mIds = $materials['material'];
+
+        if(!empty($mIds)) {
+            $data = $conn->select("tbl_supplier_material", "material_name AS name, ID as id, description", "ID in ($mIds) AND active = 1")->fetchAll();
+        }
+        
+        $address = formatSupplierAddress($materials['address']);
+    } else {
+        $materials = $conn->execute("SELECT ipr.id,
+            mat.material_name AS name,
+            mat.description,
+            sup.address
+            FROM tbl_fsvp_ingredients_product_register ipr
+            LEFT JOIN tbl_supplier_material mat ON mat.ID = ipr.product_id
+            LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.id = ipr.supplier_id
+            LEFT JOIN tbl_supplier sup ON sup.ID = fsup.supplier_id
+            WHERE mat.active = 1 AND ipr.user_id = ? AND ipr.supplier_id = ? AND ipr.deleted_at IS NULL
+        ", $user_id, $foreignSupplierId)->fetchAll();
+
+        foreach($materials as $material) {
+            $address = $material["address"];
+            $data[] = [
+                'id' => $material['id'],
+                'name' => $material['name'],
+                'description' => $material['description'],
+            ];
+        }
     }
     
     send_response([
         "materials"=> $data,
-        'address' => formatSupplierAddress($materials['address']),
+        'address' => formatSupplierAddress($address),
     ]);
 }
 
@@ -41,19 +68,32 @@ if(isset($_GET["newSupplierToList"])) {
             ];
         });
 
-        $foodImported = json_encode($_POST['food_imported'] ?? []);
+        $foodImported = $_POST['food_imported'] ?? [];
 
         // initializing record
-        $conn->execute("INSERT INTO tbl_fsvp_suppliers (user_id, portal_user, supplier_id, food_imported, supplier_agreement, compliance_statement) VALUE (?,?,?,?,?,?)", [
+        $conn->execute("INSERT INTO tbl_fsvp_suppliers (user_id, portal_user, supplier_id, supplier_agreement, compliance_statement) VALUE (?,?,?,?,?)", [
             $user_id,
             $portal_user,
             $supplierId,
-            $foodImported,
             $_POST['supplier_agreement'] ?? 0,
             $_POST['compliance_statement'] ?? 0,
         ]);
 
         $id = $conn->getInsertId();
+        $foodParams = [];
+        $foodValues = [];
+
+        // register products/food imported data
+        foreach($foodImported as $food) {
+            $foodValues = array_merge($foodValues, [$user_id, $portal_user, $id, $food]);
+            $foodParams[] = "(?,?,?,?)";
+        }
+
+        if(count($foodParams)) {
+            $sql = "INSERT INTO tbl_fsvp_ingredients_product_register(user_id, portal_user, supplier_id, product_id ) VALUES " . implode(',', $foodParams);
+            $conn->execute($sql, $foodValues);
+        }
+        
         $fileInsertQuery = "INSERT tbl_fsvp_files(record_id, record_type, filename, path, document_date, expiration_date, note, uploaded_at) VALUES (?,?,?,?,?,?,?,?)";
         $filesRecords = [];
         $params = [];
@@ -97,7 +137,7 @@ if(isset($_GET["newSupplierToList"])) {
         }
         
         // food imported names
-        $mIds = implode(', ', json_decode($foodImported));
+        $mIds = implode(', ', $foodImported);
         $materialData = $conn->select("tbl_supplier_material", "material_name AS name, ID as id", "ID in ($mIds)")->fetchAll();
 
         $conn->commit();
@@ -127,6 +167,12 @@ if(isset($_GET["newSupplierToList"])) {
 if(isset($_GET['suppliersByUser'])) {
     send_response([
         'data' => getSupplierList($conn, $user_id),
+    ]);
+}
+
+if(isset($_GET['evaluationsByUser'])) {
+    send_response([
+        'data' => getEvaluationsPerSupplierAndImporter($conn, $user_id),
     ]);
 }
 
@@ -505,9 +551,8 @@ if(isset($_GET['fetchFSVPQI']) ) {
 
 // populating fsvpqis to dropdowns outside the fsvpqi page
 if(isset($_GET['myFSVPQIInRecords']) ) {
-    $result = $conn->execute("SELECT q.id, CONCAT(TRIM(e.first_name), ' ', TRIM(e.last_name)) AS name, email FROM tbl_fsvp_qi q JOIN tbl_hr_employee e ON q.employee_id = e.ID WHERE q.user_id = ? AND q.deleted_at IS NULL", $user_id)->fetchAll();
     send_response([
-        'result' => $result,
+        'result' => myFSVPQIs($conn, $user_id),
     ]);
 }
 
@@ -520,25 +565,73 @@ if(isset($_GET['newImporter']) ) {
             throw new Exception('Incomplete fields.');
         }
 
+        $supplierId = $_POST['supplier'] ?? null;
+        $importerId = $_POST['importer'];
+
+        $isExisting = $conn->execute("SELECT 
+                IF(COUNT(*) > 0, 'true', 'false') AS hasRecords 
+            FROM tbl_fsvp_importers
+            WHERE user_id =  ?
+                AND supplier_id = ? 
+                AND importer_id = ?
+                AND deleted_at IS NULL
+        ", $user_id, $supplierId, $importerId)->fetchAssoc()['hasRecords'] == 'true';
+
+        if($isExisting) {
+            throw new Exception('Error: Importer and foreign supplier data already exist.');
+        }
+
         $insertData = [
             'user_id' => $user_id,
             'portal_user' => $portal_user,
-            'importer_id' => $_POST['importer'],
-            'supplier_id' => $_POST['supplier'] ?? null,
+            'importer_id' => $importerId,
+            'supplier_id' => $supplierId,
             'fsvpqi_id' =>  $_POST['fsvpqi'],
             'evaluation_date' =>  $_POST['evaluation_date'],
             'duns_no' =>  $_POST['duns_no'],
             'fda_registration' =>  $_POST['fda_registration'],
-            'products' => json_encode($_POST['importer_products'] ?? []),
         ];
         $conn->insert("tbl_fsvp_importers", $insertData);
 
+        // automatically insert initial evaluation data
+        
         $id = $conn->getInsertId();
+        $conn->execute("INSERT INTO tbl_fsvp_evaluations(user_id, portal_user, importer_id, supplier_id) VALUE(?,?,?,?)", $user_id, $portal_user, $id, $supplierId);
+
+        if(count($_POST['importer_products'])) {
+            $productsParams = [];
+            $productsValues = [];
+            $importerId = $id;
+
+            
+            foreach($_POST['importer_products'] as $productId) {
+                $productsParams[] = '(?,?,?,?)';
+                $productsValues = array_merge($productsValues, [
+                    $user_id,
+                    $portal_user,
+                    $importerId,
+                    $productId,
+                ]);
+            }
+            
+            // store imported products
+            if(count($productsValues)) {
+                $sql = "INSERT INTO tbl_fsvp_ipr_imported_by(user_id,portal_user,importer_id,product_id) VALUES ";
+                $sql .= implode(', ', $productsParams);
+                $conn->execute($sql, $productsValues);
+            }
+        }
+        
         $importerName = $conn->select("tbl_supplier", 'name', "ID = " . $insertData['importer_id'])->fetchAssoc()['name'] ?? null;
         $fsvpqiName = $conn->execute("SELECT CONCAT(TRIM(emp.first_name), ' ', TRIM(emp.last_name)) as name FROM tbl_fsvp_qi qi JOIN tbl_hr_employee emp ON emp.ID = qi.employee_id WHERE qi.id = ?", $insertData['fsvpqi_id'])->fetchAssoc()['name'] ?? null;
         
         if(isset($insertData['supplier_id'])) {
-            $supplierName = $conn->select("tbl_supplier", 'name', "ID = " . $insertData['supplier_id'])->fetchAssoc()['name'] ?? null;
+            // $supplierName = $conn->select("tbl_supplier", 'name', "ID = " . $insertData['supplier_id'])->fetchAssoc()['name'] ?? null;
+            $supplierName = $conn->execute("SELECT sup.name 
+                FROM tbl_fsvp_suppliers fsup 
+                LEFT JOIN tbl_supplier sup ON fsup.supplier_id = sup.ID
+                WHERE fsup.id = ?
+            ", $insertData['supplier_id'])->fetchAssoc()['name'] ?? null;
         }
 
         $conn->commit();
@@ -597,7 +690,8 @@ if(isset($_GET['fetchImportersForTable'])) {
         FROM 
             tbl_fsvp_importers i 
             LEFT JOIN tbl_supplier imp ON imp.ID = i.importer_id
-            LEFT JOIN tbl_supplier sup ON sup.ID = i.supplier_id
+            LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.id = i.supplier_id
+            LEFT JOIN tbl_supplier sup ON sup.ID = fsup.supplier_id    
             LEFT JOIN tbl_fsvp_qi qi ON qi.id = i.fsvpqi_id
             LEFT JOIN tbl_hr_employee emp ON emp.ID = qi.employee_id
             LEFT JOIN (
@@ -662,35 +756,43 @@ if(isset($_GET['fetchImportersForTable'])) {
 if(isset($_GET['newSupplierEvaluation'])) {
     try {
         $conn->begin_transaction();
-
-        if(empty($_POST['importer'])) {
-            throw new Exception('Importer is required.');
-        }
+        $evalId = $_POST['eval'] ?? null;
 
         if(empty($_POST['supplier'])) {
             throw new Exception('No foreign supplier is acquired.');
         }
 
+        if(empty($evalId)) {
+            throw new Exception('No matching record found.');
+        }
+
         $params = [
-            'user_id'                       => $user_id,
-            'portal_user'                   => $portal_user,
-            'supplier_id'                   => $_POST['supplier'],
-            'importer_id'                   => $_POST['importer'],
-            'description'                   => emptyIsNull($_POST['description']),
-            'evaluation'                    => emptyIsNull($_POST['evaluation']),
-            'info_related'                  => emptyIsNull($_POST['info_related']),
-            'rejection_date'                => emptyIsNull($_POST['rejection_date']),
-            'approval_date'                 => emptyIsNull($_POST['approval_date']),
-            'assessment'                    => emptyIsNull($_POST['assessment']),
+            $portal_user,
+            emptyIsNull($_POST['description']),
+            emptyIsNull($_POST['evaluation']),
+            emptyIsNull($_POST['info_related']),
+            emptyIsNull($_POST['rejection_date']),
+            emptyIsNull($_POST['approval_date']),
+            emptyIsNull($_POST['assessment']),
+            $evalId,
+            $user_id,
         ];
 
-        $conn->insert("tbl_fsvp_evaluations", $params);
-        $id = $conn->getInsertId();
-        saveNewEvaluationRecord($conn, $_POST, $id);
+        $conn->execute("UPDATE tbl_fsvp_evaluations SET 
+                portal_user = ?,
+                description = ?,
+                evaluation = ?,
+                info_related = ?,
+                rejection_date = ?,
+                approval_date = ?,
+                assessment = ?
+            WHERE id = ? AND user_id = ?
+        ", $params);
+        $evalData = saveNewEvaluationRecord($conn, $_POST, $evalId);
         
         $conn->commit();
         send_response([
-            'data' => getEvaluationRecordID($conn, $params['supplier_id']),
+            'data' => getEvaluationRecordID($conn, $evalId, $evalData['id']),
             'message' => 'Saved successfully.',
         ]);
     } catch(Throwable $e) {
@@ -722,7 +824,7 @@ if(isset($_GET['supplierReEvaluation']) && !empty($_POST['prev_record_id'])) {
 
         $isValid = $conn->execute("SELECT id, evaluation_due_date, evaluation_id  FROM tbl_fsvp_evaluation_records WHERE id = ?", $recordId)->fetchAssoc();
 
-        if(!count($isValid)) {
+        if(!count($isValid) || ($isValid["evaluation_id"] != ($_POST['eval'] ?? 0))) {
             throw new Exception("No matching previous record(s) found.");
         } else if(strtotime(date('Y-m-d') > strtotime($isValid['evaluation_due_date']))) {
             throw new Exception('Previous evaluation data is currently active.');
@@ -813,16 +915,24 @@ if(isset($_POST['search-foreignMaterials'])) {
     $fsClause = ForeignSupplierSQLClause();
     $search = mysqli_real_escape_string($conn, $_POST['search-foreignMaterials']);
     
-    $result = $conn->execute("SELECT
-            MAT.ID AS id,
-            MAT.material_name,
-            MAT.description,
-            SUPP.name AS supplier_name
-        FROM tbl_supplier SUPP
-        RIGHT JOIN tbl_supplier_material MAT
-            ON MAT.ID IN (SUPP.material)
-        WHERE
-            MAT.material_name LIKE '%$search%' AND SUPP.user_id = ?"
+    $sql = "SELECT
+                ipr.id,
+                MAT.material_name,
+                MAT.description,
+                SUPP.name AS supplier_name,
+                SUPP.ID as supplier_id
+            FROM tbl_fsvp_ingredients_product_register ipr 
+            LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.id = ipr.supplier_id
+            LEFT JOIN tbl_supplier SUPP ON SUPP.ID = fsup.supplier_id
+            LEFT JOIN tbl_supplier_material MAT ON MAT.ID = ipr.product_id
+            WHERE
+                MAT.material_name LIKE '%$search%'
+                AND ipr.user_id = ?
+                AND fsup.deleted_at IS NULL
+                AND ipr.deleted_at IS NULL
+    ";
+    
+    $result = $conn->execute($sql
         // $fsClause, 
         ,$user_id
     )->fetchAll();
@@ -831,4 +941,317 @@ if(isset($_POST['search-foreignMaterials'])) {
         'results' => $result,
         'count' => count($result),
     ]);
+}
+
+if(isset($_GET['ingredientProductRegister'])) {
+    try {
+        $conn->begin_transaction();
+        $returnData = [];
+
+        if(!empty($_POST['product_id'])) {
+            // for update (edit details form)
+
+            $isProductIdExist = $conn->execute("SELECT id FROM tbl_fsvp_ipr_imported_by WHERE id = ?", $_POST['product_id'])->fetchAll();
+            if(count($isProductIdExist) == 0) {
+                throw new Exception('Imported product does not exists.');
+            }
+
+            $conn->execute("UPDATE tbl_fsvp_ipr_imported_by SET
+                    portal_user = ?,
+                    importer_id = ?,
+                    brand_name = ?,
+                    ingredients_list = ?,
+                    intended_use = ?
+                    WHERE id = ? AND user_id = ?",
+                $portal_user,
+                emptyIsNull($_POST['importer']),
+                emptyIsNull($_POST['brand_name']),
+                emptyIsNull($_POST['ingredients']),
+                emptyIsNull($_POST['intended_use']),
+                $_POST['product_id'],
+                $user_id
+            );
+            
+            $returnData = [
+                'message' => 'Successfully updated.'
+            ];
+        } else {
+            $iprId = emptyIsNull($_POST['ipr_id']);
+            $importerId = emptyIsNull($_POST['importer']);
+
+            $existingRecord = $conn->execute("SELECT iby.id FROM tbl_fsvp_ipr_imported_by iby WHERE iby.importer_id = ? AND iby.product_id = ?", $importerId, $iprId)->fetchAll();
+
+            if(count($existingRecord)) {
+                throw new Exception("The selected product has already been added to the importer.");
+            }
+
+            $mySupplier = $conn->execute("SELECT ipr.id
+                FROM tbl_fsvp_importers imp
+                JOIN tbl_fsvp_ingredients_product_register ipr ON ipr.id = ?
+                WHERE imp.user_id = ? AND imp.id = ? AND imp.deleted_at IS NULL
+                AND imp.supplier_id = ipr.supplier_id
+            ", $iprId, $user_id, $importerId)->fetchAll();
+
+            if(!count($mySupplier)) {
+                throw new Exception("The foreign supplier of the selected product is not linked with the current importer.");
+            }
+            
+            $conn->execute("INSERT INTO tbl_fsvp_ipr_imported_by(
+                    user_id,
+                    portal_user,
+                    product_id,
+                    importer_id,
+                    brand_name,
+                    ingredients_list,
+                    intended_use
+                ) VALUE(?,?,?,?,?,?,?)",
+                $user_id,
+                $portal_user,
+                $iprId,
+                $importerId,
+                emptyIsNull($_POST['brand_name']),
+                emptyIsNull($_POST['ingredients']),
+                emptyIsNull($_POST['intended_use']),
+            );
+
+            $id = $conn->getInsertId();
+            $returnData = [
+                'message' => 'Successfully registered.',
+                'data' => [
+                    'id'=> $id,
+                ],
+            ];
+        }
+
+        $conn->commit();
+        send_response($returnData);
+    } catch(Throwable $e) {
+        $conn->rollback();
+        send_response([
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+// verified or imported products (with importer id)
+if(isset($_GET['ingredientProductsRegisterData'])) {
+    $results = $conn->execute("SELECT 
+            iby.id,
+            MD5(iby.id) as rhash,
+            ipr.id AS ipr_id, -- ingredient product registry record id
+            mat.material_name AS product_name,
+            mat.description,
+            iby.brand_name,
+            iby.ingredients_list,
+            iby.intended_use,
+            iby.importer_id,
+            isup.name AS importer_name
+        FROM tbl_fsvp_ipr_imported_by iby
+        LEFT JOIN tbl_fsvp_ingredients_product_register ipr ON ipr.id = iby.product_id
+        LEFT JOIN tbl_fsvp_importers imp ON imp.id = iby.importer_id
+        LEFT JOIN tbl_fsvp_suppliers fsup ON ipr.supplier_id = fsup.id
+        LEFT JOIN tbl_supplier_material mat ON mat.ID = ipr.product_id
+        LEFT JOIN tbl_supplier isup ON isup.ID = imp.importer_id
+        WHERE iby.user_id = ? 
+            AND iby.deleted_at IS NULL 
+            AND ipr.deleted_at IS NULL 
+            AND fsup.deleted_at IS NULL
+            AND imp.deleted_at IS NULL
+        ORDER BY iby.created_at DESC
+    ", $user_id)->fetchAll();
+
+    send_response([
+        'results' => $results,
+        'importers' => getImportersByUser($conn, $user_id),
+    ]);
+}
+
+if(isset($_GET['newActivityWorksheet'])) {
+    try {
+        $importerId = $_POST['importer_id'] ?? null;
+        $supplierId = $_POST['supplier_id'] ?? null;
+        $fsvpqiId = $_POST['fsvpqi_id'] ?? null;
+
+        if(empty($importerId) || empty($supplierId) || empty($fsvpqiId)) {
+            throw new Exception("Error: Incomplete data provided.");
+        }
+
+        $conn->begin_transaction();
+
+        $isValid = $conn->execute("SELECT IF(COUNT(*) = 1, 'true', 'false') AS isValid
+            FROM tbl_fsvp_importers 
+            WHERE supplier_id = ?
+                AND id = ?
+                AND fsvpqi_id = ?
+                AND user_id = ? 
+                AND deleted_at IS NULL", 
+            $supplierId, $importerId, $fsvpqiId, $user_id
+        )->fetchAssoc()['isValid'] == 'true';
+
+        if(!$isValid) {
+            throw new Exception('Incorrect details.');
+        }
+        
+        $sql = "INSERT INTO tbl_fsvp_activities_worksheets (
+                user_id,
+                portal_user,
+                importer_id,
+                fsvpqi_id,
+                supplier_id,
+                verification_date,
+                supplier_evaluation_date,
+                approval_date,
+                fdfsc,
+                pdipm,
+                fshc,
+                dfsc,
+                vaf,
+                justification_vaf,
+                verification_records,
+                assessment_results,
+                corrective_actions,
+                reevaluation_date
+            ) VALUE (" . (implode(',', array_fill(0, 18, '?'))) . ")
+        ";
+        $values = [
+            $user_id,
+            $portal_user,
+            $importerId,
+            $fsvpqiId,
+            $supplierId,
+            emptyIsNull($_POST['verification_date']),
+            emptyIsNull($_POST['supplier_evaluation_date']),
+            emptyIsNull($_POST['approval_date']),
+            emptyIsNull($_POST['fdfsc']),
+            emptyIsNull($_POST['pdipm']),
+            emptyIsNull($_POST['fshc']),
+            emptyIsNull($_POST['dfsc']),
+            emptyIsNull($_POST['vaf']),
+            emptyIsNull($_POST['justification_vaf']),
+            emptyIsNull($_POST['verification_records']),
+            emptyIsNull($_POST['assessment_results']),
+            emptyIsNull($_POST['corrective_actions']),
+            emptyIsNull($_POST['reevaluation_date']),
+        ];
+
+        $conn->execute($sql, $values);
+        $id = $conn->getInsertId();
+        
+        $conn->commit();
+        send_response([
+            'message' => 'Recorded successfully!',
+        ]);
+    } catch(Throwable $e) {
+        $conn->rollback();
+        send_response([
+            'error'=> $e->getMessage(),
+        ], 500);
+    }    
+}
+
+if(isset($_GET['activitiesWorksheetsInitialData'])) {
+    $results = $conn->execute("SELECT 
+            aw.id,
+            MD5(aw.id) AS rhash,
+            imp.name AS importer_name,
+            sup.name AS supplier_name,
+            CONCAT(TRIM(emp.first_name), ' ', TRIM(emp.last_name)) AS qi_name,
+            aw.approval_date,
+            aw.reevaluation_date AS evaluation_date,
+            GROUP_CONCAT(sm.material_name SEPARATOR ', ') AS products
+        FROM tbl_fsvp_activities_worksheets aw
+
+        -- fsvp tables
+        LEFT JOIN tbl_fsvp_importers fimp ON fimp.id = aw.importer_id
+        LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.id = aw.supplier_id
+        LEFT JOIN tbl_fsvp_qi fqi ON fqi.id = aw.fsvpqi_id
+
+        -- products
+        LEFT JOIN tbl_fsvp_ipr_imported_by iby ON aw.importer_id = iby.importer_id
+        LEFT JOIN tbl_fsvp_ingredients_product_register ipr ON ipr.id = iby.product_id
+        LEFT JOIN tbl_supplier_material sm ON sm.ID = ipr.product_id
+
+        -- references
+        LEFT JOIN tbl_supplier imp ON imp.ID = fimp.importer_id
+        LEFT JOIN tbl_supplier sup ON sup.ID = fsup.supplier_id
+        LEFT JOIN tbl_hr_employee emp ON emp.ID = fqi.employee_id
+
+        -- conditions
+        WHERE aw.user_id = ?
+            AND aw.deleted_at IS NULL
+            
+        -- other clauses
+        GROUP BY aw.id
+    ", $user_id)->fetchAll();
+
+    send_response([
+        'results' => $results,
+    ]);
+}
+
+if(isset($_GET['fetchImporterBySupplier'])) {
+    try {
+        $supplierId = $_GET['fetchImporterBySupplier'] ?? null;
+
+        if(empty($supplierId)) {
+            throw new Exception("No supplier data has been acquired.");
+        }
+
+        $mySuppliers = $conn->execute("SELECT imp.id, sup.name, sup.address
+            FROM tbl_fsvp_importers imp 
+            LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.id = imp.supplier_id
+            LEFT JOIN tbl_supplier sup ON imp.importer_id = sup.ID
+            WHERE imp.user_id = ? 
+                AND imp.deleted_at IS NULL
+                AND fsup.deleted_at IS NULL
+                AND imp.supplier_id = ?
+        ", $user_id, $supplierId)->fetchAll(function($data) {
+            $data['address'] = formatSupplierAddress($data['address']);
+            return $data;
+        });
+
+        send_response([
+            'result' => $mySuppliers,
+        ]);
+    } catch(Throwable $e) {
+        send_response([
+            'error' => $e->getMessage(), 
+        ], 500);
+    }
+}
+
+if(isset($_GET['fetchProductsBySupplierAndImporter'])) {
+    try {
+        $supplierId = emptyIsNull($_POST['supplier']);
+        $importerId = emptyIsNull($_POST['importer']);
+    
+        if(empty($supplierId)) {
+            throw new Exception("You must select a foreign supplier.");
+        }
+        
+        if(empty($importerId) || !$importerId) {
+            throw new Exception("You must select an importer.");
+        }
+        
+        $results = $conn->execute("SELECT
+                GROUP_CONCAT(mat.material_name SEPARATOR ', ') AS products
+            FROM tbl_fsvp_ipr_imported_by iby
+            LEFT JOIN tbl_fsvp_ingredients_product_register ipr ON ipr.id = iby.product_id
+            LEFT JOIN tbl_supplier_material mat ON mat.ID = ipr.product_id
+            WHERE iby.importer_id = ?
+                AND ipr.supplier_id = ?
+                AND iby.user_id = ?
+                AND iby.deleted_at IS NULL
+            GROUP BY iby.importer_id
+        ", $importerId, $supplierId, $user_id)->fetchAssoc();
+
+        send_response([
+            'results' => $results['products']
+        ]);
+            
+    } catch(Throwable $e) {
+        send_response([
+            'error' => $e->getMessage(),
+        ], 500);
+    }
 }

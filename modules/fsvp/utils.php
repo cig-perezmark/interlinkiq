@@ -182,11 +182,53 @@ function getSupplierList($conn, $userId) {
                 'name' => $d['name'],
                 'id' => $d['id'],
                 'supplier_id' => $d['supplier_id'],
-                'evaluation' => getEvaluationRecordID($conn, $d['id']),
                 'food_imported' => $materialData,
                 'compliance_statement' => $csFile,
                 'supplier_agreement' => $saFiles,
             ];
+        }
+    
+        return $data;
+    } catch(Throwable $e) {
+        send_response([
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+function getEvaluationsPerSupplierAndImporter($conn, $userId) {
+    try {
+        $sql = "SELECT 
+                    eval.id,
+                    fsup.id AS supplier_id,
+                    sup.name AS supplier_name,
+                    sup.address AS supplier_address,
+                    fimp.id AS importer_id,
+                    imp.name AS importer_name,
+                    imp.address AS importer_address
+                FROM tbl_fsvp_importers fimp
+                LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.id = fimp.supplier_id
+                LEFT JOIN tbl_supplier imp ON imp.ID = fimp.importer_id
+                LEFT JOIN tbl_supplier sup ON sup.ID = fsup.supplier_id
+                LEFT JOIN tbl_fsvp_evaluations eval ON eval.supplier_id = fsup.id AND eval.importer_id = fimp.id
+                WHERE fimp.user_id = ?
+                    AND fimp.deleted_at IS NULL
+        ";
+
+        $list = $conn->execute($sql, $userId)->fetchAll();
+    
+        $data = [];
+        foreach ($list as $d) {
+            $d['supplier_address'] = formatSupplierAddress($d["supplier_address"]);
+            $d['importer_address'] = formatSupplierAddress($d["importer_address"]);
+            $evalData = getEvaluationRecordID($conn, $d['id']);
+            $d['evaluation'] = $evalData;
+
+            if(!empty($evalData['id'])) {
+                $d['rhash'] = md5($d['id']);    
+            } 
+
+            $data[] = $d;
         }
     
         return $data;
@@ -257,11 +299,13 @@ function getEvaluationData($conn, $evalId, $recordId = null) {
             LEFT JOIN tbl_fsvp_suppliers fsupp ON eval.supplier_id = fsupp.id
             LEFT JOIN tbl_fsvp_importers fimp ON eval.importer_id = fimp.id
             LEFT JOIN tbl_fsvp_ingredients_product_register ipr ON ipr.supplier_id = fsupp.id
+            LEFT JOIN tbl_fsvp_ipr_imported_by iby ON iby.product_id = ipr.id AND iby.importer_id = fimp.id
             -- tbl_suppliers (original)
             LEFT JOIN tbl_supplier supp ON supp.ID = fsupp.supplier_id
             LEFT JOIN tbl_supplier imp ON imp.ID = fimp.importer_id 
             LEFT JOIN tbl_supplier_material sm ON sm.ID = ipr.product_id
                 WHERE $cond AND eval.deleted_at IS NULL
+                    AND iby.importer_id = fimp.id
             GROUP BY eval.id
             ORDER BY rec.pre_record_id DESC, rec.evaluation_date DESC, rec.created_at DESC LIMIT 1",
             $params 
@@ -289,7 +333,7 @@ function getEvaluationData($conn, $evalId, $recordId = null) {
     return $eval;
 }
 
-function getEvaluationRecordID($conn, $supplierId) {
+function getEvaluationRecordID($conn, $evalId) {
     try {
         $data = $conn->execute("SELECT 
                 EVAL.id,
@@ -307,9 +351,12 @@ function getEvaluationRecordID($conn, $supplierId) {
             LEFT JOIN tbl_fsvp_importers FIMP ON FIMP.id = EVAL.importer_id
             LEFT JOIN tbl_supplier SUPP ON SUPP.ID = FSUPP.supplier_id
             LEFT JOIN tbl_supplier IMP ON IMP.ID = FIMP.importer_id
-            WHERE EVAL.supplier_id = ? AND EVAL.deleted_at IS NULL 
+            WHERE EVAL.id = ? 
+                AND EVAL.deleted_at IS NULL 
+                AND REC.deleted_at IS NULL 
             ORDER BY REC.pre_record_id DESC, REC.evaluation_date DESC, REC.created_at DESC LIMIT 1",
-            $supplierId)->fetchAssoc();
+            $evalId
+        )->fetchAssoc();
 
         if(!count($data)) {
             return null;

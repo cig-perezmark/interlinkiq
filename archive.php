@@ -32,14 +32,14 @@
                                             </thead>
                                             <tbody>
                                                 <?php
-                                                    $result = mysqli_query( $conn,"SELECT * FROM tbl_archiving_department ORDER BY name" );
+                                                    $result = mysqli_query( $conn,"SELECT ID, name FROM tbl_archiving_department ORDER BY name" );
                                                     if ( mysqli_num_rows($result) > 0 ) {
                                                         while($row = mysqli_fetch_array($result)) {
                                                             $ID = $row['ID'];
-                                                            $name = $row['name'];
+                                                            $name = htmlentities($row['name'] ?? '');
                                                             $records = 0;
 
-                                                            $selectEForm = mysqli_query( $conn,'SELECT * FROM tbl_archiving WHERE user_id="'.$switch_user_id.'" AND department_id="'. $ID .'"' );
+                                                            $selectEForm = mysqli_query( $conn, "SELECT ID FROM tbl_archiving WHERE user_id = $switch_user_id AND department_id = $ID" );
                                                             if ( mysqli_num_rows($selectEForm) > 0 ) {
                                                                 while($row = mysqli_fetch_array($selectEForm)) {
                                                                     $records++;
@@ -48,7 +48,7 @@
 
                                                             if ($records > 0) {
                                                                 echo '<tr id="tr_'. $ID .'" onclick="btnViewDepartment('. $ID .', '.$FreeAccess.')">
-                                                                    <td>'. htmlentities($name) .'</td>
+                                                                    <td>'. $name .'</td>
                                                                     <td>'. $records .'</td>
                                                                 </tr>';
                                                             }
@@ -71,14 +71,13 @@
                                         <span class="caption-subject font-dark bold uppercase">Archived Records</span>
                                         <?php
                                             if($current_client == 0) {
-                                                // $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site' AND (user_id = $switch_user_id OR user_id = $current_userEmployerID OR user_id = 163)");
                                                 $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site'");
                                                 while ($row = mysqli_fetch_assoc($result)) {
-                                                    $type_id = $row["type"];
-                                                    $file_title = $row["file_title"];
-                                                    $video_url = $row["youtube_link"];
+                                                    $type_id = htmlentities($row["type"] ?? '');
+                                                    $file_title = htmlentities($row["file_title"] ?? '');
+                                                    $video_url = htmlentities($row["youtube_link"] ?? '');
                                                     
-                                                    $file_upload = $row["file_upload"];
+                                                    $file_upload = htmlentities($row["file_upload"] ?? '');
                                                     if (!empty($file_upload)) {
                                         	            $fileExtension = fileExtension($file_upload);
                                         				$src = $fileExtension['src'];
@@ -90,7 +89,7 @@
                                                 		$file_url = $src.$url.rawurlencode($file_upload).$embed;
                                                     }
                                                     
-                                                    $icon = $row["icon"];
+                                                    $icon = htmlentities($row["icon"] ?? '');
                                                     if (!empty($icon)) { 
                                                         if ($type_id == 0) {
                                                             echo ' <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
@@ -135,14 +134,14 @@
                                                     $result = mysqli_query( $conn,"SELECT ID, record, files_date, deleted, reason FROM tbl_archiving WHERE deleted = 0 AND user_id = $switch_user_id ORDER BY record" );
                                                     if ( mysqli_num_rows($result) > 0 ) {
                                                         while($row = mysqli_fetch_array($result)) {
-                                                            $ID = $row['ID'];
-                                                            $record = htmlentities($row['record']);
-                                                            $files_date = $row['files_date'];
+                                                            $ID = htmlentities($row['ID'] ?? '');
+                                                            $record = htmlentities($row['record'] ?? '');
+                                                            $files_date = htmlentities($row['files_date'] ?? '');
 
                                                             $approval = '';
                                                             if ($row['reason'] == 0 AND !empty($row['reason'])) {
-                                                                $reason_array = explode(" | ", $row['reason']);
-                                                                $reason = htmlentities($reason_array[1]);
+                                                                $reason_array = explode(" | ", htmlentities($row['reason'] ?? ''));
+                                                                $reason = htmlentities($reason_array[1] ?? '');
                                                                 $approval = '<br><i class="help-block">User requested to delete this item because '.$reason.'</i>
                                                                 <div class="remark_action">
                                                                     <a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnAccept('.$ID.')">Accept</a>
@@ -213,8 +212,8 @@
 
                                                                     ORDER BY d.name");
                                                                 while($row = mysqli_fetch_array($result)) {
-                                                                    $ID = $row['d_ID'];
-                                                                    $name = $row['d_name'];
+                                                                    $ID = htmlentities($row['d_ID'] ?? '');
+                                                                    $name = htmlentities($row['d_name'] ?? '');
                                                                     echo '<option value="'. $ID .'">'. $name .'</option>';
                                                                 }
                                                             ?>

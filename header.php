@@ -2121,7 +2121,8 @@ License: You must have a valid license purchased only from themeforest(the above
                     <?php endif; ?>
 
                     <!--if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('job-ticket', $current_userEmployerID, $current_userEmployeeID); }-->
-                    <?php if($current_userEmployeeID == 0 OR $current_userID == 95 OR $current_userID == 42 OR $current_userID == 88) { ?>
+                    <?php //  if($current_userEmployeeID == 0 OR $current_userID == 95 OR $current_userID == 42 OR $current_userID == 88) { ?>
+                    <?php if($current_userEmployeeID == 0) { ?>
                         <li class="nav-item <?php echo $site === "job-ticket" ? "active " : ""; ?>">
                             <a href="job-ticket" class="nav-link">
                                 <i class="icon-earphones-alt"></i>
@@ -2157,7 +2158,16 @@ License: You must have a valid license purchased only from themeforest(the above
                             </ul>
                         </li>
                     <?php } ?>
-
+                    
+                    <?php if($_COOKIE['ID'] == 481) { ?>
+                        <li class="nav-item ">
+                            <a href="rvm" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">RVM</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                    <?php } ?>
 
                     <?php
                             // Sidebar Menu
@@ -2226,7 +2236,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     $menu_url = $rowMenu['url'];
                                     $menu_description = htmlentities($rowMenu['description']);
 
-                                    $selectMenuSubs = mysqli_query( $conn,"SELECT * FROM tbl_menu_subscription WHERE deleted = 0 AND type = 2 AND menu_id = $menu_ID AND user_id = $switch_user_id" );
+                                    $selectMenuSubs = mysqli_query( $conn,"SELECT * FROM tbl_menu_subscription WHERE display = 1 AND deleted = 0 AND type = 2 AND menu_id = $menu_ID AND user_id = $switch_user_id" );
                                     if ( mysqli_num_rows($selectMenuSubs) > 0 ) {
                                         $rowMenuSub = mysqli_fetch_array($selectMenuSubs);
     		                            $sub_date_start = $rowMenuSub["date_start"];
@@ -2254,7 +2264,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                 while($rowMenu = mysqli_fetch_array($selectMenu)) {
                                     $menu_ID = $rowMenu['ID'];
 
-                                    $selectMenuSubs = mysqli_query( $conn,"SELECT * FROM tbl_menu_subscription WHERE deleted = 0 AND type = 1 AND menu_id = $menu_ID AND user_id = $switch_user_id" );
+                                    $selectMenuSubs = mysqli_query( $conn,"SELECT * FROM tbl_menu_subscription WHERE display = 1 AND deleted = 0 AND type = 1 AND menu_id = $menu_ID AND user_id = $switch_user_id" );
                                     if ( mysqli_num_rows($selectMenuSubs) > 0 ) {
                                         $rowMenuSub = mysqli_fetch_array($selectMenuSubs);
     		                            $sub_date_start = $rowMenuSub["date_start"];
@@ -2288,7 +2298,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     $menu_url = $rowMenu['url'];
                                     $menu_description = htmlentities($rowMenu['description']);
 
-                                    $selectMenuSubs = mysqli_query( $conn,"SELECT * FROM tbl_menu_subscription WHERE deleted = 0 AND type = 1 AND menu_id = $menu_ID AND user_id = $switch_user_id" );
+                                    $selectMenuSubs = mysqli_query( $conn,"SELECT * FROM tbl_menu_subscription WHERE display = 1 AND deleted = 0 AND type = 1 AND menu_id = $menu_ID AND user_id = $switch_user_id" );
                                     if ( mysqli_num_rows($selectMenuSubs) > 0 ) {
                                         $rowMenuSub = mysqli_fetch_array($selectMenuSubs);
     		                            $sub_date_start = $rowMenuSub["date_start"];
@@ -3146,7 +3156,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         </li>
                         <?php echo $breadcrumbs; ?>
                     </ul>
-                    <div class="page-toolbar <?php if ($site == '404' OR $site == '505' OR $site == 'dashboard') { echo 'hide'; } else if (!isset($_COOKIE['switchAccount'])) { if ($current_userEmployeeID > '0' AND $current_userAdminAccess == 0 AND $current_userID <> 532) { echo 'hide'; } } ?>">
+                    <div class="page-toolbar <?php if ($site == '404' OR $site == '505' OR $site == 'dashboard' OR $current_userEmployerID > 0) { echo 'hide'; } else if (!isset($_COOKIE['switchAccount'])) { if ($current_userEmployeeID > '0' AND $current_userAdminAccess == 0 AND $current_userID <> 532) { echo 'hide'; } } ?>">
                         <!--<div class="page-toolbar <?php //if ($site == '404' OR $site == '505' OR $site == 'dashboard' OR $current_userEmployeeID > '0') { echo 'hide'; } ?>">-->
                         <a href="#modalCollab" data-toggle="modal" class="btn btn-success btn-fit-height">
                             Collaborator <i class="icon-settings"></i>

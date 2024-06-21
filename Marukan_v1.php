@@ -26,7 +26,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.122.0">
-    <title>Cannabis 360 - Login</title>
+    <title>Marukan - Login</title>
 
     <link rel="canonical" href="//getbootstrap.com/docs/5.3/examples/sign-in/">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@docsearch/css@3">
@@ -121,14 +121,25 @@
         display: block !important;
       }
 
+
       .login-container {
-        background: url('uploads/login/bg/background web design 2.png');
+        background-image: url('uploads/login/bg/marukan-artwork.jpg');
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
+        background-color: #fff !important;
+        height: 100vh;
+      }
+      .login-form {
+        background: url('uploads/login/bg/marukan-wine2.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-color: #fff;
+        background-color: hsla(0, 0%, 100%, .95)
       }
       .sign-in-container {
-        background: url('uploads/login/bg/Cannabis backgroud.jpg');
+        background: url('uploads/login/bg/Marukan.png');
         background-size: cover;
         background-repeat: no-repeat;
         background-position: center;
@@ -140,13 +151,25 @@
         background-position: center;
       }
       .sign-logo {
-        max-height: 200px;
-        filter: brightness(0);
-        margin-bottom: -38px;
+        max-height: 250px;
+        width: auto !important;
       }
       .error {
         border: 0 !important;
         color: #fff !important;
+      }
+
+      span.input-group-text {
+        background: #FCF029;
+      }
+      input.form-control {
+        background: #FCD968 !important;
+      }
+      .form-floating>.form-control-plaintext~label::after, .form-floating>.form-control:focus~label::after, .form-floating>.form-control:not(:placeholder-shown)~label::after, .form-floating>.form-select~label::after {
+        background: #FCD968 !important;
+      }
+      .input-group {
+        filter: drop-shadow(white 0rem 0rem 15px);
       }
     </style>
 
@@ -154,8 +177,8 @@
     <!-- Custom styles for this template -->
     <link href="custom.css" rel="stylesheet">
   </head>
-  <body class="d-flex flex-column align-items-center row-direction-column py-4x bg-body-tertiaryx bg-dark login-container">
-      
+  <body class="d-flex flex-column justify-content-center align-items-center row-direction-column py-4x bg-body-tertiaryx bg-dark login-container">
+
     <?php
       $confirm = false;
       $predefine = false;
@@ -172,6 +195,7 @@
           $invited_id = $rowEmployee['ID'];
           $data_email = $rowEmployee['email'];
           $data_first_name = $rowEmployee['first_name'];
+          $data_last_name = $rowEmployee['last_name'];
           $data_last_name = $rowEmployee['last_name'];
         }
       }
@@ -206,114 +230,121 @@
 
     <div class="container text-center">
       <div class="row justify-content-center">
-        <div class="col-lg-6">
-          <img class="w-100 sign-logo" src="uploads/login/icon/Cannabis360 pro.png" />
-        </div>
-      </div>
-    </div>
+        <div class="col-md-8 p-3 login-form">
+          <div class="row d-flex justify-content-center align-items-center">
+            <div class="col-lg-5 d-flex justify-content-center">
 
-    <div class="container text-center">
-      <div class="row justify-content-center">
-        <div class="col-lg-4 p-5 sign-in-container d-flex align-items-center">
-          <form method="POST" class="form formSignIn w-100">
-            <h1 class="text-white">Welcome Back</h1>
+              <!-- Login -->
+              <form method="POST" class="form formSignIn">
+                <img class="w-100" src="uploads/login/icon/marukan2.png" />
+                <h2 class="text-dark" style="font-weight: 800;">Welcome Back</h1>
 
-            <h3 class="text-white">Login</h3>
-            <div class="alert_msg text-white"></div>
+                <div class="alert_msg text-white"></div>
 
-            <div class="input-group mb-3">
-              <span class="input-group-text">
-                <svg xmlns="//www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
-                  <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/>
+                <div class="input-group mb-3">
+                  <span class="input-group-text">
+                    <svg xmlns="//www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
+                      <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/>
+                    </svg>
+                  </span>
+                  <div class="form-floating">
+                    <input type="email" class="form-control" id="email2" name="email" placeholder="Email Address" required />
+                    <label for="email2">Email Address</label>
+                  </div>
+                </div>
+                <div class="input-group mb-3">
+                  <span class="input-group-text">
+                    <svg xmlns="//www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock" viewBox="0 0 16 16">
+                      <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2M5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1"/>
+                    </svg>
+                  </span>
+                  <div class="form-floating">
+                    <input type="password" class="form-control" id="password2" name="password" placeholder="Password" required />
+                    <label for="password2">Password</label>
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                  <button class="btn btn-primary text-dark py-2" type="submit" style="background: #FCD968; border-color: #FCD968;">
+                    Login
+                    <svg xmlns="//www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+                      <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+                    </svg>
+                  </button>
+                  <button class="btn btn-primary text-dark py-2" type="button" style="background: #FCD968; border-color: #FCD968;" onclick="btnCreate()">
+                    Create Account
+                  </button>
+                </div>
+
+                <a href="#" class="text-dark">Forgot Password?</a>
+              </form>
+
+              <!-- Register -->
+              <form method="POST" class="form formSignUp" style="display: none;">
+                <img class="w-100" src="uploads/login/icon/marukan22.png" />
+                <h2 style="font-weight: 800;">Create Account</h1>
+
+                <div class="alert_msg text-white"></div>
+                <input class="form-control" type="hidden" name="ID" value="<?php echo !empty($invited_id) ? $invited_id : ''; ?>" />
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="first_name" name="first_name" placeholder="First Name" value="<?php echo $predefine === true ? $data_first_name : ''; ?>" <?php echo $predefine === true ? 'readonly' : ''; ?> required />
+                  <label for="first_name">First Name</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Last Name" value="<?php echo $predefine === true ? $data_last_name : ''; ?>" <?php echo $predefine === true ? 'readonly' : ''; ?> required />
+                  <label for="last_name">Last Name</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="email" name="email" value="<?php echo $predefine === true ? $data_email : ''; ?>" <?php echo $predefine === true ? 'readonly' : ''; ?> placeholder="Email" required />
+                  <label for="email">Email</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="phone" name="phone" placeholder="phone" required />
+                  <label for="phone">Phone Number</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="password" class="form-control" id="password" name="password" placeholder="Password" required />
+                  <label for="password">Password</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required />
+                  <label for="confirm_password">Confirm Password</label>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                  <button class="btn btn-primary text-dark py-2" type="button" style="background: #FCD968; border-color: #FCD968;" onclick="btnBack()">
+                    Back
+                  </button>
+                  <button class="btn btn-primary text-dark py-2" type="submit" style="background: #FCD968; border-color: #FCD968;">
+                    Sign Up
+                    <svg xmlns="//www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+                      <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+                    </svg>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="row d-flex justify-content-center align-items-center mt-5">
+            <div class="col-md-4 d-flex justify-content-center align-items-centerc">
+              <h5 style="color: yellow;">
+                <svg xmlns="//www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightning-fill" viewBox="0 0 16 16">
+                  <path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641z"></path>
                 </svg>
-              </span>
-              <div class="form-floating">
-                <input type="email" class="form-control" id="email2" name="email" placeholder="Email Address" required />
-                <label for="email2">Email Address</label>
-              </div>
+                <span class="text-dark">Powered by:</span>
+              </h5>
             </div>
-            <div class="input-group mb-3">
-              <span class="input-group-text">
-                <svg xmlns="//www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock" viewBox="0 0 16 16">
-                  <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2M5 8h6a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1"/>
-                </svg>
-              </span>
-              <div class="form-floating">
-                <input type="password" class="form-control" id="password2" name="password" placeholder="Password" required />
-                <label for="password2">Password</label>
-              </div>
+            <div class="col-md-4 d-flex justify-content-center align-items-centerc text-centerx">
+              <img src="//interlinkiq.com/assets/img/interlinkiq%20v3.png" style="height: 40px;">
             </div>
-
-            <button class="btn btn-primary w-100 py-2" type="submit" style="background: #5AD15B; border-color: #5AD15B;">
-              Login
-              <svg xmlns="//www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
-                <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
-              </svg>
-            </button>
-            <a href="#" class="text-white">Forgot Password?</a>
-          </form>
-        </div>
-        <div class="col-lg-4 p-5 sign-up-container">
-          <form method="POST" class="form formSignUp">
-            <h1>Create Account</h1>
-            <p>Grab your FREE Access Now!</p>
-
-            <div class="alert_msg text-white"></div>
-            <input class="form-control" type="hidden" name="ID" value="<?php echo !empty($invited_id) ? $invited_id : ''; ?>" />
-            <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="first_name" name="first_name" placeholder="First Name" required />
-              <label for="first_name">First Name</label>
-            </div>
-            <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Last Name" required />
-              <label for="last_name">Last Name</label>
-            </div>
-            <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="email" name="email" placeholder="Email" required />
-              <label for="email">Email</label>
-            </div>
-            <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="phone" name="phone" placeholder="phone" required />
-              <label for="phone">Phone Number</label>
-            </div>
-            <div class="form-floating mb-3">
-              <input type="password" class="form-control" id="password" name="password" placeholder="Password" required />
-              <label for="password">Password</label>
-            </div>
-            <div class="form-floating mb-3">
-              <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required />
-              <label for="confirm_password">Confirm Password</label>
-            </div>
-
-            <button class="btn btn-primary w-100 py-2" type="submit" style="background: #4DB850; border-color: #4DB850;">SIGN UP</button>
-          </form>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="container">
-      <div class="row d-flex justify-content-center align-items-center">
-        <div class="col-4 d-flex justify-content-center align-items-centerc">
-          <h5 style="color: yellow;">
-            <svg xmlns="//www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightning-fill" viewBox="0 0 16 16">
-              <path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641z"></path>
-            </svg>
-            <span class="text-dark">Powered by:</span>
-          </h5>
-        </div>
-        <div class="col-4 d-flex justify-content-center align-items-centerc text-centerx">
-          <img src="//interlinkiq.com/assets/img/interlinkiq%20v3.png" style="height: 70px;">
-        </div>
-      </div>
-    </div>
-
-    <!-- <script src="/docs/5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> -->
-    <!-- <script src="//cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script> -->
-    <!-- <script src="//cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script> -->
-    <!-- <script src="//cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script> -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-
     <script src="../assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
     <script src="../assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
 
@@ -321,7 +352,19 @@
       var $ = jQuery;
       $(document).ready(function(){
         $(".form").validate();
+
+        <?php
+          if (true) {}
+        ?>
       });
+
+      function btnCreate() {
+        $(".formSignIn").hide(),$(".formSignUp").show();
+      }
+
+      function btnBack() {
+        $(".formSignIn").show(),$(".formSignUp").hide();
+      }
 
 
       $(".formSignIn").on('submit',(function(e) {
@@ -332,7 +375,7 @@
 
         var formData = new FormData(this);
         formData.append('btnSignIn',true);
-        formData.append('client',7);
+        formData.append('client',11);
 
         // var l = Ladda.create(document.querySelector('#btnSave_Attached'));
         // l.start();
@@ -373,7 +416,7 @@
           
         var formData = new FormData(this);
         formData.append('btn_SignUp',true);
-        formData.append('client',7);
+        formData.append('client',11);
 
         $.ajax({
           url: "function.php",
@@ -391,6 +434,7 @@
 
               $('#container').removeClass('right-panel-active');
               $('.formSignIn .alert_msg').html(data);
+              btnBack();
             } else {
               var data = '<div class="alert alert-danger">';
               data += obj.message;

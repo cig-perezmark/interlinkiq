@@ -38,14 +38,14 @@
                                                     $availability = array();
                                                     $preference = array();
                                                     $skill_set = "";
-
+ 
                                                     $selectJob = mysqli_query( $conn,"SELECT * FROM tbl_user_job WHERE is_active = 1 AND user_id = $current_userID" );
                                                     if ( mysqli_num_rows($selectJob) > 0 ) {
                                                         $rowJob = mysqli_fetch_array($selectJob);
                                                         $user_id = $rowJob['user_id'];
 
                                                         $type = '';
-                                                        $cv_tmp = $rowJob['cv'];
+                                                        $cv_tmp = htmlentities($rowJob['cv'] ?? '');
                                                         if (!empty($cv_tmp)) {
                                                             $fileExtension = fileExtension($cv_tmp);
                                                             $src = $fileExtension['src'];
@@ -56,19 +56,19 @@
                                                             $cv_src = $src.$url.rawurlencode($cv_tmp).$embed;
                                                         }
 
-                                                        $education = $rowJob['education'];
+                                                        $education = htmlentities($rowJob['education'] ?? '');
                                                         if (!empty($education)) {
                                                             $output_educ = json_decode($education,true);
                                                             $count_educ = count($output_educ);
                                                         }
 
-                                                        $reference = $rowJob['reference'];
+                                                        $reference = htmlentities($rowJob['reference'] ?? '');
                                                         if (!empty($reference)) {
                                                             $output_ref = json_decode($reference,true);
                                                             $count_ref = count($output_ref);
                                                         }
 
-                                                        $skill = $rowJob['skill'];
+                                                        $skill = htmlentities($rowJob['skill'] ?? '');
                                                         if (!empty($skill)) {
                                                             $output_skill = json_decode($skill,true);
                                                             $count_skill = count($output_skill);
@@ -76,7 +76,7 @@
 
                                                         $availability = explode(", ", $rowJob["availability"]);
                                                         $preference = explode(", ", $rowJob["preference"]);
-                                                        $skill_set = $rowJob["skill_set"];
+                                                        $skill_set = htmlentities($rowJob["skill_set"] ?? '');
                                                     }
                                                 ?>
 
@@ -243,19 +243,19 @@
                                                                             <div class="col-lg-4">
                                                                                 <div class="form-group">
                                                                                     <label class="control-label">Full Name</label>
-                                                                                    <input class="form-control" type="text" name="ref_name" value="'.htmlentities($value['ref_name']).'" />
+                                                                                    <input class="form-control" type="text" name="ref_name" value="'.htmlentities($value['ref_name'] ?? '').'" />
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-lg-4">
                                                                                 <div class="form-group">
                                                                                     <label class="control-label">Email</label>
-                                                                                    <input class="form-control" type="email" name="ref_email" value="'.htmlentities($value['ref_email']).'" />
+                                                                                    <input class="form-control" type="email" name="ref_email" value="'.htmlentities($value['ref_email'] ?? '').'" />
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-lg-3">
                                                                                 <div class="form-group">
                                                                                     <label class="control-label">Phone Number</label>
-                                                                                    <input class="form-control" type="text" name="ref_phone" value="'.htmlentities($value['ref_phone']).'" />
+                                                                                    <input class="form-control" type="text" name="ref_phone" value="'.htmlentities($value['ref_phone'] ?? '').'" />
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-lg-1">
@@ -309,7 +309,7 @@
                                                                             <div class="col-lg-11">
                                                                                 <div class="form-group">
                                                                                     <label class="control-label">Description</label>
-                                                                                    <input class="form-control" type="text" name="skill_name" value="'.htmlentities($value['skill_name']).'" required />
+                                                                                    <input class="form-control" type="text" name="skill_name" value="'.htmlentities($value['skill_name'] ?? '').'" required />
                                                                                 </div>
                                                                             </div>
                                                                             <div class="col-lg-1">

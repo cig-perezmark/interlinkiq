@@ -1673,6 +1673,14 @@
                                 }
                             });
                         }));
+                        function uploadNewOld(e) {
+                            $(e).parent().hide();
+                            $(e).parent().prev('.form-control').removeClass('hide');
+                        }
+                        function uploadNew(e) {
+                            $(e).parent().hide();
+                            $(e).parent().parent().find('select').removeClass('hide');
+                        }
                         
                         // Speakup Section
                         function btnSpeakup(id) {

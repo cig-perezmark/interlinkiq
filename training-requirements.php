@@ -191,10 +191,10 @@
                                                                 if (!empty($jd)) {
                                                                     $jd_arr = explode(", ", $jd);
                                                                     foreach ($jd_arr as $value) {
-                                                                        $resultJD = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE ID = $value" );
+                                                                        $resultJD = mysqli_query( $conn,"SELECT title FROM tbl_hr_job_description WHERE ID = $value" );
                                                                         if ( mysqli_num_rows($resultJD) > 0 ) {
                                                                             $rowJD = mysqli_fetch_array($resultJD);
-                                                                            array_push($position, $rowJD["title"]);
+                                                                            array_push($position, htmlentities($rowJD["title"] ?? ''));
                                                                         }
                                                                     }
                                                                 }
@@ -243,14 +243,14 @@
                                                                     ) AS r" );
                                                                 if ( mysqli_num_rows($resultTraining) > 0 ) {
                                                                     $rowTraining = mysqli_fetch_array($resultTraining);
-                                                                    $training_C = $rowTraining['C'];
+                                                                    $training_C = htmlentities($rowTraining['C'] ?? '');
 
                                                                     echo '<tr>
-                                                                        <td>'.htmlentities($rowEmployee['e_last_name']).', '.htmlentities($rowEmployee['e_first_name']).'</td>
+                                                                        <td>'.htmlentities($rowEmployee['e_last_name'] ?? '').', '.htmlentities($rowEmployee['e_first_name'] ?? '').'</td>
                                                                         <td>'.$position.'</td>
-                                                                        <td><a href="#modalTraining" type="button" data-toggle="modal" onclick="btnTraining('.$employee_ID.', 1)">'.$rowTraining['C'].'</a></td>
-                                                                        <td><a href="#modalTraining" type="button" data-toggle="modal" onclick="btnTraining('.$employee_ID.', 2)">'.$rowTraining['NC'].'</a></td>
-                                                                        <td><a href="#modalTraining" type="button" data-toggle="modal" onclick="btnTraining('.$employee_ID.', 3)">'.$rowTraining['E'].'</a></td>
+                                                                        <td><a href="#modalTraining" type="button" data-toggle="modal" onclick="btnTraining('.$employee_ID.', 1)">'.htmlentities($rowTraining['C'] ?? '').'</a></td>
+                                                                        <td><a href="#modalTraining" type="button" data-toggle="modal" onclick="btnTraining('.$employee_ID.', 2)">'.htmlentities($rowTraining['NC'] ?? '').'</a></td>
+                                                                        <td><a href="#modalTraining" type="button" data-toggle="modal" onclick="btnTraining('.$employee_ID.', 3)">'.htmlentities($rowTraining['E'] ?? '').'</a></td>
                                                                     </tr>';
                                                                 }
                                                             }
@@ -296,11 +296,11 @@
                                                         <tr>
                                                             <th>Employee Name</th>
                                                             <th>Position</th>';
-                                                            $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE status = 1 AND deleted = 0 AND user_id = $switch_user_id" );
+                                                            $result = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_trainings WHERE status = 1 AND deleted = 0 AND user_id = $switch_user_id" );
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 $i=0;
                                                                 while($row = mysqli_fetch_array($result)) {
-                                                                    echo '<td><a href="#modalViewTraining" class="btn btn-link btn-sm" data-toggle="modal" onclick="btnViewTraining('.$row["ID"].')">'.htmlentities($row["title"]).'</a></td>';
+                                                                    echo '<td><a href="#modalViewTraining" class="btn btn-link btn-sm" data-toggle="modal" onclick="btnViewTraining('.$row["ID"].')">'.htmlentities($row["title"] ?? '').'</a></td>';
                                                                 }
                                                             }
                                                         echo '</tr>
@@ -309,10 +309,10 @@
                                                         $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE user_id = $switch_user_id AND suspended = 0 AND status = 1 ORDER BY last_name" );
                                                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                             while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
-                                                                $employee_ID = $rowEmployee['ID'];
-                                                                $employee_first_name = $rowEmployee['first_name'];
-                                                                $employee_last_name = $rowEmployee['last_name'];
-                                                                $employee_type = $rowEmployee['type_id'];
+                                                                $employee_ID = htmlentities($rowEmployee['ID'] ?? '');
+                                                                $employee_first_name = htmlentities($rowEmployee['first_name'] ?? '');
+                                                                $employee_last_name = htmlentities($rowEmployee['last_name'] ?? '');
+                                                                $employee_type = htmlentities($rowEmployee['type_id'] ?? '');
                                                                 $type_arr = array(
                                                                     1 => 'Full-time',
                                                                     2 => 'Part-time',
@@ -328,17 +328,17 @@
                                                                 if (!empty($jd)) {
                                                                     $jd_arr = explode(", ", $jd);
                                                                     foreach ($jd_arr as $value) {
-                                                                        $resultJD = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE ID = $value" );
+                                                                        $resultJD = mysqli_query( $conn,"SELECT title FROM tbl_hr_job_description WHERE ID = $value" );
                                                                         if ( mysqli_num_rows($resultJD) > 0 ) {
                                                                             $rowJD = mysqli_fetch_array($resultJD);
-                                                                            array_push($position, $rowJD["title"]);
+                                                                            array_push($position, htmlentities($rowJD["title"] ?? ''));
                                                                         }
                                                                     }
                                                                 }
                                                                 $position = implode(', ', $position);
     
                                                                 echo '<tr id="tr_'.$employee_ID.'">
-                                                                    <td><a href="#modalViewEmployee" class="btn btn-link btn-sm" data-toggle="modal" onclick="btnViewEmployee('.$employee_ID.')">'.htmlentities($employee_last_name).', '.htmlentities($employee_first_name).'</a></td>
+                                                                    <td><a href="#modalViewEmployee" class="btn btn-link btn-sm" data-toggle="modal" onclick="btnViewEmployee('.$employee_ID.')">'.$employee_last_name.', '.$employee_first_name.'</a></td>
                                                                     <td>'.$position.'</td>';
     
                                                                     $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE status = 1 AND deleted = 0 AND user_id = $switch_user_id" );
@@ -360,12 +360,12 @@
                                                                                 $completed_date = '';
                                                                                 $due_date = '';
     
-                                                                                $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = $employee_ID" );
+                                                                                $selectUser = mysqli_query( $conn,"SELECT ID FROM tbl_user WHERE employee_id = $employee_ID" );
                                                                                 if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                                     $rowUser = mysqli_fetch_array($selectUser);
                                                                                     $employee_user_ID = $rowUser['ID'];
     
-                                                                                    $selectQuizResult = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_result WHERE user_id = $employee_user_ID " );
+                                                                                    $selectQuizResult = mysqli_query( $conn,"SELECT ID, quiz_id, result, last_modified FROM tbl_hr_quiz_result WHERE user_id = $employee_user_ID " );
                                                                                     if ( mysqli_num_rows($selectQuizResult) > 0 ) {
                                                                                         while($rowQuizResult = mysqli_fetch_array($selectQuizResult)) {
                                                                                             $trainingResultID = $rowQuizResult['ID'];

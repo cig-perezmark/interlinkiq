@@ -16,665 +16,326 @@
     .table-scrollable .dataTable td>.btn-group, .table-scrollable .dataTable th>.btn-group {
         position: relative;
     }
+
+    #poss {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start; /* Adjusted to start from the top */
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            position: relative;
+        }
+
+    .draggable-container {
+        display: flex;
+        flex-direction: row; /* Changed to row for horizontal alignment */
+        gap: 10px;
+        width: 100%;
+        justify-content: center; /* Center horizontally */
+        margin-top: 10px; /* Add margin to separate from the top */
+    }
+
+    .draggable {
+        padding: 10px;
+        cursor: pointer;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        text-align: center;
+        width: 180px;
+        user-select: none;
+        transition: background-color 0.3s, border-color 0.3s;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .draggable::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: inherit;
+        filter: blur(5px);
+        z-index: -1;
+    }
+
+    .draggable:hover {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-color: #888;
+    }
+
+    #chart-container {
+        width: 120%;
+        max-width: 1100px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px; /* Add margin to separate from draggable items */
+    }
+
+    #chartdiv {
+        width: 110%;
+        height: 400px;
+    }
+
+    #initial-message {
+        margin-top: 10px;
+        color: #333;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    @media (max-width: 768px) {
+        #chart-container {
+            width: 110%;
+        }
+
+        .draggable {
+            width: 100px;
+            padding: 8px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        #chart-container {
+            width: 100%;
+        }
+
+        .draggable {
+            width: 80px;
+            padding: 6px;
+        }
+    }
+
+    #filledOutChart, #signedChart, #complianceChart, #frequencyChart {
+        width: 100%;
+        height: 450px;
+    }
+
+    #chartdiv3 {
+        width: 100%;
+        max-width: 90%; /* Set the maximum width for the chart */
+        height: 400px; /* Set the height for the chart */
+        margin: 0 auto; /* Center the chart */
+    }
 </style>
 
-
                     <div class="row">
-                        <?php
-                            function get_remote_file_info($url) {
-                                $ch = curl_init($url);
-                                curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-                                curl_setopt($ch, CURLOPT_HEADER, TRUE);
-                                curl_setopt($ch, CURLOPT_NOBODY, TRUE);
-                                $data = curl_exec($ch);
-                                $fileSize = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
-                                $httpResponseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                                curl_close($ch);
-                                return [
-                                    'fileExists' => (int) $httpResponseCode == 200,
-                                    'fileSize' => (int) $fileSize
-                                ];
-                            } 
 
-                            for ($i = 22; $i <= 22; $i++) {
-
-                                // Compliance Dashboard (file, references, compliance, review, template, video)
-                                // if ($i == 1) {
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_library_file WHERE deleted = 0 AND filetype = 1 AND LENGTH(files) > 0" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $sql_ID = $rowSQL["ID"];
-                                //         $sql_files = rawurlencode($rowSQL["files"]);
-                                //         $sql_url = $base_url.'uploads/library/'.$sql_files;
-
-                                //         $result = get_remote_file_info($sql_url);
-                                //         $bytes = $result['fileSize'];
-
-                                //         mysqli_query( $conn,"UPDATE tbl_library_file set filesize = $bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // } else if ($i == 2) {
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_library_references WHERE is_deleted = 0 AND filetype = 1 AND LENGTH(files) > 0" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $sql_ID = $rowSQL["ID"];
-                                //         $sql_files = rawurlencode($rowSQL["files"]);
-                                //         $sql_url = $base_url.'uploads/library/'.$sql_files;
-
-                                //         $result = get_remote_file_info($sql_url);
-                                //         $bytes = $result['fileSize'];
-
-                                //         mysqli_query( $conn,"UPDATE tbl_library_references set filesize = $bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // } else if ($i == 3) {
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_library_review WHERE is_deleted = 0 AND filetype = 1 AND LENGTH(files) > 0" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $sql_ID = $rowSQL["ID"];
-                                //         $sql_files = rawurlencode($rowSQL["files"]);
-                                //         $sql_url = $base_url.'uploads/library/'.$sql_files;
-
-                                //         $result = get_remote_file_info($sql_url);
-                                //         $bytes = $result['fileSize'];
-
-                                //         mysqli_query( $conn,"UPDATE tbl_library_review set filesize = $bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // } else if ($i == 22) {
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_library_compliance WHERE filetype = 1 AND LENGTH(files) > 0" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $sql_ID = $rowSQL["ID"];
-                                //         $sql_files = rawurlencode($rowSQL["files"]);
-                                //         $sql_url = $base_url.'uploads/library/'.$sql_files;
-
-                                //         $result = get_remote_file_info($sql_url);
-                                //         $bytes = $result['fileSize'];
-
-                                //         mysqli_query( $conn,"UPDATE tbl_library_compliance set filesize = $bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // } else if ($i == 4) {
-                                // //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_library_template WHERE is_deleted = 0 AND filetype = 1 AND LENGTH(files) > 0" );
-                                // //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                // //         $sql_ID = $rowSQL["ID"];
-                                // //         $sql_files = rawurlencode($rowSQL["files"]);
-                                // //         $sql_url = $base_url.'uploads/library/'.$sql_files;
-
-                                // //         $result = get_remote_file_info($sql_url);
-                                // //         $bytes = $result['fileSize'];
-
-                                // //         mysqli_query( $conn,"UPDATE tbl_library_template set filesize = $bytes WHERE ID = $sql_ID" );
-                                // //     }
-                                // } else if ($i == 5) {
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_library_video WHERE is_deleted = 0 AND type = 0 AND LENGTH(files) > 0" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $sql_ID = $rowSQL["ID"];
-                                //         $sql_files = rawurlencode($rowSQL["files"]);
-                                //         $sql_url = $base_url.'uploads/library/'.$sql_files;
-                                        
-                                //         // echo $sql_url .'<br>';
-                                         
-                                //         $result = get_remote_file_info($sql_url);
-                                //         // $result = get_remote_file_info('https://interlinkiq.com/uploads/library/299838%20-%20UNO-SHOPE-110722-Picking-List.pdf');
-                                //         $bytes = $result['fileSize'];
-
-                                //         mysqli_query( $conn,"UPDATE tbl_library_video set filesize = $bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // }
-
-                                // HR (department, file, job description, training)
-                                // if ($i == 6) {
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND filetype = 1 AND LENGTH(files) > 0" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $sql_ID = $rowSQL["ID"];
-                                //         $sql_files = rawurlencode($rowSQL["files"]);
-                                //         $sql_url = $base_url.'uploads/'.$sql_files;
-
-                                //         $result = get_remote_file_info($sql_url);
-                                //         $bytes = $result['fileSize'];
-
-                                //         mysqli_query( $conn,"UPDATE tbl_hr_department set filesize = $bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // } else if ($i == 7) {
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_hr_file WHERE deleted = 0 AND filetype = 1 AND LENGTH(files) > 0" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $sql_ID = $rowSQL["ID"];
-                                //         $sql_files = rawurlencode($rowSQL["files"]);
-                                //         $sql_url = $base_url.'uploads/hr/'.$sql_files;
-
-                                //         $result = get_remote_file_info($sql_url);
-                                //         $bytes = $result['fileSize'];
-
-                                //         mysqli_query( $conn,"UPDATE tbl_hr_file set filesize = $bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // } else if ($i == 8) {
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE filetype = 1 AND LENGTH(files) > 0" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $sql_ID = $rowSQL["ID"];
-                                //         $sql_files = rawurlencode($rowSQL["files"]);
-                                //         $sql_url = $base_url.'uploads/'.$sql_files;
-
-                                //         $result = get_remote_file_info($sql_url);
-                                //         $bytes = $result['fileSize'];
-
-                                //         mysqli_query( $conn,"UPDATE tbl_hr_job_description set filesize = $bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // } else if ($i == 9) {
-                                //     // $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE deleted = 0 AND LENGTH(files) > 0" );
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE deleted = 0 AND files LIKE '%file_doc%'" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $sql_ID = $rowSQL["ID"];
-                                //         $sql_bytes = 0;
-                                //         $sql_files_arr = json_decode($rowSQL["files"],true);
-
-                                //         foreach ($sql_files_arr as $key => $value) {
-                                //             $filetype = 1;
-                                //             if (!empty($value['file_type'])) { $filetype = $value['file_type']; }
-
-                                //             if ($filetype == 1) {
-                                //                 if (!empty($value['file_doc'])) {
-                                //                     $sql_files = rawurlencode($value['file_doc']);
-                                //                     $sql_url = $base_url.'uploads/'.$sql_files;
-
-                                //                     $result = get_remote_file_info($sql_url);
-                                //                     $bytes = $result['fileSize'];
-
-                                //                     if ($bytes > 0) { $sql_bytes += $bytes; }
-                                //                 }
-                                //             }
-                                //         }
-
-                                //         mysqli_query( $conn,"UPDATE tbl_hr_trainings set filesize = $sql_bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // }
-                                
-                                // Customer/Supplier Module
-                                // if ($i == 10) {
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_supplier WHERE is_deleted = 0" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $sql_ID = $rowSQL["ID"];
-                                //         $bytes = 0;
-
-                                //         if (!empty($rowSQL["audit_report"])) {
-                                //             $sql_audit_report_arr = explode(' | ', $rowSQL["audit_report"]);
-                                //             $sql_audit_report_files = rawurlencode($sql_audit_report_arr[0]);
-
-                                //             $sql_audit_report_url = $base_url.'uploads/supplier/'.$sql_audit_report_files;
-                                //             $sql_audit_report_result = get_remote_file_info($sql_audit_report_url);
-                                //             if ($sql_audit_report_result['fileSize'] > 0) { $bytes += $sql_audit_report_result['fileSize']; }
-                                //         }
-
-                                //         if (!empty($rowSQL["audit_certificate"])) {
-                                //             $sql_audit_certificate_arr = explode(' | ', $rowSQL["audit_certificate"]);
-                                //             $sql_audit_certificate_files = rawurlencode($sql_audit_certificate_arr[0]);
-
-                                //             $sql_audit_certificate_url = $base_url.'uploads/supplier/'.$sql_audit_certificate_files;
-                                //             $sql_audit_certificate_result = get_remote_file_info($sql_audit_certificate_url);
-                                //             if ($sql_audit_certificate_result['fileSize'] > 0) { $bytes += $sql_audit_certificate_result['fileSize']; }
-                                //         }
-
-                                //         if (!empty($rowSQL["audit_action"])) {
-                                //             $sql_audit_action_arr = explode(' | ', $rowSQL["audit_action"]);
-                                //             $sql_audit_action_files = rawurlencode($sql_audit_action_arr[0]);
-
-                                //             $sql_audit_action_url = $base_url.'uploads/supplier/'.$sql_audit_action_files;
-                                //             $sql_audit_action_result = get_remote_file_info($sql_audit_action_url);
-                                //             if ($sql_audit_action_result['fileSize'] > 0) { $bytes += $sql_audit_action_result['fileSize']; }
-                                //         }
-
-                                //         mysqli_query( $conn,"UPDATE tbl_supplier set audit_filesize = $bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // } else if ($i == 11) {
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_supplier_document WHERE filetype = 1 AND LENGTH(file) > 0" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $sql_ID = $rowSQL["ID"];
-                                //         $sql_files = rawurlencode($rowSQL["file"]);
-                                //         $sql_url = $base_url.'uploads/supplier/'.$sql_files;
-
-                                //         $result = get_remote_file_info($sql_url);
-                                //         $bytes = $result['fileSize'];
-
-                                //         mysqli_query( $conn,"UPDATE tbl_supplier_document set filesize = $bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // } else if ($i == 12) {
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_supplier_material" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $sql_ID = $rowSQL["ID"];
-                                //         $sql_files = rawurlencode($rowSQL["spec_file"]);
-                                //         $sql_url = $base_url.'uploads/supplier/'.$sql_files;
-
-                                //         $bytes = 0;
-                                //         if (!empty($sql_files)) {
-                                //             $result = get_remote_file_info($sql_url);
-                                //             $bytes = $result['fileSize'];
-                                //         }
-
-                                //         $sql_bytes = 0;
-                                //         if (!empty($rowSQL["other"])) {
-                                //             $sql_files_arr = json_decode($rowSQL["other"],true);
-                                //             foreach ($sql_files_arr as $key => $value) {
-                                //                 if (!empty($value['material_file_doc'])) {
-                                //                     $sql_files = rawurlencode($value['material_file_doc']);
-                                //                     $sql_url = $base_url.'uploads/supplier/'.$sql_files;
-
-                                //                     $result = get_remote_file_info($sql_url);
-                                //                     $bytes_other = $result['fileSize'];
-
-                                //                     if ($bytes_other > 0) { $sql_bytes += $bytes_other; }
-                                //                 }
-                                //             }
-                                //         }
-
-                                //         mysqli_query( $conn,"UPDATE tbl_supplier_material set spec_filesize = $bytes, other_filesize = $sql_bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // } else if ($i == 13) {
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_supplier_regulatory WHERE deleted = 0 AND filetype = 1 AND LENGTH(files) > 0" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $sql_ID = $rowSQL["ID"];
-                                //         $sql_files = rawurlencode($rowSQL["files"]);
-                                //         $sql_url = $base_url.'uploads/supplier/'.$sql_files;
-
-                                //         $result = get_remote_file_info($sql_url);
-                                //         $bytes = $result['fileSize'];
-
-                                //         mysqli_query( $conn,"UPDATE tbl_supplier_regulatory set filesize = $bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // } else if ($i == 14) {
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_supplier_service" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $sql_ID = $rowSQL["ID"];
-                                //         $sql_files = rawurlencode($rowSQL["spec_file"]);
-                                //         $sql_url = $base_url.'uploads/supplier/'.$sql_files;
-
-                                //         $bytes = 0;
-                                //         if (!empty($sql_files)) {
-                                //             $result = get_remote_file_info($sql_url);
-                                //             $bytes = $result['fileSize'];
-                                //         }
-
-                                //         $sql_bytes = 0;
-                                //         if(!empty($rowSQL["other"])) {
-                                //             $sql_files_arr = json_decode($rowSQL["other"],true);
-                                //             foreach ($sql_files_arr as $key => $value) {
-                                //                 if (!empty($value['service_file_doc'])) {
-                                //                     $sql_files = rawurlencode($value['service_file_doc']);
-                                //                     $sql_url = $base_url.'uploads/supplier/'.$sql_files;
-    
-                                //                     $result = get_remote_file_info($sql_url);
-                                //                     $bytes_other = $result['fileSize'];
-    
-                                //                     if ($bytes_other > 0) { $sql_bytes += $bytes_other; }
-                                //                 }
-                                //             }
-                                //         }
-
-                                //         mysqli_query( $conn,"UPDATE tbl_supplier_service set spec_filesize = $bytes, other_filesize = $sql_bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // } else if ($i == 15) {
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_supplier_template WHERE filetype = 1 AND LENGTH(file) > 0" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $sql_ID = $rowSQL["ID"];
-                                //         $sql_files = rawurlencode($rowSQL["file"]);
-                                //         $sql_url = $base_url.'uploads/supplier/'.$sql_files;
-
-                                //         $result = get_remote_file_info($sql_url);
-                                //         $bytes = $result['fileSize'];
-
-                                //         mysqli_query( $conn,"UPDATE tbl_supplier_template set filesize = $bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // }
-                                
-                                // Products
-                                // if ($i == 16) {
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_products" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $bytes = 0;
-                                //         $sql_ID = $rowSQL["ID"];
-
-                                //         $sql_image_arr = explode(', ', $rowSQL["image"]);
-                                //         foreach ($sql_image_arr as $value) {
-                                //             if (!empty($value)) {
-                                //                 $sql_files = rawurlencode($value);
-                                //                 $sql_url = $base_url.'uploads/products/'.$sql_files;
-
-                                //                 $result = get_remote_file_info($sql_url);
-                                //                 if ($result['fileSize'] > 0) { $bytes += $result['fileSize']; }
-                                                
-                                //             }
-                                //         }
-
-                                //         if (!empty($rowSQL["specifcation"])) {
-                                //             $sql_files = rawurlencode($rowSQL["specifcation"]);
-                                //             $sql_url = $base_url.'uploads/products/'.$sql_files;
-
-                                //             $result = get_remote_file_info($sql_url);
-                                //             if ($result['fileSize'] > 0) { $bytes += $result['fileSize']; }
-                                //         }
-
-                                //         if (!empty($rowSQL["artwork"])) {
-                                //             $sql_files = rawurlencode($rowSQL["artwork"]);
-                                //             $sql_url = $base_url.'uploads/products/'.$sql_files;
-
-                                //             $result = get_remote_file_info($sql_url);
-                                //             if ($result['fileSize'] > 0) { $bytes += $result['fileSize']; }
-                                //         }
-
-                                //         if (!empty($rowSQL["haccp"])) {
-                                //             $sql_files = rawurlencode($rowSQL["haccp"]);
-                                //             $sql_url = $base_url.'uploads/products/'.$sql_files;
-
-                                //             $result = get_remote_file_info($sql_url);
-                                //             if ($result['fileSize'] > 0) { $bytes += $result['fileSize']; }
-                                //         }
-
-                                //         if (!empty($rowSQL["label"])) {
-                                //             $sql_files = rawurlencode($rowSQL["label"]);
-                                //             $sql_url = $base_url.'uploads/products/'.$sql_files;
-
-                                //             $result = get_remote_file_info($sql_url);
-                                //             if ($result['fileSize'] > 0) { $bytes += $result['fileSize']; }
-                                //         }
-
-                                //         if (!empty($rowSQL["formulation"])) {
-                                //             $sql_files = rawurlencode($rowSQL["formulation"]);
-                                //             $sql_url = $base_url.'uploads/products/'.$sql_files;
-
-                                //             $result = get_remote_file_info($sql_url);
-                                //             if ($result['fileSize'] > 0) { $bytes += $result['fileSize']; }
-                                //         }
-
-                                //         if (!empty($rowSQL["docs"])) {
-                                //             $sql_files_arr = json_decode($rowSQL["docs"],true);
-                                //             foreach ($sql_files_arr as $key => $value) {
-                                //                 if (!empty($value['docs_file'])) {
-                                //                     $sql_files = rawurlencode($value['docs_file']);
-                                //                     $sql_url = $base_url.'uploads/products/'.$sql_files;
-
-                                //                     $result = get_remote_file_info($sql_url);
-                                //                     if ($result['fileSize'] > 0) { $bytes += $result['fileSize']; }
-                                //                 }
-                                //             }
-                                //         }
-
-                                //         mysqli_query( $conn,"UPDATE tbl_products set files = $bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // }
-
-                                // Service
-                                // if ($i == 17) {
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_service" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $bytes = 0;
-                                //         $sql_ID = $rowSQL["ID"];
-
-                                //         if (!empty($rowSQL["files"])) {
-                                //             $sql_files_arr = json_decode($rowSQL["files"],true);
-                                //             foreach ($sql_files_arr as $key => $value) {
-                                //                 if (!empty($value['file_offering'])) {
-                                //                     $sql_files = rawurlencode($value['file_offering']);
-                                //                     $sql_url = $base_url.'uploads/services/'.$sql_files;
-
-                                //                     $result = get_remote_file_info($sql_url);
-                                //                     if ($result['fileSize'] > 0) { $bytes += $result['fileSize']; }
-                                //                 }
-                                //             }
-                                //         }
-
-                                //         mysqli_query( $conn,"UPDATE tbl_service set filesize = $bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // }
-
-                                // Archive
-                                // if ($i == 18) {
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_archiving WHERE filetype = 1 AND LENGTH(files) > 0" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $bytes = 0;
-                                //         $sql_ID = $rowSQL["ID"];
-                                //         $sql_files = rawurlencode($rowSQL["files"]);
-                                //         $sql_url = $base_url.'uploads/archiving/'.$sql_files;
-
-                                //         $result = get_remote_file_info($sql_url);
-                                //         if ($result['fileSize'] > 0) { $bytes += $result['fileSize']; }
-
-                                //         mysqli_query( $conn,"UPDATE tbl_archiving set filesize = $bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // }
-
-                                // Library
-                                // if ($i == 19) {
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_lib WHERE filetype = 1 AND LENGTH(files) > 0" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $bytes = 0;
-                                //         $sql_ID = $rowSQL["ID"];
-                                //         $sql_files = rawurlencode($rowSQL["files"]);
-                                //         $sql_url = $base_url.'uploads/lib/'.$sql_files;
-
-                                //         $result = get_remote_file_info($sql_url);
-                                //         if ($result['fileSize'] > 0) { $bytes += $result['fileSize']; }
-
-                                //         mysqli_query( $conn,"UPDATE tbl_lib set filesize = $bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // }
-
-                                // RVM
-                                // if ($i == 20) {
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_eforms WHERE filetype = 1 AND LENGTH(files) > 0" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $bytes = 0;
-                                //         $sql_ID = $rowSQL["ID"];
-                                //         $sql_files = rawurlencode($rowSQL["files"]);
-                                //         $sql_url = $base_url.'uploads/eforms/'.$sql_files;
-
-                                //         $result = get_remote_file_info($sql_url);
-                                //         if ($result['fileSize'] > 0) { $bytes += $result['fileSize']; }
-
-                                //         mysqli_query( $conn,"UPDATE tbl_eforms set filesize = $bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // }
-
-                                // FFVA
-                                // if ($i == 21) {
-                                //     $sql_select = mysqli_query( $conn,"SELECT * FROM tbl_ffva" );
-                                //     while($rowSQL = mysqli_fetch_array($sql_select)) {
-                                //         $bytes = 0;
-                                //         $sql_ID = $rowSQL["ID"];
-
-                                //         $sql_files_likelihood = explode(' | ', $rowSQL["likelihood_file"]);
-                                //         foreach ($sql_files_likelihood as $value) {
-                                //             if (!empty($value)) {
-                                //                 $sql_files = rawurlencode($value);
-                                //                 $sql_url = $base_url.'uploads/ffva/'.$sql_files;
-
-                                //                 $result = get_remote_file_info($sql_url);
-                                //                 if ($result['fileSize'] > 0) { $bytes += $result['fileSize']; }
-                                                
-                                //             }
-                                //         }
-
-                                //         $likelihood_file_other = explode(' | ', $rowSQL["likelihood_file_other"]);
-                                //         foreach ($likelihood_file_other as $value) {
-                                //             if (!empty($value)) {
-                                //                 $sql_files = rawurlencode($value);
-                                //                 $sql_url = $base_url.'uploads/ffva/'.$sql_files;
-
-                                //                 $result = get_remote_file_info($sql_url);
-                                //                 if ($result['fileSize'] > 0) { $bytes += $result['fileSize']; }
-                                                
-                                //             }
-                                //         }
-
-                                //         $sql_files_consequence = explode(' | ', $rowSQL["consequence_file"]);
-                                //         foreach ($sql_files_consequence as $value) {
-                                //             if (!empty($value)) {
-                                //                 $sql_files = rawurlencode($value);
-                                //                 $sql_url = $base_url.'uploads/ffva/'.$sql_files;
-
-                                //                 $result = get_remote_file_info($sql_url);
-                                //                 if ($result['fileSize'] > 0) { $bytes += $result['fileSize']; }
-                                                
-                                //             }
-                                //         }
-
-                                //         $sql_files_consequence_other = explode(' | ', $rowSQL["consequence_file_other"]);
-                                //         foreach ($sql_files_consequence_other as $value) {
-                                //             if (!empty($value)) {
-                                //                 $sql_files = rawurlencode($value);
-                                //                 $sql_url = $base_url.'uploads/ffva/'.$sql_files;
-
-                                //                 $result = get_remote_file_info($sql_url);
-                                //                 if ($result['fileSize'] > 0) { $bytes += $result['fileSize']; }
-                                                
-                                //             }
-                                //         }
-
-                                //         mysqli_query( $conn,"UPDATE tbl_ffva set filesize = $bytes WHERE ID = $sql_ID" );
-                                //     }
-                                // }
-                            }
-                        ?>
-                        <div class="col-md-3">
-                            <div class="portlet light portlet-fit">
-                                <div class="portlet-body">
-                                    <div class="table-scrollable">
-                                        <table class="table table-bordered table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>Department / Area</th>
-                                                    <th>No. of Records</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <?php
-                                                        $result = mysqli_query( $conn,"SELECT * FROM tbl_eforms_department ORDER BY name" );
-                                                        if ( mysqli_num_rows($result) > 0 ) {
-                                                            while($row = mysqli_fetch_array($result)) {
-                                                                $ID = $row['ID'];
-                                                                $name = htmlentities($row['name']);
-                                                                $records = 0;
-
-                                                                $selectEForm = mysqli_query( $conn,'SELECT * FROM tbl_eforms WHERE user_id="'.$switch_user_id.'" AND department_id="'. $ID .'"' );
-                                                                if ( mysqli_num_rows($selectEForm) > 0 ) {
-                                                                    while($row = mysqli_fetch_array($selectEForm)) {
-                                                                        $records++;
-                                                                    }
-                                                                }
-
-                                                                if ($records > 0) {
-                                                                    echo '<tr id="tr_'. $ID .'" onclick="btnViewDepartment('. $ID .', '.$FreeAccess.')">
-                                                                        <td>'. $name .'</td>
-                                                                        <td>'. $records .'</td>
-                                                                    </tr>';
-                                                                }
-                                                            }
-                                                        }
-                                                    ?>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <?php echo '<button class="btn btn-success hide" id="tableDataViewAll" onclick="btnViewDepartmentViewAll('.$switch_user_id.', '.$FreeAccess.')">View All</button>'; ?>
-
-                                </div>
+                        <div class="col-md-12">
+                            <div class="actions">
+                               <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a href="#records" data-toggle="tab"> Records</a>
+                                    </li>                                                                
+                                    <li>
+                                        <a href="#rvm_analytics" data-toggle="tab">Analytics </a>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
-                        <div class="col-md-9">
-                            <div class="portlet light portlet-fit">
-                                <div class="portlet-title">
-                                    <div class="caption">
-                                        <i class="icon-docs font-dark"></i>
-                                        <span class="caption-subject font-dark bold uppercase">Records Verification Management</span>
-                                        <?php
-                                            if($current_client == 0) {
-                                                // $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site' AND (user_id = $switch_user_id OR user_id = $current_userEmployerID OR user_id = 163)");
-                                                $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site'");
-                                                while ($row = mysqli_fetch_assoc($result)) {
-                                                    $type_id = $row["type"];
-                                                    $file_title = $row["file_title"];
-                                                    $video_url = $row["youtube_link"];
-                                                    
-                                                    $file_upload = $row["file_upload"];
-                                                    if (!empty($file_upload)) {
-                                        	            $fileExtension = fileExtension($file_upload);
-                                        				$src = $fileExtension['src'];
-                                        				$embed = $fileExtension['embed'];
-                                        				$type = $fileExtension['type'];
-                                        				$file_extension = $fileExtension['file_extension'];
-                                        	            $url = $base_url.'uploads/instruction/';
-                                        
-                                                		$file_url = $src.$url.rawurlencode($file_upload).$embed;
-                                                    }
-                                                    
-                                                    $icon = $row["icon"];
-                                                    if (!empty($icon)) { echo '<img src="'.$src.$url.rawurlencode($icon).'" style="width: 32px; height: 32px; object-fit: contain; object-position: center;" />'; }
-                                                    if ($type_id == 0) {
-                                                        echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'">'.$file_title.'</a>';
-                                                    } else {
-                                                        echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox>'.$file_title.'</a>';
-                                                    }
-	                                            }
-                                            }
-                                        ?>
-                                    </div>
-                                    <div class="actions">
-                                        <div class="btn-group">
-                                            <a class="btn dark btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions
-                                                <i class="fa fa-angle-down"></i>
-                                            </a>
-                                            <ul class="dropdown-menu pull-right">
-                                                <li>
-                                                    <a data-toggle="modal" href="<?php echo $FreeAccess == false ? '#modalNew':'#modalService'; ?>" >Add New RVM</a>
-                                                </li>
-                                                <?php if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163): ?>
-                                                    <li>
-                                                        <a data-toggle="modal" data-target="#modalInstruction" onclick="btnInstruction()">Add New Instruction</a>
-                                                    </li>
-                                                <?php endif; ?>
-                                            </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="records">
+                                <div class="col-md-3">
+                                    <div class="portlet light portlet-fit">
+                                        <div class="portlet-body">
+                                            <div class="table-scrollable">
+                                                <table class="table table-bordered table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Department / Area</th>
+                                                            <th>No. of Records</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <?php
+                                                                $result = mysqli_query( $conn,"SELECT ID, name FROM tbl_eforms_department ORDER BY name" );
+                                                                if ( mysqli_num_rows($result) > 0 ) {
+                                                                    while($row = mysqli_fetch_array($result)) {
+                                                                        $ID = htmlentities($row['ID'] ?? '');
+                                                                        $name = htmlentities($row['name'] ?? '');
+                                                                        $records = 0;
+
+                                                                        $selectEForm = mysqli_query( $conn,'SELECT ID FROM tbl_eforms WHERE user_id="'.$switch_user_id.'" AND department_id="'. $ID .'"' );
+                                                                        if ( mysqli_num_rows($selectEForm) > 0 ) {
+                                                                            while($row = mysqli_fetch_array($selectEForm)) {
+                                                                                $records++;
+                                                                            }
+                                                                        }
+
+                                                                        if ($records > 0) {
+                                                                            echo '<tr id="tr_'. $ID .'" onclick="btnViewDepartment('. $ID .', '.$FreeAccess.')">
+                                                                                <td>'. $name .'</td>
+                                                                                <td>'. $records .'</td>
+                                                                            </tr>';
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ?>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <?php echo '<button class="btn btn-success hide" id="tableDataViewAll" onclick="btnViewDepartmentViewAll('.$switch_user_id.', '.$FreeAccess.')">View All</button>'; ?>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="portlet-body">
-                                    <div class="table-scrollable" style="border: 0;">
-                                        <table class="table table-bordered table-hover" id="tableData">
-                                            <thead>
-                                                <tr>
-                                                    <th>Record Name</th>
-                                                    <th>Date Uploaded</th>
-                                                    <th>Verified By</th>
-                                                    <th style="width: 135px;"></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                    $result = mysqli_query( $conn,"SELECT * FROM tbl_eforms WHERE user_id=$switch_user_id ORDER BY files_date DESC" );
-                                                    if ( mysqli_num_rows($result) > 0 ) {
-                                                        while($row = mysqli_fetch_array($result)) {
-                                                            $ID = $row['ID'];
-                                                            $record = htmlentities($row['record']);
-                                                            $files_date = htmlentities($row['files_date']);
-                                                            $verified_by = htmlentities($row['verified_by']);
+                                <div class="col-md-9">
+                                    <div class="portlet light portlet-fit">
+                                        <div class="portlet-title">
+                                            <div class="caption">
+                                                <i class="icon-docs font-dark"></i>
+                                                <span class="caption-subject font-dark bold uppercase">Records Verification Management</span>
+                                            </div>
+                                            <div class="actions">
+                                                <div class="btn-group">
+                                                    <a class="btn dark btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions
+                                                        <i class="fa fa-angle-down"></i>
+                                                    </a>
+                                                    <ul class="dropdown-menu pull-right">
+                                                        <li>
+                                                            <a data-toggle="modal" href="<?php echo $FreeAccess == false ? '#modalNew':'#modalService'; ?>" >Add New RVM</a>
+                                                        </li>
+                                                        <li class="divider"> </li>
+                                                        <li>
+                                                            <a href="javascript:;">Option 2</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="javascript:;">Option 3</a>
+                                                        </li>
+                                                        <li>
+                                                            <a href="javascript:;">Option 4</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="portlet-body">
+                                            <div class="table-scrollable" style="border: 0;">
+                                                <table class="table table-bordered table-hover" id="tableData">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Record Name</th>
+                                                            <th>Date Uploaded</th>
+                                                            <th>Verified By</th>
+                                                            <th style="width: 135px;"></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php
+                                                            $result = mysqli_query( $conn,"SELECT ID, record, files_date, verified_by FROM tbl_eforms WHERE user_id=$switch_user_id ORDER BY files_date DESC" );
+                                                            if ( mysqli_num_rows($result) > 0 ) {
+                                                                while($row = mysqli_fetch_array($result)) {
+                                                                    $ID = htmlentities($row['ID'] ?? '');
+                                                                    $record = htmlentities($row['record'] ?? '');
+                                                                    $files_date = htmlentities($row['files_date'] ?? '');
+                                                                    $verified_by = htmlentities($row['verified_by'] ?? '');
 
-                                                            echo '<tr id="tr_'. $ID .'">
-                                                                <td>'. $record .'</td>
-                                                                <td>'. $files_date .'</td>
-                                                                <td>'. $verified_by .'</td>
-                                                                <td class="text-center">';
+                                                                    echo '<tr id="tr_'. $ID .'">
+                                                                        <td>'. $record .'</td>
+                                                                        <td>'. $files_date .'</td>
+                                                                        <td>'. $verified_by .'</td>
+                                                                        <td class="text-center">';
 
-                                                                    if ($FreeAccess == false) {
-                                                                        echo '<div class="btn-group btn-group-circle">
-                                                                            <a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit('. $ID.')">Edit</a>
-                                                                            <a href="#modalViewFile" class="btn btn-success btn-sm btnView" data-toggle="modal" onclick="btnView('. $ID .', '.$FreeAccess.')">View</a>
-                                                                        </div>';
-                                                                    } else {
-                                                                        echo '<a href="#modalViewFile" class="btn btn-success btn-sm btnView btn-circle" data-toggle="modal" onclick="btnView('. $ID .', '.$FreeAccess.')">View</a>';
-                                                                    }
+                                                                            if ($FreeAccess == false) {
+                                                                                echo '<div class="btn-group btn-group-circle">
+                                                                                    <a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit('. $ID.')">Edit</a>
+                                                                                    <a href="#modalViewFile" class="btn btn-success btn-sm btnView" data-toggle="modal" onclick="btnView('. $ID .', '.$FreeAccess.')">View</a>
+                                                                                </div>';
+                                                                            } else {
+                                                                                echo '<a href="#modalViewFile" class="btn btn-success btn-sm btnView btn-circle" data-toggle="modal" onclick="btnView('. $ID .', '.$FreeAccess.')">View</a>';
+                                                                            }
 
-                                                                echo '</td>
-                                                            </tr>';
-                                                        }
-                                                    }
-                                                ?>
-                                            </tbody>
-                                        </table>
+                                                                        echo '</td>
+                                                                    </tr>';
+                                                                }
+                                                            }
+                                                        ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="tab-pane" id="rvm_analytics">
+                                <div class="widget-row">  
+                                    <div class="col-md-12">
+                                        <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">
+                                            <div class="widget-thumb-wrap">
+                                                <h3 class="d-flex justify-content-center">Frequency of Collection</h3>
+                                                <div id="frequencyChart" style="width: 100%; height: 500px;"></div>
+                                            </div>
+                                        </div> 
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">
+                                            <!--<h4 class="widget-thumb-heading"></h4>-->
+                                            <h3 class="d-flex justify-content-center">Properly Filled Out</h3>
+                                            <div class="widget-thumb-wrap">
+                                                <div id="filledOutChart" style="width: 100%; height: 500px;"></div>
+                                            </div>
+                                        </div>
+                                        <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">
+                                            <div class="widget-thumb-wrap">
+                                                <h3 class="d-flex justify-content-center">Compliant</h3>
+                                                <div id="complianceChart" style="width: 100%; height: 500px;"></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-0 hide">
+                                            <div class="widget-thumb-wrap" id="poss">
+                                                <h3>RVM Chart</h3>
+                                                <div class="draggable-container">
+                                                    <div class="draggable" draggable="true" data-field="filled_out" style="background-color: #023e8a;">Properly Filled Out</div>
+                                                    <div class="draggable" draggable="true" data-field="signed" style="background-color: #0077b6;">Properly Signed</div>
+                                                    <div class="draggable" draggable="true" data-field="compliance" style="background-color: #0096c7;">Compliant</div>
+                                                    <div class="draggable" draggable="true" data-field="frequency" style="background-color: #00b4d8;">Frequency of Collection</div>
+                                                    <!-- <div class="draggable" draggable="true" data-field="assigned_count" style="background-color: #48cae4;">Assigned</div> -->
+                                                </div>
+                                                <div id="chart-container">
+                                                    <div id="chartdiv"></div>
+                                                    <div id="initial-message">Drag and drop an item to see the results or click on an item</div>
+                                                </div>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                      
+                                    <div class="col-md-6">
+                                        <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">
+                                            <!--<h4 class="widget-thumb-heading"></h4>-->
+                                            <h3 class="d-flex justify-content-center">Properly Signed</h3>
+                                            <div class="widget-thumb-wrap">
+                                                <div id="signedChart" style="width: 100%; height: 500px;"></div>
+                                            </div>
+                                        </div>      
+                                                                               
+                                        <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">
+                                            <h3 class="d-flex justify-content-center">Assigned Form</h3>
+                                            <div class="widget-thumb-wrap">
+                                                <div id="assignedtochart" style="width: 100%; height: 500px;"></div>
+                                            </div>
+                                        </div>  
+
+                                        <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 hide">
+                                            <h3 class="d-flex justify-content-center">Assigned to</h3>
+                                            <div class="widget-thumb-wrap">
+                                                <div id="chartdiv3" style="width: 100%; height: 500px;"></div>
+                                            </div>
+                                        </div>  
+                                    </div>                                                    
+                                </div>
+                            </div>
                         </div>
+
+
 
                         <!-- MODAL SERVICE -->
                         <div class="modal fade" id="modalNew" tabindex="-1" role="basic" aria-hidden="true">
@@ -693,10 +354,10 @@
                                                         <select class="form-control select2" name="department_id" onchange="changeDepartment(this, 1)" style="width: 100%;" required>
                                                             <option value="">Select</option>
                                                             <?php
-                                                                $result = mysqli_query($conn,"SELECT * FROM tbl_eforms_department WHERE user_id = $switch_user_id ORDER BY name");
+                                                                $result = mysqli_query($conn,"SELECT ID, name FROM tbl_eforms_department WHERE user_id = $switch_user_id ORDER BY name");
                                                                 while($row = mysqli_fetch_array($result)) {
-                                                                    $ID = $row['ID'];
-                                                                    $name = htmlentities($row['name']);
+                                                                    $ID = htmlentities($row['ID'] ?? '');
+                                                                    $name = htmlentities($row['name'] ?? '');
                                                                     echo '<option value="'. $ID .'">'. $name .'</option>';
                                                                 }
                                                             ?>
@@ -716,12 +377,12 @@
                                                         <label class="control-label">Assigned To</label>
                                                         <select class="form-control mt-multiselect btn btn-default" name="assigned_to_id[]" multiple="multiple" required>
                                                             <?php
-                                                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id=$switch_user_id" );
+                                                                $selectEmployee = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_hr_employee WHERE status = 1 AND user_id=$switch_user_id" );
                                                                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                                         $rowEmployeeID = $rowEmployee["ID"];
-                                                                        $rowEmployeeFName = htmlentities($rowEmployee["first_name"]);
-                                                                        $rowEmployeeLName = htmlentities($rowEmployee["last_name"]);
+                                                                        $rowEmployeeFName = htmlentities($rowEmployee["first_name"] ?? '');
+                                                                        $rowEmployeeLName = htmlentities($rowEmployee["last_name"] ?? '');
 
                                                                         echo '<option value="'. $rowEmployeeID .'">'. $rowEmployeeFName .' '. $rowEmployeeLName .'</option>';
                                                                     }
@@ -894,55 +555,7 @@
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                                         <h4 class="modal-title">Records Verification Management</h4>
                                     </div>
-                                    <div class="modal-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                file
-                                            </div>
-                                            <div class="col-md-6">
-                                                <table class="table table-bordered table-hover">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td>Record Name</td>
-                                                            <td><strong>q</strong></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Description</td>
-                                                            <td><strong>w</strong></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Filled Out</td>
-                                                            <td><strong>e</strong></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Signed</td>
-                                                            <td><strong>r</strong></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Frequency of Collection</td>
-                                                            <td><strong>t</strong></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Compliance</td>
-                                                            <td><strong>y</strong></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Date Uploaded</td>
-                                                            <td><strong>u</strong></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Verified By</td>
-                                                            <td><strong>i</strong></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td>Notes</td>
-                                                            <td><strong>o</strong></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div class="modal-body"></div>
                                     <div class="modal-footer">
                                         <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
                                     </div>
@@ -951,96 +564,27 @@
                         </div>
 
                         <!-- / END MODAL AREA -->
-                        
-                        <!--Emjay modal-->
-                        
-                        <div class="modal fade" id="modal_video" tabindex="-1" role="dialog" aria-hidden="true">
-                            <div class="modal-dialog modal-sm">
-                                <div class="modal-content">
-                                    <form method="post" enctype="multipart/form-data" action="controller.php">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                            <h4 class="modal-title">Upload Demo Video</h4>
-                                        </div>
-                                        <div class="modal-body">
-                                                <label>Video Title</label>
-                                                <input type="text" id="file_title" name="file_title" class="form-control mt-2">
-                                                <?php if($switch_user_id != ''): ?>
-                                                    <input type="hidden" id="switch_user_id" name="switch_user_id" value="<?= $switch_user_id ?>">
-                                                <?php else: ?>
-                                                    <input type="hidden" id="switch_user_id" name="switch_user_id" value="<?= $current_userEmployerID ?>">
-                                                <?php endif; ?>
-                                                <label style="margin-top:15px">Video Link</label>
-                                                <!--<input type="file" id="file" name="file" class="form-control mt-2">-->
-                                                <input type="text" class="form-control" name="youtube_link">
-                                                <input type="hidden" name="page" value="<?= $site ?>">
-
-                                                <!--<label style="margin-top:15px">Privacy</label>-->
-                                                <!--<select class="form-control" name="privacy" id="privacy" required>-->
-                                                <!--    <option value="Private">Private</option>-->
-                                                <!--    <option value="Public">Public</option>-->
-                                                <!--</select>-->
-                                            
-                                            <div style="margin-top:15px" id="message">
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
-                                            <button type="submit" class="btn btn-success" name="save_video"><span id="save_video_text">Save</span></button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
                                      
                     </div><!-- END CONTENT BODY -->
 
+        <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+        <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+        <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+        <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+        <script src="https://cdn.amcharts.com/lib/5/plugins/legend.js"></script>
         <?php include_once ('footer.php'); ?>
 
         <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
         <script src="assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
         <script src="assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
 
+
+        <script src="ChartIQ/chart.js"></script>
+
         <script type="text/javascript">
             $(document).ready(function(){
-                // Emjay script starts here
-                fancyBoxes();
-                $('#save_video').click(function(){
-                $('#save_video').attr('disabled','disabled');
-                $('#save_video_text').text("Uploading...");
-                var action_data = "supplier";
-                var user_id = $('#switch_user_id').val();
-                var privacy = $('#privacy').val();
-                var file_title = $('#file_title').val();
-                
-                 var fd = new FormData();
-                 var files = $('#file')[0].files;
-                 fd.append('file',files[0]);
-                 fd.append('action_data',action_data);
-                 fd.append('user_id',user_id);
-                 fd.append('privacy',privacy);
-                 fd.append('file_title',file_title);
-    			    $.ajax({
-        				method:"POST",
-        				url:"controller.php",
-        				data:fd,
-        				processData: false, 
-                        contentType: false,  
-                        timeout: 6000000,
-        				success:function(data){
-        					console.log('done : ' + data);
-        					if(data == 1){
-        					    window.location.reload();
-        					}
-        					else{
-        					    $('#message').html('<span class="text-danger">Invalid Video Format</span>');
-        					}
-        				}
-    				});
-    			});
-    			
-                // Emjay script ends here
-                
                 $.fn.modal.Constructor.prototype.enforceFocus = function() {};
 
                 $('.select2').select2();
@@ -1098,7 +642,7 @@
                     }
                 });
             }
-            function btnViewDepartmentViewAll(id, freeaccess) {
+            function btnViewDepartmentViewAll(id, freeaccessd) {
                 $.ajax({
                     type: "GET",
                     url: "function.php?modalViewDepartmentViewAll_Eforms="+id+"&freeaccess="+freeaccess,
@@ -1194,6 +738,7 @@
                        return xhr;
                     },
                     success:function(response) {
+                        alert(response);
                         if ($.trim(response)) {
                             msg = "Sucessfully Save!";
 
@@ -1251,6 +796,7 @@
                        return xhr;
                     },
                     success:function(response) {
+                        alert(response);
                         if ($.trim(response)) {
                             msg = "Sucessfully Save!";
 

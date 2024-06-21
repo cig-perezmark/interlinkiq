@@ -108,10 +108,10 @@ License: You must have a valid license purchased only from themeforest(the above
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         $rowEmployee = mysqli_fetch_array($selectEmployee);
                         $predefine = true;
-                        $invited_id = $rowEmployee['ID'];
-                        $data_email = $rowEmployee['email'];
-                        $data_first_name = $rowEmployee['first_name'];
-                        $data_last_name = $rowEmployee['last_name'];
+                        $invited_id = htmlentities($rowEmployee['ID'] ?? '');
+                        $data_email = htmlentities($rowEmployee['email'] ?? '');
+                        $data_first_name = htmlentities($rowEmployee['first_name'] ?? '');
+                        $data_last_name = htmlentities($rowEmployee['last_name'] ?? '');
                     }
                 }
 
@@ -121,7 +121,7 @@ License: You must have a valid license purchased only from themeforest(the above
                     $selectUser = mysqli_query( $conn,"SELECT employee_id FROM tbl_user WHERE is_verified = 0 AND is_active = 1 AND ID = $ID" );
                     if ( mysqli_num_rows($selectUser) > 0 ) {
                       $rowUser = mysqli_fetch_array($selectUser);
-                      $data_employee_id = $rowUser['employee_id'];
+                      $data_employee_id = htmlentities($rowUser['employee_id'] ?? '');
 
                       if ( !empty($data_employee_id) ) {
                         mysqli_query( $conn,"UPDATE tbl_hr_employee set status = 1 WHERE ID = $data_employee_id" );

@@ -205,7 +205,7 @@ $(document).ready(function() {
         e.preventDefault();
         // Disable the submit button to prevent multiple submissions
         $('#sendCampaignMessage').attr('disabled', true).text('Sending ...');
-
+    
         var selectedIds = [];
         var action = 'campaign';
         var body = $('#campaign-body-multi').val();
@@ -218,6 +218,14 @@ $(document).ready(function() {
             selectedIds.push($(this).val());
         });
         
+        function uncheckAndDisableCheckboxes() {
+            selectedIds.forEach(function(id) {
+                var checkbox = $('.checkbox_action[value="' + id + '"]');
+                checkbox.prop('checked', false);
+                checkbox.prop('disabled', true);
+            });
+        }
+    
         if (selectedIds.length > 0) {
             $.ajax({
                 url: 'crm/controller_functions.php',
@@ -248,6 +256,7 @@ $(document).ready(function() {
                         $('.summernoteEditor').summernote('code', '');
                         $('#emailCampaignForm')[0].reset();
                         $('#sendCampaign').modal('hide');
+                        uncheckAndDisableCheckboxes();
                     } else {
                         // Error handling: Show an error notification
                         $.bootstrapGrowl(response.message, {
@@ -286,7 +295,6 @@ $(document).ready(function() {
             $('#sendCampaignMessage').attr('disabled', false).text('Send');
         }
     });
-
     
     $(document).on('click', '#sendEmailGreetings', function(){
         var selectedIds = [];

@@ -64,7 +64,8 @@
                 <div class="tab-content">
                     <div id="clone" class="tab-pane active">
                         <div class="row">
-                            <div class="col-md-12">   
+                            <div class="col-md-12">
+                                <div class="table-responsive">
                                 <table class="table table-bordered">
                                     <thead class="bg-primary">
                                             <th>#</th>
@@ -79,22 +80,22 @@
                                     </thead>
                                     <?php
                                     $i = 1;
-                                    $query = "SELECT * from tblEnterpiseDetails left join countries on id = country where businessname !='' order by enterp_id desc";
+                                    $query = "SELECT BusinessPROCESS, businessname, businessemailAddress, name, Bldg, city, States, ZipCode from tblEnterpiseDetails left join countries on id = country where businessname !='' order by enterp_id desc";
                                     $result = mysqli_query($conn, $query);
                                     while($row = mysqli_fetch_array($result)) {?> 
                                     <tbody>
                                          <?php
-                                                 $array_busi = explode(", ", $row["BusinessPROCESS"]); 
+                                                 $array_busi = explode(", ", htmlentities($row["BusinessPROCESS"] ?? '')); 
                                             ?>
                                         <tr>
                                             <td><?php echo $i++; ?></td>
-                                            <td><?php echo $row['businessname'];?></td>
-                                            <td><?php echo $row['businessemailAddress'];?></td>
-                                            <td><?php echo $row['name'];?></td>
-                                            <td><?php echo $row['Bldg'];?></td>
-                                            <td><?php echo $row['city'];?></td>
-                                            <td><?php echo $row['States'];?></td>
-                                            <td><?php echo $row['ZipCode'];?></td> 
+                                            <td><?php echo htmlentities($row['businessname'] ?? '');?></td>
+                                            <td><?php echo htmlentities($row['businessemailAddress'] ?? '');?></td>
+                                            <td><?php echo htmlentities($row['name'] ?? '');?></td>
+                                            <td><?php echo htmlentities($row['Bldg'] ?? '');?></td>
+                                            <td><?php echo htmlentities($row['city'] ?? '');?></td>
+                                            <td><?php echo htmlentities($row['States'] ?? '');?></td>
+                                            <td><?php echo htmlentities($row['ZipCode'] ?? '');?></td> 
                                             <td>
                                             	<?php 
                                             	    if(in_array('1', $array_busi)){ echo 'Manufacturing';echo ", ";} else{ echo "";}
@@ -118,6 +119,7 @@
                                     </tbody> 
                                     <?php } ?>      
                                 </table>
+                                </div>
                             </div>
                         </div>
                     </div>

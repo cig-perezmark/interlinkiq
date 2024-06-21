@@ -1841,6 +1841,16 @@
                                                     <li class="hide">
                                                         <a href="#tabFSVP_1" data-toggle="tab">FSVP</a>
                                                     </li>
+                                                    <?php
+                                                        if ($current_userID == 481) {
+                                                            echo '<li>
+                                                                <a href="#" data-toggle="tab">Organic</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#" data-toggle="tab">FTL</a>
+                                                            </li>';
+                                                        }
+                                                    ?>
                                                 </ul>
                                                 <div class="tab-content margin-top-20">
                                                     <div class="tab-pane active" id="tabBasic_1">
@@ -1967,6 +1977,8 @@
                                                                         <option value="2">Non-Approved</option>
                                                                         <option value="3">Emergency Used Only / Spot Purchasing</option>
                                                                         <option value="4">Do Not Use</option>
+																		<option value="5">Active</option>
+																		<option value="6">Inactive</option>
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -3093,15 +3105,6 @@
             function btnClose(view) {
                 $('#'+view+' .modal-body').html('');
             }
-            function uploadNewOld(e) {
-                $(e).parent().hide();
-                $(e).parent().prev('.form-control').removeClass('hide');
-            }
-            function uploadNew(e) {
-				$(e).parent().hide();
-				// $(e).parent().prev('.form-control').removeClass('hide');
-                $(e).parent().parent().find('select').removeClass('hide');
-			}
             function changeType(e) {
                 $(e).parent().find('input').hide();
                 $(e).parent().find('input').prop('required',false);

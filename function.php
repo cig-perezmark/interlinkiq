@@ -626,7 +626,8 @@
         $exist_email = false;
         $exist_username = false;
         $isPasswordCorrect = false;
-        $message = 'Incorrect details. Please try again!<br>If you need some help, please click <a href="#modalService" data-toggle="modal"><strong>here</strong></a>';
+        // $message = 'Incorrect details. Please try again!<br>If you need some help, please click <a href="#modalService" data-toggle="modal"><strong>here</strong></a>';
+        $message = 'For further assistance, please contact <a href="mailto:csuccess@consultareinc.com" target="_blank">csuccess@consultareinc.com or call <a href="tel:1-202-982-3002" target="_blank">1-202-982-3002</a>.';
 
         $selectEmail = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE client = $client AND is_active = 1 AND email = '". $email ."'" );
         if ( mysqli_num_rows($selectEmail) > 0 ) {
@@ -1595,6 +1596,7 @@
                                 <th class="text-center" style="width: 135px;">Start Date</th>
                                 <th class="text-center" style="width: 135px;">End Date</th>
                                 <th class="text-center" style="width: 135px;">Status</th>
+                                <th class="text-center" style="width: 135px;">Display</th>
                                 <th class="text-center" style="width: 135px;">Action</th>
                             </tr>
                         </thead>
@@ -1605,6 +1607,7 @@
                                 while($rowMenuSub = mysqli_fetch_array($selectMenuSubs)) {
                                     $sub_ID = $rowMenuSub["ID"];
                                     $sub_user_id = $rowMenuSub["user_id"];
+                                    $sub_display = $rowMenuSub["display"] == 1 ? 'CHECKED':'';
 
                                     $sub_date_start = $rowMenuSub["date_start"];
                                     $sub_date_start = new DateTime($sub_date_start);
@@ -1633,6 +1636,9 @@
                                                     else if ($sub_date_start_o < $current_dateNow_o && $sub_date_end_o < $current_dateNow_o) { echo '<span class="label label-sm label-danger btn-circle">Expired</span>'; }
                                                 
                                                 echo '</td>
+                                                <td class="text-center">
+                                                    <input type="checkbox" name="" value="'.$rowMenuSub["display"].'" '.$sub_display.' onchange="checkDiplay('.$sub_ID.', this)"/>
+                                                </td>
                                                 <td class="text-center">
                                                     <div class="btn-group btn-group-circle">
                                                         <a href="#modalEdit" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnEdit('.$sub_ID.', 1)">Edit</a>
@@ -1657,6 +1663,7 @@
                                 <th class="text-center" style="width: 135px;">Start Date</th>
                                 <th class="text-center" style="width: 135px;">End Date</th>
                                 <th class="text-center" style="width: 135px;">Status</th>
+                                <th class="text-center" style="width: 135px;">Display</th>
                                 <th class="text-center" style="width: 135px;">Action</th>
                             </tr>
                         </thead>
@@ -1667,6 +1674,7 @@
                                 while($rowMenuSub = mysqli_fetch_array($selectMenuSubs)) {
                                     $sub_ID = $rowMenuSub["ID"];
                                     $sub_user_id = $rowMenuSub["user_id"];
+                                    $sub_display = $rowMenuSub["display"] == 1 ? 'CHECKED':'';
 
                                     $sub_date_start = $rowMenuSub["date_start"];
                                     $sub_date_start = new DateTime($sub_date_start);
@@ -1696,6 +1704,9 @@
                                                 
                                                 echo '</td>
                                                 <td class="text-center">
+                                                    <input type="checkbox" name="" value="'.$rowMenuSub["display"].'" '.$sub_display.' onchange="checkDiplay('.$sub_ID.', this)"/>
+                                                </td>
+                                                <td class="text-center">
                                                     <div class="btn-group btn-group-circle">
                                                         <a href="#modalEdit" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnEdit('.$sub_ID.', 2)">Edit</a>
                                                         <a href="javascript:;" class="btn btn-danger btn-sm" onclick="btnDeleteAccount('.$sub_ID.', 2)">Delete</a>
@@ -1719,6 +1730,7 @@
                                 <th class="text-center" style="width: 135px;">Start Date</th>
                                 <th class="text-center" style="width: 135px;">End Date</th>
                                 <th class="text-center" style="width: 135px;">Status</th>
+                                <th class="text-center" style="width: 135px;">Display</th>
                                 <th class="text-center" style="width: 135px;">Action</th>
                             </tr>
                         </thead>
@@ -1729,6 +1741,7 @@
                                 while($rowMenuSub = mysqli_fetch_array($selectMenuSubs)) {
                                     $sub_ID = $rowMenuSub["ID"];
                                     $sub_user_id = $rowMenuSub["user_id"];
+                                    $sub_display = $rowMenuSub["display"] == 1 ? 'CHECKED':'';
 
                                     $sub_date_start = $rowMenuSub["date_start"];
                                     $sub_date_start = new DateTime($sub_date_start);
@@ -1757,6 +1770,9 @@
                                                     else if ($sub_date_start_o < $current_dateNow_o && $sub_date_end_o < $current_dateNow_o) { echo '<span class="label label-sm label-danger btn-circle">Expired</span>'; }
                                                 
                                                 echo '</td>
+                                                <td class="text-center">
+                                                    <input type="checkbox" name="" value="'.$rowMenuSub["display"].'" '.$sub_display.' onchange="checkDiplay('.$sub_ID.', this)"/>
+                                                </td>
                                                 <td class="text-center">
                                                     <div class="btn-group btn-group-circle">
                                                         <a href="#modalEdit" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnEdit('.$sub_ID.', 3)">Edit</a>
@@ -1909,6 +1925,12 @@
             </div>
         </div>
         ';
+    }
+    if( isset($_GET['modalCheck_Sidebar']) ) {
+        $ID = $_GET['modalCheck_Sidebar'];
+        $v = $_GET['v'] == "true" ? 1:0;
+
+        mysqli_query($conn,"UPDATE tbl_menu_subscription SET display = $v WHERE ID = $ID");
     }
     if( isset($_GET['btnDelete_Sidebar']) ) {
         $id = $_GET['btnDelete_Sidebar'];
@@ -2078,7 +2100,7 @@
                     $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status=1 AND user_id = $switch_user_id" );
                     if ( mysqli_num_rows($selectDepartment) > 0 ) {
                         while($rowDepartment = mysqli_fetch_array($selectDepartment)) {
-                            echo '<option value="'. $rowDepartment["ID"] .'">'. $rowDepartment["title"] .'</option>';
+                            echo '<option value="'. $rowDepartment["ID"] .'">'. htmlentities($rowDepartment["title"] ?? '') .'</option>';
                         }
                     }
 
@@ -2093,7 +2115,7 @@
                     $selectJB = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE status=1 AND user_id = $switch_user_id" );
                     if ( mysqli_num_rows($selectJB) > 0 ) {
                         while($rowJD = mysqli_fetch_array($selectJB)) {
-                            echo '<option value="'. $rowJD["ID"] .'">'. $rowJD["title"] .'</option>';
+                            echo '<option value="'. $rowJD["ID"] .'">'. htmlentities($rowJD["title"] ?? '') .'</option>';
                         }
                     }
 
@@ -2109,7 +2131,7 @@
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         echo '<option value="">Select</option>';
                         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
-                            echo '<option value="'. $rowEmployee["ID"] .'">'. $rowEmployee["first_name"] .' '. $rowEmployee["last_name"] .'</option>';
+                            echo '<option value="'. $rowEmployee["ID"] .'">'. htmlentities($rowEmployee["first_name"] ?? '') .' '. htmlentities($rowEmployee["last_name"] ?? '') .'</option>';
                         }
                     } else {
                         echo '<option disabled>No Available</option>';
@@ -2162,19 +2184,19 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Email Address</label>
                         <div class="col-md-8">
-                            <input class="form-control" type="email" name="email" value="'. $row['email'] .'" required />
+                            <input class="form-control" type="email" name="email" value="'. htmlentities($row['email'] ?? '') .'" required />
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label">First Name</label>
                         <div class="col-md-8">
-                            <input class="form-control" type="text" name="first_name" value="'. $row['first_name'] .'" required />
+                            <input class="form-control" type="text" name="first_name" value="'. htmlentities($row['first_name'] ?? '') .'" required />
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label">Last Name</label>
                         <div class="col-md-8">
-                            <input class="form-control" type="text" name="last_name" value="'. $row['last_name'] .'" required />
+                            <input class="form-control" type="text" name="last_name" value="'. htmlentities($row['last_name'] ?? '') .'" required />
                         </div>
                     </div>
                     <div class="form-group">
@@ -2203,25 +2225,25 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Badge/ID Number</label>
                         <div class="col-md-8">
-                            <input class="form-control" type="text" name="id_number" id="id_number" value="'. $row['id_number'] .'" required />
+                            <input class="form-control" type="text" name="id_number" id="id_number" value="'. htmlentities($row['id_number'] ?? '') .'" required />
                         </div>
                     </div>
                     <div class="form-group '; echo $current_client == 1 ? '':'hide'; echo '">
                         <label class="col-md-3 control-label">Key(s) Assigned</label>
                         <div class="col-md-8">
-                            <input class="form-control" type="text" name="keys_assigned" id="keys_assigned" value="'. $row['keys_assigned'] .'" />
+                            <input class="form-control" type="text" name="keys_assigned" id="keys_assigned" value="'. htmlentities($row['keys_assigned'] ?? '') .'" />
                         </div>
                     </div>
                     <div class="form-group '; echo $current_client == 1 ? '':'hide'; echo '">
                         <label class="col-md-3 control-label">Alarm Code</label>
                         <div class="col-md-8">
-                            <input class="form-control" type="text" name="alarm_code" id="alarm_code" value="'. $row['alarm_code'] .'" />
+                            <input class="form-control" type="text" name="alarm_code" id="alarm_code" value="'. htmlentities($row['alarm_code'] ?? '') .'" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label">Date Hired</label>
                         <div class="col-md-8">
-                            <input class="form-control" type="date" name="date_hired" id="date_hired" value="'. $row['date_hired'] .'" required />
+                            <input class="form-control" type="date" name="date_hired" id="date_hired" value="'. htmlentities($row['date_hired'] ?? '') .'" required />
                         </div>
                     </div>
                     <div class="form-group">
@@ -2234,9 +2256,9 @@
                                 if ( mysqli_num_rows($selectDepartment) > 0 ) {
                                     while($rowDepartment = mysqli_fetch_array($selectDepartment)) {
                                         if (in_array($rowDepartment["ID"], $array_Dept)) {
-                                            echo '<option value="'. $rowDepartment["ID"] .'" selected>'. $rowDepartment["title"] .'</option>';
+                                            echo '<option value="'. $rowDepartment["ID"] .'" selected>'. htmlentities($rowDepartment["title"] ?? '') .'</option>';
                                         } else {
-                                            echo '<option value="'. $rowDepartment["ID"] .'">'. $rowDepartment["title"] .'</option>';
+                                            echo '<option value="'. $rowDepartment["ID"] .'">'. htmlentities($rowDepartment["title"] ?? '') .'</option>';
                                         }
                                     }
                                 } else {
@@ -2256,9 +2278,9 @@
                                 if ( mysqli_num_rows($resultJob) > 0 ) {
                                     while($rowJob = mysqli_fetch_array($resultJob)) {
                                         if (in_array($rowJob["ID"], $array_Job)) {
-                                            echo '<option value="'. $rowJob["ID"] .'" selected>'. $rowJob["title"] .'</option>';
+                                            echo '<option value="'. $rowJob["ID"] .'" selected>'. htmlentities($rowJob["title"] ?? '') .'</option>';
                                         } else {
-                                            echo '<option value="'. $rowJob["ID"] .'">'. $rowJob["title"] .'</option>';
+                                            echo '<option value="'. $rowJob["ID"] .'">'. htmlentities($rowJob["title"] ?? '') .'</option>';
                                         }
                                     }
                                 } else {
@@ -2278,9 +2300,9 @@
                                     echo '<option value="">Select</option>';
                                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                         if ( $rowEmployee["ID"] === $row["reporting_to_id"] ) {
-                                            echo '<option value="'. $rowEmployee["ID"] .'" selected>'. $rowEmployee["first_name"] .' '. $rowEmployee["last_name"] .'</option>';
+                                            echo '<option value="'. $rowEmployee["ID"] .'" selected>'. htmlentities($rowEmployee["first_name"] ?? '') .' '. htmlentities($rowEmployee["last_name"] ?? '') .'</option>';
                                         } else {
-                                            echo '<option value="'. $rowEmployee["ID"] .'">'. $rowEmployee["first_name"] .' '. $rowEmployee["last_name"] .'</option>';
+                                            echo '<option value="'. $rowEmployee["ID"] .'">'. htmlentities($rowEmployee["first_name"] ?? '') .' '. htmlentities($rowEmployee["last_name"] ?? '') .'</option>';
                                         }
                                     }
                                 } else {
@@ -2300,9 +2322,9 @@
                                     echo '<option value="">Select</option>';
                                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                         if ( $rowEmployee["ID"] === $row["reporting_to_id"] ) {
-                                            echo '<option value="'. $rowEmployee["ID"] .'" selected>'. $rowEmployee["first_name"] .' '. $rowEmployee["last_name"] .'</option>';
+                                            echo '<option value="'. $rowEmployee["ID"] .'" selected>'. htmlentities($rowEmployee["first_name"] ?? '') .' '. htmlentities($rowEmployee["last_name"] ?? '') .'</option>';
                                         } else {
-                                            echo '<option value="'. $rowEmployee["ID"] .'">'. $rowEmployee["first_name"] .' '. $rowEmployee["last_name"] .'</option>';
+                                            echo '<option value="'. $rowEmployee["ID"] .'">'. htmlentities($rowEmployee["first_name"] ?? '') .' '. htmlentities($rowEmployee["last_name"] ?? '') .'</option>';
                                         }
                                     }
                                 } else {
@@ -2413,7 +2435,7 @@
                                     if ( mysqli_num_rows($selectTrainings) > 0 ) {
                                         while($rowTraining = mysqli_fetch_array($selectTrainings)) {
                                             $training_ID = $rowTraining['t_ID'];
-                                            $title = $rowTraining['t_title'];
+                                            $title = htmlentities($rowTraining['t_title'] ?? '');
                                             $array_rowTraining = explode(", ", $rowTraining["t_job_description_id"]);
 
                                             $array_frequency = array(
@@ -2464,7 +2486,7 @@
                                                 }
 
                                                 echo '<tr id="tr_'.$training_ID.'">
-                                                    <td >'. htmlentities($title) .'</td>
+                                                    <td>'. $title .'</td>
                                                     <td class="text-center">'; echo $trainingResult == 100 ? $completed_date:''; echo '</td>
                                                     <td class="text-center">'; echo $trainingResult == 100 ? $due_date:''; echo '</td>
                                                     <td>'.$trainingStatus.'</td>
@@ -2473,74 +2495,6 @@
                                             }
                                         }
                                     }
-
-                                    // $selectTrainings = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE status = 1 AND deleted = 0 AND user_id = $current_userEmployerID" );
-                                    // if ( mysqli_num_rows($selectTrainings) > 0 ) {
-                                    //     while($rowTraining = mysqli_fetch_array($selectTrainings)) {
-                                    //         $training_ID = $rowTraining['ID'];
-                                    //         $title = $rowTraining['title'];
-                                            
-                                    //         $data_last_modified = $rowTraining['last_modified'];
-                                    //         $data_last_modified = new DateTime($data_last_modified);
-                                    //         $data_last_modified = $data_last_modified->format('M d, Y');
-
-                                    //         $found = null;
-                                    //         $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $current_userEmployeeID" );
-                                    //         if ( mysqli_num_rows($selectEmployee) > 0 ) {
-                                    //             $rowEmployee = mysqli_fetch_array($selectEmployee);
-                                    //             $array_row = explode(", ", $rowEmployee["job_description_id"]);
-                                    //             $array_rowTraining = explode(", ", $rowTraining["job_description_id"]);
-                                    //             foreach($array_row as $emp_JD) {
-                                    //                 if (in_array($emp_JD,$array_rowTraining)) {
-                                    //                     $found = true;
-                                    //                 }
-                                    //             }
-                                    //         }
-
-                                    //         $trainingStatus = "Not Yet Started";
-                                    //         $trainingResult = 0;
-                                    //         $completed_date = '';
-                                    //         $due_date = '';
-                                    //         $pdf_quiz = '';
-                                    //         $selectQuizResult = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_result WHERE user_id = $current_userID " );
-                                    //         if ( mysqli_num_rows($selectQuizResult) > 0 ) {
-                                    //             while($rowQuizResult = mysqli_fetch_array($selectQuizResult)) {
-                                    //                 $trainingResultID = $rowQuizResult['ID'];
-                                    //                 $trainingQuizID = $rowQuizResult['quiz_id'];
-
-                                    //                 if (!empty($rowTraining['quiz_id'])) {
-                                    //                     $array_quiz_id = explode(', ', $rowTraining['quiz_id']);
-                                    //                     if (in_array($trainingQuizID, $array_quiz_id)) {
-                                    //                         $trainingResult = $rowQuizResult['result'];
-                                    //                         $pdf_quiz = $trainingResultID;
-
-                                    //                         if ($trainingResult == 100) { $trainingStatus = "Completed"; }
-                                    //                         else { $trainingStatus = "Not Yet Started"; }
-                                            
-                                    //                         $completed_date = $rowQuizResult['last_modified'];
-                                    //                         $completed_date = new DateTime($completed_date);
-                                    //                         $completed_date = $completed_date->format('M d, Y');
-                                                            
-                                    //                         $due_date = date('Y-m-d', strtotime('+1 year', strtotime($completed_date)) );
-                                    //                         $due_date = new DateTime($due_date);
-                                    //                         $due_date = $due_date->format('M d, Y');
-                                    //                     }
-                                    //                 }
-
-                                    //             }
-                                    //         }
-
-                                    //         if ( $found == true ) {
-                                    //             echo '<tr id="tr_'.$training_ID.'">
-                                    //                 <td >'. $title .'</td>
-                                    //                 <td class="text-center">'; echo $trainingResult == 100 ? $completed_date:''; echo '</td>
-                                    //                 <td class="text-center">'; echo $trainingResult == 100 ? $due_date:''; echo '</td>
-                                    //                 <td>'.$trainingStatus.'</td>
-                                    //                 <td class="text-center">'; echo $trainingResult == 100 ? '<a href="'.$base_url.'pdf?id='.$pdf_quiz.'" target="_blank" class="btn btn-circle btn-success">View</a>':''; echo '</td>
-                                    //             </tr>';
-                                    //         }
-                                    //     }
-                                    // }
                                 }
 
                             echo '</tbody>
@@ -2568,14 +2522,14 @@
                                 $selectFile = mysqli_query( $conn,"SELECT * FROM tbl_hr_file WHERE deleted = 0 AND user_id = $user_id AND employee_id = $id ORDER BY filename" );
                                 if ( mysqli_num_rows($selectFile) > 0 ) {
                                     while($rowFile = mysqli_fetch_array($selectFile)) {
-                                        $file_ID = $rowFile["ID"];
-                                        $file_name = $rowFile["filename"];
-                                        $file_description = $rowFile["description"];
-                                        $file_status = $rowFile["status"];
-                                        $file_reviewed_by = $rowFile["reviewed_by"];
+                                        $file_ID = htmlentities($rowFile["ID"] ?? '');
+                                        $file_name = htmlentities($rowFile["filename"] ?? '');
+                                        $file_description = htmlentities($rowFile["description"] ?? '');
+                                        $file_status = htmlentities($rowFile["status"] ?? '');
+                                        $file_reviewed_by = htmlentities($rowFile["reviewed_by"] ?? '');
 
-                                        $filetype = $rowFile['filetype'];
-                                        $files = $rowFile["files"];
+                                        $filetype = htmlentities($rowFile['filetype'] ?? '');
+                                        $files = htmlentities($rowFile["files"] ?? '');
                                         $type = 'iframe';
                                         if ($filetype == 1) {
                                             $fileExtension = fileExtension($files);
@@ -2690,14 +2644,14 @@
 
             $data_chart = array();
             while($rowData = mysqli_fetch_array($selectData)) {
-                $jd1_ID = $rowData['jd1_ID'];
-                $jd1_title = $rowData['jd1_title'];
+                $jd1_ID = htmlentities($rowData['jd1_ID'] ?? '');
+                $jd1_title = htmlentities($rowData['jd1_title'] ?? '');
                 $jd1_reporting_to_id = $rowData['jd1_reporting_to_id'];
 
-                $jd_user = $rowData['e_first_name'].' '.$rowData['e_last_name'];
+                $jd_user = htmlentities($rowData['e_first_name'] ?? '').' '.htmlentities($rowData['e_last_name'] ?? '');
                 if (strlen(trim($jd_user)) == 0) { $jd_user = '(Open)'; }
 
-                $jd_user_alternate = $rowData['e2_first_name'].' '.$rowData['e2_last_name'];
+                $jd_user_alternate = htmlentities($rowData['e2_first_name'] ?? '').' '.htmlentities($rowData['e2_last_name'] ?? '');
                 if (strlen(trim($jd_user_alternate)) == 0) { $jd_user_alternate = 'No Alternate'; }
                 else { $jd_user_alternate = 'Alternate user is '. $jd_user_alternate; }
 
@@ -2755,18 +2709,18 @@
         $selectData = mysqli_query( $conn,'SELECT * FROM tbl_hr_employee WHERE ID="'. $ID .'"' );
         if ( mysqli_num_rows($selectData) > 0 ) {
             while($rowData = mysqli_fetch_array($selectData)) {
-                $user_id = $rowData['user_id'];
-                $data_ID = $rowData['ID'];
-                $data_first_name = $rowData['first_name'];
-                $data_last_name = $rowData['last_name'];
-                $data_email = $rowData['email'];
+                $user_id = htmlentities($rowData['user_id'] ?? '');
+                $data_ID = htmlentities($rowData['ID'] ?? '');
+                $data_first_name = htmlentities($rowData['first_name'] ?? '');
+                $data_last_name = htmlentities($rowData['last_name'] ?? '');
+                $data_email = htmlentities($rowData['email'] ?? '');
 
                 $client = $rowData['client'];
 
                 $selectEnterprise = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE users_entities = $user_id" );
                 if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                     $rowEnterprise = mysqli_fetch_array($selectEnterprise);
-                    $data_company = $rowEnterprise["businessname"];
+                    $data_company = htmlentities($rowEnterprise["businessname"] ?? '');
                 }
 
                 $to = $data_email;
@@ -2884,14 +2838,14 @@
                 $selectData = mysqli_query( $conn,'SELECT * FROM tbl_hr_employee WHERE user_id="'. $user_id .'" AND ID="'. $last_id .'" ORDER BY ID LIMIT 1' );
                 if ( mysqli_num_rows($selectData) > 0 ) {
                     $rowData = mysqli_fetch_array($selectData);
-                    $data_ID = $rowData['ID'];
+                    $data_ID = htmlentities($rowData['ID'] ?? '');
                     $data_first_name = stripcslashes(htmlentities($rowData['first_name'] ?? ''));
                     $data_last_name = stripcslashes(htmlentities($rowData['last_name'] ?? ''));
-                    $data_email = $rowData['email'];
-                    $data_date_hired = $rowData['date_hired'];
-                    $data_type_id = $rowData['type_id'];
-                    $data_suspended = $rowData['suspended'];
-                    $data_status = $rowData['status'];
+                    $data_email = htmlentities($rowData['email'] ?? '');
+                    $data_date_hired = htmlentities($rowData['date_hired'] ?? '');
+                    $data_type_id = htmlentities($rowData['type_id'] ?? '');
+                    $data_suspended = htmlentities($rowData['suspended'] ?? '');
+                    $data_status = htmlentities($rowData['status'] ?? '');
                     $data_company = "";
 
                     $position = array();
@@ -2902,7 +2856,7 @@
                             $resultJD = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE ID = $value" );
                             if ( mysqli_num_rows($resultJD) > 0 ) {
                                 $rowJD = mysqli_fetch_array($resultJD);
-                                array_push($position, $rowJD["title"]);
+                                array_push($position, htmlentities($rowJD["title"] ?? ''));
                             }
                         }
                         $position = implode(', ', $position);
@@ -2911,7 +2865,7 @@
                     $selectEnterprise = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE users_entities = $user_id" );
                     if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                         $rowEnterprise = mysqli_fetch_array($selectEnterprise);
-                        $data_company = $rowEnterprise["businessname"];
+                        $data_company = htmlentities($rowEnterprise["businessname"] ?? '');
                     }
 
 
@@ -3111,7 +3065,7 @@
                     $resultJD = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE ID = $value" );
                     if ( mysqli_num_rows($resultJD) > 0 ) {
                         $rowJD = mysqli_fetch_array($resultJD);
-                        array_push($position, $rowJD["title"]);
+                        array_push($position, htmlentities($rowJD["title"] ?? ''));
                     }
                 }
                 $position = implode(', ', $position);
@@ -3165,7 +3119,7 @@
                 if ( mysqli_num_rows($selectTrainings) > 0 ) {
                     while($rowTraining = mysqli_fetch_array($selectTrainings)) {
                         $training_ID = $rowTraining['t_ID'];
-                        $title = $rowTraining['t_title'];
+                        $title = htmlentities($rowTraining['t_title'] ?? '');
                         $array_rowTraining = explode(", ", $rowTraining["t_job_description_id"]);
 
                         $found = null;
@@ -3293,9 +3247,9 @@
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_file WHERE ID = $ID" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
-            $filename = $row['filename'];
-            $description = $row['description'];
-            $uploaded_date = $row['uploaded_date'];
+            $filename = htmlentities($row['filename'] ?? '');
+            $description = htmlentities($row['description'] ?? '');
+            $uploaded_date = htmlentities($row['uploaded_date'] ?? '');
 
             $due_date = new DateTime($row['due_date']);
             $due_date = $due_date->format('m/d/Y');
@@ -3312,8 +3266,8 @@
                 $start_date = $start_date->format('m/d/Y');
             }
 
-            $filetype = $row['filetype'];
-            $files = $row["files"];
+            $filetype = htmlentities($row['filetype'] ?? '');
+            $files = htmlentities($row["files"] ?? '');
             $type = 'iframe';
             if ($filetype == 1) {
                 $fileExtension = fileExtension($files);
@@ -3430,11 +3384,11 @@
                 $selectData = mysqli_query( $conn,'SELECT * FROM tbl_hr_file WHERE user_id="'. $user_id .'" AND ID="'. $last_id .'" ORDER BY ID LIMIT 1' );
                 if ( mysqli_num_rows($selectData) > 0 ) {
                     $rowData = mysqli_fetch_array($selectData);
-                    $data_ID = $rowData['ID'];
-                    $data_filename = stripcslashes($rowData['filename']);
-                    $data_description = stripcslashes($rowData['description']);
+                    $data_ID = htmlentities($rowData['ID'] ?? '');
+                    $data_filename = stripcslashes(htmlentities($rowData['filename'] ?? ''));
+                    $data_description = stripcslashes(htmlentities($rowData['description'] ?? ''));
 
-                    $data_files = $rowData['files'];
+                    $data_files = htmlentities($rowData['files'] ?? '');
                     $type = 'iframe';
                     if (!empty($data_files)) {
                         if ($filetype == 1) {
@@ -3494,14 +3448,14 @@
         $selectData = mysqli_query( $conn,'SELECT * FROM tbl_hr_file WHERE ID="'. $ID .'" ORDER BY ID LIMIT 1' );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $rowData = mysqli_fetch_array($selectData);
-            $data_ID = $rowData['ID'];
-            $data_filename = stripcslashes($rowData['filename']);
-            $data_description = stripcslashes($rowData['description']);
+            $data_ID = htmlentities($rowData['ID'] ?? '');
+            $data_filename = stripcslashes(htmlentities($rowData['filename'] ?? ''));
+            $data_description = stripcslashes(htmlentities($rowData['description'] ?? ''));
 
             $files = '';
             $arr_item = array();
             if (!empty($rowData["file_history"])) {
-                $arr_item = json_decode($rowData["file_history"],true);
+                $arr_item = json_decode(htmlentities($rowData["file_history"] ?? ''),true);
             }
             $filetype = $_POST['filetype'];
             if ($filetype > 0) {
@@ -3513,7 +3467,7 @@
                         $process = $fileValidation['valid'];
 
                         if ($process == true) {
-                            $filesize_tot = $filesize + $rowData["filesize"];
+                            $filesize_tot = $filesize + htmlentities($rowData["filesize"] ?? '');
 
                             mysqli_query( $conn,"UPDATE tbl_hr_file SET filesize='". $filesize_tot ."', uploaded_date = '".$last_modified."' WHERE ID='". $ID ."'" );
                         }
@@ -3538,7 +3492,7 @@
             }
 
             if ($process == true) {
-                $data_files = $rowData['files'];
+                $data_files = htmlentities($rowData['files'] ?? '');
                 $type = 'iframe';
                 if (!empty($data_files)) {
                     if ($filetype == 1) {
@@ -3603,8 +3557,6 @@
             j.files AS j_files,
             j.filetype AS j_filetype,
             j.status AS j_status,
-
-            -- t.ID AS t_ID,
             COUNT(t.job_description_id) AS t_job_description_id
 
             FROM tbl_hr_job_description AS j
@@ -3628,8 +3580,8 @@
         if ( mysqli_num_rows($result) > 0 ) {
             $table_counter = 1;
             while($row = mysqli_fetch_array($result)) {
-                $filetype = $row['j_filetype'];
-                $files = $row["j_files"];
+                $filetype = htmlentities($row['j_filetype'] ?? '');
+                $files = htmlentities($row["j_files"] ?? '');
                 $type = 'iframe';
                 if (!empty($files)) {
                     if ($filetype == 1) {
@@ -3648,9 +3600,9 @@
 
                 echo '<tr id="tr_'. $row["j_ID"] .'">
                     <td>'. $table_counter .'</td>
-                    <td>'. htmlentities($row["j_title"]) .'</td>
-                    <td>'. htmlentities($row["j_description"]) .'</td>
-                    <td>'. $row["t_job_description_id"] .'</td>
+                    <td>'. htmlentities($row["j_title"] ?? '') .'</td>
+                    <td>'. htmlentities($row["j_description"] ?? '') .'</td>
+                    <td>'. htmlentities($row["t_job_description_id"] ?? '') .'</td>
                     <td class="text-center"><p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p></td>';
 
                     if ( $row["j_status"] == 0 ) {
@@ -3680,10 +3632,10 @@
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE ID = $ID" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
-            $user_id = $row['user_id'];
+            $user_id = htmlentities($row['user_id'] ?? '');
 
-            $filetype = $row['filetype'];
-            $files = $row["files"];
+            $filetype = htmlentities($row['filetype'] ?? '');
+            $files = htmlentities($row["files"] ?? '');
             $type = 'iframe';
             if (!empty($files)) {
                 if ($filetype == 1) {
@@ -3703,17 +3655,17 @@
 
         echo '<input class="form-control" type="hidden" name="ID" value="'. $row['ID'] .'" />
         <input class="form-control" type="hidden" name="c" value="'. $c .'" />
-        <input class="form-control" type="hidden" name="files" id="files" value="'. $row['files'] .'" />
+        <input class="form-control" type="hidden" name="files" id="files" value="'. htmlentities($row['files'] ?? '') .'" />
         <div class="form-group">
             <label class="col-md-3 control-label">Title</label>
             <div class="col-md-8">
-                <input class="form-control" type="text" name="title" value="'. $row['title'] .'" required />
+                <input class="form-control" type="text" name="title" value="'. htmlentities($row['title'] ?? '') .'" required />
             </div>
         </div>
         <div class="form-group">
             <label class="col-md-3 control-label">Description</label>
             <div class="col-md-8">
-                <textarea class="form-control" name="description" style="height:100px !important;" required >'. $row['description'] .'</textarea>
+                <textarea class="form-control" name="description" style="height:100px !important;" required >'. htmlentities($row['description'] ?? '') .'</textarea>
             </div>
         </div>
         <div class="form-group">
@@ -3726,9 +3678,9 @@
                     if ( mysqli_num_rows($selectDepartment) > 0 ) {
                         while($rowDepartment = mysqli_fetch_array($selectDepartment)) {
                             if (in_array($rowDepartment["ID"], $array_Dept)) {
-                                echo '<option value="'. $rowDepartment["ID"] .'" selected>'. $rowDepartment["title"] .'</option>';
+                                echo '<option value="'. $rowDepartment["ID"] .'" selected>'. htmlentities($rowDepartment["title"] ?? '') .'</option>';
                             } else {
-                                echo '<option value="'. $rowDepartment["ID"] .'">'. $rowDepartment["title"] .'</option>';
+                                echo '<option value="'. $rowDepartment["ID"] .'">'. htmlentities($rowDepartment["title"] ?? '') .'</option>';
                             }
                         }
                     } else {
@@ -3749,9 +3701,9 @@
                         echo '<option value="">Select</option>';
                         while($rowJob = mysqli_fetch_array($resultJob)) {
                             if (in_array($rowJob["ID"], $array_Job)) {
-                                echo '<option value="'. $rowJob["ID"] .'" selected>'. $rowJob["title"] .'</option>';
+                                echo '<option value="'. $rowJob["ID"] .'" selected>'. htmlentities($rowJob["title"] ?? '') .'</option>';
                             } else {
-                                echo '<option value="'. $rowJob["ID"] .'">'. $rowJob["title"] .'</option>';
+                                echo '<option value="'. $rowJob["ID"] .'">'. htmlentities($rowJob["title"] ?? '') .'</option>';
                             }
                         }
                     } else {
@@ -3827,7 +3779,7 @@
                                                         $countTraining++;
 
                                                         // $filetype = $rowTraining['filetype'];
-                                                        $files = $rowTraining["files"];
+                                                        $files = htmlentities($rowTraining["files"] ?? '');
                                                         // $type = 'iframe';
                                                         // if ($filetype == 1) {
                                                         //     $fileExtension = fileExtension($files);
@@ -3848,8 +3800,8 @@
 
                                                         echo '<tr>
                                                             <td>'. $counting++ .'</td>
-                                                            <td>'. htmlentities($rowTraining["title"]) .'</td>
-                                                            <td>'. htmlentities($rowTraining["description"]) .'</td>
+                                                            <td>'. htmlentities($rowTraining["title"] ?? '') .'</td>
+                                                            <td>'. htmlentities($rowTraining["description"] ?? '') .'</td>
                                                             <td class="text-center"><p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="#modalViewTraining" data-toggle="modal" class="btn btn-link" onclick="btnViewTraining('.$rowTraining["ID"].')">View</a></p></td>
                                                             <td class="text-center">'.$last_modified.'</td>
                                                             <td class="text-center">';
@@ -3905,9 +3857,9 @@
                                             while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                 echo '<tr>
                                                     <td>'. $counting++ .'</td>
-                                                    <td>'. $rowEmployee["first_name"] .'</td>
-                                                    <td>'. $rowEmployee["last_name"] .'</td>
-                                                    <td>'. $rowEmployee["email"] .'</td>
+                                                    <td>'. htmlentities($rowEmployee["first_name"] ?? '') .'</td>
+                                                    <td>'. htmlentities($rowEmployee["last_name"] ?? '') .'</td>
+                                                    <td>'. htmlentities($rowEmployee["email"] ?? '') .'</td>
                                                 </tr>';
                                             }
                                         } else {
@@ -3936,7 +3888,7 @@
             $t_quiz_id = $row['quiz_id'];
             $t_job_description_id = $row["job_description_id"];
 
-            $files = $row['files'];
+            $files = htmlentities($row['files'] ?? '');
             if (!empty($files)) {
                 $output_file = json_decode($files,true);
             }
@@ -4033,12 +3985,12 @@
                 
                 if ( mysqli_num_rows($selectData) > 0 ) {
                     $rowData = mysqli_fetch_array($selectData);
-                    $data_ID = $rowData['ID'];
-                    $data_title = stripcslashes($rowData['title']);
-                    $data_description = stripcslashes($rowData['description']);
+                    $data_ID = htmlentities($rowData['ID'] ?? '');
+                    $data_title = stripcslashes(htmlentities($rowData['title'] ?? ''));
+                    $data_description = stripcslashes(htmlentities($rowData['description'] ?? ''));
 
-                    $filetype = $rowData['filetype'];
-                    $files = $rowData["files"];
+                    $filetype = htmlentities($rowData['filetype'] ?? '');
+                    $files = htmlentities($rowData["files"] ?? '');
                     $type = 'iframe';
                     if (!empty($files)) {
                         if ($filetype == 1) {
@@ -4106,14 +4058,14 @@
             $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE ID = $ID" );
             if ( mysqli_num_rows($selectData) > 0 ) {
                 $rowData = mysqli_fetch_array($selectData);
-                $data_ID = $rowData['ID'];
-                $data_title = stripcslashes($rowData['title']);
-                $data_description = stripcslashes($rowData['description']);
+                $data_ID = htmlentities($rowData['ID'] ?? '');
+                $data_title = stripcslashes(htmlentities($rowData['title'] ?? ''));
+                $data_description = stripcslashes(htmlentities($rowData['description'] ?? ''));
 
                 $files = '';
                 $arr_item = array();
                 if (!empty($rowData["file_history"])) {
-                    $arr_item = json_decode($rowData["file_history"],true);
+                    $arr_item = json_decode(htmlentities($rowData["file_history"] ?? ''),true);
                 }
                 
                 $filetype = $_POST['filetype'];
@@ -4126,7 +4078,7 @@
                             $process = $fileValidation['valid'];
 
                             if ($process == true) {
-                                $filesize_tot = $filesize + $rowData["filesize"];
+                                $filesize_tot = $filesize + htmlentities($rowData["filesize"] ?? '');
 
                                 mysqli_query( $conn,"UPDATE tbl_hr_job_description SET files='". $files ."', filetype='". $filetype ."', filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
 
@@ -4168,8 +4120,8 @@
                         mysqli_query( $conn,"UPDATE tbl_hr_job_description SET file_history='". $file_history ."' WHERE ID='". $ID ."'" );
                     }
                 } else {
-                    $filetype = $rowData['filetype'];
-                    $files = $rowData["files"];
+                    $filetype = htmlentities($rowData['filetype'] ?? '');
+                    $files = htmlentities($rowData["files"] ?? '');
                     $type = 'iframe';
                     if (!empty($files)) {
                         if ($filetype == 1) {
@@ -4283,7 +4235,7 @@
                     $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE status = 1 and user_id = $user_id ORDER BY title" );
                     if ( mysqli_num_rows($result) > 0 ) {
                         while($row = mysqli_fetch_array($result)) {
-                            echo '<option value="'. $row["ID"] .'">'. $row["title"] .'</option>';
+                            echo '<option value="'. $row["ID"] .'">'. htmlentities($row["title"] ?? '') .'</option>';
                         }
                     } else {
                         echo '<option value="" disabled>No Available</option>';
@@ -4344,7 +4296,7 @@
                     $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_set WHERE status = 1 and user_id = $user_id ORDER BY title" );
                     if ( mysqli_num_rows($result) > 0 ) {
                         while($row = mysqli_fetch_array($result)) {
-                            echo '<option value="'. $row["ID"] .'">'. $row["title"] .'</option>';
+                            echo '<option value="'. $row["ID"] .'">'. htmlentities($row["title"] ?? '') .'</option>';
                         }
                     } else {
                         echo '<option value="" disabled>No Available</option>';
@@ -4389,7 +4341,7 @@
             $t_quiz_id = $row['quiz_id'];
             $t_job_description_id = $row["job_description_id"];
 
-            $files = $row['files'];
+            $files = htmlentities($row['files'] ?? '');
             if (!empty($files)) {
                 $output_file = json_decode($files,true);
             }
@@ -4417,8 +4369,8 @@
                                 $resultType = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings_type ORDER BY name" );
                                 if ( mysqli_num_rows($resultType) > 0 ) {
                                     while($rowType = mysqli_fetch_array($resultType)) {
-                                        $ID = $rowType['ID'];
-                                        $name = $rowType['name'];
+                                        $ID = htmlentities($rowType['ID'] ?? '');
+                                        $name = htmlentities($rowType['name'] ?? '');
                                         $records = 0;
 
                                         $selectTrainings = mysqli_query( $conn,'SELECT * FROM tbl_hr_trainings WHERE deleted = 0 AND user_id="'.$user_id.'" AND type="'. $ID .'"' );
@@ -4442,13 +4394,13 @@
                     <div class="form-group">
                         <label class="col-md-3 control-label">Title</label>
                         <div class="col-md-8">
-                            <input class="form-control" type="text" name="title" value="'. $row['title'] .'" required />
+                            <input class="form-control" type="text" name="title" value="'. htmlentities($row['title'] ?? '') .'" required />
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-md-3 control-label">Description</label>
                         <div class="col-md-8">
-                            <textarea class="form-control" name="description" style="height:100px !important;" required >'. $row['description'] .'</textarea>
+                            <textarea class="form-control" name="description" style="height:100px !important;" required >'. htmlentities($row['description'] ?? '') .'</textarea>
                         </div>
                     </div>
                     <div class="form-group">
@@ -4461,9 +4413,9 @@
                                 if ( mysqli_num_rows($resultJD) > 0 ) {
                                     while($rowJD = mysqli_fetch_array($resultJD)) {
                                         if (in_array($rowJD["ID"], $array_jd)) {
-                                            echo '<option value="'. $rowJD["ID"] .'" selected>'. $rowJD["title"] .'</option>';
+                                            echo '<option value="'. $rowJD["ID"] .'" selected>'. htmlentities($rowJD["title"] ?? '') .'</option>';
                                         } else {
-                                            echo '<option value="'. $rowJD["ID"] .'">'. $rowJD["title"] .'</option>';
+                                            echo '<option value="'. $rowJD["ID"] .'">'. htmlentities($rowJD["title"] ?? '') .'</option>';
                                         }
                                     }
                                 } else {
@@ -4602,9 +4554,9 @@
                                 if ( mysqli_num_rows($resultQuiz) > 0 ) {
                                     while($rowQuiz = mysqli_fetch_array($resultQuiz)) {
                                         if (in_array($rowQuiz["ID"], $array_quiz)) {
-                                            echo '<option value="'. $rowQuiz["ID"] .'" selected>'. $rowQuiz["title"] .'</option>';
+                                            echo '<option value="'. $rowQuiz["ID"] .'" selected>'. htmlentities($rowQuiz["title"] ?? '') .'</option>';
                                         } else {
-                                            echo '<option value="'. $rowQuiz["ID"] .'">'. $rowQuiz["title"] .'</option>';
+                                            echo '<option value="'. $rowQuiz["ID"] .'">'. htmlentities($rowQuiz["title"] ?? '') .'</option>';
                                         }
                                     }
                                 } else {
@@ -4722,11 +4674,12 @@
 
                                                 echo '<tr>
                                                     <td>'.$countTraining++.'</td>
-                                                    <td>'.$rowEmployee["e_first_name"] .'</td>
-                                                    <td>'.$rowEmployee["e_last_name"] .'</td>
-                                                    <td>'.$rowEmployee["e_email"] .'</td>
+                                                    <td>'.htmlentities($rowEmployee["e_first_name"] ?? '') .'</td>
+                                                    <td>'.htmlentities($rowEmployee["e_last_name"] ?? '') .'</td>
+                                                    <td>'.htmlentities($rowEmployee["e_email"] ?? '') .'</td>
                                                     <td class="text-center">'; echo $trainingResult == 100 ? '<span class="label label-sm label-success">YES</span>':'<span class="label label-sm label-danger">NO</span>'; echo '</td>
-                                                </tr>';                                         }
+                                                </tr>';
+                                            }
                                         }
 
                                         if ( $countTraining < 1 ) {
@@ -4735,104 +4688,6 @@
                                     } else {
                                         echo '<tr class="text-center text-default"><td colspan="5">Empty Record</td></tr>';
                                     }
-                                // } else {
-                                //     $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id = $user_id ORDER BY first_name" );
-                                //     if ( mysqli_num_rows($selectEmployee) > 0 ) {
-                                //         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
-
-
-                                //          // Option 1
-                                //          // $trainings_id = $row['ID'];
-                                //          // $trainings_id_status = $rowEmployee["trainings_id_status"];
-                                //          // $output = json_decode($trainings_id_status,true);
-
-                                //          // if ( !empty($trainings_id_status) ) {
-                                //          //  if ( array_key_exists($trainings_id, $output) ) {
-                                //          //      if ( $output[$trainings_id] == 1 ) {
-
-                                //          //          echo '<tr>
-                                //          //              <td>'. $rowEmployee["ID"] .'</td>
-                                //          //              <td>'. $rowEmployee["first_name"] .'</td>
-                                //          //              <td>'. $rowEmployee["last_name"] .'</td>
-                                //          //              <td>'. $rowEmployee["email"] .'</td>
-                                //          //              <td>
-                                //          //              <span class="label label-sm label-success">YES</span>
-                                //          //              </td>
-                                //          //          </tr>';
-                                                        
-                                //          //          $countTraining++;
-                                //          //      }
-                                //          //  }
-                                //          // }
-
-                                //          // Option 2
-                                //          $found = null;
-                                //          $array_rowEmployee = explode(", ", $rowEmployee["job_description_id"]);
-                                //          $array_rowTraining = explode(", ", $row["job_description_id"]);
-                                //          foreach($array_rowEmployee as $emp_JD) {
-                                //              if (in_array($emp_JD,$array_rowTraining)) {
-                                //                  $found = true;
-                                //              }
-                                //          }
-
-                                //          if ( $found == true ) {
-                                //              $employee_id = $rowEmployee["ID"];
-
-                                //                 $trainingStatus = "Not Yet Started";
-                                //                 $trainingResult = 0;
-                                //                 $completed_date = '';
-                                //                 $due_date = '';
-
-                                //              $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = $employee_id" );
-                                //                 if ( mysqli_num_rows($selectUser) > 0 ) {
-                                //                     $rowUser = mysqli_fetch_array($selectUser);
-                                //                     $employee_user_ID = $rowUser['ID'];
-
-                                //                     $selectQuizResult = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_result WHERE user_id = $employee_user_ID " );
-                                //                     if ( mysqli_num_rows($selectQuizResult) > 0 ) {
-                                //                         while($rowQuizResult = mysqli_fetch_array($selectQuizResult)) {
-                                //                             $trainingResultID = $rowQuizResult['ID'];
-                                //                             $trainingQuizID = $rowQuizResult['quiz_id'];
-
-                                //                             if (!empty($row['quiz_id'])) {
-                                //                                 $array_quiz_id = explode(', ', $row['quiz_id']);
-                                //                                 if (in_array($trainingQuizID, $array_quiz_id)) {
-                                //                                     $trainingResult = $rowQuizResult['result'];
-
-                                //                                     if ($trainingResult == 100) { $trainingStatus = "Completed"; }
-                                //                                     else { $trainingStatus = "Not Yet Started"; }
-                                                    
-                                //                                     $completed_date = $rowQuizResult['last_modified'];
-                                //                                     $completed_date = new DateTime($completed_date);
-                                //                                     $completed_date = $completed_date->format('M d, Y');
-                                                                    
-                                //                                     $due_date = date('Y-m-d', strtotime('+1 year', strtotime($completed_date)) );
-                                //                                     $due_date = new DateTime($due_date);
-                                //                                     $due_date = $due_date->format('M d, Y');
-                                //                                 }
-                                //                             }
-                                //                         }
-                                //                     }
-                                //                 }
-                                //              echo '<tr>
-                                //                  <td>'. $rowEmployee["ID"] .'</td>
-                                //                  <td>'. $rowEmployee["first_name"] .'</td>
-                                //                  <td>'. $rowEmployee["last_name"] .'</td>
-                                //                  <td>'. $rowEmployee["email"] .'</td>
-                                //                  <td class="text-center">'; echo $trainingResult == 100 ? '<span class="label label-sm label-success">YES</span>':'<span class="label label-sm label-danger">NO</span>'; echo '</td>
-                                //              </tr>';
-
-                                //              $countTraining++;
-                                //          }
-                                //         }
-
-                                //         if ( $countTraining < 1 ) {
-                                //          echo '<tr class="text-center text-default"><td colspan="5">Empty Record</td></tr>';
-                                //         }
-                                //     } else {
-                                //      echo '<tr class="text-center text-default"><td colspan="5">Empty Record</td></tr>';
-                                //     }
-                                // }
                                 
                             echo '</tbody>
                         </table>
@@ -4943,12 +4798,12 @@
         if ( mysqli_num_rows($result) > 0 ) {
             $i=1;
             while($row = mysqli_fetch_array($result)) {
-                $t_ID = $row["t_ID"];
-                $t_title = $row["t_title"];
-                $t_description = $row["t_description"];
-                $t_status = $row["t_status"];
-                $countApproved = $row["TOTAL_APPROVE"];
-                $countEmployee = $row["TOTAL_EMPLOYEE"];
+                $t_ID = htmlentities($row["t_ID"] ?? '');
+                $t_title = htmlentities($row["t_title"] ?? '');
+                $t_description = htmlentities($row["t_description"] ?? '');
+                $t_status = htmlentities($row["t_status"] ?? '');
+                $countApproved = htmlentities($row["TOTAL_APPROVE"] ?? '');
+                $countEmployee = htmlentities($row["TOTAL_EMPLOYEE"] ?? '');
                 $percentage = 0;
                 
                 echo '<tr id="tr_'.$t_ID.'">
@@ -5090,12 +4945,12 @@
         if ( mysqli_num_rows($result) > 0 ) {
             $i=1;
             while($row = mysqli_fetch_array($result)) {
-                $t_ID = $row["t_ID"];
-                $t_title = $row["t_title"];
-                $t_description = $row["t_description"];
-                $t_status = $row["t_status"];
-                $countApproved = $row["TOTAL_APPROVE"];
-                $countEmployee = $row["TOTAL_EMPLOYEE"];
+                $t_ID = htmlentities($row["t_ID"] ?? '');
+                $t_title = htmlentities($row["t_title"] ?? '');
+                $t_description = htmlentities($row["t_description"] ?? '');
+                $t_status = htmlentities($row["t_status"] ?? '');
+                $countApproved = htmlentities($row["TOTAL_APPROVE"] ?? '');
+                $countEmployee = htmlentities($row["TOTAL_EMPLOYEE"] ?? '');
                 $percentage = 0;
                 
                 echo '<tr id="tr_'.$t_ID.'">
@@ -5242,16 +5097,16 @@
 
                 if ( mysqli_num_rows($selectData) > 0 ) {
                     $rowData = mysqli_fetch_array($selectData);
-                    $data_ID = $rowData['ID'];
-                    $data_title = stripcslashes($rowData['title']);
-                    $data_description = stripcslashes($rowData['description']);
+                    $data_ID = htmlentities($rowData['ID'] ?? '');
+                    $data_title = stripcslashes(htmlentities($rowData['title'] ?? ''));
+                    $data_description = stripcslashes(htmlentities($rowData['description'] ?? ''));
 
                     $array_jd = $_POST['job_description_id'];
                     $job_title = array();
                     foreach ($array_jd as $value) {
                         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE ID=$value " );
                         while($rowJD = mysqli_fetch_array($selectData)) {
-                            $job_title[] = $rowJD["title"];
+                            $job_title[] = htmlentities($rowJD["title"] ?? '');
                         }
                     }
 
@@ -5347,9 +5202,9 @@
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE ID = $ID" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
-            $user_id = $row['user_id'];
+            $user_id = htmlentities($row['user_id'] ?? '');
 
-            $files = $row['files'];
+            $files = htmlentities($row['files'] ?? '');
             if (!empty($files)) {
                 $output_file = json_decode($files,true);
             }
@@ -5365,7 +5220,7 @@
                 $files = '';
                 $arr_item = array();
                 if (!empty($rowData["file_history"])) {
-                    $arr_item = json_decode($rowData["file_history"],true);
+                    $arr_item = json_decode(htmlentities($rowData["file_history"] ?? ''),true);
                 }
                 $arr_file = array();
                 $path = 'uploads/';
@@ -5434,7 +5289,7 @@
                 foreach ($array_jd as $value) {
                     $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE ID=$value " );
                     while($rowJD = mysqli_fetch_array($selectData)) {
-                        $job_title[] = $rowJD["title"];
+                        $job_title[] = htmlentities($rowJD["title"] ?? '');
                     }
                 }
 
@@ -5592,8 +5447,8 @@
                             $selectTrainings = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE deleted = 0 AND user_id = $current_userEmployerID ORDER BY title" );
                             if ( mysqli_num_rows($selectTrainings) > 0 ) {
                                 while($rowTraining = mysqli_fetch_array($selectTrainings)) {
-                                    $training_ID = $rowTraining['ID'];
-                                    $title = $rowTraining['title'];
+                                    $training_ID = htmlentities($rowTraining['ID'] ?? '');
+                                    $title = htmlentities($rowTraining['title'] ?? '');
                                     
                                     $data_last_modified = $rowTraining['last_modified'];
                                     $data_last_modified = new DateTime($data_last_modified);
@@ -5647,7 +5502,7 @@
 
                                     if ( $found == true ) {
                                         echo '<tr id="tr_'.$training_ID.'">
-                                            <td >'. htmlentities($title) .'</td>
+                                            <td >'. $title .'</td>
                                             <td class="text-center">'; echo $trainingResult == 100 ? $completed_date:''; echo '</td>
                                             <td class="text-center">'; echo $trainingResult == 100 ? $due_date:''; echo '</td>
                                             <td class="text-center">'.$trainingStatus.'</td>
@@ -5671,10 +5526,10 @@
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE ID = $id" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
-            $user_id = $row['user_id'];
-            $type = $row['type'];
+            $user_id = htmlentities($row['user_id'] ?? '');
+            $type = htmlentities($row['type'] ?? '');
 
-            $files = $row['files'];
+            $files = htmlentities($row['files'] ?? '');
             if (!empty($files)) {
                 $output_file = json_decode($files,true);
             }
@@ -5746,9 +5601,9 @@
                                     }
                                 }
                                 echo '<tr>
-                                    <td>'. htmlentities($rowEmployee["last_name"]) .'</td>
-                                    <td>'. htmlentities($rowEmployee["first_name"]) .'</td>
-                                    <td>'. $rowEmployee["email"] .'</td>
+                                    <td>'. htmlentities($rowEmployee["last_name"] ?? '') .'</td>
+                                    <td>'. htmlentities($rowEmployee["first_name"] ?? '') .'</td>
+                                    <td>'. htmlentities($rowEmployee["email"] ?? '') .'</td>
                                     <td class="text-center">'; echo $trainingResult == 100 ? '<span class="label label-sm label-success">YES</span>':'<span class="label label-sm label-danger">NO</span>'; echo '</td>
                                 </tr>';
 
@@ -5803,8 +5658,8 @@
                             $selectTrainings = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE deleted = 0 AND user_id = $current_userEmployerID ORDER BY title" );
                             if ( mysqli_num_rows($selectTrainings) > 0 ) {
                                 while($rowTraining = mysqli_fetch_array($selectTrainings)) {
-                                    $training_ID = $rowTraining['ID'];
-                                    $title = $rowTraining['title'];
+                                    $training_ID = htmlentities($rowTraining['ID'] ?? '');
+                                    $title = htmlentities($rowTraining['title'] ?? '');
                                     
                                     $data_last_modified = $rowTraining['last_modified'];
                                     $data_last_modified = new DateTime($data_last_modified);
@@ -5865,7 +5720,7 @@
 
                                     if ( $found == true ) {
                                         echo '<tr id="tr_'.$training_ID.'">
-                                            <td >'. htmlentities($title) .'</td>
+                                            <td >'. $title .'</td>
                                             <td class="text-center">'; echo $trainingResult == 100 ? $completed_date:''; echo '</td>
                                             <td class="text-center">'; echo $trainingResult == 100 ? $due_date:''; echo '</td>
                                             <td class="text-center">'.$trainingStatus.'</td>
@@ -5928,8 +5783,8 @@
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz WHERE ID = $id" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
-            $data_choices = $row['choices'];
-            $data_answer = $row['answer'];
+            $data_choices = htmlentities($row['choices'] ?? '');
+            $data_answer = htmlentities($row['answer'] ?? '');
             $count_answer = 0;
         }
 
@@ -5938,7 +5793,7 @@
         <div class="form-group">
             <label class="col-md-3 control-label">Question</label>
             <div class="col-md-8">
-                <textarea class="form-control" name="question" style="height:150px;" required >'.$row['question'].'</textarea>
+                <textarea class="form-control" name="question" style="height:150px;" required >'.htmlentities($row['question'] ?? '').'</textarea>
             </div>
         </div>
         <div class="form-group">
@@ -5999,10 +5854,10 @@
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_set WHERE ID = $id" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
-            $title = $row['title'];
-            $language = $row['language'];
-            $status = $row['status'];
-            $quiz_id = $row['quiz_id'];
+            $title = htmlentities($row['title'] ?? '');
+            $language = htmlentities($row['language'] ?? '');
+            $status = htmlentities($row['status'] ?? '');
+            $quiz_id = htmlentities($row['quiz_id'] ?? '');
         }
 
         echo '<input class="form-control" type="hidden" name="ID" value="'.$id.'" />
@@ -6052,16 +5907,16 @@
                             $selectDataQuiz = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz WHERE ID = $value" );
                             if ( mysqli_num_rows($selectDataQuiz) > 0 ) {
                                 $rowQuiz = mysqli_fetch_array($selectDataQuiz);
-                                $ID = $rowQuiz['ID'];
-                                $question = $rowQuiz['question'];
+                                $ID = htmlentities($rowQuiz['ID'] ?? '');
+                                $question = htmlentities($rowQuiz['question'] ?? '');
 
-                                $data_choices = $rowQuiz['choices'];
+                                $data_choices = htmlentities($rowQuiz['choices'] ?? '');
                                 $choices_arr = explode(" | ", $data_choices);
                                 $choices = '<ol type="a">';
                                 foreach ($choices_arr as $value) { $choices .= '<li>'.$value.'</li>'; }
                                 $choices .= '</ol>';
 
-                                $answer = $rowQuiz['answer'];
+                                $answer = htmlentities($rowQuiz['answer'] ?? '');
                                 $alphabet = range('a', 'z');
 
                                 echo '<tr id="tr_'.$ID.'">
@@ -6134,16 +5989,16 @@
             $selectData = mysqli_query( $conn,'SELECT * FROM tbl_hr_quiz WHERE user_id="'. $user_id .'" AND ID="'. $last_id .'" ORDER BY ID LIMIT 1' );
             if ( mysqli_num_rows($selectData) > 0 ) {
                 $rowData = mysqli_fetch_array($selectData);
-                $data_ID = $rowData['ID'];
-                $data_question = stripcslashes(htmlentities($rowData['question']));
+                $data_ID = htmlentities($rowData['ID'] ?? '');
+                $data_question = stripcslashes(htmlentities($rowData['question'] ?? ''));
 
-                $data_choices = $rowData['choices'];
+                $data_choices = htmlentities($rowData['choices'] ?? '');
                 $choices_arr = explode(" | ", $data_choices);
                 $choices = '<ol type="a">';
-                foreach ($choices_arr as $value) { $choices .= '<li>'.htmlentities($value).'</li>'; }
+                foreach ($choices_arr as $value) { $choices .= '<li>'.htmlentities($value ?? '').'</li>'; }
                 $choices .= '</ol>';
 
-                $data_answer = $rowData['answer'];
+                $data_answer = htmlentities($rowData['answer'] ?? '');
                 $alphabet = range('a', 'z');
 
                 $output = array(
@@ -6190,16 +6045,16 @@
             $selectData = mysqli_query( $conn,'SELECT * FROM tbl_hr_quiz WHERE ID="'. $ID .'" ORDER BY ID LIMIT 1' );
             if ( mysqli_num_rows($selectData) > 0 ) {
                 $rowData = mysqli_fetch_array($selectData);
-                $data_ID = $rowData['ID'];
-                $data_question = stripcslashes(htmlentities($rowData['question']));
+                $data_ID = htmlentities($rowData['ID'] ?? '');
+                $data_question = stripcslashes(htmlentities($rowData['question'] ?? ''));
 
-                $data_choices = $rowData['choices'];
+                $data_choices = htmlentities($rowData['choices'] ?? '');
                 $choices_arr = explode(" | ", $data_choices);
                 $choices = '<ol type="a">';
-                foreach ($choices_arr as $value) { $choices .= '<li>'.htmlentities($value).'</li>'; }
+                foreach ($choices_arr as $value) { $choices .= '<li>'.htmlentities($value ?? '').'</li>'; }
                 $choices .= '</ol>';
 
-                $data_answer = $rowData['answer'];
+                $data_answer = htmlentities($rowData['answer'] ?? '');
                 $alphabet = range('a', 'z');
 
                 $output = array(
@@ -6303,8 +6158,8 @@
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
 
-            $filetype = $row['filetype'];
-            $files = $row["files"];
+            $filetype = htmlentities($row['filetype'] ?? '');
+            $files = htmlentities($row["files"] ?? '');
             $type = 'iframe';
             if (!empty($files)) {
                 if ($filetype == 1) {
@@ -6324,17 +6179,17 @@
 
         echo '<input class="form-control" type="hidden" name="ID" value="'. $row['ID'] .'" />
         <input class="form-control" type="hidden" name="c" value="'. $c .'" />
-        <input class="form-control" type="hidden" name="files" id="files" value="'. $row['files'] .'" />
+        <input class="form-control" type="hidden" name="files" id="files" value="'. htmlentities($row['files'] ?? '') .'" />
         <div class="form-group">
             <label class="col-md-3 control-label">Department Name</label>
             <div class="col-md-8">
-                <input class="form-control" type="text" name="title" value="'. $row['title'] .'" required />
+                <input class="form-control" type="text" name="title" value="'. htmlentities($row['title'] ?? '') .'" required />
             </div>
         </div>
         <div class="form-group">
             <label class="col-md-3 control-label">Description</label>
             <div class="col-md-8">
-                <textarea class="form-control" name="description" style="height:100px !important;" required >'. $row['description'] .'</textarea>
+                <textarea class="form-control" name="description" style="height:100px !important;" required >'. htmlentities($row['description'] ?? '') .'</textarea>
             </div>
         </div>
         <div class="form-group '; echo $_COOKIE['client'] == 1 ? 'hide':''; echo '">
@@ -6418,7 +6273,7 @@
                                                 $resultJD = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE ID = $value" );
                                                 if ( mysqli_num_rows($resultJD) > 0 ) {
                                                     $rowJD = mysqli_fetch_array($resultJD);
-                                                    array_push($position, $rowJD["title"]);
+                                                    array_push($position, htmlentities($rowJD["title"] ?? ''));
                                                 }
                                             }
                                         }
@@ -6426,11 +6281,11 @@
 
                                         echo '<tr>
                                             <td>'. $table_counter++ .'</td>
-                                            <td>'. $rowEmployee["last_name"] .'</td>
-                                            <td>'. $rowEmployee["first_name"] .'</td>
+                                            <td>'. htmlentities($rowEmployee["last_name"] ?? '') .'</td>
+                                            <td>'. htmlentities($rowEmployee["first_name"] ?? '') .'</td>
                                             <td>'. $position .'</td>
                                             <td>'. $employment_type[$rowEmployee["type_id"]] .'</td>
-                                            <td>'. $rowEmployee["email"] .'</td>
+                                            <td>'. htmlentities($rowEmployee["email"] ?? '') .'</td>
                                         </tr>';
                                     }
                                 } else {
@@ -6494,8 +6349,8 @@
                     $rowData = mysqli_fetch_array($selectData);
                     $data_ID = $rowData['ID'];
 
-                    $filetype = $rowData['filetype'];
-                    $files = $rowData["files"];
+                    $filetype = htmlentities($rowData['filetype'] ?? '');
+                    $files = htmlentities($rowData["files"] ?? '');
                     $type = 'iframe';
                     if (!empty($files)) {
                         if ($filetype == 1) {
@@ -6552,7 +6407,7 @@
                 $files = '';
                 $arr_item = array();
                 if (!empty($rowData["file_history"])) {
-                    $arr_item = json_decode($rowData["file_history"],true);
+                    $arr_item = json_decode(htmlentities($rowData["file_history"] ?? ''),true);
                 }
                 $filetype = $_POST['filetype'];
                 if ($filetype > 0) {
@@ -6564,7 +6419,7 @@
                             $process = $fileValidation['valid'];
 
                             if ($process == true) {
-                                $filesize_tot = $filesize + $rowData["filesize"];
+                                $filesize_tot = $filesize + htmlentities($rowData["filesize"] ?? '');
 
                                 mysqli_query( $conn,"UPDATE tbl_hr_department SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
                             }
@@ -6593,8 +6448,8 @@
 
                 //echo "Updated!" . mysqli_error($conn);
 
-                $filetype = $rowData['filetype'];
-                $files = $rowData["files"];
+                $filetype = htmlentities($rowData['filetype'] ?? '');
+                $files = htmlentities($rowData["files"] ?? '');
                 $type = 'iframe';
                 if (!empty($files)) {
                     if ($filetype == 1) {
@@ -6663,14 +6518,14 @@
         $selectUser = mysqli_query( $conn,"SELECT * from tbl_user WHERE ID = 35" );
         if ( mysqli_num_rows($selectUser) > 0 ) {
             $rowUser = mysqli_fetch_array($selectUser);
-            $current_userFName = $rowUser['first_name'];
-            $current_userLName = $rowUser['last_name'];
+            $current_userFName = htmlentities($rowUser['first_name'] ?? '');
+            $current_userLName = htmlentities($rowUser['last_name'] ?? '');
         }
 
         $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $user_id" );
         if ( mysqli_num_rows($selectEnterprise) > 0 ) {
             $rowEnterprise = mysqli_fetch_array($selectEnterprise);
-            $enterp_name = $rowEnterprise['businessname'];
+            $enterp_name = htmlentities($rowEnterprise['businessname'] ?? '');
         } else {
             $enterp_name = "";
         }
@@ -6756,7 +6611,7 @@
                                     $selectCategory = mysqli_query( $conn,"SELECT * FROM tbl_ffva_category" );
                                     if ( mysqli_num_rows($selectCategory) > 0 ) {
                                         while($rowCategory = mysqli_fetch_array($selectCategory)) {
-                                            echo '<option value="'.$rowCategory["ID"].'">'.$rowCategory["name"].'</option>';
+                                            echo '<option value="'.$rowCategory["ID"].'">'.htmlentities($rowCategory["name"] ?? '').'</option>';
                                         }
                                     }
 
@@ -6772,7 +6627,7 @@
                                     $selectIndustry = mysqli_query( $conn,"SELECT * FROM tbl_ffva_industry" );
                                     if ( mysqli_num_rows($selectIndustry) > 0 ) {
                                         while($rowIndustry = mysqli_fetch_array($selectIndustry)) {
-                                            echo '<option value="'.$rowIndustry["ID"].'">'.$rowIndustry["name"].'</option>';
+                                            echo '<option value="'.$rowIndustry["ID"].'">'.htmlentities($rowIndustry["name"] ?? '').'</option>';
                                         }
                                     }
 
@@ -6842,19 +6697,19 @@
                                         $likelihood_type_arr = explode(', ', $rowLikelihood["type"]);
                                         if (in_array($id, $likelihood_type_arr)) {
                                             $likelihood_ID = $rowLikelihood["ID"];
-                                            $likelihood_element = $rowLikelihood["element"];
-                                            $likelihood_question = $rowLikelihood["question"];
-                                            $likelihood_very_unlikely = $rowLikelihood["very_unlikely"];
-                                            $likelihood_unlikely = $rowLikelihood["unlikely"];
-                                            $likelihood_fairly_likely = $rowLikelihood["fairly_likely"];
-                                            $likelihood_likely = $rowLikelihood["likely"];
-                                            $likelihood_very_likely = $rowLikelihood["very_likely"];
+                                            $likelihood_element = htmlentities($rowLikelihood["element"] ?? '');
+                                            $likelihood_question = htmlentities($rowLikelihood["question"] ?? '');
+                                            $likelihood_very_unlikely = htmlentities($rowLikelihood["very_unlikely"] ?? '');
+                                            $likelihood_unlikely = htmlentities($rowLikelihood["unlikely"] ?? '');
+                                            $likelihood_fairly_likely = htmlentities($rowLikelihood["fairly_likely"] ?? '');
+                                            $likelihood_likely = htmlentities($rowLikelihood["likely"] ?? '');
+                                            $likelihood_very_likely = htmlentities($rowLikelihood["very_likely"] ?? '');
 
                                             $ref_content = '';
                                             $resultRef = mysqli_query( $conn,"SELECT * FROM tbl_ffva_reference WHERE type = 1 AND element = $likelihood_ID" );
                                             if ( mysqli_num_rows($resultRef) > 0 ) {
                                                 $rowRef = mysqli_fetch_array($resultRef);
-                                                $ref_content = $rowRef["content"];
+                                                $ref_content = htmlentities($rowRef["content"] ?? '');
                                             }
 
                                             echo '<tr class="tr_'.$likelihood_ID.'">
@@ -6989,19 +6844,19 @@
                                 if ( mysqli_num_rows($selectConsequence) > 0 ) {
                                     while($rowConsequence = mysqli_fetch_array($selectConsequence)) {
                                         $consequence_ID = $rowConsequence["ID"];
-                                        $consequence_element = $rowConsequence["element"];
-                                        $consequence_question = $rowConsequence["question"];
-                                        $consequence_negligible = $rowConsequence["negligible"];
-                                        $consequence_minor = $rowConsequence["minor"];
-                                        $consequence_moderate = $rowConsequence["moderate"];
-                                        $consequence_significant = $rowConsequence["significant"];
-                                        $consequence_severe = $rowConsequence["severe"];
+                                        $consequence_element = htmlentities($rowConsequence["element"] ?? '');
+                                        $consequence_question = htmlentities($rowConsequence["question"] ?? '');
+                                        $consequence_negligible = htmlentities($rowConsequence["negligible"] ?? '');
+                                        $consequence_minor = htmlentities($rowConsequence["minor"] ?? '');
+                                        $consequence_moderate = htmlentities($rowConsequence["moderate"] ?? '');
+                                        $consequence_significant = htmlentities($rowConsequence["significant"] ?? '');
+                                        $consequence_severe = htmlentities($rowConsequence["severe"] ?? '');
 
                                         $ref_content = '';
                                         $resultRef = mysqli_query( $conn,"SELECT * FROM tbl_ffva_reference WHERE type = 2 AND element = $consequence_ID" );
                                         if ( mysqli_num_rows($resultRef) > 0 ) {
                                             $rowRef = mysqli_fetch_array($resultRef);
-                                            $ref_content = $rowRef["content"];
+                                            $ref_content = htmlentities($rowRef["content"] ?? '');
                                         }
 
                                         echo '<tr class="tr_'.$consequence_ID.'">
@@ -7168,7 +7023,7 @@
                         if ( mysqli_num_rows($selectPrevention) > 0 ) {
                             while($rowPrevention = mysqli_fetch_array($selectPrevention)) {
                                 $prevention_ID = $rowPrevention["ID"];
-                                $prevention_name = $rowPrevention["name"];
+                                $prevention_name = htmlentities($rowPrevention["name"] ?? '');
 
                                 echo '<label class="mt-checkbox mt-checkbox-outline"> '.$prevention_name.'
                                     <input type="checkbox" value="'.$prevention_ID.'" name="prevention[]" />
@@ -7197,7 +7052,7 @@
                         if ( mysqli_num_rows($selectDetection) > 0 ) {
                             while($rowDetection = mysqli_fetch_array($selectDetection)) {
                                 $detection_ID = $rowDetection["ID"];
-                                $detection_name = $rowDetection["name"];
+                                $detection_name = htmlentities($rowDetection["name"] ?? '');
 
                                 echo '<label class="mt-checkbox mt-checkbox-outline"> '.$detection_name.'
                                     <input type="checkbox" value="'.$detection_ID.'" name="detection[]" />
@@ -7226,7 +7081,7 @@
                         if ( mysqli_num_rows($selectMitigation) > 0 ) {
                             while($rowMitigation = mysqli_fetch_array($selectMitigation)) {
                                 $mitigation_ID = $rowMitigation["ID"];
-                                $mitigation_name = $rowMitigation["name"];
+                                $mitigation_name = htmlentities($rowMitigation["name"] ?? '');
 
                                 echo '<label class="mt-checkbox mt-checkbox-outline"> '.$mitigation_name.'
                                     <input type="checkbox" value="'.$mitigation_ID.'" name="mitigation[]" />
@@ -7317,8 +7172,8 @@
                                             if ( mysqli_num_rows($selectUserEnterprise) > 0 ) {
                                                 $rowUserEnt = mysqli_fetch_array($selectUserEnterprise);
                                                 $currentEnt_userID = $rowUserEnt['ID'];
-                                                $currentEnt_userFName = $rowUserEnt['first_name'];
-                                                $currentEnt_userLName = $rowUserEnt['last_name'];
+                                                $currentEnt_userFName = htmlentities($rowUserEnt['first_name'] ?? '');
+                                                $currentEnt_userLName = htmlentities($rowUserEnt['last_name'] ?? '');
 
                                                 echo '<option value="'.$currentEnt_userID.'">'.$currentEnt_userFName.' '.$currentEnt_userLName.'</option>';
                                             }
@@ -7370,8 +7225,8 @@
                                             if ( mysqli_num_rows($selectUserEnterprise) > 0 ) {
                                                 $rowUserEnt = mysqli_fetch_array($selectUserEnterprise);
                                                 $currentEnt_userID = $rowUserEnt['ID'];
-                                                $currentEnt_userFName = $rowUserEnt['first_name'];
-                                                $currentEnt_userLName = $rowUserEnt['last_name'];
+                                                $currentEnt_userFName = htmlentities($rowUserEnt['first_name'] ?? '');
+                                                $currentEnt_userLName = htmlentities($rowUserEnt['last_name'] ?? '');
 
                                                 echo '<option value="'.$currentEnt_userID.'">'.$currentEnt_userFName.' '.$currentEnt_userLName.'</option>';
                                             }
@@ -7436,7 +7291,7 @@
                 $consequence_rate_arr = explode(', ', $consequence_rate);
 
                 $prepared_signature = $row["prepared_signature"];
-                $prepared_position = $row["prepared_position"];
+                $prepared_position = htmlentities($row["prepared_position"] ?? '');
                 $prepared_date = $row["prepared_date"];
 
                 if(!empty($row["prepared_by"])) { $prepared_by = $row["prepared_by"]; }
@@ -7444,21 +7299,21 @@
                 $selectUser = mysqli_query( $conn,"SELECT * from tbl_user WHERE ID = $prepared_by" );
                 if ( mysqli_num_rows($selectUser) > 0 ) {
                     $rowUser = mysqli_fetch_array($selectUser);
-                    $current_userFName = $rowUser['first_name'];
-                    $current_userLName = $rowUser['last_name'];
+                    $current_userFName = htmlentities($rowUser['first_name'] ?? '');
+                    $current_userLName = htmlentities($rowUser['last_name'] ?? '');
                 }
 
                 $enterp_name = "";
                 $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $prepared_by" );
                 if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                     $rowEnterprise = mysqli_fetch_array($selectEnterprise);
-                    $enterp_name = $rowEnterprise['businessname'];
+                    $enterp_name = htmlentities($rowEnterprise['businessname'] ?? '');
                 }
 
 
                 $reviewed_by = $row["reviewed_by"];
                 $reviewed_signature = $row["reviewed_signature"];
-                $reviewed_position = $row["reviewed_position"];
+                $reviewed_position = htmlentities($row["reviewed_position"] ?? '');
                 $reviewed_date = $row["reviewed_date"];
                 $reviewed_by_employer = '';
                 $reviewed_enterp_name = "";
@@ -7467,13 +7322,13 @@
                     $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $reviewed_by_employer" );
                     if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                         $rowEnterprise = mysqli_fetch_array($selectEnterprise);
-                        $reviewed_enterp_name = $rowEnterprise['businessname'];
+                        $reviewed_enterp_name = htmlentities($rowEnterprise['businessname'] ?? '');
                     }
                 }
 
                 $approved_by = $row["approved_by"];
                 $approved_signature = $row["approved_signature"];
-                $approved_position = $row["approved_position"];
+                $approved_position = htmlentities($row["approved_position"] ?? '');
                 $approved_date = $row["approved_date"];
                 $approved_by_employer = '';
                 $approved_enterp_name = "";
@@ -7482,7 +7337,7 @@
                     $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $approved_by_employer" );
                     if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                         $rowEnterprise = mysqli_fetch_array($selectEnterprise);
-                        $approved_enterp_name = $rowEnterprise['businessname'];
+                        $approved_enterp_name = htmlentities($rowEnterprise['businessname'] ?? '');
                     }
                 }
 
@@ -7509,19 +7364,19 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="control-label">Supplier Name</label>
-                                        <input class="form-control" type="text" name="company" value="'.$row["company"].'" '; echo $row["type"] == 1 ? 'required':''; echo ' />
+                                        <input class="form-control" type="text" name="company" value="'.htmlentities($row["company"] ?? '').'" '; echo $row["type"] == 1 ? 'required':''; echo ' />
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="control-label">Website</label>
-                                        <input class="form-control" type="text" name="website" value="'.$row["website"].'" '; echo $row["type"] == 1 ? 'required':''; echo ' />
+                                        <input class="form-control" type="text" name="website" value="'.htmlentities($row["website"] ?? '').'" '; echo $row["type"] == 1 ? 'required':''; echo ' />
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="control-label">Headquarters</label>
-                                        <input class="form-control" type="text" name="headquarters" value="'.$row["headquarters"].'" '; echo $row["type"] == 1 ? 'required':''; echo ' />
+                                        <input class="form-control" type="text" name="headquarters" value="'.htmlentities($row["headquarters"] ?? '').'" '; echo $row["type"] == 1 ? 'required':''; echo ' />
                                     </div>
                                 </div>
                             </div>
@@ -7529,19 +7384,19 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="control-label">Telephone Number</label>
-                                        <input class="form-control" type="text" name="telephone" value="'.$row["telephone"].'" '; echo $row["type"] == 1 ? 'required':''; echo ' />
+                                        <input class="form-control" type="text" name="telephone" value="'.htmlentities($row["telephone"] ?? '').'" '; echo $row["type"] == 1 ? 'required':''; echo ' />
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="control-label">Email</label>
-                                        <input class="form-control" type="email" name="email" value="'.$row["email"].'" '; echo $row["type"] == 1 ? 'required':''; echo ' />
+                                        <input class="form-control" type="email" name="email" value="'.htmlentities($row["email"] ?? '').'" '; echo $row["type"] == 1 ? 'required':''; echo ' />
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="control-label">Contact Person</label>
-                                        <input class="form-control" type="text" name="person" value="'.$row["person"].'"  '; echo $row["type"] == 1 ? 'required':''; echo ' />
+                                        <input class="form-control" type="text" name="person" value="'.htmlentities($row["person"] ?? '').'"  '; echo $row["type"] == 1 ? 'required':''; echo ' />
                                     </div>
                                 </div>
                             </div>
@@ -7549,13 +7404,13 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label class="control-label">Product or ingredient or raw material</label>
-                                        <textarea class="form-control" name="product" required >'.$row["product"].'</textarea>
+                                        <textarea class="form-control" name="product" required >'.htmlentities($row["product"] ?? '').'</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label class="control-label">Materials names and/or codes included in this assessment</label>
-                                        <textarea class="form-control" name="assessment" required >'.$row["assessment"].'</textarea>
+                                        <textarea class="form-control" name="assessment" required >'.htmlentities($row["assessment"] ?? '').'</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -7568,12 +7423,12 @@
                                             $selectCategory = mysqli_query( $conn,"SELECT * FROM tbl_ffva_category" );
                                             if ( mysqli_num_rows($selectCategory) > 0 ) {
                                                 while($rowCategory = mysqli_fetch_array($selectCategory)) {
-                                                    echo '<option value="'.$rowCategory["ID"].'"'; echo $row["category_id"] == $rowCategory["ID"] ? 'SELECTED':'';  echo '>'.$rowCategory["name"].'</option>';
+                                                    echo '<option value="'.$rowCategory["ID"].'"'; echo $row["category_id"] == $rowCategory["ID"] ? 'SELECTED':'';  echo '>'.htmlentities($rowCategory["name"] ?? '').'</option>';
                                                 }
                                             }
 
                                         echo '</select>
-                                        <input class="form-control margin-top-15" type="text" name="category_other" placeholder="Specify if other" value="'.$row["category_other"].'" />
+                                        <input class="form-control margin-top-15" type="text" name="category_other" placeholder="Specify if other" value="'.htmlentities($row["category_other"] ?? '').'" />
                                     </div>
                                 </div>
                                 <div class="col-md-4">
@@ -7584,18 +7439,18 @@
                                             $selectIndustry = mysqli_query( $conn,"SELECT * FROM tbl_ffva_industry" );
                                             if ( mysqli_num_rows($selectIndustry) > 0 ) {
                                                 while($rowIndustry = mysqli_fetch_array($selectIndustry)) {
-                                                    echo '<option value="'.$rowIndustry["ID"].'"'; echo $row["industry_id"] == $rowIndustry["ID"] ? 'SELECTED':'';  echo '>'.$rowIndustry["name"].'</option>';
+                                                    echo '<option value="'.$rowIndustry["ID"].'"'; echo $row["industry_id"] == $rowIndustry["ID"] ? 'SELECTED':'';  echo '>'.htmlentities($rowIndustry["name"] ?? '').'</option>';
                                                 }
                                             }
 
                                         echo '</select>
-                                        <input class="form-control margin-top-15" type="text" name="industry_other" placeholder="Specify if other" value="'.$row["industry_other"].'" />
+                                        <input class="form-control margin-top-15" type="text" name="industry_other" placeholder="Specify if other" value="'.htmlentities($row["industry_other"] ?? '').'" />
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="control-label">Document Number</label>
-                                        <input class="form-control" type="text" name="code" value="'.$row["code"].'" required />
+                                        <input class="form-control" type="text" name="code" value="'.htmlentities($row["code"] ?? '').'" required />
                                     </div>
                                     <div class="form-group">
                                         <label class="col-md-4 control-label mt-radio-inline">Receive Notification?</label>
@@ -7655,19 +7510,19 @@
                                                 $likelihood_type_arr = explode(', ', $rowLikelihood["type"]);
                                                 if (in_array($row["type"], $likelihood_type_arr)) {
                                                     $likelihood_ID = $rowLikelihood["ID"];
-                                                    $likelihood_element = $rowLikelihood["element"];
-                                                    $likelihood_question = $rowLikelihood["question"];
-                                                    $likelihood_very_unlikely = $rowLikelihood["very_unlikely"];
-                                                    $likelihood_unlikely = $rowLikelihood["unlikely"];
-                                                    $likelihood_fairly_likely = $rowLikelihood["fairly_likely"];
-                                                    $likelihood_likely = $rowLikelihood["likely"];
-                                                    $likelihood_very_likely = $rowLikelihood["very_likely"];
+                                                    $likelihood_element = htmlentities($rowLikelihood["element"] ?? '');
+                                                    $likelihood_question = htmlentities($rowLikelihood["question"] ?? '');
+                                                    $likelihood_very_unlikely = htmlentities($rowLikelihood["very_unlikely"] ?? '');
+                                                    $likelihood_unlikely = htmlentities($rowLikelihood["unlikely"] ?? '');
+                                                    $likelihood_fairly_likely = htmlentities($rowLikelihood["fairly_likely"] ?? '');
+                                                    $likelihood_likely = htmlentities($rowLikelihood["likely"] ?? '');
+                                                    $likelihood_very_likely = htmlentities($rowLikelihood["very_likely"] ?? '');
 
                                                     $ref_content = '';
                                                     $resultRef = mysqli_query( $conn,"SELECT * FROM tbl_ffva_reference WHERE type = 1 AND element = $likelihood_ID" );
                                                     if ( mysqli_num_rows($resultRef) > 0 ) {
                                                         $rowRef = mysqli_fetch_array($resultRef);
-                                                        $ref_content = $rowRef["content"];
+                                                        $ref_content = htmlentities($rowRef["content"] ?? '');
                                                     }
 
                                                     if (empty($likelihood_answer_arr[$index])) { $likelihood_answer_arr[$index] = 0; }
@@ -7859,12 +7714,12 @@
                                         <tr>
                                             <td>Likelihood</td>
                                             <td colspan="2">Likelihood of this material being affected by food fraud.</td>
-                                            <td><textarea class="form-control" name="likelihood_comment_summary" placeholder="Enter comment here">'.$row["likelihood_comment_summary"].'</textarea></td>
+                                            <td><textarea class="form-control" name="likelihood_comment_summary" placeholder="Enter comment here">'.htmlentities($row["likelihood_comment_summary"] ?? '').'</textarea></td>
                                             <td colspan="2"><span class="likelihood_result">Undefine</span></td>
                                         </tr>
                                         <tr>
                                             <td>Additional Notes:</td>
-                                            <td colspan="5"><textarea class="form-control" name="likelihood_note" placeholder="Enter comment here">'.$row["likelihood_note"].'</textarea></td>
+                                            <td colspan="5"><textarea class="form-control" name="likelihood_note" placeholder="Enter comment here">'.htmlentities($row["likelihood_note"] ?? '').'</textarea></td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -7909,19 +7764,19 @@
                                         if ( mysqli_num_rows($selectConsequence) > 0 ) {
                                             while($rowConsequence = mysqli_fetch_array($selectConsequence)) {
                                                 $consequence_ID = $rowConsequence["ID"];
-                                                $consequence_element = $rowConsequence["element"];
-                                                $consequence_question = $rowConsequence["question"];
-                                                $consequence_negligible = $rowConsequence["negligible"];
-                                                $consequence_minor = $rowConsequence["minor"];
-                                                $consequence_moderate = $rowConsequence["moderate"];
-                                                $consequence_significant = $rowConsequence["significant"];
-                                                $consequence_severe = $rowConsequence["severe"];
+                                                $consequence_element = htmlentities($rowConsequence["element"] ?? '');
+                                                $consequence_question = htmlentities($rowConsequence["question"] ?? '');
+                                                $consequence_negligible = htmlentities($rowConsequence["negligible"] ?? '');
+                                                $consequence_minor = htmlentities($rowConsequence["minor"] ?? '');
+                                                $consequence_moderate = htmlentities($rowConsequence["moderate"] ?? '');
+                                                $consequence_significant = htmlentities($rowConsequence["significant"] ?? '');
+                                                $consequence_severe = htmlentities($rowConsequence["severe"] ?? '');
 
                                                 $ref_content = '';
                                                 $resultRef = mysqli_query( $conn,"SELECT * FROM tbl_ffva_reference WHERE type = 2 AND element = $consequence_ID" );
                                                 if ( mysqli_num_rows($resultRef) > 0 ) {
                                                     $rowRef = mysqli_fetch_array($resultRef);
-                                                    $ref_content = $rowRef["content"];
+                                                    $ref_content = htmlentities($rowRef["content"] ?? '');
                                                 }
 
                                                 echo '<tr class="tr_'.$consequence_ID.'">
@@ -8096,12 +7951,12 @@
                                         <tr>
                                             <td>Consequence</td>
                                             <td colspan="2">Consequences of food fraud on this material.</td>
-                                            <td><textarea class="form-control" name="consequence_comment_summary" placeholder="Enter comment here">'.$row["consequence_comment_summary"].'</textarea></td>
+                                            <td><textarea class="form-control" name="consequence_comment_summary" placeholder="Enter comment here">'.htmlentities($row["consequence_comment_summary"] ?? '').'</textarea></td>
                                             <td colspan="2"><span class="consequence_result">Undefine</span></td>
                                         </tr>
                                         <tr>
                                             <td>Additional Notes:</td>
-                                            <td colspan="5"><textarea class="form-control" name="consequence_note" placeholder="Enter comment here">'.$row["consequence_note"].'</textarea></td>
+                                            <td colspan="5"><textarea class="form-control" name="consequence_note" placeholder="Enter comment here">'.htmlentities($row["consequence_note"] ?? '').'</textarea></td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -8190,7 +8045,7 @@
                                 if ( mysqli_num_rows($selectPrevention) > 0 ) {
                                     while($rowPrevention = mysqli_fetch_array($selectPrevention)) {
                                         $prevention_ID = $rowPrevention["ID"];
-                                        $prevention_name = $rowPrevention["name"];
+                                        $prevention_name = htmlentities($rowPrevention["name"] ?? '');
 
                                         $prevention_arr = array();
                                         if (!empty($row["prevention"])) { $prevention_arr = explode(', ', $row["prevention"]); }
@@ -8231,7 +8086,7 @@
                                 if ( mysqli_num_rows($selectDetection) > 0 ) {
                                     while($rowDetection = mysqli_fetch_array($selectDetection)) {
                                         $detection_ID = $rowDetection["ID"];
-                                        $detection_name = $rowDetection["name"];
+                                        $detection_name = htmlentities($rowDetection["name"] ?? '');
 
                                         $detection_arr = array();
                                         if (!empty($row["detection"])) { $detection_arr = explode(', ', $row["detection"]); }
@@ -8272,7 +8127,7 @@
                                 if ( mysqli_num_rows($selectMitigation) > 0 ) {
                                     while($rowMitigation = mysqli_fetch_array($selectMitigation)) {
                                         $mitigation_ID = $rowMitigation["ID"];
-                                        $mitigation_name = $rowMitigation["name"];
+                                        $mitigation_name = htmlentities($rowMitigation["name"] ?? '');
 
                                         $mitigation_arr = array();
                                         if (!empty($row["mitigation"])) { $mitigation_arr = explode(', ', $row["mitigation"]); }
@@ -8385,8 +8240,8 @@
                                                     if ( mysqli_num_rows($selectUserEnterprise) > 0 ) {
                                                         $rowUserEnt = mysqli_fetch_array($selectUserEnterprise);
                                                         $currentEnt_userID = $rowUserEnt['ID'];
-                                                        $currentEnt_userFName = $rowUserEnt['first_name'];
-                                                        $currentEnt_userLName = $rowUserEnt['last_name'];
+                                                        $currentEnt_userFName = htmlentities($rowUserEnt['first_name'] ?? '');
+                                                        $currentEnt_userLName = htmlentities($rowUserEnt['last_name'] ?? '');
 
                                                         echo '<option value="'.$currentEnt_userID.'" '; echo $reviewed_by == $currentEnt_userID ? 'SELECTED':''; echo '>'.$currentEnt_userFName.' '.$currentEnt_userLName.'</option>';
                                                     }
@@ -8443,8 +8298,8 @@
                                                     if ( mysqli_num_rows($selectUserEnterprise) > 0 ) {
                                                         $rowUserEnt = mysqli_fetch_array($selectUserEnterprise);
                                                         $currentEnt_userID = $rowUserEnt['ID'];
-                                                        $currentEnt_userFName = $rowUserEnt['first_name'];
-                                                        $currentEnt_userLName = $rowUserEnt['last_name'];
+                                                        $currentEnt_userFName = htmlentities($rowUserEnt['first_name'] ?? '');
+                                                        $currentEnt_userLName = htmlentities($rowUserEnt['last_name'] ?? '');
 
                                                         echo '<option value="'.$currentEnt_userID.'" '; echo $approved_by == $currentEnt_userID ? 'SELECTED':''; echo '>'.$currentEnt_userFName.' '.$currentEnt_userLName.'</option>';
                                                     }
@@ -8518,19 +8373,19 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="control-label">Company Name</label>
-                                        <input class="form-control" type="text" name="company" value="'.$row["company"].'" readonly />
+                                        <input class="form-control" type="text" name="company" value="'.htmlentities($row["company"] ?? '').'" readonly />
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="control-label">Website</label>
-                                        <input class="form-control" type="text" name="website" value="'.$row["website"].'" readonly />
+                                        <input class="form-control" type="text" name="website" value="'.htmlentities($row["website"] ?? '').'" readonly />
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="control-label">Headquarters</label>
-                                        <input class="form-control" type="text" name="headquarters" value="'.$row["headquarters"].'" readonly />
+                                        <input class="form-control" type="text" name="headquarters" value="'.htmlentities($row["headquarters"] ?? '').'" readonly />
                                     </div>
                                 </div>
                             </div>
@@ -8538,19 +8393,19 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="control-label">Telephone Number</label>
-                                        <input class="form-control" type="text" name="telephone" value="'.$row["telephone"].'" readonly />
+                                        <input class="form-control" type="text" name="telephone" value="'.htmlentities($row["telephone"] ?? '').'" readonly />
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="control-label">Email</label>
-                                        <input class="form-control" type="email" name="email" value="'.$row["email"].'" readonly />
+                                        <input class="form-control" type="email" name="email" value="'.htmlentities($row["email"] ?? '').'" readonly />
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label class="control-label">Contact Person</label>
-                                        <input class="form-control" type="text" name="person" value="'.$row["person"].'"  readonly />
+                                        <input class="form-control" type="text" name="person" value="'.htmlentities($row["person"] ?? '').'"  readonly />
                                     </div>
                                 </div>
                             </div>
@@ -8558,13 +8413,13 @@
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label class="control-label">Product or ingredient or raw material</label>
-                                        <textarea class="form-control" name="product" readonly >'.$row["product"].'</textarea>
+                                        <textarea class="form-control" name="product" readonly >'.htmlentities($row["product"] ?? '').'</textarea>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="form-group">
                                         <label class="control-label">Materials names and/or codes included in this assessment</label>
-                                        <textarea class="form-control" name="assessment" readonly >'.$row["assessment"].'</textarea>
+                                        <textarea class="form-control" name="assessment" readonly >'.htmlentities($row["assessment"] ?? '').'</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -8577,12 +8432,12 @@
                                             $selectCategory = mysqli_query( $conn,"SELECT * FROM tbl_ffva_category" );
                                             if ( mysqli_num_rows($selectCategory) > 0 ) {
                                                 while($rowCategory = mysqli_fetch_array($selectCategory)) {
-                                                    echo '<option value="'.$rowCategory["ID"].'"'; echo $row["category_id"] == $rowCategory["ID"] ? 'SELECTED':'';  echo '>'.$rowCategory["name"].'</option>';
+                                                    echo '<option value="'.$rowCategory["ID"].'"'; echo $row["category_id"] == $rowCategory["ID"] ? 'SELECTED':'';  echo '>'.htmlentities($rowCategory["name"] ?? '').'</option>';
                                                 }
                                             }
 
                                         echo '</select>
-                                        <input class="form-control margin-top-15" type="text" name="category_other" placeholder="Specify if other" value="'.$row["category_other"].'" readonly />
+                                        <input class="form-control margin-top-15" type="text" name="category_other" placeholder="Specify if other" value="'.htmlentities($row["category_other"] ?? '').'" readonly />
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -8593,12 +8448,12 @@
                                             $selectIndustry = mysqli_query( $conn,"SELECT * FROM tbl_ffva_industry" );
                                             if ( mysqli_num_rows($selectIndustry) > 0 ) {
                                                 while($rowIndustry = mysqli_fetch_array($selectIndustry)) {
-                                                    echo '<option value="'.$rowIndustry["ID"].'"'; echo $row["industry_id"] == $rowIndustry["ID"] ? 'SELECTED':'';  echo '>'.$rowIndustry["name"].'</option>';
+                                                    echo '<option value="'.$rowIndustry["ID"].'"'; echo $row["industry_id"] == $rowIndustry["ID"] ? 'SELECTED':'';  echo '>'.htmlentities($rowIndustry["name"] ?? '').'</option>';
                                                 }
                                             }
 
                                         echo '</select>
-                                        <input class="form-control margin-top-15" type="text" name="industry_other" placeholder="Specify if other" value="'.$row["industry_other"].'" readonly />
+                                        <input class="form-control margin-top-15" type="text" name="industry_other" placeholder="Specify if other" value="'.htmlentities($row["industry_other"] ?? '').'" readonly />
                                     </div>
                                 </div>
                             </div>
@@ -8640,8 +8495,8 @@
                                         if ( mysqli_num_rows($selectLikelihood) > 0 ) {
                                             while($rowLikelihood = mysqli_fetch_array($selectLikelihood)) {
                                                 $likelihood_ID = $rowLikelihood["ID"];
-                                                $likelihood_element = $rowLikelihood["element"];
-                                                $likelihood_question = $rowLikelihood["question"];
+                                                $likelihood_element = htmlentities($rowLikelihood["element"] ?? '');
+                                                $likelihood_question = htmlentities($rowLikelihood["question"] ?? '');
 
                                                 echo '<tr class="tr_'.$likelihood_ID.'">
                                                     <td>'.$likelihood_element.'</td>
@@ -8741,12 +8596,12 @@
                                         <tr>
                                             <td>Likelihood</td>
                                             <td colspan="2">Likelihood of this material being affected by food fraud.</td>
-                                            <td><p>'.$row["likelihood_comment_summary"].'</p></td>
+                                            <td><p>'.htmlentities($row["likelihood_comment_summary"] ?? '').'</p></td>
                                             <td class="text-center"><span class="likelihood_result">Undefine</span></td>
                                         </tr>
                                         <tr>
                                             <td>Additional Notes:</td>
-                                            <td colspan="5"><p>'.$row["likelihood_note"].'</p></td>
+                                            <td colspan="5"><p>'.htmlentities($row["likelihood_note"] ?? '').'</p></td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -8790,8 +8645,8 @@
                                         if ( mysqli_num_rows($selectConsequence) > 0 ) {
                                             while($rowConsequence = mysqli_fetch_array($selectConsequence)) {
                                                 $consequence_ID = $rowConsequence["ID"];
-                                                $consequence_element = $rowConsequence["element"];
-                                                $consequence_question = $rowConsequence["question"];
+                                                $consequence_element = htmlentities($rowConsequence["element"] ?? '');
+                                                $consequence_question = htmlentities($rowConsequence["question"] ?? '');
 
                                                 echo '<tr class="tr_'.$consequence_ID.'">
                                                     <td>'.$consequence_element.'</td>
@@ -8891,12 +8746,12 @@
                                         <tr>
                                             <td>Consequence</td>
                                             <td colspan="2">Consequences of food fraud on this material.</td>
-                                            <td><p>'.$row["consequence_comment_summary"].'</p></td>
+                                            <td><p>'.htmlentities($row["consequence_comment_summary"] ?? '').'</p></td>
                                             <td class="text-center"><span class="consequence_result">Undefine</span></td>
                                         </tr>
                                         <tr>
                                             <td>Additional Notes:</td>
-                                            <td colspan="4"><p>'.$row["consequence_note"].'</p></td>
+                                            <td colspan="4"><p>'.htmlentities($row["consequence_note"] ?? '').'</p></td>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -8985,7 +8840,7 @@
                                 if ( mysqli_num_rows($selectPrevention) > 0 ) {
                                     while($rowPrevention = mysqli_fetch_array($selectPrevention)) {
                                         $prevention_ID = $rowPrevention["ID"];
-                                        $prevention_name = $rowPrevention["name"];
+                                        $prevention_name = htmlentities($rowPrevention["name"] ?? '');
 
                                         if (!empty($row["prevention"])) {
                                             $prevention_arr = explode(', ', $row["prevention"]);
@@ -9033,7 +8888,7 @@
                                 if ( mysqli_num_rows($selectDetection) > 0 ) {
                                     while($rowDetection = mysqli_fetch_array($selectDetection)) {
                                         $detection_ID = $rowDetection["ID"];
-                                        $detection_name = $rowDetection["name"];
+                                        $detection_name = htmlentities($rowDetection["name"] ?? '');
 
                                         if (!empty($row["detection"])) {
                                             $detection_arr = explode(', ', $row["detection"]);
@@ -9081,7 +8936,7 @@
                                 if ( mysqli_num_rows($selectMitigation) > 0 ) {
                                     while($rowMitigation = mysqli_fetch_array($selectMitigation)) {
                                         $mitigation_ID = $rowMitigation["ID"];
-                                        $mitigation_name = $rowMitigation["name"];
+                                        $mitigation_name = htmlentities($rowMitigation["name"] ?? '');
 
                                         if (!empty($row["mitigation"])) {
                                             $mitigation_arr = explode(', ', $row["mitigation"]);
@@ -9157,14 +9012,14 @@
                         if ( mysqli_num_rows($resultSupplier) > 0 ) {
                             while($rowSupplier = mysqli_fetch_array($resultSupplier)) {
                                 $supplier_user_id = $rowSupplier["user_id"];
-                                $supplier_reviewed_by = $rowSupplier["reviewed_by"];
-                                $supplier_approved_by = $rowSupplier["approved_by"];
+                                $supplier_reviewed_by = htmlentities($rowSupplier["reviewed_by"] ?? '');
+                                $supplier_approved_by = htmlentities($rowSupplier["approved_by"] ?? '');
 
                                 $supplier_id = $rowSupplier["ID"];
-                                $supplier_company = $rowSupplier["company"];
-                                $supplier_product = $rowSupplier["product"];
+                                $supplier_company = htmlentities($rowSupplier["company"] ?? '');
+                                $supplier_product = htmlentities($rowSupplier["product"] ?? '');
 
-                                $data_status = $rowSupplier['status'];
+                                $data_status = htmlentities($rowSupplier['status'] ?? '');
                                 $status = "Drafted";
                                 // if (empty($int_review_assigned)) { $status = 'Drafted'; }
                                 if (!empty($rowSupplier['int_review_assigned']) AND $rowSupplier['int_review_status'] == 1) { $status = 'Reviewed'; }
@@ -9227,39 +9082,39 @@
         if ( mysqli_num_rows($resultSupplier) > 0 ) {
             while($rowSupplier = mysqli_fetch_array($resultSupplier)) {
                 $supplier_user_id = $rowSupplier["user_id"];
-                $supplier_reviewed_by = $rowSupplier["reviewed_by"];
-                $supplier_approved_by = $rowSupplier["approved_by"];
+                $supplier_reviewed_by = htmlentities($rowSupplier["reviewed_by"] ?? '');
+                $supplier_approved_by = htmlentities($rowSupplier["approved_by"] ?? '');
 
                 $int_review_assigned_name = '';
-                $int_review_assigned = $rowSupplier["int_review_assigned"];
-                $int_review_status = $rowSupplier["int_review_status"];
-                $int_review_comment = $rowSupplier["int_review_comment"];
+                $int_review_assigned = htmlentities($rowSupplier["int_review_assigned"] ?? '');
+                $int_review_status = htmlentities($rowSupplier["int_review_status"] ?? '');
+                $int_review_comment = htmlentities($rowSupplier["int_review_comment"] ?? '');
 
                 if (!empty($int_review_assigned)) {
                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $int_review_assigned" );
                     if ( mysqli_num_rows($selectUser) > 0 ) {
                         $rowUser = mysqli_fetch_array($selectUser);
-                        $int_review_assigned_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                        $int_review_assigned_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
                     }
                 }
 
                 $int_verify_assigned_name = '';
-                $int_verify_assigned = $rowSupplier["int_verify_assigned"];
-                $int_verify_status = $rowSupplier["int_verify_status"];
-                $int_verify_comment = $rowSupplier["int_verify_comment"];
+                $int_verify_assigned = htmlentities($rowSupplier["int_verify_assigned"] ?? '');
+                $int_verify_status = htmlentities($rowSupplier["int_verify_status"] ?? '');
+                $int_verify_comment = htmlentities($rowSupplier["int_verify_comment"] ?? '');
 
                 if (!empty($int_verify_assigned)) {
                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $int_verify_assigned" );
                     if ( mysqli_num_rows($selectUser) > 0 ) {
                         $rowUser = mysqli_fetch_array($selectUser);
-                        $int_verify_assigned_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                        $int_verify_assigned_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
                     }
                 }
 
                 $supplier_id = $rowSupplier["ID"];
-                $supplier_company = $rowSupplier["company"];
+                $supplier_company = htmlentities($rowSupplier["company"] ?? '');
                 if ($id == 2) {
-                    $supplier_company = $rowSupplier["product"];
+                    $supplier_company = htmlentities($rowSupplier["product"] ?? '');
                 }
                 
                 $status = "Drafted";
@@ -9424,7 +9279,7 @@
         if ( mysqli_num_rows($result) > 0 ) {
             $row = mysqli_fetch_array($result);
             $ref_id = $row["ID"];
-            $ref_content = $row["content"];
+            $ref_content = htmlentities($row["content"] ?? '');
         }
         echo '<input type="hidden" value="'.$id.'" name="ID" />
         <input type="hidden" value="'.$type.'" name="type" />
@@ -9440,22 +9295,22 @@
 
             $reviewed_by = employerID($row["reviewed_by"]);
             $reviewed_signature = $row["reviewed_signature"];
-            $reviewed_position = $row["reviewed_position"];
+            $reviewed_position = htmlentities($row["reviewed_position"] ?? '');
             $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $reviewed_by" );
             if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                 $rowEnterprise = mysqli_fetch_array($selectEnterprise);
-                $reviewed_enterp_name = $rowEnterprise['businessname'];
+                $reviewed_enterp_name = htmlentities($rowEnterprise['businessname'] ?? '');
             } else {
                 $reviewed_enterp_name = "Company Name";
             }
 
             $approved_by = employerID($row["approved_by"]);
-            $approved_position = $row["approved_position"];
+            $approved_position = htmlentities($row["approved_position"] ?? '');
             $approved_signature = $row["approved_signature"];
             $selectEnterprise = mysqli_query( $conn,"SELECT * from tblEnterpiseDetails WHERE users_entities = $approved_by" );
             if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                 $rowEnterprise = mysqli_fetch_array($selectEnterprise);
-                $approved_enterp_name = $rowEnterprise['businessname'];
+                $approved_enterp_name = htmlentities($rowEnterprise['businessname'] ?? '');
             } else {
                 $approved_enterp_name = "Company Name";
             }
@@ -9464,15 +9319,15 @@
                 $selectUser = mysqli_query( $conn,"SELECT * from tbl_user WHERE ID = '".$row["reviewed_by"]."'" );
                 if ( mysqli_num_rows($selectUser) > 0 ) {
                     $rowUser = mysqli_fetch_array($selectUser);
-                    $current_userFName = $rowUser['first_name'];
-                    $current_userLName = $rowUser['last_name'];
+                    $current_userFName = htmlentities($rowUser['first_name'] ?? '');
+                    $current_userLName = htmlentities($rowUser['last_name'] ?? '');
                 }
             } else {
                 $selectUser = mysqli_query( $conn,"SELECT * from tbl_user WHERE ID = '".$row["approved_by"]."'" );
                 if ( mysqli_num_rows($selectUser) > 0 ) {
                     $rowUser = mysqli_fetch_array($selectUser);
-                    $current_userFName = $rowUser['first_name'];
-                    $current_userLName = $rowUser['last_name'];
+                    $current_userFName = htmlentities($rowUser['first_name'] ?? '');
+                    $current_userLName = htmlentities($rowUser['last_name'] ?? '');
                 }
             }
         }
@@ -9569,9 +9424,9 @@
         $result = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE ID = $id" );
         if ( mysqli_num_rows($result) > 0 ) {
             $row = mysqli_fetch_array($result);
-            $reviewed_position = $row["reviewed_position"];
+            $reviewed_position = htmlentities($row["reviewed_position"] ?? '');
             $reviewed_date = $row["reviewed_date"];
-            $approved_position = $row["approved_position"];
+            $approved_position = htmlentities($row["approved_position"] ?? '');
             $approved_date = $row["approved_date"];
         }
 
@@ -9619,14 +9474,14 @@
         if ( mysqli_num_rows($result) > 0 ) {
             $row = mysqli_fetch_array($result);
             if ($type == 1) {
-                $int_assigned = $row['int_review_assigned'];
-                $int_status = $row['int_review_status'];
-                $int_comment = $row['int_review_comment'];
-                $int_assigned2 = $row['int_verify_assigned'];
+                $int_assigned = htmlentities($row['int_review_assigned'] ?? '');
+                $int_status = htmlentities($row['int_review_status'] ?? '');
+                $int_comment = htmlentities($row['int_review_comment'] ?? '');
+                $int_assigned2 = htmlentities($row['int_verify_assigned'] ?? '');
             } else {
-                $int_assigned = $row['int_verify_assigned'];
-                $int_status = $row['int_verify_status'];
-                $int_comment = $row['int_verify_comment'];
+                $int_assigned = htmlentities($row['int_verify_assigned'] ?? '');
+                $int_status = htmlentities($row['int_verify_status'] ?? '');
+                $int_comment = htmlentities($row['int_verify_comment'] ?? '');
             }
 
             echo '<input type="hidden" value="'.$id.'" name="ID" />
@@ -9642,8 +9497,8 @@
                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                             while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                 $employee_id = $rowEmployee['ID'];
-                                $employee_userFName = $rowEmployee['first_name'];
-                                $employee_userLName = $rowEmployee['last_name'];
+                                $employee_userFName = htmlentities($rowEmployee['first_name'] ?? '');
+                                $employee_userLName = htmlentities($rowEmployee['last_name'] ?? '');
 
                                 echo '<option value="'.$employee_id.'" '; echo $int_assigned == $employee_id ? 'SELECTED':''; echo '>'.$employee_userFName.' '.$employee_userLName.'</option>';
                             }
@@ -9680,8 +9535,8 @@
                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                     $employee_id = $rowEmployee['ID'];
-                                    $employee_userFName = $rowEmployee['first_name'];
-                                    $employee_userLName = $rowEmployee['last_name'];
+                                    $employee_userFName = htmlentities($rowEmployee['first_name'] ?? '');
+                                    $employee_userLName = htmlentities($rowEmployee['last_name'] ?? '');
 
                                     echo '<option value="'.$employee_id.'" '; echo $int_assigned2 == $employee_id ? 'SELECTED':''; echo '>'.$employee_userFName.' '.$employee_userLName.'</option>';
                                 }
@@ -9839,7 +9694,7 @@
                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                     $employee_id = $rowEmployee['ID'];
-                                    $employee_name = $rowEmployee['first_name'] .' '. $rowEmployee['last_name'];
+                                    $employee_name = htmlentities($rowEmployee['first_name'] ?? '') .' '. htmlentities($rowEmployee['last_name'] ?? '');
                                     
                                     echo '<option value="'.$employee_id.'">'.$employee_name.'</option>';
                                 }
@@ -9882,7 +9737,7 @@
                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                     $employee_id = $rowEmployee['ID'];
-                                    $employee_name = $rowEmployee['first_name'] .' '. $rowEmployee['last_name'];
+                                    $employee_name = htmlentities($rowEmployee['first_name'] ?? '') .' '. htmlentities($rowEmployee['last_name'] ?? '');
                                     
                                     echo '<option value="'.$employee_id.'">'.$employee_name.'</option>';
                                 }
@@ -9918,9 +9773,9 @@
         $result = mysqli_query( $conn,"SELECT * FROM tbl_ffva_katva WHERE ID = $id" );
         if ( mysqli_num_rows($result) > 0 ) {
             $row = mysqli_fetch_array($result);
-            $product = $row["product"];
-            $facility = $row["facility"];
-            $address = $row["address"];
+            $product = htmlentities($row["product"] ?? '');
+            $facility = htmlentities($row["facility"] ?? '');
+            $address = htmlentities($row["address"] ?? '');
 
             $prepared_by = $row["prepared_by"];
             $prepared_signature = $row["prepared_signature"];
@@ -10124,7 +9979,7 @@
                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                     $employee_id = $rowEmployee['ID'];
-                                    $employee_name = $rowEmployee['first_name'] .' '. $rowEmployee['last_name'];
+                                    $employee_name = htmlentities($rowEmployee['first_name'] ?? '') .' '. htmlentities($rowEmployee['last_name'] ?? '');
                                     
                                     echo '<option value="'.$employee_id.'" '; echo $reviewed_by == $employee_id ? 'SELECTED':''; echo '>'.$employee_name.'</option>';
                                 }
@@ -10172,7 +10027,7 @@
                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                     $employee_id = $rowEmployee['ID'];
-                                    $employee_name = $rowEmployee['first_name'] .' '. $rowEmployee['last_name'];
+                                    $employee_name = htmlentities($rowEmployee['first_name'] ?? '') .' '. htmlentities($rowEmployee['last_name'] ?? '');
                                     
                                     echo '<option value="'.$employee_id.'" '; echo $approved_by == $employee_id ? 'SELECTED':''; echo '>'.$employee_name.'</option>';
                                 }
@@ -10228,8 +10083,8 @@
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
             $new_ID = $row["ID"];
-            $new_company = $row["company"] .' Draft';
-            $new_product = $row["product"] .' Draft';
+            $new_company = htmlentities($row["company"] ?? '') .' Draft';
+            $new_product = htmlentities($row["product"] ?? '') .' Draft';
 
             // CLONING
             $sql = "INSERT INTO tbl_ffva (user_id, portal_user, type, files, company, website, headquarters, telephone, email, person, product, assessment, category_id, category_other, industry_id, industry_other, code, likelihood_answer, likelihood_comment, likelihood_file, likelihood_rate, likelihood_element_other, likelihood_question_other, likelihood_answer_other, likelihood_comment_other, likelihood_file_other, likelihood_rate_other, likelihood_comment_summary, likelihood_note, consequence_answer, consequence_comment, consequence_file, consequence_rate, consequence_element_other, consequence_question_other, consequence_answer_other, consequence_comment_other, consequence_file_other, consequence_rate_other, consequence_comment_summary, consequence_note, prevention, prevention_other, detection, detection_other, mitigation, mitigation_other, prepared_by, prepared_signature, prepared_position, prepared_date, last_modified)
@@ -10244,10 +10099,10 @@
                 if ( mysqli_num_rows($selectData) > 0 ) {
                     $rowData = mysqli_fetch_array($selectData);
                     $data_ID = $rowData['ID'];
-                    $data_company = $rowData['company'];
-                    if ($tab == 2) { $data_company = $rowData['product']; }
+                    $data_company = htmlentities($rowData['company'] ?? '');
+                    if ($tab == 2) { $data_company = htmlentities($rowData['product'] ?? ''); }
 
-                    $data_status = $rowData['status'];
+                    $data_status = htmlentities($rowData['status'] ?? '');
                     $status = "Drafted";
                     // if (empty($int_review_assigned)) { $status = 'Drafted'; }
                     if (!empty($rowData['int_review_assigned']) AND $rowData['int_review_status'] == 1) { $status = 'Reviewed'; }
@@ -10370,7 +10225,7 @@
 
                     $output = array(
                         "ID" => $data_ID,
-                        "company" => htmlentities($data_company),
+                        "company" => htmlentities($data_company ?? ''),
                         "status" => $status,
                         "last_modified" => $data_last_modified,
                         "vulnerability_result" => $vulnerability_result,
@@ -10732,12 +10587,12 @@
                 if ( mysqli_num_rows($selectData) > 0 ) {
                     $rowData = mysqli_fetch_array($selectData);
                     $data_ID = $rowData['ID'];
-                    $data_int_review_status = $rowData['int_review_status'];
-                    $data_int_verify_status = $rowData['int_verify_status'];
-                    $data_company = $rowData['company'];
-                    if ($tab == 2) { $data_company = $rowData['product']; }
+                    $data_int_review_status = htmlentities($rowData['int_review_status'] ?? '');
+                    $data_int_verify_status = htmlentities($rowData['int_verify_status'] ?? '');
+                    $data_company = htmlentities($rowData['company'] ?? '');
+                    if ($tab == 2) { $data_company = htmlentities($rowData['product'] ?? ''); }
 
-                    $data_status = $rowData['status'];
+                    $data_status = htmlentities($rowData['status'] ?? '');
                     $status = "Drafted";
                     // if (empty($int_review_assigned)) { $status = 'Drafted'; }
                     if (!empty($rowData['int_review_assigned']) AND $rowData['int_review_status'] == 1) { $status = 'Reviewed'; }
@@ -10861,7 +10716,7 @@
 
                     $output = array(
                         "ID" => $data_ID,
-                        "company" => htmlentities($data_company),
+                        "company" => htmlentities($data_company ?? ''),
                         "status" => $status,
                         "last_modified" => $data_last_modified,
                         "vulnerability_result" => $vulnerability_result,
@@ -10872,8 +10727,8 @@
 
                     $resultUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $prepared_by" );
                     $rowUser = mysqli_fetch_array($resultUser);
-                    $prepared_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
-                    $prepared_email = $rowUser["email"];
+                    $prepared_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                    $prepared_email = htmlentities($rowUser["email"] ?? '');
 
                     // if ($data_int_verify_status == 1 AND $notification == 1) {
                     if ($notification == 1) {
@@ -10883,8 +10738,8 @@
                             $selectDataUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $reviewed_by" );
                             if ( mysqli_num_rows($selectDataUser) > 0 ) {
                                 $rowDataUser = mysqli_fetch_array($selectDataUser);
-                                $datauser_fullname = $rowDataUser["first_name"] .' '. $rowDataUser["last_name"];
-                                $datauser_email = $rowDataUser["email"];
+                                $datauser_fullname = htmlentities($rowDataUser["first_name"] ?? '') .' '. htmlentities($rowDataUser["last_name"] ?? '');
+                                $datauser_email = htmlentities($rowDataUser["email"] ?? '');
 
                                 $from = $prepared_email;
                                 $sender = $prepared_name;
@@ -10897,7 +10752,7 @@
                                 Interlink FFVA Module for Review<br><br>
 
                                 <b>Description</b><br>
-                                '.htmlentities($data_company).'<br><br>
+                                '.htmlentities($data_company ?? '').'<br><br>
 
                                 <b>Assigned by</b><br>
                                 Arnel Ryan<br><br>
@@ -10916,8 +10771,8 @@
                             $selectDataUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $approved_by" );
                             if ( mysqli_num_rows($selectDataUser) > 0 ) {
                                 $rowDataUser = mysqli_fetch_array($selectDataUser);
-                                $datauser_fullname = $rowDataUser["first_name"] .' '. $rowDataUser["last_name"];
-                                $datauser_email = $rowDataUser["email"];
+                                $datauser_fullname = htmlentities($rowDataUser["first_name"] ?? '') .' '. htmlentities($rowDataUser["last_name"] ?? '');
+                                $datauser_email = htmlentities($rowDataUser["email"] ?? '');
 
                                 $from = $prepared_email;
                                 $sender = $prepared_name;
@@ -10930,7 +10785,7 @@
                                 Interlink FFVA Module for Approval<br><br>
 
                                 <b>Description</b><br>
-                                '.htmlentities($data_company).'<br><br>
+                                '.htmlentities($data_company ?? '').'<br><br>
 
                                 <b>Assigned by</b><br>
                                 Arnel Ryan<br><br>
@@ -11321,12 +11176,12 @@
                 if ( mysqli_num_rows($selectData) > 0 ) {
                     $rowData = mysqli_fetch_array($selectData);
                     $data_ID = $rowData['ID'];
-                    $data_int_review_status = $rowData['int_review_status'];
-                    $data_int_verify_status = $rowData['int_verify_status'];
-                    $data_company = $rowData['company'];
-                    if ($tab == 2) { $data_company = $rowData['product']; }
+                    $data_int_review_status = htmlentities($rowData['int_review_status'] ?? '');
+                    $data_int_verify_status = htmlentities($rowData['int_verify_status'] ?? '');
+                    $data_company = htmlentities($rowData['company'] ?? '');
+                    if ($tab == 2) { $data_company = htmlentities($rowData['product'] ?? ''); }
 
-                    $data_status = $rowData['status'];
+                    $data_status = htmlentities($rowData['status'] ?? '');
                     $status = "Drafted";
                     // if (empty($int_review_assigned)) { $status = 'Drafted'; }
                     if (!empty($rowData['int_review_assigned']) AND $rowData['int_review_status'] == 1) { $status = 'Reviewed'; }
@@ -11463,7 +11318,7 @@
 
                     $output = array(
                         "ID" => $data_ID,
-                        "company" => htmlentities($data_company),
+                        "company" => htmlentities($data_company ?? ''),
                         "status" => $status,
                         "last_modified" => $data_last_modified,
                         "vulnerability_result" => $vulnerability_result,
@@ -11475,8 +11330,8 @@
 
                     $resultUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $prepared_by" );
                     $rowUser = mysqli_fetch_array($resultUser);
-                    $prepared_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
-                    $prepared_email = $rowUser["email"];
+                    $prepared_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                    $prepared_email = htmlentities($rowUser["email"] ?? '');
                     $countSend = 0;
 
                     // if ($data_int_verify_status == 1 AND $notification == 1) {
@@ -11486,8 +11341,8 @@
                             $selectDataUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $reviewed_by" );
                             if ( mysqli_num_rows($selectDataUser) > 0 ) {
                                 $rowDataUser = mysqli_fetch_array($selectDataUser);
-                                $datauser_fullname = $rowDataUser["first_name"] .' '. $rowDataUser["last_name"];
-                                $datauser_email = $rowDataUser["email"];
+                                $datauser_fullname = htmlentities($rowDataUser["first_name"] ?? '') .' '. htmlentities($rowDataUser["last_name"] ?? '');
+                                $datauser_email = htmlentities($rowDataUser["email"] ?? '');
 
                                 $from = $prepared_email;
                                 $sender = $prepared_name;
@@ -11500,7 +11355,7 @@
                                 Interlink FFVA Module for Review<br><br>
 
                                 <b>Description</b><br>
-                                '.htmlentities($data_company).'<br><br>
+                                '.htmlentities($data_company ?? '').'<br><br>
 
                                 <b>Assigned by</b><br>
                                 Arnel Ryan<br><br>
@@ -11518,8 +11373,8 @@
                             $selectDataUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $approved_by" );
                             if ( mysqli_num_rows($selectDataUser) > 0 ) {
                                 $rowDataUser = mysqli_fetch_array($selectDataUser);
-                                $datauser_fullname = $rowDataUser["first_name"] .' '. $rowDataUser["last_name"];
-                                $datauser_email = $rowDataUser["email"];
+                                $datauser_fullname = htmlentities($rowDataUser["first_name"] ?? '') .' '. htmlentities($rowDataUser["last_name"] ?? '');
+                                $datauser_email = htmlentities($rowDataUser["email"] ?? '');
 
                                 $from = $prepared_email;
                                 $sender = $prepared_name;
@@ -11532,7 +11387,7 @@
                                 Interlink FFVA Module for Approval<br><br>
 
                                 <b>Description</b><br>
-                                '.htmlentities($data_company).'<br><br>
+                                '.htmlentities($data_company ?? '').'<br><br>
 
                                 <b>Assigned by</b><br>
                                 Arnel Ryan<br><br>
@@ -11684,11 +11539,11 @@
         $selectDataTemp = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE ID = $ID" );
         if ( mysqli_num_rows($selectDataTemp) > 0 ) {
             $rowDataTemp = mysqli_fetch_array($selectDataTemp);
-            $rowDataTemp_int_review_assigned = $rowDataTemp["int_review_assigned"];
-            $rowDataTemp_int_verify_assigned = $rowDataTemp["int_verify_assigned"];
+            $rowDataTemp_int_review_assigned = htmlentities($rowDataTemp["int_review_assigned"] ?? '');
+            $rowDataTemp_int_verify_assigned = htmlentities($rowDataTemp["int_verify_assigned"] ?? '');
 
-            $data_company = $rowDataTemp['company'];
-            if ($tab == 2) { $data_company = $rowDataTemp['product']; }
+            $data_company = htmlentities($rowDataTemp['company'] ?? '');
+            if ($tab == 2) { $data_company = htmlentities($rowDataTemp['product'] ?? ''); }
         }
 
         mysqli_query( $conn,"UPDATE tbl_ffva set int_".$type_field."_assigned = '".$assigned_to_id."', int_".$type_field."_status = '".$status."', int_".$type_field."_comment = '".$comment."' WHERE ID = $ID" );
@@ -11700,8 +11555,8 @@
             $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = '".$assigned_to_id."'" );
             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                 $rowEmployee = mysqli_fetch_array($selectEmployee);
-                $row_name = $rowEmployee["first_name"] .' '. $rowEmployee["last_name"];
-                $row_email = $rowEmployee["email"];
+                $row_name = htmlentities($rowEmployee["first_name"] ?? '') .' '. htmlentities($rowEmployee["last_name"] ?? '');
+                $row_email = htmlentities($rowEmployee["email"] ?? '');
                 $int_column .= $row_name.'<br>';
             }
 
@@ -11713,8 +11568,8 @@
                 $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $rowFFVA_user_id" );
                 if ( mysqli_num_rows($selectUser) > 0 ) {
                     $rowUser = mysqli_fetch_array($selectUser);
-                    $name = $rowUser["first_name"] .' '. $rowUser["last_name"];
-                    $from = $rowUser["email"];
+                    $name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                    $from = htmlentities($rowUser["email"] ?? '');
                 }
             }
 
@@ -11747,22 +11602,22 @@
         if ( mysqli_num_rows($selectFFVA) > 0 ) {
             $rowFFVA = mysqli_fetch_array($selectFFVA);
             $row_user_id = $rowFFVA["user_id"];
-            $row_int_review_assigned = $rowFFVA["int_review_assigned"];
-            $row_int_review_comment = $rowFFVA["int_review_comment"];
-            $row_int_verify_assigned = $rowFFVA["int_verify_assigned"];
+            $row_int_review_assigned = htmlentities($rowFFVA["int_review_assigned"] ?? '');
+            $row_int_review_comment = htmlentities($rowFFVA["int_review_comment"] ?? '');
+            $row_int_verify_assigned = htmlentities($rowFFVA["int_verify_assigned"] ?? '');
 
             $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $row_user_id" );
             if ( mysqli_num_rows($selectUser) > 0 ) {
                 $rowUser = mysqli_fetch_array($selectUser);
-                $row_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
-                $row_email = $rowUser["email"];
+                $row_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                $row_email = htmlentities($rowUser["email"] ?? '');
             }
 
             $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = '".$row_int_review_assigned."'" );
             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                 $rowEmployee = mysqli_fetch_array($selectEmployee);
-                $name = $rowEmployee["first_name"] .' '. $rowEmployee["last_name"];
-                $from = $rowEmployee["email"];
+                $name = htmlentities($rowEmployee["first_name"] ?? '') .' '. htmlentities($rowEmployee["last_name"] ?? '');
+                $from = htmlentities($rowEmployee["email"] ?? '');
             }
         }
 
@@ -11797,8 +11652,8 @@
                 $selectEmployee2 = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $row_int_verify_assigned" );
                 if ( mysqli_num_rows($selectEmployee2) > 0 ) {
                     $rowEmployee2 = mysqli_fetch_array($selectEmployee2);
-                    $user2 = $rowEmployee2["first_name"] .' '. $rowEmployee2["last_name"];
-                    $to2 = $rowEmployee2["email"];
+                    $user2 = htmlentities($rowEmployee2["first_name"] ?? '') .' '. htmlentities($rowEmployee2["last_name"] ?? '');
+                    $to2 = htmlentities($rowEmployee2["email"] ?? '');
                 }
 
                 $subject2 = 'FFVA Module - Internal Verifier';
@@ -11863,14 +11718,14 @@
                     $selectDataUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $row_reviewed_by" );
                     if ( mysqli_num_rows($selectDataUser) > 0 ) {
                         $rowDataUser = mysqli_fetch_array($selectDataUser);
-                        $datauser_fullname = $rowDataUser["first_name"] .' '. $rowDataUser["last_name"];
-                        $datauser_email = $rowDataUser["email"];
+                        $datauser_fullname = htmlentities($rowDataUser["first_name"] ?? '') .' '. htmlentities($rowDataUser["last_name"] ?? '');
+                        $datauser_email = htmlentities($rowDataUser["email"] ?? '');
 
                         $selectDataUser2 = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $row_prepared_by" );
                         if ( mysqli_num_rows($selectDataUser2) > 0 ) {
                             $rowDataUser2 = mysqli_fetch_array($selectDataUser2);
-                            $prepared_name = $rowDataUser2["first_name"] .' '. $rowDataUser2["last_name"];
-                            $prepared_email = $rowDataUser2["email"];
+                            $prepared_name = htmlentities($rowDataUser2["first_name"] ?? '') .' '. htmlentities($rowDataUser2["last_name"] ?? '');
+                            $prepared_email = htmlentities($rowDataUser2["email"] ?? '');
                         }
 
                         $from = $prepared_email;
@@ -11904,14 +11759,14 @@
                     $selectDataUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $row_approved_by" );
                     if ( mysqli_num_rows($selectDataUser) > 0 ) {
                         $rowDataUser = mysqli_fetch_array($selectDataUser);
-                        $datauser_fullname = $rowDataUser["first_name"] .' '. $rowDataUser["last_name"];
-                        $datauser_email = $rowDataUser["email"];
+                        $datauser_fullname = htmlentities($rowDataUser["first_name"] ?? '') .' '. htmlentities($rowDataUser["last_name"] ?? '');
+                        $datauser_email = htmlentities($rowDataUser["email"] ?? '');
 
                         $selectDataUser2 = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $row_prepared_by" );
                         if ( mysqli_num_rows($selectDataUser2) > 0 ) {
                             $rowDataUser2 = mysqli_fetch_array($selectDataUser2);
-                            $prepared_name = $rowDataUser2["first_name"] .' '. $rowDataUser2["last_name"];
-                            $prepared_email = $rowDataUser2["email"];
+                            $prepared_name = htmlentities($rowDataUser2["first_name"] ?? '') .' '. htmlentities($rowDataUser2["last_name"] ?? '');
+                            $prepared_email = htmlentities($rowDataUser2["email"] ?? '');
                         }
 
                         $from = $prepared_email;
@@ -12092,9 +11947,9 @@
             if ( mysqli_num_rows($selectData) > 0 ) {
                 $rowData = mysqli_fetch_array($selectData);
                 $data_ID = $rowData['ID'];
-                $data_product = $rowData['product'];
-                $data_facility = $rowData['facility'];
-                $data_address = $rowData['address'];
+                $data_product = htmlentities($rowData['product'] ?? '');
+                $data_facility = htmlentities($rowData['facility'] ?? '');
+                $data_address = htmlentities($rowData['address'] ?? '');
 
                 $output = array(
                     "ID" => $data_ID,
@@ -12228,9 +12083,9 @@
             if ( mysqli_num_rows($selectData) > 0 ) {
                 $rowData = mysqli_fetch_array($selectData);
                 $data_ID = $rowData['ID'];
-                $data_product = $rowData['product'];
-                $data_facility = $rowData['facility'];
-                $data_address = $rowData['address'];
+                $data_product = htmlentities($rowData['product'] ?? '');
+                $data_facility = htmlentities($rowData['facility'] ?? '');
+                $data_address = htmlentities($rowData['address'] ?? '');
 
                 $output = array(
                     "ID" => $data_ID,
@@ -12289,31 +12144,31 @@
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
             $user_account_id = $row["user_id"];
-            $page = $row["page"];
-            $category = $row["category"];
-            $industry = $row["industry"];
+            $page = htmlentities($row["page"] ?? '');
+            $category = htmlentities($row["category"] ?? '');
+            $industry = htmlentities($row["industry"] ?? '');
 
-            $address = $row["address"];
+            $address =htmlentities( $row["address" ?? '']);
             $address_arr = explode(" | ", $address);
             if (COUNT($address_arr) < 5) {
                 $address_arr = explode(", ", $address);
             }
 
-            $document = $row["document"];
+            $document = htmlentities($row["document"] ?? '');
             $document_arr = explode(" | ", $document);
             if (count($document_arr) <= 1) {
                 $document_arr = explode(", ", $document);
             }
 
-            $document_other = $row["document_other"];
+            $document_other = htmlentities($row["document_other"] ?? '');
             $document_other_arr = explode(" | ", $document_other);
             if (count($document_other_arr) <= 1 ) {
                 $document_other_arr = explode(", ", $document_other);
             }
 
-            $contact = $row["contact"];
-            $material = $row["material"];
-            $service = $row["service"];
+            $contact = htmlentities($row["contact"] ?? '');
+            $material = htmlentities($row["material"] ?? '');
+            $service = htmlentities($row["service"] ?? '');
 
             $audit_report = $row["audit_report"];
             $audit_report_arr = explode(" | ", $audit_report);
@@ -16358,9 +16213,9 @@
                     if (COUNT($address_arr) < 5) {
                         $address_arr = explode(", ", $address);
                     }
-                    array_push($address_array, htmlentities($address_arr[1]));
-                    array_push($address_array, htmlentities($address_arr[2]));
-                    array_push($address_array, htmlentities($address_arr[3]));
+                    array_push($address_array, htmlentities($address_arr[1] ?? ''));
+                    array_push($address_array, htmlentities($address_arr[2] ?? ''));
+                    array_push($address_array, htmlentities($address_arr[3] ?? ''));
                     array_push($address_array, $address_arr[0]);
                     array_push($address_array, $address_arr[4]);
                     $address_arr = implode(", ", $address_array);
@@ -17350,9 +17205,9 @@
                     if (COUNT($address_arr) < 5) {
                         $address_arr = explode(", ", $address);
                     }
-                    array_push($address_array, htmlentities($address_arr[1]));
-                    array_push($address_array, htmlentities($address_arr[2]));
-                    array_push($address_array, htmlentities($address_arr[3]));
+                    array_push($address_array, htmlentities($address_arr[1] ?? ''));
+                    array_push($address_array, htmlentities($address_arr[2] ?? ''));
+                    array_push($address_array, htmlentities($address_arr[3] ?? ''));
                     array_push($address_array, $address_arr[0]);
                     array_push($address_array, $address_arr[4]);
                     $address_arr = implode(", ", $address_array);
@@ -18870,6 +18725,15 @@
                     <li class="hide">
                         <a href="#tabFSVP_2" data-toggle="tab">FSVP</a>
                     </li>';
+
+                    if ($portal_user == 481) {
+                        echo '<li>
+                            <a href="#" data-toggle="tab">Organic</a>
+                        </li>
+                        <li>
+                            <a href="#" data-toggle="tab">FTL</a>
+                        </li>';
+                    }
                 } else {
                     echo '<li class="active">
                         <a href="#tabBasic_2" data-toggle="tab">Details</a>
@@ -18892,6 +18756,15 @@
                     <li class="hide">
                         <a href="#tabFSVP_2" data-toggle="tab">FSVP</a>
                     </li>';
+
+                    if ($portal_user == 481) {
+                        echo '<li>
+                            <a href="#" data-toggle="tab">Organic</a>
+                        </li>
+                        <li>
+                            <a href="#" data-toggle="tab">FTL</a>
+                        </li>';
+                    }
                 }
 
             echo '</ul>
@@ -19061,6 +18934,8 @@
                                     <option value="2" '; echo $row["status"] == 2 ? 'SELECTED':'';  echo '>Non-Approved</option>
                                     <option value="3" '; echo $row["status"] == 3 ? 'SELECTED':'';  echo '>Emergency Used Only / Spot Purchasing</option>
                                     <option value="4" '; echo $row["status"] == 4 ? 'SELECTED':'';  echo '>Do Not Use</option>
+                                    <option value="5" '; echo $row["status"] == 5 ? 'SELECTED':'';  echo '>Active</option>
+                                    <option value="6" '; echo $row["status"] == 6 ? 'SELECTED':'';  echo '>Inactive</option>
                                 </select>
                             </div>
                         </div>
@@ -22212,9 +22087,9 @@
                         if (COUNT($address_arr) < 5) {
                             $address_arr = explode(", ", $address);
                         }
-                        array_push($address_array, htmlentities($address_arr[1]));
-                        array_push($address_array, htmlentities($address_arr[2]));
-                        array_push($address_array, htmlentities($address_arr[3]));
+                        array_push($address_array, htmlentities($address_arr[1] ?? ''));
+                        array_push($address_array, htmlentities($address_arr[2] ?? ''));
+                        array_push($address_array, htmlentities($address_arr[3] ?? ''));
                         array_push($address_array, $address_arr[0]);
                         array_push($address_array, $address_arr[4]);
                         $address_arr = implode(", ", $address_array);
@@ -23199,9 +23074,9 @@
                 if (COUNT($address_arr) < 5) {
                     $address_arr = explode(", ", $address);
                 }
-                array_push($address_array, htmlentities($address_arr[1]));
-                array_push($address_array, htmlentities($address_arr[2]));
-                array_push($address_array, htmlentities($address_arr[3]));
+                array_push($address_array, htmlentities($address_arr[1] ?? ''));
+                array_push($address_array, htmlentities($address_arr[2] ?? ''));
+                array_push($address_array, htmlentities($address_arr[3] ?? ''));
                 array_push($address_array, $address_arr[0]);
                 array_push($address_array, $address_arr[4]);
                 $address_arr = implode(", ", $address_array);
@@ -30499,29 +30374,29 @@
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_eforms WHERE ID = $id" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
-            $data_id = $row['ID'];
-            $data_department_id = $row['department_id'];
-            $data_record = $row['record'];
-            $data_description = $row['description'];
-            $data_filled_out = $row['filled_out'];
-            $data_filled_out_reason = $row['filled_out_reason'];
-            $data_signed = $row['signed'];
-            $data_signed_reason = $row['signed_reason'];
-            $data_frequency = $row['frequency'];
-            $data_frequency_other = $row['frequency_other'];
-            $data_compliance = $row['compliance'];
-            $data_compliance_reason = $row['compliance_reason'];
-            $data_files_date = $row['files_date'];
-            $data_verified_by = $row['verified_by'];
-            $data_notes = $row['notes'];
+            $data_id = htmlentities($row['ID'] ?? '');
+            $data_department_id = htmlentities($row['department_id'] ?? '');
+            $data_record = htmlentities($row['record'] ?? '');
+            $data_description = htmlentities($row['description'] ?? '');
+            $data_filled_out = htmlentities($row['filled_out'] ?? '');
+            $data_filled_out_reason = htmlentities($row['filled_out_reason'] ?? '');
+            $data_signed = htmlentities($row['signed'] ?? '');
+            $data_signed_reason = htmlentities($row['signed_reason'] ?? '');
+            $data_frequency = htmlentities($row['frequency'] ?? '');
+            $data_frequency_other = htmlentities($row['frequency_other'] ?? '');
+            $data_compliance = htmlentities($row['compliance'] ?? '');
+            $data_compliance_reason = htmlentities($row['compliance_reason'] ?? '');
+            $data_files_date = htmlentities($row['files_date'] ?? '');
+            $data_verified_by = htmlentities($row['verified_by'] ?? '');
+            $data_notes = htmlentities($row['notes'] ?? '');
 
             $data_assigned_to_id = '';
             if (!empty($row["assigned_to_id"])) {
-                $data_assigned_to_id = explode(', ', $row["assigned_to_id"]);
+                $data_assigned_to_id = explode(', ', htmlentities($row["assigned_to_id"] ?? ''));
             }
 
-            $filetype = $row['filetype'];
-            $data_files = $row['files'];
+            $filetype = htmlentities($row['filetype'] ?? '');
+            $data_files = htmlentities($row['files'] ?? '');
             $type = 'iframe';
             if (!empty($data_files)) {
                 if ($filetype == 1) {
@@ -30549,8 +30424,8 @@
 
                             $resultDepartment = mysqli_query($conn,"SELECT * FROM tbl_eforms_department WHERE user_id = $user_id ORDER BY name");
                             while($rowDept = mysqli_fetch_array($resultDepartment)) {
-                                $ID = $rowDept['ID'];
-                                $name = $rowDept['name'];
+                                $ID = htmlentities($rowDept['ID'] ?? '');
+                                $name = htmlentities($rowDept['name'] ?? '');
 
                                 echo '<option value="'. $ID .'" '; echo $ID == $data_department_id ? 'SELECTED':''; echo'>'. $name .'</option>';
                             }
@@ -30574,9 +30449,9 @@
                         $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id=$user_id" );
                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                             while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
-                                $rowEmployeeID = $rowEmployee["ID"];
-                                $rowEmployeeFName = $rowEmployee["first_name"];
-                                $rowEmployeeLName = $rowEmployee["last_name"];
+                                $rowEmployeeID = htmlentities($rowEmployee["ID"] ?? '');
+                                $rowEmployeeFName = htmlentities($rowEmployee["first_name"] ?? '');
+                                $rowEmployeeLName = htmlentities($rowEmployee["last_name"] ?? '');
 
                                 if (!empty($data_assigned_to_id) AND in_array($rowEmployeeID, $data_assigned_to_id)) {
                                     echo '<option value="'. $rowEmployeeID .'" SELECTED>'. $rowEmployeeFName .' '. $rowEmployeeLName .'</option>';
@@ -30731,21 +30606,21 @@
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_eforms WHERE ID = $id" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
-            $data_id = $row['ID'];
-            $data_department_id = $row['department_id'];
-            $data_record = $row['record'];
-            $data_description = $row['description'];
-            $data_filled_out = $row['filled_out'];
-            $data_signed = $row['signed'];
-            $data_frequency = $row['frequency'];
-            $data_frequency_other = $row['frequency_other'];
-            $data_compliance = $row['compliance'];
-            $data_files = $row['files'];
-            $data_files_date = $row['files_date'];
-            $data_verified_by = $row['verified_by'];
-            $data_notes = $row['notes'];
+            $data_id = htmlentities($row['ID'] ?? '');
+            $data_department_id = htmlentities($row['department_id'] ?? '');
+            $data_record = htmlentities($row['record'] ?? '');
+            $data_description = htmlentities($row['description'] ?? '');
+            $data_filled_out = htmlentities($row['filled_out'] ?? '');
+            $data_signed = htmlentities($row['signed'] ?? '');
+            $data_frequency = htmlentities($row['frequency'] ?? '');
+            $data_frequency_other = htmlentities($row['frequency_other'] ?? '');
+            $data_compliance = htmlentities($row['compliance'] ?? '');
+            $data_files = htmlentities($row['files'] ?? '');
+            $data_files_date = htmlentities($row['files_date'] ?? '');
+            $data_verified_by = htmlentities($row['verified_by'] ?? '');
+            $data_notes = htmlentities($row['notes'] ?? '');
 
-            $data_frequency = $row['frequency'];
+            $data_frequency = htmlentities($row['frequency'] ?? '');
             if ($data_frequency == 0) { $frequency = "Daily"; }
             else if ($data_frequency == 1) { $frequency = "Weekly"; }
             else if ($data_frequency == 2) { $frequency = "Monthly"; }
@@ -30760,8 +30635,8 @@
         echo '<div class="row">
             <div class="col-md-6">';
 
-                $filetype = $row['filetype'];
-                $data_files = $row['files'];
+                $filetype = htmlentities($row['filetype'] ?? '');
+                $data_files = htmlentities($row['files'] ?? '');
                 $type = 'iframe';
                 if (!empty($data_files)) {
                     if ($filetype == 1) {
@@ -30865,10 +30740,10 @@
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_eforms WHERE user_id=$user_id AND department_id = $id ORDER BY files_date DESC" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             while($row = mysqli_fetch_array($selectData)) {
-                $ID = $row['ID'];
-                $record = htmlentities($row['record']);
-                $files_date = htmlentities($row['files_date']);
-                $verified_by = htmlentities($row['verified_by']);
+                $ID = htmlentities($row['ID'] ?? '');
+                $record = htmlentities($row['record'] ?? '');
+                $files_date = htmlentities($row['files_date'] ?? '');
+                $verified_by = htmlentities($row['verified_by'] ?? '');
 
                 echo '<tr id="tr_'. $ID .'">
                     <td>'. $record .'</td>
@@ -30900,10 +30775,10 @@
         $result = mysqli_query( $conn,"SELECT * FROM tbl_eforms WHERE user_id=$id ORDER BY files_date DESC" );
         if ( mysqli_num_rows($result) > 0 ) {
             while($row = mysqli_fetch_array($result)) {
-                $ID = $row['ID'];
-                $record = htmlentities($row['record']);
-                $files_date = htmlentities($row['files_date']);
-                $verified_by = htmlentities($row['verified_by']);
+                $ID = htmlentities($row['ID'] ?? '');
+                $record = htmlentities($row['record'] ?? '');
+                $files_date = htmlentities($row['files_date'] ?? '');
+                $verified_by = htmlentities($row['verified_by'] ?? '');
 
                 echo '<tr id="tr_'. $ID .'">
                     <td>'. $record .'</td>
@@ -30999,8 +30874,8 @@
                     $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $key" );
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         $rowEmployee = mysqli_fetch_array($selectEmployee);
-                        $employee_name = $rowEmployee["first_name"].' '.$rowEmployee["last_name"];
-                        $employee_email = $rowEmployee["email"];
+                        $employee_name = htmlentities($rowEmployee["first_name"] ?? '').' '.htmlentities($rowEmployee["last_name"] ?? '');
+                        $employee_email = htmlentities($rowEmployee["email"] ?? '');
                         
                         $recipients[$employee_email] = $employee_name;
                     }
@@ -31015,17 +30890,17 @@
                 $selectData = mysqli_query( $conn,'SELECT * FROM tbl_eforms WHERE user_id="'. $user_id .'" AND ID="'. $last_id .'" ORDER BY ID LIMIT 1' );
                 if ( mysqli_num_rows($selectData) > 0 ) {
                     $rowData = mysqli_fetch_array($selectData);
-                    $data_ID = $rowData['ID'];
-                    $data_record = htmlentities($rowData['record']);
-                    $data_files_date = htmlentities($rowData['files_date']);
-                    $data_verified = htmlentities($rowData['verified_by']);
+                    $data_ID = htmlentities($rowData['ID'] ?? '');
+                    $data_record = htmlentities($rowData['record'] ?? '');
+                    $data_files_date = htmlentities($rowData['files_date'] ?? '');
+                    $data_verified = htmlentities($rowData['verified_by'] ?? '');
 
                     if (!empty($assigned_to_id)) {
                         $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $user_id" );
                         if ( mysqli_num_rows($selectUser) > 0 AND (intval($filled_out) == 0 OR intval($signed) == 0)) {
                             $rowUser = mysqli_fetch_array($selectUser);
-                            $user_name = $rowUser['first_name'].' '.$rowUser['last_name'];
-                            $user_email = $rowUser['email'];
+                            $user_name = htmlentities($rowUser['first_name'] ?? '').' '.htmlentities($rowUser['last_name'] ?? '');
+                            $user_email = htmlentities($rowUser['email'] ?? '');
                             $sender[$user_email] = $user_name;
 
                             $words = explode(' ', $user_name);
@@ -31114,8 +30989,8 @@
                 $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $key" );
                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                     $rowEmployee = mysqli_fetch_array($selectEmployee);
-                    $employee_name = $rowEmployee["first_name"].' '.$rowEmployee["last_name"];
-                    $employee_email = $rowEmployee["email"];
+                    $employee_name = htmlentities($rowEmployee["first_name"] ?? '').' '.htmlentities($rowEmployee["last_name"] ?? '');
+                    $employee_email = htmlentities($rowEmployee["email"] ?? '');
                     
                     $recipients[$employee_email] = $employee_name;
                 }
@@ -31127,15 +31002,15 @@
         $selectData = mysqli_query( $conn,'SELECT * FROM tbl_eforms WHERE ID="'. $ID .'" ORDER BY ID LIMIT 1' );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $rowData = mysqli_fetch_array($selectData);
-            $data_ID = $rowData['ID'];
-            $data_record = htmlentities($rowData['record']);
-            $data_files_date = htmlentities($rowData['files_date']);
-            $data_verified = htmlentities($rowData['verified_by']);
+            $data_ID = htmlentities($rowData['ID'] ?? '');
+            $data_record = htmlentities($rowData['record'] ?? '');
+            $data_files_date = htmlentities($rowData['files_date'] ?? '');
+            $data_verified = htmlentities($rowData['verified_by'] ?? '');
 
             $files = '';
             $arr_item = array();
             if (!empty($rowData["file_history"])) {
-                $arr_item = json_decode($rowData["file_history"],true);
+                $arr_item = json_decode(htmlentities($rowData["file_history"] ?? ''),true);
             }
             $filetype = $_POST['filetype'];
             if ($filetype > 0) {
@@ -31148,7 +31023,7 @@
                         $process = $fileValidation['valid'];
 
                         if ($process == true) {
-                            $filesize_tot = $filesize + $rowData["filesize"];
+                            $filesize_tot = $filesize + htmlentities($rowData["filesize"] ?? '');
 
                             mysqli_query( $conn,"UPDATE tbl_eforms SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
                         }
@@ -31178,8 +31053,8 @@
                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $user_id" );
                     if ( mysqli_num_rows($selectUser) > 0 AND (intval($filled_out) == 0 OR intval($signed) == 0)) {
                         $rowUser = mysqli_fetch_array($selectUser);
-                        $user_name = $rowUser['first_name'].' '.$rowUser['last_name'];
-                        $user_email = $rowUser['email'];
+                        $user_name = htmlentities($rowUser['first_name'] ?? '').' '.htmlentities($rowUser['last_name'] ?? '');
+                        $user_email = htmlentities($rowUser['email'] ?? '');
                         $sender[$user_email] = $user_name;
 
                         $words = explode(' ', $user_name);
@@ -31237,15 +31112,15 @@
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_lib WHERE ID = $id" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
-            $data_id = $row['ID'];
-            $data_department_id = $row['department_id'];
-            $data_record = $row['record'];
-            $data_files_date = $row['files_date'];
-            $data_description = $row['description'];
-            $data_notes = $row['notes'];
+            $data_id = htmlentities($row['ID'] ?? '');
+            $data_department_id = htmlentities($row['department_id'] ?? '');
+            $data_record = htmlentities($row['record'] ?? '');
+            $data_files_date = htmlentities($row['files_date'] ?? '');
+            $data_description = htmlentities($row['description'] ?? '');
+            $data_notes = htmlentities($row['notes'] ?? '');
 
-            $filetype = $row['filetype'];
-            $data_files = $row['files'];
+            $filetype = htmlentities($row['filetype'] ?? '');
+            $data_files = htmlentities($row['files'] ?? '');
             $type = 'iframe';
             if (!empty($data_files)) {
                 if ($filetype == 1) {
@@ -31273,8 +31148,8 @@
 
                             $resultDepartment = mysqli_query($conn,"SELECT * FROM tbl_lib_department ORDER BY name");
                             while($rowDept = mysqli_fetch_array($resultDepartment)) {
-                                $ID = $rowDept['ID'];
-                                $name = $rowDept['name'];
+                                $ID = htmlentities($rowDept['ID'] ?? '');
+                                $name = htmlentities($rowDept['name'] ?? '');
 
                                 echo '<option value="'. $ID .'" '; echo $ID == $data_department_id ? 'SELECTED':''; echo'>'. $name .'</option>';
                             }
@@ -31329,20 +31204,20 @@
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_lib WHERE ID = $id" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
-            $data_id = $row['ID'];
-            $data_department_id = $row['department_id'];
-            $data_record = $row['record'];
-            $data_files = $row['files'];
-            $data_files_date = $row['files_date'];
-            $data_description = $row['description'];
-            $data_notes = $row['notes'];
+            $data_id = htmlentities($row['ID'] ?? '');
+            $data_department_id = htmlentities($row['department_id'] ?? '');
+            $data_record = htmlentities($row['record'] ?? '');
+            $data_files = htmlentities($row['files'] ?? '');
+            $data_files_date = htmlentities($row['files_date'] ?? '');
+            $data_description = htmlentities($row['description'] ?? '');
+            $data_notes = htmlentities($row['notes'] ?? '');
         }
 
         echo '<div class="row">
             <div class="col-md-6">';
                 
-                $filetype = $row['filetype'];
-                $data_files = $row['files'];
+                $filetype = htmlentities($row['filetype'] ?? '');
+                $data_files = htmlentities($row['files'] ?? '');
                 $type = 'iframe';
                 if (!empty($data_files)) {
                     if ($filetype == 1) {
@@ -31422,9 +31297,9 @@
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_lib WHERE department_id = $id ORDER BY files_date DESC" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             while($row = mysqli_fetch_array($selectData)) {
-                $ID = $row['ID'];
-                $record = $row['record'];
-                $files_date = $row['files_date'];
+                $ID = htmlentities($row['ID'] ?? '');
+                $record = htmlentities($row['record'] ?? '');
+                $files_date = htmlentities($row['files_date'] ?? '');
 
                 echo '<tr id="tr_'. $ID .'">
                     <td>'. $record .'</td>
@@ -31468,9 +31343,9 @@
         $result = mysqli_query( $conn,"SELECT * FROM tbl_lib ORDER BY files_date DESC" );
         if ( mysqli_num_rows($result) > 0 ) {
             while($row = mysqli_fetch_array($result)) {
-                $ID = $row['ID'];
-                $record = $row['record'];
-                $files_date = $row['files_date'];
+                $ID = htmlentities($row['ID'] ?? '');
+                $record = htmlentities($row['record'] ?? '');
+                $files_date = htmlentities($row['files_date'] ?? '');
 
                 echo '<tr id="tr_'. $ID .'">
                     <td>'. $record .'</td>
@@ -31561,9 +31436,9 @@
                 $selectData = mysqli_query( $conn,'SELECT * FROM tbl_lib WHERE user_id="'. $user_id .'" AND ID="'. $last_id .'" ORDER BY ID LIMIT 1' );
                 if ( mysqli_num_rows($selectData) > 0 ) {
                     $rowData = mysqli_fetch_array($selectData);
-                    $data_ID = $rowData['ID'];
-                    $data_record = $rowData['record'];
-                    $data_files_date = $rowData['files_date'];
+                    $data_ID = htmlentities($rowData['ID'] ?? '');
+                    $data_record = htmlentities($rowData['record'] ?? '');
+                    $data_files_date = htmlentities($rowData['files_date'] ?? '');
 
                     $output = array(
                         "ID" => $data_ID,
@@ -31609,14 +31484,14 @@
         $selectData = mysqli_query( $conn,'SELECT * FROM tbl_lib WHERE ID="'. $ID .'" ORDER BY ID LIMIT 1' );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $rowData = mysqli_fetch_array($selectData);
-            $data_ID = $rowData['ID'];
-            $data_record = $rowData['record'];
-            $data_files_date = $rowData['files_date'];
+            $data_ID = htmlentities($rowData['ID'] ?? '');
+            $data_record = htmlentities($rowData['record'] ?? '');
+            $data_files_date = htmlentities($rowData['files_date'] ?? '');
 
             $files = '';
             $arr_item = array();
             if (!empty($rowData["file_history"])) {
-                $arr_item = json_decode($rowData["file_history"],true);
+                $arr_item = json_decode(htmlentities($rowData["file_history"] ?? ''),true);
             }
             $filetype = $_POST['filetype'];
             if ($filetype > 0) {
@@ -31629,7 +31504,7 @@
                         $process = $fileValidation['valid'];
 
                         if ($process == true) {
-                            $filesize_tot = $filesize + $rowData["filesize"];
+                            $filesize_tot = $filesize + htmlentities($rowData["filesize"] ?? '');
 
                             mysqli_query( $conn,"UPDATE tbl_lib SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
                         }
@@ -31682,15 +31557,15 @@
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_archiving WHERE ID = $id" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
-            $data_id = $row['ID'];
-            $data_department_id = $row['department_id'];
-            $data_record = $row['record'];
-            $data_files_date = $row['files_date'];
-            $data_description = $row['description'];
-            $data_notes = $row['notes'];
+            $data_id = htmlentities($row['ID'] ?? '');
+            $data_department_id = htmlentities($row['department_id'] ?? '');
+            $data_record = htmlentities($row['record'] ?? '');
+            $data_files_date = htmlentities($row['files_date'] ?? '');
+            $data_description = htmlentities($row['description'] ?? '');
+            $data_notes = htmlentities($row['notes'] ?? '');
 
-            $filetype = $row['filetype'];
-            $data_files = $row['files'];
+            $filetype = htmlentities($row['filetype'] ?? '');
+            $data_files = htmlentities($row['files'] ?? '');
             $type = 'iframe';
             if (!empty($data_files)) {
                 if ($filetype == 1) {
@@ -31734,8 +31609,8 @@
 
                                 ORDER BY d.name");
                             while($rowDept = mysqli_fetch_array($resultDepartment)) {
-                                $ID = $rowDept['d_ID'];
-                                $name = $rowDept['d_name'];
+                                $ID = htmlentities($rowDept['d_ID'] ?? '');
+                                $name = htmlentities($rowDept['d_name'] ?? '');
 
                                 echo '<option value="'. $ID .'" '; echo $ID == $data_department_id ? 'SELECTED':''; echo'>'. $name .'</option>';
                             }
@@ -31790,20 +31665,20 @@
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_archiving WHERE ID = $id" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
-            $data_id = $row['ID'];
-            $data_department_id = $row['department_id'];
-            $data_record = $row['record'];
-            $data_files = $row['files'];
-            $data_files_date = $row['files_date'];
-            $data_description = $row['description'];
-            $data_notes = $row['notes'];
+            $data_id = htmlentities($row['ID'] ?? '');
+            $data_department_id = htmlentities($row['department_id'] ?? '');
+            $data_record = htmlentities($row['record'] ?? '');
+            $data_files = htmlentities($row['files'] ?? '');
+            $data_files_date = htmlentities($row['files_date'] ?? '');
+            $data_description = htmlentities($row['description'] ?? '');
+            $data_notes = htmlentities($row['notes'] ?? '');
         }
 
         echo '<div class="row">
             <div class="col-md-6">';
 
-                $filetype = $row['filetype'];
-                $data_files = $row['files'];
+                $filetype = htmlentities($row['filetype'] ?? '');
+                $data_files = htmlentities($row['files'] ?? '');
                 $type = 'iframe';
                 if (!empty($data_files)) {
                     if ($filetype == 1) {
@@ -31846,7 +31721,7 @@
                     <tbody>
                         <tr>
                             <td>Name</td>
-                            <td><strong>'. htmlentities($data_record) .'</strong></td>
+                            <td><strong>'.$data_record.'</strong></td>
                         </tr>
                         <tr>
                             <td>Document Date</td>
@@ -31854,11 +31729,11 @@
                         </tr>
                         <tr>
                             <td>Description</td>
-                            <td><strong>'. htmlentities($data_description) .'</strong></td>
+                            <td><strong>'.$data_description.'</strong></td>
                         </tr>
                         <tr>
                             <td>Notes</td>
-                            <td><strong>'. htmlentities($data_notes) .'</strong></td>
+                            <td><strong>'.$data_notes.'</strong></td>
                         </tr>
                     </tbody>
                 </table>
@@ -31885,14 +31760,14 @@
         $selectData = mysqli_query( $conn,"SELECT ID, record, files_date, deleted, reason FROM tbl_archiving WHERE user_id = $user_id AND department_id = $ID ORDER BY record" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             while($row = mysqli_fetch_array($selectData)) {
-                $ID = $row['ID'];
-                $record = htmlentities($row['record']);
-                $files_date = $row['files_date'];
+                $ID = htmlentities($row['ID'] ?? '');
+                $record = htmlentities($row['record'] ?? '');
+                $files_date = htmlentities($row['files_date'] ?? '');
 
                 $approval = '';
                 if ($row['reason'] == 0 AND !empty($row['reason'])) {
-                    $reason_array = explode(" | ", $row['reason']);
-                    $reason = htmlentities($reason_array[1]);
+                    $reason_array = explode(" | ", htmlentities($row['reason'] ?? ''));
+                    $reason = htmlentities($reason_array[1] ?? '');
                     $approval = '<br><i class="help-block">User requested to delete this item because '.$reason.'</i>
                     <div class="remark_action">
                         <a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnAccept('.$ID.')">Accept</a>
@@ -31941,14 +31816,14 @@
         $selectData = mysqli_query( $conn,"SELECT ID, record, files_date, deleted, reason FROM tbl_archiving WHERE user_id = $user_id ORDER BY record" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             while($row = mysqli_fetch_array($selectData)) {
-                $ID = $row['ID'];
-                $record = htmlentities($row['record']);
-                $files_date = $row['files_date'];
+                $ID = htmlentities($row['ID'] ?? '');
+                $record = htmlentities($row['record'] ?? '');
+                $files_date = htmlentities($row['files_date'] ?? '');
 
                 $approval = '';
                 if ($row['reason'] == 0 AND !empty($row['reason'])) {
-                    $reason_array = explode(" | ", $row['reason']);
-                    $reason = htmlentities($reason_array[1]);
+                    $reason_array = explode(" | ", htmlentities($row['reason'] ?? ''));
+                    $reason = htmlentities($reason_array[1] ?? '');
                     $approval = '<br><i class="help-block">User requested to delete this item because '.$reason.'</i>
                     <div class="remark_action">
                         <a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnAccept('.$ID.')">Accept</a>
@@ -32006,15 +31881,15 @@
         $selectData = mysqli_query( $conn,"SELECT record FROM tbl_archiving WHERE ID = $ID" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $rowData = mysqli_fetch_array($selectData);
-            $data_record = htmlentities($rowData['record']);
+            $data_record = htmlentities($rowData['record'] ?? '');
         }
 
         // Requester
         $selectUserReq = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $portal_user" );
         if ( mysqli_num_rows($selectUserReq) > 0 ) {
             $rowUserReq = mysqli_fetch_array($selectUserReq);
-            $user_name_req = htmlentities($rowUserReq['first_name']) .' '. htmlentities($rowUserReq['last_name']);
-            $user_email_req = htmlentities($rowUserReq['email']);
+            $user_name_req = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+            $user_email_req = htmlentities($rowUserReq['email'] ?? '');
             $sender[$user_email_req] = $user_name_req;
         }
 
@@ -32022,8 +31897,8 @@
         $selectUser = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $user_id" );
         if ( mysqli_num_rows($selectUser) > 0 ) {
             $rowUser = mysqli_fetch_array($selectUser);
-            $user_name = htmlentities($rowUser['first_name']) .' '. htmlentities($rowUser['last_name']);
-            $user_email = htmlentities($rowUser['email']);
+            $user_name = htmlentities($rowUser['first_name'] ?? '') .' '. htmlentities($rowUser['last_name' ?? '']);
+            $user_email = htmlentities($rowUser['email'] ?? '');
             $recipients[$user_email] = $user_name;
         }
 
@@ -32108,9 +31983,9 @@
                 $selectData = mysqli_query( $conn,'SELECT * FROM tbl_archiving WHERE user_id="'. $user_id .'" AND ID="'. $last_id .'" ORDER BY ID LIMIT 1' );
                 if ( mysqli_num_rows($selectData) > 0 ) {
                     $rowData = mysqli_fetch_array($selectData);
-                    $data_ID = $rowData['ID'];
-                    $data_record = $rowData['record'];
-                    $data_files_date = $rowData['files_date'];
+                    $data_ID = htmlentities($rowData['ID'] ?? '');
+                    $data_record = htmlentities($rowData['record'] ?? '');
+                    $data_files_date = htmlentities($rowData['files_date'] ?? '');
 
                     $output = array(
                         "ID" => $data_ID,
@@ -32156,14 +32031,14 @@
         $selectData = mysqli_query( $conn,'SELECT * FROM tbl_archiving WHERE ID="'. $ID .'" ORDER BY ID LIMIT 1' );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $rowData = mysqli_fetch_array($selectData);
-            $data_ID = $rowData['ID'];
-            $data_record = $rowData['record'];
-            $data_files_date = $rowData['files_date'];
+            $data_ID = htmlentities($rowData['ID'] ?? '');
+            $data_record = htmlentities($rowData['record'] ?? '');
+            $data_files_date = htmlentities($rowData['files_date'] ?? '');
 
             $files = '';
             $arr_item = array();
             if (!empty($rowData["file_history"])) {
-                $arr_item = json_decode($rowData["file_history"],true);
+                $arr_item = json_decode(htmlentities($rowData["file_history"] ?? ''),true);
             }
             $filetype = $_POST['filetype'];
             if ($filetype > 0) {
@@ -32176,7 +32051,7 @@
                         $process = $fileValidation['valid'];
 
                         if ($process == true) {
-                            $filesize_tot = $filesize + $rowData["filesize"];
+                            $filesize_tot = $filesize + htmlentities($rowData["filesize"] ?? '');
 
                             mysqli_query( $conn,"UPDATE tbl_archiving SET filesize='". $filesize_tot ."' WHERE ID='". $ID ."'" );
                         }
@@ -53271,6 +53146,9 @@
             $from = $client_email;
             $name = $client_name;
             $body .= $client_name;
+
+            $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $last_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+            
             php_mailer_1($to, $user, $subject, $body, $from, $name);
         }
     }
@@ -53503,6 +53381,9 @@
                         $from = $client_email;
                         $name = $client_name;
                         $body .= $client_name.' Team';
+
+                        $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $last_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+
                         php_mailer_1($to, $user, $subject, $body, $from, $name);
                     }
 
@@ -53515,8 +53396,6 @@
                         "frequency" => $frequency,
                         "files" => $files
                     );
-
-                        $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $last_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
 
                     // Update History Data
                     actionHistory($parent_id, 1, 3, $last_id);

@@ -1078,10 +1078,10 @@
         	                                                        $lo = $i == 0 ? 0 : $array_data[$i - 1]['score_rate'] + 1;
         	                                                        $hi = $array_data[$i]['score_rate'];
         	                                                        $color = $array_data[$i]['score_color'];
-        	                                                        $label = $array_data[$i]['score_label'];
+        	                                                        $score_label = $array_data[$i]['score_label'];
     
         	                                                        $ranges[] = [
-        	                                                            'label' => $label,
+        	                                                            'label' => $score_label,
         	                                                            'color' => $color,
         	                                                            'lo' => $lo,
         	                                                            'hi' => $hi

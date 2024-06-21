@@ -66,38 +66,38 @@
                                                         $resultSupplier = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE deleted = 0 AND type = 1 AND updated = 0 AND user_id = $switch_user_id" );
                                                         if ( mysqli_num_rows($resultSupplier) > 0 ) {
                                                             while($rowSupplier = mysqli_fetch_array($resultSupplier)) {
-                                                                $supplier_user_id = $rowSupplier["user_id"];
-                                                                $supplier_reviewed_by = $rowSupplier["reviewed_by"];
-                                                                $supplier_approved_by = $rowSupplier["approved_by"];
+                                                                $supplier_user_id = htmlentities($rowSupplier["user_id"] ?? '');
+                                                                $supplier_reviewed_by = htmlentities($rowSupplier["reviewed_by"] ?? '');
+                                                                $supplier_approved_by = htmlentities($rowSupplier["approved_by"] ?? '');
 
                                                                 $int_review_assigned_name = '';
-                                                                $int_review_assigned = $rowSupplier["int_review_assigned"];
-                                                                $int_review_status = $rowSupplier["int_review_status"];
-                                                                $int_review_comment = $rowSupplier["int_review_comment"];
+                                                                $int_review_assigned = htmlentities($rowSupplier["int_review_assigned"] ?? '');
+                                                                $int_review_status = htmlentities($rowSupplier["int_review_status"] ?? '');
+                                                                $int_review_comment = htmlentities($rowSupplier["int_review_comment"] ?? '');
 
                                                                 if (!empty($int_review_assigned)) {
                                                                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $int_review_assigned" );
                                                                     if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                         $rowUser = mysqli_fetch_array($selectUser);
-                                                                        $int_review_assigned_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                        $int_review_assigned_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
                                                                     }
                                                                 }
 
                                                                 $int_verify_assigned_name = '';
-                                                                $int_verify_assigned = $rowSupplier["int_verify_assigned"];
-                                                                $int_verify_status = $rowSupplier["int_verify_status"];
-                                                                $int_verify_comment = $rowSupplier["int_verify_comment"];
+                                                                $int_verify_assigned = htmlentities($rowSupplier["int_verify_assigned"] ?? '');
+                                                                $int_verify_status = htmlentities($rowSupplier["int_verify_status"] ?? '');
+                                                                $int_verify_comment = htmlentities($rowSupplier["int_verify_comment"] ?? '');
 
                                                                 if (!empty($int_verify_assigned)) {
                                                                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $int_verify_assigned" );
                                                                     if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                         $rowUser = mysqli_fetch_array($selectUser);
-                                                                        $int_verify_assigned_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                        $int_verify_assigned_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
                                                                     }
                                                                 }
 
-                                                                $supplier_id = $rowSupplier["ID"];
-                                                                $supplier_company = $rowSupplier["company"];
+                                                                $supplier_id = htmlentities($rowSupplier["ID"] ?? '');
+                                                                $supplier_company = htmlentities($rowSupplier["company"] ?? '');
 
                                                                 // $data_status = $rowSupplier['status'];
                                                                 // $status = "Pending";
@@ -292,14 +292,14 @@
                                                         $resultSupplier = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE deleted = 0 AND type = 2 AND updated = 0 AND user_id = $switch_user_id" );
                                                         if ( mysqli_num_rows($resultSupplier) > 0 ) {
                                                             while($rowSupplier = mysqli_fetch_array($resultSupplier)) {
-                                                                $supplier_user_id = $rowSupplier["user_id"];
-                                                                $supplier_reviewed_by = $rowSupplier["reviewed_by"];
-                                                                $supplier_approved_by = $rowSupplier["approved_by"];
+                                                                $supplier_user_id = htmlentities($rowSupplier["user_id"] ?? '');
+                                                                $supplier_reviewed_by = htmlentities($rowSupplier["reviewed_by"] ?? '');
+                                                                $supplier_approved_by = htmlentities($rowSupplier["approved_by"] ?? '');
 
                                                                 $int_review_assigned_name = '';
-                                                                $int_review_assigned = $rowSupplier["int_review_assigned"];
-                                                                $int_review_status = $rowSupplier["int_review_status"];
-                                                                $int_review_comment = $rowSupplier["int_review_comment"];
+                                                                $int_review_assigned = htmlentities($rowSupplier["int_review_assigned"] ?? '');
+                                                                $int_review_status = htmlentities($rowSupplier["int_review_status"] ?? '');
+                                                                $int_review_comment = htmlentities($rowSupplier["int_review_comment"] ?? '');
 
                                                                 if (!empty($int_review_assigned)) {
                                                                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $int_review_assigned" );
@@ -310,9 +310,9 @@
                                                                 }
 
                                                                 $int_verify_assigned_name = '';
-                                                                $int_verify_assigned = $rowSupplier["int_verify_assigned"];
-                                                                $int_verify_status = $rowSupplier["int_verify_status"];
-                                                                $int_verify_comment = $rowSupplier["int_verify_comment"];
+                                                                $int_verify_assigned = htmlentities($rowSupplier["int_verify_assigned"] ?? '');
+                                                                $int_verify_status = htmlentities($rowSupplier["int_verify_status"] ?? '');
+                                                                $int_verify_comment = htmlentities($rowSupplier["int_verify_comment"] ?? '');
 
                                                                 if (!empty($int_verify_assigned)) {
                                                                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $int_verify_assigned" );
@@ -322,9 +322,9 @@
                                                                     }
                                                                 }
 
-                                                                $supplier_id = $rowSupplier["ID"];
-                                                                $supplier_company = $rowSupplier["company"];
-                                                                $supplier_product = $rowSupplier["product"];
+                                                                $supplier_id = htmlentities($rowSupplier["ID"] ?? '');
+                                                                $supplier_company = htmlentities($rowSupplier["company"] ?? '');
+                                                                $supplier_product = htmlentities($rowSupplier["product"] ?? '');
 
                                                                 // $data_status = $rowSupplier['status'];
                                                                 // $status = "Pending";

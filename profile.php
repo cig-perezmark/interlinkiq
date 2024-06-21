@@ -1162,10 +1162,10 @@
                                                                     <th>Status</th>
                                                                 </tr>
                                                             </thead>
-                                                            <tbody>
+                                                            <tbody> 
                                                                 <?php
                                                                     $t=1;
-                                                                    $queryPending = "SELECT * FROM tbl_Customer_Relationship_Task  where Task_Status = 1 and Assigned_to = '$current_userEmail'";
+                                                                    $queryPending = "SELECT user_cookies, crm_ids, assign_task, Task_Description, Task_added, Deadline FROM tbl_Customer_Relationship_Task  where Task_Status = 1 and Assigned_to = '$current_userEmail'";
                                                                     $resultPending = mysqli_query($conn, $queryPending);
                                                                                                 
                                                                     while($rowPending = mysqli_fetch_array($resultPending)){?>
@@ -1174,36 +1174,36 @@
                                                                     <td>
                                                                         <?php
                                                                             $getids = $rowPending['user_cookies'];
-                                                                            $queryUser = "SELECT * FROM tbl_user  where ID = $getids";
+                                                                            $queryUser = "SELECT first_name, last_name FROM tbl_user  where ID = $getids";
                                                                             $resultUser = mysqli_query($conn, $queryUser);
                                                                                                         
                                                                             while($rowUser = mysqli_fetch_array($resultUser)){ 
-                                                                                echo htmlentities($rowUser['first_name']);
+                                                                                echo htmlentities($rowUser['first_name'] ?? '');
                                                                                 echo ' ';
-                                                                                echo htmlentities($rowUser['last_name']);
+                                                                                echo htmlentities($rowUser['last_name'] ?? '');
                                                                             }
                                                                         ?>
                                                                     </td>
                                                                     <td><a href="customer_details.php?view_id=<?php echo $rowPending['crm_ids'] ?>#tasks">
                                                                         <?php
                                                                             $crm_ids = $rowPending['crm_ids'];
-                                                                            $queryAccount = "SELECT * FROM tbl_Customer_Relationship  where crm_id = $crm_ids";
+                                                                            $queryAccount = "SELECT account_name FROM tbl_Customer_Relationship  where crm_id = $crm_ids";
                                                                             $resultAccount = mysqli_query($conn, $queryAccount);
                                                                                                         
                                                                             while($rowAccount = mysqli_fetch_array($resultAccount)){ 
-                                                                                echo htmlentities($rowAccount['account_name']);
+                                                                                echo htmlentities($rowAccount['account_name'] ?? '');
                                                                             }
                                                                         ?></a>
                                                                     </td>
-                                                                    <td><?php echo htmlentities($rowPending['assign_task']); ?></td>
-                                                                    <td><?php echo htmlentities($rowPending['Task_Description']); ?></td>
-                                                                    <td><?php echo $rowPending['Task_added']; ?></td>
-                                                                    <td><?php echo $rowPending['Deadline']; ?></td>
+                                                                    <td><?php echo htmlentities($rowPending['assign_task'] ?? ''); ?></td>
+                                                                    <td><?php echo htmlentities($rowPending['Task_Description'] ?? ''); ?></td>
+                                                                    <td><?php echo htmlentities($rowPending['Task_added'] ?? ''); ?></td>
+                                                                    <td><?php echo htmlentities($rowPending['Deadline'] ?? ''); ?></td>
                                                                     <td><b style="color:red;">Pending</b></td>
                                                                 </tr>
                                                                 <?php } ?>
                                                                 <?php
-                                                                    $queryInprogress = "SELECT * FROM tbl_Customer_Relationship_Task  where Task_Status = 2 and Assigned_to = '$current_userEmail'";
+                                                                    $queryInprogress = "SELECT user_cookies, crm_ids, assign_task, Task_Description, Task_added, Deadline FROM tbl_Customer_Relationship_Task  where Task_Status = 2 and Assigned_to = '$current_userEmail'";
                                                                     $resultInprogress = mysqli_query($conn, $queryInprogress);
                                                                                                 
                                                                     while($rowInprogress = mysqli_fetch_array($resultInprogress)){?>
@@ -1212,36 +1212,36 @@
                                                                     <td>
                                                                         <?php
                                                                             $getids = $rowInprogress['user_cookies'];
-                                                                            $queryUser = "SELECT * FROM tbl_user  where ID = $getids";
+                                                                            $queryUser = "SELECT first_name, last_name FROM tbl_user  where ID = $getids";
                                                                             $resultUser = mysqli_query($conn, $queryUser);
                                                                                                         
                                                                             while($rowUser = mysqli_fetch_array($resultUser)){ 
-                                                                                echo htmlentities($rowUser['first_name']);
+                                                                                echo htmlentities($rowUser['first_name'] ?? '');
                                                                                 echo ' ';
-                                                                                echo htmlentities($rowUser['last_name']);
+                                                                                echo htmlentities($rowUser['last_name'] ?? '');
                                                                             }
                                                                         ?>
                                                                     </td>
                                                                     <td><a href="customer_details.php?view_id=<?php echo $rowInprogress['crm_ids'] ?>#tasks">
                                                                         <?php
                                                                             $crm_ids = $rowInprogress['crm_ids'];
-                                                                            $queryAccount = "SELECT * FROM tbl_Customer_Relationship  where crm_id = $crm_ids";
+                                                                            $queryAccount = "SELECT account_name FROM tbl_Customer_Relationship  where crm_id = $crm_ids";
                                                                             $resultAccount = mysqli_query($conn, $queryAccount);
                                                                                                         
                                                                             while($rowAccount = mysqli_fetch_array($resultAccount)){ 
-                                                                                echo htmlentities($rowAccount['account_name']);
+                                                                                echo htmlentities($rowAccount['account_name'] ?? '');
                                                                             }
                                                                         ?></a>
                                                                     </td>
-                                                                    <td><?php echo htmlentities($rowInprogress['assign_task']); ?></td>
-                                                                    <td><?php echo htmlentities($rowInprogress['Task_Description']); ?></td>
-                                                                    <td><?php echo $rowInprogress['Task_added']; ?></td>
-                                                                    <td><?php echo $rowInprogress['Deadline']; ?></td>
+                                                                    <td><?php echo htmlentities($rowInprogress['assign_task'] ?? ''); ?></td>
+                                                                    <td><?php echo htmlentities($rowInprogress['Task_Description'] ?? ''); ?></td>
+                                                                    <td><?php echo htmlentities($rowInprogress['Task_added'] ?? ''); ?></td>
+                                                                    <td><?php echo htmlentities($rowInprogress['Deadline'] ?? ''); ?></td>
                                                                     <td><b style="color:orange;">Inprogress</b></td>
                                                                 </tr>
                                                                 <?php } ?>
                                                                 <?php
-                                                                    $queryDone = "SELECT * FROM tbl_Customer_Relationship_Task  where Task_Status = 3 and Assigned_to = '$current_userEmail'";
+                                                                    $queryDone = "SELECT user_cookies, crm_ids, assign_task, Task_Description, Task_added, Deadline FROM tbl_Customer_Relationship_Task  where Task_Status = 3 and Assigned_to = '$current_userEmail'";
                                                                     $resultDone = mysqli_query($conn, $queryDone);
                                                                                                 
                                                                     while($rowDone = mysqli_fetch_array($resultDone)){?>
@@ -1250,31 +1250,31 @@
                                                                     <td>
                                                                         <?php
                                                                             $getids = $rowDone['user_cookies'];
-                                                                            $queryUser = "SELECT * FROM tbl_user  where ID = $getids";
+                                                                            $queryUser = "SELECT first_name, last_name FROM tbl_user  where ID = $getids";
                                                                             $resultUser = mysqli_query($conn, $queryUser);
                                                                                                         
                                                                             while($rowUser = mysqli_fetch_array($resultUser)){ 
-                                                                                echo htmlentities($rowUser['first_name']);
+                                                                                echo htmlentities($rowUser['first_name'] ?? '');
                                                                                 echo ' ';
-                                                                                echo htmlentities($rowUser['last_name']);
+                                                                                echo htmlentities($rowUser['last_name'] ?? '');
                                                                             }
                                                                         ?>
                                                                     </td>
                                                                     <td> <a href="customer_details.php?view_id=<?php echo $rowDone['crm_ids'] ?>#tasks">
                                                                         <?php
                                                                             $crm_ids = $rowDone['crm_ids'];
-                                                                            $queryAccount = "SELECT * FROM tbl_Customer_Relationship  where crm_id = $crm_ids";
+                                                                            $queryAccount = "SELECT account_name FROM tbl_Customer_Relationship  where crm_id = $crm_ids";
                                                                             $resultAccount = mysqli_query($conn, $queryAccount);
                                                                                                         
                                                                             while($rowAccount = mysqli_fetch_array($resultAccount)){ 
-                                                                                echo htmlentities($rowAccount['account_name']);
+                                                                                echo htmlentities($rowAccount['account_name'] ?? '');
                                                                             }
                                                                         ?></a>
                                                                     </td>
-                                                                    <td><?php echo htmlentities($rowDone['assign_task']); ?></td>
-                                                                    <td><?php echo htmlentities($rowDone['Task_Description']); ?></td>
-                                                                    <td><?php echo $rowDone['Task_added']; ?></td>
-                                                                    <td><?php echo $rowDone['Deadline']; ?></td>
+                                                                    <td><?php echo htmlentities($rowDone['assign_task'] ?? ''); ?></td>
+                                                                    <td><?php echo htmlentities($rowDone['Task_Description'] ?? ''); ?></td>
+                                                                    <td><?php echo htmlentities($rowDone['Task_added'] ?? ''); ?></td>
+                                                                    <td><?php echo htmlentities($rowDone['Deadline'] ?? ''); ?></td>
                                                                     <td><b style="color:green;">Done</b></td>
                                                                 </tr>
                                                                 <?php } ?>
@@ -1356,7 +1356,7 @@
                                                                         if ( mysqli_num_rows($selectTrainings) > 0 ) {
                                                                             while($rowTraining = mysqli_fetch_array($selectTrainings)) {
                                                                                 $training_ID = $rowTraining['t_ID'];
-                                                                                $title = htmlentities($rowTraining['t_title']);
+                                                                                $title = htmlentities($rowTraining['t_title'] ?? '');
                                                                                 $array_rowTraining = explode(", ", $rowTraining["t_job_description_id"]);
 
                                                                                 $array_frequency = array(
@@ -1367,7 +1367,7 @@
                                                                                 );
 
                                                                                 $found = null;
-                                                                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $current_userEmployeeID" );
+                                                                                $selectEmployee = mysqli_query( $conn,"SELECT job_description_id FROM tbl_hr_employee WHERE ID = $current_userEmployeeID" );
                                                                                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                                                     $rowEmployee = mysqli_fetch_array($selectEmployee);
                                                                                     $array_row = explode(", ", $rowEmployee["job_description_id"]);

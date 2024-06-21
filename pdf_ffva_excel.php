@@ -265,22 +265,13 @@
                 <td colspan="5">'.htmlentities($row["company"]).'</td>
             </tr>
             <tr style="background-color: #e1e5ec;">
-                <td colspan="2"><b>Website</b></td>
-                <td colspan="5"><a href="'.htmlentities($row["website"]).'" target="_blank">'.htmlentities($row["website"]).'</a></td>
-            </tr>
-            <tr style="background-color: #e1e5ec;">
-                <td colspan="2"><b>Headquarters</b></td>
-                <td colspan="5">'.htmlentities($row["headquarters"]).'</td>
-            </tr>
-            <tr style="background-color: #e1e5ec;">
-                <td style="text-align: center;"><b>Tel. No.</b></td>
-                <td style="text-align: center;"><b>Email</b></td>
-                <td colspan="2" style="text-align: center;">T: <a href="tel:'.htmlentities($row["telephone"]).'">'.htmlentities($row["telephone"]).'</a></td>
-                <td colspan="3" style="text-align: center;"><a href="mailto:'.htmlentities($row["email"]).'">'.htmlentities($row["email"]).'</a></td>
-            </tr>
-            <tr style="background-color: #e1e5ec;">
                 <td colspan="2"><b>Contact Person</b></td>
                 <td colspan="5">'.htmlentities($row["person"]).'</td>
+            </tr>';
+        } else if ($likelihood_type == 2) {
+            $html .= '<tr style="background-color: #e1e5ec;">
+                <td colspan="2"><b>Material Name</b></td>
+                <td colspan="5">'.htmlentities($row["product"]).'</td>
             </tr>';
         }
         
@@ -378,7 +369,7 @@
 
     <table cellpadding="7" cellspacing="0" border="1">
         <tr>
-            <td colspan="4">Product or ingredient or raw material</td>
+            <td colspan="4">Product or ingredient or raw material name</td>
             <td colspan="3" style="background-color: #ffd965;">'.htmlentities($row["product"]).'</td>
         </tr>
         <tr>

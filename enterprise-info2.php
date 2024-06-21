@@ -80,7 +80,7 @@
                                         <div class="portlet light ">
                                             <div class="portlet-title  tabbable-tabdrop tabbable-line">
                                                 <div class="caption caption-md">
-                                                    <i class="icon-globe theme-font hide"></i>
+                                                    <span class="icon-globe theme-font hide"></span>
                                                     <span class="caption-subject font-dark bold uppercase">Enterprise Details</span>
                                                     <?php
                                                         if($current_client == 0) {
@@ -103,11 +103,14 @@
                                                             		$file_url = $src.$url.rawurlencode($file_upload).$embed;
                                                                 }
                                                                 
-                                                                if ($type_id == 0) {
-                                                            		echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i> '.$file_title.'</a>';
-                                                            	} else {
-                                                            		echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><i class="fa fa-youtube"></i> '.$file_title.'</a>';
-                                                            	}
+                                                                $icon = $row["icon"];
+                                                                if (!empty($icon)) { 
+                                                                    if ($type_id == 0) {
+                                                                        echo ' <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                                                    } else {
+                                                                        echo ' <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                                                    }
+                                                                }
             	                                            }
                                                             
                                                             if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163) {
@@ -285,8 +288,8 @@
                                                                             while($rowc = mysqli_fetch_array($resultQuery)){
     
                                                                                 $selectedContact = '';
-                                                                                if (!empty($rowc['contactpersonphone'])) { $contactPin = $rowc['contactpersonphone']; }
-                                                                                if (!empty($rowc['contactpersoncellno'])) { $contactPin = $rowc['contactpersoncellno']; }
+                                                                                if (!empty($rowc['contactpersonphone'])) { $contactPin = htmlentities($rowc['contactpersonphone']); }
+                                                                                if (!empty($rowc['contactpersoncellno'])) { $contactPin = htmlentities($rowc['contactpersoncellno']); }
     
                                                                                 if (!empty($contactHeader)) {
                                                                                     // $contactHeader_arr = explode(' | ', $contactHeader);
@@ -306,13 +309,13 @@
                                                                                         </td>';
                                                                                     }
                                                                                 ?>
-                                                                                <td><?php echo $rowc['contactpersonname']; ?></td>
-                                                                                <td><?php echo $rowc['contactpersonlastname']; ?></td>
-                                                                                <td><?php echo $rowc['titles']; ?></td>
-                                                                                <td><?php echo $rowc['contactpersoncellno']; ?></td>
-                                                                                <td><?php echo $rowc['contactpersonphone']; ?></td>
-                                                                                <td><?php echo $rowc['contactpersonfax']; ?></td>
-                                                                                <td><?php echo $rowc['contactpersonemailAddress']; ?></td>
+                                                                                <td><?php echo htmlentities($rowc['contactpersonname']); ?></td>
+                                                                                <td><?php echo htmlentities($rowc['contactpersonlastname']); ?></td>
+                                                                                <td><?php echo htmlentities($rowc['titles']); ?></td>
+                                                                                <td><?php echo htmlentities($rowc['contactpersoncellno']); ?></td>
+                                                                                <td><?php echo htmlentities($rowc['contactpersonphone']); ?></td>
+                                                                                <td><?php echo htmlentities($rowc['contactpersonfax']); ?></td>
+                                                                                <td><?php echo htmlentities($rowc['contactpersonemailAddress']); ?></td>
                                                                                 <td style="text-align: right;">
                                                                                     <a class="btn blue btn-outline btnViewCon" data-toggle="modal" href="#modalGetContact" data-id="<?php echo $rowc["con_id"]; ?>">VIEW</a>
                                                                                     <a class="btn btn-outline red" onclick="btnDelete_EI_Contact(<?php echo $rowc["con_id"]; ?>, this)">Delete</a>
@@ -355,8 +358,8 @@
                                                                             while($rowq = mysqli_fetch_array($resultQuery)){
     
                                                                                 $selectedContact = '';
-                                                                                if (!empty($rowq['emergencyphone'])) { $contactPin = $rowq['emergencyphone']; }
-                                                                                if (!empty($rowq['emergencycellno'])) { $contactPin = $rowq['emergencycellno']; }
+                                                                                if (!empty($rowq['emergencyphone'])) { $contactPin = htmlentities($rowq['emergencyphone']); }
+                                                                                if (!empty($rowq['emergencycellno'])) { $contactPin = htmlentities($rowq['emergencycellno']); }
     
                                                                                 if (!empty($contactHeader)) {
                                                                                     // $contactHeader_arr = explode(' | ', $contactHeader);
@@ -376,13 +379,13 @@
                                                                                         </td>';
                                                                                     }
                                                                                 ?>
-                                                                                <td><?php echo $rowq['emergencyname']; ?></td>
-                                                                                <td><?php echo $rowq['emergencycontact_last_name']; ?></td>
-                                                                                <td><?php echo $rowq['emergency_contact_title']; ?></td>
-                                                                                <td><?php echo $rowq['emergencycellno']; ?></td>
-                                                                                <td><?php echo $rowq['emergencyphone']; ?></td>
-                                                                                <td><?php echo $rowq['emergencyfax']; ?></td>
-                                                                                <td><?php echo $rowq['emergencyemailAddress']; ?></td>
+                                                                                <td><?php echo htmlentities($rowq['emergencyname']); ?></td>
+                                                                                <td><?php echo htmlentities($rowq['emergencycontact_last_name']); ?></td>
+                                                                                <td><?php echo htmlentities($rowq['emergency_contact_title']); ?></td>
+                                                                                <td><?php echo htmlentities($rowq['emergencycellno']); ?></td>
+                                                                                <td><?php echo htmlentities($rowq['emergencyphone']); ?></td>
+                                                                                <td><?php echo htmlentities($rowq['emergencyfax']); ?></td>
+                                                                                <td><?php echo htmlentities($rowq['emergencyemailAddress']); ?></td>
                                                                                 <td style="text-align: right;">
                                                                                     <a class="btn blue btn-outline btnView " data-toggle="modal" href="#modalGetEmergencyContact" data-id="<?php echo $rowq["emerg_id"]; ?>">VIEW</a>
                                                                                     <a class="btn btn-outline red" onclick="btnDelete_EI_Emergency(<?php echo $rowq["emerg_id"]; ?>, this)">Delete</a>
@@ -422,8 +425,8 @@
                                                                                 while($rowpp = mysqli_fetch_array($resultQuery)){
     
                                                                                     $selectedContact = '';
-                                                                                    if (!empty($rowpp['phone'])) { $contactPin = $rowpp['phone']; }
-                                                                                    if (!empty($rowpp['cell'])) { $contactPin = $rowpp['cell']; }
+                                                                                    if (!empty($rowpp['phone'])) { $contactPin = htmlentities($rowpp['phone']); }
+                                                                                    if (!empty($rowpp['cell'])) { $contactPin = htmlentities($rowpp['cell']); }
     
                                                                                     if (!empty($contactHeader)) {
                                                                                         // $contactHeader_arr = explode(' | ', $contactHeader);
@@ -443,13 +446,13 @@
                                                                                             </td>';
                                                                                         }
                                                                                     ?>
-                                                                                    <td><?php echo $rowpp['first_name']; ?></td>
-                                                                                    <td><?php echo $rowpp['last_name']; ?></td>
-                                                                                    <td><?php echo $rowpp['title']; ?></td>
-                                                                                    <td><?php echo $rowpp['cell']; ?></td>
-                                                                                    <td><?php echo $rowpp['phone']; ?></td>
-                                                                                    <td><?php echo $rowpp['fax']; ?></td>
-                                                                                    <td><?php echo $rowpp['email']; ?></td>
+                                                                                    <td><?php echo htmlentities($rowpp['first_name']); ?></td>
+                                                                                    <td><?php echo htmlentities($rowpp['last_name']); ?></td>
+                                                                                    <td><?php echo htmlentities($rowpp['title']); ?></td>
+                                                                                    <td><?php echo htmlentities($rowpp['cell']); ?></td>
+                                                                                    <td><?php echo htmlentities($rowpp['phone']); ?></td>
+                                                                                    <td><?php echo htmlentities($rowpp['fax']); ?></td>
+                                                                                    <td><?php echo htmlentities($rowpp['email']); ?></td>
                                                                                     <td style="text-align: right;">
                                                                                         <a class="btn blue btn-outline btnViewPP" data-toggle="modal" href="#modalPrivatePatrol" data-id="<?php echo $rowpp["ID"]; ?>">VIEW</a>
                                                                                         <a class="btn btn-outline red" onclick="btnDelete_EI_Private(<?php echo $rowpp["ID"]; ?>, this)">Delete</a>
@@ -468,7 +471,7 @@
                                                                     $selectContactSet = mysqli_query($conn, "SELECT * FROM tblEnterpiseDetails_Contact_Set where deleted = 0 AND user_id = $switch_user_id");
                                                                     while($rowSet = mysqli_fetch_array($selectContactSet)){
                                                                         $set_ID = $rowSet['ID'];
-                                                                        $set_title = $rowSet['title'];
+                                                                        $set_title = htmlentities($rowSet['title']);
 
                                                                         echo '<div id="contactSet_'.$set_ID.'">
                                                                             <h4>
@@ -499,8 +502,8 @@
                                                                                         $selectContactSetData = mysqli_query($conn, "SELECT * FROM tblEnterpiseDetails_Contact_SetData where deleted = 0 AND set_id = $set_ID AND user_id = $switch_user_id");
                                                                                         while($rowSetData = mysqli_fetch_array($selectContactSetData)){
                                                                                             $selectedContact = '';
-                                                                                            if (!empty($rowSetData['phone'])) { $contactPin = $rowSetData['phone']; }
-                                                                                            if (!empty($rowSetData['cell'])) { $contactPin = $rowSetData['cell']; }
+                                                                                            if (!empty($rowSetData['phone'])) { $contactPin = htmlentities($rowSetData['phone']); }
+                                                                                            if (!empty($rowSetData['cell'])) { $contactPin = htmlentities($rowSetData['cell']); }
             
                                                                                             if (!empty($contactHeader)) {
                                                                                                 $data = json_decode($contactHeader, true);
@@ -515,14 +518,14 @@
                                                                                                         <input type="checkbox" name="contactPin" value="'.$contactPin.'" onchange="changeCheck(this)" data-id="'.$rowSetData['ID'].'" data-section="4" '.$selectedContact.'/>
                                                                                                     </td>';
                                                                                                 }
-                                                                                                echo '<td>'.$rowSetData['first_name'].'</td>
-                                                                                                <td>'.$rowSetData['last_name'].'</td>
-                                                                                                <td>'.$rowSetData['title'].'</td>
-                                                                                                <td>'.$rowSetData['cell'].'</td>
-                                                                                                <td>'.$rowSetData['phone'].'</td>
-                                                                                                <td>'.$rowSetData['fax'].'</td>
-                                                                                                <td>'.$rowSetData['email'].'</td>
-                                                                                                <td>'.$rowSetData['organization'].'</td>
+                                                                                                echo '<td>'.htmlentities($rowSetData['first_name']).'</td>
+                                                                                                <td>'.htmlentities($rowSetData['last_name']).'</td>
+                                                                                                <td>'.htmlentities($rowSetData['title']).'</td>
+                                                                                                <td>'.htmlentities($rowSetData['cell']).'</td>
+                                                                                                <td>'.htmlentities($rowSetData['phone']).'</td>
+                                                                                                <td>'.htmlentities($rowSetData['fax']).'</td>
+                                                                                                <td>'.htmlentities($rowSetData['email']).'</td>
+                                                                                                <td>'.htmlentities($rowSetData['organization']).'</td>
                                                                                                 <td style="text-align: right;">
                                                                                                     <a class="btn blue btn-outline" data-toggle="modal" href="#modalViewContactSetData" data-id="'.$rowSetData["ID"].'" onClick="btnView_ContactSetData('.$rowSetData["ID"].')">VIEW</a>
                                                                                                     <a class="btn btn-outline red" onclick="btnDelete_ContactSetData('.$rowSetData["ID"].', this)">Delete</a>
@@ -549,7 +552,7 @@
                                                                     <div class="col-md-12">
                                                                         <div class="form-group">
                                                                             <input type="hidden" name="ids" class="form-control" value="<?php echo $row['enterp_id']; ?>">
-                                                                            <textarea class="form-control" name="BusinessPurpose" required><?php echo $row['BusinessPurpose']; ?></textarea>
+                                                                            <textarea class="form-control" name="BusinessPurpose" required><?php echo htmlentities($row['BusinessPurpose']); ?></textarea>
                                                                         </div>
                                                                      </div>
                                                                 </div>
@@ -559,25 +562,27 @@
                                                                         <label>Does the enterprise have a Factory(ies) / Facility(ies)?</label>
                                                                     </div>
                                                                     <div class="col-md-2">
-                                                                        <select class="form-control" name="enterpriseOperation" value="<?php echo $row['enterpriseOperation']; ?>" >
+                                                                        <select class="form-control" name="enterpriseOperation" value="<?php echo htmlentities($row['enterpriseOperation']); ?>" >
                                                                             <option value="No" <?php if($row['enterpriseOperation']=='No'){echo 'selected';}else{echo '';} ?>>No</option>
                                                                             <option value="Yes" <?php if($row['enterpriseOperation']=='Yes'){echo 'selected';}else{echo '';} ?>>Yes</option>
                                                                         </select>
                                                                     </div>
-                                                                    <div class="col-md-6">
-                                                                         <?php 
-                                                                            // $ids = $_COOKIE['ID'];
-                                                                            $ids = $switch_user_id;
-                                                                            $query = "SELECT * FROM tblFacilityDetails where users_entities = '$ids' ";
-                                                                            $result = mysqli_query($conn, $query);
-                                                                            while($rows = mysqli_fetch_array($result)) {
-                                                                                if(!empty($rows['facility_category'])){ 
-                                                                                    echo $rows['facility_category'];echo ', ';
-                                                                                } else{ echo '';}
-                                                                            }
-                                                                        ?>
-                                                                        &nbsp;<a data-toggle="modal" href="#addFacilityModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;Add Facility</a>
-                                                                    </div>
+                                                                    <?php if($row['enterpriseOperation']=='Yes'){ ?>
+                                                                        <div class="col-md-6">
+                                                                             <?php 
+                                                                                // $ids = $_COOKIE['ID'];
+                                                                                $ids = $switch_user_id;
+                                                                                $query = "SELECT * FROM tblFacilityDetails where users_entities = '$ids' ";
+                                                                                $result = mysqli_query($conn, $query);
+                                                                                while($rows = mysqli_fetch_array($result)) {
+                                                                                    if(!empty($rows['facility_category'])){ 
+                                                                                        echo htmlentities($rows['facility_category']); echo ', ';
+                                                                                    } else{ echo '';}
+                                                                                }
+                                                                            ?>
+                                                                            &nbsp;<a data-toggle="modal" href="#addFacilityModal" class="btn btn-xs btn-primary"><i class="fa fa-plus"></i>&nbsp;Add Facility</a>
+                                                                        </div>
+                                                                    <?php } ?>
                                                                 </div>
                                                                 <br>
                                                                 <div class="row">
@@ -750,7 +755,7 @@
                                                                             <input type="checkbox" name="BusinessPROCESS[]" value="15" <?php  if(in_array('15', $array_busi)){echo 'checked';}else{echo '';} ?>>
                                                                             <label>Others</label> <br>
                                                                             <?php  if(in_array('15', $array_busi)){ ?>
-                                                                            <input class="form-control" name="EnterpriseProcessSpecify" value="<?php echo $row['EnterpriseProcessSpecify']; ?>" >
+                                                                            <input class="form-control" name="EnterpriseProcessSpecify" value="<?php echo htmlentities($row['EnterpriseProcessSpecify']); ?>" >
                                                                             <?php  }else{ ?>
                                                                             <?php  } ?>
                                                                             <?php endif; ?>
@@ -871,7 +876,6 @@
                                                                                 
                                                                                 <input type="checkbox" name="Categories[]" value="32" <?php  if(in_array('32', $array_busi)){echo 'checked';}else{echo '';} ?>>
                                                                                 <label>Others</label> <br>
-                                                                                <!--<input class="form-control" name="EnterpriseProcessSpecify" value="<?php echo $row['EnterpriseProcessSpecify']; ?>" >-->
                                                                                 <br>
                                                                             </div>
                                                                         </div>      
@@ -898,7 +902,7 @@
                                                                                     if ( empty($row['BrandLogos']) ) {
                                                                                         echo '<img src="https://via.placeholder.com/200x150/EFEFEF/AAAAAA&text=no+image" class="img-responsive" alt="Avatar" />';
                                                                                     } else {
-                                                                                        echo '<img src="companyDetailsFolder/'.$row['BrandLogos'].'" class="img-responsive" alt="Avatar" />';
+                                                                                        echo '<img src="companyDetailsFolder/'.htmlentities($row['BrandLogos']).'" class="img-responsive" alt="Avatar" />';
                                                                                     }
                                                                                 ?>
                                                                             </div>
@@ -1088,8 +1092,8 @@
                                                                                 }
 
                                                                                 echo '<tr>
-                                                                                    <td>'.$rowtrade['trademark_name'].'</td>
-                                                                                    <td>'.$rowtrade['trade_name'].'</td>
+                                                                                    <td>'.htmlentities($rowtrade['trademark_name']).'</td>
+                                                                                    <td>'.htmlentities($rowtrade['trade_name']).'</td>
                                                                                     <td>'; 
                                                                                         if (!empty($files)) { echo '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a>'; }
                                                                                     echo '</td>
@@ -1160,49 +1164,49 @@
                                                                 <div class="col-md-12">
                                                                     <div class="form-group">
                                                                         <label class="control-label"><strong>Parent Company Name:</strong></label>
-                                                                        <input type="text" class=" form-control" name="ParentCompanyName" value="<?php echo $row['ParentCompanyName']; ?>" onchange="ParentCompanyName(this.value,'<?php echo $row['enterp_id']; ?>')">
+                                                                        <input type="text" class=" form-control" name="ParentCompanyName" value="<?php echo htmlentities($row['ParentCompanyName']); ?>" onchange="ParentCompanyName(this.value,'<?php echo $row['enterp_id']; ?>')">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-3">
                                                                     <div class="form-group">
                                                                         <label class="control-label"><strong>Address:</strong></label>
-                                                                        <input type="text" class=" form-control" name="Headquarters" value="<?php echo $row['Headquarters']; ?>" onchange="Headquarters(this.value,'<?php echo $row['enterp_id']; ?>')">
+                                                                        <input type="text" class=" form-control" name="Headquarters" value="<?php echo htmlentities($row['Headquarters']); ?>" onchange="Headquarters(this.value,'<?php echo $row['enterp_id']; ?>')">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-3">
                                                                     <div class="form-group">
                                                                         <label class="control-label"><strong>City:</strong></label>
-                                                                        <input type="text" class=" form-control" name="ParentCompanycity" value="<?php echo $row['ParentCompanycity']; ?>" onchange="ParentCompanycity(this.value,'<?php echo $row['enterp_id']; ?>')">
+                                                                        <input type="text" class=" form-control" name="ParentCompanycity" value="<?php echo htmlentities($row['ParentCompanycity']); ?>" onchange="ParentCompanycity(this.value,'<?php echo $row['enterp_id']; ?>')">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-3">
                                                                     <div class="form-group">
                                                                         <label class="control-label"><strong>State:</strong></label>
-                                                                        <input type="text" class=" form-control" name="ParentCompanyStates" value="<?php echo $row['ParentCompanyStates']; ?>" onchange="ParentCompanyStates(this.value,'<?php echo $row['enterp_id']; ?>')">
+                                                                        <input type="text" class=" form-control" name="ParentCompanyStates" value="<?php echo htmlentities($row['ParentCompanyStates']); ?>" onchange="ParentCompanyStates(this.value,'<?php echo $row['enterp_id']; ?>')">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-3">
                                                                     <div class="form-group">
                                                                         <label class="control-label"><strong>Zip Code:</strong></label>
-                                                                        <input type="text" class=" form-control" name="ParentCompanyZipCode" value="<?php echo $row['ParentCompanyZipCode']; ?>" onchange="ParentCompanyZipCode(this.value,'<?php echo $row['enterp_id']; ?>')">
+                                                                        <input type="text" class=" form-control" name="ParentCompanyZipCode" value="<?php echo htmlentities($row['ParentCompanyZipCode']); ?>" onchange="ParentCompanyZipCode(this.value,'<?php echo $row['enterp_id']; ?>')">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-3">
                                                                     <div class="form-group">
                                                                         <label class="control-label"><strong>Year Established:</strong></label>
-                                                                        <input type="number" class=" form-control" name="YearEstablished" value="<?php echo $row['YearEstablished']; ?>" onchange="YearEstablished(this.value,'<?php echo $row['enterp_id']; ?>')">
+                                                                        <input type="number" class=" form-control" name="YearEstablished" value="<?php echo htmlentities($row['YearEstablished']); ?>" onchange="YearEstablished(this.value,'<?php echo $row['enterp_id']; ?>')">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-3">
                                                                     <div class="form-group">
                                                                         <label class="control-label"><strong>Dun & Bradstreet (D-U-N-S) Number</strong></label>
-                                                                        <input type="text" class=" form-control" name="Dunn" value="<?php echo $row['Dunn']; ?>" onchange="Dunn(this.value,'<?php echo $row['enterp_id']; ?>')">
+                                                                        <input type="text" class=" form-control" name="Dunn" value="<?php echo htmlentities($row['Dunn']); ?>" onchange="Dunn(this.value,'<?php echo $row['enterp_id']; ?>')">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-3 <?php echo $_COOKIE['client'] == 1 ? '':'hide'; ?>">
                                                                     <div class="form-group">
                                                                         <label class="control-label"><strong>EIN</strong></label>
-                                                                        <input type="text" class=" form-control" name="ein" value="<?php echo $row['ein']; ?>" onchange="ein(this.value,'<?php echo $row['enterp_id']; ?>')">
+                                                                        <input type="text" class=" form-control" name="ein" value="<?php echo htmlentities($row['ein']); ?>" onchange="ein(this.value,'<?php echo $row['enterp_id']; ?>')">
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-12">
@@ -1632,8 +1636,8 @@
 
                                                                                 echo '<tr class="'.$due.'">
                                                                                     <td><p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">'.$rowf['EnterpriseRecordsFile'].'</a></p></td>
-                                                                                    <td>'.$rowf['DocumentTitle'].'</td>
-                                                                                    <td>'.$rowf['DocumentDesciption'].'</td>
+                                                                                    <td>'.htmlentities($rowf['DocumentTitle']).'</td>
+                                                                                    <td>'.htmlentities($rowf['DocumentDesciption']).'</td>
                                                                                     <td>'.$rowf['DocumentDueDate'].'</td>
                                                                                     <td class="text-center">
                                                                                         <div class="btn-group btn-group-circle">
@@ -1669,11 +1673,11 @@
                                                                             while($rowAcc = mysqli_fetch_array($resultQuery)){
 
                                                                                 echo '<tr>
-                                                                                    <td>'.$rowAcc['description'].'</td>
-                                                                                    <td>'.$rowAcc['url'].'</td>
-                                                                                    <td>'.$rowAcc['username'].'</td>
-                                                                                    <td>'.$rowAcc['password'].'</td>
-                                                                                    <td>'.$rowAcc['remark'].'</td>
+                                                                                    <td>'.htmlentities($rowAcc['description']).'</td>
+                                                                                    <td>'.htmlentities($rowAcc['url']).'</td>
+                                                                                    <td>'.htmlentities($rowAcc['username']).'</td>
+                                                                                    <td>'.htmlentities($rowAcc['password']).'</td>
+                                                                                    <td>'.htmlentities($rowAcc['remark']).'</td>
                                                                                     <td style="text-align: right;">
                                                                                         <a class="btn blue btn-outline btnViewAcc" data-toggle="modal" href="#modalAccount" data-id="'.$rowAcc["ID"].'">VIEW</a>
                                                                                         <a class="btn btn-outline red" onclick="btnDelete_Account('.$rowAcc["ID"].', this)">Delete</a>
@@ -1695,7 +1699,7 @@
                                                                     $selectDataSupplier = mysqli_query( $conn,"SELECT * FROM tbl_supplier WHERE page = 2 AND is_deleted = 0 AND email = '".$current_userEmail."'" );
                                                             		if ( mysqli_num_rows($selectDataSupplier) > 0 ) {
                                                                         $rowDataSupplier = mysqli_fetch_array($selectDataSupplier);
-                                                                        $def_address = $rowDataSupplier["address"];
+                                                                        $def_address = htmlentities($rowDataSupplier["address"]);
                                                                         $address_arr = explode(" | ", $def_address);
                                                                         if (COUNT($address_arr) < 5) {
                                                                             $address_arr = explode(", ", $address);
@@ -1705,8 +1709,8 @@
                                                                 <div class="row">
                                                                     <div class="form-group">
                                                                         <div class="col-md-12">
-                                                                            <label class="control-label"><strong>Legal Namesss:<i style="color:orange;" title="This input box is required!!!">*</i></strong></label>
-                                                                            <input type="" class="form-control" name="LegalNameNew" value="<?php echo $rowDataSupplier['name']; ?>" required> 
+                                                                            <label class="control-label"><strong>Legal Name:<i style="color:orange;" title="This input box is required!!!">*</i></strong></label>
+                                                                            <input type="" class="form-control" name="LegalNameNew" value="<?php echo htmlentities($rowDataSupplier['name']); ?>" required> 
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -1769,10 +1773,10 @@
                                                                         </thead>
                                                                         <tbody>
                                                                             <tr>
-                                                                                <td><input type="" min="6" class="form-control" name="businesstelephone" value="<?php echo $rowDataSupplier["phone"]; ?>" required></td>
-                                                                                <td><input type="" class="form-control" name="businessfax" value="<?php echo $rowDataSupplier["fax"]; ?>" required></td>
-                                                                                <td><input type="email" class="form-control" name="businessemailAddress" value="<?php echo $rowDataSupplier["email"]; ?>" required></td>
-                                                                                <td><input class=" form-control" name="businesswebsite" value="<?php echo $rowDataSupplier["website"]; ?>" required></td>
+                                                                                <td><input type="" min="6" class="form-control" name="businesstelephone" value="<?php echo htmlentities($rowDataSupplier["phone"]); ?>" required></td>
+                                                                                <td><input type="" class="form-control" name="businessfax" value="<?php echo htmlentities($rowDataSupplier["fax"]); ?>" required></td>
+                                                                                <td><input type="email" class="form-control" name="businessemailAddress" value="<?php echo htmlentities($rowDataSupplier["email"]); ?>" required></td>
+                                                                                <td><input class=" form-control" name="businesswebsite" value="<?php echo htmlentities($rowDataSupplier["website"]); ?>" required></td>
                                                                             </tr>
                                                                         </tbody>
                                                                     </table>
@@ -1797,15 +1801,15 @@
                                                                     </thead>
                                                                     <tbody>
                                                                         <tr>
-                                                                            <td> <input class=" form-control" name="contactpersonname" value="<?php echo $row['contactpersonname']; ?>" onchange="contactpersonname(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
-                                                                            <td> <input class=" form-control" name="contactpersonlastname" value="<?php echo $row['contactpersonlastname']; ?>" onchange="contactpersonlastname(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
-                                                                            <td> <input class=" form-control" name="titles" value="<?php echo $row['title']; ?>" onchange="titles(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
-                                                                            <td> <input type="" class=" form-control" name="contactpersoncellno" value="<?php echo $row['contactpersoncellno']; ?>" onchange="contactpersoncellno(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
-                                                                            <td> <input type="" class=" form-control" name="contactpersonphone" value="<?php echo $row['contactpersonphone']; ?>" onchange="contactpersonphone(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
-                                                                            <td> <input type="" class=" form-control" name="contactpersonfax" value="<?php echo $row['contactpersonfax']; ?>" onchange="contactpersonfax(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
-                                                                            <td> <input type="email" class=" form-control" name="contactpersonemailAddress" value="<?php echo $row['contactpersonemailAddress']; ?>" onchange="contactpersonemailAddress(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
+                                                                            <td> <input class=" form-control" name="contactpersonname" value="<?php echo htmlentities($row['contactpersonname']); ?>" onchange="contactpersonname(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
+                                                                            <td> <input class=" form-control" name="contactpersonlastname" value="<?php echo htmlentities($row['contactpersonlastname']); ?>" onchange="contactpersonlastname(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
+                                                                            <td> <input class=" form-control" name="titles" value="<?php echo htmlentities($row['title']); ?>" onchange="titles(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
+                                                                            <td> <input type="" class=" form-control" name="contactpersoncellno" value="<?php echo htmlentities($row['contactpersoncellno']); ?>" onchange="contactpersoncellno(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
+                                                                            <td> <input type="" class=" form-control" name="contactpersonphone" value="<?php echohtmlentities($row['contactpersonphone']); ?>" onchange="contactpersonphone(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
+                                                                            <td> <input type="" class=" form-control" name="contactpersonfax" value="<?php echo htmlentities($row['contactpersonfax']); ?>" onchange="contactpersonfax(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
+                                                                            <td> <input type="email" class=" form-control" name="contactpersonemailAddress" value="<?php echo htmlentities($row['contactpersonemailAddress']); ?>" onchange="contactpersonemailAddress(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
                                                                         </tr>
-                                                                    </tbody>
+                                                                    </tbody> 
                                                                 </table>
                                                             </div>
                                                             <hr >
@@ -1827,13 +1831,13 @@
                                                                     </thead>
                                                                     <tbody>
                                                                         <tr>
-                                                                            <td> <input class=" form-control" name="emergencyname" value="<?php echo $row['emergencyname']; ?>" onchange="emergencyname(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
-                                                                            <td> <input class=" form-control" name="emergencycontact_last_name" value="<?php echo $row['emergencycontact_last_name']; ?>" onchange="emergencycontact_last_name(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
-                                                                            <td> <input class=" form-control" name="emergency_contact_title" value="<?php echo $row['emergency_contact_title']; ?>" onchange="emergency_contact_title(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
-                                                                            <td> <input type="" class=" form-control" name="emergencycellno" value="<?php echo $row['emergencycellno']; ?>" onchange="emergencycellno(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
-                                                                            <td> <input type="" class=" form-control" name="emergencyphone" value="<?php echo $row['emergencyphone']; ?>" onchange="emergencyphone(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
-                                                                            <td> <input type="" class=" form-control" name="emergencyfax" value="<?php echo $row['emergencyfax']; ?>" onchange="emergencyfax(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
-                                                                            <td> <input type="email" class=" form-control" name="emergencyemailAddress" value="<?php echo $row['emergencyemailAddress']; ?>" onchange="emergencyemailAddress(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
+                                                                            <td> <input class=" form-control" name="emergencyname" value="<?php echo htmlentities($row['emergencyname']); ?>" onchange="emergencyname(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
+                                                                            <td> <input class=" form-control" name="emergencycontact_last_name" value="<?php echo htmlentities($row['emergencycontact_last_name']); ?>" onchange="emergencycontact_last_name(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
+                                                                            <td> <input class=" form-control" name="emergency_contact_title" value="<?php echo htmlentities($row['emergency_contact_title']); ?>" onchange="emergency_contact_title(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
+                                                                            <td> <input type="" class=" form-control" name="emergencycellno" value="<?php echo htmlentities($row['emergencycellno']); ?>" onchange="emergencycellno(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
+                                                                            <td> <input type="" class=" form-control" name="emergencyphone" value="<?php echo htmlentities($row['emergencyphone']); ?>" onchange="emergencyphone(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
+                                                                            <td> <input type="" class=" form-control" name="emergencyfax" value="<?php echo htmlentities($row['emergencyfax']); ?>" onchange="emergencyfax(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
+                                                                            <td> <input type="email" class=" form-control" name="emergencyemailAddress" value="<?php echo htmlentities($row['emergencyemailAddress']); ?>" onchange="emergencyemailAddress(this.value,'<?php echo $row['enterp_id']; ?>')" disabled> </td>
                                                                         </tr>
                                                                     </tbody>
                                                                 </table>
@@ -2132,14 +2136,14 @@
                                                             <center>
                                                                <form action="enterprise-information-function.php" method="POST" enctype="multipart/form-data">
                                                                 <input type="hidden" name="ids" value="<?php if($users == $row['users_entities']){ echo $row['enterp_id'];}else{ echo '';} ?>" required> 
-                                                                <div class="form-group">
+                                                                <div class="form-group"> 
                                                                     <div class="fileinput fileinput-new" data-provides="fileinput">
                                                                         <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
                                                                             <?php
                                                                                 if ( empty($row['BrandLogos']) ) {
                                                                                     echo '<img src="https://via.placeholder.com/200x150/EFEFEF/AAAAAA&text=no+image" class="img-responsive" alt="Avatar" />';
                                                                                 } else {
-                                                                                    echo '<img src="companyDetailsFolder/'.$row['BrandLogos'].'" class="img-responsive" alt="Avatar" />';
+                                                                                    echo '<img src="companyDetailsFolder/'.htmlentities($row['BrandLogos']).'" class="img-responsive" alt="Avatar" />';
                                                                                 }
                                                                             ?>
                                                                         </div>
@@ -3271,10 +3275,10 @@
                                                                             </td>
                                                                             </form>
                                                                             <td>
-                                                                                <input class="form-control" name="DocumentTitle" value="<?php echo $row['DocumentTitle']; ?>" onchange="DocumentTitle(this.value,'<?php echo $row['enterp_id']; ?>')" disabled>
+                                                                                <input class="form-control" name="DocumentTitle" value="<?php echo htmlentities($row['DocumentTitle']); ?>" onchange="DocumentTitle(this.value,'<?php echo htmlentities($row['enterp_id']); ?>')" disabled>
                                                                             </td>
                                                                             <td>
-                                                                                <textarea class="form-control" name="DocumentDesciption" onchange="DocumentDesciption(this.value,'<?php echo $row['enterp_id']; ?>')" disabled><?php echo $row['DocumentDesciption']; ?></textarea>
+                                                                                <textarea class="form-control" name="DocumentDesciption" onchange="DocumentDesciption(this.value,'<?php echo $row['enterp_id']; ?>')" disabled><?php echo htmlentities($row['DocumentDesciption']); ?></textarea>
                                                                             </td>
                                                                             <td>
                                                                                 <input type="date" class="form-control" name="DocumentDueDate" onchange="DocumentDueDate(this.value,'<?php echo $row['enterp_id']; ?>')" value="<?php echo  date("Y-m-d", strtotime($row['DocumentDueDate']));?>" disabled>
@@ -3842,7 +3846,7 @@
                                         <div class="row">
                                             <div class="form-group">
                                                  <div class="col-md-12">
-                                                    <label>Desciption</label>
+                                                    <label>Description</label>
                                                 </div>
                                                 <div class="col-md-12">
                                                     <input class="form-control" type="text" name="DocumentDesciption" id="DocumentDesciption" required />

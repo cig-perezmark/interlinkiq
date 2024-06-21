@@ -43,7 +43,6 @@
         try {
             // SMTP configuration
             $mail->isSMTP();
-            // $mail->SMTPDebug  = SMTP::DEBUG_SERVER;
             $mail->Host       = 'interlinkiq.com';
             $mail->SMTPAuth   = true;
             $mail->Username   = 'admin@interlinkiq.com';

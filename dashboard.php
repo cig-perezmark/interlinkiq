@@ -2605,14 +2605,6 @@
                 $('#btnTree').addClass('hide');
             });
             
-			function uploadNewOld(e) {
-				$(e).parent().hide();
-				$(e).parent().prev('.form-control').removeClass('hide');
-			}
-            function uploadNew(e) {
-                $(e).parent().hide();
-                $(e).parent().parent().find('select').removeClass('hide');
-            }
             function changeType(e) {
                 $(e).parent().find('input').hide();
                 $(e).parent().find('input').prop('required',false);

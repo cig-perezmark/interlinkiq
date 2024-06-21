@@ -26,7 +26,7 @@
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
     <meta name="generator" content="Hugo 0.122.0">
-    <title>Cosmetics 350 - Login</title>
+    <title>Cosmetics 360 - Login</title>
 
     <link rel="canonical" href="//getbootstrap.com/docs/5.3/examples/sign-in/">
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@docsearch/css@3">

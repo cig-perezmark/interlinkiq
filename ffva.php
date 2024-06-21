@@ -1,117 +1,60 @@
-<?php 
-
+<?php
     $title = "Food Fraud Vulnerability Assessment";
-
     $site = "ffva";
-
     $breadcrumbs = '';
-
     $sub_breadcrumbs = '';
 
-
-
     if ($sub_breadcrumbs) {
-
         $breadcrumbs .= '<li><span>'. $sub_breadcrumbs .'</span><i class="fa fa-angle-right"></i></li>';
-
     }
-
     $breadcrumbs .= '<li><span>'. $title .'</span></li>';
-
-
-
-    include_once ('header.php'); 
-
+    include_once ('header.php');
 ?>
 
 <style type="text/css">
-
     .bootstrap-tagsinput { min-height: 100px; }
-
     .mt-checkbox-list {
-
         column-count: 5;
-
         column-gap: 40px;
-
     }
-
-
 
     #tabAssigned_2 table tbody > tr:first-child > td,
-
     #tabAssigned table tbody > tr:first-child > td,
-
     #modalSign table tbody > tr:first-child > td {
-
         width: 25%;
-
     }
-
     #tabAssigned_2 table tbody > tr:first-child > td:first-child,
-
     #tabAssigned table tbody > tr:first-child > td:first-child,
-
     #modalSign table tbody > tr:first-child > td:first-child {
-
         vertical-align: middle;
-
     }
-
     #tabAssigned table tbody > tr:first-child > td:nth-child(n+2),
-
     #tabAssigned_2 table tbody > tr:first-child > td:nth-child(n+2),
-
     #modalSign table tbody > tr:first-child > td:nth-child(n+2) {
-
         vertical-align: bottom;
-
     }
-
-
 
     .signature,
-
     .signature_img {
-
         width: 300px;
-
         height: 150px;
-
         border: 1px solid #ccc;
-
         margin: auto;
-
         margin-bottom: 15px;
-
     }
-
-
 
     .dt-buttons {
-
         margin: unset !important;
-
         float: left !important;
-
         margin-left: 15px !important;
-
     }
-
     .table-scrollable .dataTable td>.btn-group, .table-scrollable .dataTable th>.btn-group {
-
         position: relative;
-
     }
-
-
 
     table.table-bordered.dataTable thead > tr:last-child th:last-child {
-
         border-right: 1px solid #e7ecf1;
-
     }
-
 </style>
 
 
@@ -241,13 +184,13 @@
                                                         if ( mysqli_num_rows($resultSupplier) > 0 ) {
 
                                                             while($rowSupplier = mysqli_fetch_array($resultSupplier)) {
-                                                                $supplier_user_id = $rowSupplier["user_id"];
-                                                                $supplier_reviewed_by = $rowSupplier["reviewed_by"];
-                                                                $supplier_approved_by = $rowSupplier["approved_by"];
+                                                                $supplier_user_id = htmlentities($rowSupplier["user_id"] ?? '');
+                                                                $supplier_reviewed_by = htmlentities($rowSupplier["reviewed_by"] ?? '');
+                                                                $supplier_approved_by = htmlentities($rowSupplier["approved_by"] ?? '');
                                                                 $int_review_assigned_name = '';
-                                                                $int_review_assigned = $rowSupplier["int_review_assigned"];
-                                                                $int_review_status = $rowSupplier["int_review_status"];
-                                                                $int_review_comment = $rowSupplier["int_review_comment"];
+                                                                $int_review_assigned = htmlentities($rowSupplier["int_review_assigned"] ?? '');
+                                                                $int_review_status = htmlentities($rowSupplier["int_review_status"] ?? '');
+                                                                $int_review_comment = htmlentities($rowSupplier["int_review_comment"] ?? '');
 
                                                                 if (!empty($int_review_assigned)) {
                                                                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $int_review_assigned" );
@@ -259,21 +202,21 @@
                                                                 }
 
                                                                 $int_verify_assigned_name = '';
-                                                                $int_verify_assigned = $rowSupplier["int_verify_assigned"];
-                                                                $int_verify_status = $rowSupplier["int_verify_status"];
-                                                                $int_verify_comment = $rowSupplier["int_verify_comment"];
+                                                                $int_verify_assigned = htmlentities($rowSupplier["int_verify_assigned"] ?? '');
+                                                                $int_verify_status = htmlentities($rowSupplier["int_verify_status"] ?? '');
+                                                                $int_verify_comment = htmlentities($rowSupplier["int_verify_comment"] ?? '');
 
                                                                 if (!empty($int_verify_assigned)) {
                                                                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $int_verify_assigned" );
 
                                                                     if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                         $rowUser = mysqli_fetch_array($selectUser);
-                                                                        $int_verify_assigned_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                        $int_verify_assigned_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
                                                                     }
                                                                 }
 
-                                                                $supplier_id = $rowSupplier["ID"];
-                                                                $supplier_company = $rowSupplier["company"];
+                                                                $supplier_id = htmlentities($rowSupplier["ID"] ?? '');
+                                                                $supplier_company = htmlentities($rowSupplier["company"] ?? '');
 
                                                                 $status = "Drafted";
                                                                 // if (empty($int_review_assigned)) { $status = 'Drafted'; }
@@ -404,7 +347,7 @@
 
                                                                 echo '<tr id="tr_'.$supplier_id.'">
                                                                     <td>'.$supplier_id.'</td>
-                                                                    <td>'.htmlentities($supplier_company).'</td>';
+                                                                    <td>'.$supplier_company.'</td>';
 
                                                                     if ($current_userEmployerID == 34 OR $current_userEmployerID == 1) {
                                                                         echo '<td class="text-center int_review_status">';
@@ -412,7 +355,7 @@
                                                                             echo '<a href="#modalViewInt" class="btn btn-link btn-sm" data-toggle="modal" onClick="btnInt('.$supplier_id.', 1, 1)">View</a>';
 
                                                                             if($int_review_status == 1) { echo '<span class="label label-sm label-success">Accepted</span>'; }
-                                                                            else if ($int_review_status == 2) { echo '<span class="label label-sm label-danger">Rejected</span><br><small>Reason: <i>'.htmlentities($int_review_comment).'</i></small>'; }
+                                                                            else if ($int_review_status == 2) { echo '<span class="label label-sm label-danger">Rejected</span><br><small>Reason: <i>'.$int_review_comment.'</i></small>'; }
                                                                         echo '</td>
                                                                         <td class="text-center int_verify_status">';
                                                                             if (!empty($int_verify_assigned_name)) {  echo $int_verify_assigned_name .'<br>'; }
@@ -420,7 +363,7 @@
                                                                             if ($int_review_status == 1) { echo '<a href="#modalViewInt" class="btn btn-link btn-sm" data-toggle="modal" onClick="btnInt('.$supplier_id.', 2, 1)">View</a>'; }
                                                                             
                                                                             if($int_verify_status == 1) { echo '<span class="label label-sm label-success">Accepted</span>'; }
-                                                                            else if ($int_verify_status == 2) { echo '<span class="label label-sm label-danger">Rejected</span><br><small>Reason: <i>'.htmlentities($int_verify_comment).'</i></small>'; }
+                                                                            else if ($int_verify_status == 2) { echo '<span class="label label-sm label-danger">Rejected</span><br><small>Reason: <i>'.$int_verify_comment.'</i></small>'; }
                                                                         echo '</td>';
                                                                     }
                                                                     
@@ -511,38 +454,38 @@
                                                         if ( mysqli_num_rows($resultSupplier) > 0 ) {
                                                             while($rowSupplier = mysqli_fetch_array($resultSupplier)) {
                                                                 $supplier_user_id = $rowSupplier["user_id"];
-                                                                $supplier_reviewed_by = $rowSupplier["reviewed_by"];
-                                                                $supplier_approved_by = $rowSupplier["approved_by"];
+                                                                $supplier_reviewed_by = htmlentities($rowSupplier["reviewed_by"] ?? '');
+                                                                $supplier_approved_by = htmlentities($rowSupplier["approved_by"] ?? '');
 
                                                                 $int_review_assigned_name = '';
-                                                                $int_review_assigned = $rowSupplier["int_review_assigned"];
-                                                                $int_review_status = $rowSupplier["int_review_status"];
-                                                                $int_review_comment = $rowSupplier["int_review_comment"];
+                                                                $int_review_assigned = htmlentities($rowSupplier["int_review_assigned"] ?? '');
+                                                                $int_review_status = htmlentities($rowSupplier["int_review_status"] ?? '');
+                                                                $int_review_comment = htmlentities($rowSupplier["int_review_comment"] ?? '');
 
                                                                 if (!empty($int_review_assigned)) {
                                                                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $int_review_assigned" );
                                                                     if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                         $rowUser = mysqli_fetch_array($selectUser);
-                                                                        $int_review_assigned_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                        $int_review_assigned_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
                                                                     }
                                                                 }
 
                                                                 $int_verify_assigned_name = '';
-                                                                $int_verify_assigned = $rowSupplier["int_verify_assigned"];
-                                                                $int_verify_status = $rowSupplier["int_verify_status"];
-                                                                $int_verify_comment = $rowSupplier["int_verify_comment"];
+                                                                $int_verify_assigned = htmlentities($rowSupplier["int_verify_assigned"] ?? '');
+                                                                $int_verify_status = htmlentities($rowSupplier["int_verify_status"] ?? '');
+                                                                $int_verify_comment = htmlentities($rowSupplier["int_verify_comment"] ?? '');
 
                                                                 if (!empty($int_verify_assigned)) {
                                                                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $int_verify_assigned" );
                                                                     if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                         $rowUser = mysqli_fetch_array($selectUser);
-                                                                        $int_verify_assigned_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                        $int_verify_assigned_name = htmlentities($rowUser["first_name"]) .' '. htmlentities($rowUser["last_name"]);
                                                                     }
                                                                 }
                                                                 
-                                                                $supplier_id = $rowSupplier["ID"];
-                                                                $supplier_company = $rowSupplier["company"];
-                                                                $supplier_product = $rowSupplier["product"];
+                                                                $supplier_id = htmlentities($rowSupplier["ID"] ?? '');
+                                                                $supplier_company = htmlentities($rowSupplier["company"] ?? '');
+                                                                $supplier_product = htmlentities($rowSupplier["product"] ?? '');
 
                                                                 $status = "Drafted";
                                                                 // if (empty($int_review_assigned)) { $status = 'Drafted'; }
@@ -753,7 +696,7 @@
 
                                                                     <td>'.$supplier_id.'</td>
 
-                                                                    <td>'.htmlentities($supplier_product).'</td>';
+                                                                    <td>'.$supplier_product.'</td>';
 
 
 
@@ -769,7 +712,7 @@
 
                                                                             if($int_review_status == 1) { echo '<span class="label label-sm label-success">Accepted</span>'; }
 
-                                                                            else if ($int_review_status == 2) { echo '<span class="label label-sm label-danger">Rejected</span><br><small>Reason: <i>'.htmlentities($int_review_comment).'</i></small>'; }
+                                                                            else if ($int_review_status == 2) { echo '<span class="label label-sm label-danger">Rejected</span><br><small>Reason: <i>'.$int_review_comment.'</i></small>'; }
 
                                                                         echo '</td>
 
@@ -785,7 +728,7 @@
 
                                                                             if($int_verify_status == 1) { echo '<span class="label label-sm label-success">Accepted</span>'; }
 
-                                                                            else if ($int_verify_status == 2) { echo '<span class="label label-sm label-danger">Rejected</span><br><small>Reason: <i>'.htmlentities($int_verify_comment).'</i></small>'; }
+                                                                            else if ($int_verify_status == 2) { echo '<span class="label label-sm label-danger">Rejected</span><br><small>Reason: <i>'.$int_verify_comment.'</i></small>'; }
 
                                                                         echo '</td>';
 
@@ -1059,9 +1002,9 @@
 
                                                                 while($rowRefGeneral = mysqli_fetch_array($resultRefGeneral)) {
 
-                                                                    $ref_general_name = $rowRefGeneral["name"];
+                                                                    $ref_general_name = htmlentities($rowRefGeneral["name"] ?? '');
 
-                                                                    $ref_general_ref = $rowRefGeneral["ref"];
+                                                                    $ref_general_ref = htmlentities($rowRefGeneral["ref"] ?? '');
 
                                                                     $ref_general_ref_arr = explode(' ; ', $ref_general_ref);
 
@@ -1127,9 +1070,9 @@
 
                                                                 while($rowRefGeneral = mysqli_fetch_array($resultRefGeneral)) {
 
-                                                                    $ref_general_name = $rowRefGeneral["name"];
+                                                                    $ref_general_name = htmlentities($rowRefGeneral["name"] ?? '');
 
-                                                                    $ref_general_ref = $rowRefGeneral["ref"];
+                                                                    $ref_general_ref = htmlentities($rowRefGeneral["ref"] ?? '');
 
                                                                     $ref_general_ref_arr = explode(' ; ', $ref_general_ref);
 
@@ -1193,9 +1136,9 @@
 
                                                                 while($rowRefGeneral = mysqli_fetch_array($resultRefGeneral)) {
 
-                                                                    $ref_general_name = $rowRefGeneral["name"];
+                                                                    $ref_general_name = htmlentities($rowRefGeneral["name"] ?? '');
 
-                                                                    $ref_general_ref = $rowRefGeneral["ref"];
+                                                                    $ref_general_ref = htmlentities($rowRefGeneral["ref"] ?? '');
 
                                                                     $ref_general_ref_arr = explode(' ; ', $ref_general_ref);
 
@@ -1259,9 +1202,9 @@
 
                                                                 while($rowRefGeneral = mysqli_fetch_array($resultRefGeneral)) {
 
-                                                                    $ref_general_name = $rowRefGeneral["name"];
+                                                                    $ref_general_name = htmlentities($rowRefGeneral["name"] ?? '');
 
-                                                                    $ref_general_ref = $rowRefGeneral["ref"];
+                                                                    $ref_general_ref = htmlentities($rowRefGeneral["ref"] ?? '');
 
                                                                     $ref_general_ref_arr = explode(' ; ', $ref_general_ref);
 
@@ -1325,9 +1268,9 @@
 
                                                                 while($rowRefGeneral = mysqli_fetch_array($resultRefGeneral)) {
 
-                                                                    $ref_general_name = $rowRefGeneral["name"];
+                                                                    $ref_general_name = htmlentities($rowRefGeneral["name"] ?? '');
 
-                                                                    $ref_general_ref = $rowRefGeneral["ref"];
+                                                                    $ref_general_ref = htmlentities($rowRefGeneral["ref"] ?? '');
 
                                                                     $ref_general_ref_arr = explode(' ; ', $ref_general_ref);
 
@@ -1391,9 +1334,9 @@
 
                                                                 while($rowRefGeneral = mysqli_fetch_array($resultRefGeneral)) {
 
-                                                                    $ref_general_name = $rowRefGeneral["name"];
+                                                                    $ref_general_name = htmlentities($rowRefGeneral["name"] ?? '');
 
-                                                                    $ref_general_ref = $rowRefGeneral["ref"];
+                                                                    $ref_general_ref = htmlentities($rowRefGeneral["ref"] ?? '');
 
                                                                     $ref_general_ref_arr = explode(' ; ', $ref_general_ref);
 
@@ -1487,11 +1430,11 @@
 
                                                                     $katva_ID = $rowKatva["ID"];
 
-                                                                    $katva_product = $rowKatva["product"];
+                                                                    $katva_product = htmlentities($rowKatva["product"] ?? '');
 
-                                                                    $katva_facility = $rowKatva["facility"];
+                                                                    $katva_facility = htmlentities($rowKatva["facility"] ?? '');
 
-                                                                    $katva_address = $rowKatva["address"];
+                                                                    $katva_address = htmlentities($rowKatva["address"] ?? '');
 
 
 
@@ -2258,443 +2201,225 @@
                 }
 
             }
-
             function btnNew_Questionaire(modal, id) {
-
                 if (id == 1) { var nameOther = 'likelihood'; }
-
                 else if (id == 2) { var nameOther = 'consequence'; }
 
-
-
                 let x = Math.floor((Math.random() * 100) + 1);
-
                 var questionaire_element = $('#tabdrop_'+modal+' .tableQuestionaire_'+id+' .'+nameOther+'_element').val();
-
                 var questionaire_question = $('#tabdrop_'+modal+' .tableQuestionaire_'+id+' .'+nameOther+'_question').val();
 
-
-
                 if (questionaire_element != "" && questionaire_question != "") {
-
                     var html = '<tr class="tr_other_'+x+'">';
-
                         html += '<td><input type="hidden" value="'+questionaire_element+'" name="'+nameOther+'_element_other[]" required />'+questionaire_element+'</td>';
-
                         html += '<td><input type="hidden" value="'+questionaire_question+'" name="'+nameOther+'_question_other[]" required />'+questionaire_question+'</td>';
-
                         html += '<td>';
-
                             html += '<div class="mt-radio-list">';
-
                                 html += '<label class="mt-radio mt-radio-outline"> Yes';
-
                                     html += '<input type="radio" value="1" name="'+nameOther+'_answer_other_'+x+'" onclick="questionaireAnswerOther('+modal+', '+id+', '+x+', 1, this)" required />';
-
                                     html += '<span></span>';
-
                                 html += '</label>';
-
                                 html += '<label class="mt-radio mt-radio-outline"> No';
-
                                     html += '<input type="radio" value="0" name="'+nameOther+'_answer_other_'+x+'" onclick="questionaireAnswerOther('+modal+', '+id+', '+x+', 0, this)" required />';
-
                                     html += '<span></span>';
-
                                 html += '</label>';
-
                             html += '</div>';
-
                             html += '<input type="hidden" class="'+nameOther+'_answer" name="'+nameOther+'_answer_other[]" value="" />';
-
                         html += '</td>';
-
                         html += '<td>';
-
                             html += '<textarea class="form-control" name="'+nameOther+'_comment_other[]" placeholder="Enter comment here"></textarea>';
-
                             html += '<input type="file" class="form-control margin-top-15 hide" name="'+nameOther+'_file_other[]" />';
-
                             html += '<p style="margin: 0;"><button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload File</button></p>';
-
                         html += '</td>';
-
                         html += '<td class="radioRate">';
-
                             html += '<div class="mt-radio-list">';
-
                                 html += '<label class="mt-radio mt-radio-outline"> 1 - Very Unlikely';
-
                                     html += '<input type="radio" value="1" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 1)" required />';
-
                                     html += '<span></span>';
-
                                 html += '</label>';
-
                                 html += '<label class="mt-radio mt-radio-outline"> 2 - Unlikely';
-
                                     html += '<input type="radio" value="2" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 2)" required />';
-
                                     html += '<span></span>';
-
                                 html += '</label>';
-
                                 html += '<label class="mt-radio mt-radio-outline"> 3 - Fairly Likely';
-
                                     html += '<input type="radio" value="3" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 3)" required />';
-
                                     html += '<span></span>';
-
                                 html += '</label>';
-
                                 html += '<label class="mt-radio mt-radio-outline"> 4 - Likely';
-
                                     html += '<input type="radio" value="4" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 4)" required />';
-
                                     html += '<span></span>';
-
                                 html += '</label>';
-
                                 html += '<label class="mt-radio mt-radio-outline"> 5 - Very Likely or Certain';
-
                                     html += '<input type="radio" value="5" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 5)" required />';
-
                                     html += '<span></span>';
-
                                 html += '</label>';
-
                             html += '</div>';
-
                             html += '<input type="hidden" class="'+nameOther+'_rate" name="'+nameOther+'_rate_other[]" value="" />';
-
                         html += '</td>';
-
                         html += '<td class="text-center"><a href="javascript:;" class="btn btn-danger btn-circle" onclick="btnRemoveOther('+modal+', '+id+', '+x+')">Remove</a></td>';
-
                     html += '</tr>';
-
                     $('#tabdrop_'+modal+' .tableQuestionaire_'+id+' tbody').append(html);
-
                 }
-
             }
-
             function btnNew_Questionaire_Consequence(modal, id) {
-
                 if (id == 1) { var nameOther = 'likelihood'; }
-
                 else if (id == 2) { var nameOther = 'consequence'; }
 
-
-
                 let x = Math.floor((Math.random() * 100) + 1);
-
                 var questionaire_element = $('#tabdrop_'+modal+' .tableQuestionaire_'+id+' .'+nameOther+'_element').val();
-
                 var questionaire_question = $('#tabdrop_'+modal+' .tableQuestionaire_'+id+' .'+nameOther+'_question').val();
 
-
-
                 if (questionaire_element != "" && questionaire_question != "") {
-
                     var html = '<tr class="tr_other_'+x+'">';
-
                         html += '<td><input type="hidden" value="'+questionaire_element+'" name="'+nameOther+'_element_other[]" required />'+questionaire_element+'</td>';
-
                         html += '<td><input type="hidden" value="'+questionaire_question+'" name="'+nameOther+'_question_other[]" required />'+questionaire_question+'</td>';
-
                         html += '<td>';
-
                             html += '<div class="mt-radio-list">';
-
                                 html += '<label class="mt-radio mt-radio-outline"> Yes';
-
                                     html += '<input type="radio" value="1" name="'+nameOther+'_answer_other_'+x+'" onclick="questionaireAnswerOther('+modal+', '+id+', '+x+', 1, this)" required />';
-
                                     html += '<span></span>';
-
                                 html += '</label>';
-
                                 html += '<label class="mt-radio mt-radio-outline"> No';
-
                                     html += '<input type="radio" value="0" name="'+nameOther+'_answer_other_'+x+'" onclick="questionaireAnswerOther('+modal+', '+id+', '+x+', 0, this)" required />';
-
                                     html += '<span></span>';
-
                                 html += '</label>';
-
                             html += '</div>';
-
                             html += '<input type="hidden" class="'+nameOther+'_answer" name="'+nameOther+'_answer_other[]" value="" />';
-
                         html += '</td>';
-
                         html += '<td>';
-
                             html += '<textarea class="form-control" name="'+nameOther+'_comment_other[]" placeholder="Enter comment here"></textarea>';
-
                             html += '<input type="file" class="form-control margin-top-15 hide" name="'+nameOther+'_file_other[]" />';
-
                             html += '<p style="margin: 0;"><button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload File</button></p>';
-
                         html += '</td>';
-
                         html += '<td class="radioRate">';
-
                             html += '<div class="mt-radio-list">';
-
                                 html += '<label class="mt-radio mt-radio-outline"> <b>1 - Negligible</b>';
-
                                     html += '<input type="radio" value="1" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 1)" required />';
-
                                     html += '<span></span>';
-
                                 html += '</label>';
-
                                 html += '<label class="mt-radio mt-radio-outline"> <b>2 - Minor</b>';
-
                                     html += '<input type="radio" value="2" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 2)" required />';
-
                                     html += '<span></span>';
-
                                 html += '</label>';
-
                                 html += '<label class="mt-radio mt-radio-outline"> <b>3 - Moderate</b>';
-
                                     html += '<input type="radio" value="3" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 3)" required />';
-
                                     html += '<span></span>';
-
                                 html += '</label>';
-
                                 html += '<label class="mt-radio mt-radio-outline"> <b>4 - Significant</b>';
-
                                     html += '<input type="radio" value="4" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 4)" required />';
-
                                     html += '<span></span>';
-
                                 html += '</label>';
-
                                 html += '<label class="mt-radio mt-radio-outline"> <b>5 - Severe</b>';
-
                                     html += '<input type="radio" value="5" name="'+nameOther+'_rate_other_'+x+'" onclick="questionaireRateOther('+modal+', '+id+', '+x+', 5)" required />';
-
                                     html += '<span></span>';
-
                                 html += '</label>';
-
                             html += '</div>';
-
                             html += '<input type="hidden" class="'+nameOther+'_rate" name="'+nameOther+'_rate_other[]" value="" />';
-
                         html += '</td>';
-
                         html += '<td class="text-center"><a href="javascript:;" class="btn btn-danger btn-circle" onclick="btnRemoveOther('+modal+', '+id+', '+x+')">Remove</a></td>';
-
                     html += '</tr>';
-
                     $('#tabdrop_'+modal+' .tableQuestionaire_'+id+' tbody').append(html);
-
                 }
-
             }
-
             function btnRemove(modal, table, x) {
-
                 $('#tabdrop_'+modal+' .tableQuestionaire_'+table+' tbody .tr_'+x).remove();
-
             }
-
             function btnRemoveOther(modal, table, x) {
-
                 $('#tabdrop_'+modal+' .tableQuestionaire_'+table+' tbody .tr_other_'+x).remove();
-
             }
-
             function questionaireAnswer(modal, table, id, val, e) {
-
                 if (table == 1) { name = "likelihood"; }
-
                 else if (table == 2) { name = "consequence"; }
-
-
 
                 $('#tabdrop_'+modal+' .tableQuestionaire_'+table+' tbody .tr_'+id+' .'+name+'_answer').val(val);
 
-
-
                 $(e).parent().parent().parent().parent().find('.radioRate .mt-radio-list label:first-child input').prop("checked", true);
-
                 // if (val == 1) { $(e).parent().parent().parent().parent().find('.radioRate .mt-radio-list label input').removeAttr("disabled"); }
-
                 // else { $(e).parent().parent().parent().parent().find('.radioRate .mt-radio-list label:nth-child(n+2) input').attr('disabled', 'disabled'); }
-
-
 
                 questionaireRate(modal, table, id, 1);
 
-
-
                 // $(e).parent().parent().parent().hide();
-
                 // console.log(val);
-
                 // console.log(id);
-
             }
-
             function questionaireAnswerOther(modal, table, id, val, e) {
-
                 if (table == 1) { name = "likelihood"; }
-
                 else if (table == 2) { name = "consequence"; }
-
-
 
                 $('#tabdrop_'+modal+' .tableQuestionaire_'+table+' tbody .tr_other_'+id+' .'+name+'_answer').val(val);
 
-
-
                 $(e).parent().parent().parent().parent().find('.radioRate .mt-radio-list label:first-child input').prop("checked", true);
-
                 // if (val == 1) { $(e).parent().parent().parent().parent().find('.radioRate .mt-radio-list label input').removeAttr("disabled"); }
-
                 // else { $(e).parent().parent().parent().parent().find('.radioRate .mt-radio-list label:nth-child(n+2) input').attr('disabled', 'disabled'); }
 
-
-
                 questionaireRateOther(modal, table, id, 1);
-
             }
-
             function questionaireRate(modal, table, id, val) {
-
                 if (table == 1) { name = "likelihood"; }
-
                 else if (table == 2) { name = "consequence"; }
-
-
 
                 $('#tabdrop_'+modal+' .tableQuestionaire_'+table+' tbody .tr_'+id+' .'+name+'_rate').val(val);
-
                 // console.log(modal);
-
                 // console.log(table);
-
                 // console.log(id);
-
                 // console.log(val);
-
                 questionaireRateSummary(modal);
-
             }
-
             function questionaireRateOther(modal, table, id, val) {
-
                 if (table == 1) { name = "likelihood"; }
-
                 else if (table == 2) { name = "consequence"; }
-
-
 
                 $('#tabdrop_'+modal+' .tableQuestionaire_'+table+' tbody .tr_other_'+id+' .'+name+'_rate').val(val);
 
-
-
                 questionaireRateSummary(modal);
-
             }
-
             function questionaireRateSummary(modal) {
-
                 for (var x = 1; x <= 2; x++) {
-
                     if (x == 1) { name = "likelihood"; }
-
                     else if (x == 2) { name = "consequence"; }
 
-
-
                     var sum = 0;
-
                     var total = 0;
-
                     var result = 'Undefine';
-
                     var inputs = $('#tabdrop_'+modal+' .tableQuestionaire_'+x+' .'+name+'_rate');
-
                     for(var i = 0; i < inputs.length; i++){
-
                         var number = $(inputs[i]).val();
-
                         if($.isNumeric(number)) {
-
                             sum = Math.round(sum) + Math.round(number);
-
                         }
-
                     }
-
                     total = sum / inputs.length;
 
-
-
                     if (x == 1) {
-
                         if (Math.round(total) == 1) { result = "1 - Very Unlikely"; }
-
                         else if (Math.round(total) == 2) { result = "2 - Unlikely"; }
-
                         else if (Math.round(total) == 3) { result = "3 - Fairly Likely"; }
-
                         else if (Math.round(total) == 4) { result = "4 - Likely"; }
-
                         else if (Math.round(total) == 5) { result = "5 - Very Likely or Certain"; }
-
                     } else if (x == 2) {
-
                         if (Math.round(total) == 1) { result = "1 - Negligible"; }
-
                         else if (Math.round(total) == 2) { result = "2 - Minor"; }
-
                         else if (Math.round(total) == 3) { result = "3 - Moderate"; }
-
                         else if (Math.round(total) == 4) { result = "4 - Significant"; }
-
                         else if (Math.round(total) == 5) { result = "5 - Severe"; }
-
                     }
-
                     $('#tabdrop_'+modal+' .tableQuestionaire_'+x+' .'+name+'_result').html(result);
-
                     $('#tabdrop_'+modal+' #tableMatrixData .'+name+'_result').html(result);
 
-
-
                     // console.log(x);
-
                     // console.log('modal:'+ modal);
-
                     // console.log('total:'+ total);
-
                     // console.log('sum:'+ sum);
-
                     // console.log('inputs.length:'+ inputs.length);
-
                     // console.log('name:'+ name);
-
                     // console.log('result:'+ result);
-
                 }
 
-
-
                 questionaireMatrix();
-
             }
 
             function questionaireMatrix() {
-
                 var x = 1;
 
                 var y = 1;

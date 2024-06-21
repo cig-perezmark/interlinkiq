@@ -34,8 +34,8 @@
                                                     $result = mysqli_query( $conn,"SELECT * FROM tbl_lib_department ORDER BY name" );
                                                     if ( mysqli_num_rows($result) > 0 ) {
                                                         while($row = mysqli_fetch_array($result)) {
-                                                            $ID = $row['ID'];
-                                                            $name = $row['name'];
+                                                            $ID = htmlentities($row['ID'] ?? '');
+                                                            $name = htmlentities($row['name'] ?? '');
                                                             $records = 0;
 
                                                             $selectEForm = mysqli_query( $conn,'SELECT * FROM tbl_lib WHERE department_id="'. $ID .'"' );
@@ -108,12 +108,12 @@
                                             </thead>
                                             <tbody>
                                                 <?php
-                                                    $result = mysqli_query( $conn,"SELECT * FROM tbl_lib ORDER BY files_date DESC" );
+                                                    $result = mysqli_query( $conn,"SELECT ID, record, files_date FROM tbl_lib ORDER BY files_date DESC" );
                                                     if ( mysqli_num_rows($result) > 0 ) {
                                                         while($row = mysqli_fetch_array($result)) {
-                                                            $ID = $row['ID'];
-                                                            $record = $row['record'];
-                                                            $files_date = $row['files_date'];
+                                                            $ID = htmlentities($row['ID'] ?? '');
+                                                            $record = htmlentities($row['record'] ?? '');
+                                                            $files_date = htmlentities($row['files_date'] ?? '');
 
                                                             echo '<tr id="tr_'. $ID .'">
                                                                 <td>'. $record .'</td>
@@ -181,7 +181,7 @@
                                                                     ORDER BY d.name");
                                                                 while($row = mysqli_fetch_array($result)) {
                                                                     $ID = $row['d_ID'];
-                                                                    $name = $row['d_name'];
+                                                                    $name = htmlentities($row['d_name'] ?? '');
                                                                     echo '<option value="'. $ID .'">'. $name .'</option>';
                                                                 }
                                                             ?>

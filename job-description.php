@@ -13,7 +13,7 @@
 ?>
 
                     <div class="row">
-                        <div class="col-md-3" onclick="summary(<?php echo $switch_user_id; ?>, 1)" href="#modalSummary" data-toggle="modal">
+                        <div class="col-md-3" onclick="summary(<?php echo $switch_user_id; ?>, 1, 'Total Active Job desc.')" href="#modalSummary" data-toggle="modal">
                             <div class="dashboard-stat2 counterup_1">
                                 <div class="display" style="position: relative;">
                                     <div class="number">
@@ -32,7 +32,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3" onclick="summary(<?php echo $switch_user_id; ?>, 2)" href="#modalSummary" data-toggle="modal">
+                        <div class="col-md-3" onclick="summary(<?php echo $switch_user_id; ?>, 2, 'Total Inactive Job Desc.')" href="#modalSummary" data-toggle="modal">
                             <div class="dashboard-stat2 counterup_2">
                                 <div class="display" style="position: relative;">
                                     <div class="number">
@@ -51,7 +51,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3" onclick="summary(<?php echo $switch_user_id; ?>, 3)" href="#modalSummary" data-toggle="modal">
+                        <div class="col-md-3" onclick="summary(<?php echo $switch_user_id; ?>, 3, 'No. of Job Desc. w/no Employee')" href="#modalSummary" data-toggle="modal">
                             <div class="dashboard-stat2 counterup_3">
                                 <div class="display" style="position: relative;">
                                     <div class="number">
@@ -70,7 +70,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3" onclick="summary(<?php echo $switch_user_id; ?>, 4)" href="#modalSummary" data-toggle="modal">
+                        <div class="col-md-3" onclick="summary(<?php echo $switch_user_id; ?>, 4, 'Total Job Desc. w/no training')" href="#modalSummary" data-toggle="modal">
                             <div class="dashboard-stat2 counterup_4">
                                 <div class="display" style="position: relative;">
                                     <div class="number">
@@ -105,12 +105,12 @@
                                             <tbody>
                                                 <tr>
                                                     <?php
-                                                        $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND status = 1 AND user_id = $switch_user_id ORDER BY title" );
+                                                        $result = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_department WHERE deleted = 0 AND status = 1 AND user_id = $switch_user_id ORDER BY title" );
                                                         if ( mysqli_num_rows($result) > 0 ) {
                                                             while($row = mysqli_fetch_array($result)) {
 
                                                                 echo '<tr id="tr_'.$row["ID"].'" onclick="btnViewType('.$row["ID"].')">
-                                                                    <td>'.htmlentities($row["title"]).'</td>
+                                                                    <td>'.htmlentities($row["title"] ?? '').'</td>
                                                                 </tr>';
                                                             }
                                                         }
@@ -238,8 +238,8 @@
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 $table_counter = 1;
                                                                 while($row = mysqli_fetch_array($result)) {
-                                                                    $filetype = $row['j_filetype'];
-                                                                    $files = $row["j_files"];
+                                                                    $filetype = htmlentities($row['j_filetype'] ?? '');
+                                                                    $files = htmlentities($row["j_files"] ?? '');
                                                                     $type = 'iframe';
                                                                     if (!empty($files)) {
                                                                         if ($filetype == 1) {
@@ -258,9 +258,9 @@
                                                                     
                                                                     echo '<tr id="tr_'. $row["j_ID"] .'">
                                                                         <td>'. $table_counter .'</td>
-                                                                        <td>'. $row["j_title"] .'</td>
-                                                                        <td>'. $row["j_description"] .'</td>
-                                                                        <td>'. $row["t_job_description_id"] .'</td>
+                                                                        <td>'. htmlentities($row["j_title"] ?? '') .'</td>
+                                                                        <td>'. htmlentities($row["j_description"] ?? '') .'</td>
+                                                                        <td>'. htmlentities($row["t_job_description_id"] ?? '') .'</td>
                                                                         <td class="text-center"><p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p></td>';
         
                                                                         if ( $row["j_status"] == 0 ) {
@@ -333,8 +333,8 @@
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 $table_counter = 1;
                                                                 while($row = mysqli_fetch_array($result)) {
-                                                                    $filetype = $row['j_filetype'];
-                                                                    $files = $row["j_files"];
+                                                                    $filetype = htmlentities($row['j_filetype'] ?? '');
+                                                                    $files = htmlentities($row["j_files"] ?? '');
                                                                     $type = 'iframe';
                                                                     if (!empty($files)) {
                                                                         if ($filetype == 1) {
@@ -353,9 +353,9 @@
                                                                     
                                                                     echo '<tr id="tr_'. $row["j_ID"] .'">
                                                                         <td>'. $table_counter .'</td>
-                                                                        <td>'. $row["j_title"] .'</td>
-                                                                        <td>'. $row["j_description"] .'</td>
-                                                                        <td>'. $row["t_job_description_id"] .'</td>
+                                                                        <td>'. htmlentities($row["j_title"] ?? '') .'</td>
+                                                                        <td>'. htmlentities($row["j_description"] ?? '') .'</td>
+                                                                        <td>'. htmlentities($row["t_job_description_id"] ?? '') .'</td>
                                                                         <td class="text-center"><p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p></td>';
         
                                                                         if ( $row["j_status"] == 0 ) {
@@ -416,10 +416,10 @@
                                                         <option value="">Select</option>
 
                                                         <?php
-                                                            $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $switch_user_id" );
+                                                            $result = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_department WHERE status = 1 AND user_id = $switch_user_id" );
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 while($row = mysqli_fetch_array($result)) {
-                                                                    echo '<option value="'. $row["ID"] .'">'. $row["title"] .'</option>';
+                                                                    echo '<option value="'. $row["ID"] .'">'. htmlentities($row["title"] ?? '') .'</option>';
                                                                 }
                                                             }
                                                         ?>
@@ -663,12 +663,13 @@
                 }
             });
 
-            function summary(id, type) {
+            function summary(id, type, title) {
                 $.ajax({
                     type: "GET",
                     url: "function.php?summary_JD="+id+"&type="+type,
                     dataType: "html",
                     success: function(data){
+                        $("#modalSummary .modal-header .modal-title").html(title);
                         $("#modalSummary .modal-body table tbody").html(data);
                     }
                 });

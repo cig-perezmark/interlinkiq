@@ -3,6 +3,12 @@
 require_once __DIR__ . '/../../assets/TCPDF/tcpdf.php';
 include_once __DIR__ .'/utils.php';
 
+define('MARGIN_LEFT', 54);
+define('MARGIN_RIGHT', 54);
+define('MARGIN_TOP', 54);
+// define('MARGIN_TOP', 72);
+define('MARGIN_BOTTOM', 54);
+
 if(isset($_GET['pdf'])) {
     $pdfView = $_GET['pdf'];
     $recordId = $_GET['r'] ?? null;
@@ -19,6 +25,11 @@ if(isset($_GET['pdf'])) {
         </style>
     ';
 
+    // fetching company logo
+
+    $company = $conn->execute("SELECT BrandLogos as logo from tblEnterpiseDetails WHERE users_entities = ?", $user_id)->fetchAssoc();
+    $logo = !empty($company['logo']) ? ('companyDetailsFolder/' . $company['logo']) : 'https://via.placeholder.com/150x150/EFEFEF/AAAAAA.png?text=no+image';
+
     // custom TCPDF class
     class TCPDF2 extends TCPDF {
         public function __construct() {
@@ -32,13 +43,16 @@ if(isset($_GET['pdf'])) {
         }
         // override header 
         public function Header() {
+            global $logo;
             // $pageNo = $this->getAliasNumPage();
             // $totalPage = $this->getAliasNbPages();
             // $this->SetY(20);
             $html = '
-                <table width="100%">
+                <table style="width:100%; padding:5px 5px 5px 5px">
                     <tr>
-                        <td style="color:gray;">Header</td>
+                        <td style="text-align:center;">
+                            <img src="'.$logo.'" height="50" border="0">
+                        </td>
                     </tr>
                 </table>
             ';
@@ -51,9 +65,9 @@ if(isset($_GET['pdf'])) {
     $pdf->SetAuthor('InterlinkIQ.com');
     $pdf->SetSubject('Foreign Supplier Verification Program');
     $pdf->SetPrintHeader(true);
-    // $pdf->SetMargins(MARGIN_LEFT, MARGIN_TOP, MARGIN_RIGHT, MARGIN_BOTTOM);
+    $pdf->SetMargins(MARGIN_LEFT, MARGIN_TOP, MARGIN_RIGHT, MARGIN_BOTTOM);
     $pdf->SetFont('helvetica', '', 10);
-    // $pdf->setAutoPageBreak(true, MARGIN_BOTTOM);
+    $pdf->setAutoPageBreak(true, MARGIN_BOTTOM);
 
     include_once __DIR__ . match($pdfView) {
         'evaluation_form'       => '/pdfs/evaluation_form.php',
@@ -65,14 +79,14 @@ if(isset($_GET['pdf'])) {
     };
 }
 
-function debugger($data) {
+function debugger($data, $mode = false) {
     global $debugging;
 
     if(empty($data)) {
         exit('Record not found.');
     }
     
-    if(isset($debugging) && $debugging) {
+    if($mode || (isset($debugging) && $debugging)) {
         header('Content-Type: application/json');
         echo json_encode($data);
         exit();

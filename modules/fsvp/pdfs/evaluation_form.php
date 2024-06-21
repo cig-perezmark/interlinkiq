@@ -2,11 +2,19 @@
 
 $data = $conn->execute("SELECT 
     REC.*,
+    IF(REC.import_alerts = 1, 'Yes', 'No') AS import_alerts,
+    IF(REC.recalls = 1, 'Yes', 'No') AS recalls,
+    IF(REC.warning_letters = 1, 'Yes', 'No') AS warning_letters,
+    IF(REC.other_significant_ca = 1, 'Yes', 'No') AS other_significant_ca,
+    IF(REC.suppliers_corrective_actions = 1, 'Yes', 'No') AS suppliers_corrective_actions,
     IMP.name as importer_name,
     IMP.address as importer_address,
     SUPP.name as supplier_name,
     SUPP.address as supplier_address,
-    EVAL.assessment
+    EVAL.assessment,
+    EVAL.description,
+    F_IMP.id AS importer_id,
+    F_SUPP.id AS supplier_id
     FROM tbl_fsvp_evaluation_records REC
     LEFT JOIN tbl_fsvp_evaluations EVAL ON EVAL.id = REC.evaluation_id
     -- importer
@@ -24,7 +32,25 @@ $data = $conn->execute("SELECT
 
 debugger($data);
 
-$title = '(FSVP) Foreign Supplier Evaluation Form PDF';
+$products = $conn->execute("SELECT 
+            GROUP_CONCAT(mat.material_name SEPARATOR ', ') AS `all`
+        FROM tbl_fsvp_ipr_imported_by iby
+        LEFT JOIN tbl_fsvp_ingredients_product_register ipr ON ipr.id = iby.product_id
+        LEFT JOIN tbl_supplier_material mat ON mat.ID = ipr.product_id
+        WHERE iby.importer_id = ?
+            AND ipr.supplier_id = ?
+            AND iby.user_id = ?
+            AND iby.deleted_at IS NULL
+        GROUP BY iby.importer_id
+    ", 
+    $data['importer_id'],
+    $data['supplier_id'],
+    $user_id
+)->fetchAssoc()['all'];
+
+debugger($products, false);
+
+$title = '(FSVP) Foreign Supplier Evaluation Form';
 $pdf->SetTitle($title);
 
 $pdf->AddPage('L');
@@ -32,31 +58,31 @@ $html = $css . '
     <h3 style="text-align:center;">'.$title.'</h3>
     <table>
         <tr>
-            <td colspan="4" style="width: 50%;">IMPORTER NAME: '.($data['importer_name'] ?? '').'</td>
-            <td colspan="5" style="width: 50%;">DATE: '.($data['evaluation_date'] ?? '').'</td>
+            <td colspan="4" style="width: 50%;"><strong>IMPORTER NAME:</strong> '.txt($data['importer_name']).'</td>
+            <td colspan="5" style="width: 50%;"><strong>DATE:</strong> '.txt($data['evaluation_date']).'</td>
         </tr>
         <tr>
-            <td colspan="4" style="width: 50%;">ADDRESS: '.($data['importer_address'] ?? '').'</td>
-            <td colspan="5" style="width: 50%;">QUALIFIED INDIVIDUAL (QI) APPROVAL: </td>
+            <td colspan="4" style="width: 50%;"><strong>ADDRESS:</strong> '.txt($data['importer_address']).'</td>
+            <td colspan="5" style="width: 50%;"><strong>QUALIFIED INDIVIDUAL (QI) APPROVAL:</strong> </td>
         </tr>
         <tr>
-            <td colspan="2" style="width: 25%;">Foreign Supplier Name</td>
-            <td colspan="3" style="width: 25%;">'.($data['supplier_name'] ?? '').'</td>
-            <td colspan="2" style="width: 25%;">Foreign Supplier Address (location) </td>
-            <td colspan="2" style="width: 25%;">'.($data['supplier_address'] ?? '').'</td>
+            <td colspan="2" style="width: 22%; font-weight:bold;">Foreign Supplier Name</td>
+            <td colspan="3" style="width: 28%;">'.txt($data['supplier_name']).'</td>
+            <td colspan="2" style="width: 25%; font-weight:bold;">Foreign Supplier Address (location) </td>
+            <td colspan="2" style="width: 25%;">'.txt($data['supplier_address']).'</td>
         </tr>
         <tr>
-            <td colspan="2" style="width: 25%;">Food Product(s) Imported</td>
-            <td colspan="3" style="width: 25%;"></td>
-            <td colspan="2" style="width: 25%;">Food Product(s) Description(s), including Important Food Safety Characteristics</td>
-            <td colspan="2" style="width: 25%;"></td>
+            <td colspan="2" style="width: 22%; font-weight:bold;">Food Product(s) Imported</td>
+            <td colspan="3" style="width: 28%;">'.txt($products).'</td>
+            <td colspan="2" style="width: 25%; font-weight:bold;">Food Product(s) Description(s), including Important Food Safety Characteristics</td>
+            <td colspan="2" style="width: 25%;">'.txt($data['description']).'</td>
         </tr>
         <tr>
-            <td colspan="9" style="text-align:center;">Evaluation Considerations and Results</td>
+            <td colspan="9" style="text-align:center; font-weight:bold;">Evaluation Considerations and Results</td>
         </tr>
-        <tr>
-            <td>Supplier\'s Procedures, Practices, and Processes</td>
-            <td>Import Alerts</td>
+        <tr style="text-align:center; font-weight:bold;">
+            <td style="width:12%;">Supplier\'s Procedures, Practices, and Processes</td>
+            <td style="width:10%;">Import Alerts</td>
             <td>Recalls</td>
             <td>Warning Letters</td>
             <td>Other Significant Compliance Action</td>
@@ -66,25 +92,24 @@ $html = $css . '
             <td>Approval Date <br> (if applicable)</td>
         </tr>
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>'.txt($data['sppp']).'</td>
+            <td>'.txt($data['import_alerts']).'</td>
+            <td>'.txt($data['recalls']).'</td>
+            <td>'.txt($data['warning_letters']).'</td>
+            <td>'.txt($data['other_significant_ca']).'</td>
+            <td>'.txt($data['suppliers_corrective_actions']).'</td>
+            <td>'.txt($data['info_related']).'</td>
+            <td>'.txt($data['rejection_date']).'</td>
+            <td>'.txt($data['approval_date']).'</td>
         </tr>
         <tr>
-            <td colspan="4" style="width: 50%; font-style: italic;">Assessment of Results of Foreign Supplier Evaluation*** <br><span style="color:gray;">[Note: If the evaluation was performed by another entity (other than the foreign supplier) include Entity’s name, address, email, and date of evaluation.]</span>
-            </td>
-            <td colspan="5" style="width: 50%;">'.($data['assessment'] ?? 'none').'</td>
+            <td colspan="4" style="width: 50%; font-weight:bold;">Assessment of Results of Foreign Supplier Evaluation<span style="color:gray; display:none;">[Note: If the evaluation was performed by another entity (other than the foreign supplier) include Entity’s name, address, email, and date of evaluation.]</span></td>
+            <td colspan="5" style="width: 50%;">'.txt($data['assessment']).'</td>
         </tr>
-        <tr>
+        <tr style="display:none;">
             <td colspan="9" style="font-style: italic; color:gray;">*All supporting documentation should be appended to this form.
-            <br>**Includes previous and recent experience with the supplier (e.g., rejected shipments, lab results, audit results, or other food safety information you may have outside of the government oversight context).
-            <br>***If another entity (other than the foreign supplier) performs the foreign supplier evaluation, you may meet your evaluation requirements by having your QI review and assess the entity’s evaluation. Your review/assessment of the evaluation must include documentation that the evaluation was conducted by a QI.
+                <br>**Includes previous and recent experience with the supplier (e.g., rejected shipments, lab results, audit results, or other food safety information you may have outside of the government oversight context).
+                <br>***If another entity (other than the foreign supplier) performs the foreign supplier evaluation, you may meet your evaluation requirements by having your QI review and assess the entity’s evaluation. Your review/assessment of the evaluation must include documentation that the evaluation was conducted by a QI.
             </td>
         </tr>
     </table>
@@ -99,8 +124,8 @@ $html = $css . '
             <td>Date: </td>
         </tr>
     </table>
-    <span style="color:gray;">Note:  Review and return this form to the Quality Personnel within 24 hours. If the document is not approved, state the reason in the comment section below.</span>
-    <p></p>Comments:
+    <span style="color:gray; display:none;">Note:  Review and return this form to the Quality Personnel within 24 hours. If the document is not approved, state the reason in the comment section below.</span>
+    <br>Comments:
     <br /><table>
         <tr>
             <td></td>

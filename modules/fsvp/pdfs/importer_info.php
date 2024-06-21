@@ -5,17 +5,18 @@ $data = $conn->execute("SELECT
         i.duns_no, 
         i.fda_registration, 
         i.evaluation_date,
-        i.importer_id, 
         imp.name AS importer_name, 
         imp.address AS importer_address,
         i.fsvpqi_id, 
         CONCAT(TRIM(emp.first_name), ' ', TRIM(emp.last_name)) AS fsvpqi_name,
+        emp.email,
         i.supplier_id,
         sup.name AS supplier_name
     FROM 
         tbl_fsvp_importers i 
+        LEFT JOIN tbl_fsvp_suppliers fsup ON i.supplier_id = fsup.id 
         LEFT JOIN tbl_supplier imp ON imp.ID = i.importer_id
-        LEFT JOIN tbl_supplier sup ON sup.ID = i.supplier_id
+        LEFT JOIN tbl_supplier sup ON sup.ID = fsup.supplier_id
         LEFT JOIN tbl_fsvp_qi qi ON qi.id = i.fsvpqi_id
         LEFT JOIN tbl_hr_employee emp ON emp.ID = qi.employee_id
     WHERE MD5(i.id) = ?
@@ -25,7 +26,25 @@ $data = $conn->execute("SELECT
     return $d;
 });
 
-debugger($data);
+debugger($data, 0);
+
+$products = $conn->execute("SELECT 
+            GROUP_CONCAT(mat.material_name SEPARATOR ', ') AS `all`
+        FROM tbl_fsvp_ipr_imported_by iby
+        LEFT JOIN tbl_fsvp_ingredients_product_register ipr ON ipr.id = iby.product_id
+        LEFT JOIN tbl_supplier_material mat ON mat.ID = ipr.product_id
+        WHERE iby.importer_id = ?
+            AND ipr.supplier_id = ?
+            AND iby.user_id = ?
+            AND iby.deleted_at IS NULL
+        GROUP BY iby.importer_id
+    ", 
+    $data['id'],
+    $data['supplier_id'],
+    $user_id
+)->fetchAssoc()['all'];
+
+debugger($products, 0);
 
 $title = 'Foreign Supplier Importer Information Form';
 $pdf->SetTitle($title);
@@ -35,53 +54,54 @@ $html = $css . '
     <h3 style="text-align:center;">'.$title.'</h3>
     <table>
         <tr>
-            <td style="width: 20%;">FSVP Importer:</td>
-            <td style="width: 80%;">'.($data['importer_name'] ?? '').'</td>
+            <td style="width: 20%; font-weight:bold;">FSVP Importer:</td>
+            <td style="width: 80%;">'.txt($data['importer_name']).'</td>
         </tr>
         <tr>
-            <td>DUNS No.</td>
-            <td>'.($data['duns_no'] ?? 'none').'</td>
+            <td style="font-weight:bold;">DUNS No.:</td>
+            <td>'.txt($data['duns_no']).'</td>
         </tr>
         <tr>
-            <td>Food Registration No.</td>
+            <td style="font-weight:bold;">Food Registration No.</td>
             <td>'.(txt($data['fda_registration'])).'</td>
         </tr>
         <tr>
-            <td>Supplier</td>
+            <td style="font-weight:bold;">Supplier:</td>
             <td>'. txt($data['supplier_name']) .'</td>
         </tr>
         <tr>
-            <td>Product(s):</td>
-            <td></td>
+            <td style="font-weight:bold;">Product(s):</td>
+            <td>'.txt($products).'</td>
         </tr>
         <tr>
-            <td>Qualifying Individual:</td>
+            <td style="font-weight:bold;">Qualifying Individual:</td>
             <td>'. txt($data['fsvpqi_name']) .'</td>
         </tr>
         <tr>
-            <td>Name:</td>
+            <td style="font-weight:bold;">Name:</td>
             <td></td>
         </tr>
         <tr>
-            <td>Email:</td>
-            <td></td>
+            <td style="font-weight:bold;">Email:</td>
+            <td>'.txt($data['email']).'</td>
         </tr>
         <tr>
-            <td>Address:</td>
-            <td></td>
+            <td style="font-weight:bold;">Address:</td>
+            <td>'.txt($data['importer_address']).'</td>
         </tr>
     </table>
-    <p></p>
-    <span>Importer Name and Signature:</span>
+    <br>
+    <br><strong>Importer Name and Signature:</strong>
     <br><table>
         <tr>
-            <td>Name and Signature:</td>
+            <td>Name and Signature:
+                <p style="text-align:center;">'.txt($data['importer_name']).'</p>
+            </td>
             <td>Date:</td>
         </tr>
     </table>
-    <p style="color:gray; font-style:italic;">Make certain that you understand what the FSVP requirements are and comply with those requirements and provide us with accurate data</p>
-    <p style="color:gray; font-style:italic;">Note:  When reviewing, please return form within 24 hours to the Quality Specialist. “Yes” - means that revision has been approved and is okay to implement, effective date of approval.  For “No”, please enter comments.</p>
-    <p></p>Comments:
+    <br>
+    <br>Comments:
     <br><table>
         <tr>
             <td></td>

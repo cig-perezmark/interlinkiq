@@ -49,7 +49,7 @@ $html = $css . '
 $pdf->writeHTML($html);
 $pdf->writeHTML('
     <style>
-        table { width: 100%; padding: 5px; }
+        table { width: 100%; padding: 5px 0 5px 0; }
     </style>
     <table class="borderless">
         <tr>

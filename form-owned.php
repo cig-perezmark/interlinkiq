@@ -20,7 +20,7 @@
             <div class="portlet light portlet-fit ">
                 <div class="portlet-title">
                     <div class="caption">
-                        <i class=" icon-layers font-dark"></i>
+                        <span class=" icon-layers font-dark"></span>
                         <span class="caption-subject font-dark bold uppercase">Interlink E-Forms</span>
                         <?php
                             if($current_client == 0) {
@@ -42,11 +42,14 @@
                                 		$file_url = $src.$url.rawurlencode($file_upload).$embed;
                                     }
                                     
-                                    if ($type_id == 0) {
-                                		echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i> '.$file_title.'</a>';
-                                	} else {
-                                		echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><i class="fa fa-youtube"></i> '.$file_title.'</a>';
-                                	}
+                                    $icon = $row["icon"];
+                                    if (!empty($icon)) { 
+                                        if ($type_id == 0) {
+                                            echo ' <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                        } else {
+                                            echo ' <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                        }
+                                    }
                                 }
                                 
                                 if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163) {
@@ -664,7 +667,8 @@ if (mysqli_num_rows($record_result) > 0) {
 					            $check_result = mysqli_fetch_array($check_form_owned);
 					            $array_counter = explode(",", $check_result["form_owned"]);
                             ?>
-                            <select name="" class="form-control" id="form_id">
+                            <select onchange="get_employee_list(this)" name="" class="form-control" id="form_id">
+                                <option>-- Please Select --</option>
                                 <?php foreach($array_counter as $value):
                                     $query = "SELECT * FROM tbl_afia_forms_list WHERE PK_id = '$value'";
                                     $result = mysqli_query($e_connection, $query);
@@ -678,23 +682,7 @@ if (mysqli_num_rows($record_result) > 0) {
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-12 form-group">
-                            <label>Select Owner</label>
-                            <?php
-                                $get_users = "SELECT * FROM `tbl_hr_employee` WHERE user_id = '$switch_user_id' AND status != 0 ";
-                                $user_result = mysqli_query($conn, $get_users);
-                            ?>
-                            <select id="form_owner"  class="form-control mt-multiselect btn btn-default" name="assigned_to_id[]" multiple="multiple">
-                                <?php foreach($user_result as $rows): ?>
-                                    <?php 
-                                        $get_users_form = "SELECT * FROM `tbl_user` WHERE employee_id = '" . $rows['ID'] . "' ";
-                                        $user_form_result = mysqli_query($conn, $get_users_form);
-                                        foreach($user_form_result as $user_list):
-                                    ?>
-                                    <option value="<?= $user_list['ID'] ?>"><?= $user_list['first_name'] .' '. $user_list['last_name'] ?></option>
-                                <?php endforeach;endforeach; ?>
-                            </select>
-                        </div>
+                        <div class="col-md-12 form-group" id="form_owner_display"></div>
                     </div>
               </div>
               <div class="modal-footer">
@@ -889,7 +877,27 @@ if (mysqli_num_rows($record_result) > 0) {
     }
 </style>
 	<?php include('footer.php'); ?>
+	
 <script>
+function get_employee_list(id){
+    var id = $(event.target).val();
+    $.ajax({
+        url: 'controller.php',
+        type: 'POST',
+        data: {
+            id: id,
+            get_employee:'1'
+        },
+        success: function(response) {
+            $('#form_owner_display').html(response);
+            selectMulti();
+            console.log(response);
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX Error: ' + status + error);
+        }
+    });
+}
 am5.ready(function() {
 
 // Create root element

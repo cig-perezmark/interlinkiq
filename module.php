@@ -9,270 +9,33 @@
     }
     $breadcrumbs .= '<li><span>'. $title .'</span></li>';
 
-    include_once ('database.php');
     include_once ('header.php'); 
-    error_reporting(0);
 ?>
-<style>
-    .icon {
-            font-size: 24px;
-            display: inline-block;
-            width: 24px;
-            height: 24px;
-    }
-    .mt_element_card .mt_card_item {
-        border: 1px solid;
-        border-color: #e7ecf1;
-        position: relative;
-        margin-bottom: 30px;
-    }
-    .mt_element_card .mt_card_item .mt_card_avatar {
-        margin-bottom: 15px;
-    }
-    .mt_element_card.mt_card_round .mt_card_item {
-        padding: 50px 50px 10px 50px;
-    }
-    .mt_element_card.mt_card_round .mt_card_item .mt_card_avatar {
-        border-radius: 50% !important;
-        -webkit-mask-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAA5JREFUeNpiYGBgAAgwAAAEAAGbA+oJAAAAAElFTkSuQmCC);
-    }
-    .mt_element_card .mt_card_item .mt_card_content {
-        text-align: center;
-    }
-    .mt_element_card .mt_card_item .mt_card_content .mt_card_name {
-        font-size: 16px;
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
-    .mt_element_card .mt_card_item .mt_card_content .mt_card_desc {
-        font-size: 14px;
-        margin: 0 0 10px 0;
-       
-    }
-    .mt_element_overlay .mt_overlay_1 {
-        width: 100%;
-        height: 100%;
-        float: left;
+<style type="text/css">
+    .img_cover {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+        object-position: center;
+        border-radius: 100% !important;
+        border: 1px solid #c1c1c1;
         overflow: hidden;
+        margin: auto;
         position: relative;
-        text-align: center;
-        cursor: default;
     }
-    .mt_element_overlay .mt_overlay_1 img {
-        display: block;
-        position: relative;
-        -webkit-transition: all .4s linear;
-        transition: all .4s linear;
+    .img_cover img {
         width: 100%;
-        height: auto;
-        opacity: 0.5;
     }
-
-    .card{
-      width: 25rem;
-      border-radius: 1rem;
-      background: white;
-      box-shadow: 4px 4px 15px rgba(#000, 0.15);
-      position : relative;
-      color: #434343;
+    .img_cover button {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        display: none;
     }
-    
-    .card::before{
-      position: absolute;
-      top:2rem;
-      right:-0.5rem;
-      content: '';
-      background: #283593;
-      height: 28px;
-      width: 28px;
-      transform : rotate(45deg);
-    }
-    
-    .card::after{
-      position: absolute;
-      content: attr(data-label);
-      top: 5px;
-      right: -14px;
-      padding: 0.5rem;
-      width: 6rem;
-      background: #3949ab;
-      color: white;
-      text-align: center;
-      font-family: 'Roboto', sans-serif;
-      box-shadow: 4px 4px 15px rgba(26, 35, 126, 0.2);
-      border-radius: 5px;
-    }
-    
-    /*for free cards*/
-    .cardFree{
-      width: 25rem;
-      border-radius: 1rem;
-      background: white;
-      box-shadow: 4px 4px 15px rgba(#000, 0.15);
-      position : relative;
-      color: #434343;
-      
-    }
-    
-    .cardFree::before{
-      position: absolute;
-      top:2rem;
-      right:-0.5rem;
-      content: '';
-      background: #3CCF4E;
-      height: 28px;
-      width: 28px;
-      transform : rotate(45deg);
-    }
-    
-    .cardFree::after{
-      position: absolute;
-      content: attr(data-label);
-      top: 5px;
-      right: -14px;
-      padding: 0.5rem;
-      width: 9rem;
-      background: #3CCF4E;
-      color: white;
-      text-align: center;
-      font-family: 'Roboto', sans-serif;
-      box-shadow: 4px 4px 15px rgba(26, 35, 126, 0.2);
-      border-radius: 5px;
-    }
-    
-    /*for gallery view*/
-    
-    .container-gallery {
-      position: relative;
-    }
-    
-    /* Hide the images by default */
-    .mySlides {
-      display: none;
-    }
-    
-    /* Add a pointer when hovering over the thumbnail images */
-    .cursor {
-      cursor: pointer;
-    }
-    
-    /* Next & previous buttons */
-    /*.prev,*/
-    /*.next {*/
-    /*  cursor: pointer;*/
-    /*  position: absolute;*/
-    /*  top: 40%;*/
-    /*  width: auto;*/
-    /*  padding: 16px;*/
-    /*  margin-top: -50px;*/
-    /*  color: #003865;*/
-    /*  font-weight: bold;*/
-    /*  font-size: 20px;*/
-    /*  border-radius: 0 3px 3px 0;*/
-    /*  user-select: none;*/
-    /*  -webkit-user-select: none;*/
-    /*}*/
-    
-    /* Position the "next button" to the right */
-    .next {
-      right: 0;
-      border-radius: 3px 0 0 3px;
-    }
-    
-    /* On hover, add a black background color with a little bit see-through */
-    .prev:hover,
-    .next:hover {
-      background-color: #A6D1E6;
-    }
-    
-    /* Number text (1/3 etc) */
-    .numbertext {
-      color: #f2f2f2;
-      font-size: 12px;
-      padding: 8px 12px;
-      position: absolute;
-      top: 0;
-    }
-    
-    /* Container for image text */
-    .caption-container {
-      text-align: center;
-      background-color: #003865;
-      padding: 2px;
-      color: white;
-    }
-    
-    .row:after {
-      content: "";
-      display: table;
-      clear: both;
-    }
-    
-    /* Six columns side by side */
-    .column {
-      float: left;
-      width: 16.66%;
-    }
-    
-    /* Add a transparency effect for thumnbail images */
-    .demo {
-      opacity: 0.6;
-    }
-    
-    .active,
-    .demo:hover {
-      opacity: 1;
-    }
-    
-    /* Style the tab */
-    .tab {
-      overflow: hidden;
-      border: 1px solid #ccc;
-      background-color: #f1f1f1;
-    }
-    
-    /* Style the buttons inside the tab */
-    .tab button {
-      background-color: inherit;
-      float: left;
-      border: none;
-      outline: none;
-      cursor: pointer;
-      padding: 8px 10px;
-      transition: 0.3s;
-      font-size: 14px;
-    }
-    
-    /* Change background color of buttons on hover */
-    .tab button:hover {
-      background-color: #ddd;
-    }
-    
-    /* Create an active/current tablink class */
-    .tab button.active {
-     font-weight:600;
-     color:#003865;
-      background-color: #F1F1F1;
-      border-bottom:solid #003865 4px;
-    }
-    
-    /* Style the tab content */
-    .tabcontent{
-      display: none;
-      padding: 6px 12px;
-      border: 1px solid #ccc;
-      border-top: none;
-    }
-    .tabcontent2{
-      display: block;
-      padding: 6px 12px;
-      border: 1px solid #ccc;
-      border-top: none;
-    }
-    
-    
-    .table-scrollable .dataTable td>.btn-group, .table-scrollable .dataTable th>.btn-group {
-        position: relative;
+    .img_cover:hover button {
+        display: block;
     }
 </style>
 
@@ -323,7 +86,7 @@
             	            <?php endif ?>
     						<!-- List of apps in tbl_app_store table -->
                             <?php
-                                if ($switch_user_id == 1 || $switch_user_id == 19 || $switch_user_id == 163) {
+                                if ($switch_user_id == 1 OR $switch_user_id == 19 OR $switch_user_id == 163 OR $switch_user_id == 464) {
                                     echo '<div class="row margin-bottom-15">
                                         <form method="post" enctype="multipart/form-data" class="formModule">
                                             <div class="col-md-4">
@@ -338,117 +101,63 @@
                                         </form>
                                     </div>';
                                 }
-                            ?>
-                            
-                            <?php
-                                $selectModules = mysqli_query( $conn,"SELECT * FROM tblPlugins WHERE deleted = 0 ORDER BY plugin_name ASC" );
-                                if ( mysqli_num_rows($selectModules) > 0 ) {
-                                    while($rowData = mysqli_fetch_array($selectModules)) {
-                                        $data_ID = $rowData['plugin_id'];
-                                        $data_name = stripcslashes($rowData['plugin_name']);
-                                        $data_description = stripcslashes($rowData['plugin_description']);
-                                        $data_available = $rowData['available'];
-                                        $data_menu_id = $rowData['menu_id'];
-                                        $file_attachmet = $rowData['file_attachment'];
-                                        
-                                        echo '<div class="col-md-3 text-center" style="height: 200px; min-height: 200px;">';
-                                            if($file_attachmet){
-                                                echo '<img src="data:image/png;base64,'.$file_attachmet.'" width="100px" /><br>';
-                                            } else {
-                                                echo '<button class="btn btn-danger upload-btn" data-id="'.$data_ID.'" data-toggle="modal" data-target="#upload_file">Upload</button><br>';
-                                            }
+
+                                echo '<div class="row margin-bottom-15">';
+                                    // $selectModules = mysqli_query( $conn,"SELECT * FROM tblPlugins WHERE deleted = 0 ORDER BY plugin_name" );
+                                    $selectData = mysqli_query( $conn,"SELECT 
+                                        p.plugin_id AS p_plugin_id,
+                                        p.plugin_name AS p_plugin_name,
+                                        p.available AS p_available,
+                                        p.file_attachment AS p_file_attachment,
+                                        m.url AS m_url
+                                        FROM tblPlugins AS p
+
+                                        LEFT JOIN (
+                                            SELECT
+                                            *
+                                            FROM
+                                            tbl_menu
+                                            WHERE deleted = 0
+                                        ) AS m
+                                        ON p.menu_id = m.ID
+
+                                        WHERE p.deleted = 0 
+
+                                        ORDER BY p.plugin_name" );
+                                    if ( mysqli_num_rows($selectData) > 0 ) {
+                                        while($rowData = mysqli_fetch_array($selectData)) {
+                                            $p_plugin_id = $rowData['p_plugin_id'];
+                                            $p_plugin_name = stripcslashes($rowData['p_plugin_name']);
+                                            $p_available = stripcslashes($rowData['p_available']);
+                                            $p_file_attachment = $rowData['p_file_attachment'];
+                                            $m_url = $rowData['m_url'];
                                             
-                                            if ($data_available == 1) {
-                    	                        $selectMenu = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE ID = $data_menu_id" );
-                                                if ( mysqli_num_rows($selectMenu) > 0 ) {
-                                                    $rowMenu = mysqli_fetch_array($selectMenu);
-                                                    $data_url = $rowMenu['url'];
-                                                    
-                                                    echo '<a href="'.$data_url.'" class="blue-steel bold" target="_blank">'.$data_name.'</a>';
-                                                } else {
-                                                    echo $data_name;
-                                                }
-                    	                    } else {
-                                                echo $data_name;
-                                            }
-                                        echo '</div>';
-                                    }
-                                }
-                            
-                            ?>
-                                    
-                            <table class="table table-bordered hide" id="tableModule">
-                                <thead class="bg-primary">
-                                    <tr>
-                                        <?php
-                                            if($_COOKIE['ID'] == 481){
-                                                echo '<th style="width: 150px;">Attachment - <button class="btn btn-primary" data-toggle="modal" data-target="#demo_modal">Demo</button></th>';
-                                            }
-                                        ?>
-                                        <th style="width: 300px;">Module Name</th>
-                                        <th class="hide">Description</th>
-                                        <?php
-                                            if ($switch_user_id == 1 || $switch_user_id == 19 || $switch_user_id == 163) { echo '<th style="width: 135px;" class="text-center">Action</th>'; }
-                                        ?>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                        $selectModules = mysqli_query( $conn,"SELECT * FROM tblPlugins WHERE deleted = 0 ORDER BY plugin_name ASC" );
-                                        if ( mysqli_num_rows($selectModules) > 0 ) {
-                                            while($rowData = mysqli_fetch_array($selectModules)) {
-                                                $data_ID = $rowData['plugin_id'];
-                                                $data_name = stripcslashes($rowData['plugin_name']);
-                                                $data_description = stripcslashes($rowData['plugin_description']);
-                                                $data_available = $rowData['available'];
-                                                $data_menu_id = $rowData['menu_id'];
-                                                $file_attachmet = $rowData['file_attachment'];
-                                                
-                                                echo '<tr id="tr_'.$data_ID.'">
-                                                    <td class="text-center">';
-                                                    if($_COOKIE['ID'] == 481){
-                                                        if($file_attachmet){
-                                                            echo '<img src="data:image/png;base64,'.$file_attachmet.'" width="100px" />';
-                                                            // echo '<button class="btn btn-primary view-btn" data-image="data:image/png;base64,'.$file_attachmet.'">View</button>';
-                                                        }
-                                                        echo '<button class="btn btn-danger upload-btn" data-id="'.$data_ID.'" data-toggle="modal" data-target="#upload_file">Upload</button>';
+                                            echo '<div class="col-md-3 text-center margin-bottom-15" style="height: 230px; min-height: 230px;">
+                                                <div class="img_cover margin-bottom-15">
+                                                    <img src="data:image/png;base64,'.$p_file_attachment.'" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image\';"  />';
+
+                                                    if($_COOKIE['ID'] == 163 OR $switch_user_id == 19){
+                                                        echo '<button class="btn btn-danger upload-btn" data-id="'.$p_plugin_id.'" data-toggle="modal" data-target="#upload_file">Upload</button>';
                                                     }
-                                                    echo '</td>
-                                	                <td>';
-                                	                
-                                	                    if ($data_available == 1) {
-                                	                        $selectMenu = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE ID = $data_menu_id" );
-                                                            if ( mysqli_num_rows($selectMenu) > 0 ) {
-                                                                $rowMenu = mysqli_fetch_array($selectMenu);
-                                                                $data_url = $rowMenu['url'];
-                                                                
-                                                                echo '<a href="'.$data_url.'" class="blue-steel bold" target="_blank">'.$data_name.'</a>';
-                                                            } else {
-                                                                echo $data_name;
-                                                            }
-                                	                    } else {
-                                                            echo $data_name;
-                                                        }
-                                                        
-                                	                echo '</td>
-                                	                <td class="hide">'.$data_description.'</td>';
-                                	                
-                            	                    if ($switch_user_id == 1 || $switch_user_id == 19 || $switch_user_id == 163) {
-                            	                        echo '<td class="text-center">
-                                	                        <div class="btn-group btn-group-circle">
-                                	                            <a href="#modalViewModule" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnViewModule('.$data_ID.')">View</a>
-                                	                            <a href="javascript:;" class="btn btn-danger btn-sm" onclick="btnDeleteModule('.$data_ID.')">Delete</a>
-                                                            </div>
-                                                        </td>';
-                            	                    }
-                            	                    
-                                	            echo '</tr>';
-                                            }
+                                                echo '</div>';
+
+                                                if ($switch_user_id == 1 OR $switch_user_id == 19 OR $switch_user_id == 163) {
+                                                    echo '<div class="text-center margin-bottom-15">
+                                                        <a href="#modalViewModule" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnViewModule('.$p_plugin_id.')">View</a>
+                                                        <a href="javascript:;" class="btn btn-danger btn-sm" onclick="btnDeleteModule('.$p_plugin_id.')">Delete</a>
+                                                    </div>';
+                                                }
+
+                                                if ($m_url) {
+                                                    echo '<a href="'.$m_url.'" class="blue-steel bold" target="_blank">'.$p_plugin_name.'</a>';
+                                                } else {
+                                                    echo $p_plugin_name;
+                                                }
+                                            echo '</div>';
                                         }
-                                    ?>
-                                </tbody>
-                            </table>
+                                    }
+                                echo '</div>';
+                            ?>
         				</div>
                     </div>
                 </div>
@@ -834,60 +543,57 @@
         <script>
             const icons = document.querySelectorAll('.icon');
         
-        let dragSrcEl = null;
-        
-        function handleDragStart(e) {
-          dragSrcEl = this;
-          e.dataTransfer.effectAllowed = 'move';
-          e.dataTransfer.setData('text/html', this.innerHTML);
-        }
-        
-        function handleDragOver(e) {
-          if (e.preventDefault) {
+            let dragSrcEl = null;
+
+            function handleDragStart(e) {
+            dragSrcEl = this;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+            }
+
+            function handleDragOver(e) {
+            if (e.preventDefault) {
             e.preventDefault();
-          }
-          e.dataTransfer.dropEffect = 'move';
-          return false;
-        }
-        
-        function handleDragEnter(e) {
-          this.classList.add('over');
-        }
-        
-        function handleDragLeave() {
-          this.classList.remove('over');
-        }
-        
-        function handleDrop(e) {
-          if (e.stopPropagation) {
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+            }
+
+            function handleDragEnter(e) {
+            this.classList.add('over');
+            }
+
+            function handleDragLeave() {
+            this.classList.remove('over');
+            }
+
+            function handleDrop(e) {
+            if (e.stopPropagation) {
             e.stopPropagation();
-          }
-        
-          if (dragSrcEl !== this) {
+            }
+
+            if (dragSrcEl !== this) {
             dragSrcEl.innerHTML = this.innerHTML;
             this.innerHTML = e.dataTransfer.getData('text/html');
-          }
-        
-          return false;
-        }
-        
-        function handleDragEnd() {
-          icons.forEach(icon => {
+            }
+
+            return false;
+            }
+
+            function handleDragEnd() {
+            icons.forEach(icon => {
             icon.classList.remove('over');
-          });
-        }
-        
-        icons.forEach(icon => {
-          icon.addEventListener('dragstart', handleDragStart);
-          icon.addEventListener('dragenter', handleDragEnter);
-          icon.addEventListener('dragover', handleDragOver);
-          icon.addEventListener('dragleave', handleDragLeave);
-          icon.addEventListener('drop', handleDrop);
-          icon.addEventListener('dragend', handleDragEnd);
-        });
-        
-        
-        
+            });
+            }
+
+            icons.forEach(icon => {
+            icon.addEventListener('dragstart', handleDragStart);
+            icon.addEventListener('dragenter', handleDragEnter);
+            icon.addEventListener('dragover', handleDragOver);
+            icon.addEventListener('dragleave', handleDragLeave);
+            icon.addEventListener('drop', handleDrop);
+            icon.addEventListener('dragend', handleDragEnd);
+            });
         </script>
         <script> 
             
@@ -1547,8 +1253,9 @@
                         if ($.trim(response)) {
                             msg = "Sucessfully Save!";
 
-                            var obj = jQuery.parseJSON(response);
-                            $('#tableModule').prepend(obj.data);
+                            location.reload();
+                            // var obj = jQuery.parseJSON(response);
+                            // $('#tableModule').prepend(obj.data);
                         } else {
                             msg = "Error!"
                         }
@@ -1588,9 +1295,10 @@
                         if ($.trim(response)) {
                             msg = "Sucessfully Save!";
 
-                            var obj = jQuery.parseJSON(response);
-                            $("#tableModule tbody #tr_"+obj.ID).html(obj.data);
-                            $('#modalViewModule').modal('hide');
+                            location.reload();
+                            // var obj = jQuery.parseJSON(response);
+                            // $("#tableModule tbody #tr_"+obj.ID).html(obj.data);
+                            // $('#modalViewModule').modal('hide');
                         } else {
                             msg = "Error!"
                         }
@@ -1696,87 +1404,3 @@
         </script>
     </body>
 </html>
-<style>
-    #app {
-  display: flex;
-  flex-wrap: wrap;
-  max-width: 500px;
-}
-
-.icon {
-  width: 75px;
-  height: 75px;
-  background-color: #ccc;
-  border: 1px solid #999;
-  border-radius: 50% !important;
-  margin: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: transform 0.3s ease-in-out;
-}
-
-.icon:hover {
-  background-color: #ddd;
-}
-
-.up, .down, .left, .right {
-  position: relative;
-  animation-duration: 0.5s;
-  animation-fill-mode: forwards;
-}
-
-.up {
-  animation-name: moveUp;
-}
-
-.down {
-  animation-name: moveDown;
-}
-
-.left {
-  animation-name: moveLeft;
-}
-
-.right {
-  animation-name: moveRight;
-}
-
-@keyframes moveUp {
-  from {
-    transform: translateY(0) translateX(0);
-  }
-  to {
-    transform: translateY(-100px) translateX(0);
-  }
-}
-
-@keyframes moveDown {
-  from {
-    transform: translateY(0) translateX(0);
-  }
-  to {
-    transform: translateY(100px) translateX(0);
-  }
-}
-
-@keyframes moveLeft {
-  from {
-    transform: translateX(0) translateY(0);
-  }
-  to {
-    transform: translateX(-100px) translateY(0);
-  }
-}
-
-@keyframes moveRight {
-  from {
-    transform: translateX(0) translateY(0);
-  }
-  to {
-    transform: translateX(100px) translateY(0);
-  }
-}
-
-</style>

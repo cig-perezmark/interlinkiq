@@ -73,13 +73,13 @@
                                     </thead>
                                     <?php
                                         $i = 1;
-                                        $result = mysqli_query($conn, "SELECT * FROM tbl_user WHERE client = $current_client ORDER BY ID desc");
+                                        $result = mysqli_query($conn, "SELECT first_name, last_name, email FROM tbl_user WHERE client = $current_client ORDER BY ID desc");
                                         while($row = mysqli_fetch_array($result)) {?> 
                                         <tbody>
                                             <tr>
                                                 <td><?php echo $i++; ?></td>
-                                                <td><?php echo $row['first_name'];?> <?php echo $row['last_name'];?></td>
-                                                <td><?php echo $row['email'];?></td>
+                                                <td><?php echo htmlentities($row['first_name'] ?? '') .' '. htmlentities($row['last_name'] ?? '');?></td>
+                                                <td><?php echo htmlentities($row['email'] ?? '');?></td>
                                             </tr>
                                         </tbody> 
                                     <?php } ?>      

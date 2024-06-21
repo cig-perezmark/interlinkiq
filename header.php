@@ -98,33 +98,33 @@
             $rowUser = mysqli_fetch_array($selectUser);
             $current_userID = $rowUser['ID'];
             $current_userEmployeeID = $rowUser['employee_id'];
-            $current_userFName = $rowUser['first_name'];
-            $current_userLName = $rowUser['last_name'];
-            $current_userEmail = $rowUser['email'];
+            $current_userFName = htmlentities($rowUser['first_name']);
+            $current_userLName = htmlentities($rowUser['last_name']);
+            $current_userEmail = htmlentities($rowUser['email']);
             $current_userType = $rowUser['type'];
         }
 
         $selectUserInfo = mysqli_query( $conn,"SELECT * from tbl_user_info WHERE user_id = $user_id" );
         if ( mysqli_num_rows($selectUserInfo) > 0 ) {
             $rowUserInfo = mysqli_fetch_array($selectUserInfo);
-            $current_userMobile = $rowUserInfo['mobile'];
-            $current_userInterest = $rowUserInfo['interest'];
-            $current_userAddress = $rowUserInfo['address'];
-            $current_userDLicense = $rowUserInfo['driver_license'];
-            $current_userOccupation = $rowUserInfo['occupation'];
-            $current_userAbout = $rowUserInfo['about'];
-            $current_userWebsite = $rowUserInfo['website'];
-            $current_userAvatar = $rowUserInfo['avatar'];
+            $current_userMobile = htmlentities($rowUserInfo['mobile']);
+            $current_userInterest = htmlentities($rowUserInfo['interest']);
+            $current_userAddress = htmlentities($rowUserInfo['address']);
+            $current_userDLicense = htmlentities($rowUserInfo['driver_license']);
+            $current_userOccupation = htmlentities($rowUserInfo['occupation']);
+            $current_userAbout = htmlentities($rowUserInfo['about']);
+            $current_userWebsite = htmlentities($rowUserInfo['website']);
+            $current_userAvatar = htmlentities($rowUserInfo['avatar']);
             if (!empty($rowUserInfo['privacy'])) { $current_userPrivacy = $rowUserInfo['privacy']; }
         }
 
         $selectSM = mysqli_query( $conn,"SELECT * from tbl_user_social_media WHERE user_id = $user_id" );
         if ( mysqli_num_rows($selectSM) > 0 ) {
             $rowSM = mysqli_fetch_array($selectSM);
-            $current_userLinkedIn = $rowSM['linkedin'];
-            $current_userFacebook = $rowSM['facebook'];
-            $current_userTwitter = $rowSM['twitter'];
-            $current_userPage = $rowSM['page'];
+            $current_userLinkedIn = htmlentities($rowSM['linkedin']);
+            $current_userFacebook = htmlentities($rowSM['facebook']);
+            $current_userTwitter = htmlentities($rowSM['twitter']);
+            $current_userPage = htmlentities($rowSM['page']);
         }
         
         if ($current_userEmployeeID > 0) {
@@ -150,7 +150,7 @@
                 $rowEnterprise = mysqli_fetch_array($selectEnterprise);
                 $enterp_id = $rowEnterprise['enterp_id'];
                 $enterp_logo = $rowEnterprise['BrandLogos'];
-                $enterp_name = $rowEnterprise['businessname'];
+                $enterp_name = htmlentities($rowEnterprise['businessname']);
                 $enterp_userID = $rowEnterprise['users_entities'];
             }
         } else {
@@ -159,7 +159,7 @@
                 $rowEnterprise = mysqli_fetch_array($selectEnterprise);
                 $enterp_id = $rowEnterprise['enterp_id'];
                 $enterp_logo = $rowEnterprise['BrandLogos'];
-                $enterp_name = $rowEnterprise['businessname'];
+                $enterp_name = htmlentities($rowEnterprise['businessname']);
                 $enterp_userID = $rowEnterprise['users_entities'];
             }
                 
@@ -368,7 +368,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
         if (mysqli_num_rows($selectUserSwitch) > 0) {
             $rowUserSwitch=mysqli_fetch_array($selectUserSwitch);
-            $current_userEmail=$rowUserSwitch['email'];
+            $current_userEmail=htmlentities($rowUserSwitch['email']);
         }
     }
 
@@ -859,6 +859,50 @@ License: You must have a valid license purchased only from themeforest(the above
                                     echo '<a href="dashboard"><img src="/companyDetailsFolder/574189 - Viking Atlantic Sales Group, LLC.png" height="60px" alt="logo" /></a>';
                                 }
                                 
+                            } else if ($current_client == 7) {
+                                if ($switch_user_id == 1469) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/388267 - Cannabis360.png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/388267 - Cannabis360.png" height="60px" alt="logo" /></a>';
+                                }
+                                
+                            } else if ($current_client == 8) {
+                                if ($switch_user_id == 1471) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/165028 - SafeSupplements 360.png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/165028 - SafeSupplements 360.png" height="60px" alt="logo" /></a>';
+                                }
+                                
+                            } else if ($current_client == 9) {
+                                if ($switch_user_id == 1477) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/175668 - FS_RGB_R_Stacked_SiennaTuscany.jpg" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/175668 - FS_RGB_R_Stacked_SiennaTuscany.jpg" height="60px" alt="logo" /></a>';
+                                }
+                                
+                            } else if ($current_client == 10) {
+                                if ($switch_user_id == 1479) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/852876 - New Focuss Logo.png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/852876 - New Focuss Logo.png" height="60px" alt="logo" /></a>';
+                                }
+                                
                             } else {
                                 if (isset($_COOKIE['switchAccount'])) {
                                     echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
@@ -885,51 +929,51 @@ License: You must have a valid license purchased only from themeforest(the above
             <!-- BEGIN PAGE ACTIONS -->
             <!-- DOC: Remove "hide" class to enable the page header actions -->
             <?php if ($current_client == 0) { ?>
-            <div class="page-actions">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-circle btn-outline red dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-plus"></i>&nbsp;
-                        <span class="hidden-sm hidden-xs">New&nbsp;</span>&nbsp;
-                        <i class="fa fa-angle-down"></i>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                        <?php if ($current_userType == 1) { ?>
-                        <li>
-                            <a href="employee#new"><i class="icon-user"></i> Employee Roster</a>
-                        </li>
-                        <li>
-                            <a href="job-description#new"><i class="icon-notebook"></i> Job Description</a>
-                        </li>
-                        <li>
-                            <a href="trainings#new"><i class="icon-graduation"></i> Trainings</a>
-                        </li>
-                        <li>
-                            <a href="department#new"><i class="icon-directions"></i> Department</a>
-                        </li>
-                        <li>
-                            <a href="customer#new"><i class="icon-users"></i> Customer</a>
-                        </li>
-                        <li>
-                            <a href="supplier#new"><i class="icon-basket-loaded"></i> Supplier</a>
-                        </li>
-                        <li class="divider hide"> </li>
-                        <?php } ?>
-
-                        <li class="hide">
-                            <a href="javascript:;">
-                                <i class="icon-flag"></i> Comments
-                                <span class="badge badge-success">4</span>
-                            </a>
-                        </li>
-                        <li class="hide">
-                            <a href="javascript:;">
-                                <i class="icon-users"></i> Feedbacks
-                                <span class="badge badge-danger">2</span>
-                            </a>
-                        </li>
-                    </ul>
+                <div class="page-actions">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-circle btn-outline red dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-plus"></i>&nbsp;
+                            <span class="hidden-sm hidden-xs">New&nbsp;</span>&nbsp;
+                            <i class="fa fa-angle-down"></i>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <?php if ($current_userType == 1) { ?>
+                            <li>
+                                <a href="employee#new"><i class="icon-user"></i> Employee Roster</a>
+                            </li>
+                            <li>
+                                <a href="job-description#new"><i class="icon-notebook"></i> Job Description</a>
+                            </li>
+                            <li>
+                                <a href="trainings#new"><i class="icon-graduation"></i> Trainings</a>
+                            </li>
+                            <li>
+                                <a href="department#new"><i class="icon-directions"></i> Department</a>
+                            </li>
+                            <li>
+                                <a href="customer#new"><i class="icon-users"></i> Customer</a>
+                            </li>
+                            <li>
+                                <a href="supplier#new"><i class="icon-basket-loaded"></i> Supplier</a>
+                            </li>
+                            <li class="divider hide"> </li>
+                            <?php } ?>
+    
+                            <li class="hide">
+                                <a href="javascript:;">
+                                    <i class="icon-flag"></i> Comments
+                                    <span class="badge badge-success">4</span>
+                                </a>
+                            </li>
+                            <li class="hide">
+                                <a href="javascript:;">
+                                    <i class="icon-users"></i> Feedbacks
+                                    <span class="badge badge-danger">2</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
             <?php } ?>
             <?php
                     if ($current_client == 1) {
@@ -1019,40 +1063,8 @@ License: You must have a valid license purchased only from themeforest(the above
                 <?php } ?>
 
                 <?php
-                        if ($switch_user_id == 1 OR $switch_user_id == 34 OR $switch_user_id == 163) {
-                            echo '<div class="offcanvas offcanvas-end" id="chatbox">
-                                <div class="offcanvas-header pb-0">';
-
-                                    $sql = mysqli_query($conn, "SELECT * FROM tbl_user WHERE is_active = 1 AND ID = $current_userID");
-                                    if(mysqli_num_rows($sql) > 0) {
-                                        $row = mysqli_fetch_assoc($sql);
-
-                                        $selectUserInfo = mysqli_query($conn, "SELECT * FROM tbl_user_info WHERE user_id = '".$row['ID']."'");
-                                        if(mysqli_num_rows($selectUserInfo) > 0) {
-                                            $rowInfo = mysqli_fetch_assoc($selectUserInfo);
-                                            $current_userAvatar = $rowInfo['avatar'];
-                                        }
-                                    }
-                                   
-                                   echo '<div class="d-flex flex-columnx justify-content-betweenx align-items-center w-100 border-1 margin-bottom-15">
-                                        <span class="position-relative me-2">
-                                            <img class="d-flex justify-content-center border border-default bg-white img-circle" style="width:80px; height:80px; object-fit: contain;" src="'.$base_url.'uploads/avatar/'.$current_userAvatar.'" alt="Avatar" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/150x150/EFEFEF/AAAAAA.png?text=no+image\';" />
-                                        </span>
-                                        <h4 class="bold ms-3">'.$row['first_name']. " " . $row['last_name'].'</h4>
-                                    </div>
-                                    <div class="input-icon right">
-                                        <i class="fa fa-search"></i>
-                                        <input type="text" class="form-control input-circle" placeholder="search" id="txtSearch">
-                                    </div>
-                                </div>
-                                <div class="offcanvas-body">
-                                    <div class="users-list mt-2" style="max-height:calc(100vh - 185px) !important" id="userList"></div>
-                                </div>
-                            </div>
-                            <div class="offcanvas-backdrop" id="chatboxDrop" onClick="offCanvas(1)"></div>';
-                        }
-
-                        echo '<div class="offcanvas offcanvas-end" id="stickyNote">
+                    if ($switch_user_id == 1 OR $switch_user_id == 34 OR $switch_user_id == 163) {
+                        echo '<div class="offcanvas offcanvas-end" id="chatbox">
                             <div class="offcanvas-header pb-0">';
 
                                 $sql = mysqli_query($conn, "SELECT * FROM tbl_user WHERE is_active = 1 AND ID = $current_userID");
@@ -1066,345 +1078,365 @@ License: You must have a valid license purchased only from themeforest(the above
                                     }
                                 }
                                
-                               echo '<div class="d-flex justify-content-between align-items-center">
-                                    <a href="javascript:;" class="page-quick-sidebar-togglerx h3" style="margin: 0;" data-toggle="modal" data-target="#modalNotes">
-                                        <i class="icon-plus"></i>
-                                    </a>
-                                    <span class="sbold">My Notes</span>
-                                    <a href="javascript:;" class="page-quick-sidebar-togglerx h3" style="margin: 0;" onclick="offCanvas(2)">
-                                        <i class="icon-close"></i>
-                                    </a>
+                               echo '<div class="d-flex flex-columnx justify-content-betweenx align-items-center w-100 border-1 margin-bottom-15">
+                                    <span class="position-relative me-2">
+                                        <img class="d-flex justify-content-center border border-default bg-white img-circle" style="width:80px; height:80px; object-fit: contain;" src="'.$base_url.'uploads/avatar/'.$current_userAvatar.'" alt="Avatar" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/150x150/EFEFEF/AAAAAA.png?text=no+image\';" />
+                                    </span>
+                                    <h4 class="bold ms-3">'.htmlentities($row['first_name']). " " . htmlentities($row['last_name']).'</h4>
+                                </div>
+                                <div class="input-icon right">
+                                    <i class="fa fa-search"></i>
+                                    <input type="text" class="form-control input-circle" placeholder="search" id="txtSearch">
                                 </div>
                             </div>
                             <div class="offcanvas-body">
-                                <div class="users-list mt-2" style="max-height:calc(100vh - 100px) !important" id="userNotes">';
-
-                                    // $selectNote = mysqli_query( $conn,"SELECT * FROM tbl_notes WHERE deleted = 0 AND (user_id = $current_userID OR assigned_to IN ($current_userEmployeeID) OR copy_to IN ($current_userEmployyeeID)) ORDER BY ID DESC" );
-                                    $selectNote = mysqli_query( $conn,"SELECT * FROM tbl_notes WHERE deleted = 0 AND user_id = $current_userID ORDER BY ID DESC" );
-                                    if ( mysqli_num_rows($selectNote) > 0 ) {
-                                        while($rowNote = mysqli_fetch_array($selectNote)) {
-                                            $note_ID = $rowNote['ID'];
-                                            $note_user_id = $rowNote['user_id'];
-                                            $note_description = $rowNote['description'];
-                                            $note_last_modified = $rowNote['last_modified'];
-
-                                            echo '<div class="userResult" id="note_'.$note_ID.'">
-                                                <div class="d-flex align-items-center img-rounded excerpt p-2 position-relative">
-                                                    <div class="userData flex-grow-1" data-toggle="modal" data-target="#modalNotesView'; echo $note_user_id == $current_userID ? '':'Copy'; echo '" onclick="noteView'; echo $note_user_id == $current_userID ? '':'Copy'; echo '('.$note_ID.')">
-                                                        <p class="mb-0 bold" style="font-size: 15px;">'.nl2br($note_description).'</p>
-                                                        <p class="mb-0 text-muted " style="font-size: 13px;">'.$note_last_modified.'</p>
-                                                    </div>';
-
-                                                    if ($note_user_id == $current_userID) {
-                                                        echo '<a href="javascript:;" class="hide h4 text-danger p-2 position-absolute end-0" style="margin: 0;" onclick="noteDelete('.$note_ID.')">
-                                                            <i class="icon-trash"></i>
-                                                        </a>';
-                                                    }
-                                                    
-                                                echo '</div>
-                                            </div>';
-                                        }
-                                    }
-                                    
-                                echo '</div>
+                                <div class="users-list mt-2" style="max-height:calc(100vh - 185px) !important" id="userList"></div>
                             </div>
                         </div>
-                        <div class="offcanvas-backdrop" id="stickyNoteDrop" onClick="offCanvas(2)"></div>';
-                    ?>
+                        <div class="offcanvas-backdrop" id="chatboxDrop" onClick="offCanvas(1)"></div>';
+                    }
+
+                    echo '<div class="offcanvas offcanvas-end" id="stickyNote">
+                        <div class="offcanvas-header pb-0">';
+
+                            $sql = mysqli_query($conn, "SELECT * FROM tbl_user WHERE is_active = 1 AND ID = $current_userID");
+                            if(mysqli_num_rows($sql) > 0) {
+                                $row = mysqli_fetch_assoc($sql);
+
+                                $selectUserInfo = mysqli_query($conn, "SELECT * FROM tbl_user_info WHERE user_id = '".$row['ID']."'");
+                                if(mysqli_num_rows($selectUserInfo) > 0) {
+                                    $rowInfo = mysqli_fetch_assoc($selectUserInfo);
+                                    $current_userAvatar = $rowInfo['avatar'];
+                                }
+                            }
+                           
+                            echo '<div class="d-flex justify-content-between align-items-center">
+                                <a href="javascript:;" class="page-quick-sidebar-togglerx h3" style="margin: 0;" data-toggle="modal" data-target="#modalNotes">
+                                    <i class="icon-plus"></i>
+                                </a>
+                                <span class="sbold">My Notes</span>
+                                <a href="javascript:;" class="page-quick-sidebar-togglerx h3" style="margin: 0;" onclick="offCanvas(2)">
+                                    <i class="icon-close"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="offcanvas-body">
+                            <div class="users-list mt-2" style="max-height:calc(100vh - 100px) !important" id="userNotes">';
+
+                                // $selectNote = mysqli_query( $conn,"SELECT * FROM tbl_notes WHERE deleted = 0 AND (user_id = $current_userID OR assigned_to IN ($current_userEmployeeID) OR copy_to IN ($current_userEmployyeeID)) ORDER BY ID DESC" );
+                                $selectNote = mysqli_query( $conn,"SELECT * FROM tbl_notes WHERE deleted = 0 AND user_id = $current_userID ORDER BY ID DESC" );
+                                if ( mysqli_num_rows($selectNote) > 0 ) {
+                                    while($rowNote = mysqli_fetch_array($selectNote)) {
+                                        $note_ID = $rowNote['ID'];
+                                        $note_user_id = htmlentities($rowNote['user_id']);
+                                        $note_description = htmlentities($rowNote['description']);
+                                        $note_last_modified = $rowNote['last_modified'];
+
+                                        echo '<div class="userResult" id="note_'.$note_ID.'">
+                                            <div class="d-flex align-items-center img-rounded excerpt p-2 position-relative">
+                                                <div class="userData flex-grow-1" data-toggle="modal" data-target="#modalNotesView'; echo $note_user_id == $current_userID ? '':'Copy'; echo '" onclick="noteView'; echo $note_user_id == $current_userID ? '':'Copy'; echo '('.$note_ID.')">
+                                                    <p class="mb-0 bold" style="font-size: 15px;">'.nl2br($note_description).'</p>
+                                                    <p class="mb-0 text-muted " style="font-size: 13px;">'.$note_last_modified.'</p>
+                                                </div>';
+
+                                                if ($note_user_id == $current_userID) {
+                                                    echo '<a href="javascript:;" class="hide h4 text-danger p-2 position-absolute end-0" style="margin: 0;" onclick="noteDelete('.$note_ID.')">
+                                                        <i class="icon-trash"></i>
+                                                    </a>';
+                                                }
+                                                
+                                            echo '</div>
+                                        </div>';
+                                    }
+                                }
+                                
+                            echo '</div>
+                        </div>
+                    </div>
+                    <div class="offcanvas-backdrop" id="stickyNoteDrop" onClick="offCanvas(2)"></div>';
+                ?>
 
                 <!-- BEGIN TOP NAVIGATION MENU -->
                 <div class="top-menu">
 
                     <ul class="nav navbar-nav pull-right">
                         <?php if ($current_client == 0) { ?>
-                        <li class="dropdown dropdown-extended" id="googleTranslate">
-                            <div id="google_translate_element"></div>
-                            <script type="text/javascript">
-                            function googleTranslateElementInit() {
-                                new google.translate.TranslateElement({
-                                    pageLanguage: 'en',
-                                    autoDisplay: 'true',
-                                    includedLanguages: 'en,fr,zh-CN,zh-TW,ja,ko,es,it,pt,ar,sw',
-                                    layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
-                                }, 'google_translate_element');
-                            }
-                            </script>
-
-                            <!--<div id="customLang"></div>-->
-                            <!--<select class="selectpicker notranslate" data-width="fit" onchange="translateLanguage(this.value);">-->
-                            <!--    <option data-content='<span class="fi fi-us"></span> English' value="English">English</option>-->
-                            <!--    <option data-content='<span class="fi fi-sa"></span> Arabic' value="Arabic" <?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/ar') { echo 'SELECTED'; } ?> >Arabic</option>-->
-                            <!--    <option data-content='<span class="fi fi-fr"></span> French' value="French"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/fr') { echo 'SELECTED'; } ?> >French</option>-->
-                            <!--    <option data-content='<span class="fi fi-it"></span> Italian' value="Italian"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/it') { echo 'SELECTED'; } ?> >Italian</option>-->
-                            <!--    <option data-content='<span class="fi fi-jp"></span> Japanese' value="Japanese"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/ja') { echo 'SELECTED'; } ?> >Japanese</option>-->
-                            <!--    <option data-content='<span class="fi fi-kr"></span> Korean' value="Korean"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/ko') { echo 'SELECTED'; } ?> >Korean</option>-->
-                            <!--    <option data-content='<span class="fi fi-pt"></span> Portuguese' value="Portuguese"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/pt') { echo 'SELECTED'; } ?> >Portuguese</option>-->
-                            <!--    <option data-content='<span class="fi fi-es"></span> Spanish' value="Spanish"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/es') { echo 'SELECTED'; } ?> >Spanish</option>-->
-                            <!--</select>-->
-                            <script type="text/javascript">
-                            function googleTranslateElementInit() {
-                                new google.translate.TranslateElement({
-                                    pageLanguage: 'en',
-                                    autoDisplay: 'true',
-                                    includedLanguages: 'en,fr,zh-CN,zh-TW,ja,ko,es,it,pt,ar,sw',
-                                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-                                }, 'google_translate_element');
-                            }
-                            // function googleTranslateElementInit() {
-                            //     // new google.translate.TranslateElement({
-                            //     //     pageLanguage: 'en',
-                            //     //     autoDisplay: 'true',
-                            //     //     layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
-                            //     // }, 'google_translate_element');
-                            // }
-
-                            function translateLanguage(lang) {
-                                googleTranslateElementInit();
-                                var $frame = $('.goog-te-menu-frame:first');
-                                // if (!$frame.size()) {
-                                //     alert("Error: Could not find Google translate frame.");
-                                //     return false;
-                                // }
-                                if (lang == "English") {
-                                    location.reload();
+                            <li class="dropdown dropdown-extended" id="googleTranslate">
+                                <div id="google_translate_element"></div>
+                                <script type="text/javascript">
+                                    function googleTranslateElementInit() {
+                                        new google.translate.TranslateElement({
+                                            pageLanguage: 'en',
+                                            autoDisplay: 'true',
+                                            includedLanguages: 'en,fr,zh-CN,zh-TW,ja,ko,es,it,pt,ar,sw',
+                                            layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
+                                        }, 'google_translate_element');
                                 }
-                                $frame.contents().find('.goog-te-menu2-item span.text:contains(' + lang + ')').get(0).click();
-                                return false;
-                            }
-                            </script>
-                            <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript"></script>
-                        </li>
+                                </script>
+    
+                                <!--<div id="customLang"></div>-->
+                                <!--<select class="selectpicker notranslate" data-width="fit" onchange="translateLanguage(this.value);">-->
+                                <!--    <option data-content='<span class="fi fi-us"></span> English' value="English">English</option>-->
+                                <!--    <option data-content='<span class="fi fi-sa"></span> Arabic' value="Arabic" <?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/ar') { echo 'SELECTED'; } ?> >Arabic</option>-->
+                                <!--    <option data-content='<span class="fi fi-fr"></span> French' value="French"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/fr') { echo 'SELECTED'; } ?> >French</option>-->
+                                <!--    <option data-content='<span class="fi fi-it"></span> Italian' value="Italian"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/it') { echo 'SELECTED'; } ?> >Italian</option>-->
+                                <!--    <option data-content='<span class="fi fi-jp"></span> Japanese' value="Japanese"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/ja') { echo 'SELECTED'; } ?> >Japanese</option>-->
+                                <!--    <option data-content='<span class="fi fi-kr"></span> Korean' value="Korean"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/ko') { echo 'SELECTED'; } ?> >Korean</option>-->
+                                <!--    <option data-content='<span class="fi fi-pt"></span> Portuguese' value="Portuguese"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/pt') { echo 'SELECTED'; } ?> >Portuguese</option>-->
+                                <!--    <option data-content='<span class="fi fi-es"></span> Spanish' value="Spanish"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/es') { echo 'SELECTED'; } ?> >Spanish</option>-->
+                                <!--</select>-->
+                                <script type="text/javascript">
+                                    function googleTranslateElementInit() {
+                                        new google.translate.TranslateElement({
+                                            pageLanguage: 'en',
+                                            autoDisplay: 'true',
+                                            includedLanguages: 'en,fr,zh-CN,zh-TW,ja,ko,es,it,pt,ar,sw',
+                                            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+                                        }, 'google_translate_element');
+                                    }
+                                    // function googleTranslateElementInit() {
+                                    //     // new google.translate.TranslateElement({
+                                    //     //     pageLanguage: 'en',
+                                    //     //     autoDisplay: 'true',
+                                    //     //     layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
+                                    //     // }, 'google_translate_element');
+                                    // }
+    
+                                    function translateLanguage(lang) {
+                                        googleTranslateElementInit();
+                                        var $frame = $('.goog-te-menu-frame:first');
+                                        // if (!$frame.size()) {
+                                        //     alert("Error: Could not find Google translate frame.");
+                                        //     return false;
+                                        // }
+                                        if (lang == "English") {
+                                            location.reload();
+                                        }
+                                        $frame.contents().find('.goog-te-menu2-item span.text:contains(' + lang + ')').get(0).click();
+                                        return false;
+                                    }
+                                </script>
+                                <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript"></script>
+                            </li>
                         <?php } ?>
                         <?php
-                                // if ($switch_user_id == 1) {
-                                //     echo '<li class="dropdown dropdown-extended">
-                                //         <a href="javascript:;" class="dropdown-toggle" onclick="offCanvas(2)">
-                                //             <i class="icon-note"></i>
-                                //         </a>
-                                //         <ul class="dropdown-menu hide"></ul>
-                                //     </li>';
-                                // }
-                                if ($switch_user_id == 1 OR $switch_user_id == 34 OR $switch_user_id == 163) {
-                                    echo '<li class="dropdown dropdown-extended">
-                                        <a href="javascript:;" class="dropdown-toggle" onclick="offCanvas(1)">
-                                            <i class="icon-envelope"></i>
-                                            <span class="hide badge badge-success" id="countNotif"></span>
+                            // if ($switch_user_id == 1) {
+                            //     echo '<li class="dropdown dropdown-extended">
+                            //         <a href="javascript:;" class="dropdown-toggle" onclick="offCanvas(2)">
+                            //             <i class="icon-note"></i>
+                            //         </a>
+                            //         <ul class="dropdown-menu hide"></ul>
+                            //     </li>';
+                            // }
+                            if ($switch_user_id == 1 OR $switch_user_id == 34 OR $switch_user_id == 163) {
+                                echo '<li class="dropdown dropdown-extended">
+                                    <a href="javascript:;" class="dropdown-toggle" onclick="offCanvas(1)">
+                                        <i class="icon-envelope"></i>
+                                        <span class="hide badge badge-success" id="countNotif"></span>
+                                    </a>
+                                    <ul class="dropdown-menu hide"></ul>
+                                </li>
+                                <li class="dropdown dropdown-extended">
+                                    <a href="javascript:;" class="dropdown-toggle" onclick="offCanvas(2)">
+                                        <i class="icon-note"></i>
+                                    </a>
+                                    <ul class="dropdown-menu hide"></ul>
+                                </li>';
+
+                                if ($current_userEmployeeID == 129 OR $current_userEmployeeID == 128) {
+                                    $selectSpeak = mysqli_query($conn, "SELECT * FROM tbl_speakup WHERE reply_to = 0 AND seen = 0 AND user_id = $current_userEmployerID ORDER BY ID DESC");
+                                    echo '<li class="dropdown dropdown-extended" id="speakup_employer">
+                                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" aria-expanded="false" style="padding-top: 22px;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 512 512"><path fill="#48677E" d="M292.834 280.647a8.344 8.344 0 0 0 3.415 11.305c4.577 2.457 13.948 4.158 20.393 5.094c3.623.526 6.089 4.226 5.041 7.734c-10.601 35.504-41.8 50.113-82.55 55.398v25.865c52.399 4.923 93.405 49.025 93.405 102.711c0 9.525-7.721 17.246-17.246 17.246H59.747c-9.525 0-17.246-7.721-17.246-17.246c0-53.686 41.006-97.789 93.405-102.711v-34.758C103.807 336.26 83.351 308.4 70.313 278.99c-1.909.367-3.115.417-3.408.103c-19.506-20.89-38.863-74.881-38.863-128.64c0-53.76 36.755-147.634 137.924-147.634c58.21 0 139.255 13.239 141.821 15.35c2.587 2.128-5.389 18.791-2.83 21.231c5.335 5.086 10.637 10.871 16.016 17.45c4.545 5.558-1.443 8.837-21.675 10.114c18.337 19.668 28.944 46.551 28.944 80.468l-.372 18.779l.004-.008c-.002.001-.002.007-.004.01l-.006.295c.464 3.721 12.114 40.293 19.704 56.085c8.582 17.858-2.743 21.798-21.257 22.374l-.602 30.426c0 5.576-16.126 4.762-21.571 1.844c-4.119-2.184-9.159-.638-11.304 3.41zm80.636-27.338l91.264-42.482a3.279 3.279 0 0 0 1.326-4.771l-14.046-21.22a3.28 3.28 0 0 0-4.91-.644l-75.219 66.701c-1.259 1.117.059 3.126 1.585 2.416zm-1.207 62.314l73.979 66.62a3.279 3.279 0 0 0 4.912-.651l13.992-21.242a3.279 3.279 0 0 0-1.341-4.77l-89.943-42.363c-1.52-.716-2.848 1.282-1.599 2.406zm3.159-30.571l112.456 14.619a3.28 3.28 0 0 0 3.702-3.251v-25.535a3.278 3.278 0 0 0-3.702-3.251l-112.456 14.619c-1.64.213-1.64 2.586 0 2.799z"></path></svg>
+                                            <span class="badge badge-default">'; if(mysqli_num_rows($selectSpeak) > 0) { echo mysqli_num_rows($selectSpeak); } echo '</span>
                                         </a>
-                                        <ul class="dropdown-menu hide"></ul>
-                                    </li>
-                                    <li class="dropdown dropdown-extended">
-                                        <a href="javascript:;" class="dropdown-toggle" onclick="offCanvas(2)">
-                                            <i class="icon-note"></i>
-                                        </a>
-                                        <ul class="dropdown-menu hide"></ul>
+                                        <ul class="dropdown-menu">
+                                            <li class="external">
+                                                <h3 class="hide"><a href="#modalSpeakUp" data-toggle="modal" class="btn btn-success btn-xs xdropdown-toggle">Create New</a></h3>
+                                                <h3>SpeakUp!</h3>
+                                                <a href="#modalSpeakUpViewAll" data-toggle="modal" onclick="btnSpeakupAll('.$current_userEmployerID.')">view all</a>
+                                            </li>';
+
+                                            if(mysqli_num_rows($selectSpeak) > 0) {
+                                                echo '<li>
+                                                    <ul class="dropdown-menu-list speakupList" style="max-height: 275px; overflow: auto;">';
+
+                                                        while($rowSpeak = mysqli_fetch_array($selectSpeak)) {
+                                                            $speak_ID = $rowSpeak['ID'];
+                                                            $speak_comment = htmlentities(stripcslashes($rowSpeak['comment']));
+
+                                                            $speak_last_modified = $rowSpeak['last_modified'];
+                                                            $speak_last_modified = new DateTime($speak_last_modified);
+                                                            $speak_last_modified = $speak_last_modified->format('M d, Y');
+
+                                                            echo '<li>
+                                                                <a href="#modalSpeakUpView" data-toggle="modal" onclick="btnSpeakup('.$speak_ID.')" style="text-decoration: none;">
+                                                                    <span class="sbold">'.$speak_comment.'</span>
+                                                                    <div class="time text-right">'.$speak_last_modified.'</div>
+                                                                </a>
+                                                            </li>';
+                                                        }
+
+                                                    echo '</ul>
+                                                </li>';
+                                            }
+
+                                        echo '</ul>
                                     </li>';
+                                } else {
+                                    $selectSpeak = mysqli_query($conn, "SELECT * FROM tbl_speakup WHERE reply_to = 0 AND user_id = $current_userEmployerID AND portal_user = $current_userID ORDER BY ID DESC");
+                                    echo '<li class="dropdown dropdown-extended" id="speakup_employee">
+                                        <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" aria-expanded="false" style="padding-top: 22px;">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 512 512"><path fill="#48677E" d="M292.834 280.647a8.344 8.344 0 0 0 3.415 11.305c4.577 2.457 13.948 4.158 20.393 5.094c3.623.526 6.089 4.226 5.041 7.734c-10.601 35.504-41.8 50.113-82.55 55.398v25.865c52.399 4.923 93.405 49.025 93.405 102.711c0 9.525-7.721 17.246-17.246 17.246H59.747c-9.525 0-17.246-7.721-17.246-17.246c0-53.686 41.006-97.789 93.405-102.711v-34.758C103.807 336.26 83.351 308.4 70.313 278.99c-1.909.367-3.115.417-3.408.103c-19.506-20.89-38.863-74.881-38.863-128.64c0-53.76 36.755-147.634 137.924-147.634c58.21 0 139.255 13.239 141.821 15.35c2.587 2.128-5.389 18.791-2.83 21.231c5.335 5.086 10.637 10.871 16.016 17.45c4.545 5.558-1.443 8.837-21.675 10.114c18.337 19.668 28.944 46.551 28.944 80.468l-.372 18.779l.004-.008c-.002.001-.002.007-.004.01l-.006.295c.464 3.721 12.114 40.293 19.704 56.085c8.582 17.858-2.743 21.798-21.257 22.374l-.602 30.426c0 5.576-16.126 4.762-21.571 1.844c-4.119-2.184-9.159-.638-11.304 3.41zm80.636-27.338l91.264-42.482a3.279 3.279 0 0 0 1.326-4.771l-14.046-21.22a3.28 3.28 0 0 0-4.91-.644l-75.219 66.701c-1.259 1.117.059 3.126 1.585 2.416zm-1.207 62.314l73.979 66.62a3.279 3.279 0 0 0 4.912-.651l13.992-21.242a3.279 3.279 0 0 0-1.341-4.77l-89.943-42.363c-1.52-.716-2.848 1.282-1.599 2.406zm3.159-30.571l112.456 14.619a3.28 3.28 0 0 0 3.702-3.251v-25.535a3.278 3.278 0 0 0-3.702-3.251l-112.456 14.619c-1.64.213-1.64 2.586 0 2.799z"></path></svg>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li class="external">
+                                                <h3>SpeakUp!</h3>
+                                                <a href="#modalSpeakUp" data-toggle="modal">say something</a>
+                                                <p class="small text-muted" style="margin-bottom: 0;">
+                                                    Our secret weapon for building the best culture is open and honest feedback.<br>
+                                                    <span class="sbold text-danger">Note: Your name will not be logged.</span>
+                                                </p>
+                                            </li>';
 
+                                            if(mysqli_num_rows($selectSpeak) > 0) {
+                                                echo '<li>
+                                                    <ul class="dropdown-menu-list speakupList" style="max-height: 275px; overflow: auto;">';
 
+                                                        while($rowSpeak = mysqli_fetch_array($selectSpeak)) {
+                                                            $speak_ID = $rowSpeak['ID'];
+                                                            $speak_comment = stripcslashes($rowSpeak['comment']);
 
+                                                            $speak_last_modified = $rowSpeak['last_modified'];
+                                                            $speak_last_modified = new DateTime($speak_last_modified);
+                                                            $speak_last_modified = $speak_last_modified->format('M d, Y');
 
+                                                            echo '<li>
+                                                                <a href="#modalSpeakUpView" data-toggle="modal" onclick="btnSpeakup('.$speak_ID.')" style="text-decoration: none;">
+                                                                    <span class="sbold">'.$speak_comment.'</span>
+                                                                    <div class="time text-right">'.$speak_last_modified.'</div>
+                                                                </a>
+                                                            </li>';
+                                                        }
 
-
-
-                                    if ($current_userEmployeeID == 129 OR $current_userEmployeeID == 128) {
-                                        $selectSpeak = mysqli_query($conn, "SELECT * FROM tbl_speakup WHERE reply_to = 0 AND seen = 0 AND user_id = $current_userEmployerID ORDER BY ID DESC");
-                                        echo '<li class="dropdown dropdown-extended" id="speakup_employer">
-                                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" aria-expanded="false" style="padding-top: 22px;">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 512 512"><path fill="#48677E" d="M292.834 280.647a8.344 8.344 0 0 0 3.415 11.305c4.577 2.457 13.948 4.158 20.393 5.094c3.623.526 6.089 4.226 5.041 7.734c-10.601 35.504-41.8 50.113-82.55 55.398v25.865c52.399 4.923 93.405 49.025 93.405 102.711c0 9.525-7.721 17.246-17.246 17.246H59.747c-9.525 0-17.246-7.721-17.246-17.246c0-53.686 41.006-97.789 93.405-102.711v-34.758C103.807 336.26 83.351 308.4 70.313 278.99c-1.909.367-3.115.417-3.408.103c-19.506-20.89-38.863-74.881-38.863-128.64c0-53.76 36.755-147.634 137.924-147.634c58.21 0 139.255 13.239 141.821 15.35c2.587 2.128-5.389 18.791-2.83 21.231c5.335 5.086 10.637 10.871 16.016 17.45c4.545 5.558-1.443 8.837-21.675 10.114c18.337 19.668 28.944 46.551 28.944 80.468l-.372 18.779l.004-.008c-.002.001-.002.007-.004.01l-.006.295c.464 3.721 12.114 40.293 19.704 56.085c8.582 17.858-2.743 21.798-21.257 22.374l-.602 30.426c0 5.576-16.126 4.762-21.571 1.844c-4.119-2.184-9.159-.638-11.304 3.41zm80.636-27.338l91.264-42.482a3.279 3.279 0 0 0 1.326-4.771l-14.046-21.22a3.28 3.28 0 0 0-4.91-.644l-75.219 66.701c-1.259 1.117.059 3.126 1.585 2.416zm-1.207 62.314l73.979 66.62a3.279 3.279 0 0 0 4.912-.651l13.992-21.242a3.279 3.279 0 0 0-1.341-4.77l-89.943-42.363c-1.52-.716-2.848 1.282-1.599 2.406zm3.159-30.571l112.456 14.619a3.28 3.28 0 0 0 3.702-3.251v-25.535a3.278 3.278 0 0 0-3.702-3.251l-112.456 14.619c-1.64.213-1.64 2.586 0 2.799z"></path></svg>
-                                                <span class="badge badge-default">'; if(mysqli_num_rows($selectSpeak) > 0) { echo mysqli_num_rows($selectSpeak); } echo '</span>
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                <li class="external">
-                                                    <h3 class="hide"><a href="#modalSpeakUp" data-toggle="modal" class="btn btn-success btn-xs xdropdown-toggle">Create New</a></h3>
-                                                    <h3>SpeakUp!</h3>
-                                                    <a href="#modalSpeakUpViewAll" data-toggle="modal" onclick="btnSpeakupAll('.$current_userEmployerID.')">view all</a>
+                                                    echo '</ul>
                                                 </li>';
+                                            }
 
-                                                if(mysqli_num_rows($selectSpeak) > 0) {
-                                                    echo '<li>
-                                                        <ul class="dropdown-menu-list speakupList" style="max-height: 275px; overflow: auto;">';
-
-                                                            while($rowSpeak = mysqli_fetch_array($selectSpeak)) {
-                                                                $speak_ID = $rowSpeak['ID'];
-                                                                $speak_comment = stripcslashes($rowSpeak['comment']);
-
-                                                                $speak_last_modified = $rowSpeak['last_modified'];
-                                                                $speak_last_modified = new DateTime($speak_last_modified);
-                                                                $speak_last_modified = $speak_last_modified->format('M d, Y');
-
-                                                                echo '<li>
-                                                                    <a href="#modalSpeakUpView" data-toggle="modal" onclick="btnSpeakup('.$speak_ID.')" style="text-decoration: none;">
-                                                                        <span class="sbold">'.$speak_comment.'</span>
-                                                                        <div class="time text-right">'.$speak_last_modified.'</div>
-                                                                    </a>
-                                                                </li>';
-                                                            }
-
-                                                        echo '</ul>
-                                                    </li>';
-                                                }
-
-                                            echo '</ul>
-                                        </li>';
-                                    } else {
-                                        $selectSpeak = mysqli_query($conn, "SELECT * FROM tbl_speakup WHERE reply_to = 0 AND user_id = $current_userEmployerID AND portal_user = $current_userID ORDER BY ID DESC");
-                                        echo '<li class="dropdown dropdown-extended" id="speakup_employee">
-                                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" aria-expanded="false" style="padding-top: 22px;">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" viewBox="0 0 512 512"><path fill="#48677E" d="M292.834 280.647a8.344 8.344 0 0 0 3.415 11.305c4.577 2.457 13.948 4.158 20.393 5.094c3.623.526 6.089 4.226 5.041 7.734c-10.601 35.504-41.8 50.113-82.55 55.398v25.865c52.399 4.923 93.405 49.025 93.405 102.711c0 9.525-7.721 17.246-17.246 17.246H59.747c-9.525 0-17.246-7.721-17.246-17.246c0-53.686 41.006-97.789 93.405-102.711v-34.758C103.807 336.26 83.351 308.4 70.313 278.99c-1.909.367-3.115.417-3.408.103c-19.506-20.89-38.863-74.881-38.863-128.64c0-53.76 36.755-147.634 137.924-147.634c58.21 0 139.255 13.239 141.821 15.35c2.587 2.128-5.389 18.791-2.83 21.231c5.335 5.086 10.637 10.871 16.016 17.45c4.545 5.558-1.443 8.837-21.675 10.114c18.337 19.668 28.944 46.551 28.944 80.468l-.372 18.779l.004-.008c-.002.001-.002.007-.004.01l-.006.295c.464 3.721 12.114 40.293 19.704 56.085c8.582 17.858-2.743 21.798-21.257 22.374l-.602 30.426c0 5.576-16.126 4.762-21.571 1.844c-4.119-2.184-9.159-.638-11.304 3.41zm80.636-27.338l91.264-42.482a3.279 3.279 0 0 0 1.326-4.771l-14.046-21.22a3.28 3.28 0 0 0-4.91-.644l-75.219 66.701c-1.259 1.117.059 3.126 1.585 2.416zm-1.207 62.314l73.979 66.62a3.279 3.279 0 0 0 4.912-.651l13.992-21.242a3.279 3.279 0 0 0-1.341-4.77l-89.943-42.363c-1.52-.716-2.848 1.282-1.599 2.406zm3.159-30.571l112.456 14.619a3.28 3.28 0 0 0 3.702-3.251v-25.535a3.278 3.278 0 0 0-3.702-3.251l-112.456 14.619c-1.64.213-1.64 2.586 0 2.799z"></path></svg>
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                <li class="external">
-                                                    <h3>SpeakUp!</h3>
-                                                    <a href="#modalSpeakUp" data-toggle="modal">say something</a>
-                                                    <p class="small text-muted" style="margin-bottom: 0;">
-                                                        Our secret weapon for building the best culture is open and honest feedback.<br>
-                                                        <span class="sbold text-danger">Note: Your name will not be logged.</span>
-                                                    </p>
-                                                </li>';
-
-                                                if(mysqli_num_rows($selectSpeak) > 0) {
-                                                    echo '<li>
-                                                        <ul class="dropdown-menu-list speakupList" style="max-height: 275px; overflow: auto;">';
-
-                                                            while($rowSpeak = mysqli_fetch_array($selectSpeak)) {
-                                                                $speak_ID = $rowSpeak['ID'];
-                                                                $speak_comment = stripcslashes($rowSpeak['comment']);
-
-                                                                $speak_last_modified = $rowSpeak['last_modified'];
-                                                                $speak_last_modified = new DateTime($speak_last_modified);
-                                                                $speak_last_modified = $speak_last_modified->format('M d, Y');
-
-                                                                echo '<li>
-                                                                    <a href="#modalSpeakUpView" data-toggle="modal" onclick="btnSpeakup('.$speak_ID.')" style="text-decoration: none;">
-                                                                        <span class="sbold">'.$speak_comment.'</span>
-                                                                        <div class="time text-right">'.$speak_last_modified.'</div>
-                                                                    </a>
-                                                                </li>';
-                                                            }
-
-                                                        echo '</ul>
-                                                    </li>';
-                                                }
-
-                                            echo '</ul>
-                                        </li>';
-                                    }
+                                        echo '</ul>
+                                    </li>';
                                 }
-                            ?>
+                            }
+                        ?>
                         <!-- BEGIN NOTIFICATION DROPDOWN -->
                         <!-- DOC: Apply "dropdown-dark" class below "dropdown-extended" to change the dropdown styte -->
                         <!-- DOC: Apply "dropdown-hoverable" class after below "dropdown" and remove data-toggle="dropdown" data-hover="dropdown" data-close-others="true" attributes to enable hover dropdown mode -->
                         <!-- DOC: Remove "dropdown-hoverable" and add data-toggle="dropdown" data-hover="dropdown" data-close-others="true" attributes to the below A element with dropdown-toggle class -->
                         <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
                             <?php if($user_id == 1 || $user_id == 35 || $user_id == 42 || $user_id == 163 || $user_id == 38 || $user_id == 88 || $user_id == 34 || $user_id == 100 || $user_id == 55 || $user_id == 54 || $user_id == 387 || $user_id == 693 || $user_id == 1231): ?>
-                            <a href="quotation.php" class="dropdown-toggle">
-                                <i class="fa fa-qrcode"></i>
-                            </a>
+                                <a href="quotation.php" class="dropdown-toggle">
+                                    <i class="fa fa-qrcode"></i>
+                                </a>
                             <?php endif; ?>
                         </li>
-                        <?php
-                                if($_COOKIE['ID'] == 481):
-                            ?>
-                        <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                <i class="icon-bell"></i>
-                                <span class="badge badge-default"> 1 </span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="external">
-                                    <h3>
-                                        <span class="bold">1 pending</span> notifications
-                                    </h3>
-                                    <a href="#">view all</a>
-                                </li>
-                                <li>
-                                    <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
-                                        <li>
-                                            <a href="javascript:;">
-                                                <span class="time">30 min. ago</span>
-                                                <span class="details"> Cindiy Compliance fail to review the Health Declaration Form. </span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                            <?php endif; ?>
-                        <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-                            <?php if($user_id == 1 || $user_id == 2 || $user_id == 13 || $user_id == 42 || $user_id == 44 || $user_id == 185 || $user_id == 95 || $user_id == 38): ?>
-                            <a href="blog_pages.php" class="dropdown-toggle">
-                                <i class="icon-earphones-alt"></i>
-                            </a>
-                            <?php endif; ?>
-                        </li>
+                        
+                        <?php if($_COOKIE['ID'] == 481): ?>
+                            <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
+                                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-bell"></i>
+                                    <span class="badge badge-default"> 1 </span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="external">
+                                        <h3>
+                                            <span class="bold">1 pending</span> notifications
+                                        </h3>
+                                        <a href="#">view all</a>
+                                    </li>
+                                    <li>
+                                        <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
+                                            <li>
+                                                <a href="javascript:;">
+                                                    <span class="time">30 min. ago</span>
+                                                    <span class="details"> Cindiy Compliance fail to review the Health Declaration Form. </span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                        <?php endif; ?>
+                            <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
+                                <?php if($user_id == 1 || $user_id == 2 || $user_id == 13 || $user_id == 42 || $user_id == 44 || $user_id == 185 || $user_id == 95 || $user_id == 38): ?>
+                                    <a href="blog_pages.php" class="dropdown-toggle">
+                                        <i class="icon-earphones-alt"></i>
+                                    </a>
+                                <?php endif; ?>
+                            </li>
 
-                        <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-                            <?php if($user_id == 163 OR $user_id == 1): ?>
-                            <a data-toggle="modal" data-target="#modal_video" class="dropdown-toggle">
-                                <i class="icon-cloud-upload"></i>
-                            </a>
-                            <?php endif; ?>
-                        </li>
+                            <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
+                                <?php if($user_id == 163 OR $user_id == 1): ?>
+                                    <a data-toggle="modal" data-target="#modal_video" class="dropdown-toggle">
+                                        <i class="icon-cloud-upload"></i>
+                                    </a>
+                                <?php endif; ?>
+                            </li>
                         <?php if($_COOKIE['ID'] == 108): ?>
-                        <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                <i class="icon-bell"></i>
-                                <span class="badge badge-default"> 9 </span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <?php
+                            <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
+                                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                    <i class="icon-bell"></i>
+                                    <span class="badge badge-default"> 9 </span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <?php
                                         $select_pending = mysqli_query($conn, "SELECT * FROM leave_details INNER JOIN leave_types ON leave_types.leave_id = leave_details.leave_id INNER JOIN tbl_user ON tbl_user.ID = leave_details.payeeid WHERE approve_status = 0");
                                     ?>
-                                <li class="external">
-                                    <h3>
-                                        <span class="bold">9 pending</span> for approval
-                                    </h3>
-                                    <a href="page_user_profile_1.html">view all</a>
-                                </li>
-                                <li>
-                                    <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
-                                        <li>
-                                            <?php
-                                                    foreach($select_pending as $row):
-                                                ?>
-                                            <a href="pto_request_for_approve.php">
-                                                <span class="time"><?= $row['leave_name'] ?></span>
-                                                <span class="details">
-                                                    <span class="label label-sm label-icon label-success">
-                                                        <i class="fa fa-check"></i>
-                                                    </span> <?= $row['first_name'].' '.$row['last_name'] ?> </span>
-                                            </a>
-                                            <?php
-                                                    endforeach;
-                                                ?>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
+                                    <li class="external">
+                                        <h3>
+                                            <span class="bold">9 pending</span> for approval
+                                        </h3>
+                                        <a href="page_user_profile_1.html">view all</a>
+                                    </li>
+                                    <li>
+                                        <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
+                                            <li>
+                                                <?php foreach($select_pending as $row): ?>
+                                                    <a href="pto_request_for_approve.php">
+                                                        <span class="time"><?= $row['leave_name'] ?></span>
+                                                        <span class="details">
+                                                            <span class="label label-sm label-icon label-success">
+                                                                <i class="fa fa-check"></i>
+                                                            </span> <?= htmlentities($row['first_name']).' '.htmlentities($row['last_name']) ?> </span>
+                                                    </a>
+                                                <?php endforeach; ?>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
                         <?php endif; ?>
                         <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
                             <?php if($user_id == 108 OR $user_id == 1): ?>
-                            <a data-toggle="modal" data-target="#modal_export" class="dropdown-toggle">
-                                <i class="icon-cloud-upload"></i>
-                            </a>
+                                <a data-toggle="modal" data-target="#modal_export" class="dropdown-toggle">
+                                    <i class="icon-cloud-upload"></i>
+                                </a>
                             <?php endif; ?>
                         </li>
                         <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
                             <?php if($user_id == 2 || $user_id == 1 || $user_id == 19 || $user_id == 43 || $user_id == 35 || $user_id == 54 || $user_id == 40 || $user_id == 41 || $user_id == 42 || $user_id == 178 || $user_id == 55 || $user_id == 100 || $user_id == 693 || $user_id == 88 || $user_id == 1027 || $user_id == 1360 || $user_id == 1365 || $user_id == 1366 || $user_id == 1453): ?>
-                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-
-                                <i class="icon-bell"></i>
-                                <span class="badge badge-default">
-                                    <?php    
-                                        $users = $user_id;
-                                        $result = mysqli_query($conn, "SELECT count(*) AS count FROM tbl_user WHERE client = $current_client ORDER BY ID desc");
-                                                                                            
-                                        while($row = mysqli_fetch_array($result))
-                                        {?>
-                                    <?php echo $row['count']; ?>
-
-                                    <?php } ?>
-                                </span>
-                            </a>
+                                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+    
+                                    <i class="icon-bell"></i>
+                                    <span class="badge badge-default">
+                                        <?php    
+                                            $users = $user_id;
+                                            $result = mysqli_query($conn, "SELECT count(*) AS count FROM tbl_user WHERE client = $current_client ORDER BY ID desc");
+                                                                                                
+                                            while($row = mysqli_fetch_array($result)) {
+                                                echo $row['count'];
+                                            }
+                                        ?>
+                                    </span>
+                                </a>
                             <?php endif; ?>
                             <ul class="dropdown-menu">
                                 <li class="external">
@@ -1416,26 +1448,25 @@ License: You must have a valid license purchased only from themeforest(the above
                                 <li>
                                     <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
                                         <?php 
-                                                $users = $user_id;
-                                                $result = mysqli_query($conn, "SELECT count(*) AS count FROM tbl_user WHERE client = $current_client ORDER BY ID desc");
-                                                                                                    
-                                                while($row = mysqli_fetch_array($result))
-                                                {?>
-                                        <li>
-                                            <form action="enterprise-function/export_users.php" method="POST" style="margin-top: 10px;">
-                                                <a style="text-decoration:none;" href="users-details-record">
-                                                    <span class="time" style="background-color:red;color:white;margin-right:20px;"><?php echo $row['count']; ?></span>
-                                                    <span class="details">
-                                                        <span class="label label-sm label-icon ">
-                                                            <button class="btn btn-xs btn-success" type="submit" name="exportExcel"><i class="fa fa-download"></i></button>
-                                                        </span>
-                                                        User registered.
-                                                    </span>
-                                                </a>
-                                            </form>
-                                        </li>
-                                        <?php } ?>
-                                        <?php 
+                                            $users = $user_id;
+                                            $result = mysqli_query($conn, "SELECT count(*) AS count FROM tbl_user WHERE client = $current_client ORDER BY ID desc");
+                                                                                                
+                                            while($row = mysqli_fetch_array($result)) {
+                                                echo '<li>
+                                                    <form action="enterprise-function/export_users.php" method="POST" style="margin-top: 10px;">
+                                                        <a style="text-decoration:none;" href="users-details-record">
+                                                            <span class="time" style="background-color:red;color:white;margin-right:20px;">'; echo $row['count']; echo '</span>
+                                                            <span class="details">
+                                                                <span class="label label-sm label-icon ">
+                                                                    <button class="btn btn-xs btn-success" type="submit" name="exportExcel"><i class="fa fa-download"></i></button>
+                                                                </span>
+                                                                User registered.
+                                                            </span>
+                                                        </a>
+                                                    </form>
+                                                </li>';   
+                                            }
+                                            
                                             if ($current_client == 0) {
                                                 
                                                 $users = $user_id;
@@ -1443,12 +1474,10 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 $result = mysqli_query($conn, $query);
                                                                                                     
                                                 while($row = mysqli_fetch_array($result)) {
-                                            }
-                                        ?>
-                                                    <li>
+                                                    echo '<li>
                                                         <form action="enterprise-function/export_users.php" method="POST" style="margin-top: 10px;">
                                                             <a style="text-decoration:none;" href="enterprise_record">
-                                                                <span class="time" style="background-color:red;color:white;margin-right:20px;"><?php echo $row['count'] ?? '0'; /* added nullish fallback operator */ ?></span>
+                                                                <span class="time" style="background-color:red;color:white;margin-right:20px;">'; echo $row['count'] ?? '0'; /* added nullish fallback operator */ echo '</span>
                                                                 <span class="details">
                                                                     <span class="label label-sm label-icon ">
                                                                         <button class="btn btn-xs btn-success" type="submit" name="exportExcelEnterprise"><i class="fa fa-book"></i></button>
@@ -1457,10 +1486,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                                 </span>
                                                             </a>
                                                         </form>
-                                                    </li>
-                                        <?php 
-                                        
-                                            if ($current_client == 0) {
+                                                    </li>';
                                                 }
                                             }
                                         ?>
@@ -1861,7 +1887,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         </a>
                     </li>
                     <?php endif?>
-                    <?php if(($current_client == 0 AND $switch_user_id <> 1106) OR $switch_user_id == 1360 OR $switch_user_id == 1453) { ?>
+                    <?php if(($current_client == 0 AND $switch_user_id <> 1106) OR $switch_user_id == 1360 OR $switch_user_id == 1366 OR $switch_user_id == 1453 OR $switch_user_id == 1482 OR $switch_user_id == 1365 OR $switch_user_id == 1477 OR $switch_user_id == 145) { ?>
                         <li class="nav-item hide <?php echo $site === "tracking" ? "active" : ""; ?>">
                             <a href="tracking" class="nav-link">
                                 <i class="icon-target"></i>
@@ -2094,8 +2120,10 @@ License: You must have a valid license purchased only from themeforest(the above
                         </li>
                     <?php endif; ?>
 
-                    <?php if($current_userEmployeeID == 0 OR $current_userID == 95 OR $current_userID == 42 OR $current_userID == 88) { ?>
-                        <li class="nav-item <?php echo $site === "job-ticket" ? "active " : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('job-ticket', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                    <!--if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('job-ticket', $current_userEmployerID, $current_userEmployeeID); }-->
+                    <?php //  if($current_userEmployeeID == 0 OR $current_userID == 95 OR $current_userID == 42 OR $current_userID == 88) { ?>
+                    <?php if($current_userEmployeeID == 0) { ?>
+                        <li class="nav-item <?php echo $site === "job-ticket" ? "active " : ""; ?>">
                             <a href="job-ticket" class="nav-link">
                                 <i class="icon-earphones-alt"></i>
                                 <span class="title">Job Ticket Tracker</span>
@@ -2130,7 +2158,16 @@ License: You must have a valid license purchased only from themeforest(the above
                             </ul>
                         </li>
                     <?php } ?>
-
+                    
+                    <?php if($_COOKIE['ID'] == 481) { ?>
+                        <li class="nav-item ">
+                            <a href="rvm" class="nav-link">
+                                <i class="icon-docs"></i>
+                                <span class="title">RVM</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                    <?php } ?>
 
                     <?php
                             // Sidebar Menu
@@ -2170,7 +2207,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                     $menuDown_ID = $rowMenuDown['ID'];
                                                     $menuDown_collab = $rowMenuDown['collab'];
                                                     $menuDown_url = $rowMenuDown['url'];
-                                                    $menuDown_description = $rowMenuDown['description'];
+                                                    $menuDown_description = htmlentities($rowMenuDown['description']);
 
                                                     $output .= '<li class="nav-item '; if ($site == $menuDown_url) { $output .= 'active'; } if ($menuDown_collab == 1 AND $current_userEmployeeID > 0) { $output .= menu($menuDown_url, $current_userEmployerID, $current_userEmployeeID); } $output .= '">
                                                         <a href="'.$menuDown_url.'" class="nav-link ">
@@ -2197,9 +2234,9 @@ License: You must have a valid license purchased only from themeforest(the above
                                     $menu_collab = $rowMenu['collab'];
                                     $menu_icon = $rowMenu['icon'];
                                     $menu_url = $rowMenu['url'];
-                                    $menu_description = $rowMenu['description'];
+                                    $menu_description = htmlentities($rowMenu['description']);
 
-                                    $selectMenuSubs = mysqli_query( $conn,"SELECT * FROM tbl_menu_subscription WHERE deleted = 0 AND type = 2 AND menu_id = $menu_ID AND user_id = $switch_user_id" );
+                                    $selectMenuSubs = mysqli_query( $conn,"SELECT * FROM tbl_menu_subscription WHERE display = 1 AND deleted = 0 AND type = 2 AND menu_id = $menu_ID AND user_id = $switch_user_id" );
                                     if ( mysqli_num_rows($selectMenuSubs) > 0 ) {
                                         $rowMenuSub = mysqli_fetch_array($selectMenuSubs);
     		                            $sub_date_start = $rowMenuSub["date_start"];
@@ -2227,7 +2264,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                 while($rowMenu = mysqli_fetch_array($selectMenu)) {
                                     $menu_ID = $rowMenu['ID'];
 
-                                    $selectMenuSubs = mysqli_query( $conn,"SELECT * FROM tbl_menu_subscription WHERE deleted = 0 AND type = 1 AND menu_id = $menu_ID AND user_id = $switch_user_id" );
+                                    $selectMenuSubs = mysqli_query( $conn,"SELECT * FROM tbl_menu_subscription WHERE display = 1 AND deleted = 0 AND type = 1 AND menu_id = $menu_ID AND user_id = $switch_user_id" );
                                     if ( mysqli_num_rows($selectMenuSubs) > 0 ) {
                                         $rowMenuSub = mysqli_fetch_array($selectMenuSubs);
     		                            $sub_date_start = $rowMenuSub["date_start"];
@@ -2259,9 +2296,9 @@ License: You must have a valid license purchased only from themeforest(the above
                                     $menu_collab = $rowMenu['collab'];
                                     $menu_icon = $rowMenu['icon'];
                                     $menu_url = $rowMenu['url'];
-                                    $menu_description = $rowMenu['description'];
+                                    $menu_description = htmlentities($rowMenu['description']);
 
-                                    $selectMenuSubs = mysqli_query( $conn,"SELECT * FROM tbl_menu_subscription WHERE deleted = 0 AND type = 1 AND menu_id = $menu_ID AND user_id = $switch_user_id" );
+                                    $selectMenuSubs = mysqli_query( $conn,"SELECT * FROM tbl_menu_subscription WHERE display = 1 AND deleted = 0 AND type = 1 AND menu_id = $menu_ID AND user_id = $switch_user_id" );
                                     if ( mysqli_num_rows($selectMenuSubs) > 0 ) {
                                         $rowMenuSub = mysqli_fetch_array($selectMenuSubs);
     		                            $sub_date_start = $rowMenuSub["date_start"];
@@ -2480,7 +2517,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         </a>
                     </li>
                     <?php  endif;?>
-                    <?php if($current_client == 1 || $current_userID == 42 || $current_userID == 693 || $current_userID == 88 || $current_userID == 667 || $current_userID == 748 || $current_userID == 149 || $current_userID == 943 || $current_userID == 153 || $current_userID == 41 || $current_userID == 154 || $current_userID == 43 || $current_userID == 387 || $current_userID == 54 || $current_userID == 55): ?>
+                    <?php if($current_client == 1 || $current_userID == 42 || $current_userID == 693 || $current_userID == 88 || $current_userID == 667 || $current_userID == 748 || $current_userID == 149 || $current_userID == 943 || $current_userID == 153 || $current_userID == 41 || $current_userID == 154 || $current_userID == 43 || $current_userID == 387 || $current_userID == 54 || $current_userID == 55 || $current_userID == 35 || $current_userID == 43 || $current_userID == 1474): ?>
                     <li class="nav-item <?php echo $site === "MyPro" ? "active" : ""; ?>">
                         <a href="test_MyPro" class="nav-link">
                             <i class="icon-earphones-alt"></i>
@@ -2615,7 +2652,7 @@ License: You must have a valid license purchased only from themeforest(the above
                     <?php endif ?>
                     <?php } ?>
 
-                    <?php if($switch_user_id == 1360): ?>
+                    <?php if($switch_user_id == 1360 OR $switch_user_id == 1365 OR $switch_user_id == 1366 OR $switch_user_id == 1453 OR $switch_user_id == 1482 OR $switch_user_id == 1477): ?>
                         <li class="nav-item">
                             <a href="coming-soon" class="nav-link">
                                 <i class="icon-docs"></i>
@@ -2938,6 +2975,13 @@ License: You must have a valid license purchased only from themeforest(the above
                             <span class="selected"></span>
                         </a>
                     </li>
+                    <li class="nav-item <?php echo $site === "app-store" ? "active" : ""; ?>">
+                        <a href="https://consultareinc.com/fda/fda-registration-information-sheet/" target="_blank" class="nav-link">
+                            <i class="icon-pencil" style="color: orange !important;"></i>
+                            <span class="title">FDA Registration</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
 
                     <?php
                         if($current_client == 0) {
@@ -2946,7 +2990,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                 echo '<li class="nav-item '; echo $site === "pricing" ? "active" : ""; echo '">
                                     <a href="pricing" class="nav-link">
                                         <i class="icon-tag" style="color: #ffff00;"></i>
-                                        <span class="title" style="color: #ffff00; font-weight: bold;">Pricing</span>
+                                        <span class="title" style="color: #ffff00; font-weight: bold;">Software Package</span>
                                         <span class="selected"></span>
                                     </a>
                                 </li>';
@@ -2992,7 +3036,7 @@ License: You must have a valid license purchased only from themeforest(the above
                     <li class="nav-item hide">
                         <a href="<?php echo $row['app_url']; ?>" target="_blank" class="nav-link">
                             <i class="icon-layers"></i>
-                            <span class="title"><?php echo $row['application_name']; ?></span>
+                            <span class="title"><?php echo htmlentities($row['application_name']); ?></span>
                             <span class="selected"></span>
                         </a>
                     </li>
@@ -3112,7 +3156,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         </li>
                         <?php echo $breadcrumbs; ?>
                     </ul>
-                    <div class="page-toolbar <?php if ($site == '404' OR $site == '505' OR $site == 'dashboard') { echo 'hide'; } else if (!isset($_COOKIE['switchAccount'])) { if ($current_userEmployeeID > '0' AND $current_userAdminAccess == 0 AND $current_userID <> 532) { echo 'hide'; } } ?>">
+                    <div class="page-toolbar <?php if ($site == '404' OR $site == '505' OR $site == 'dashboard' OR $current_userEmployerID > 0) { echo 'hide'; } else if (!isset($_COOKIE['switchAccount'])) { if ($current_userEmployeeID > '0' AND $current_userAdminAccess == 0 AND $current_userID <> 532) { echo 'hide'; } } ?>">
                         <!--<div class="page-toolbar <?php //if ($site == '404' OR $site == '505' OR $site == 'dashboard' OR $current_userEmployeeID > '0') { echo 'hide'; } ?>">-->
                         <a href="#modalCollab" data-toggle="modal" class="btn btn-success btn-fit-height">
                             Collaborator <i class="icon-settings"></i>

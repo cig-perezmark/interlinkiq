@@ -132,7 +132,12 @@
             #old-document-container a{
                 text-decoration: none;
             }
-
+            .custom-width2 {
+                width: 60% !important;
+            }
+            .last-column: {
+                width: 5%;
+            }
         </style>
         <div class="row">
             <div class="col-md-12">
@@ -343,13 +348,13 @@
                                             <table class="table table-bordered table-hover table-striped dataTable no-footer" id="pendingTaskTable">
                                                 <thead>
                                                     <tr>
-                                                        <th width="5%">#</th>
+                                                        <th>#</th>
                                                         <th>Task</th>
                                                         <th>Originator</th>
                                                         <th>Assigned to</th>
                                                         <th>Status</th>
                                                         <th>Due</th>
-                                                        <th width="%"></th>
+                                                        <th class="custom-width text-center">Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody></tbody>
@@ -361,13 +366,13 @@
                                             <table class="table table-bordered table-hover table-striped dataTable no-footer" id="completedTaskTable">
                                                 <thead>
                                                     <tr>
-                                                        <th width="5%">#</th>
+                                                        <th>#</th>
                                                         <th>Task</th>
                                                         <th>Originator</th>
                                                         <th>Assigned to</th>
                                                         <th>Status</th>
                                                         <th>Due</th>
-                                                        <th width="%"></th>
+                                                        <th class="custom-width text-center">Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -403,8 +408,8 @@
                                             <tr>
                                                 <th>Date</th>
                                                 <th>Added by</th>
-                                                <th>Notes</th>
-                                                <th width="%"></th>
+                                                <th class="custom-width2">Notes</th>
+                                                <th class="custom-width text-center">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -443,7 +448,7 @@
                                                 <th>Date Added</th>
                                                 <th>Date End</th>
                                                 <th>Documents</th>
-                                                <th width="%"></th>
+                                                <th class="custom-width text-center">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -519,7 +524,7 @@
                                                 <th>Message</th>
                                                 <th>Frequency</th>
                                                 <th>Status</th>
-                                                <th width="%"></th>
+                                                <th class="custom-width text-center">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -771,7 +776,7 @@
                                                         <th>Description</th>
                                                         <th>Request Date</th>
                                                         <th>Desired Due Date</th>
-                                                        <th width="%"></th>
+                                                        <th class="custom-width"></th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -1745,7 +1750,7 @@
                     height: 400
                 });
             });
-
+            
             var universalId = $('#universal_id').data('id');
                                   
             function initializeDataTable(selector) {
@@ -1781,8 +1786,12 @@
                     pageLength: 5,
                     searching: true,
                     dom: "<'row' <'col-md-12'B>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
+                    createdRow: function(row, data, index) {
+                        $(row).find('td:last-child').addClass('text-center last-column');
+                    }
                 });
             }
+
 
             function formatDate(date) {
                 var parts = date.split('/');
@@ -1909,7 +1918,7 @@
                             campaignsTable.DataTable().clear().draw();
                         }
                         campaigns.forEach(function(campaign) {
-                            let status = campaign.status == 1 ? "Suspended" : "Active";
+                            let status = campaign.status == 0 ? "Suspended" : "Active";
                             var email_frequency = parseInt(campaign.frequency);
                             var frequency = '';
 

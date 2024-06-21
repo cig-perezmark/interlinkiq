@@ -11,8 +11,7 @@
                                             $users = $switch_user_id;
                                             $query = "SELECT * FROM tblEnterpiseDetails where users_entities = $users";
                                             $result = mysqli_query($conn, $query);     
-                                            while($row = mysqli_fetch_array($result))
-                                            {
+                                            while($row = mysqli_fetch_array($result)) {
                                                 $done = false;
                                                 if($users == $row['users_entities']){
                                                     $done = true;
@@ -23,12 +22,12 @@
                                             <?php  if ( empty($row['BrandLogos']) ) {
                                                 echo '<img src="https://via.placeholder.com/200x150/EFEFEF/AAAAAA&text=no+image" class="img-responsive thumbnail" alt="Avatar" />';
                                             } else {
-                                                echo '<img src="companyDetailsFolder/'.$row['BrandLogos'].'" class="img-responsive thumbnail" alt="Avatar" />';
+                                                echo '<img src="companyDetailsFolder/'.htmlentities($row['BrandLogos']).'" class="img-responsive thumbnail" alt="Avatar" />';
                                             } ?>
                                     </div>
                                         <div class="profile-usertitle">
-                                                    <div class="profile-usertitle-name"><?php echo $row['businessname']; ?></div>
-                                                    <div class="profile-usertitle-job "> <u><?php echo $row['Bldg']; ?>,&nbsp;<?php echo $row['city']; ?>,&nbsp;<?php echo $row['States']; ?>,&nbsp;<?php echo $row['ZipCode']; ?></u> </div>
+                                                    <div class="profile-usertitle-name"><?php echo htmlentities($row['businessname']); ?></div>
+                                                    <div class="profile-usertitle-job "> <u><?php echo htmlentities($row['Bldg']); ?>,&nbsp;<?php echo htmlentities($row['city']); ?>,&nbsp;<?php echo htmlentities($row['States']); ?>,&nbsp;<?php echo htmlentities($row['ZipCode']); ?></u> </div>
                                                     <i style="font-size:12px;">Address</i>
                                                     <br>
                                                     <br>
@@ -37,7 +36,7 @@
                                         <?php  if ( empty($row['BrandLogos']) ) {
                                                     echo '<img src="https://via.placeholder.com/200x150/EFEFEF/AAAAAA&text=no+image" class="img-responsive thumbnail" alt="Avatar" />';
                                                 } else {
-                                                    echo '<img src="companyDetailsFolder/'.$row['BrandLogos'].'" class="img-responsive thumbnail" alt="Avatar" />';
+                                                    echo '<img src="companyDetailsFolder/'.htmlentities($row['BrandLogos']).'" class="img-responsive thumbnail" alt="Avatar" />';
                                                 } ?>
                                                         
                                         </div>
@@ -102,9 +101,9 @@
                                                                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                                         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                                             if ( $rowEmployee["ID"] === $current_userID ) {
-                                                                                echo '<option value="'. $rowEmployee["ID"] .'" selected>'. $rowEmployee["first_name"] .' '. $rowEmployee["last_name"] .'</option>';
+                                                                                echo '<option value="'. $rowEmployee["ID"] .'" selected>'. htmlentities($rowEmployee["first_name"]) .' '. htmlentities($rowEmployee["last_name"]) .'</option>';
                                                                             } else {
-                                                                                echo '<option value="'. $rowEmployee["ID"] .'">'. $rowEmployee["first_name"] .' '. $rowEmployee["last_name"] .'</option>';
+                                                                                echo '<option value="'. $rowEmployee["ID"] .'">'. htmlentities($rowEmployee["first_name"]) .' '. htmlentities($rowEmployee["last_name"]) .'</option>';
                                                                             }
                                                                         }
                                                                     } else {
@@ -154,7 +153,7 @@
                                                                                         if ( mysqli_num_rows($resultEmployee) > 0 ) {
                                                                                             while($rowEmployee = mysqli_fetch_array($resultEmployee)) {
                                                                                                 if (in_array($rowEmployee["ID"], $array_assigned_to_id)) {
-                                                                                                    array_push($data_assigned_to_id, $rowEmployee["first_name"] .' '. $rowEmployee["last_name"]);
+                                                                                                    array_push($data_assigned_to_id, htmlentities($rowEmployee["first_name"]) .' '. htmlentities($rowEmployee["last_name"]));
                                                                                                 }
                                                                                             }
                                                                                         }
@@ -266,9 +265,9 @@
                                                                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                                             while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                                                 if ( $rowEmployee["ID"] === $current_userID ) {
-                                                                                    echo '<option value="'. $rowEmployee["ID"] .'" selected>'. $rowEmployee["first_name"] .' '. $rowEmployee["last_name"] .'</option>';
+                                                                                    echo '<option value="'. $rowEmployee["ID"] .'" selected>'. htmlentities($rowEmployee["first_name"]) .' '. htmlentities($rowEmployee["last_name"]) .'</option>';
                                                                                 } else {
-                                                                                    echo '<option value="'. $rowEmployee["ID"] .'">'. $rowEmployee["first_name"] .' '. $rowEmployee["last_name"] .'</option>';
+                                                                                    echo '<option value="'. $rowEmployee["ID"] .'">'. htmlentities($rowEmployee["first_name"]) .' '. htmlentities($rowEmployee["last_name"]) .'</option>';
                                                                                 }
                                                                             }
                                                                         } else {
@@ -330,7 +329,7 @@
                                                                                                         $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $userID" );
                                                                                                         if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                                                             while($rowUser = mysqli_fetch_array($selectUser)) {
-                                                                                                                $data_assigned_to_id = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                                                                $data_assigned_to_id = htmlentities($rowUser["first_name"]) .' '. htmlentities($rowUser["last_name"]);
                                                                                                             }
                                                                                                         }
                                                                                                     // }
@@ -346,7 +345,7 @@
                                                                                             if ( mysqli_num_rows($resultEmployee) > 0 ) {
                                                                                                 while($rowEmployee = mysqli_fetch_array($resultEmployee)) {
                                                                                                     if (in_array($rowEmployee["ID"], $array_assigned_to_id)) {
-                                                                                                        array_push($data_assigned_to_id, $rowEmployee["first_name"] .' '. $rowEmployee["last_name"]);
+                                                                                                        array_push($data_assigned_to_id, htmlentities($rowEmployee["first_name"]) .' '. htmlentities($rowEmployee["last_name"]));
                                                                                                     }
                                                                                                 }
                                                                                             }
@@ -364,7 +363,7 @@
                                                                                                     </div>';
                                                                                                 }
                                                                                                 
-                                                                                                echo '<b>'. $rowTask["task"] .'</b></br>
+                                                                                                echo '<b>'. htmlentities($rowTask["task"]) .'</b></br>
                                                                                                 <span><b>Assigned To: </b><i>'. $data_assigned_to_id .'</i></span></br>
                                                                                                 <span><b>Due Date: </b><i>'. $rowTask["due_date"] .'</i></span></br>
                                                                                                 <span><b>Remarks: </b><i>';
@@ -379,7 +378,7 @@
                                                                                                             echo '<span class="label label-sm label-danger">Canceled</span>';
                                                                                                         }
                                                                                                     } else {
-                                                                                                        echo '<span>'. $rowTask["remarks"] .'</span>';
+                                                                                                        echo '<span>'. htmlentities($rowTask["remarks"]) .'</span>';
                                                                                                     }
 
 
@@ -389,7 +388,7 @@
                                                                                                 <div class="btn-group btn-group-circle">
                                                                                                     <button type="button" class="btn btn-outline dark btn-sm btnEditTask" 
                                                                                                         data-id="'. $rowTask["ID"] .'"
-                                                                                                        data-task="'. $rowTask["task"] .'"
+                                                                                                        data-task="'. htmlentities($rowTask["task"]) .'"
                                                                                                         data-assigned="'. $rowTask["assigned_to_id"] .'"
                                                                                                         data-date="'. $rowTask["due_date"] .'"
                                                                                                         data-priority="'. $rowTask["priority"] .'"
@@ -466,10 +465,10 @@
                                                                                         echo '<tr id="tr_'. $rowUpload["ID"] .'">
                                                                                             <td>';
                                                                                                 if ( !empty( $rowUpload["description"] ) ) {
-                                                                                                    echo '<span>'. $rowUpload["description"] .'</span></br>';
+                                                                                                    echo '<span>'. htmlentities($rowUpload["description"]) .'</span></br>';
                                                                                                 }
                                                                                                 
-                                                                                                echo '<a href="uploads/'. $rowUpload["files"] .'" target="_blank">'. $rowUpload["files"] .'</a>
+                                                                                                echo '<a href="uploads/'. htmlentities($rowUpload["files"]) .'" target="_blank">'. htmlentities($rowUpload["files"]) .'</a>
                                                                                             </td>
                                                                                             <td class="text-center">
                                                                                                 <a class="btn red-thunderbird btn-sm uppercase btnRemoveUpload" data-id="'. $rowUpload["ID"] .'"><i class="fa fa-times"></i> Remove</a>

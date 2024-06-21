@@ -209,6 +209,16 @@
                     swal("Done!", "This item has been deleted.", "success");
                 });
             }
+            function checkDiplay(id, e) {
+                $.ajax({
+                    type: "GET",
+                    url: "function.php?modalCheck_Sidebar="+id+"&v="+e.checked,
+                    dataType: "html",                  
+                    success: function(data){
+                        // alert(data);
+                    }
+                });
+            }
 
             // Account
             function btnNew(id, type) {
@@ -253,6 +263,7 @@
                                 result += '<td class="text-center">'+obj.date_start+'</td>';
                                 result += '<td class="text-center">'+obj.date_end+'</td>';
                                 result += '<td class="text-center"><span class="label label-sm label-info btn-circle">Initializing</span></td>';
+                                result += '<td class="text-center"><input type="checkbox" name="" value="1" checked onchange="checkDiplay('+obj.ID+', this)"></td>';
                                 result += '<td class="text-center">';
                                     result += '<div class="btn-group btn-group-circle">';
                                         result += '<a href="#modalEdit" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnEdit('+obj.ID+', '+obj.type+')">Edit</a>';
@@ -312,6 +323,7 @@
                             result += '<td class="text-center">'+obj.date_start+'</td>';
                             result += '<td class="text-center">'+obj.date_end+'</td>';
                             result += '<td class="text-center"><span class="label label-sm label-info btn-circle">Initializing</span></td>';
+                            result += '<td class="text-center"><input type="checkbox" name="" value="1" checked onchange="checkDiplay('+obj.ID+', this)"></td>';
                             result += '<td class="text-center">';
                                 result += '<div class="btn-group btn-group-circle">';
                                     result += '<a href="#modalEdit" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnEdit('+obj.ID+', '+obj.type+')">Edit</a>';

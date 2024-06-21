@@ -140,7 +140,7 @@
                             <div class="portlet light">
                                 <div class="portlet-title tabbable-line">
                                     <div class="caption">
-                                        <i class="icon-users font-dark"></i>
+                                        <span class="icon-users font-dark"></span>
                                         <span class="caption-subject font-dark bold uppercase">List of Customers</span>
                                         <?php
                                             if($current_client == 0) {
@@ -163,11 +163,14 @@
                                                 		$file_url = $src.$url.rawurlencode($file_upload).$embed;
                                                     }
                                                     
-                                                    if ($type_id == 0) {
-                                                		echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i> '.$file_title.'</a>';
-                                                	} else {
-                                                		echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><i class="fa fa-youtube"></i> '.$file_title.'</a>';
-                                                	}
+                                                    $icon = $row["icon"];
+                                                    if (!empty($icon)) { 
+                                                        if ($type_id == 0) {
+                                                            echo ' <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                                        } else {
+                                                            echo ' <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                                        }
+                                                    }
 	                                            }
                                             }
                                         ?>
@@ -1897,15 +1900,6 @@
             function btnClose(view) {
                 $('#'+view+' .modal-body').html('');
             }
-            function uploadNewOld(e) {
-                $(e).parent().hide();
-                $(e).parent().prev('.form-control').removeClass('hide');
-            }
-            function uploadNew(e) {
-				$(e).parent().hide();
-				// $(e).parent().prev('.form-control').removeClass('hide');
-                $(e).parent().parent().find('select').removeClass('hide');
-			}
             function changeType(e) {
                 $(e).parent().find('input').hide();
                 $(e).parent().find('input').prop('required',false);

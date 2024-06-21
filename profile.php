@@ -1162,10 +1162,10 @@
                                                                     <th>Status</th>
                                                                 </tr>
                                                             </thead>
-                                                            <tbody>
+                                                            <tbody> 
                                                                 <?php
                                                                     $t=1;
-                                                                    $queryPending = "SELECT * FROM tbl_Customer_Relationship_Task  where Task_Status = 1 and Assigned_to = '$current_userEmail'";
+                                                                    $queryPending = "SELECT user_cookies, crm_ids, assign_task, Task_Description, Task_added, Deadline FROM tbl_Customer_Relationship_Task  where Task_Status = 1 and Assigned_to = '$current_userEmail'";
                                                                     $resultPending = mysqli_query($conn, $queryPending);
                                                                                                 
                                                                     while($rowPending = mysqli_fetch_array($resultPending)){?>
@@ -1174,36 +1174,36 @@
                                                                     <td>
                                                                         <?php
                                                                             $getids = $rowPending['user_cookies'];
-                                                                            $queryUser = "SELECT * FROM tbl_user  where ID = $getids";
+                                                                            $queryUser = "SELECT first_name, last_name FROM tbl_user  where ID = $getids";
                                                                             $resultUser = mysqli_query($conn, $queryUser);
                                                                                                         
                                                                             while($rowUser = mysqli_fetch_array($resultUser)){ 
-                                                                                echo $rowUser['first_name'];
+                                                                                echo htmlentities($rowUser['first_name'] ?? '');
                                                                                 echo ' ';
-                                                                                echo $rowUser['last_name'];
+                                                                                echo htmlentities($rowUser['last_name'] ?? '');
                                                                             }
                                                                         ?>
                                                                     </td>
-                                                                    <td><a href="customer_relationship_View.php?view_id=<?php echo $rowPending['crm_ids'] ?>#tasks">
+                                                                    <td><a href="customer_details.php?view_id=<?php echo $rowPending['crm_ids'] ?>#tasks">
                                                                         <?php
                                                                             $crm_ids = $rowPending['crm_ids'];
-                                                                            $queryAccount = "SELECT * FROM tbl_Customer_Relationship  where crm_id = $crm_ids";
+                                                                            $queryAccount = "SELECT account_name FROM tbl_Customer_Relationship  where crm_id = $crm_ids";
                                                                             $resultAccount = mysqli_query($conn, $queryAccount);
                                                                                                         
                                                                             while($rowAccount = mysqli_fetch_array($resultAccount)){ 
-                                                                                echo $rowAccount['account_name'];
+                                                                                echo htmlentities($rowAccount['account_name'] ?? '');
                                                                             }
                                                                         ?></a>
                                                                     </td>
-                                                                    <td><?php echo $rowPending['assign_task']; ?></td>
-                                                                    <td><?php echo $rowPending['Task_Description']; ?></td>
-                                                                    <td><?php echo $rowPending['Task_added']; ?></td>
-                                                                    <td><?php echo $rowPending['Deadline']; ?></td>
+                                                                    <td><?php echo htmlentities($rowPending['assign_task'] ?? ''); ?></td>
+                                                                    <td><?php echo htmlentities($rowPending['Task_Description'] ?? ''); ?></td>
+                                                                    <td><?php echo htmlentities($rowPending['Task_added'] ?? ''); ?></td>
+                                                                    <td><?php echo htmlentities($rowPending['Deadline'] ?? ''); ?></td>
                                                                     <td><b style="color:red;">Pending</b></td>
                                                                 </tr>
                                                                 <?php } ?>
                                                                 <?php
-                                                                    $queryInprogress = "SELECT * FROM tbl_Customer_Relationship_Task  where Task_Status = 2 and Assigned_to = '$current_userEmail'";
+                                                                    $queryInprogress = "SELECT user_cookies, crm_ids, assign_task, Task_Description, Task_added, Deadline FROM tbl_Customer_Relationship_Task  where Task_Status = 2 and Assigned_to = '$current_userEmail'";
                                                                     $resultInprogress = mysqli_query($conn, $queryInprogress);
                                                                                                 
                                                                     while($rowInprogress = mysqli_fetch_array($resultInprogress)){?>
@@ -1212,36 +1212,36 @@
                                                                     <td>
                                                                         <?php
                                                                             $getids = $rowInprogress['user_cookies'];
-                                                                            $queryUser = "SELECT * FROM tbl_user  where ID = $getids";
+                                                                            $queryUser = "SELECT first_name, last_name FROM tbl_user  where ID = $getids";
                                                                             $resultUser = mysqli_query($conn, $queryUser);
                                                                                                         
                                                                             while($rowUser = mysqli_fetch_array($resultUser)){ 
-                                                                                echo $rowUser['first_name'];
+                                                                                echo htmlentities($rowUser['first_name'] ?? '');
                                                                                 echo ' ';
-                                                                                echo $rowUser['last_name'];
+                                                                                echo htmlentities($rowUser['last_name'] ?? '');
                                                                             }
                                                                         ?>
                                                                     </td>
-                                                                    <td><a href="customer_relationship_View.php?view_id=<?php echo $rowInprogress['crm_ids'] ?>#tasks">
+                                                                    <td><a href="customer_details.php?view_id=<?php echo $rowInprogress['crm_ids'] ?>#tasks">
                                                                         <?php
                                                                             $crm_ids = $rowInprogress['crm_ids'];
-                                                                            $queryAccount = "SELECT * FROM tbl_Customer_Relationship  where crm_id = $crm_ids";
+                                                                            $queryAccount = "SELECT account_name FROM tbl_Customer_Relationship  where crm_id = $crm_ids";
                                                                             $resultAccount = mysqli_query($conn, $queryAccount);
                                                                                                         
                                                                             while($rowAccount = mysqli_fetch_array($resultAccount)){ 
-                                                                                echo $rowAccount['account_name'];
+                                                                                echo htmlentities($rowAccount['account_name'] ?? '');
                                                                             }
                                                                         ?></a>
                                                                     </td>
-                                                                    <td><?php echo $rowInprogress['assign_task']; ?></td>
-                                                                    <td><?php echo $rowInprogress['Task_Description']; ?></td>
-                                                                    <td><?php echo $rowInprogress['Task_added']; ?></td>
-                                                                    <td><?php echo $rowInprogress['Deadline']; ?></td>
+                                                                    <td><?php echo htmlentities($rowInprogress['assign_task'] ?? ''); ?></td>
+                                                                    <td><?php echo htmlentities($rowInprogress['Task_Description'] ?? ''); ?></td>
+                                                                    <td><?php echo htmlentities($rowInprogress['Task_added'] ?? ''); ?></td>
+                                                                    <td><?php echo htmlentities($rowInprogress['Deadline'] ?? ''); ?></td>
                                                                     <td><b style="color:orange;">Inprogress</b></td>
                                                                 </tr>
                                                                 <?php } ?>
                                                                 <?php
-                                                                    $queryDone = "SELECT * FROM tbl_Customer_Relationship_Task  where Task_Status = 3 and Assigned_to = '$current_userEmail'";
+                                                                    $queryDone = "SELECT user_cookies, crm_ids, assign_task, Task_Description, Task_added, Deadline FROM tbl_Customer_Relationship_Task  where Task_Status = 3 and Assigned_to = '$current_userEmail'";
                                                                     $resultDone = mysqli_query($conn, $queryDone);
                                                                                                 
                                                                     while($rowDone = mysqli_fetch_array($resultDone)){?>
@@ -1250,31 +1250,31 @@
                                                                     <td>
                                                                         <?php
                                                                             $getids = $rowDone['user_cookies'];
-                                                                            $queryUser = "SELECT * FROM tbl_user  where ID = $getids";
+                                                                            $queryUser = "SELECT first_name, last_name FROM tbl_user  where ID = $getids";
                                                                             $resultUser = mysqli_query($conn, $queryUser);
                                                                                                         
                                                                             while($rowUser = mysqli_fetch_array($resultUser)){ 
-                                                                                echo $rowUser['first_name'];
+                                                                                echo htmlentities($rowUser['first_name'] ?? '');
                                                                                 echo ' ';
-                                                                                echo $rowUser['last_name'];
+                                                                                echo htmlentities($rowUser['last_name'] ?? '');
                                                                             }
                                                                         ?>
                                                                     </td>
-                                                                    <td> <a href="customer_relationship_View.php?view_id=<?php echo $rowDone['crm_ids'] ?>#tasks">
+                                                                    <td> <a href="customer_details.php?view_id=<?php echo $rowDone['crm_ids'] ?>#tasks">
                                                                         <?php
                                                                             $crm_ids = $rowDone['crm_ids'];
-                                                                            $queryAccount = "SELECT * FROM tbl_Customer_Relationship  where crm_id = $crm_ids";
+                                                                            $queryAccount = "SELECT account_name FROM tbl_Customer_Relationship  where crm_id = $crm_ids";
                                                                             $resultAccount = mysqli_query($conn, $queryAccount);
                                                                                                         
                                                                             while($rowAccount = mysqli_fetch_array($resultAccount)){ 
-                                                                                echo $rowAccount['account_name'];
+                                                                                echo htmlentities($rowAccount['account_name'] ?? '');
                                                                             }
                                                                         ?></a>
                                                                     </td>
-                                                                    <td><?php echo $rowDone['assign_task']; ?></td>
-                                                                    <td><?php echo $rowDone['Task_Description']; ?></td>
-                                                                    <td><?php echo $rowDone['Task_added']; ?></td>
-                                                                    <td><?php echo $rowDone['Deadline']; ?></td>
+                                                                    <td><?php echo htmlentities($rowDone['assign_task'] ?? ''); ?></td>
+                                                                    <td><?php echo htmlentities($rowDone['Task_Description'] ?? ''); ?></td>
+                                                                    <td><?php echo htmlentities($rowDone['Task_added'] ?? ''); ?></td>
+                                                                    <td><?php echo htmlentities($rowDone['Deadline'] ?? ''); ?></td>
                                                                     <td><b style="color:green;">Done</b></td>
                                                                 </tr>
                                                                 <?php } ?>
@@ -1315,182 +1315,110 @@
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>';
-                                                                
-                                                                    // if ($current_userID == 43) {
-                                                                        $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = $current_userEmployeeID" ); // 83
-                                                                        if ( mysqli_num_rows($selectUser) > 0 ) {
-                                                                            $rowUser = mysqli_fetch_array($selectUser);
-    
-                                                                            $selectTrainings = mysqli_query( $conn,"SELECT 
-                                                                                *
-                                                                                FROM (
-                                                                                    SELECT
-                                                                                    t.ID AS t_ID,
-                                                                                    t.title AS t_title,
-                                                                                    t.job_description_id AS t_job_description_id,
-                                                                                    replace(t.quiz_id , ' ','') AS t_quiz_id,
-                                                                                    t.last_modified AS t_last_modified,
-                                                                                    t.frequency AS t_frequency,
-                                                                                    q.ID AS q_ID,
-                                                                                    q.quiz_id AS q_quiz_id,
-                                                                                    q.result AS q_result,
-                                                                                    q.last_modified AS q_last_modified
-                                                                                    FROM tbl_hr_trainings AS t
-                                                                                    
-                                                                                    LEFT JOIN (
-                                                                                        SELECT * 
-                                                                                        FROM tbl_hr_quiz_result 
-                                                                                        WHERE ID IN 
-                                                                                        ( 
-                                                                                        SELECT MAX(ID) 
-                                                                                        FROM tbl_hr_quiz_result
-                                                                                        WHERE user_id = $current_userID
-                                                                                        GROUP BY quiz_id 
-                                                                                        )
-                                                                                    ) AS q
-                                                                                    ON FIND_IN_SET(q.quiz_id, t.quiz_id) > 0
-                                                                                    
-                                                                                    WHERE t.status = 1
-                                                                                    AND t.deleted = 0
-                                                                                    AND t.user_id = $current_userEmployerID
-                                                                                ) AS r" );
-                                                                            if ( mysqli_num_rows($selectTrainings) > 0 ) {
-                                                                                while($rowTraining = mysqli_fetch_array($selectTrainings)) {
-                                                                                    $training_ID = $rowTraining['t_ID'];
-                                                                                    $title = $rowTraining['t_title'];
-                                                                                    $array_rowTraining = explode(", ", $rowTraining["t_job_description_id"]);
+                                                            
+                                                                    $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = $current_userEmployeeID" ); // 83
+                                                                    if ( mysqli_num_rows($selectUser) > 0 ) {
+                                                                        $rowUser = mysqli_fetch_array($selectUser);
 
-                                                                                    $array_frequency = array(
-                                                                                        0 => '+1 month',
-                                                                                        1 => '+3 month',
-                                                                                        2 => '+6 month',
-                                                                                        3 => '+1 year'
-                                                                                    );
-    
-                                                                                    $found = null;
-                                                                                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $current_userEmployeeID" );
-                                                                                    if ( mysqli_num_rows($selectEmployee) > 0 ) {
-                                                                                        $rowEmployee = mysqli_fetch_array($selectEmployee);
-                                                                                        $array_row = explode(", ", $rowEmployee["job_description_id"]);
-                                                                                        foreach($array_row as $emp_JD) {
-                                                                                            if (in_array($emp_JD,$array_rowTraining)) {
-                                                                                                $found = true;
+                                                                        $selectTrainings = mysqli_query( $conn,"SELECT 
+                                                                            *
+                                                                            FROM (
+                                                                                SELECT
+                                                                                t.ID AS t_ID,
+                                                                                t.title AS t_title,
+                                                                                t.job_description_id AS t_job_description_id,
+                                                                                replace(t.quiz_id , ' ','') AS t_quiz_id,
+                                                                                t.last_modified AS t_last_modified,
+                                                                                t.frequency AS t_frequency,
+                                                                                q.ID AS q_ID,
+                                                                                q.quiz_id AS q_quiz_id,
+                                                                                q.result AS q_result,
+                                                                                q.last_modified AS q_last_modified
+                                                                                FROM tbl_hr_trainings AS t
+                                                                                
+                                                                                LEFT JOIN (
+                                                                                    SELECT * 
+                                                                                    FROM tbl_hr_quiz_result 
+                                                                                    WHERE ID IN 
+                                                                                    ( 
+                                                                                    SELECT MAX(ID) 
+                                                                                    FROM tbl_hr_quiz_result
+                                                                                    WHERE user_id = $current_userID
+                                                                                    GROUP BY quiz_id 
+                                                                                    )
+                                                                                ) AS q
+                                                                                ON FIND_IN_SET(q.quiz_id, t.quiz_id) > 0
+                                                                                
+                                                                                WHERE t.status = 1
+                                                                                AND t.deleted = 0
+                                                                                AND t.user_id = $current_userEmployerID
+                                                                            ) AS r" );
+                                                                        if ( mysqli_num_rows($selectTrainings) > 0 ) {
+                                                                            while($rowTraining = mysqli_fetch_array($selectTrainings)) {
+                                                                                $training_ID = $rowTraining['t_ID'];
+                                                                                $title = htmlentities($rowTraining['t_title'] ?? '');
+                                                                                $array_rowTraining = explode(", ", $rowTraining["t_job_description_id"]);
+
+                                                                                $array_frequency = array(
+                                                                                    0 => '+1 month',
+                                                                                    1 => '+3 month',
+                                                                                    2 => '+6 month',
+                                                                                    3 => '+1 year'
+                                                                                );
+
+                                                                                $found = null;
+                                                                                $selectEmployee = mysqli_query( $conn,"SELECT job_description_id FROM tbl_hr_employee WHERE ID = $current_userEmployeeID" );
+                                                                                if ( mysqli_num_rows($selectEmployee) > 0 ) {
+                                                                                    $rowEmployee = mysqli_fetch_array($selectEmployee);
+                                                                                    $array_row = explode(", ", $rowEmployee["job_description_id"]);
+                                                                                    foreach($array_row as $emp_JD) {
+                                                                                        if (in_array($emp_JD,$array_rowTraining)) {
+                                                                                            $found = true;
+                                                                                        }
+                                                                                    }
+                                                                                }
+
+                                                                                if ( $found == true ) {
+                                                                                    $trainingStatus = "Not Yet Started";
+                                                                                    $trainingResult = 0;
+                                                                                    $completed_date = '';
+                                                                                    $due_date = '';
+                                                                                    $pdf_quiz = '';
+                                                                                    if (!empty($rowTraining['t_quiz_id'])) {
+                                                                                        $trainingQuizID = $rowTraining['q_quiz_id'];
+                                                                                        $trainingResult = $rowTraining['q_result'];
+                                                                                        $pdf_quiz = $rowTraining['q_ID'];
+
+                                                                                        if ($trainingResult == 100) {
+                                                                                            $trainingStatus = "Completed";
+
+                                                                                            $completed_date = $rowTraining['q_last_modified'];
+                                                                                            $completed_date = new DateTime($completed_date);
+                                                                                            $completed_date = $completed_date->format('M d, Y');
+
+                                                                                            $due_date = date('Y-m-d', strtotime($array_frequency[$rowTraining['t_frequency']], strtotime($completed_date)) );
+                                                                                            $due_date = new DateTime($due_date);
+                                                                                            $due_date = $due_date->format('M d, Y');
+
+                                                                                            if (date('Y-m-d') > date('Y-m-d', strtotime($array_frequency[$rowTraining['t_frequency']], strtotime($completed_date)) )) {
+                                                                                                $trainingStatus = '<i class="text-danger sbold">Pass Due</i>';
                                                                                             }
                                                                                         }
                                                                                     }
-    
-                                                                                    if ( $found == true ) {
-                                                                                        $trainingStatus = "Not Yet Started";
-                                                                                        $trainingResult = 0;
-                                                                                        $completed_date = '';
-                                                                                        $due_date = '';
-                                                                                        $pdf_quiz = '';
-                                                                                        if (!empty($rowTraining['t_quiz_id'])) {
-                                                                                            $trainingQuizID = $rowTraining['q_quiz_id'];
-                                                                                            $trainingResult = $rowTraining['q_result'];
-                                                                                            $pdf_quiz = $rowTraining['q_ID'];
-    
-                                                                                            if ($trainingResult == 100) {
-                                                                                                $trainingStatus = "Completed";
-    
-                                                                                                $completed_date = $rowTraining['q_last_modified'];
-                                                                                                $completed_date = new DateTime($completed_date);
-                                                                                                $completed_date = $completed_date->format('M d, Y');
-    
-                                                                                                $due_date = date('Y-m-d', strtotime($array_frequency[$rowTraining['t_frequency']], strtotime($completed_date)) );
-                                                                                                $due_date = new DateTime($due_date);
-                                                                                                $due_date = $due_date->format('M d, Y');
 
-                                                                                                if (date('Y-m-d') > date('Y-m-d', strtotime($array_frequency[$rowTraining['t_frequency']], strtotime($completed_date)) )) {
-                                                                                                    $trainingStatus = '<i class="text-danger sbold">Pass Due</i>';
-                                                                                                }
-                                                                                            }
-                                                                                        }
-    
-                                                                                        echo '<tr id="tr_'.$training_ID.'">
-                                                                                            <td >'. $title .'</td>
-                                                                                            <td class="text-center">'; echo $trainingResult == 100 ? $completed_date:''; echo '</td>
-                                                                                            <td class="text-center">'; echo $trainingResult == 100 ? $due_date:''; echo '</td>
-                                                                                            <td>'.$trainingStatus.'</td>
-                                                                                            <td class="text-center">'; echo $trainingResult == 100 ? '<a href="pdf?id='.$pdf_quiz.'" target="_blank" class="btn btn-circle btn-success">View</a>':''; echo '</td>
-                                                                                            <td class="text-center"><a href="#modalView" class="btn btn-circle btn-success" data-toggle="modal" onclick="btnView('.$training_ID.')">View</a></td>
-                                                                                        </tr>';
-                                                                                    }
+                                                                                    echo '<tr id="tr_'.$training_ID.'">
+                                                                                        <td >'. $title .'</td>
+                                                                                        <td class="text-center">'; echo $trainingResult == 100 ? $completed_date:''; echo '</td>
+                                                                                        <td class="text-center">'; echo $trainingResult == 100 ? $due_date:''; echo '</td>
+                                                                                        <td>'.$trainingStatus.'</td>
+                                                                                        <td class="text-center">'; echo $trainingResult == 100 ? '<a href="pdf?id='.$pdf_quiz.'" target="_blank" class="btn btn-circle btn-success">View</a>':''; echo '</td>
+                                                                                        <td class="text-center"><a href="#modalView" class="btn btn-circle btn-success" data-toggle="modal" onclick="btnView('.$training_ID.')">View</a></td>
+                                                                                    </tr>';
                                                                                 }
                                                                             }
                                                                         }
-                                                                    // } else {
-                                                                    //     $selectTrainings = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE status = 1 AND deleted = 0 AND user_id = $current_userEmployerID" );
-                                                                    //     if ( mysqli_num_rows($selectTrainings) > 0 ) {
-                                                                    //         while($rowTraining = mysqli_fetch_array($selectTrainings)) {
-                                                                    //             $training_ID = $rowTraining['ID'];
-                                                                    //             $title = $rowTraining['title'];
-                                                                                
-                                                                    //             $data_last_modified = $rowTraining['last_modified'];
-                                                                    //             $data_last_modified = new DateTime($data_last_modified);
-                                                                    //             $data_last_modified = $data_last_modified->format('M d, Y');
-    
-                                                                    //             $found = null;
-                                                                    //             $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $current_userEmployeeID" );
-                                                                    //             if ( mysqli_num_rows($selectEmployee) > 0 ) {
-                                                                    //                 $rowEmployee = mysqli_fetch_array($selectEmployee);
-                                                                    //                 $array_row = explode(", ", $rowEmployee["job_description_id"]);
-                                                                    //                 $array_rowTraining = explode(", ", $rowTraining["job_description_id"]);
-                                                                    //                 foreach($array_row as $emp_JD) {
-                                                                    //                     if (in_array($emp_JD,$array_rowTraining)) {
-                                                                    //                         $found = true;
-                                                                    //                     }
-                                                                    //                 }
-                                                                    //             }
-    
-                                                                    //             $trainingStatus = "Not Yet Started";
-                                                                    //             $trainingResult = 0;
-                                                                    //             $completed_date = '';
-                                                                    //             $due_date = '';
-                                                                    //             $pdf_quiz = '';
-                                                                    //             $selectQuizResult = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_result WHERE user_id = $current_userID " );
-                                                                    //             if ( mysqli_num_rows($selectQuizResult) > 0 ) {
-                                                                    //                 while($rowQuizResult = mysqli_fetch_array($selectQuizResult)) {
-                                                                    //                     $trainingResultID = $rowQuizResult['ID'];
-                                                                    //                     $trainingQuizID = $rowQuizResult['quiz_id'];
-    
-                                                                    //                     if (!empty($rowTraining['quiz_id'])) {
-                                                                    //                         $array_quiz_id = explode(', ', $rowTraining['quiz_id']);
-                                                                    //                         if (in_array($trainingQuizID, $array_quiz_id)) {
-                                                                    //                             $trainingResult = $rowQuizResult['result'];
-                                                                    //                             $pdf_quiz = $trainingResultID;
-    
-                                                                    //                             if ($trainingResult == 100) { $trainingStatus = "Completed"; }
-                                                                    //                             else { $trainingStatus = "Not Yet Started"; }
-                                                                                
-                                                                    //                             $completed_date = $rowQuizResult['last_modified'];
-                                                                    //                             $completed_date = new DateTime($completed_date);
-                                                                    //                             $completed_date = $completed_date->format('M d, Y');
-                                                                                
-                                                                    //                             $due_date = date('Y-m-d', strtotime('+1 year', strtotime($completed_date)) );
-                                                                    //                             $due_date = new DateTime($due_date);
-                                                                    //                             $due_date = $due_date->format('M d, Y');
-                                                                    //                         }
-                                                                    //                     }
-    
-                                                                    //                 }
-                                                                    //             }
-    
-                                                                    //             if ( $found == true ) {
-                                                                    //                 echo '<tr id="tr_'.$training_ID.'">
-                                                                    //                     <td >'. $title .'</td>
-                                                                    //                     <td class="text-center">'; echo $trainingResult == 100 ? $completed_date:''; echo '</td>
-                                                                    //                     <td class="text-center">'; echo $trainingResult == 100 ? $due_date:''; echo '</td>
-                                                                    //                     <td>'.$trainingStatus.'</td>
-                                                                    //                     <td class="text-center">'; echo $trainingResult == 100 ? '<a href="pdf?id='.$pdf_quiz.'" target="_blank" class="btn btn-circle btn-success">View</a>':''; echo '</td>
-                                                                    //                     <td class="text-center hide">'.$trainingResult.'%</td>
-                                                                    //                     <td class="text-center"><a href="#modalView" class="btn btn-circle btn-success" data-toggle="modal" onclick="btnView('.$rowTraining["ID"].')">View</a></td>
-                                                                    //                 </tr>';
-                                                                    //             }
-                                                                    //         }
-                                                                    //     }
-                                                                    // }
-                                                                    
+                                                                    }
+                                                                
                                                                 echo '</tbody>
                                                             </table>
                                                         </div>

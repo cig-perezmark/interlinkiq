@@ -97,7 +97,7 @@
                             <div class="portlet light">
                                 <div class="portlet-title tabbable-line">
                                     <div class="caption">
-                                        <i class="icon-earphones-alt font-dark"></i>
+                                        <span class="icon-earphones-alt font-dark"></span>
                                         <span class="caption-subject font-dark bold uppercase">List of Employees</span>
                                         <?php
                                             if($current_client == 0) {
@@ -120,11 +120,14 @@
                                                 		$file_url = $src.$url.rawurlencode($file_upload).$embed;
                                                     }
                                                     
-                                                    if ($type_id == 0) {
-                                                		echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i> '.$file_title.'</a>';
-                                                	} else {
-                                                		echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><i class="fa fa-youtube"></i> '.$file_title.'</a>';
-                                                	}
+                                                    $icon = $row["icon"];
+                                                    if (!empty($icon)) { 
+                                                        if ($type_id == 0) {
+                                                            echo ' <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                                        } else {
+                                                            echo ' <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                                        }
+                                                    }
 	                                            }
                                                 
                                                 if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163) {
@@ -159,20 +162,31 @@
                                 <div class="portlet-body">
                                     <div class="tab-content">
                                         <select id='filterText' style='display:inline-block' onchange='filterText()'>
-                                            <option disabled selected>Select</option>
-                                            <option value='Consultant'>Consultant</option>
-                                            <option value='Contractor'>Contractor</option>
-                                            <option value='Freelance'>Freelance</option>
-                                            <option value='Full-time'>Full-time</option>
-                                            <option value='OJT'>OJT</option>
-                                            <option value='Part-Time Apprentice'>Part-Time Apprentice</option>
-                                            
-                                            <?php 
-                                                echo $_COOKIE['client'] == 1 ? '<option value=\'Part-Time\'>Part-Time</option><option value=\'Salaried\'>Salaried</option><option value=\'Seasonal\'>Seasonal</option>':'<option value=\'Part-Time Project\'>Part-Time Project</option>';
-                                            ?>
-                                            
+                                            <optgroup>
+                                                <option disabled selected>Select</option>
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value='Consultant'>Consultant</option>
+                                                <option value='Contractor'>Contractor</option>
+                                                <option value='Freelance'>Freelance</option>
+                                                <option value='Full-time'>Full-time</option>
+                                                <option value='OJT'>OJT</option>
+                                                <option value='Part-Time Apprentice'>Part-Time Apprentice</option>
+                                                
+                                                <?php 
+                                                    echo $_COOKIE['client'] == 1 ? '<option value=\'Part-Time\'>Part-Time</option><option value=\'Salaried\'>Salaried</option><option value=\'Seasonal\'>Seasonal</option>':'<option value=\'Part-Time Project\'>Part-Time Project</option>';
+                                                ?>
+                                                
                                             <option value='Trainee'>Trainee</option>
-                                            <option value='all'>All</option>
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value='HACCP'>HACCP</option>
+                                                <option value='Food Defense'>Food Defense</option>
+                                                <option value='Food Safety'>Food Safety</option>
+                                            </optgroup>
+                                            <optgroup>
+                                                <option value='all'>All</option>
+                                            </optgroup>
                                         </select>
                                         <div class="tab-pane active" id="tab_actions_active">
                                             <div class="table-scrollable">
@@ -188,6 +202,7 @@
                                                             <th style="width: 150px;">Employment Type</th>
                                                             <th class="hide">Employee File/s</th>
                                                             <th class="hide">Files for Follow-up</th>
+                                                            <th style="width: 80px;" class="text-center">Team</th>
                                                             <th style="width: 80px;" class="text-center">Status</th>
                                                             <th style="width: 100px;" class="text-center">Registered</th>
                                                             <th style="width: 80px;" class="text-center">Action</th>
@@ -195,11 +210,16 @@
                                                     </thead>
                                                     <tbody>
                                                         <?php
+                                                            $team_list = array(
+                                                                1 => 'HACCP',
+                                                                2 => 'Food Defense',
+                                                                3 => 'Food Safety'
+                                                            );
                                                             $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $switch_user_id ORDER BY last_name " );
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 $table_counter = 1;
                                                                 while($row = mysqli_fetch_array($result)) {
-                                                                    $email = $row["email"];
+                                                                    $email = htmlentities($row["email"] ?? '');
                                                                     if ($_COOKIE['client'] == 1) {
                                                                         $employment_type = array(
                                                                             1 => 'Full-time',
@@ -229,18 +249,27 @@
                                                                     }
 
                                                                     $position = array();
-                                                                    $jd = $row["job_description_id"];
+                                                                    $jd = htmlentities($row["job_description_id"] ?? '');
                                                                     if (!empty($jd)) {
                                                                         $jd_arr = explode(", ", $jd);
                                                                         foreach ($jd_arr as $value) {
-                                                                            $resultJD = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE ID = $value" );
+                                                                            $resultJD = mysqli_query( $conn,"SELECT title FROM tbl_hr_job_description WHERE ID = $value" );
                                                                             if ( mysqli_num_rows($resultJD) > 0 ) {
                                                                                 $rowJD = mysqli_fetch_array($resultJD);
-                                                                                array_push($position, $rowJD["title"]);
+                                                                                array_push($position, htmlentities($rowJD["title"] ?? ''));
                                                                             }
                                                                         }
                                                                     }
                                                                     $position = implode(', ', $position);
+
+                                                                    $team = array();
+                                                                    if (!empty($row["team"])) {
+                                                                        $team_arr = explode(', ', $row["team"]);
+                                                                        foreach($team_arr as $value) {
+                                                                            array_push($team, $team_list[$value]);
+                                                                        }
+                                                                    }
+                                                                    $team = implode(', ', $team);
                                                                     
                                                                     echo '<tr id="tr_'. $row["ID"] .'" class="content">
                                                                         <td>'. $table_counter .'</td>
@@ -248,10 +277,11 @@
                                                                         <td>'. htmlentities($row["first_name"] ?? '') .'</td>
                                                                         <td>'. $position .'</td>
                                                                         <td>'. htmlentities($email ?? '') .'</td>
-                                                                        <td class="text-center">'. $row["date_hired"] .'</td>
+                                                                        <td class="text-center">'. htmlentities($row["date_hired"] ?? '') .'</td>
                                                                         <td>'. $employment_type[$row["type_id"]] .'</td>
                                                                         <td class="hide">0</td>
-                                                                        <td class="hide">0</td>';
+                                                                        <td class="hide">0</td>
+                                                                        <td>'.$team.'</td>';
 
                                                                         if ( $row["suspended"] == 1 ) {
                                                                             echo '<td class="text-center"><span class="label label-sm label-warning">Suspended</span></td>';
@@ -265,7 +295,7 @@
                                                                         }
 
                                                                         echo '<td class="text-center">';
-                                                                            $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE email ='".$email."'" );
+                                                                            $selectUser = mysqli_query( $conn,"SELECT ID FROM tbl_user WHERE email ='".$email."'" );
                                                                             if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                                 echo '<span class="label label-sm label-success">Yes</span>';
                                                                             } else {
@@ -305,6 +335,7 @@
                                                             <th style="width: 150px;">Employment Type</th>
                                                             <th class="hide">Employee File/s</th>
                                                             <th class="hide">Files for Follow-up</th>
+                                                            <th style="width: 80px;" class="text-center">Team</th>
                                                             <th style="width: 80px;" class="text-center">Status</th>
                                                             <th style="width: 100px;" class="text-center">Registered</th>
                                                             <th style="width: 80px;" class="text-center">Action</th>
@@ -316,7 +347,7 @@
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 $table_counter = 1;
                                                                 while($row = mysqli_fetch_array($result)) {
-                                                                    $email = $row["email"];
+                                                                    $email = htmlentities($row["email"] ?? '');
                                                                     if ($_COOKIE['client'] == 1) {
                                                                         $employment_type = array(
                                                                             1 => 'Full-time',
@@ -346,18 +377,27 @@
                                                                     }
 
                                                                     $position = array();
-                                                                    $jd = $row["job_description_id"];
+                                                                    $jd = htmlentities($row["job_description_id"] ?? '');
                                                                     if (!empty($jd)) {
                                                                         $jd_arr = explode(", ", $jd);
                                                                         foreach ($jd_arr as $value) {
-                                                                            $resultJD = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE ID = $value" );
+                                                                            $resultJD = mysqli_query( $conn,"SELECT title FROM tbl_hr_job_description WHERE ID = $value" );
                                                                             if ( mysqli_num_rows($resultJD) > 0 ) {
                                                                                 $rowJD = mysqli_fetch_array($resultJD);
-                                                                                array_push($position, $rowJD["title"]);
+                                                                                array_push($position, htmlentities($rowJD["title"] ?? ''));
                                                                             }
                                                                         }
                                                                     }
                                                                     $position = implode(', ', $position);
+
+                                                                    $team = array();
+                                                                    if (!empty($row["team"])) {
+                                                                        $team_arr = explode(', ', $row["team"]);
+                                                                        foreach($team_arr as $value) {
+                                                                            array_push($team, $team_list[$value]);
+                                                                        }
+                                                                    }
+                                                                    $team = implode(', ', $team);
                                                                     
                                                                     echo '<tr id="tr_'. $row["ID"] .'" class="content">
                                                                         <td>'. $table_counter .'</td>
@@ -365,10 +405,11 @@
                                                                         <td>'. htmlentities($row["first_name"] ?? '') .'</td>
                                                                         <td>'. $position .'</td>
                                                                         <td>'. htmlentities($email ?? '') .'</td>
-                                                                        <td class="text-center">'. $row["date_hired"] .'</td>
+                                                                        <td class="text-center">'. htmlentities($row["date_hired"] ?? '') .'</td>
                                                                         <td>'. $employment_type[$row["type_id"]] .'</td>
                                                                         <td class="hide">0</td>
-                                                                        <td class="hide">0</td>';
+                                                                        <td class="hide">0</td>
+                                                                        <td>'.$team.'</td>';
 
                                                                         if ( $row["suspended"] == 1 ) {
                                                                             echo '<td class="text-center"><span class="label label-sm label-warning">Suspended</span></td>';
@@ -382,7 +423,7 @@
                                                                         }
 
                                                                         echo '<td class="text-center">';
-                                                                            $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE email ='".$email."'" );
+                                                                            $selectUser = mysqli_query( $conn,"SELECT ID FROM tbl_user WHERE email ='".$email."'" );
                                                                             if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                                 echo '<span class="label label-sm label-success">Yes</span>';
                                                                             } else {
@@ -417,6 +458,7 @@
                                                             <th style="width: 150px;">Employment Type</th>
                                                             <th class="hide">Employee File/s</th>
                                                             <th class="hide">Files for Follow-up</th>
+                                                            <th style="width: 80px;" class="text-center">Team</th>
                                                             <th style="width: 80px;" class="text-center">Status</th>
                                                             <th style="width: 100px;" class="text-center">Registered</th>
                                                             <th style="width: 80px;" class="text-center">Action</th>
@@ -428,7 +470,7 @@
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 $table_counter = 1;
                                                                 while($row = mysqli_fetch_array($result)) {
-                                                                    $email = $row["email"];
+                                                                    $email = htmlentities($row["email"] ?? '');
                                                                     if ($_COOKIE['client'] == 1) {
                                                                         $employment_type = array(
                                                                             1 => 'Full-time',
@@ -458,18 +500,28 @@
                                                                     }
 
                                                                     $position = array();
-                                                                    $jd = $row["job_description_id"];
+                                                                    $jd = htmlentities($row["job_description_id"] ?? '');
                                                                     if (!empty($jd)) {
                                                                         $jd_arr = explode(", ", $jd);
                                                                         foreach ($jd_arr as $value) {
-                                                                            $resultJD = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE ID = $value" );
+                                                                            $resultJD = mysqli_query( $conn,"SELECT title FROM tbl_hr_job_description WHERE ID = $value" );
                                                                             if ( mysqli_num_rows($resultJD) > 0 ) {
                                                                                 $rowJD = mysqli_fetch_array($resultJD);
-                                                                                array_push($position, $rowJD["title"]);
+                                                                                array_push($position, htmlentities($rowJD["title"] ?? ''));
                                                                             }
                                                                         }
                                                                     }
                                                                     $position = implode(', ', $position);
+
+                                                                    $team = array();
+                                                                    if (!empty($row["team"])) {
+                                                                        $team_arr = explode(', ', $row["team"]);
+                                                                        foreach($team_arr as $value) {
+                                                                            array_push($team, $team_list[$value]);
+                                                                        }
+                                                                    }
+                                                                    $team = implode(', ', $team);
+
                                                                     
                                                                     echo '<tr id="tr_'. $row["ID"] .'" class="content">
                                                                         <td>'. $table_counter .'</td>
@@ -477,10 +529,11 @@
                                                                         <td>'. htmlentities($row["first_name"] ?? '') .'</td>
                                                                         <td>'. $position .'</td>
                                                                         <td>'. htmlentities($email ?? '') .'</td>
-                                                                        <td class="text-center">'. $row["date_hired"] .'</td>
+                                                                        <td class="text-center">'. htmlentities($row["date_hired"] ?? '') .'</td>
                                                                         <td>'. $employment_type[$row["type_id"]] .'</td>
                                                                         <td class="hide">0</td>
-                                                                        <td class="hide">0</td>';
+                                                                        <td class="hide">0</td>
+                                                                        <td>'.$team.'</td>';
 
                                                                         if ( $row["suspended"] == 1 ) {
                                                                             echo '<td class="text-center"><span class="label label-sm label-warning">Suspended</span></td>';
@@ -494,7 +547,7 @@
                                                                         }
 
                                                                         echo '<td class="text-center">';
-                                                                            $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE email ='".$email."'" );
+                                                                            $selectUser = mysqli_query( $conn,"SELECT ID FROM tbl_user WHERE email ='".$email."'" );
                                                                             if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                                 echo '<span class="label label-sm label-success">Yes</span>';
                                                                             } else {
@@ -534,21 +587,21 @@
 
                                                                     $selectFTA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FTA FROM tbl_hr_employee WHERE type_id = 1 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id" );
                                                                     $rowFTA = mysqli_fetch_array($selectFTA);
-                                                                    echo $rowFTA["TOTAL_FTA"];
+                                                                    echo htmlentities($rowFTA["TOTAL_FTA"] ?? '');
 
                                                                 echo '</td>
                                                                 <td class="text-center">';
 
                                                                     $selectFTI = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FTI FROM tbl_hr_employee WHERE type_id = 1 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id" );
                                                                     $rowFTI = mysqli_fetch_array($selectFTI);
-                                                                    echo $rowFTI["TOTAL_FTI"];
+                                                                    echo htmlentities($rowFTI["TOTAL_FTI"] ?? '');
 
                                                                 echo '</td>
                                                                 <td class="text-center">';
 
                                                                     $selectFTS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FTS FROM tbl_hr_employee WHERE type_id = 1 AND suspended = 1 AND user_id = $switch_user_id" );
                                                                     $rowFTS = mysqli_fetch_array($selectFTS);
-                                                                    echo $rowFTS["TOTAL_FTS"];
+                                                                    echo htmlentities($rowFTS["TOTAL_FTS"] ?? '');
 
                                                                 echo '</td>
                                                             </tr>
@@ -558,21 +611,21 @@
 
                                                                     $selectPTA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_PTA FROM tbl_hr_employee WHERE type_id = 2 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id" );
                                                                     $rowPTA = mysqli_fetch_array($selectPTA);
-                                                                    echo $rowPTA["TOTAL_PTA"];
+                                                                    echo htmlentities($rowPTA["TOTAL_PTA"] ?? '');
 
                                                                 echo '</td>
                                                                 <td class="text-center">';
 
                                                                     $selectPTI = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_PTI FROM tbl_hr_employee WHERE type_id = 2 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id" );
                                                                     $rowPTI = mysqli_fetch_array($selectPTI);
-                                                                    echo $rowPTI["TOTAL_PTI"];
+                                                                    echo htmlentities($rowPTI["TOTAL_PTI"] ?? '');
 
                                                                 echo '</td>
                                                                 <td class="text-center">';
 
                                                                     $selectPTS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_PTS FROM tbl_hr_employee WHERE type_id = 2 AND suspended = 1 AND user_id = $switch_user_id" );
                                                                     $rowPTS = mysqli_fetch_array($selectPTS);
-                                                                    echo $rowPTS["TOTAL_PTS"];
+                                                                    echo htmlentities($rowPTS["TOTAL_PTS"] ?? '');
 
                                                                 echo '</td>
                                                             </tr>';
@@ -584,21 +637,21 @@
 
                                                                             $selectOJTA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_OJTA FROM tbl_hr_employee WHERE type_id = 3 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id" );
                                                                             $rowOJTA = mysqli_fetch_array($selectOJTA);
-                                                                            echo $rowOJTA["TOTAL_OJTA"];
+                                                                            echo htmlentities($rowOJTA["TOTAL_OJTA"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
                                                                             $selectOJTI = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_OJTI FROM tbl_hr_employee WHERE type_id = 3 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id" );
                                                                             $rowOJTI = mysqli_fetch_array($selectOJTI);
-                                                                            echo $rowOJTI["TOTAL_OJTI"];
+                                                                            echo htmlentities($rowOJTI["TOTAL_OJTI"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
                                                                             $selectOJTS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_OJTS FROM tbl_hr_employee WHERE type_id = 3 AND suspended = 1 AND user_id = $switch_user_id" );
                                                                             $rowOJTS = mysqli_fetch_array($selectOJTS);
-                                                                            echo $rowOJTS["TOTAL_OJTS"];
+                                                                            echo htmlentities($rowOJTS["TOTAL_OJTS"] ?? '');
 
                                                                     echo '</td>
                                                                 </tr>
@@ -608,21 +661,21 @@
 
                                                                             $selectFA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FA FROM tbl_hr_employee WHERE type_id = 4 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id" );
                                                                             $rowFA = mysqli_fetch_array($selectFA);
-                                                                            echo $rowFA["TOTAL_FA"];
+                                                                            echo htmlentities($rowFA["TOTAL_FA"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
                                                                             $selectFI = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FI FROM tbl_hr_employee WHERE type_id = 4 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id" );
                                                                             $rowFI = mysqli_fetch_array($selectFI);
-                                                                            echo $rowFI["TOTAL_FI"];
+                                                                            echo htmlentities($rowFI["TOTAL_FI"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
                                                                             $selectFS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FS FROM tbl_hr_employee WHERE type_id = 4 AND suspended = 1 AND user_id = $switch_user_id" );
                                                                             $rowFS = mysqli_fetch_array($selectFS);
-                                                                            echo $rowFS["TOTAL_FS"];
+                                                                            echo htmlentities($rowFS["TOTAL_FS"] ?? '');
 
                                                                     echo '</td>
                                                                 </tr>
@@ -632,21 +685,21 @@
 
                                                                             $selectIA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IA FROM tbl_hr_employee WHERE type_id = 5 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id" );
                                                                             $rowIA = mysqli_fetch_array($selectIA);
-                                                                            echo $rowIA["TOTAL_IA"];
+                                                                            echo htmlentities($rowIA["TOTAL_IA"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
                                                                             $selectII = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_II FROM tbl_hr_employee WHERE type_id = 5 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id" );
                                                                             $rowII = mysqli_fetch_array($selectII);
-                                                                            echo $rowII["TOTAL_II"];
+                                                                            echo htmlentities($rowII["TOTAL_II"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
                                                                             $selectIS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IS FROM tbl_hr_employee WHERE type_id = 5 AND suspended = 1 AND user_id = $switch_user_id" );
                                                                             $rowIS = mysqli_fetch_array($selectIS);
-                                                                            echo $rowIS["TOTAL_IS"];
+                                                                            echo htmlentities($rowIS["TOTAL_IS"] ?? '');
 
                                                                     echo '</td>
                                                                 </tr>
@@ -656,21 +709,21 @@
 
                                                                             $selectIA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IA FROM tbl_hr_employee WHERE type_id = 6 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id" );
                                                                             $rowIA = mysqli_fetch_array($selectIA);
-                                                                            echo $rowIA["TOTAL_IA"];
+                                                                            echo htmlentities($rowIA["TOTAL_IA"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
                                                                             $selectII = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_II FROM tbl_hr_employee WHERE type_id = 6 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id" );
                                                                             $rowII = mysqli_fetch_array($selectII);
-                                                                            echo $rowII["TOTAL_II"];
+                                                                            echo htmlentities($rowII["TOTAL_II"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
                                                                             $selectIS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IS FROM tbl_hr_employee WHERE type_id = 6 AND suspended = 1 AND user_id = $switch_user_id" );
                                                                             $rowIS = mysqli_fetch_array($selectIS);
-                                                                            echo $rowIS["TOTAL_IS"];
+                                                                            echo htmlentities($rowIS["TOTAL_IS"] ?? '');
 
                                                                     echo '</td>
                                                                 </tr>
@@ -680,21 +733,21 @@
 
                                                                             $selectIA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IA FROM tbl_hr_employee WHERE type_id = 7 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id" );
                                                                             $rowIA = mysqli_fetch_array($selectIA);
-                                                                            echo $rowIA["TOTAL_IA"];
+                                                                            echo htmlentities($rowIA["TOTAL_IA"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
                                                                             $selectII = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_II FROM tbl_hr_employee WHERE type_id = 7 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id" );
                                                                             $rowII = mysqli_fetch_array($selectII);
-                                                                            echo $rowII["TOTAL_II"];
+                                                                            echo htmlentities($rowII["TOTAL_II"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
                                                                             $selectIS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IS FROM tbl_hr_employee WHERE type_id = 7 AND suspended = 1 AND user_id = $switch_user_id" );
                                                                             $rowIS = mysqli_fetch_array($selectIS);
-                                                                            echo $rowIS["TOTAL_IS"];
+                                                                            echo htmlentities($rowIS["TOTAL_IS"] ?? '');
 
                                                                     echo '</td>
                                                                 </tr>';
@@ -705,21 +758,21 @@
 
                                                                             $selectOJTA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_OJTA FROM tbl_hr_employee WHERE type_id = 8 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id" );
                                                                             $rowOJTA = mysqli_fetch_array($selectOJTA);
-                                                                            echo $rowOJTA["TOTAL_OJTA"];
+                                                                            echo htmlentities($rowOJTA["TOTAL_OJTA"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
                                                                             $selectOJTI = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_OJTI FROM tbl_hr_employee WHERE type_id = 8 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id" );
                                                                             $rowOJTI = mysqli_fetch_array($selectOJTI);
-                                                                            echo $rowOJTI["TOTAL_OJTI"];
+                                                                            echo htmlentities($rowOJTI["TOTAL_OJTI"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
                                                                             $selectOJTS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_OJTS FROM tbl_hr_employee WHERE type_id = 8 AND suspended = 1 AND user_id = $switch_user_id" );
                                                                             $rowOJTS = mysqli_fetch_array($selectOJTS);
-                                                                            echo $rowOJTS["TOTAL_OJTS"];
+                                                                            echo htmlentities($rowOJTS["TOTAL_OJTS"] ?? '');
 
                                                                     echo '</td>
                                                                 </tr>
@@ -729,21 +782,21 @@
 
                                                                             $selectFA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FA FROM tbl_hr_employee WHERE type_id = 9 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id" );
                                                                             $rowFA = mysqli_fetch_array($selectFA);
-                                                                            echo $rowFA["TOTAL_FA"];
+                                                                            echo htmlentities($rowFA["TOTAL_FA"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
                                                                             $selectFI = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FI FROM tbl_hr_employee WHERE type_id = 9 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id" );
                                                                             $rowFI = mysqli_fetch_array($selectFI);
-                                                                            echo $rowFI["TOTAL_FI"];
+                                                                            echo htmlentities($rowFI["TOTAL_FI"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
                                                                             $selectFS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FS FROM tbl_hr_employee WHERE type_id = 9 AND suspended = 1 AND user_id = $switch_user_id" );
                                                                             $rowFS = mysqli_fetch_array($selectFS);
-                                                                            echo $rowFS["TOTAL_FS"];
+                                                                            echo htmlentities($rowFS["TOTAL_FS"] ?? '');
 
                                                                     echo '</td>
                                                                 </tr>
@@ -753,21 +806,21 @@
 
                                                                             $selectIA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IA FROM tbl_hr_employee WHERE type_id = 10 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id" );
                                                                             $rowIA = mysqli_fetch_array($selectIA);
-                                                                            echo $rowIA["TOTAL_IA"];
+                                                                            echo htmlentities($rowIA["TOTAL_IA"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
                                                                             $selectII = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_II FROM tbl_hr_employee WHERE type_id = 10 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id" );
                                                                             $rowII = mysqli_fetch_array($selectII);
-                                                                            echo $rowII["TOTAL_II"];
+                                                                            echo htmlentities($rowII["TOTAL_II"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
                                                                             $selectIS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IS FROM tbl_hr_employee WHERE type_id = 10 AND suspended = 1 AND user_id = $switch_user_id" );
                                                                             $rowIS = mysqli_fetch_array($selectIS);
-                                                                            echo $rowIS["TOTAL_IS"];
+                                                                            echo htmlentities($rowIS["TOTAL_IS"] ?? '');
 
                                                                     echo '</td>
                                                                 </tr>';
@@ -801,13 +854,15 @@
                                             <input class="form-control" type="hidden" name="client" value="<?php echo $current_client; ?>" />
                                             <div class="form-group">
                                                 <?php
-                                                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id = $switch_user_id ORDER BY first_name ASC");
+                                                    $selectEmployee = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_hr_employee WHERE status = 1 AND user_id = $switch_user_id ORDER BY first_name ASC");
                                                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
-                                                        while($rowEmployee = mysqli_fetch_array($selectEmployee)) { ?>
-                                                    <div class="col-md-3">
-                                                        <input type="checkbox" value="<?=$rowEmployee["ID"]?>"> &nbsp; <?=$rowEmployee["first_name"] .' '. $rowEmployee["last_name"]?>
-                                                    </div>    
-                                                <?php } } ?>    
+                                                        while($rowEmployee = mysqli_fetch_array($selectEmployee)) { 
+                                                            echo '<div class="col-md-3">
+                                                                <input type="checkbox" value="'.$rowEmployee["ID"].'"> '.htmlentities($rowEmployee["first_name"] ?? '').' '.htmlentities($rowEmployee["last_name"] ?? '').'
+                                                            </div>';
+                                                        }
+                                                    }
+                                                ?>
                                             </div>
                                             <div class="form-group">
                                                 <div class="col-md-12">
@@ -1355,6 +1410,7 @@
                                     data += '<td>'+obj.employment_type+'</td>';
                                     data += '<td class="hide">0</td>';
                                     data += '<td class="hide">0</td>';
+                                    data += '<td></td>';
 
                                     if ( obj.suspended == 1) {
                                         data += '<td><span class="label label-sm label-warning">Suspended</span></td>';
@@ -1461,6 +1517,7 @@
                             data += '<td>'+obj.employment_type+'</td>';
                             data += '<td class="hide">0</td>';
                             data += '<td class="hide">0</td>';
+                            data += '<td></td>';
 
                             if ( obj.suspended == 1) {
                                 data += '<td class="text-center"><span class="label label-sm label-warning">Suspended</span></td>';

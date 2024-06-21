@@ -113,14 +113,14 @@
                                             <tbody>
                                                 <tr>
                                                     <?php
-                                                        $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings_type ORDER BY name" );
+                                                        $result = mysqli_query( $conn,"SELECT ID, name FROM tbl_hr_trainings_type ORDER BY name" );
                                                         if ( mysqli_num_rows($result) > 0 ) {
                                                             while($row = mysqli_fetch_array($result)) {
-                                                                $ID = $row['ID'];
-                                                                $name = $row['name'];
+                                                                $ID = htmlentities($row['ID'] ?? '');
+                                                                $name = htmlentities($row['name'] ?? '');
                                                                 $records = 0;
 
-                                                                $selectTrainings = mysqli_query( $conn,'SELECT * FROM tbl_hr_trainings WHERE deleted = 0 AND user_id="'.$switch_user_id.'" AND type="'. $ID .'"' );
+                                                                $selectTrainings = mysqli_query( $conn,'SELECT ID FROM tbl_hr_trainings WHERE deleted = 0 AND user_id="'.$switch_user_id.'" AND type="'. $ID .'"' );
                                                                 if ( mysqli_num_rows($selectTrainings) > 0 ) {
                                                                     while($row = mysqli_fetch_array($selectTrainings)) {
                                                                         $records++;
@@ -129,7 +129,7 @@
 
                                                                 if ($records > 0) {
                                                                     echo '<tr id="tr_'. $ID .'" onclick="btnViewType('. $ID .')">
-                                                                        <td>'. htmlentities($name) .'</td>
+                                                                        <td>'. $name .'</td>
                                                                         <td>'. $records .'</td>
                                                                     </tr>';
                                                                 }
@@ -150,7 +150,7 @@
                             <div class="portlet light portlet-fit ">
                                 <div class="portlet-title">
                                     <div class="caption">
-                                        <i class="icon-graduation font-dark"></i>
+                                        <span class="icon-graduation font-dark"></span>
                                         <span class="caption-subject font-dark bold uppercase">List of Trainings</span>
                                         <?php
                                             if($current_client == 0) {
@@ -173,11 +173,14 @@
                                                 		$file_url = $src.$url.rawurlencode($file_upload).$embed;
                                                     }
                                                     
-                                                    if ($type_id == 0) {
-                                                		echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i> '.$file_title.'</a>';
-                                                	} else {
-                                                		echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><i class="fa fa-youtube"></i> '.$file_title.'</a>';
-                                                	}
+                                                    $icon = $row["icon"];
+                                                    if (!empty($icon)) { 
+                                                        if ($type_id == 0) {
+                                                            echo ' <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                                        } else {
+                                                            echo ' <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                                        }
+                                                    }
 	                                            }
                                             }
                                         ?>

@@ -300,15 +300,15 @@
                                                         $emergency_email = '';
                                                         $emergency_relation = '';
                                                         if($row_employee){
-                                                            $personal_email = $row_employee['personal_email'];
-                                                            $company_email = $row_employee['company_email'];
-                                                            $contact_no = $row_employee['contact_no'];
-                                                            $emergency_name  = $row_employee['emergency_name'];
-                                                            $emergency_address = $row_employee['emergency_address'];
-                                                            $emergency_contact_no = $row_employee['emergency_contact_no'];
-                                                            $emergency_email = $row_employee['emergency_email'];
-                                                            $emergency_relation = $row_employee['emergency_relation'];
-                                                            $employee_address = $row_employee['address'];
+                                                            $personal_email = htmlentities($row_employee['personal_email'] ?? '');
+                                                            $company_email = htmlentities($row_employee['company_email'] ?? '');
+                                                            $contact_no = htmlentities($row_employee['contact_no'] ?? '');
+                                                            $emergency_name  = htmlentities($row_employee['emergency_name'] ?? '');
+                                                            $emergency_address = htmlentities($row_employee['emergency_address'] ?? '');
+                                                            $emergency_contact_no = htmlentities($row_employee['emergency_contact_no'] ?? '');
+                                                            $emergency_email = htmlentities($row_employee['emergency_email'] ?? '');
+                                                            $emergency_relation = htmlentities($row_employee['emergency_relation'] ?? '');
+                                                            $employee_address = htmlentities($row_employee['address'] ?? '');
                                                         }
                                                     ?>
                                                     
@@ -346,9 +346,9 @@
                                                                     $street = '';
                                                                     $apartment ='';
                                                                     if($employee_address){
-                                                                        $address = $row_employee['address'];
+                                                                        $address = htmlentities($row_employee['address'] ?? '');
                                                                         $addresses = $address;
-                                                                        $user_addres  = $row_employee['address'];
+                                                                        $user_addres  = htmlentities($row_employee['address'] ?? '');
                                                                         // Split the address into parts based on the comma delimiter
                                                                         $values = explode('|', $user_addres);
                                                                         
@@ -474,7 +474,7 @@
                                                                 <select name="bankno" class="form-control" required>
                                                                     <option value="">--Please select--</option>
                                                                     <?php 
-                                                                        $employee_details = mysqli_query($payroll_connection,"SELECT * FROM payee WHERE payeeid = '$current_userEmployeeID' " );
+                                                                        $employee_details = mysqli_query($payroll_connection,"SELECT accountname, accountno, bankno FROM payee WHERE payeeid = '$current_userEmployeeID' " );
                                                                         $employee_details_row = mysqli_fetch_array($employee_details);
                                                                         $accountname = '';
                                                                         $accountno = '';
@@ -488,11 +488,11 @@
                                                                             $bankno = $employee_details_row['bankno'];
                                                                         }
                                                                         
-                                                                        $bank_name = mysqli_query($payroll_connection,"SELECT * FROM bankname " );
+                                                                        $bank_name = mysqli_query($payroll_connection,"SELECT bankno, bankname FROM bankname " );
                                                                         foreach($bank_name as $rows) {
                                                                             $bank_id =  $rows['bankno'];
                                                                             
-                                                                            echo '<option value="'.$rows['bankno'].'" '; echo ($bank_id === $bankno) ? 'selected' : ''; echo '>'.$rows['bankname'].'</option>';
+                                                                            echo '<option value="'.$rows['bankno'].'" '; echo ($bank_id === $bankno) ? 'selected' : ''; echo '>'.htmlentities($rows['bankname'] ?? '').'</option>';
                                                                         }
                                                                     ?>
                                                                 </select>
@@ -530,14 +530,14 @@
                                                                         $selectFile = mysqli_query( $conn,"SELECT * FROM tbl_hr_file WHERE deleted = 0 AND user_id = $switch_user_id AND employee_id = $current_userEmployeeID ORDER BY filename" );
                                                                         if ( mysqli_num_rows($selectFile) > 0 ) {
                                                                             while($rowFile = mysqli_fetch_array($selectFile)) {
-                                                                                $file_ID = $rowFile["ID"];
-                                                                                $file_name = $rowFile["filename"];
-                                                                                $file_description = $rowFile["description"];
-                                                                                $file_status = $rowFile["status"];
-                                                                                $file_reviewed_by = $rowFile["reviewed_by"];
+                                                                                $file_ID = htmlentities($rowFile["ID"] ?? '');
+                                                                                $file_name = htmlentities($rowFile["filename"] ?? '');
+                                                                                $file_description = htmlentities($rowFile["description"] ?? '');
+                                                                                $file_status = htmlentities($rowFile["status"] ?? '');
+                                                                                $file_reviewed_by = htmlentities($rowFile["reviewed_by"] ?? '');
 
-                                                                                $filetype = $rowFile['filetype'];
-                                                                                $files = $rowFile["files"];
+                                                                                $filetype = htmlentities($rowFile['filetype'] ?? '');
+                                                                                $files = htmlentities($rowFile["files"] ?? '');
                                                                                 $type = 'iframe';
                                                                                 if ($filetype == 1) {
                                                                                     $fileExtension = fileExtension($files);
@@ -552,9 +552,9 @@
                                                                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                                                 }
 
-                                                                                $file_start_date = $rowFile["start_date"];
-                                                                                $file_uploaded_date = $rowFile["uploaded_date"];
-                                                                                $file_due_date = $rowFile["due_date"];
+                                                                                $file_start_date = htmlentities($rowFile["start_date"] ?? '');
+                                                                                $file_uploaded_date = htmlentities($rowFile["uploaded_date"] ?? '');
+                                                                                $file_due_date = htmlentities($rowFile["due_date"] ?? '');
                                                                                 $file_due_date = new DateTime($file_due_date);
                                                                                 $file_due_date = $file_due_date->format('M d, Y');
                                                                                 if (empty($rowFile["start_date"])) {

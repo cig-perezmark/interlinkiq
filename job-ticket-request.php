@@ -11,6 +11,32 @@
 
     include_once ('header.php'); 
 ?>
+<style type="text/css">
+    /* DataTable*/
+    .dt-buttons {
+        margin: unset !important;
+        float: left !important;
+        margin-left: 15px !important;
+    }
+    div.dt-button-collection .dt-button.active:after {
+        position: absolute;
+        top: 50%;
+        margin-top: -10px;
+        right: 1em;
+        display: inline-block;
+        content: "✓";
+        color: inherit;
+    }
+    .table {
+        width: 100% !important;
+    }
+    .table-scrollable .dataTable td>.btn-group, .table-scrollable .dataTable th>.btn-group {
+        position: relative;
+    }
+    .table thead tr th {
+        vertical-align: middle;
+    }
+</style>
 
                     <div class="row">
                         <div class="col-md-12">
@@ -32,7 +58,7 @@
                                 <div class="portlet-body">
                                     <div class="tab-content">
                                         <div class="tab-pane active" id="tab_actions_assigned">
-                                            <div class="table-scrollable">
+                                            <div class="table-scrollablex">
                                                 <table class="table table-bordered table-hover" id="tableDataServicesAssigned">
                                                     <thead>
                                                         <tr>
@@ -49,12 +75,48 @@
                                                     <tbody>
                                                         <?php
                                                             // $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0 AND user_id = $current_userID AND (assigned_to_id IS NULL OR assigned_to_id = '')" );
-                                                            if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 17 OR $current_userID == 185) { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0" ); }
-                                                            else { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0 AND user_id = $current_userID" ); }
+                                                            // if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 17 OR $current_userID == 185) { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0" ); }
+                                                            // else { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0 AND user_id = $current_userID" ); }
                                                             
+                                                            $counter = 1;
+                                                            // $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 0 AND deleted = 0 AND user_id = $current_userID" );
+                                                            $result = mysqli_query( $conn,"
+                                                                SELECT 
+                                                                s.ID AS s_ID,
+                                                                s.category AS s_category,
+                                                                s.title AS s_title,
+                                                                s.description AS s_description,
+                                                                s.contact AS s_contact,
+                                                                s.email AS s_email,
+                                                                s.files AS s_files,
+                                                                s.due_date AS s_due_date,
+                                                                s.last_modified AS s_last_modified,
+                                                                s.assigned_to_id AS s_assigned_to_id,
+                                                                s.type AS s_type,
+                                                                GROUP_CONCAT(CONCAT(e.first_name,' ', e.last_name) ORDER BY e.first_name ASC SEPARATOR ', ') AS e_assigned_to
+                                                                FROM 
+                                                                tbl_services AS s
+
+                                                                LEFT JOIN (
+                                                                    SELECT
+                                                                    ID,
+                                                                    first_name,
+                                                                    last_name
+                                                                    FROM tbl_hr_employee
+                                                                ) AS e
+                                                                 ON FIND_IN_SET(e.ID, REPLACE(REPLACE(s.assigned_to_id, ' ', ''), '|',','  )  ) > 0
+
+                                                                WHERE s.status = 0 
+                                                                AND s.deleted = 0 
+                                                                AND s.user_id = $current_userID
+                                                                
+                                                                GROUP BY s.ID
+
+                                                                ORDER BY s.ID
+                                                            " );
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 while($row = mysqli_fetch_array($result)) {
-                                                                    $category_id = $row["category"];
+                                                                    $category_id = $row["s_category"];
                                                                     $category = array(
                                                                         0 => 'Others',
                                                                         1 => 'IT Services',
@@ -66,7 +128,7 @@
                                                                         7 => 'Praise'
                                                                     );
 
-                                                                    $status_id = $row["type"];
+                                                                    $status_id = $row["s_type"];
                                                                     $status = array(
                                                                         0 => '<span class="label label-sm label-info">Assigned</span>',
                                                                         1 => '<span class="label label-sm label-primary">On Queue</span>',
@@ -74,8 +136,8 @@
                                                                         3 => '<span class="label label-sm label-success">Fixed</span>',
                                                                         4 => '<span class="label label-sm label-danger">Unresolved</span>'
                                                                     );
-                                                                    
-                                                                    $file_files = $row["files"];
+
+                                                                    $file_files = $row["s_files"];
                                                                     if (!empty($file_files)) {
                                                                         $fileExtension = fileExtension($file_files);
                                                                         $src = $fileExtension['src'];
@@ -84,26 +146,27 @@
                                                                         $file_extension = $fileExtension['file_extension'];
                                                                         $url = $base_url.'uploads/services/';
                                                                     }
-                                                                    
-                                                                    echo '<tr id="tr_'. $row["ID"] .'">
-                                                                        <td>'. $row["ID"] .'</td>
-                                                                        <td>'. $category[$category_id].'</td>
+
+                                                                    echo '<tr id="tr_'.$row["s_ID"].'">
+                                                                        <td>'.$counter++.'</td>
+                                                                        <td>'.$category[$category_id].'</td>
                                                                         <td>
-                                                                            <p style="margin: 0;"><b>'. $row["title"] .'</b></p>
-                                                                            <p style="margin: 0;">'. $row["description"] .'</p>';
-                                                                            echo !empty($file_files) ? '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-fancybox data-type="'.$type.'">'. $file_files .'</a></p>' : '';
+                                                                            <p style="margin: 0;"><b>'.$row["s_title"].'</b></p>
+                                                                            <p style="margin: 0;">'.$row["s_description"].'</p>';
+                                                                            echo !empty($file_files) ? '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-fancybox data-type="'.$type.'">'.$file_files.'</a></p>' : '';
                                                                         echo '</td>
                                                                         <td>
-                                                                            <p style="margin: 0;">'. $row["contact"] .'</p>
-                                                                            <p style="margin: 0;"><a href="mailto:'. $row["email"] .'" target="_blank">'. $row["email"] .'</a></p>
+                                                                            <p style="margin: 0;">'.$row["s_contact"].'</p>
+                                                                            <p style="margin: 0;"><a href="mailto:'.$row["s_email"].'" target="_blank">'.$row["s_email"].'</a></p>
                                                                         </td>
-                                                                        <td class="text-center">'. $row["last_modified"] .'</td>
-                                                                        <td class="text-center">'. $row["due_date"] .'</td>
-                                                                        <td class="text-center">'; echo empty($row["assigned_to_id"]) ? 'Pending':$status[$status_id]; echo '</td>
+                                                                        <td class="text-center">'.$row["s_last_modified"].'</td>
+                                                                        <td class="text-center">'.$row["s_due_date"].'</td>
+                                                                        <td class="text-center">'; echo empty($row["s_assigned_to_id"]) ? 'Pending':$status[$status_id]; echo '</td>
+                                                                        <td class="text-center">'.$row["e_assigned_to"].'</td>
                                                                         <td class="text-center">
                                                                             <div class="btn-group btn-group-circle">
-                                                                                <a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-id="'. $row["ID"] .'" data-toggle="modal" onclick="btnView('. $row["ID"] .')">View</a>
-                                                                                <a href="javascript:;" class="btn btn-outlinex green btn-sm btnDone" data-id="'. $row["ID"] .'" onclick="btnDone('. $row["ID"] .')">Done</a>
+                                                                                <a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-id="'.$row["s_ID"].'" data-toggle="modal" onclick="btnView('.$row["s_ID"].')">View</a>
+                                                                                <a href="javascript:;" class="btn btn-outlinex green btn-sm btnDone" data-id="'.$row["s_ID"].'" onclick="btnDone('.$row["s_ID"].')">Done</a>
                                                                             </div>
                                                                         </td>
                                                                     </tr>';
@@ -117,7 +180,7 @@
                                             </div>
                                         </div>
                                         <div class="tab-pane" id="tab_actions_completed">
-                                            <div class="table-scrollable">
+                                            <div class="table-scrollablex">
                                                 <table class="table table-bordered table-hover" id="tableDataServicesComplete">
                                                     <thead>
                                                         <tr>
@@ -125,18 +188,56 @@
                                                             <th>Category</th>
                                                             <th>Service</th>
                                                             <th>Contact Info</th>
-                                                            <th class="text-center" style="width: 135px;">Desire Due Date</th>
-                                                            <th class="text-center" style="width: 135px;">Completed</th>
+                                                            <th style="width: 135px;" class="text-center">Desire Due Date</th>
+                                                            <th style="width: 135px;" class="text-center">Assigned</th>
+                                                            <th style="width: 135px;" class="text-center">Completed</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <?php
-                                                            if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 17 OR $current_userID == 185) { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 1 AND deleted = 0" ); }
-                                                            else { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 1 AND deleted = 0 AND user_id = $current_userID" ); }
+                                                            // if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 17 OR $current_userID == 185) { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 1 AND deleted = 0" ); }
+                                                            // else { $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 1 AND deleted = 0 AND user_id = $current_userID" ); }
+                                                            
+                                                            $counter = 1;
+                                                            // $result = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE status = 1 AND deleted = 0 AND user_id = $current_userID" );
+                                                            $result = mysqli_query( $conn,"
+                                                                SELECT 
+                                                                s.ID AS s_ID,
+                                                                s.category AS s_category,
+                                                                s.title AS s_title,
+                                                                s.description AS s_description,
+                                                                s.contact AS s_contact,
+                                                                s.email AS s_email,
+                                                                s.files AS s_files,
+                                                                s.due_date AS s_due_date,
+                                                                s.last_modified AS s_last_modified,
+                                                                s.assigned_to_id AS s_assigned_to_id,
+                                                                s.type AS s_type,
+                                                                GROUP_CONCAT(CONCAT(e.first_name,' ', e.last_name) ORDER BY e.first_name ASC SEPARATOR ', ') AS e_assigned_to
+                                                                FROM 
+                                                                tbl_services AS s
+
+                                                                LEFT JOIN (
+                                                                    SELECT
+                                                                    ID,
+                                                                    first_name,
+                                                                    last_name
+                                                                    FROM tbl_hr_employee
+                                                                ) AS e
+                                                                 ON FIND_IN_SET(e.ID, REPLACE(REPLACE(s.assigned_to_id, ' ', ''), '|',','  )  ) > 0
+
+                                                                WHERE s.status = 1 
+                                                                AND s.deleted = 0 
+                                                                AND s.user_id = $current_userID
+                                                                
+                                                                GROUP BY s.ID
+
+                                                                ORDER BY s.ID
+                                                            " );
                                                             
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 while($row = mysqli_fetch_array($result)) {
-                                                                    $category_id = $row["category"];
+                                                                    $category_id = $row["s_category"];
                                                                     $category = array(
                                                                         0 => 'Others',
                                                                         1 => 'IT Services',
@@ -148,7 +249,7 @@
                                                                         7 => 'Praise'
                                                                     );
 
-                                                                    $file_files = $row["files"];
+                                                                    $file_files = $row["s_files"];
                                                                     if (!empty($file_files)) {
                                                                         $fileExtension = fileExtension($file_files);
                                                                         $src = $fileExtension['src'];
@@ -157,21 +258,22 @@
                                                                         $file_extension = $fileExtension['file_extension'];
                                                                         $url = $base_url.'uploads/services/';
                                                                     }
-                                                                    
-                                                                    echo '<tr id="tr_'. $row["ID"] .'">
-                                                                        <td>'. $row["ID"] .'</td>
-                                                                        <td>'. $category[$category_id].'</td>
+
+                                                                    echo '<tr id="tr_'.$row["s_ID"].'">
+                                                                        <td>'.$counter++.'</td>
+                                                                        <td>'.$category[$category_id].'</td>
                                                                         <td>
-                                                                            <p style="margin: 0;">'. $row["title"] .'</p>
-                                                                            <p style="margin: 0;">'. $row["description"] .'</p>';
-                                                                            echo !empty($file_files) ? '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-fancybox data-type="'.$type.'">'. $file_files .'</a></p>' : '';
+                                                                            <p style="margin: 0;">'.$row["s_title"].'</p>
+                                                                            <p style="margin: 0;">'.$row["s_description"].'</p>';
+                                                                            echo !empty($file_files) ? '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-fancybox data-type="'.$type.'">'.$file_files.'</a></p>' : '';
                                                                         echo '</td>
                                                                         <td>
-                                                                            <p style="margin: 0;">'. $row["contact"] .'</p>
-                                                                            <p style="margin: 0;"><a href="mailto:'. $row["email"] .'" target="_blank">'. $row["email"] .'</a></p>
+                                                                            <p style="margin: 0;">'.$row["s_contact"].'</p>
+                                                                            <p style="margin: 0;"><a href="mailto:'.$row["s_email"].'" target="_blank">'.$row["s_email"].'</a></p>
                                                                         </td>
-                                                                        <td class="text-center">'. $row["due_date"] .'</td>
-                                                                        <td class="text-center">'. $row["last_modified"] .'</td>
+                                                                        <td class="text-center">'.$row["s_due_date"].'</td>
+                                                                        <td class="text-center">'.$row["e_assigned_to"].'</td>
+                                                                        <td class="text-center">'.$row["s_last_modified"].'</td>
                                                                     </tr>';
                                                                 }
                                                             } else {
@@ -210,6 +312,40 @@
         <?php include_once ('footer.php'); ?>
 
         <script type="text/javascript">
+            $(document).ready(function(){
+                $('#tableDataServicesAssigned, #tableDataServicesComplete').DataTable({
+                    dom: 'lBfrtip',
+                    lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+                    buttons: [
+                        {
+                            extend: 'print',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'pdf',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'csv',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        {
+                            extend: 'excel',
+                            exportOptions: {
+                                columns: ':visible'
+                            }
+                        },
+                        'colvis'
+                    ]
+                });
+            });
+            
             function btnDone(id) {
                 swal({
                     title: "Are you sure?",

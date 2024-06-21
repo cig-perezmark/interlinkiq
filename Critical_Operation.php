@@ -68,35 +68,36 @@
                                             </thead>
                                             <tbody>
                                                 <?php
-                                                $i = 1;
-                                                $usersQuery = $_COOKIE['ID'];
-                                                $queriesPri = "SELECT * FROM tbl_critical_operation left join tbl_hr_employee on ID = addPrimaryNameField left join tblFacilityDetails on assign_area = facility_id where user_cookies = $usersQuery";
-                                                $resultQuery = mysqli_query($conn, $queriesPri);
-                                                 
-                                                while($rowPri = mysqli_fetch_array($resultQuery)){ 
-                                                $alt = $rowPri['addAlternateNameField'];
-                                                $queriesAlt = "SELECT * FROM tbl_hr_employee where ID = $alt";
-                                                $resultQueryAlt = mysqli_query($conn, $queriesAlt);
+                                                    $i = 1;
+                                                    $usersQuery = $_COOKIE['ID'];
+                                                    $queriesPri = "SELECT * FROM tbl_critical_operation left join tbl_hr_employee on ID = addPrimaryNameField inner join tblFacilityDetails on assign_area = facility_id where user_cookies = $switch_user_id";
+                                                    $resultQuery = mysqli_query($conn, $queriesPri);
+                                                     
+                                                    while($rowPri = mysqli_fetch_array($resultQuery)){ 
+                                                        $alt = $rowPri['addAlternateNameField'];
+                                                        
+                                                        if (!empty($alt)) {
+                                                            $resultQueryAlt = mysqli_query($conn, "SELECT * FROM tbl_hr_employee where ID = $alt");
+                                                            
+                                                            echo '<tr>
+                                                                <td>'.$i++.'</td>
+                                                                <td>'.$rowPri['facility_category'].'</td>
+                                                                <td>'.$rowPri['addOperationField'].'</td>
+                                                                <td>'.$rowPri['first_name'] .' '. $rowPri['last_name'].'</td>
+                                                                <td></td>
+                                                                <td>'.$rowPri['email'].'</td>';
+                                                                
+                                                                while($rowAlt = mysqli_fetch_array($resultQueryAlt)) {
+                                                                    echo '<td>'.$rowAlt['first_name'].' '.$rowAlt['last_name'].'</td>
+                                                                    <td></td>
+                                                                    <td>'.$rowAlt['email'].'</td>';
+                                                                }
+                                                                
+                                                                echo '<td></td>
+                                                            </tr>';
+                                                        }
+                                                    } 
                                                 ?>
-                                                <tr>
-                                                    <td><?php echo $i++;  ?></td>
-                                                    <td><?php echo $rowPri['facility_category'];  ?></td>
-                                                    <td><?php echo $rowPri['addOperationField'];  ?></td>
-                                                    <td><?php echo $rowPri['first_name'];  ?> <?php echo $rowPri['last_name'];  ?></td>
-                                                    <td></td>
-                                                    <td><?php echo $rowPri['email'];  ?></td>
-                                                     <?php while($rowAlt = mysqli_fetch_array($resultQueryAlt)){ ?>
-                                                    <td>
-                                                        <?php echo $rowAlt['first_name'];  ?> <?php echo $rowAlt['last_name'];  ?>
-                                                    </td>
-                                                    <td></td>
-                                                    <td> 
-                                                        <?php echo $rowAlt['email'];  ?> 
-                                                    </td>
-                                                     <?php } ?>
-                                                    <td></td>
-                                                </tr>
-                                                <?php } ?>
                                             </tbody>
                                         </table>
                                     </div>

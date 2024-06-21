@@ -33,6 +33,47 @@
 		
 		
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if(isset($_POST['get_employee'])){
+                $form_id = $_POST['id'];
+                $switch_user_id = mysqli_real_escape_string($conn, $switch_user_id);
+                $form_id = mysqli_real_escape_string($conn, $form_id);
+                
+                $get_users = "SELECT * FROM `tbl_hr_employee` WHERE user_id = '$switch_user_id' AND status != 0";
+                $user_result = mysqli_query($conn, $get_users);
+                
+                $options = ''; // Initialize an empty string to store options
+                echo '<label>Select Owner</label>
+                      <select id="form_owner" class="form-control mt-multiselect btn btn-default" name="assigned_to_id[]" multiple="multiple">';
+                
+                if ($user_result && mysqli_num_rows($user_result) > 0) {
+                    while ($rows = mysqli_fetch_assoc($user_result)) {
+                        $get_users_form = "SELECT * FROM `tbl_user` WHERE employee_id = '" . $rows['ID'] . "'";
+                        $user_form_result = mysqli_query($conn, $get_users_form);
+                
+                        if ($user_form_result && mysqli_num_rows($user_form_result) > 0) {
+                            while ($user_list = mysqli_fetch_assoc($user_form_result)) {
+                                $select_form_owned = "SELECT * FROM tbl_forms_owned WHERE user_id = '" . $user_list['ID'] . "' AND enterprise_id = '$switch_user_id'";
+                                $form_owned_result = mysqli_query($conn, $select_form_owned);
+                
+                                if ($form_owned_result && mysqli_num_rows($form_owned_result) > 0) {
+                                    while ($form_owned = mysqli_fetch_assoc($form_owned_result)) {
+                                        $form_owned_array = explode(',', $form_owned['form_owned']);
+                                        
+                                        // Check if $form_id is in the $form_owned_array
+                                        $selected = in_array($form_id, $form_owned_array) ? ' selected' : '';
+                                    }
+                                }
+                
+                                $options .= '<option value="' . htmlspecialchars($user_list['ID'], ENT_QUOTES, 'UTF-8') . '"' . $selected . '>' . htmlspecialchars($user_list['first_name'] . ' ' . $user_list['last_name'], ENT_QUOTES, 'UTF-8') . '</option>';
+                            }
+                        }
+                    }
+                }
+                
+                echo $options;
+                echo '</select>';
+
+        }
         if(isset($_POST['save_kpi_reviewer'])){
             if($_POST['collab_type'] == "performer"){
                 $record_data = array(

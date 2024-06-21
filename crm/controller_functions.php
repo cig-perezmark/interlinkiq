@@ -39,32 +39,49 @@
 	require '../PHPMailer/src/SMTP.php';
 	
 	function php_mailer($from, $to, $user, $subject, $body) {
-
-		$mail = new PHPMailer(true);
-		try {
-		    $mail->isSMTP();
-		  //  $mail->SMTPDebug  = SMTP::DEBUG_SERVER;
-		    $mail->Host       = 'interlinkiq.com';
-		    $mail->SMTPAuth   = true;
-		    $mail->Username   = 'admin@interlinkiq.com';
-		    $mail->Password   = 'L1873@2019new';
-		    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-		    $mail->Port       = 465;
-		    $mail->CharSet = 'UTF-8';
-		    $mail->setFrom('services@interlinkiq.com', 'Interlink IQ');
-		    $mail->addAddress($to, $user);
-		    $mail->addReplyTo($from, $user);
-		    $mail->isHTML(true);
-		    $mail->Subject = $subject;
-		    $mail->Body    = $body;
-
-		    $mail->send();
-		    $msg = 'Message has been sent';
-		} catch (Exception $e) {
-		    $msg = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
-		}
-		return $msg;
-	}
+        $mail = new PHPMailer(true);
+        try {
+            // SMTP configuration
+            $mail->isSMTP();
+            $mail->Host       = 'interlinkiq.com';
+            $mail->SMTPAuth   = true;
+            $mail->Username   = 'admin@interlinkiq.com';
+            $mail->Password   = 'L1873@2019new';
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+            $mail->Port       = 465;
+            $mail->CharSet    = 'UTF-8';
+            $mail->setFrom('services@interlinkiq.com', 'Interlink IQ');
+            $mail->addAddress($to, $user);
+            $mail->addReplyTo($from, $user);
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+    
+            // Parse and embed base64 images
+            if (preg_match_all('/src="data:image\/(.*?);base64,(.*?)"/', $body, $matches, PREG_SET_ORDER)) {
+                foreach ($matches as $key => $match) {
+                    $imageType = $match[1];
+                    $imageData = base64_decode($match[2]);
+                    $cid = 'image' . $key;
+                    $filePath = tempnam(sys_get_temp_dir(), 'img') . ".$imageType";
+                    file_put_contents($filePath, $imageData);
+    
+                    // Embed the image
+                    $mail->addEmbeddedImage($filePath, $cid);
+                    $body = str_replace($match[0], 'src="cid:' . $cid . '"', $body);
+                }
+            }
+    
+            // Set the email body
+            $mail->Body = $body;
+    
+            // Send the email
+            $mail->send();
+            $msg = 'Message has been sent';
+        } catch (Exception $e) {
+            $msg = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        }
+        return $msg;
+    }
     
     function employerID($ID) {
     	global $conn;
@@ -118,14 +135,192 @@
         }
     }
     
-    if(isset($_POST['filter_value'])) { // Filter data through date
+    if (isset($_POST['filter_value'])) {
         $column = $_POST['column'];
         $value = $_POST['value'];
+        $columns = array(
+                0 => 'crm_id',
+                1 => 'account_name',
+                2 => 'account_email',
+                3 => 'contact_phone',
+                4 => 'Account_Source',
+                5 => 'account_status',
+                6 => 'activity_date',
+                7 => 'performer_name'
+            );
+    
+        if ($column == 'crm_date_added') {
+            $sql = "SELECT 
+                        cr.crm_id,
+                        cr.account_rep, 
+                        cr.account_name, 
+                        cr.account_email,  
+                        cr.Account_Source, 
+                        cr.account_status,
+                        cr.contact_phone,
+                        cr.enterprise_id,
+                        cr.flag,
+                        DATE_FORMAT(chd.timestamp, '%M %e, %Y') as activity_date,
+                        chd.performer_name
+                    FROM tbl_Customer_Relationship AS cr
+                    LEFT JOIN (
+                        SELECT
+                            contact_id, 
+                            history_id,
+                            timestamp,
+                            performer_name
+                        FROM tbl_crm_history_data
+                        WHERE history_id IN (
+                            SELECT
+                                MAX(history_id)
+                            FROM tbl_crm_history_data
+                            GROUP BY contact_id
+                        )
+                    ) AS chd
+                    ON chd.contact_id = cr.crm_id
+                WHERE 
+                    LENGTH(account_name) > 0
+                    AND cr.crm_date_added >= DATE_SUB(NOW(), INTERVAL $value) AND flag = 1
+                    AND cr.enterprise_id = $user_id";
+        } elseif ($column == 'account_status') {
+            $sql = "SELECT 
+                        cr.crm_id,
+                        cr.account_rep, 
+                        cr.account_name, 
+                        cr.account_email,  
+                        cr.Account_Source, 
+                        cr.account_status,
+                        cr.contact_phone,
+                        cr.enterprise_id,
+                        cr.flag,
+                        CASE
+                            WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 3 MONTH) AND chd.type = 1 THEN 'Expired'
+                            ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
+                        END as activity_date,
+                        chd.performer_name
+                    FROM tbl_Customer_Relationship AS cr
+                    LEFT JOIN (
+                        SELECT
+                            contact_id, 
+                            history_id,
+                            timestamp,
+                            type,
+                            performer_name
+                        FROM tbl_crm_history_data
+                        WHERE history_id IN (
+                            SELECT
+                                MAX(history_id)
+                            FROM tbl_crm_history_data
+                            GROUP BY contact_id
+                        )
+                    ) AS chd
+                    ON chd.contact_id = cr.crm_id
+                WHERE 
+                    LENGTH(account_name) > 0
+                    AND $column = '$value'
+                    AND flag = 1
+                    AND cr.enterprise_id = $user_id";
+        } elseif ($column == 'flag') {
+            $sql = "SELECT 
+                        cr.crm_id,
+                        cr.account_rep, 
+                        cr.account_name, 
+                        cr.account_email,  
+                        cr.Account_Source, 
+                        cr.account_status,
+                        cr.contact_phone,
+                        cr.enterprise_id,
+                        cr.flag,
+                        CASE
+                            WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 3 MONTH) AND chd.type = 1 THEN 'Expired'
+                            ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
+                        END as activity_date,
+                        chd.performer_name
+                    FROM tbl_Customer_Relationship AS cr
+                    LEFT JOIN (
+                        SELECT
+                            contact_id, 
+                            history_id,
+                            timestamp,
+                            type,
+                            performer_name
+                        FROM tbl_crm_history_data
+                        WHERE history_id IN (
+                            SELECT
+                                MAX(history_id)
+                            FROM tbl_crm_history_data
+                            GROUP BY contact_id
+                        )
+                    ) AS chd
+                    ON chd.contact_id = cr.crm_id
+                WHERE 
+                    LENGTH(account_name) > 0
+                    AND $column = '$value' AND flag = 0
+                    AND cr.enterprise_id = $user_id";
+        }
+        $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
+        $totalData = mysqli_fetch_assoc($totalDataQuery)['total'];
+        $totalFiltered = $totalData;
+    
+        if (!empty($_POST['search']['value'])) {
+            $searchValue = $_POST['search']['value'];
+            $sql .= " AND (cr.account_name LIKE '%$searchValue%' ";
+            $sql .= " OR cr.account_email LIKE '%$searchValue%' ";
+            $sql .= " OR cr.contact_phone LIKE '%$searchValue%' ";
+            $sql .= " OR cr.Account_Source LIKE '%$searchValue%' ";
+            $sql .= " OR chd.performer_name LIKE '%$searchValue%')";
+        }
+    
+        if(isset($_POST['order'][0]['column']) && isset($_POST['order'][0]['dir']) && isset($_POST['start']) && isset($_POST['length'])) {
+            $sql .= " ORDER BY ".$columns[$_POST['order'][0]['column']]." ".$_POST['order'][0]['dir']." LIMIT ".$_POST['start']." ,".$_POST['length']." ";
+        }
+    
+        $query = mysqli_query($conn, $sql);
+    
+        if($query) {
+            $data = array();
+            while ($row = mysqli_fetch_assoc($query)) {
+                $row['status'] = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
+                $row['checkbox_display'] = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
+                $data[] = $row;
+            }
+        } else {
+            $data = array();
+        }
+    
+        $json_data = array(
+            "draw" => isset($_POST['draw']) ? intval($_POST['draw']) : 0,
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        );
+    
+        echo json_encode($json_data);
+    }
+    
+    if (isset($_POST['filter_range'])) {
+        // Code for filtering contacts by date ranges
+        $from = $_POST['from'];
+        $from_date = date_create($from);
+        $rfrom = date_format($from_date, "Y-m-d");
         $output = '';
-        if($column == 'crm_date_added') {
-            $sql = "SELECT
-                    cr.crm_id, 
-                    cr.userID, 
+        $to = $_POST['to'];
+        $to_date = date_create($to);
+        $rto = date_format($to_date, "Y-m-d");
+    
+        $columns = array(
+            0 => 'crm_id',
+            1 => 'account_name',
+            2 => 'account_email',
+            3 => 'contact_phone',
+            4 => 'Account_Source',
+            5 => 'account_status',
+            6 => 'activity_date',
+            7 => 'performer_name'
+        );
+    
+        $sql = "SELECT 
+                    cr.crm_id,
                     cr.account_rep, 
                     cr.account_name, 
                     cr.account_email,  
@@ -134,366 +329,70 @@
                     cr.contact_phone,
                     cr.enterprise_id,
                     cr.flag,
-                    chd.timestamp,
-                    chd.performer_name,
-                    CONCAT(u.first_name, ' ', u.last_name) AS uploader
-                FROM 
-                    tbl_Customer_Relationship cr
-                LEFT JOIN 
-                    (SELECT 
-                         contact_id, MAX(history_id) AS max_history_data_id
-                     FROM 
-                         tbl_crm_history_data
-                     GROUP BY 
-                         contact_id) latest_history
-                ON 
-                    cr.crm_id = latest_history.contact_id
-                LEFT JOIN 
-                    tbl_crm_history_data chd
-                ON 
-                    latest_history.contact_id = chd.contact_id
-                    AND latest_history.max_history_data_id = chd.history_id
-                LEFT JOIN 
-                    tbl_user u
-                ON 
-                    chd.user_id = u.ID
-                WHERE 
-                    LENGTH(account_name) > 0
-                    AND crm_date_added >= DATE_SUB(NOW(), INTERVAL $value) AND flag = 1
-                    AND cr.enterprise_id = $user_id
-                GROUP BY
-                    cr.crm_id,
-                    cr.userID,
-                    cr.account_name,
-                    cr.account_email,
-                    cr.Account_Source,
-                    cr.contact_phone,
-                    cr.flag,
-                    cr.enterprise_id,
-                    cr.account_status
-                ORDER BY 
-                    cr.crm_date_added DESC";
-                
-            $result = mysqli_query($conn, $sql);
-            if($result) {
-                if(mysqli_num_rows($result) > 0) {
-                    while($row = mysqli_fetch_array($result)) {
-                        $userID = $row["userID"];
-                        $status = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
-                        $date = isset($row['timestamp']) ? new DateTime($row['timestamp']) : null;
-                        $activity_date = $date ? $date->format('F j, Y') : '';
-                        $checkbox_display = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
-                        $output .= '
-                        <tr class="contact-row">
-                            <td class="text-center">
-                                <label class="mt-checkbox '.$checkbox_display.'">
-                                    <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="'.$row["crm_id"].'"/>
-                                    <span></span>
-                                </label>
-                            </td>    
-                            <td>'.$row["account_name"].'</td>
-                            <td>'.$row["account_email"].'</td>
-                            <td>'.$row["contact_phone"].'</td>
-                            <td>'.$row["Account_Source"].'</td>
-                            <td class="contact-status">'.$status.'</td>
-                            <td>'.$activity_date.'</td>
-                            <td>'.$row["uploader"].'</td>
-                            <td class="text-center">
-                                <div class="clearfix">
-                                    <div class="">
-                                        <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                        <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                        <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>';
-                    }
-                 echo $output;
-                }
-            }
-        } elseif($column == 'account_status') { // Filter data by category/status 
-            $sql = "SELECT
-                cr.crm_id, 
-                cr.userID, 
-                cr.account_rep, 
-                cr.account_name, 
-                cr.account_email,  
-                cr.Account_Source, 
-                cr.account_status,
-                cr.contact_phone,
-                cr.enterprise_id,
-                cr.flag,
-                chd.timestamp,
-                chd.performer_name,
-                CONCAT(u.first_name, ' ', u.last_name) AS uploader
-            FROM 
-                tbl_Customer_Relationship cr
-            LEFT JOIN 
-                (SELECT 
-                     contact_id, MAX(history_id) AS max_history_data_id
-                 FROM 
-                     tbl_crm_history_data
-                 GROUP BY 
-                     contact_id) latest_history
-            ON 
-                cr.crm_id = latest_history.contact_id
-            LEFT JOIN 
-                tbl_crm_history_data chd
-            ON 
-                latest_history.contact_id = chd.contact_id
-                AND latest_history.max_history_data_id = chd.history_id
-            LEFT JOIN 
-                tbl_user u
-            ON 
-                chd.user_id = u.ID
+                    CASE
+                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 3 MONTH) AND chd.type = 1 THEN 'Expired'
+                        ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
+                    END as activity_date,
+                    chd.performer_name
+                FROM tbl_Customer_Relationship AS cr
+                LEFT JOIN (
+                    SELECT
+                        contact_id, 
+                        history_id,
+                        timestamp,
+                        type,
+                        performer_name
+                    FROM tbl_crm_history_data
+                    WHERE history_id IN (
+                        SELECT
+                            MAX(history_id)
+                        FROM tbl_crm_history_data
+                        GROUP BY contact_id
+                    )
+                ) AS chd
+                ON chd.contact_id = cr.crm_id
             WHERE 
-                $column = '$value' AND flag = 1
-            GROUP BY
-                cr.crm_id,
-                cr.userID,
-                cr.account_name,
-                cr.account_email,
-                cr.Account_Source,
-                cr.contact_phone,
-                cr.flag,
-                cr.enterprise_id,
-                cr.account_status
-            ORDER BY 
-                cr.crm_date_added DESC";
-                
-            $result = mysqli_query($conn, $sql);
-            
-            if(mysqli_num_rows($result) > 0) {
-                while($row = mysqli_fetch_array($result)) {
-                    $userID = $row["userID"];
-                    $status = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
-                    $date = isset($row['timestamp']) ? new DateTime($row['timestamp']) : null;
-                    $activity_date = $date ? $date->format('F j, Y') : '';
-                    if($row['enterprise_id'] == $user_id) {
-                        $checkbox_display = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
-                        $output .= '
-                        <tr class="contact-row">
-                            <td class="text-center">
-                                <label class="mt-checkbox '.$checkbox_display.'">
-                                    <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="'.$row["crm_id"].'"/>
-                                    <span></span>
-                                </label>
-                            </td>    
-                            <td>'.$row["account_name"].'</td>
-                            <td>'.$row["account_email"].'</td>
-                            <td>'.$row["contact_phone"].'</td>
-                            <td>'.$row["Account_Source"].'</td>
-                            <td class="contact-status">'.$status.'</td>
-                            <td>'.$activity_date.'</td>
-                            <td>'.$row["uploader"].'</td>
-                            <td class="text-center">
-                                <div class="clearfix">
-                                    <div class="">
-                                        <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                        <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                        <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>';
-                    }
-                }
-             echo $output;
-            }
-        } elseif($column == 'flag') { // Filter data by category/status 
-            $sql = "SELECT
-                cr.crm_id, 
-                cr.userID, 
-                cr.account_rep, 
-                cr.account_name, 
-                cr.account_email,  
-                cr.Account_Source, 
-                cr.account_status,
-                cr.contact_phone,
-                cr.enterprise_id,
-                cr.flag,
-                chd.timestamp,
-                chd.performer_name,
-                CONCAT(u.first_name, ' ', u.last_name) AS uploader
-            FROM 
-                tbl_Customer_Relationship cr
-            LEFT JOIN 
-                (SELECT 
-                     contact_id, MAX(history_id) AS max_history_data_id
-                 FROM 
-                     tbl_crm_history_data
-                 GROUP BY 
-                     contact_id) latest_history
-            ON 
-                cr.crm_id = latest_history.contact_id
-            LEFT JOIN 
-                tbl_crm_history_data chd
-            ON 
-                latest_history.contact_id = chd.contact_id
-                AND latest_history.max_history_data_id = chd.history_id
-            LEFT JOIN 
-                tbl_user u
-            ON 
-                chd.user_id = u.ID
-            WHERE 
-                $column = '$value' AND flag = 0
-            GROUP BY
-                cr.crm_id,
-                cr.userID,
-                cr.account_name,
-                cr.account_email,
-                cr.Account_Source,
-                cr.contact_phone,
-                cr.flag,
-                cr.enterprise_id,
-                cr.account_status
-            ORDER BY 
-                cr.crm_date_added DESC";
-            $result = mysqli_query($conn, $sql);
-            if($result) {
-                if(mysqli_num_rows($result) > 0) {
-                    while($row = mysqli_fetch_array($result)) {
-                        $userID = $row["userID"];
-                        $status = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
-                        $date = isset($row['timestamp']) ? new DateTime($row['timestamp']) : null;
-                        $activity_date = $date ? $date->format('F j, Y') : '';
-                        if($row['enterprise_id'] == $user_id) {
-                            $checkbox_display = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
-                            $output .= '
-                            <tr class="contact-row">
-                                <td class="text-center">
-                                    <label class="mt-checkbox '.$checkbox_display.'">
-                                        <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="'.$row["crm_id"].'"/>
-                                        <span></span>
-                                    </label>
-                                </td>    
-                                <td>'.$row["account_name"].'</td>
-                                <td>'.$row["account_email"].'</td>
-                                <td>'.$row["contact_phone"].'</td>
-                                <td>'.$row["Account_Source"].'</td>
-                                <td><span class="font-red">Archived</span></td>
-                                <td>'.$activity_date.'</td>
-                                <td>'.$row["uploader"].'</td>
-                                <td class="text-center">
-                                    <div class="clearfix">
-                                        <div class="">
-                                            <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                            <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                            <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>';
-                        }
-                    }
-                 echo $output;
-                }
-            }
-        }
-    }
+                crm_date_added BETWEEN '$rfrom' AND '$rto' AND flag = 1
+                AND cr.enterprise_id = $user_id";
     
-    if(isset($_POST['filter_range'])) {  // filter contacts by date ranges
-        $from = $_POST['from'];
-        $from_date = date_create($from);
-        $rfrom = date_format($from_date, "Y-m-d");
-        $output = '';
-        $to = $_POST['to'];
-        $to_date = date_create($to);
-        $rto = date_format($to_date, "Y-m-d");
-        $sql = "SELECT
-                cr.crm_id, 
-                cr.userID, 
-                cr.account_rep, 
-                cr.account_name, 
-                cr.account_email,  
-                cr.Account_Source, 
-                cr.account_status,
-                cr.contact_phone,
-                cr.enterprise_id,
-                cr.flag,
-                chd.timestamp,
-                chd.performer_name,
-                CONCAT(u.first_name, ' ', u.last_name) AS uploader
-            FROM 
-                tbl_Customer_Relationship cr
-            LEFT JOIN 
-                (SELECT 
-                     contact_id, MAX(history_id) AS max_history_data_id
-                 FROM 
-                     tbl_crm_history_data
-                 GROUP BY 
-                     contact_id) latest_history
-            ON 
-                cr.crm_id = latest_history.contact_id
-            LEFT JOIN 
-                tbl_crm_history_data chd
-            ON 
-                latest_history.contact_id = chd.contact_id
-                AND latest_history.max_history_data_id = chd.history_id
-            LEFT JOIN 
-                tbl_user u
-            ON 
-                chd.user_id = u.ID
-            WHERE 
-                crm_date_added BETWEEN ? AND ? AND flag = 1
-                AND cr.enterprise_id = $user_id
-            GROUP BY
-                cr.crm_id,
-                cr.userID,
-                cr.account_name,
-                cr.account_email,
-                cr.Account_Source,
-                cr.contact_phone,
-                cr.flag,
-                cr.enterprise_id,
-                cr.account_status
-            ORDER BY 
-                cr.crm_date_added DESC";
+        $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
+        $totalData = mysqli_fetch_assoc($totalDataQuery)['total'];
+        $totalFiltered = $totalData;
     
-        $stmt = mysqli_prepare($conn, $sql);
-        mysqli_stmt_bind_param($stmt, "ss", $rfrom, $rto);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-        if($result) {
-            if(mysqli_num_rows($result) > 0) {
-                while($row = mysqli_fetch_array($result)) {
-                    $userID = $row["userID"];
-                    $status = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
-                    $date = isset($row['timestamp']) ? new DateTime($row['timestamp']) : null;
-                    $activity_date = $date ? $date->format('F j, Y') : '';
-                    $checkbox_display = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
-                    $output .= '
-                    <tr class="contact-row">
-                        <td class="text-center">
-                            <label class="mt-checkbox '.$checkbox_display.'">
-                                <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="'.$row["crm_id"].'"/>
-                                <span></span>
-                            </label>
-                        </td>    
-                        <td>'.$row["account_name"].'</td>
-                        <td>'.$row["account_email"].'</td>
-                        <td>'.$row["contact_phone"].'</td>
-                        <td>'.$row["Account_Source"].'</td>
-                        <td class="contact-status">'.$status.'</td>
-                        <td>'.$activity_date.'</td>
-                        <td>'.$row["uploader"].'</td>
-                        <td class="text-center">
-                            <div class="clearfix">
-                                <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                    <a class="btn btn-sm blue tooltips d-none" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                    <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>';
-                }
-            echo $output;
-            }
+        if (!empty($_POST['search']['value'])) {
+            $searchValue = $_POST['search']['value'];
+            $sql .= " AND (cr.account_name LIKE '%$searchValue%' ";
+            $sql .= " OR cr.account_email LIKE '%$searchValue%' ";
+            $sql .= " OR cr.contact_phone LIKE '%$searchValue%' ";
+            $sql .= " OR cr.Account_Source LIKE '%$searchValue%' ";
+            $sql .= " OR chd.performer_name LIKE '%$searchValue%')";
         }
-        mysqli_stmt_close($stmt);
-        mysqli_close($conn);
+    
+        if(isset($_POST['order'][0]['column']) && isset($_POST['order'][0]['dir']) && isset($_POST['start']) && isset($_POST['length'])) {
+            $sql .= " ORDER BY ".$columns[$_POST['order'][0]['column']]." ".$_POST['order'][0]['dir']." LIMIT ".$_POST['start']." ,".$_POST['length']." ";
+        }
+    
+        $query = mysqli_query($conn, $sql);
+    
+        if($query) {
+            $data = array();
+            while ($row = mysqli_fetch_assoc($query)) {
+                $row['status'] = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
+                $row['checkbox_display'] = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
+                $data[] = $row;
+            }
+        } else {
+            $data = array();
+        }
+    
+        $json_data = array(
+            "draw" => isset($_POST['draw']) ? intval($_POST['draw']) : 0,
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        );
+    
+        echo json_encode($json_data);
     }
 
     if(isset($_POST['query'])) { // get all contact
@@ -565,7 +464,7 @@
                     <tr class="contact-row">
                         <td class="text-center">
                             <label class="mt-checkbox '.$checkbox_display.'">
-                                <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="'.$row["crm_id"].'"/>
+                                <input type="checkbox" class="checkbox_action" value="'.$row["crm_id"].'"/>
                                 <span></span>
                             </label>
                         </td>    
@@ -592,479 +491,23 @@
         }
     }
     
-    if(isset($_POST['search_contact'])) {   // get searched contact by account name
-        $output = '';
+    if (isset($_POST['search_contact'])) {
         $searchValue = $_POST['searchVal'];
-        $query = "SELECT
-                cr.crm_id, 
-                cr.userID, 
-                cr.account_rep, 
-                cr.account_name, 
-                cr.account_email,  
-                cr.Account_Source, 
-                cr.account_status,
-                cr.contact_phone,
-                cr.enterprise_id,
-                cr.flag,
-                chd.timestamp,
-                chd.performer_name,
-                CONCAT(u.first_name, ' ', u.last_name) AS uploader
-            FROM 
-                tbl_Customer_Relationship cr
-            LEFT JOIN 
-                (SELECT 
-                     contact_id, MAX(history_id) AS max_history_data_id
-                 FROM 
-                     tbl_crm_history_data
-                 GROUP BY 
-                     contact_id) latest_history
-            ON 
-                cr.crm_id = latest_history.contact_id
-            LEFT JOIN 
-                tbl_crm_history_data chd
-            ON 
-                latest_history.contact_id = chd.contact_id
-                AND latest_history.max_history_data_id = chd.history_id
-            LEFT JOIN 
-                tbl_user u
-            ON 
-                chd.user_id = u.ID
-            WHERE 
-                account_name LIKE '%".$searchValue."%' AND LENGTH(account_name) > 0
-                AND cr.enterprise_id = $user_id
-            GROUP BY
-                cr.crm_id,
-                cr.userID,
-                cr.account_name,
-                cr.account_email,
-                cr.Account_Source,
-                cr.contact_phone,
-                cr.flag,
-                cr.enterprise_id,
-                cr.account_status
-            ORDER BY 
-                cr.crm_date_added DESC";
-        $result = mysqli_query($conn, $query);
-        if($result){
-            if(mysqli_num_rows($result) > 0) {
-                while($row = mysqli_fetch_array($result)) {
-                    $userID = $row["userID"];
-                    $status = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
-                    $date = isset($row['timestamp']) ? new DateTime($row['timestamp']) : null;
-                    $activity_date = $date ? $date->format('F j, Y') : '';
-                    $checkbox_display = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
-                    $output .= '
-                    <tr class="contact-row">
-                        <td class="text-center">
-                            <label class="mt-checkbox '.$checkbox_display.'">
-                                <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="'.$row["crm_id"].'"/>
-                                <span></span>
-                            </label>
-                        </td>    
-                        <td>'.$row["account_name"].'</td>
-                        <td>'.$row["account_email"].'</td>
-                        <td>'.$row["contact_phone"].'</td>
-                        <td>'.$row["Account_Source"].'</td>
-                        <td class="contact-status">'.$status.'</td>
-                        <td>'.$activity_date.'</td>
-                        <td>'.$row["uploader"].'</td>
-                        <td class="text-center">
-                            <div class="clearfix">
-                                <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                    <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
-                                    <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>';
-                }
-             echo $output;
-            }   
-        }
-    }
+        $request = $_REQUEST;
 
-    if(isset($_POST['search_parent'])) {   // get searched contact by account name
-        $output = '';
-        $searchValue = $_POST['searchVal'];
-        $query = "SELECT
-                cr.crm_id, 
-                cr.userID, 
-                cr.account_rep, 
-                cr.account_name, 
-                cr.account_email,  
-                cr.Account_Source, 
-                cr.account_status,
-                cr.contact_phone,
-                cr.enterprise_id,
-                cr.flag,
-                chd.timestamp,
-                chd.performer_name,
-                CONCAT(u.first_name, ' ', u.last_name) AS uploader
-            FROM 
-                tbl_Customer_Relationship cr
-            LEFT JOIN 
-                (SELECT 
-                     contact_id, MAX(history_id) AS max_history_data_id
-                 FROM 
-                     tbl_crm_history_data
-                 GROUP BY 
-                     contact_id) latest_history
-            ON 
-                cr.crm_id = latest_history.contact_id
-            LEFT JOIN 
-                tbl_crm_history_data chd
-            ON 
-                latest_history.contact_id = chd.contact_id
-                AND latest_history.max_history_data_id = chd.history_id
-            LEFT JOIN 
-                tbl_user u
-            ON 
-                chd.user_id = u.ID
-            WHERE 
-                parent_account LIKE '%".$searchValue."%' AND LENGTH(account_name) > 0
-                AND cr.enterprise_id = $user_id
-            GROUP BY
-                cr.crm_id,
-                cr.userID,
-                cr.account_name,
-                cr.account_email,
-                cr.Account_Source,
-                cr.contact_phone,
-                cr.flag,
-                cr.enterprise_id,
-                cr.account_status
-            ORDER BY 
-                cr.crm_date_added DESC";
-        $result = mysqli_query($conn, $query);
-        if($result){
-            if(mysqli_num_rows($result) > 0) {
-                while($row = mysqli_fetch_array($result)) {
-                    $userID = $row["userID"];
-                    $status = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
-                    $date = isset($row['timestamp']) ? new DateTime($row['timestamp']) : null;
-                    $activity_date = $date ? $date->format('F j, Y') : '';
-                    $checkbox_display = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
-                    $output .= '
-                    <tr class="contact-row">
-                        <td class="text-center">
-                            <label class="mt-checkbox '.$checkbox_display.'">
-                                <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="'.$row["crm_id"].'"/>
-                                <span></span>
-                            </label>
-                        </td>    
-                        <td>'.$row["account_name"].'</td>
-                        <td>'.$row["account_email"].'</td>
-                        <td>'.$row["contact_phone"].'</td>
-                        <td>'.$row["Account_Source"].'</td>
-                        <td class="contact-status">'.$status.'</td>
-                        <td>'.$activity_date.'</td>
-                        <td>'.$row["uploader"].'</td>
-                        <td class="text-center">
-                            <div class="clearfix">
-                                <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                    <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
-                                    <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>';
-                }
-             echo $output;
-            }   
-        }
-    }
-    
-    if(isset($_POST['search_contact_email'])) {  // get searched contact by account email
-        $output = '';
-        $searchValue = $_POST['searchEmailVal'];
-        $query = "SELECT
-                cr.crm_id, 
-                cr.userID, 
-                cr.account_rep, 
-                cr.account_name, 
-                cr.account_email,  
-                cr.Account_Source, 
-                cr.account_status,
-                cr.contact_phone,
-                cr.enterprise_id,
-                cr.flag,
-                chd.timestamp,
-                chd.performer_name,
-                CONCAT(u.first_name, ' ', u.last_name) AS uploader
-            FROM 
-                tbl_Customer_Relationship cr
-            LEFT JOIN 
-                (SELECT 
-                     contact_id, MAX(history_id) AS max_history_data_id
-                 FROM 
-                     tbl_crm_history_data
-                 GROUP BY 
-                     contact_id) latest_history
-            ON 
-                cr.crm_id = latest_history.contact_id
-            LEFT JOIN 
-                tbl_crm_history_data chd
-            ON 
-                latest_history.contact_id = chd.contact_id
-                AND latest_history.max_history_data_id = chd.history_id
-            LEFT JOIN 
-                tbl_user u
-            ON 
-                chd.user_id = u.ID
-            WHERE 
-                account_email LIKE '%".$searchValue."%' AND LENGTH(account_name) > 0
-                AND cr.enterprise_id = $user_id
-            GROUP BY
-                cr.crm_id,
-                cr.userID,
-                cr.account_name,
-                cr.account_email,
-                cr.Account_Source,
-                cr.contact_phone,
-                cr.flag,
-                cr.enterprise_id,
-                cr.account_status
-            ORDER BY 
-                cr.crm_date_added DESC";
-                
-        $result = mysqli_query($conn, $query);
-        $output = '';
+        $columns = array(
+            0 => 'crm_id',
+            1 => 'account_name',
+            2 => 'account_email',
+            3 => 'contact_phone',
+            4 => 'Account_Source',
+            5 => 'account_status',
+            6 => 'activity_date',
+            7 => 'performer_name'
+        );
 
-        $result = mysqli_query($conn, $query);
-        if($result) {
-            if(mysqli_num_rows($result) > 0) {
-                while($row = mysqli_fetch_array($result)) {
-                    $userID = $row["userID"];
-                    $status = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
-                    $date = isset($row['timestamp']) ? new DateTime($row['timestamp']) : null;
-                    $activity_date = $date ? $date->format('F j, Y') : '';
-                    $checkbox_display = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
-                    $output .= '
-                    <tr class="contact-row">
-                        <td class="text-center">
-                            <label class="mt-checkbox '.$checkbox_display.'">
-                                <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="'.$row["crm_id"].'"/>
-                                <span></span>
-                            </label>
-                        </td>    
-                        <td>'.$row["account_name"].'</td>
-                        <td>'.$row["account_email"].'</td>
-                        <td>'.$row["contact_phone"].'</td>
-                        <td>'.$row["Account_Source"].'</td>
-                        <td class="contact-status">'.$status.'</td>
-                        <td>'.$activity_date.'</td>
-                        <td>'.$row["uploader"].'</td>
-                        <td class="text-center">
-                            <div class="clearfix">
-                                <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                    <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
-                                    <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>';
-                }
-             echo $output;
-            }
-        }
-    }
-    
-    if(isset($_POST['search_contact_phone'])) {   // get searched contact by account phone
-        $output = '';
-        $searchValue = $_POST['searchPhoneVal'];
-        $query = "SELECT
-                cr.crm_id, 
-                cr.userID, 
-                cr.account_rep, 
-                cr.account_name, 
-                cr.account_email,  
-                cr.Account_Source, 
-                cr.account_status,
-                cr.contact_phone,
-                cr.enterprise_id,
-                cr.flag,
-                chd.timestamp,
-                chd.performer_name,
-                CONCAT(u.first_name, ' ', u.last_name) AS uploader
-            FROM 
-                tbl_Customer_Relationship cr
-            LEFT JOIN 
-                (SELECT 
-                     contact_id, MAX(history_id) AS max_history_data_id
-                 FROM 
-                     tbl_crm_history_data
-                 GROUP BY 
-                     contact_id) latest_history
-            ON 
-                cr.crm_id = latest_history.contact_id
-            LEFT JOIN 
-                tbl_crm_history_data chd
-            ON 
-                latest_history.contact_id = chd.contact_id
-                AND latest_history.max_history_data_id = chd.history_id
-            LEFT JOIN 
-                tbl_user u
-            ON 
-                chd.user_id = u.ID
-            WHERE 
-                contact_phone LIKE '%".$searchValue."%' AND LENGTH(account_name) > 0
-                AND cr.enterprise_id = $user_id
-            GROUP BY
-                cr.crm_id,
-                cr.userID,
-                cr.account_name,
-                cr.account_email,
-                cr.Account_Source,
-                cr.contact_phone,
-                cr.flag,
-                cr.enterprise_id,
-                cr.account_status
-            ORDER BY 
-                cr.crm_date_added DESC";
-                
-        $result = mysqli_query($conn, $query);
-        if($result) {
-            if(mysqli_num_rows($result) > 0) {
-                while($row = mysqli_fetch_array($result)) {
-                    $userID = $row["userID"];
-                    $status = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
-                    $date = isset($row['timestamp']) ? new DateTime($row['timestamp']) : null;
-                    $activity_date = $date ? $date->format('F j, Y') : '';
-                    $checkbox_display = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
-                    $output .= '
-                    <tr class="contact-row">
-                        <td class="text-center">
-                            <label class="mt-checkbox '.$checkbox_display.'">
-                                <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="'.$row["crm_id"].'"/>
-                                <span></span>
-                            </label>
-                        </td>    
-                        <td>'.$row["account_name"].'</td>
-                        <td>'.$row["account_email"].'</td>
-                        <td>'.$row["contact_phone"].'</td>
-                        <td>'.$row["Account_Source"].'</td>
-                        <td class="contact-status">'.$status.'</td>
-                        <td>'.$activity_date.'</td>
-                        <td>'.$row["uploader"].'</td>
-                        <td class="text-center">
-                            <div class="clearfix">
-                                <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                    <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
-                                    <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>';
-                }
-             echo $output;
-            }
-        }
-    }
-    
-    if(isset($_POST['search_contact_source'])) {   // get searched contact by account source
-        $output = '';
-        $searchValue = $_POST['searchSourceVal'];
-        $query = "SELECT
-                cr.crm_id, 
-                cr.userID, 
-                cr.account_rep, 
-                cr.account_name, 
-                cr.account_email,  
-                cr.Account_Source, 
-                cr.account_status,
-                cr.contact_phone,
-                cr.enterprise_id,
-                cr.flag,
-                chd.timestamp,
-                chd.performer_name,
-                CONCAT(u.first_name, ' ', u.last_name) AS uploader
-            FROM 
-                tbl_Customer_Relationship cr
-            LEFT JOIN 
-                (SELECT 
-                     contact_id, MAX(history_id) AS max_history_data_id
-                 FROM 
-                     tbl_crm_history_data
-                 GROUP BY 
-                     contact_id) latest_history
-            ON 
-                cr.crm_id = latest_history.contact_id
-            LEFT JOIN 
-                tbl_crm_history_data chd
-            ON 
-                latest_history.contact_id = chd.contact_id
-                AND latest_history.max_history_data_id = chd.history_id
-            LEFT JOIN 
-                tbl_user u
-            ON 
-                chd.user_id = u.ID
-            WHERE 
-                Account_Source LIKE '%".$searchValue."%' AND LENGTH(account_name) > 0
-                AND cr.enterprise_id = $user_id
-            GROUP BY
-                cr.crm_id,
-                cr.userID,
-                cr.account_name,
-                cr.account_email,
-                cr.Account_Source,
-                cr.contact_phone,
-                cr.flag,
-                cr.enterprise_id,
-                cr.account_status
-            ORDER BY 
-                cr.crm_date_added DESC";
-                
-        $result = mysqli_query($conn, $query);
-        if($result) {
-            if(mysqli_num_rows($result) > 0) {
-                while($row = mysqli_fetch_array($result)) {
-                    $userID = $row["userID"];
-                    $status = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
-                    $date = isset($row['timestamp']) ? new DateTime($row['timestamp']) : null;
-                    $activity_date = $date ? $date->format('F j, Y') : '';
-                    $checkbox_display = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
-                    $output .= '
-                    <tr class="contact-row">
-                        <td class="text-center">
-                            <label class="mt-checkbox '.$checkbox_display.'">
-                                <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="'.$row["crm_id"].'"/>
-                                <span></span>
-                            </label>
-                        </td>    
-                        <td>'.$row["account_name"].'</td>
-                        <td>'.$row["account_email"].'</td>
-                        <td>'.$row["contact_phone"].'</td>
-                        <td>'.$row["Account_Source"].'</td>
-                        <td class="contact-status">'.$status.'</td>
-                        <td>'.$activity_date.'</td>
-                        <td>'.$row["uploader"].'</td>
-                        <td class="text-center">
-                            <div class="clearfix">
-                                <div class="">
-                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                    <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
-                                    <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>';
-                }
-             echo $output;
-            }
-        }
-    }
-    
-    if(isset($_POST['filter_campaign'])) {  // Filter data through campaign date
-        $slug = $_POST['slug'];
-        $output = '';
-        if($slug == 'has_campaign') {
-            $sql = "SELECT
-                    cr.crm_id, 
-                    cr.userID, 
+        $sql = "SELECT 
+                    cr.crm_id,
                     cr.account_rep, 
                     cr.account_name, 
                     cr.account_email,  
@@ -1073,99 +516,434 @@
                     cr.contact_phone,
                     cr.enterprise_id,
                     cr.flag,
-                    chd.timestamp,
-                    chd.performer_name,
-                    CONCAT(u.first_name, ' ', u.last_name) AS uploader,
-                    latest_campaign.Campaign_added AS latest_campaign_added
-                FROM 
-                    tbl_Customer_Relationship cr
-                LEFT JOIN 
-                    (SELECT 
-                         contact_id, MAX(history_id) AS max_history_data_id
-                     FROM 
-                         tbl_crm_history_data
-                     GROUP BY 
-                         contact_id) latest_history
-                ON 
-                    cr.crm_id = latest_history.contact_id
-                LEFT JOIN 
-                    tbl_crm_history_data chd
-                ON 
-                    latest_history.contact_id = chd.contact_id
-                    AND latest_history.max_history_data_id = chd.history_id
-                LEFT JOIN 
-                    tbl_user u
-                ON 
-                    chd.user_id = u.ID
-                LEFT JOIN 
-                    (SELECT 
-                         crm_ids, MAX(Campaign_added) AS Campaign_added
-                     FROM 
-                         tbl_Customer_Relationship_Campaign
-                     GROUP BY 
-                         crm_ids) latest_campaign
-                ON 
-                    cr.crm_id = latest_campaign.crm_ids
-                WHERE 
-                    LENGTH(cr.account_name) > 0
-                    AND LENGTH(latest_campaign.Campaign_added) > 0 
-                    AND cr.flag = 1
-                    AND cr.enterprise_id = $user_id
-                GROUP BY
+                    CASE
+                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 3 MONTH) AND chd.type = 1 THEN 'Expired'
+                        ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
+                    END as activity_date,
+                    chd.performer_name
+                FROM tbl_Customer_Relationship AS cr
+                LEFT JOIN (
+                    SELECT
+                        contact_id, 
+                        history_id,
+                        timestamp,
+                        type,
+                        performer_name
+                    FROM tbl_crm_history_data
+                    WHERE history_id IN (
+                        SELECT
+                            MAX(history_id)
+                        FROM tbl_crm_history_data
+                        GROUP BY contact_id
+                    )
+                ) AS chd
+                ON chd.contact_id = cr.crm_id
+            WHERE 
+                cr.account_name LIKE '%".$searchValue."%' AND LENGTH(cr.account_name) > 0
+                AND cr.enterprise_id = $user_id";
+
+        $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
+        $totalData = mysqli_fetch_assoc($totalDataQuery)['total'];
+        $totalFiltered = $totalData;
+
+        if (!empty($request['search']['value'])) {
+            $sql .= " AND (cr.account_name LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.account_email LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.contact_phone LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.Account_Source LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR chd.performer_name LIKE '%".$request['search']['value']."%' )";
+        }
+
+        $totalFilteredQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
+        $totalFiltered = mysqli_fetch_assoc($totalFilteredQuery)['total'];
+
+        $sql .= " ORDER BY ".$columns[$request['order'][0]['column']]." ".$request['order'][0]['dir']." LIMIT ".$request['start']." ,".$request['length']." ";
+
+        $query = mysqli_query($conn, $sql);
+
+        $data = array();
+        while ($row = mysqli_fetch_assoc($query)) {
+            $row['status'] = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
+            $row['checkbox_display'] = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
+            $data[] = $row;
+        }
+
+        $json_data = array(
+            "draw" => intval($request['draw']),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        );
+
+        echo json_encode($json_data);
+    }
+
+    if(isset($_POST['search_parent'])) {  
+        $searchValue = $_POST['searchVal'];
+        $request = $_REQUEST;
+
+       $columns = array(
+            0 => 'crm_id',
+            1 => 'account_name',
+            2 => 'account_email',
+            3 => 'contact_phone',
+            4 => 'Account_Source',
+            5 => 'account_status',
+            6 => 'activity_date',
+            7 => 'performer_name'
+        );
+
+        $sql = "SELECT 
                     cr.crm_id,
-                    cr.userID,
-                    cr.account_name,
-                    cr.account_email,
-                    cr.Account_Source,
-                    cr.contact_phone,
-                    cr.flag,
-                    cr.enterprise_id,
+                    cr.account_rep, 
+                    cr.account_name, 
+                    cr.account_email,  
+                    cr.Account_Source, 
                     cr.account_status,
-                    latest_campaign.Campaign_added
-                ORDER BY 
-                    cr.crm_date_added DESC";  
-            $result = mysqli_query($conn, $sql);
-            if($result) {
-                if(mysqli_num_rows($result) > 0) {
-                    while($row = mysqli_fetch_array($result)) {
-                        $userID = $row["userID"];
-                        $status = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
-                        $date = isset($row['timestamp']) ? new DateTime($row['timestamp']) : null;
-                        $activity_date = $date ? $date->format('F j, Y') : '';
-                        $checkbox_display = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
-                        $output .= '
-                        <tr class="contact-row">
-                            <td class="text-center">
-                                <label class="mt-checkbox '.$checkbox_display.'">
-                                    <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="'.$row["crm_id"].'"/>
-                                    <span></span>
-                                </label>
-                            </td>    
-                            <td>'.$row["account_name"].'</td>
-                            <td>'.$row["account_email"].'</td>
-                            <td>'.$row["contact_phone"].'</td>
-                            <td>'.$row["Account_Source"].'</td>
-                            <td class="contact-status">'.$status.'</td>
-                            <td>'.$activity_date.'</td>
-                            <td>'.$row["uploader"].'</td>
-                            <td class="text-center">
-                                <div class="clearfix">
-                                    <div class="">
-                                        <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                        <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
-                                        <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>';
-                    }
-                 echo $output;
-                }
-            }
-        } elseif($slug == 'no_campaign') { // Filter data by category/status 
+                    cr.contact_phone,
+                    cr.enterprise_id,
+                    cr.flag,
+                    CASE
+                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 3 MONTH) AND chd.type = 1 THEN 'Expired'
+                        ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
+                    END as activity_date,
+                    chd.performer_name
+                FROM tbl_Customer_Relationship AS cr
+                LEFT JOIN (
+                    SELECT
+                        contact_id, 
+                        history_id,
+                        timestamp,
+                        type,
+                        performer_name
+                    FROM tbl_crm_history_data
+                    WHERE history_id IN (
+                        SELECT
+                            MAX(history_id)
+                        FROM tbl_crm_history_data
+                        GROUP BY contact_id
+                    )
+                ) AS chd
+                ON chd.contact_id = cr.crm_id
+            WHERE 
+                cr.parent_account LIKE '%".$searchValue."%' AND LENGTH(cr.account_name) > 0
+                AND cr.enterprise_id = $user_id";
+
+        $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
+        $totalData = mysqli_fetch_assoc($totalDataQuery)['total'];
+        $totalFiltered = $totalData;
+
+        if(!empty($request['search']['value'])) {
+            $sql .= " AND (cr.account_name LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.account_email LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.contact_phone LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.Account_Source LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR chd.performer_name LIKE '%".$request['search']['value']."%' )";
+        }
+
+        $totalFilteredQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
+        $totalFiltered = mysqli_fetch_assoc($totalFilteredQuery)['total'];
+
+        $sql .= " ORDER BY ".$columns[$request['order'][0]['column']]." ".$request['order'][0]['dir']." LIMIT ".$request['start']." ,".$request['length']." ";
+
+        $query = mysqli_query($conn, $sql);
+
+        $data = array();
+        while($row = mysqli_fetch_assoc($query)) {
+            $row['status'] = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
+            $row['checkbox_display'] = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
+            $data[] = $row;
+        }
+
+        $json_data = array(
+            "draw" => intval($request['draw']),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        );
+
+        echo json_encode($json_data);
+    }
+    
+    if (isset($_POST['search_contact_phone'])) {
+        $searchValue = $_POST['searchPhoneVal'];
+        $request = $_REQUEST;
+
+        $columns = array(
+            0 => 'crm_id',
+            1 => 'account_name',
+            2 => 'account_email',
+            3 => 'contact_phone',
+            4 => 'Account_Source',
+            5 => 'account_status',
+            6 => 'activity_date',
+            7 => 'performer_name'
+        );
+
+        $sql = "SELECT 
+                    cr.crm_id,
+                    cr.account_rep, 
+                    cr.account_name, 
+                    cr.account_email,  
+                    cr.Account_Source, 
+                    cr.account_status,
+                    cr.contact_phone,
+                    cr.enterprise_id,
+                    cr.flag,
+                    CASE
+                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 3 MONTH) AND chd.type = 1 THEN 'Expired'
+                        ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
+                    END as activity_date,
+                    chd.performer_name
+                FROM tbl_Customer_Relationship AS cr
+                LEFT JOIN (
+                    SELECT
+                        contact_id, 
+                        history_id,
+                        timestamp,
+                        type,
+                        performer_name
+                    FROM tbl_crm_history_data
+                    WHERE history_id IN (
+                        SELECT
+                            MAX(history_id)
+                        FROM tbl_crm_history_data
+                        GROUP BY contact_id
+                    )
+                ) AS chd
+                ON chd.contact_id = cr.crm_id
+            WHERE 
+                cr.account_phone LIKE '%".$searchValue."%' AND LENGTH(cr.account_name) > 0
+                AND cr.enterprise_id = $user_id";
+
+        $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
+        $totalData = mysqli_fetch_assoc($totalDataQuery)['total'];
+        $totalFiltered = $totalData;
+
+        if (!empty($request['search']['value'])) {
+            $sql .= " AND (cr.account_name LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.account_email LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.contact_phone LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.Account_Source LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR chd.performer_name LIKE '%".$request['search']['value']."%' )";
+        }
+
+        $totalFilteredQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
+        $totalFiltered = mysqli_fetch_assoc($totalFilteredQuery)['total'];
+
+        $sql .= " ORDER BY ".$columns[$request['order'][0]['column']]." ".$request['order'][0]['dir']." LIMIT ".$request['start']." ,".$request['length']." ";
+
+        $query = mysqli_query($conn, $sql);
+
+        $data = array();
+        while ($row = mysqli_fetch_assoc($query)) {
+            $row['status'] = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
+            $row['checkbox_display'] = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
+            $data[] = $row;
+        }
+
+        $json_data = array(
+            "draw" => intval($request['draw']),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        );
+
+        echo json_encode($json_data);
+    }
+    
+    if (isset($_POST['search_contact_email'])) {
+        $searchValue = $_POST['searchEmailVal'];
+        $request = $_REQUEST;
+
+        $columns = array(
+            0 => 'crm_id',
+            1 => 'account_name',
+            2 => 'account_email',
+            3 => 'contact_phone',
+            4 => 'Account_Source',
+            5 => 'account_status',
+            6 => 'activity_date',
+            7 => 'performer_name'
+        );
+
+        $sql = "SELECT 
+                    cr.crm_id,
+                    cr.account_rep, 
+                    cr.account_name, 
+                    cr.account_email,  
+                    cr.Account_Source, 
+                    cr.account_status,
+                    cr.contact_phone,
+                    cr.enterprise_id,
+                    cr.flag,
+                    CASE
+                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 3 MONTH) AND chd.type = 1 THEN 'Expired'
+                        ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
+                    END as activity_date,
+                    chd.performer_name
+                FROM tbl_Customer_Relationship AS cr
+                LEFT JOIN (
+                    SELECT
+                        contact_id, 
+                        history_id,
+                        timestamp,
+                        type,
+                        performer_name
+                    FROM tbl_crm_history_data
+                    WHERE history_id IN (
+                        SELECT
+                            MAX(history_id)
+                        FROM tbl_crm_history_data
+                        GROUP BY contact_id
+                    )
+                ) AS chd
+                ON chd.contact_id = cr.crm_id
+            WHERE 
+                cr.account_email LIKE '%".$searchValue."%' AND LENGTH(cr.account_name) > 0
+                AND cr.enterprise_id = $user_id";
+
+        $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
+        $totalData = mysqli_fetch_assoc($totalDataQuery)['total'];
+        $totalFiltered = $totalData;
+
+        if (!empty($request['search']['value'])) {
+            $sql .= " AND (cr.account_name LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.account_email LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.contact_phone LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.Account_Source LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR chd.performer_name LIKE '%".$request['search']['value']."%' )";
+        }
+
+        $totalFilteredQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
+        $totalFiltered = mysqli_fetch_assoc($totalFilteredQuery)['total'];
+
+        $sql .= " ORDER BY ".$columns[$request['order'][0]['column']]." ".$request['order'][0]['dir']." LIMIT ".$request['start']." ,".$request['length']." ";
+
+        $query = mysqli_query($conn, $sql);
+
+        $data = array();
+        while ($row = mysqli_fetch_assoc($query)) {
+            $row['status'] = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
+            $row['checkbox_display'] = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
+            $data[] = $row;
+        }
+
+        $json_data = array(
+            "draw" => intval($request['draw']),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        );
+
+        echo json_encode($json_data);
+    }
+    
+    if(isset($_POST['search_contact_source'])) {   
+        $searchValue = $_POST['searchSourceVal'];
+        $request = $_REQUEST;
+    
+        $columns = array(
+            0 => 'crm_id',
+            1 => 'account_name',
+            2 => 'account_email',
+            3 => 'contact_phone',
+            4 => 'Account_Source',
+            5 => 'account_status',
+            6 => 'activity_date',
+            7 => 'performer_name'
+        );
+    
+        $sql = "SELECT 
+                    cr.crm_id,
+                    cr.account_rep, 
+                    cr.account_name, 
+                    cr.account_email,  
+                    cr.Account_Source, 
+                    cr.account_status,
+                    cr.contact_phone,
+                    cr.enterprise_id,
+                    cr.flag,
+                    CASE
+                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 3 MONTH) AND chd.type = 1 THEN 'Expired'
+                        ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
+                    END as activity_date,
+                    chd.performer_name
+                FROM tbl_Customer_Relationship AS cr
+                LEFT JOIN (
+                    SELECT
+                        contact_id, 
+                        history_id,
+                        timestamp,
+                        type,
+                        performer_name
+                    FROM tbl_crm_history_data
+                    WHERE history_id IN (
+                        SELECT
+                            MAX(history_id)
+                        FROM tbl_crm_history_data
+                        GROUP BY contact_id
+                    )
+                ) AS chd
+                ON chd.contact_id = cr.crm_id
+            WHERE 
+                cr.Account_Source LIKE '%".$searchValue."%' AND LENGTH(cr.account_name) > 0
+                AND cr.enterprise_id = $user_id";
+    
+        $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
+        $totalData = mysqli_fetch_assoc($totalDataQuery)['total'];
+        $totalFiltered = $totalData;
+    
+        if(!empty($request['search']['value'])) {
+            $sql .= " AND (cr.account_name LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.account_email LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.contact_phone LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.Account_Source LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR chd.performer_name LIKE '%".$request['search']['value']."%' )";
+        }
+    
+        $totalFilteredQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
+        $totalFiltered = mysqli_fetch_assoc($totalFilteredQuery)['total'];
+    
+        $sql .= " ORDER BY ".$columns[$request['order'][0]['column']]." ".$request['order'][0]['dir']." LIMIT ".$request['start']." ,".$request['length']." ";
+    
+        $query = mysqli_query($conn, $sql);
+    
+        $data = array();
+        while($row = mysqli_fetch_assoc($query)) {
+            $row['status'] = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
+            $row['checkbox_display'] = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
+            $data[] = $row;
+        }
+    
+        $json_data = array(
+            "draw" => intval($request['draw']),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        );
+    
+        echo json_encode($json_data);
+    }
+
+    
+    if(isset($_POST['filter_campaign'])) {
+        $slug = $_POST['slug'];
+        $request = $_REQUEST;
+        $columns = array(
+                0 => 'crm_id',
+                1 => 'account_name',
+                2 => 'account_email',
+                3 => 'contact_phone',
+                4 => 'Account_Source',
+                5 => 'account_status',
+                6 => 'timestamp',
+                7 => 'performer_name'
+            );
+    
+        if($slug == 'has_campaign') {
             $sql = "SELECT
-                        cr.crm_id, 
-                        cr.userID, 
+                        cr.crm_id,
                         cr.account_rep, 
                         cr.account_name, 
                         cr.account_email,  
@@ -1174,82 +952,90 @@
                         cr.contact_phone,
                         cr.enterprise_id,
                         cr.flag,
-                        cr.crm_date_added,
-                        CONCAT(u.first_name, ' ', u.last_name) AS uploader,
-                        MAX(crc.Campaign_added) AS latest_campaign_added,
-                        chd.timestamp AS activity_timestamp,
-                        chd.performer_name AS activity_performer
+                        CASE
+                            WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 3 MONTH) AND chd.type = 1 THEN 'Expired'
+                            ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
+                        END as activity_date,
+                        chd.performer_name
                     FROM 
                         tbl_Customer_Relationship cr
                     LEFT JOIN 
                         tbl_Customer_Relationship_Campaign crc ON cr.crm_id = crc.crm_ids
                     LEFT JOIN 
-                        tbl_user u ON crc.userID = u.ID
-                    LEFT JOIN 
                         tbl_crm_history_data chd ON cr.crm_id = chd.contact_id
                     WHERE 
-                        cr.flag = 1
-                        AND cr.enterprise_id = $user_id
-                        AND crc.Campaign_added IS NULL -- Condition to filter out rows with no campaign
+                         LENGTH(crc.Campaign_added) > 0
+                         AND cr.enterprise_id = $user_id
                     GROUP BY
-                        cr.crm_id, 
-                        cr.userID, 
+                        cr.crm_id";
+    
+        } elseif($slug == 'no_campaign') {
+            $sql = "SELECT
+                        cr.crm_id,
                         cr.account_rep, 
                         cr.account_name, 
                         cr.account_email,  
                         cr.Account_Source, 
-                        cr.contact_phone,
-                        cr.flag,
-                        cr.enterprise_id,
-                        cr.crm_date_added,
                         cr.account_status,
-                        chd.timestamp,
+                        cr.contact_phone,
+                        cr.enterprise_id,
+                        cr.flag,
+                        CASE
+                            WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 3 MONTH) AND chd.type = 1 THEN 'Expired'
+                            ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
+                        END as activity_date,
                         chd.performer_name
-                    ORDER BY 
-                        cr.crm_date_added";
-            $result = mysqli_query($conn, $sql);
-            if($result) {
-                if(mysqli_num_rows($result) > 0) {
-                    while($row = mysqli_fetch_array($result)) {
-                        $userID = $row["userID"];
-                        $status = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
-                        $date = isset($row['timestamp']) ? new DateTime($row['timestamp']) : null;
-                        $activity_date = $date ? $date->format('F j, Y') : '';
-                        $checkbox_display = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
-                        $activity_performer = null;
-                        if (!empty($row['latest_campaign_added'])) {
-                            $activity_performer = $row['activity_performer']; // Set performer from the database
-                        }
+                    FROM 
+                        tbl_Customer_Relationship cr
+                    LEFT JOIN 
+                        tbl_Customer_Relationship_Campaign crc ON cr.crm_id = crc.crm_ids
+                    LEFT JOIN 
+                        tbl_crm_history_data chd ON cr.crm_id = chd.contact_id
+                    WHERE 
+                         cr.enterprise_id = $user_id
+                        AND crc.Campaign_added IS NULL
+                    GROUP BY
+                        cr.crm_id";
+        }
+    
+        $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
+        $totalData = mysqli_fetch_assoc($totalDataQuery)['total'];
+        $totalFiltered = $totalData;
+    
+        if(!empty($request['search']['value'])) {
+            $sql .= " AND (cr.account_name LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.account_email LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.contact_phone LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.Account_Source LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR chd.performer_name LIKE '%".$request['search']['value']."%' )";
+        }
+    
+        $totalFilteredQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
+        $totalFiltered = mysqli_fetch_assoc($totalFilteredQuery)['total'];
+    
+        $sql .= " ORDER BY ".$columns[$request['order'][0]['column']]." ".$request['order'][0]['dir']." LIMIT ".$request['start']." ,".$request['length']." ";
+    
+        $query = mysqli_query($conn, $sql);
 
-                        $output .= '
-                        <tr class="contact-row">
-                            <td class="text-center">
-                                <label class="mt-checkbox '.$checkbox_display.'">
-                                    <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="'.$row["crm_id"].'"/>
-                                    <span></span>
-                                </label>
-                            </td>    
-                            <td>'.$row["account_name"].'</td>
-                            <td>'.$row["account_email"].'</td>
-                            <td>'.$row["contact_phone"].'</td>
-                            <td>'.$row["Account_Source"].'</td>
-                            <td class="contact-status">'.$status.'</td>
-                            <td>'.$activity_date.'</td>
-                            <td>'.$activity_performer.'</td>
-                            <td class="text-center">
-                                <div class="clearfix">
-                                    <div class="">
-                                        <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id='.$row['crm_id'].'"><i class="icon-eye"></i> View</a>
-                                        <a class="btn btn-sm red tooltips delete_contact d-none" id="'.$row['crm_id'].'"><i class="icon-trash"></i></a>
-                                        <a class="btn btn-sm red tooltips activity-history" id="'.$row['crm_id'].'" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>';
-                    }
-                 echo $output;
-                }
+        if($query) {
+            $data = array();
+            while($row = mysqli_fetch_assoc($query)) {
+                $row['status'] = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
+                $row['checkbox_display'] = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
+                $data[] = $row;
             }
+    
+            $json_data = array(
+                "draw" => intval($request['draw']),
+                "recordsTotal" => intval($totalData),
+                "recordsFiltered" => intval($totalFiltered),
+                "data" => $data
+            );
+    
+            echo json_encode($json_data);
+        } else {
+            // If there's an error executing the query, send back the error message
+            echo json_encode(array("error" => mysqli_error($conn)));
         }
     }
     
@@ -2623,7 +2409,7 @@
                             <tr>
                                 <td class="text-center">
                                     <label class="mt-checkbox">
-                                        <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="'.$Campaign_Id.'"/>
+                                        <input type="checkbox" class="checkbox_action" value="'.$Campaign_Id.'"/>
                                         <span></span>
                                     </label>
                                 </td> 

@@ -200,42 +200,6 @@
                         // if($switch_user_id == 423) { $newUser = 0; }
                         $newUser = 0;
                     ?>
-                    
-                    <?php if($current_client == 0 AND $newUser == 1) { ?>
-                        <div class="row">
-                            <?php
-                                $get_category=mysqli_query($conn,"SELECT * FROM tbl_dashboard_cards ORDER BY sort_by");
-                                while ($row=mysqli_fetch_array($get_category)) {
-                                    
-                                    $category_name = $row['category_name'];
-                                    $get_videos = mysqli_query($conn,"SELECT youtube_link FROM tbl_pages_demo_video WHERE page = '$category_name'");
-                                    $get_videos_result = mysqli_fetch_array($get_videos);
-                                    if($get_videos_result) {
-                                        foreach($get_videos_result as $video_rows) {
-                                            echo '<div class="col-md-2">
-                                                <a data-toggle="modal" data-src="'.$video_rows.'" data-fancybox >
-                                                    <img src="/uploads/bgBlue.png" class="img-thumbnail" style="width: 100%;"/>
-                                                    <div class="cover" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; padding: 15px 30px; display: flex;">
-                                                        <h3 class="font-white" style="margin: auto; font-weight: bold; font-size: clamp(18px, 1.5vw, 22px); text-align: center;">'.$row['category_name'].'</h3>
-                                                    </div>
-                                                </a>
-                                            </div>';
-                                            break;
-                                        }
-                                    } else {
-                                        echo '<div class="col-md-2">
-                                            <a href="#modalService" data-toggle="modal">
-                                                <img src="/uploads/bgBlue.png" class="img-thumbnail" style="width: 100%;"/>
-                                                <div class="cover" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; padding: 15px 30px; display: flex;">
-                                                    <h3 class="font-white" style="margin: auto; font-weight: bold; font-size: clamp(18px, 1.5vw, 22px); text-align: center;">'.$row['category_name'].'</h3>
-                                                </div>
-                                            </a>
-                                        </div>';
-                                    }
-                                }
-                            ?>
-                        </div>
-                    <?php } ?>
 
                     <?php
                         if($current_client == 0) {
@@ -258,11 +222,14 @@
                             		$file_url = $src.$url.rawurlencode($file_upload).$embed;
                                 }
                                 
-                                if ($type_id == 0) {
-                            		echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i> '.$file_title.'</a>';
-                            	} else {
-                            		echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><i class="fa fa-youtube"></i> '.$file_title.'</a>';
-                            	}
+                                $icon = $row["icon"];
+                                if (!empty($icon)) { 
+                                    if ($type_id == 0) {
+                                        echo ' <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                    } else {
+                                        echo ' <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                    }
+                                }
                             }
                             
                             if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163) {
@@ -2638,14 +2605,6 @@
                 $('#btnTree').addClass('hide');
             });
             
-			function uploadNewOld(e) {
-				$(e).parent().hide();
-				$(e).parent().prev('.form-control').removeClass('hide');
-			}
-            function uploadNew(e) {
-                $(e).parent().hide();
-                $(e).parent().parent().find('select').removeClass('hide');
-            }
             function changeType(e) {
                 $(e).parent().find('input').hide();
                 $(e).parent().find('input').prop('required',false);

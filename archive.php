@@ -32,14 +32,14 @@
                                             </thead>
                                             <tbody>
                                                 <?php
-                                                    $result = mysqli_query( $conn,"SELECT * FROM tbl_archiving_department ORDER BY name" );
+                                                    $result = mysqli_query( $conn,"SELECT ID, name FROM tbl_archiving_department ORDER BY name" );
                                                     if ( mysqli_num_rows($result) > 0 ) {
                                                         while($row = mysqli_fetch_array($result)) {
                                                             $ID = $row['ID'];
-                                                            $name = $row['name'];
+                                                            $name = htmlentities($row['name'] ?? '');
                                                             $records = 0;
 
-                                                            $selectEForm = mysqli_query( $conn,'SELECT * FROM tbl_archiving WHERE user_id="'.$switch_user_id.'" AND department_id="'. $ID .'"' );
+                                                            $selectEForm = mysqli_query( $conn, "SELECT ID FROM tbl_archiving WHERE user_id = $switch_user_id AND department_id = $ID" );
                                                             if ( mysqli_num_rows($selectEForm) > 0 ) {
                                                                 while($row = mysqli_fetch_array($selectEForm)) {
                                                                     $records++;
@@ -48,7 +48,7 @@
 
                                                             if ($records > 0) {
                                                                 echo '<tr id="tr_'. $ID .'" onclick="btnViewDepartment('. $ID .', '.$FreeAccess.')">
-                                                                    <td>'. htmlentities($name) .'</td>
+                                                                    <td>'. $name .'</td>
                                                                     <td>'. $records .'</td>
                                                                 </tr>';
                                                             }
@@ -67,18 +67,17 @@
                             <div class="portlet light portlet-fit">
                                 <div class="portlet-title">
                                     <div class="caption">
-                                        <i class="icon-folder-alt font-dark"></i>
+                                        <span class="icon-folder-alt font-dark"></span>
                                         <span class="caption-subject font-dark bold uppercase">Archived Records</span>
                                         <?php
                                             if($current_client == 0) {
-                                                // $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site' AND (user_id = $switch_user_id OR user_id = $current_userEmployerID OR user_id = 163)");
                                                 $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site'");
                                                 while ($row = mysqli_fetch_assoc($result)) {
-                                                    $type_id = $row["type"];
-                                                    $file_title = $row["file_title"];
-                                                    $video_url = $row["youtube_link"];
+                                                    $type_id = htmlentities($row["type"] ?? '');
+                                                    $file_title = htmlentities($row["file_title"] ?? '');
+                                                    $video_url = htmlentities($row["youtube_link"] ?? '');
                                                     
-                                                    $file_upload = $row["file_upload"];
+                                                    $file_upload = htmlentities($row["file_upload"] ?? '');
                                                     if (!empty($file_upload)) {
                                         	            $fileExtension = fileExtension($file_upload);
                                         				$src = $fileExtension['src'];
@@ -90,11 +89,14 @@
                                                 		$file_url = $src.$url.rawurlencode($file_upload).$embed;
                                                     }
                                                     
-                                                    if ($type_id == 0) {
-                                                		echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i> '.$file_title.'</a>';
-                                                	} else {
-                                                		echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><i class="fa fa-youtube"></i> '.$file_title.'</a>';
-                                                	}
+                                                    $icon = htmlentities($row["icon"] ?? '');
+                                                    if (!empty($icon)) { 
+                                                        if ($type_id == 0) {
+                                                            echo ' <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                                        } else {
+                                                            echo ' <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                                        }
+                                                    }
 	                                            }
                                             }
                                         ?>
@@ -129,22 +131,35 @@
                                             </thead>
                                             <tbody>
                                                 <?php
-                                                    $result = mysqli_query( $conn,"SELECT * FROM tbl_archiving WHERE user_id=$switch_user_id ORDER BY files_date DESC" );
+                                                    $result = mysqli_query( $conn,"SELECT ID, record, files_date, deleted, reason FROM tbl_archiving WHERE deleted = 0 AND user_id = $switch_user_id ORDER BY record" );
                                                     if ( mysqli_num_rows($result) > 0 ) {
                                                         while($row = mysqli_fetch_array($result)) {
-                                                            $ID = $row['ID'];
-                                                            $record = $row['record'];
-                                                            $files_date = $row['files_date'];
+                                                            $ID = htmlentities($row['ID'] ?? '');
+                                                            $record = htmlentities($row['record'] ?? '');
+                                                            $files_date = htmlentities($row['files_date'] ?? '');
+
+                                                            $approval = '';
+                                                            if ($row['reason'] == 0 AND !empty($row['reason'])) {
+                                                                $reason_array = explode(" | ", htmlentities($row['reason'] ?? ''));
+                                                                $reason = htmlentities($reason_array[1] ?? '');
+                                                                $approval = '<br><i class="help-block">User requested to delete this item because '.$reason.'</i>
+                                                                <div class="remark_action">
+                                                                    <a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnAccept('.$ID.')">Accept</a>
+                                                                     | 
+                                                                    <a href="javascript:;" type="button" class="btn btn-sm btn-link" onclick="btnReject('.$ID.')">Reject</a>
+                                                                </div>';
+                                                            }
 
                                                             echo '<tr id="tr_'. $ID .'">
-                                                                <td>'. htmlentities($record) .'</td>
-                                                                <td class="text-center">'. $files_date .'</td>
+                                                                <td>'.$record.$approval.'</td>
+                                                                <td class="text-center">'.$files_date.'</td>
                                                                 <td class="text-center">';
-                                                                
+
                                                                     if ($FreeAccess == false) {
                                                                         echo '<div class="btn-group btn-group-circle">
                                                                             <a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit('. $ID.')">Edit</a>
                                                                             <a href="#modalViewFile" class="btn btn-success btn-sm btnView" data-toggle="modal" onclick="btnView('. $ID .', '.$FreeAccess.')">View</a>
+                                                                            <a href="javascript:;" class="btn btn-danger btn-sm btnDelete" onclick="btnDelete('. $ID .', '.$FreeAccess.')">Delete</a>
                                                                         </div>';
                                                                     } else {
                                                                         echo '<a href="#modalViewFile" class="btn btn-success btn-sm btnView btn-circle" data-toggle="modal" onclick="btnView('. $ID .', '.$FreeAccess.')">View</a>';
@@ -197,8 +212,8 @@
 
                                                                     ORDER BY d.name");
                                                                 while($row = mysqli_fetch_array($result)) {
-                                                                    $ID = $row['d_ID'];
-                                                                    $name = $row['d_name'];
+                                                                    $ID = htmlentities($row['d_ID'] ?? '');
+                                                                    $name = htmlentities($row['d_name'] ?? '');
                                                                     echo '<option value="'. $ID .'">'. $name .'</option>';
                                                                 }
                                                             ?>
@@ -294,6 +309,12 @@
 
         <script type="text/javascript">
             $(document).ready(function(){
+                var i = '<?php echo isset($_GET['i']) ? $_GET['i']:''; ?>';
+                if (i != '') {
+                    $('#modalViewFile').modal('show');
+                    btnView(i, 0);
+                }
+                
                 $.fn.modal.Constructor.prototype.enforceFocus = function() {};
 
                 $('.select2').select2();
@@ -318,6 +339,75 @@
                 }
             }
 
+            function btnDelete(id) {
+                swal({
+                    title: "Are you sure?",
+                    text: "Write some reason on it!",
+                    type: "input",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    inputPlaceholder: "Reason"
+                }, function (inputValue) {
+                    if (inputValue === false) return false;
+                    if (inputValue === "") {
+                        swal.showInputError("You need to write something!");
+                        return false
+                    }
+                    $.ajax({
+                        type: "GET",
+                        url: "function.php?btnDelete_archiving="+id+"&reason="+inputValue,
+                        dataType: "html",
+                        success: function(response){
+                            // $('.panel_'+id+' > .panel-heading h4 a').append('<i class="fa fa-warning font-red" style="margin-left: 5px;"></i>');
+                        }
+                    });
+                    swal("Notification Sent!", "You wrote: " + inputValue, "success");
+                });
+            }
+            function btnAccept(id) {
+                swal({
+                    title: "Are you sure?",
+                    text: "Please confirm if the data are correct!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-success",
+                    confirmButtonText: "Yes, confirm it!",
+                    closeOnConfirm: false
+                },
+                function(){
+                    $.ajax({
+                        type: "GET",
+                        url: "function.php?btnAccept_archiving="+id,
+                        dataType: "html",
+                        success: function(response){
+                            $('#tr_'+id+' .remark_action').html('<span class="text-success">Accepted!</span>');
+                        }
+                    });
+                    swal("Accepted!", "Data is accepted", "success");
+                });
+            }
+            function btnReject(id) {
+                swal({
+                    title: "Are you sure?",
+                    text: "Please confirm if the data are correct!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-success",
+                    confirmButtonText: "Yes, reject it!",
+                    closeOnConfirm: false
+                },
+                function(){
+                    $.ajax({
+                        type: "GET",
+                        url: "function.php?btnReject_archiving="+id,
+                        dataType: "html",
+                        success: function(response){
+                            $('#tr_'+id+' .remark_action').html('<span class="text-danger">Rejected!</span>');
+                        }
+                    });
+                    swal("Rejected!", "Data is rejected", "success");
+                });
+            }
             function btnEdit(id) {
                 $.ajax({
                     type: "GET",
@@ -411,6 +501,7 @@
                                     result += '<div class="btn-group btn-group-circle">';
                                         result += '<a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit('+obj.ID+')">Edit</a>';
                                         result += '<a href="#modalViewFile" class="btn btn-success btn-sm btnView" data-toggle="modal" onclick="btnView('+obj.ID+')">View</a>';
+                                        result += '<a href="javascript:;" class="btn btn-danger btn-sm btnDelete" onclick="btnDelete('+obj.ID+')">Delete</a>';
                                     result += '</div>';
                                 result += '</td>';
                             result += '</tr>';
@@ -466,6 +557,7 @@
                                 result += '<div class="btn-group btn-group-circle">';
                                     result += '<a href="#modalView" class="btn btn-outline dark btn-sm btnEdit" data-toggle="modal" onclick="btnEdit('+obj.ID+')">Edit</a>';
                                     result += '<a href="#modalViewFile" class="btn btn-success btn-sm btnView" data-toggle="modal" onclick="btnView('+obj.ID+')">View</a>';
+                                    result += '<a href="javascript:;" class="btn btn-danger btn-sm btnDelete" onclick="btnDelete('+obj.ID+')">Delete</a>';
                                 result += '</div>';
                             result += '</td>';
 

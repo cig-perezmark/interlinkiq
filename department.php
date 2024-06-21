@@ -13,7 +13,7 @@
 ?>
 
                     <div class="row">
-                        <div class="col-md-3" onclick="summary(<?php echo $switch_user_id; ?>, 1)" href="#modalSummary" data-toggle="modal">
+                        <div class="col-md-3" onclick="summary(<?php echo $switch_user_id; ?>, 1, 'Total Active Department')" href="#modalSummary" data-toggle="modal">
                             <div class="dashboard-stat2 counterup_1">
                                 <div class="display" style="position: relative;">
                                     <div class="number">
@@ -32,7 +32,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3" onclick="summary(<?php echo $switch_user_id; ?>, 2)" href="#modalSummary" data-toggle="modal">
+                        <div class="col-md-3" onclick="summary(<?php echo $switch_user_id; ?>, 2, 'Total Inactive Department')" href="#modalSummary" data-toggle="modal">
                             <div class="dashboard-stat2 counterup_2">
                                 <div class="display" style="position: relative;">
                                     <div class="number">
@@ -51,7 +51,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3" onclick="summary(<?php echo $switch_user_id; ?>, 3)" href="#modalSummary" data-toggle="modal">
+                        <div class="col-md-3" onclick="summary(<?php echo $switch_user_id; ?>, 3, 'No. of Dept. not yet performed by employee')" href="#modalSummary" data-toggle="modal">
                             <div class="dashboard-stat2 counterup_3">
                                 <div class="display" style="position: relative;">
                                     <div class="number">
@@ -70,7 +70,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3" onclick="summary(<?php echo $switch_user_id; ?>, 4)" href="#modalSummary" data-toggle="modal">
+                        <div class="col-md-3" onclick="summary(<?php echo $switch_user_id; ?>, 4, 'No. of Department with no Document')" href="#modalSummary" data-toggle="modal">
                             <div class="dashboard-stat2 counterup_4">
                                 <div class="display" style="position: relative;">
                                     <div class="number">
@@ -97,7 +97,7 @@
                             <div class="portlet light">
                                 <div class="portlet-title tabbable-line">
                                     <div class="caption">
-                                        <i class="icon-directions font-dark"></i>
+                                        <span class="icon-directions font-dark"></span>
                                         <span class="caption-subject font-dark bold uppercase">List of Departments</span>
                                         <?php
                                             if($current_client == 0) {
@@ -120,11 +120,14 @@
                                                 		$file_url = $src.$url.rawurlencode($file_upload).$embed;
                                                     }
                                                     
-                                                    if ($type_id == 0) {
-                                                		echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i> '.$file_title.'</a>';
-                                                	} else {
-                                                		echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><i class="fa fa-youtube"></i> '.$file_title.'</a>';
-                                                	}
+                                                    $icon = $row["icon"];
+                                                    if (!empty($icon)) { 
+                                                        if ($type_id == 0) {
+                                                            echo ' <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                                        } else {
+                                                            echo ' <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                                        }
+                                                    }
 	                                            }
                                             }
                                         ?>
@@ -177,8 +180,8 @@
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 $table_counter = 1;
                                                                 while($row = mysqli_fetch_array($result)) {
-                                                                    $filetype = $row['filetype'];
-                                                                    $files = $row["files"];
+                                                                    $filetype = htmlentities($row['filetype'] ?? '');
+                                                                    $files = htmlentities($row["files"] ?? '');
                                                                     $type = 'iframe';
                                                                     if (!empty($files)) {
                                                                         if ($filetype == 1) {
@@ -197,8 +200,8 @@
                                                                     
                                                                     echo '<tr id="tr_'. $row["ID"] .'">
                                                                         <td>'. $table_counter .'</td>
-                                                                        <td>'. $row["title"] .'</td>
-                                                                        <td>'. $row["description"] .'</td>
+                                                                        <td>'. htmlentities($row["title"] ?? '') .'</td>
+                                                                        <td>'. htmlentities($row["description"] ?? '') .'</td>
                                                                         <td class="text-center"><p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p></td>';
         
                                                                         // $dept_id = $row["ID"];
@@ -256,8 +259,8 @@
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 $table_counter = 1;
                                                                 while($row = mysqli_fetch_array($result)) {
-                                                                    $filetype = $row['filetype'];
-                                                                    $files = $row["files"];
+                                                                    $filetype = htmlentities($row['filetype'] ?? '');
+                                                                    $files = htmlentities($row["files"] ?? '');
                                                                     $type = 'iframe';
                                                                     if (!empty($files)) {
                                                                         if ($filetype == 1) {
@@ -276,8 +279,8 @@
                                                                     
                                                                     echo '<tr id="tr_'. $row["ID"] .'">
                                                                         <td>'. $table_counter .'</td>
-                                                                        <td>'. $row["title"] .'</td>
-                                                                        <td>'. $row["description"] .'</td>
+                                                                        <td>'. htmlentities($row["title"] ?? '') .'</td>
+                                                                        <td>'. htmlentities($row["description"] ?? '') .'</td>
                                                                         <td class="text-center"><p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p></td>';
         
                                                                         // $dept_id = $row["ID"];
@@ -569,12 +572,13 @@
                 }
             });
 
-            function summary(id, type) {
+            function summary(id, type, title) {
                 $.ajax({
                     type: "GET",
                     url: "function.php?summary="+id+"&type="+type,
                     dataType: "html",
                     success: function(data){
+                        $("#modalSummary .modal-header .modal-title").html(title);
                         $("#modalSummary .modal-body table tbody").html(data);
                     }
                 });

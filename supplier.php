@@ -168,7 +168,7 @@
                             <div class="portlet light">
                                 <div class="portlet-title tabbable-line">
                                     <div class="caption">
-                                        <i class="icon-basket-loaded font-dark"></i>
+                                        <span class="icon-basket-loaded font-dark"></span>
                                         <span class="caption-subject font-dark bold uppercase">List of Supplier</span>
                                         <?php
                                             if($current_client == 0) {
@@ -191,11 +191,14 @@
                                                 		$file_url = $src.$url.rawurlencode($file_upload).$embed;
                                                     }
                                                     
-                                                    if ($type_id == 0) {
-                                                		echo '<a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"> - <i class="fa '. $file_extension .'"></i> '.$file_title.'</a>';
-                                                	} else {
-                                                		echo '<a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox> - <i class="fa fa-youtube"></i> '.$file_title.'</a>';
-                                                	}
+                                                    $icon = $row["icon"];
+                                                    if (!empty($icon)) { 
+                                                        if ($type_id == 0) {
+                                                            echo ' <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                                        } else {
+                                                            echo ' <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                                        }
+                                                    }
 	                                            }
                                             }
                                         ?>
@@ -258,7 +261,7 @@
                                             <table class="table table-bordered table-hover" id="tableData_1">
                                                 <thead>
                                                     <tr>
-                                                        <th rowspan="2">Supplier Name</th>
+                                                        <th rowspan="2">Vendor Name</th>
                                                         <th rowspan="2">Category</th>
                                                         <th rowspan="2">Materials/Services</th>
 														<th rowspan="2">Specification File</th>
@@ -808,7 +811,7 @@
                                             <table class="table table-bordered table-hover" id="tableData_2">
                                                 <thead>
                                                     <tr>
-                                                        <th rowspan="2">Supplier Name</th>
+                                                        <th rowspan="2">Vendor Name</th>
                                                         <th rowspan="2">Category</th>
                                                         <th rowspan="2">Materials/Services</th>
 														<th rowspan="2">Specification File</th>
@@ -1513,7 +1516,7 @@
 											<table class="table table-bordered table-hover" id="tableData_req">
 												<thead>
 													<tr>
-														<th>Supplier Name</th>
+														<th>Vendor Name</th>
 														<th>Category</th>
 														<th class="text-center" style="width: 100px;">Compliance</th>
 														<th class="text-center" style="width: 135px;">Action</th>
@@ -1838,13 +1841,23 @@
                                                     <li class="hide">
                                                         <a href="#tabFSVP_1" data-toggle="tab">FSVP</a>
                                                     </li>
+                                                    <?php
+                                                        if ($current_userID == 481) {
+                                                            echo '<li>
+                                                                <a href="#" data-toggle="tab">Organic</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="#" data-toggle="tab">FTL</a>
+                                                            </li>';
+                                                        }
+                                                    ?>
                                                 </ul>
                                                 <div class="tab-content margin-top-20">
                                                     <div class="tab-pane active" id="tabBasic_1">
                                                         <div class="row">
                                                             <div class="col-md-3">
                                                                 <div class="form-group">
-                                                                    <label class="control-label">Supplier/Vendor Name</label>
+                                                                    <label class="control-label">Vendor Name</label>
                                                                     <input class="form-control" type="text" name="supplier_name" required />
                                                                 </div>
                                                             </div>
@@ -1964,6 +1977,8 @@
                                                                         <option value="2">Non-Approved</option>
                                                                         <option value="3">Emergency Used Only / Spot Purchasing</option>
                                                                         <option value="4">Do Not Use</option>
+																		<option value="5">Active</option>
+																		<option value="6">Inactive</option>
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -3090,15 +3105,6 @@
             function btnClose(view) {
                 $('#'+view+' .modal-body').html('');
             }
-            function uploadNewOld(e) {
-                $(e).parent().hide();
-                $(e).parent().prev('.form-control').removeClass('hide');
-            }
-            function uploadNew(e) {
-				$(e).parent().hide();
-				// $(e).parent().prev('.form-control').removeClass('hide');
-                $(e).parent().parent().find('select').removeClass('hide');
-			}
             function changeType(e) {
                 $(e).parent().find('input').hide();
                 $(e).parent().find('input').prop('required',false);

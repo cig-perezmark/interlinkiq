@@ -29,8 +29,5 @@ activity worksheet tab
 june-20 TODOs:
 re-evaluate row updates to datatables
 update/edit functions
-evaluate pdf documents
-evaluate foreign supplier evaluation workflow
 
-must
-"evaluate" button (supplier list)
+evaluate pdf documents

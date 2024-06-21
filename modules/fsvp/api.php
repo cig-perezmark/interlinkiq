@@ -170,6 +170,12 @@ if(isset($_GET['suppliersByUser'])) {
     ]);
 }
 
+if(isset($_GET['evaluationsByUser'])) {
+    send_response([
+        'data' => getEvaluationsPerSupplierAndImporter($conn, $user_id),
+    ]);
+}
+
 // searching employee
 if(isset($_POST['search-employee'])) {
     try {
@@ -587,7 +593,10 @@ if(isset($_GET['newImporter']) ) {
         ];
         $conn->insert("tbl_fsvp_importers", $insertData);
 
+        // automatically insert initial evaluation data
+        
         $id = $conn->getInsertId();
+        $conn->execute("INSERT INTO tbl_fsvp_evaluations(user_id, portal_user, importer_id, supplier_id) VALUE(?,?,?,?)", $user_id, $portal_user, $id, $supplierId);
 
         if(count($_POST['importer_products'])) {
             $productsParams = [];
@@ -605,10 +614,10 @@ if(isset($_GET['newImporter']) ) {
                 ]);
             }
             
+            // store imported products
             if(count($productsValues)) {
                 $sql = "INSERT INTO tbl_fsvp_ipr_imported_by(user_id,portal_user,importer_id,product_id) VALUES ";
                 $sql .= implode(', ', $productsParams);
-                // throw new Exception(json_encode([$sql, $productsValues]));
                 $conn->execute($sql, $productsValues);
             }
         }
@@ -747,6 +756,7 @@ if(isset($_GET['fetchImportersForTable'])) {
 if(isset($_GET['newSupplierEvaluation'])) {
     try {
         $conn->begin_transaction();
+        $evalId = $_POST['eval'] ?? null;
 
         if(empty($_POST['importer'])) {
             throw new Exception('Importer is required.');
@@ -756,11 +766,13 @@ if(isset($_GET['newSupplierEvaluation'])) {
             throw new Exception('No foreign supplier is acquired.');
         }
 
+        if(empty($evalId)) {
+            throw new Exception('No matching record found.');
+        }
+
         $params = [
             'user_id'                       => $user_id,
             'portal_user'                   => $portal_user,
-            'supplier_id'                   => $_POST['supplier'],
-            'importer_id'                   => $_POST['importer'],
             'description'                   => emptyIsNull($_POST['description']),
             'evaluation'                    => emptyIsNull($_POST['evaluation']),
             'info_related'                  => emptyIsNull($_POST['info_related']),
@@ -769,7 +781,10 @@ if(isset($_GET['newSupplierEvaluation'])) {
             'assessment'                    => emptyIsNull($_POST['assessment']),
         ];
 
-        $conn->insert("tbl_fsvp_evaluations", $params);
+        $conn->execute("UPDATE tbl_fsvp_evaluations SET 
+                portal_user = ?,
+            WHERE id = ?
+        ", $params);
         $id = $conn->getInsertId();
         saveNewEvaluationRecord($conn, $_POST, $id);
         
@@ -807,7 +822,7 @@ if(isset($_GET['supplierReEvaluation']) && !empty($_POST['prev_record_id'])) {
 
         $isValid = $conn->execute("SELECT id, evaluation_due_date, evaluation_id  FROM tbl_fsvp_evaluation_records WHERE id = ?", $recordId)->fetchAssoc();
 
-        if(!count($isValid)) {
+        if(!count($isValid) || ($isValid["evaluation_id"] != ($_POST['eval'] ?? 0))) {
             throw new Exception("No matching previous record(s) found.");
         } else if(strtotime(date('Y-m-d') > strtotime($isValid['evaluation_due_date']))) {
             throw new Exception('Previous evaluation data is currently active.');

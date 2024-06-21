@@ -97,28 +97,28 @@ th {
 }
 </style>
 
-<div class="d-flex margin-bottom-20" style="justify-content: end;">
-    <a href="#modalNewSupplier" data-toggle="modal" class="btn green hide">
-        <i class="fa fa-plus"></i>
-        New
+<div class="d-flex margin-bottom-20" style="justify-content: end;" id="fstToolbar">
+    <a href="javascript:void(0)" class="btn green" id="toggleEvaluationBtn" style="display: none;">
+        <i class="fa fa-table icon-margin-right"></i>
+        <span data-label>View Evaluations Data</span>
+        <input type="checkbox" style="display: none;" id="viewEvaluationsCheck">
     </a>
 </div>
 
+<!-- <tr>
+    <th>Supplier Name</th>
+    <th style="width: 220px;">Address</th>
+    <th>Food Imported</th>
+    <th style="max-width: 140px">
+        Evaluation Date <br>
+        <small class="text-muted margin-top-10 font-grey-salsa" style="font-weight: normal;line-height: 98%;display: inline-block;">Click the date to view evaluation details.</small>
+    </th>
+    <th style="max-width: 80px">Supplier Agreement</th>
+    <th style="max-width: 80px;">FSVP Compliance Statement</th>
+</tr> -->
+
 <table class="table table-bordered table-hover" id="tableSupplierList">
-    <thead>
-        <tr>
-            <th>Supplier Name</th>
-            <th style="width: 220px;">Address</th>
-            <th>Food Imported</th>
-            <th style="max-width: 140px">
-                Evaluation Date <br>
-                <small class="text-muted margin-top-10 font-grey-salsa" style="font-weight: normal;line-height: 98%;display: inline-block;">Click the date to view evaluation details.</small>
-            </th>
-            <th style="max-width: 80px">Supplier Agreement</th>
-            <th style="max-width: 80px;">FSVP Compliance Statement</th>
-            <!-- <th class="text-center" style="width: 120px">Actions</th> -->
-        </tr>
-    </thead>
+    <thead></thead>
     <tbody></tbody>
 </table>
 
@@ -132,6 +132,7 @@ th {
                 <h4 class="modal-title" data-efm="reeval">Re-Evaluation Form</h4>
             </div>
             <div class="modal-body form-body">
+                <input type="hidden" name="eval">
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -147,24 +148,10 @@ th {
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group" data-efm="eval">
-                            <label for="importerSelect">Importer Name <span class="required">*</span></label>
-                            <select name="importer" id="importerSelect">
-                                <option value="" selected disabled>Select an importer</option>
-                                <?php
-                                    $suppliers = getImportersByUser($conn, $switch_user_id);
-                                    foreach($suppliers as $supplier) {
-                                        echo '<option value="'.$supplier['id'].'" data-address="'.$supplier['address'].'">'.$supplier['name'].'</option>';
-                                    }
-                                    if(count($suppliers) == 0) {
-                                        echo'';
-                                    }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="form-group" data-efm="reeval" style="display: none;">
-                            <label for="reefimporter">Importer <i class="text-muted">(auto-filled)</i></label>
-                            <input type="text" class="form-control bg-white" id="reefimporter" placeholder="Enter supplier address" readonly>
+                        <div class="form-group">
+                            <label for="reefimporter">Importer Name <i class="text-muted">(auto-filled)</i></label>
+                            <input type="text" class="form-control bg-white" id="reefimporter" placeholder="Enter importer name" readonly>
+                            <input type="hidden" name="importer">
                         </div>
                     </div>
                     <div class="col-md-6">

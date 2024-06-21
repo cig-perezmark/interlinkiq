@@ -18,7 +18,8 @@
     padding-top: 60px;
 }
 
-body, html {
+body,
+html {
     scroll-behavior: smooth;
 }
 </style>
@@ -101,6 +102,7 @@ body, html {
                 <li><a href="#verification_and_record_keeping" data-toggle="tab"> Verification and Record Keeping</a></li>
                 <li><a href="#master_sheet" data-toggle="tab"> HACCP Master Sheet </a></li>
                 <?php if(isset($haccpResource)): ?>
+                <li><a href="#process_monitoring_forms" data-toggle="tab"> Process Monitoring Forms </a></li>
                 <li><a href="#haccptasks" data-toggle="tab"> Tasks <span class="badge badge-danger" data-tasksbadge="0">0</span> </a></li>
                 <li><a href="#history" data-toggle="tab"> History </a></li>
                 <?php endif;?>
@@ -114,6 +116,7 @@ body, html {
         <li class="hbtabwide"><a href="#verification_and_record_keeping" data-toggle="tab"> Verification and Record Keeping</a></li>
         <li class="hbtabwide"><a href="#master_sheet" data-toggle="tab"> HACCP Master Sheet </a></li>
         <?php if(isset($haccpResource)): ?>
+        <li class="hbtabwide"><a href="#process_monitoring_forms" data-toggle="tab"> Process Monitoring Forms </a></li>
         <li class="hbtabwide"><a href="#haccptasks" data-toggle="tab"> Tasks <span class="badge badge-danger" data-tasksbadge="0">0</span> </a></li>
         <li class="hbtabwide"><a href="#history" data-toggle="tab"> History </a></li>
         <?php endif;?>
@@ -671,6 +674,9 @@ body, html {
     </div>
 
     <?php if(isset($haccpResource)): ?>
+    <div class="tab-pane" id="process_monitoring_forms">
+        e-forms
+    </div>
     <div class="tab-pane" id="haccptasks">
         <div class="row">
             <div class="col-md-6">

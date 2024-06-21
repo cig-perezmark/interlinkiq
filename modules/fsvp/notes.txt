@@ -1,0 +1,33 @@
+supplier list tab 
+    - list of all foreign suppliers
+    - evaluation and re-evaluation happens
+    - products imported have been identified here...
+
+    todo:
+        - re-assess supplier database and data structure
+
+importer list tab
+    - US entities profiles responsible for fsvp
+    - (must) link each importer to specific suppliers and products they import 
+
+fsvpqi register tab
+    - qualified individuals responsible for managing fsvp
+    - records of their qualifications
+
+fsvp team tab
+    - team members involved in fsvp process
+
+ingredient product register tab
+    - registry of all products and ingredients covered by fsvp
+    - (must) link products to respective suppliers and importer
+    - automatically detects products imported from the supplier list page
+
+activity worksheet tab
+    - verification activities
+
+
+june-20 TODOs:
+re-evaluate row updates to datatables
+update/edit functions
+
+evaluate pdf documents

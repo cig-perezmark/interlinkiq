@@ -15,7 +15,10 @@ $(function() {
                 className: "dt-right",
             },{
                 className: 'text-center',
-                targets: [3, 5]
+                targets: [3,4,5,6]
+            }, {
+                visible: false,
+                targets: [2,3]
             }
         ]
     });
@@ -30,20 +33,17 @@ $(function() {
         onChange: function(option, checked) {
             const address = option.get(0).dataset.address || '';
             $('#if_SupplierAddress').val(address);
-        }
-    });
-    const importerSelect = Init.multiSelect($('#importerdd'), {
-        onChange: function(option, checked, select) {
+
+            // render products importer
+            // const foreignSupplierId = option.attr('value');
+
             const pList = $('#productsListSelection');
             pList.html('');
             pList.append(`<div class="stat-loading"> <img src="assets/global/img/loading.gif" alt="loading"> </div>`);
             $('#productsHelpBlock').addClass('d-none');
-            
-            const address = option.get(0).dataset.address || '';
-            $('#if_ImporterAddress').val(address);
 
             $.ajax({
-                url: baseUrl + "getProductsBySupplier=" + $(option).val(),
+                url: baseUrl + "getProductsByForeignSupplier=" + $(option).val(),
                 type: "GET",
                 contentType: false,
                 processData: false,
@@ -77,6 +77,13 @@ $(function() {
                     $('#productsHelpBlock').removeClass('d-none');
                 }
             });
+        }
+    });
+    const importerSelect = Init.multiSelect($('#importerdd'), {
+        onChange: function(option, checked, select) {
+            
+            const address = option.get(0).dataset.address || '';
+            $('#if_ImporterAddress').val(address);
         }
     });
     const CBPFormAlert = Init.createAlert($('#modalCBPFiling .modal-body'));
@@ -297,14 +304,18 @@ function renderDTRow(importersData, d, table, method = 'add') {
     
     const rowData = [
         importerName,
+        d.supplier.name || '',
         d.duns_no,
         d.fda_registration,
-        `<a href="#" title="View details">${d.fsvpqi.name}</a>`,
+        d.fsvpqi.name,
         d.evaluation_date,
         CBPButtons,
         `
             <div class="d-flex center">
-                <a href="${(Init.URL || 'fsvp') + '?pdf=importer_information&r=' + d.rhash}" class="btn green btn-circle btn-sm" target="_blank">View</a>
+                <a href="${(Init.URL || 'fsvp') + '?pdf=importer_information&r=' + d.rhash}" class="btn dark btn-circle btn-sm" target="_blank">
+                    <i class="fa fa-file-pdf-o hide"></i>
+                    PDF
+                </a>
             </div>
         `,
     ];

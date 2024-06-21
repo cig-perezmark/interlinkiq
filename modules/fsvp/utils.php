@@ -1,5 +1,7 @@
 <?php
 
+
+
 include_once __DIR__ ."/../../alt-setup/setup.php";
 date_default_timezone_set('America/Chicago');
 
@@ -8,29 +10,78 @@ function ForeignSupplierSQLClause($firstAnd = true) {
 }
 
 function getSuppliersByUser($conn, $userId) {
-    $y = 1;
-    return $conn->execute("SELECT ID as id, name, address 
-        FROM tbl_supplier 
-        WHERE user_id = ? AND status = 1 AND page = 1
+    return $conn->execute("SELECT fsup.id, sup.name, sup.address 
+        FROM tbl_fsvp_suppliers fsup
+        LEFT JOIN tbl_supplier sup ON sup.ID = fsup.supplier_id 
+        WHERE fsup.user_id = ? AND sup.status = 1 AND sup.page = 1 AND fsup.deleted_at IS NULL
     ", $userId)
         ->fetchAll(function($d) {
             $d['address'] = formatSupplierAddress($d['address']);
             return $d;
         });
-    // return $conn->select("tbl_supplier", "ID as id, name, address", [ 'user_id'=> $userId, 'status'=> $y, 'page'=>$y])
-    //     ->fetchAll();
 }
 
-function getImportersByUser($conn, $userId) {
+function getRawSuppliersByUser($conn, $userId) {
+    $sql = "SELECT 
+                tbl_supplier.ID as id,
+                tbl_supplier.name,
+                tbl_supplier.address
+            FROM 
+                tbl_supplier
+            WHERE 
+                TRIM(SUBSTRING_INDEX(tbl_supplier.address, ',', 1)) NOT LIKE 'US' AND TRIM(SUBSTRING_INDEX(tbl_supplier.address, '|', 1)) NOT LIKE 'US' 
+                AND tbl_supplier.user_id = 464
+                AND tbl_supplier.is_deleted = 0
+                AND tbl_supplier.status = 1
+                AND tbl_supplier.ID NOT IN (
+                    SELECT supplier_id 
+                    FROM tbl_fsvp_suppliers
+                    WHERE tbl_fsvp_suppliers.user_id = ?
+                    AND tbl_fsvp_suppliers.deleted_at IS NULL
+                );
+    ";
+    
+    return $conn->execute($sql, $userId)
+        ->fetchAll(function($d) {
+            $d['address'] = formatSupplierAddress($d['address']);
+            return $d;
+        });
+}
+
+// to populate importers dropdown in the new importer form (importer list tab)
+function getRawImportersByUser($conn, $userId) {
     return $conn->execute(
-        "SELECT imp.id, sup.name, sup.address FROM tbl_fsvp_importers imp 
-         JOIN tbl_supplier sup ON sup.ID = imp.importer_id
-         WHERE imp.user_id = ? AND deleted_at IS NULL",
+        "SELECT sup.ID as id, sup.name, sup.address
+         FROM tbl_supplier sup
+         LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.user_id = sup.user_id AND fsup.supplier_id = sup.ID
+         WHERE sup.user_id = ?
+         AND (fsup.id IS NULL OR sup.ID <> fsup.supplier_id)
+         AND sup.status = 1 AND sup.page = 1
+         AND (TRIM(SUBSTRING_INDEX(sup.address, ',', 1)) LIKE 'US' OR TRIM(SUBSTRING_INDEX(sup.address, '|', 1)) LIKE 'US')",
         $userId
     )->fetchAll(function($data) { 
         $data['address'] = formatSupplierAddress($data['address']);
         return $data;
     });
+}
+
+function getImportersByUser($conn, $userId) {
+    return $conn->execute(
+        "SELECT imp.id, sup.name, sup.address 
+         FROM tbl_fsvp_importers imp 
+         JOIN tbl_supplier sup ON sup.ID = imp.importer_id
+         WHERE imp.user_id = ? 
+         AND deleted_at IS NULL
+        ",
+        $userId
+    )->fetchAll(function($data) { 
+        $data['address'] = formatSupplierAddress($data['address']);
+        return $data;
+    });
+}
+
+function myFSVPQIs($conn, $userId) {
+    return $conn->execute("SELECT q.id, CONCAT(TRIM(e.first_name), ' ', TRIM(e.last_name)) AS name, email FROM tbl_fsvp_qi q JOIN tbl_hr_employee e ON q.employee_id = e.ID WHERE q.user_id = ? AND q.deleted_at IS NULL", $userId)->fetchAll();
 }
 
 function getRealFileName($fileName) {
@@ -46,36 +97,82 @@ function formatSupplierAddress($add) {
     }, [ $a2, $a3, $a4, $a1, $a5 ]), function($a) { return !empty($a); }));
 }
 
+// foreign suppliers
 function getSupplierList($conn, $userId) {
     try {
         $recordType = 'supplier-list:';
 
-        $list = $conn->execute("SELECT fs.*, s.name, s.address FROM tbl_fsvp_suppliers fs
-            LEFT JOIN tbl_supplier s ON s.ID = fs.supplier_id
-            WHERE fs.user_id = ? AND fs.deleted_at IS NULL
-            ORDER BY fs.created_at DESC
-        ", $userId)->fetchAll();
+        $sql = "SELECT 
+                    tbl_fsvp_suppliers.id,
+                    tbl_fsvp_suppliers.supplier_id,
+                    tbl_supplier.name,
+                    tbl_supplier.address,
+                    tbl_fsvp_suppliers.supplier_agreement,
+                    tbl_fsvp_suppliers.compliance_statement,
+                    'FSVP Supplier' AS source
+                FROM 
+                    tbl_fsvp_suppliers
+                JOIN 
+                    tbl_supplier ON tbl_fsvp_suppliers.supplier_id = tbl_supplier.ID
+                WHERE 
+                    tbl_fsvp_suppliers.user_id = ?
+                    AND tbl_fsvp_suppliers.deleted_at IS NULL
+
+                UNION
+
+                SELECT 
+                    NULL,
+                    tbl_supplier.ID,
+                    tbl_supplier.name,
+                    tbl_supplier.address,
+                    NULL,
+                    NULL,
+                    'Foreign Supplier' AS source
+                FROM 
+                    tbl_supplier
+                WHERE 
+                    TRIM(SUBSTRING_INDEX(tbl_supplier.address, ',', 1)) NOT LIKE 'US' AND TRIM(SUBSTRING_INDEX(tbl_supplier.address, '|', 1)) NOT LIKE 'US' 
+                    AND tbl_supplier.user_id = 464
+                    AND tbl_supplier.is_deleted = 0
+                    AND tbl_supplier.`status` = 1
+                    AND tbl_supplier.ID NOT IN (
+                        SELECT supplier_id 
+                        FROM tbl_fsvp_suppliers
+                        WHERE tbl_fsvp_suppliers.user_id = ?
+                        AND tbl_fsvp_suppliers.deleted_at IS NULL
+                    );
+        ";
+
+        $list = $conn->execute($sql, $userId, $userId)->fetchAll();
     
         $data = [];
         foreach ($list as $d) {
             $address = formatSupplierAddress($d["address"]);
-            $mIds = implode(', ', json_decode($d['food_imported']));
-            $materialData = $conn->select("tbl_supplier_material", "material_name AS name, ID as id", "ID in ($mIds)")->fetchAll();
-    
-            // fetching stored files
-            $mFiles = $conn->select("tbl_fsvp_files","*", "deleted_at IS NULL AND record_type LIKE '$recordType%' AND record_id = " . $d['id'])->fetchAll();
+
+            // fetch imported products data
+            $importedProducts = $conn->execute("SELECT product_id FROM tbl_fsvp_ingredients_product_register WHERE supplier_id = ? AND user_id = ? AND deleted_at IS NULL", $d["id"], $userId)->fetchAll(function ($d) { return $d['product_id']; });
+            
+            $materialData = [];
+            if(count($importedProducts) > 0) {
+                $mIds = implode(', ', $importedProducts) ?? '';
+                $materialData = $conn->select("tbl_supplier_material", "material_name AS name, ID as id", "ID in ($mIds)")->fetchAll();
+            }
     
             $saFiles = [];
             $csFile = [];
-    
-            if(count($mFiles) > 0) {
-                foreach ($mFiles as $mFile) {
-                    $fileData = prepareFileInfo($mFile);
-                    
-                    if($mFile['record_type'] == 'supplier-list:supplier-agreement') {
-                        $saFiles[] = $fileData;
-                    } else if($mFile['record_type'] == 'supplier-list:compliance-statement') {
-                        $csFile[] = $fileData;
+            
+            // fetching stored files
+            if(!empty($d['id'])) {
+                $mFiles = $conn->select("tbl_fsvp_files","*", "deleted_at IS NULL AND record_type LIKE '$recordType%' AND record_id = " . $d['id'])->fetchAll();
+                if(count($mFiles) > 0) {
+                    foreach ($mFiles as $mFile) {
+                        $fileData = prepareFileInfo($mFile);
+                        
+                        if($mFile['record_type'] == 'supplier-list:supplier-agreement') {
+                            $saFiles[] = $fileData;
+                        } else if($mFile['record_type'] == 'supplier-list:compliance-statement') {
+                            $csFile[] = $fileData;
+                        }
                     }
                 }
             }
@@ -84,7 +181,7 @@ function getSupplierList($conn, $userId) {
                 'address' => $address,
                 'name' => $d['name'],
                 'id' => $d['id'],
-                'evaluation' => getEvaluationRecordID($conn, $d['id']),
+                'supplier_id' => $d['supplier_id'],
                 'food_imported' => $materialData,
                 'compliance_statement' => $csFile,
                 'supplier_agreement' => $saFiles,
@@ -99,12 +196,70 @@ function getSupplierList($conn, $userId) {
     }
 }
 
-/**
- * TODO:
- * re-evaluate this query if issues occur
- * specially the ORDER BY clause
- * also do the same in getEvaluationRecordID function
- */
+function getEvaluationsPerSupplierAndImporter($conn, $userId) {
+    try {
+        $sql = "SELECT 
+                    eval.id,
+                    fsup.id AS supplier_id,
+                    sup.name AS supplier_name,
+                    sup.address AS supplier_address,
+                    fimp.id AS importer_id,
+                    imp.name AS importer_name,
+                    imp.address AS importer_address
+                FROM tbl_fsvp_importers fimp
+                LEFT JOIN tbl_fsvp_suppliers fsup ON fsup.id = fimp.supplier_id
+                LEFT JOIN tbl_supplier imp ON imp.ID = fimp.importer_id
+                LEFT JOIN tbl_supplier sup ON sup.ID = fsup.supplier_id
+                LEFT JOIN tbl_fsvp_evaluations eval ON eval.supplier_id = fsup.id AND eval.importer_id = fimp.id
+                WHERE fimp.user_id = ?
+                    AND fimp.deleted_at IS NULL
+        ";
+
+        $list = $conn->execute($sql, $userId)->fetchAll();
+    
+        $data = [];
+        foreach ($list as $d) {
+            $d['supplier_address'] = formatSupplierAddress($d["supplier_address"]);
+            $d['importer_address'] = formatSupplierAddress($d["importer_address"]);
+            $evalData = getEvaluationRecordID($conn, $d['id']);
+            $d['evaluation'] = $evalData;
+
+            if(!empty($evalData['id'])) {
+                $d['rhash'] = md5($d['id']);    
+            } 
+
+            $data[] = $d;
+        }
+    
+        return $data;
+    } catch(Throwable $e) {
+        send_response([
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+function getForeignSuppliersOnly($conn, $userId) {
+    $results = $conn->execute("SELECT 
+                    tbl_fsvp_suppliers.id,
+                    tbl_fsvp_suppliers.supplier_id,
+                    tbl_supplier.name,
+                    tbl_supplier.address
+                FROM 
+                    tbl_fsvp_suppliers
+                JOIN 
+                    tbl_supplier ON tbl_fsvp_suppliers.supplier_id = tbl_supplier.ID
+                WHERE 
+                    tbl_fsvp_suppliers.user_id = ? 
+                    AND tbl_fsvp_suppliers.deleted_at IS NULL", 
+    $userId)->fetchAll(function ($d) {
+        $d['address'] = formatSupplierAddress($d['address']);
+        return $d;
+    });
+
+    return $results;
+}
+
 // evaluation data for every supplier in the supplier list page
 function getEvaluationData($conn, $evalId, $recordId = null) {
     $cond = "eval.id = ?" . (!empty($recordId) ? " AND rec.id = ?" : "");
@@ -132,15 +287,20 @@ function getEvaluationData($conn, $evalId, $recordId = null) {
                 supp.address AS supplier_address,
                 imp.name AS importer_name, 
                 imp.address AS importer_address,
-                fsupp.food_imported
+                GROUP_CONCAT(sm.ID) AS food_imported
             FROM tbl_fsvp_evaluations eval
             LEFT JOIN tbl_fsvp_evaluation_records rec ON eval.id = rec.evaluation_id
             LEFT JOIN tbl_fsvp_suppliers fsupp ON eval.supplier_id = fsupp.id
             LEFT JOIN tbl_fsvp_importers fimp ON eval.importer_id = fimp.id
+            LEFT JOIN tbl_fsvp_ingredients_product_register ipr ON ipr.supplier_id = fsupp.id
+            LEFT JOIN tbl_fsvp_ipr_imported_by iby ON iby.product_id = ipr.id AND iby.importer_id = fimp.id
             -- tbl_suppliers (original)
             LEFT JOIN tbl_supplier supp ON supp.ID = fsupp.supplier_id
             LEFT JOIN tbl_supplier imp ON imp.ID = fimp.importer_id 
+            LEFT JOIN tbl_supplier_material sm ON sm.ID = ipr.product_id
                 WHERE $cond AND eval.deleted_at IS NULL
+                    AND iby.importer_id = fimp.id
+            GROUP BY eval.id
             ORDER BY rec.pre_record_id DESC, rec.evaluation_date DESC, rec.created_at DESC LIMIT 1",
             $params 
         )->fetchAssoc(function($d) {
@@ -167,7 +327,7 @@ function getEvaluationData($conn, $evalId, $recordId = null) {
     return $eval;
 }
 
-function getEvaluationRecordID($conn, $supplierId) {
+function getEvaluationRecordID($conn, $evalId) {
     try {
         $data = $conn->execute("SELECT 
                 EVAL.id,
@@ -185,9 +345,12 @@ function getEvaluationRecordID($conn, $supplierId) {
             LEFT JOIN tbl_fsvp_importers FIMP ON FIMP.id = EVAL.importer_id
             LEFT JOIN tbl_supplier SUPP ON SUPP.ID = FSUPP.supplier_id
             LEFT JOIN tbl_supplier IMP ON IMP.ID = FIMP.importer_id
-            WHERE EVAL.supplier_id = ? AND EVAL.deleted_at IS NULL 
+            WHERE EVAL.id = ? 
+                AND EVAL.deleted_at IS NULL 
+                AND REC.deleted_at IS NULL 
             ORDER BY REC.pre_record_id DESC, REC.evaluation_date DESC, REC.created_at DESC LIMIT 1",
-            $supplierId)->fetchAssoc();
+            $evalId
+        )->fetchAssoc();
 
         if(!count($data)) {
             return null;
@@ -221,9 +384,8 @@ function updateCurrentEvalStatus($conn, $due, $id) {
 
 function getSupplierFoodImported($conn, $foodIds) {
     // not: empty array  or string
-    if(!empty($foodIds) && count(($foodIds = json_decode($foodIds))) > 0) {
-        $ids = implode(',', $foodIds);
-        return $conn->select("tbl_supplier_material", "material_name AS name, description", "ID in ($ids) AND active = 1")->fetchAll();
+    if(!empty($foodIds)) {
+        return $conn->select("tbl_supplier_material", "material_name AS name, description", "ID in ($foodIds) AND active = 1")->fetchAll();
     }
     
     return null;

@@ -48,11 +48,12 @@ function showHint($hint) {
     <thead>
         <tr>
             <th>Importer Name</th>
+            <th>Supplier Name</th>
             <th>DUNS No.</th>
             <th>FDA Registration No.</th>
             <th>FSVPQI</th>
             <th>Evaluation Date</th>
-            <th>FSVP CBP Filing Form</th>
+            <th>CBP Filing Form</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -75,7 +76,7 @@ function showHint($hint) {
                             <select name="importer" id="importerdd" class="form-control">
                                 <option value="" selected disabled>Select importer</option>
                                 <?php
-                                    $suppliers = getSuppliersByUser($conn, $switch_user_id);
+                                    $suppliers = getRawImportersByUser($conn, $switch_user_id);
                                     foreach($suppliers as $supplier) {
                                         echo '<option value="'.$supplier['id'].'" data-address="'.$supplier['address'].'">'.$supplier['name'].'</option>';
                                     }
@@ -107,16 +108,17 @@ function showHint($hint) {
                 <div class="row">
                     <div class="col-md-7">
                         <div class="form-group">
-                            <label for="">Supplier</label>
+                            <label for="">Foreign Supplier <?= required() ?></label>
                             <select name="supplier" id="supplierSelectDropdown" class="form-control">
-                                <option value="" selected disabled>Select supplier</option>
+                                <option value="" selected disabled>Select foreign supplier</option>
                                 <?php
-                                    $suppliers = getSuppliersByUser($conn, $switch_user_id);
+                                    $suppliers = getForeignSuppliersOnly($conn, $switch_user_id);
                                     foreach($suppliers as $supplier) {
                                         echo '<option value="'.$supplier['id'].'" data-address="'.$supplier['address'].'">'.$supplier['name'].'</option>';
                                     }
                                 ?>
                             </select>
+                            <small class="help-block">Directly associated with Foreign Suppliers List data.</small>
                         </div>
                     </div>
                     <div class="col-md-5">
@@ -129,8 +131,9 @@ function showHint($hint) {
                 <div class="row margin-bottom-20x">
                     <div class="col-md-7">
                         <div class="form-group">
-                            <label for="fsvpqiSelect">FSVPQI <span class="required">*</span></label>
+                            <label for="fsvpqiSelect">FSVP Qualified Individual <span class="required">*</span></label>
                             <select name="fsvpqi" id="fsvpqiSelect" class="form-control"></select>
+                            <small class="help-block">Correlates with FSVPQI Registry tab.</small>
                             <small class="help-block" id="fsvpqiSelectHelpBlock"></small>
                         </div>
                     </div>
@@ -144,9 +147,9 @@ function showHint($hint) {
                 <div class="row margin-bottom-20">
                     <div class="col-md-12 margin-bottom-10">
                         <div>
-                            <strong>Product(s):</strong>
+                            <strong>Food/Product(s) Imported:</strong>
                             <hr>
-                            <p class="help-block" id="productsHelpBlock">Select importer first.</p>
+                            <p class="help-block" id="productsHelpBlock">Select a foreign supplier first.</p>
                         </div>
                         <div class="mls-grid" id="productsListSelection"></div>
                     </div>

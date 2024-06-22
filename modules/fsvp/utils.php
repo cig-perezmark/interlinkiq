@@ -178,13 +178,14 @@ function getSupplierList($conn, $userId) {
             }
                         
             $data[] = [
+                'id' => $d['id'],
                 'address' => $address,
                 'name' => $d['name'],
-                'id' => $d['id'],
                 'supplier_id' => $d['supplier_id'],
                 'food_imported' => $materialData,
                 'compliance_statement' => $csFile,
                 'supplier_agreement' => $saFiles,
+                // 'source' => $d['source'],
             ];
         }
     

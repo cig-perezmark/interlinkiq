@@ -443,11 +443,13 @@ th {
         <form class="modal-content" role="form" id="newSupplierForm">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">New Supplier Form</h4>
+                <h4 class="modal-title">Supplier Form</h4>
             </div>
             <div class="modal-body form-body">
+                <input type="hidden" name="fsvp_supplier_id">
                 <div class="row">
                     <div class="col-md-12 margin-bottom-20">
+                        <?php if(false): ?>
                         <div class="form-group">
                             <label for="findSupplierDd">Foreign Supplier <?= required() ?></label>
                             <select name="supplier" id="findSupplierDd" class="supplierdd">
@@ -459,6 +461,12 @@ th {
                                     }
                                 ?>
                             </select>
+                        </div>
+                        <?php endif; ?>
+                        <div class="form-group">
+                            <label>Foreign Supplier</label>
+                            <input type="text" class="form-control bg-white" id="fsName" readonly>
+                            <input type="hidden" name="supplier">
                         </div>
                     </div>
                     <div class="col-md-12 margin-bottom-20">

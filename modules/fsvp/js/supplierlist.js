@@ -24,7 +24,9 @@ jQuery(function() {
         ]
     });
     const supplierSelect = Init.multiSelect($('.supplierdd'), {
-        onChange: supplierDdOnchange
+        onChange: function(option) {
+            supplierDdOnchange($(option).val() || null);
+        }
     });
     const importerSelect = Init.multiSelect($('#importerSelect'), {
         onChange: function(option, checked, select) {
@@ -108,10 +110,32 @@ jQuery(function() {
         supplierSelect.reset();
         $('#materialListSelection').html('');
         $('#materialListHelpBlock').text('Please select a supplier first.');
+        $('#newSupplierForm [name=fsvp_supplier_id]').val('');
+        $('#newSupplierForm [name=supplier]').val(supplierId);
+        $('#fsName').val(this.dataset.fsname || '');
         
         // simulate multiselect dropdown selectopn
-        supplierDdOnchange($(`.supplierdd option[value=${supplierId}]`));
+        supplierDdOnchange(supplierId);
         $(`.supplierdd`).multiselect('select', [supplierId]);
+        editDetailsTRIndex = this.closest('tr');
+        $('#modalNewSupplier').modal('show');
+    });
+
+    $('#tableSupplierList').on('click', '[data-update-foreign-supplier]', function() {
+        const fsvpSupplierId = this.dataset.updateForeignSupplier;
+        const data = suppliersData[fsvpSupplierId];
+        
+        supplierSelect.reset();
+        $('#materialListSelection').html('');
+        $('#materialListHelpBlock').text('Please select a supplier first.');
+        $('#newSupplierForm [name=fsvp_supplier_id]').val(data.id);
+
+        $('#newSupplierForm [name=supplier]').val(data.supplier_id);
+        $('#fsName').val(data.name || '');
+        
+        // simulate multiselect dropdown selectopn
+        supplierDdOnchange(data.supplier_id, data.id);
+        $(`.supplierdd`).multiselect('select', [data.supplier_id]);
         editDetailsTRIndex = this.closest('tr');
         $('#modalNewSupplier').modal('show');
     });
@@ -268,10 +292,7 @@ jQuery(function() {
             processData: false,
             data: formData,
             success: function({data, message}) {
-                if(data) {
-                    renderDTRow(data, editDetailsTRIndex ? 'data' : 'add').draw();
-                }
-
+                initSuppliers();
                 supplierSelect.reset();
                 form.reset();
                 $('#materialListSelection').html('');
@@ -492,6 +513,14 @@ jQuery(function() {
                     className: "text-center",
                     targets: centerColumns 
                 },
+                {
+                    orderable: false,
+                    targets: [-1],
+                },
+                {
+                    searchable: false,
+                    targets: [-1],
+                },
             ]
         });
         $('.dataTables_wrapper .dt-buttons').append($('#toggleEvaluationBtn').attr('class', 'dt-button buttons-collection').show())
@@ -505,8 +534,9 @@ jQuery(function() {
                 <th>Food Imported</th>
                 <th style="max-width: 80px">Supplier Agreement</th>
                 <th style="max-width: 80px;">FSVP Compliance Statement</th>
+                <th>Action</th>
             </tr>
-        `, [3,4]);
+        `, [3,4,-1]);
 
         $.ajax({
             url: baseUrl + "suppliersByUser",
@@ -537,7 +567,7 @@ jQuery(function() {
                 <th>Due Date</th>
                 <th>Actions</th>
             </tr>
-        `, [2,3,4,5]);
+        `, [2,3,4,-1]);
 
         $.ajax({
             url: baseUrl + "evaluationsByUser",
@@ -621,14 +651,30 @@ jQuery(function() {
         } else {
             const sa = !d.supplier_agreement || !d.supplier_agreement.length ? no : `<a href="javascript:void(0)" data-opensafile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View</a>`;
             const cs = !d.compliance_statement || !d.compliance_statement.length ?  no : `<a href="javascript:void(0)" data-opencsfile="${d.id}" class="btn-link"> <i class="icon-margin-right fa fa-file-text-o"></i> View </a>`;
+
+            // data is an fsvp supplier
+            if(d.id) {
+                evalBtn = `
+                    <div class="d-flex center">
+                        <button type="button" class="btn green btn-sm btn-circle" data-update-foreign-supplier="${d.id}">Edit</button>
+                    </div>
+                `;
+            } else {
+                evalBtn = `
+                    <div class="d-flex center">
+                        <button type="button" class="btn green btn-sm btn-circle" data-edit-foreign-supplier="${d.supplier_id}" data-fsname="${d.name}">Edit</button>
+                    </div>
+                `;
+            }
         
             // displaying suppliers list
             rowData = [
-                d.id ? d.name : `<a href="javascript:void(0)" data-edit-foreign-supplier="${d.supplier_id}">${d.name}</a>`,
+                d.name,
                 d.address,
                 d.id ? d.food_imported.map((x) => x.name).join(', ') : na,
                 d.id ? sa : na,
                 d.id ? cs : na,
+                evalBtn,
             ];
         }
         
@@ -698,14 +744,14 @@ jQuery(function() {
         });
     }
 
-    function supplierDdOnchange(option) {
+    function supplierDdOnchange(supplierId, existingFSVPSupplierId = null) {
         const mList = $('#materialListSelection');
         mList.html('');
         mList.append(`<div class="stat-loading"> <img src="assets/global/img/loading.gif" alt="loading"> </div>`);
         $('#materialListHelpBlock').addClass('d-none');
 
         $.ajax({
-            url: baseUrl + "raw=true&getProductsByForeignSupplier=" + $(option).val(),
+            url: baseUrl + "raw=true&getProductsByForeignSupplier=" + supplierId + (existingFSVPSupplierId ? ("&fsvpSupplier=" + existingFSVPSupplierId) : ""),
             type: "GET",
             contentType: false,
             processData: false,
@@ -720,11 +766,16 @@ jQuery(function() {
 
                     materials.forEach((m) => {
                         const substr = m.description.substring(0, 32);
+                        const isChecked = m.selected == 'true' ? 'checked' : '';
+                        const isLocked = m.locked == 'true' ? 'disabled' : '';
+                        const lockedCheckbox = m.locked == 'true' ? `<input type="checkbox" value="${m.id}" name="food_imported[]" checked style="display:none;">` : '';
+                        const lockedTitle = m.locked == 'true' ? 'title="This product has been used by importer(s). You cannot unselect this."' : '';
 
                         mList.append(`
-                            <label class="mt-checkbox mt-checkbox-outline "> ${m.name}
+                            <label class="mt-checkbox mt-checkbox-outline" ${m.locked == 'true' ? 'style="cursor: not-allowed;"' : ''} ${lockedTitle}> ${m.name}
                                 <p title="${m.description}" class="small text-muted" style="padding: 0; margin:0;">${(m.description.length > 32 ? substr + '...' : m.description) || ''}</p>
-                                <input type="checkbox" value="${m.id}" name="food_imported[]"">
+                                <input type="checkbox" value="${m.id}" name="food_imported[]" ${isChecked + ' ' + isLocked}>
+                                ${lockedCheckbox}
                                 <span></span>
                             </label>
                         `);

@@ -12,6 +12,7 @@ if(empty($user_id)) {
 
 if(isset($_GET["getProductsByForeignSupplier"]) && !empty($_GET["getProductsByForeignSupplier"])) {
     $foreignSupplierId = $_GET["getProductsByForeignSupplier"] ?? 0;
+    $fsvpSupplierId = $_GET["fsvpSupplier"] ??0;
 
     $materials = [];
     $address = "";
@@ -22,7 +23,20 @@ if(isset($_GET["getProductsByForeignSupplier"]) && !empty($_GET["getProductsByFo
         $mIds = $materials['material'];
 
         if(!empty($mIds)) {
-            $data = $conn->select("tbl_supplier_material", "material_name AS name, ID as id, description", "ID in ($mIds) AND active = 1")->fetchAll();
+            if(!empty($fsvpSupplierId)) {
+                $data = $conn->execute("SELECT 
+                        mat.material_name AS name, 
+                        mat.ID as id, description,
+                        IF(ipr.id IS NULL, 'false', 'true') AS selected,
+                        IF(iby.id IS NULL, 'false', 'true') AS locked
+                    FROM tbl_supplier_material mat
+                    LEFT JOIN tbl_fsvp_ingredients_product_register ipr ON ipr.product_id = mat.ID AND ipr.supplier_id = ? AND ipr.user_id = ? AND ipr.deleted_at IS NULL
+                    LEFT JOIN tbl_fsvp_ipr_imported_by iby ON iby.product_id = ipr.id AND iby.deleted_at IS NULL
+                    WHERE mat.ID in ($mIds) AND mat.active = 1", $fsvpSupplierId, $user_id
+                )->fetchAll();
+            } else{
+                $data = $conn->select("tbl_supplier_material", "material_name AS name, ID as id, description", "ID in ($mIds) AND active = 1")->fetchAll();
+            }
         }
         
         $address = formatSupplierAddress($materials['address']);
@@ -59,6 +73,8 @@ if(isset($_GET["newSupplierToList"])) {
     try {
         $conn->begin_transaction();
         $conn->escapeString = false;
+
+        $fsvpSupplierId = $_POST['fsvp_supplier_id'] ?? null;
         
         $supplierId = $_POST["supplier"];
         $supplierData = $conn->select("tbl_supplier", "address, name", ["ID" => $supplierId])->fetchAssoc(function ($d) {
@@ -69,29 +85,88 @@ if(isset($_GET["newSupplierToList"])) {
         });
 
         $foodImported = $_POST['food_imported'] ?? [];
+        $id = null;
 
-        // initializing record
-        $conn->execute("INSERT INTO tbl_fsvp_suppliers (user_id, portal_user, supplier_id, supplier_agreement, compliance_statement) VALUE (?,?,?,?,?)", [
-            $user_id,
-            $portal_user,
-            $supplierId,
-            $_POST['supplier_agreement'] ?? 0,
-            $_POST['compliance_statement'] ?? 0,
-        ]);
+        if(empty($fsvpSupplierId)) {
+            // initializing record
+            $conn->execute("INSERT INTO tbl_fsvp_suppliers (user_id, portal_user, supplier_id, supplier_agreement, compliance_statement) VALUE (?,?,?,?,?)", [
+                $user_id,
+                $portal_user,
+                $supplierId,
+                $_POST['supplier_agreement'] ?? 0,
+                $_POST['compliance_statement'] ?? 0,
+            ]);
 
-        $id = $conn->getInsertId();
-        $foodParams = [];
-        $foodValues = [];
+            $id = $conn->getInsertId();
+            $foodParams = [];
+            $foodValues = [];
 
-        // register products/food imported data
-        foreach($foodImported as $food) {
-            $foodValues = array_merge($foodValues, [$user_id, $portal_user, $id, $food]);
-            $foodParams[] = "(?,?,?,?)";
-        }
+            // register products/food imported data
+            foreach($foodImported as $food) {
+                $foodValues = array_merge($foodValues, [$user_id, $portal_user, $id, $food]);
+                $foodParams[] = "(?,?,?,?)";
+            }
 
-        if(count($foodParams)) {
-            $sql = "INSERT INTO tbl_fsvp_ingredients_product_register(user_id, portal_user, supplier_id, product_id ) VALUES " . implode(',', $foodParams);
-            $conn->execute($sql, $foodValues);
+            if(count($foodParams)) {
+                $sql = "INSERT INTO tbl_fsvp_ingredients_product_register(user_id, portal_user, supplier_id, product_id ) VALUES " . implode(',', $foodParams);
+                $conn->execute($sql, $foodValues);
+            }
+        } else {
+            // updating fsvp supplier
+            
+            $id = $fsvpSupplierId;
+            $sqlParams = [$user_id];
+            $sql = "UPDATE tbl_fsvp_suppliers SET portal_user = ?";
+
+            $sa = $_POST['supplier_agreement'] ?? null;
+            $cs = $_POST['compliance_statement'] ?? null;
+
+            if($sa != null) {
+                $sql .= ", supplier_agreement = ?";
+                $sqlParams[] = $sa;
+            }
+
+            if($cs != null) {
+                $sql .= ", compliance_statement = ?";
+                $sqlParams[] = $cs;
+            }
+
+            $sql .= " WHERE id = ?";
+            $sqlParams[] = $id;
+
+            $conn->execute($sql , $sqlParams);
+            
+            if(count($foodImported)) {
+                $oldProducts = $conn->execute("SELECT product_id as id from tbl_fsvp_ingredients_product_register WHERE supplier_id = ?", $id)->fetchAll(function ($d) { return $d['id']; });
+                $newProducts = [];
+                $removedProducts = [];
+                $fp = [];
+
+                // removed products
+                foreach($oldProducts as $opId) {
+                    if(!in_array($opId, $foodImported)) {
+                        $removedProducts[] = $opId;
+                    }
+                }
+                
+                if(count($removedProducts)) {
+                    $p = implode(',', $removedProducts);
+                    $conn->execute("UPDATE tbl_fsvp_ingredients_product_register SET deleted_at = CURRENT_TIMESTAMP() WHERE product_id IN ($p) AND user_id = ? AND deleted_at IS NULL", $user_id);
+                }
+
+                // new products
+                foreach($foodImported as $f) {
+                    if(!in_array($f, $oldProducts)) {
+                        $newProducts = array_merge($newProducts, [$user_id, $portal_user, $id, $f]);
+                        $fp[] = "(?,?,?,?)";
+                    }
+                }
+
+                if(count($newProducts)) {
+                    $sql = "INSERT INTO tbl_fsvp_ingredients_product_register(user_id, portal_user, supplier_id, product_id ) VALUES " . implode(',', $fp);
+                    $conn->execute($sql, $newProducts);
+                }
+            }
         }
         
         $fileInsertQuery = "INSERT tbl_fsvp_files(record_id, record_type, filename, path, document_date, expiration_date, note, uploaded_at) VALUES (?,?,?,?,?,?,?,?)";
@@ -137,8 +212,10 @@ if(isset($_GET["newSupplierToList"])) {
         }
         
         // food imported names
-        $mIds = implode(', ', $foodImported);
-        $materialData = $conn->select("tbl_supplier_material", "material_name AS name, ID as id", "ID in ($mIds)")->fetchAll();
+        if(count($foodImported)) {
+            $mIds = implode(', ', $foodImported);
+            $materialData = $conn->select("tbl_supplier_material", "material_name AS name, ID as id", "ID in ($mIds)")->fetchAll();
+        }
 
         $conn->commit();
         send_response([
@@ -146,7 +223,7 @@ if(isset($_GET["newSupplierToList"])) {
                 "address" => $supplierData['address'],
                 "name" => $supplierData['name'],
                 "id" => $id,
-                "food_imported" => $materialData,
+                "food_imported" => $materialData ?? null,
                 'supplier_agreement' => $saFiles,
                 'compliance_statement' => $csFile,
             ],

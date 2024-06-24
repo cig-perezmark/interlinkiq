@@ -19,7 +19,7 @@ $data = $conn->execute("SELECT
     return $d;
 });
 
-debugger($data, 1);
+debugger($data, 0);
 
 $title = 'FSVP Ingredient Product Register';
 $pdf->SetTitle($title);

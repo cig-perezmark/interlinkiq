@@ -2161,6 +2161,13 @@ License: You must have a valid license purchased only from themeforest(the above
 
                     <?php if($_COOKIE['ID'] == 481) { ?>
                     <li class="nav-item ">
+                        <a href="fsvp" class="nav-link">
+                            <i class="icon-graph"></i>
+                            <span class="title">FSVP</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item ">
                         <a href="rvm" class="nav-link">
                             <i class="icon-docs"></i>
                             <span class="title">RVM</span>
@@ -2411,13 +2418,6 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <a href="product_and_formulation" class="nav-link">
                                         <i class="icon-graph"></i>
                                         <span class="title">Product and Formulation</span>
-                                        <span class="selected"></span>
-                                    </a>
-                                </li>';
-                                echo '<li class="nav-item ">
-                                    <a href="fsvp" class="nav-link">
-                                        <i class="icon-graph"></i>
-                                        <span class="title">FSVP</span>
                                         <span class="selected"></span>
                                     </a>
                                 </li>';

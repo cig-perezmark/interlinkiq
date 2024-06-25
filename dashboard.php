@@ -2297,6 +2297,40 @@
                     $('.type_others').addClass('hide');
                 } 
             }
+            function changeStatus(id, val) {
+                if (val == 1) {
+                    swal_val = "Accept";
+                } else if (val == 2) {
+                    swal_val = "Reject";
+                }
+
+                if (val > 0) {
+                    swal({
+                        title: "Are you sure?",
+                        text: "Please confirm if you really want to "+swal_val,
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-success",
+                        confirmButtonText: "Yes, confirm it!",
+                        closeOnConfirm: false
+                    },
+                    function(){
+                        $.ajax({
+                            type: "GET",
+                            url: "admin_2/function.php?modalChangesStatus_Area="+id+"&v="+val,
+                            dataType: "html",
+                            success: function(response){
+                                if ($.trim(response)) {
+                                    var obj = jQuery.parseJSON(response);
+                                    $('.panel_'+obj.ID+' .panel-body > .row #tabDescription_'+obj.ID).html(obj.description);
+                                }
+                                $('#modalChanges').modal('hide');
+                            }
+                        });
+                        swal(swal_val+"ed!", "Data is confirmed", "success");
+                    });
+                }
+            }
             function changedCategory(val) {
                 if (val == 9) {
                     $('.category_others').removeClass('hide');

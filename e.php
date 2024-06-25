@@ -1,6 +1,39 @@
-<?php
+<php
     $e = $_GET['email'];
     
+    <!--// https://www.codexworld.com/verify-email-address-check-if-real-exists-domain-php/-->
+
+    <!--// Include library file-->
+    <!--require_once 'VerifyEmail.class.php'; -->
+
+    <!--// Initialize library class-->
+    <!--$mail = new VerifyEmail();-->
+
+    <!--// Set the timeout value on stream-->
+    <!--$mail->setStreamTimeoutWait(20);-->
+
+    <!--// Set debug output mode-->
+    <!--$mail->Debug= TRUE; -->
+    <!--$mail->Debugoutput= 'html'; -->
+
+    <!--// Set email address for SMTP request-->
+    <!--$mail->setEmailFrom('from@email.com');-->
+
+    <!--// Email to check-->
+    <!--$email = $e; -->
+
+    <!--// Check if email is valid and exist-->
+    <!--if($mail->check($email)){ -->
+    <!--    echo 'Email &lt;'.$email.'&gt; is exist!'; -->
+    <!--}elseif(verifyEmail::validate($email)){ -->
+    <!--    echo 'Email &lt;'.$email.'&gt; is valid, but not exist!'; -->
+    <!--}else{ -->
+    <!--    echo 'Email &lt;'.$email.'&gt; is not valid and not exist!'; -->
+    <!--} -->
+
+
+
+
     // =========================================================
     
     
@@ -15,13 +48,13 @@
      $mxHost = findPreferredMxHostForDomain($domain);
      if ($mxHost) {
          //    echo $mxHost . "<br>";
-         $mxSocket = @fsockopen($mxHost, 587, $errno, $errstr, 2);
+         $mxSocket = @fsockopen($mxHost, 25, $errno, $errstr, 2);
          if ($mxSocket) {
              $response = "";
              // say HELO to mailserver
-             $response .= sendCommand($mxSocket, "HELO mx1.validemail.com");
+             $response .= sendCommand($mxSocket, "EHLO mx1.validemail.com");
              // initialize sending mail
-             $response .= sendCommand($mxSocket, "MAIL FROM:<admin@interlinkiq.com>");
+             $response .= sendCommand($mxSocket, "MAIL FROM:<info@validemail.com>");
              // try recipient address, will return 250 when ok..
              $rcptText = sendCommand($mxSocket, "RCPT TO:<" . $email . ">");
              $response .= $rcptText;
@@ -33,8 +66,6 @@
              fclose($mxSocket);
          }
      }
-     
-     echo '<br>validating...<br>';
      return $emailValid;
     }
     function extractFullyQualifiedDomainFromEmail($email)
@@ -88,6 +119,5 @@
     }
 
 
-    echo 'output<br>test:' . $e . '<br>';
     var_dump(validateEmail($e));
 ?>

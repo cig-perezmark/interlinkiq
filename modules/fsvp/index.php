@@ -170,7 +170,7 @@ div.form-control {
                     <li <?= isset($_GET['ingredient_product_register']) ? 'class="active"' : '' ?>><a href="?ingredient_product_register">Ingredient Product Registry</a></li>
                     <li <?= isset($_GET['fsvpqi_register']) ? 'class="active"' : '' ?>><a href="?fsvpqi_register">FSVPQI Registry</a></li>
                     <li <?= isset($_GET['fsvp_team']) ? 'class="active"' : '' ?>>
-                        <span class="badge badge-danger"> </span>
+                        <span class="badge badge-danger hide"> </span>
                         <a href="?fsvp_team">FSVP Team</a>
                     </li>
                 </ul>

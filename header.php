@@ -107,14 +107,14 @@
         $selectUserInfo = mysqli_query( $conn,"SELECT * from tbl_user_info WHERE user_id = $user_id" );
         if ( mysqli_num_rows($selectUserInfo) > 0 ) {
             $rowUserInfo = mysqli_fetch_array($selectUserInfo);
-            $current_userMobile = htmlentities($rowUserInfo['mobile']);
-            $current_userInterest = htmlentities($rowUserInfo['interest']);
-            $current_userAddress = htmlentities($rowUserInfo['address']);
-            $current_userDLicense = htmlentities($rowUserInfo['driver_license']);
-            $current_userOccupation = htmlentities($rowUserInfo['occupation']);
-            $current_userAbout = htmlentities($rowUserInfo['about']);
-            $current_userWebsite = htmlentities($rowUserInfo['website']);
-            $current_userAvatar = htmlentities($rowUserInfo['avatar']);
+            $current_userMobile = htmlentities($rowUserInfo['mobile'] ?? '');
+            $current_userInterest = htmlentities($rowUserInfo['interest'] ?? '');
+            $current_userAddress = htmlentities($rowUserInfo['address'] ?? '');
+            $current_userDLicense = htmlentities($rowUserInfo['driver_license'] ?? '');
+            $current_userOccupation = htmlentities($rowUserInfo['occupation'] ?? '');
+            $current_userAbout = htmlentities($rowUserInfo['about'] ?? '');
+            $current_userWebsite = htmlentities($rowUserInfo['website'] ?? '');
+            $current_userAvatar = htmlentities($rowUserInfo['avatar'] ?? '');
             if (!empty($rowUserInfo['privacy'])) { $current_userPrivacy = $rowUserInfo['privacy']; }
         }
 
@@ -929,51 +929,51 @@ License: You must have a valid license purchased only from themeforest(the above
             <!-- BEGIN PAGE ACTIONS -->
             <!-- DOC: Remove "hide" class to enable the page header actions -->
             <?php if ($current_client == 0) { ?>
-                <div class="page-actions">
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-circle btn-outline red dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-plus"></i>&nbsp;
-                            <span class="hidden-sm hidden-xs">New&nbsp;</span>&nbsp;
-                            <i class="fa fa-angle-down"></i>
-                        </button>
-                        <ul class="dropdown-menu" role="menu">
-                            <?php if ($current_userType == 1) { ?>
-                            <li>
-                                <a href="employee#new"><i class="icon-user"></i> Employee Roster</a>
-                            </li>
-                            <li>
-                                <a href="job-description#new"><i class="icon-notebook"></i> Job Description</a>
-                            </li>
-                            <li>
-                                <a href="trainings#new"><i class="icon-graduation"></i> Trainings</a>
-                            </li>
-                            <li>
-                                <a href="department#new"><i class="icon-directions"></i> Department</a>
-                            </li>
-                            <li>
-                                <a href="customer#new"><i class="icon-users"></i> Customer</a>
-                            </li>
-                            <li>
-                                <a href="supplier#new"><i class="icon-basket-loaded"></i> Supplier</a>
-                            </li>
-                            <li class="divider hide"> </li>
-                            <?php } ?>
-    
-                            <li class="hide">
-                                <a href="javascript:;">
-                                    <i class="icon-flag"></i> Comments
-                                    <span class="badge badge-success">4</span>
-                                </a>
-                            </li>
-                            <li class="hide">
-                                <a href="javascript:;">
-                                    <i class="icon-users"></i> Feedbacks
-                                    <span class="badge badge-danger">2</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+            <div class="page-actions">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-circle btn-outline red dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-plus"></i>&nbsp;
+                        <span class="hidden-sm hidden-xs">New&nbsp;</span>&nbsp;
+                        <i class="fa fa-angle-down"></i>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <?php if ($current_userType == 1) { ?>
+                        <li>
+                            <a href="employee#new"><i class="icon-user"></i> Employee Roster</a>
+                        </li>
+                        <li>
+                            <a href="job-description#new"><i class="icon-notebook"></i> Job Description</a>
+                        </li>
+                        <li>
+                            <a href="trainings#new"><i class="icon-graduation"></i> Trainings</a>
+                        </li>
+                        <li>
+                            <a href="department#new"><i class="icon-directions"></i> Department</a>
+                        </li>
+                        <li>
+                            <a href="customer#new"><i class="icon-users"></i> Customer</a>
+                        </li>
+                        <li>
+                            <a href="supplier#new"><i class="icon-basket-loaded"></i> Supplier</a>
+                        </li>
+                        <li class="divider hide"> </li>
+                        <?php } ?>
+
+                        <li class="hide">
+                            <a href="javascript:;">
+                                <i class="icon-flag"></i> Comments
+                                <span class="badge badge-success">4</span>
+                            </a>
+                        </li>
+                        <li class="hide">
+                            <a href="javascript:;">
+                                <i class="icon-users"></i> Feedbacks
+                                <span class="badge badge-danger">2</span>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
+            </div>
             <?php } ?>
             <?php
                     if ($current_client == 1) {
@@ -1161,63 +1161,63 @@ License: You must have a valid license purchased only from themeforest(the above
 
                     <ul class="nav navbar-nav pull-right">
                         <?php if ($current_client == 0) { ?>
-                            <li class="dropdown dropdown-extended" id="googleTranslate">
-                                <div id="google_translate_element"></div>
-                                <script type="text/javascript">
-                                    function googleTranslateElementInit() {
-                                        new google.translate.TranslateElement({
-                                            pageLanguage: 'en',
-                                            autoDisplay: 'true',
-                                            includedLanguages: 'en,fr,zh-CN,zh-TW,ja,ko,es,it,pt,ar,sw',
-                                            layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
-                                        }, 'google_translate_element');
+                        <li class="dropdown dropdown-extended" id="googleTranslate">
+                            <div id="google_translate_element"></div>
+                            <script type="text/javascript">
+                            function googleTranslateElementInit() {
+                                new google.translate.TranslateElement({
+                                    pageLanguage: 'en',
+                                    autoDisplay: 'true',
+                                    includedLanguages: 'en,fr,zh-CN,zh-TW,ja,ko,es,it,pt,ar,sw',
+                                    layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
+                                }, 'google_translate_element');
+                            }
+                            </script>
+
+                            <!--<div id="customLang"></div>-->
+                            <!--<select class="selectpicker notranslate" data-width="fit" onchange="translateLanguage(this.value);">-->
+                            <!--    <option data-content='<span class="fi fi-us"></span> English' value="English">English</option>-->
+                            <!--    <option data-content='<span class="fi fi-sa"></span> Arabic' value="Arabic" <?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/ar') { echo 'SELECTED'; } ?> >Arabic</option>-->
+                            <!--    <option data-content='<span class="fi fi-fr"></span> French' value="French"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/fr') { echo 'SELECTED'; } ?> >French</option>-->
+                            <!--    <option data-content='<span class="fi fi-it"></span> Italian' value="Italian"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/it') { echo 'SELECTED'; } ?> >Italian</option>-->
+                            <!--    <option data-content='<span class="fi fi-jp"></span> Japanese' value="Japanese"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/ja') { echo 'SELECTED'; } ?> >Japanese</option>-->
+                            <!--    <option data-content='<span class="fi fi-kr"></span> Korean' value="Korean"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/ko') { echo 'SELECTED'; } ?> >Korean</option>-->
+                            <!--    <option data-content='<span class="fi fi-pt"></span> Portuguese' value="Portuguese"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/pt') { echo 'SELECTED'; } ?> >Portuguese</option>-->
+                            <!--    <option data-content='<span class="fi fi-es"></span> Spanish' value="Spanish"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/es') { echo 'SELECTED'; } ?> >Spanish</option>-->
+                            <!--</select>-->
+                            <script type="text/javascript">
+                            function googleTranslateElementInit() {
+                                new google.translate.TranslateElement({
+                                    pageLanguage: 'en',
+                                    autoDisplay: 'true',
+                                    includedLanguages: 'en,fr,zh-CN,zh-TW,ja,ko,es,it,pt,ar,sw',
+                                    layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+                                }, 'google_translate_element');
+                            }
+                            // function googleTranslateElementInit() {
+                            //     // new google.translate.TranslateElement({
+                            //     //     pageLanguage: 'en',
+                            //     //     autoDisplay: 'true',
+                            //     //     layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
+                            //     // }, 'google_translate_element');
+                            // }
+
+                            function translateLanguage(lang) {
+                                googleTranslateElementInit();
+                                var $frame = $('.goog-te-menu-frame:first');
+                                // if (!$frame.size()) {
+                                //     alert("Error: Could not find Google translate frame.");
+                                //     return false;
+                                // }
+                                if (lang == "English") {
+                                    location.reload();
                                 }
-                                </script>
-    
-                                <!--<div id="customLang"></div>-->
-                                <!--<select class="selectpicker notranslate" data-width="fit" onchange="translateLanguage(this.value);">-->
-                                <!--    <option data-content='<span class="fi fi-us"></span> English' value="English">English</option>-->
-                                <!--    <option data-content='<span class="fi fi-sa"></span> Arabic' value="Arabic" <?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/ar') { echo 'SELECTED'; } ?> >Arabic</option>-->
-                                <!--    <option data-content='<span class="fi fi-fr"></span> French' value="French"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/fr') { echo 'SELECTED'; } ?> >French</option>-->
-                                <!--    <option data-content='<span class="fi fi-it"></span> Italian' value="Italian"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/it') { echo 'SELECTED'; } ?> >Italian</option>-->
-                                <!--    <option data-content='<span class="fi fi-jp"></span> Japanese' value="Japanese"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/ja') { echo 'SELECTED'; } ?> >Japanese</option>-->
-                                <!--    <option data-content='<span class="fi fi-kr"></span> Korean' value="Korean"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/ko') { echo 'SELECTED'; } ?> >Korean</option>-->
-                                <!--    <option data-content='<span class="fi fi-pt"></span> Portuguese' value="Portuguese"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/pt') { echo 'SELECTED'; } ?> >Portuguese</option>-->
-                                <!--    <option data-content='<span class="fi fi-es"></span> Spanish' value="Spanish"<?php if (isset($_COOKIE['googtrans']) && $_COOKIE['googtrans'] == '/en/es') { echo 'SELECTED'; } ?> >Spanish</option>-->
-                                <!--</select>-->
-                                <script type="text/javascript">
-                                    function googleTranslateElementInit() {
-                                        new google.translate.TranslateElement({
-                                            pageLanguage: 'en',
-                                            autoDisplay: 'true',
-                                            includedLanguages: 'en,fr,zh-CN,zh-TW,ja,ko,es,it,pt,ar,sw',
-                                            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-                                        }, 'google_translate_element');
-                                    }
-                                    // function googleTranslateElementInit() {
-                                    //     // new google.translate.TranslateElement({
-                                    //     //     pageLanguage: 'en',
-                                    //     //     autoDisplay: 'true',
-                                    //     //     layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
-                                    //     // }, 'google_translate_element');
-                                    // }
-    
-                                    function translateLanguage(lang) {
-                                        googleTranslateElementInit();
-                                        var $frame = $('.goog-te-menu-frame:first');
-                                        // if (!$frame.size()) {
-                                        //     alert("Error: Could not find Google translate frame.");
-                                        //     return false;
-                                        // }
-                                        if (lang == "English") {
-                                            location.reload();
-                                        }
-                                        $frame.contents().find('.goog-te-menu2-item span.text:contains(' + lang + ')').get(0).click();
-                                        return false;
-                                    }
-                                </script>
-                                <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript"></script>
-                            </li>
+                                $frame.contents().find('.goog-te-menu2-item span.text:contains(' + lang + ')').get(0).click();
+                                return false;
+                            }
+                            </script>
+                            <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" type="text/javascript"></script>
+                        </li>
                         <?php } ?>
                         <?php
                             // if ($switch_user_id == 1) {
@@ -1334,100 +1334,100 @@ License: You must have a valid license purchased only from themeforest(the above
                         <!-- DOC: Remove "dropdown-hoverable" and add data-toggle="dropdown" data-hover="dropdown" data-close-others="true" attributes to the below A element with dropdown-toggle class -->
                         <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
                             <?php if($user_id == 1 || $user_id == 35 || $user_id == 42 || $user_id == 163 || $user_id == 38 || $user_id == 88 || $user_id == 34 || $user_id == 100 || $user_id == 55 || $user_id == 54 || $user_id == 387 || $user_id == 693 || $user_id == 1231): ?>
-                                <a href="quotation.php" class="dropdown-toggle">
-                                    <i class="fa fa-qrcode"></i>
-                                </a>
+                            <a href="quotation.php" class="dropdown-toggle">
+                                <i class="fa fa-qrcode"></i>
+                            </a>
                             <?php endif; ?>
                         </li>
-                        
-                        <?php if($_COOKIE['ID'] == 481): ?>
-                            <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-                                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                    <i class="icon-bell"></i>
-                                    <span class="badge badge-default"> 1 </span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li class="external">
-                                        <h3>
-                                            <span class="bold">1 pending</span> notifications
-                                        </h3>
-                                        <a href="#">view all</a>
-                                    </li>
-                                    <li>
-                                        <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
-                                            <li>
-                                                <a href="javascript:;">
-                                                    <span class="time">30 min. ago</span>
-                                                    <span class="details"> Cindiy Compliance fail to review the Health Declaration Form. </span>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                        <?php endif; ?>
-                            <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-                                <?php if($user_id == 1 || $user_id == 2 || $user_id == 13 || $user_id == 42 || $user_id == 44 || $user_id == 185 || $user_id == 95 || $user_id == 38): ?>
-                                    <a href="blog_pages.php" class="dropdown-toggle">
-                                        <i class="icon-earphones-alt"></i>
-                                    </a>
-                                <?php endif; ?>
-                            </li>
 
-                            <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-                                <?php if($user_id == 163 OR $user_id == 1): ?>
-                                    <a data-toggle="modal" data-target="#modal_video" class="dropdown-toggle">
-                                        <i class="icon-cloud-upload"></i>
-                                    </a>
-                                <?php endif; ?>
-                            </li>
+                        <?php if($_COOKIE['ID'] == 481): ?>
+                        <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
+                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                <i class="icon-bell"></i>
+                                <span class="badge badge-default"> 1 </span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="external">
+                                    <h3>
+                                        <span class="bold">1 pending</span> notifications
+                                    </h3>
+                                    <a href="#">view all</a>
+                                </li>
+                                <li>
+                                    <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
+                                        <li>
+                                            <a href="javascript:;">
+                                                <span class="time">30 min. ago</span>
+                                                <span class="details"> Cindiy Compliance fail to review the Health Declaration Form. </span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <?php endif; ?>
+                        <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
+                            <?php if($user_id == 1 || $user_id == 2 || $user_id == 13 || $user_id == 42 || $user_id == 44 || $user_id == 185 || $user_id == 95 || $user_id == 38): ?>
+                            <a href="blog_pages.php" class="dropdown-toggle">
+                                <i class="icon-earphones-alt"></i>
+                            </a>
+                            <?php endif; ?>
+                        </li>
+
+                        <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
+                            <?php if($user_id == 163 OR $user_id == 1): ?>
+                            <a data-toggle="modal" data-target="#modal_video" class="dropdown-toggle">
+                                <i class="icon-cloud-upload"></i>
+                            </a>
+                            <?php endif; ?>
+                        </li>
                         <?php if($_COOKIE['ID'] == 108): ?>
-                            <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-                                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                                    <i class="icon-bell"></i>
-                                    <span class="badge badge-default"> 9 </span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <?php
+                        <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
+                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                                <i class="icon-bell"></i>
+                                <span class="badge badge-default"> 9 </span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <?php
                                         $select_pending = mysqli_query($conn, "SELECT * FROM leave_details INNER JOIN leave_types ON leave_types.leave_id = leave_details.leave_id INNER JOIN tbl_user ON tbl_user.ID = leave_details.payeeid WHERE approve_status = 0");
                                     ?>
-                                    <li class="external">
-                                        <h3>
-                                            <span class="bold">9 pending</span> for approval
-                                        </h3>
-                                        <a href="page_user_profile_1.html">view all</a>
-                                    </li>
-                                    <li>
-                                        <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
-                                            <li>
-                                                <?php foreach($select_pending as $row): ?>
-                                                    <a href="pto_request_for_approve.php">
-                                                        <span class="time"><?= $row['leave_name'] ?></span>
-                                                        <span class="details">
-                                                            <span class="label label-sm label-icon label-success">
-                                                                <i class="fa fa-check"></i>
-                                                            </span> <?= htmlentities($row['first_name']).' '.htmlentities($row['last_name']) ?> </span>
-                                                    </a>
-                                                <?php endforeach; ?>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
+                                <li class="external">
+                                    <h3>
+                                        <span class="bold">9 pending</span> for approval
+                                    </h3>
+                                    <a href="page_user_profile_1.html">view all</a>
+                                </li>
+                                <li>
+                                    <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
+                                        <li>
+                                            <?php foreach($select_pending as $row): ?>
+                                            <a href="pto_request_for_approve.php">
+                                                <span class="time"><?= $row['leave_name'] ?></span>
+                                                <span class="details">
+                                                    <span class="label label-sm label-icon label-success">
+                                                        <i class="fa fa-check"></i>
+                                                    </span> <?= htmlentities($row['first_name']).' '.htmlentities($row['last_name']) ?> </span>
+                                            </a>
+                                            <?php endforeach; ?>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
                         <?php endif; ?>
                         <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
                             <?php if($user_id == 108 OR $user_id == 1): ?>
-                                <a data-toggle="modal" data-target="#modal_export" class="dropdown-toggle">
-                                    <i class="icon-cloud-upload"></i>
-                                </a>
+                            <a data-toggle="modal" data-target="#modal_export" class="dropdown-toggle">
+                                <i class="icon-cloud-upload"></i>
+                            </a>
                             <?php endif; ?>
                         </li>
                         <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
                             <?php if($user_id == 2 || $user_id == 1 || $user_id == 19 || $user_id == 43 || $user_id == 35 || $user_id == 54 || $user_id == 40 || $user_id == 41 || $user_id == 42 || $user_id == 178 || $user_id == 55 || $user_id == 100 || $user_id == 693 || $user_id == 88 || $user_id == 1027 || $user_id == 1360 || $user_id == 1365 || $user_id == 1366 || $user_id == 1453): ?>
-                                <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-    
-                                    <i class="icon-bell"></i>
-                                    <span class="badge badge-default">
-                                        <?php    
+                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+
+                                <i class="icon-bell"></i>
+                                <span class="badge badge-default">
+                                    <?php    
                                             $users = $user_id;
                                             $result = mysqli_query($conn, "SELECT count(*) AS count FROM tbl_user WHERE client = $current_client ORDER BY ID desc");
                                                                                                 
@@ -1435,8 +1435,8 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 echo $row['count'];
                                             }
                                         ?>
-                                    </span>
-                                </a>
+                                </span>
+                            </a>
                             <?php endif; ?>
                             <ul class="dropdown-menu">
                                 <li class="external">
@@ -1888,22 +1888,22 @@ License: You must have a valid license purchased only from themeforest(the above
                     </li>
                     <?php endif?>
                     <?php if(($current_client == 0 AND $switch_user_id <> 1106) OR $switch_user_id == 1360 OR $switch_user_id == 1366 OR $switch_user_id == 1453 OR $switch_user_id == 1482 OR $switch_user_id == 1365 OR $switch_user_id == 1477 OR $switch_user_id == 145) { ?>
-                        <li class="nav-item hide <?php echo $site === "tracking" ? "active" : ""; ?>">
-                            <a href="tracking" class="nav-link">
-                                <i class="icon-target"></i>
-                                <span class="title">Tracking Dashboard</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item hide <?php echo $site === "app-store" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('app-store', $current_userEmployerID, $current_userEmployeeID); } ?>">
-                            <a href="app-store" class="nav-link">
-                                <i class="icon-grid"></i>
-                                <span class="title">App Catalog</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li> 
+                    <li class="nav-item hide <?php echo $site === "tracking" ? "active" : ""; ?>">
+                        <a href="tracking" class="nav-link">
+                            <i class="icon-target"></i>
+                            <span class="title">Tracking Dashboard</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item hide <?php echo $site === "app-store" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('app-store', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                        <a href="app-store" class="nav-link">
+                            <i class="icon-grid"></i>
+                            <span class="title">App Catalog</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
 
-                        <?php
+                    <?php
                             if ($current_userEmployerID == 46400 OR $switch_user_id == 464) {
                                 echo '<li class="nav-item ">
                                     <a href="form-owned" class="nav-link">
@@ -1915,28 +1915,28 @@ License: You must have a valid license purchased only from themeforest(the above
                             }
                         ?>
 
-                        <li class="nav-item">
-                            <a href="javascript:;" class="nav-link nav-toggle">
-                                <i class="icon-support" style="color: #ffff00;"></i>
-                                <span class="title" style="color: #ffff00; font-weight: bold;">Risk Assessment</span>
-                                <span class="selected"></span>
-                                <span class="arrow"></span>
-                            </a>
-                            <ul class="sub-menu">
-                                <li class="nav-item">
-                                    <a href="survey" class="nav-link " target="_blank" onclick="myfunction(<?= $current_userEmployerID; ?>)">
-                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                        <span class="title">Qualification Survey</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="e-forms/Sanitary_controller/Sanitary/gmp_food_v" class="nav-link " target="_blank" onclick="set_newCookie(<?= $switch_user_id; ?>)">
-                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                        <span class="title">Food and Beverage</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                    <li class="nav-item">
+                        <a href="javascript:;" class="nav-link nav-toggle">
+                            <i class="icon-support" style="color: #ffff00;"></i>
+                            <span class="title" style="color: #ffff00; font-weight: bold;">Risk Assessment</span>
+                            <span class="selected"></span>
+                            <span class="arrow"></span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li class="nav-item">
+                                <a href="survey" class="nav-link " target="_blank" onclick="myfunction(<?= $current_userEmployerID; ?>)">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">Qualification Survey</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="e-forms/Sanitary_controller/Sanitary/gmp_food_v" class="nav-link " target="_blank" onclick="set_newCookie(<?= $switch_user_id; ?>)">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">Food and Beverage</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
 
                     <?php } ?>
 
@@ -2111,42 +2111,42 @@ License: You must have a valid license purchased only from themeforest(the above
                     </li>
                     <?php } ?>
                     <?php if($_COOKIE['ID'] == 481): ?>
-                        <li class="nav-item">
-                            <a href="eform_dashboard" class="nav-link" disabled>
-                                <i class="icon-graph"></i>
-                                <span class="title">E-Form Dashboard</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
+                    <li class="nav-item">
+                        <a href="eform_dashboard" class="nav-link" disabled>
+                            <i class="icon-graph"></i>
+                            <span class="title">E-Form Dashboard</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
                     <?php endif; ?>
 
                     <!--if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('job-ticket', $current_userEmployerID, $current_userEmployeeID); }-->
                     <?php //  if($current_userEmployeeID == 0 OR $current_userID == 95 OR $current_userID == 42 OR $current_userID == 88) { ?>
                     <?php if($current_userEmployeeID == 0) { ?>
-                        <li class="nav-item <?php echo $site === "job-ticket" ? "active " : ""; ?>">
-                            <a href="job-ticket" class="nav-link">
-                                <i class="icon-earphones-alt"></i>
-                                <span class="title">Job Ticket Tracker</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
+                    <li class="nav-item <?php echo $site === "job-ticket" ? "active " : ""; ?>">
+                        <a href="job-ticket" class="nav-link">
+                            <i class="icon-earphones-alt"></i>
+                            <span class="title">Job Ticket Tracker</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
                     <?php } else { ?>
-                        <li class="nav-item <?php echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "active open start" : ""; ?>">
-                            <a href="javascript:;" class="nav-link nav-toggle">
-                                <i class="icon-earphones"></i>
-                                <span class="title">Job Ticket Tracker</span>
-                                <span class="selected"></span>
-                                <span class="arrow <?php echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "open" : ""; ?>"></span>
-                            </a>
-                            <ul class="sub-menu">
-                                <li class="nav-item <?php echo $site === "job-ticket-request" ? "active" : ""; ?>">
-                                    <a href="job-ticket-request" class="nav-link ">
-                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                        <span class="title">Request</span>
-                                        <span class="selected"></span>
-                                    </a>
-                                </li>
-                                <?php
+                    <li class="nav-item <?php echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "active open start" : ""; ?>">
+                        <a href="javascript:;" class="nav-link nav-toggle">
+                            <i class="icon-earphones"></i>
+                            <span class="title">Job Ticket Tracker</span>
+                            <span class="selected"></span>
+                            <span class="arrow <?php echo $site === "job-ticket-request" || $site === "job-ticket-service" ? "open" : ""; ?>"></span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li class="nav-item <?php echo $site === "job-ticket-request" ? "active" : ""; ?>">
+                                <a href="job-ticket-request" class="nav-link ">
+                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                    <span class="title">Request</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                            <?php
                                     echo '<li class="nav-item '; $site === "job-ticket-service" ? "active" : ""; echo '">
                                         <a href="job-ticket-service" class="nav-link ">
                                             <i class="fa fa-minus" style="font-size: 10px;"></i>
@@ -2155,18 +2155,18 @@ License: You must have a valid license purchased only from themeforest(the above
                                         </a>
                                     </li>';
                                 ?>
-                            </ul>
-                        </li>
+                        </ul>
+                    </li>
                     <?php } ?>
-                    
+
                     <?php if($_COOKIE['ID'] == 481) { ?>
-                        <li class="nav-item ">
-                            <a href="rvm" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">RVM</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
+                    <li class="nav-item ">
+                        <a href="rvm" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">RVM</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
                     <?php } ?>
 
                     <?php
@@ -2457,16 +2457,16 @@ License: You must have a valid license purchased only from themeforest(the above
                             <span class="selected"></span>
                         </a>
                     </li>
-                    
-                    
+
+
                     <?php if($switch_user_id == 1362): ?>
-                        <!--<li class="nav-item">-->
-                        <!--    <a href="batchproduction" class="nav-link" disabled>-->
-                        <!--        <i class="icon-wrench"></i>-->
-                        <!--        <span class="title">Batch Production</span>-->
-                        <!--        <span class="selected"></span>-->
-                        <!--    </a>-->
-                        <!--</li>-->
+                    <!--<li class="nav-item">-->
+                    <!--    <a href="batchproduction" class="nav-link" disabled>-->
+                    <!--        <i class="icon-wrench"></i>-->
+                    <!--        <span class="title">Batch Production</span>-->
+                    <!--        <span class="selected"></span>-->
+                    <!--    </a>-->
+                    <!--</li>-->
                     <?php endif; ?>
 
                     <?php
@@ -2653,293 +2653,293 @@ License: You must have a valid license purchased only from themeforest(the above
                     <?php } ?>
 
                     <?php if($switch_user_id == 1360 OR $switch_user_id == 1365 OR $switch_user_id == 1366 OR $switch_user_id == 1453 OR $switch_user_id == 1482 OR $switch_user_id == 1477): ?>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Environmental Monitoring Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Equipment Calibration Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Food Safety Culture Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Formula / Recipe Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">HACCP / Food Safety Plan Builder Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Laboratory Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Positive Product Release Program Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Residue Testing Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Risk Assessment</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Shelf Life Program Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Stability Program Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Storage and Distribution Report Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Environmental Monitoring Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Equipment Calibration Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Food Safety Culture Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Formula / Recipe Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">HACCP / Food Safety Plan Builder Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Laboratory Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Positive Product Release Program Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Residue Testing Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Risk Assessment</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Shelf Life Program Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Stability Program Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Storage and Distribution Report Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
                     <?php endif ?>
-                    
+
                     <?php if($switch_user_id == 1372): ?>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Production Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Foreign Supplier Verification Program (FSVP) Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Sanitation Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Preventive Maintenance Program (PMP) Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Formulation/Product Realization Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Product Testing Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Environmental Monitoring Program (EMP) Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Records Verification Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Food Fraud Vulnerability Assessment (FFVA) Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Certificate of Analysis (COA) Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Internal Audit (IA) Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Shelf Life Program Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Stability Program Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Food Safety/ HACCP Plan Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Bill of Material (BOM) / Mock Recall Traceability Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Calibration Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Crisis Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Customer Complaint Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Food Safety Culture Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Laboratory Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Inventory Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Storage and Distribution Report Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Sales Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Positive Product Release Program Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Residue Testing Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Purchasing Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">QA/QC Activity Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="coming-soon" class="nav-link">
-                                <i class="icon-docs"></i>
-                                <span class="title">Receiving Management</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Production Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Foreign Supplier Verification Program (FSVP) Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Sanitation Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Preventive Maintenance Program (PMP) Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Formulation/Product Realization Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Product Testing Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Environmental Monitoring Program (EMP) Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Records Verification Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Food Fraud Vulnerability Assessment (FFVA) Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Certificate of Analysis (COA) Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Internal Audit (IA) Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Shelf Life Program Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Stability Program Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Food Safety/ HACCP Plan Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Bill of Material (BOM) / Mock Recall Traceability Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Calibration Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Crisis Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Customer Complaint Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Food Safety Culture Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Laboratory Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Inventory Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Storage and Distribution Report Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Sales Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Positive Product Release Program Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Residue Testing Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Purchasing Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">QA/QC Activity Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="coming-soon" class="nav-link">
+                            <i class="icon-docs"></i>
+                            <span class="title">Receiving Management</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
                     <?php endif ?>
-                    
-                    
-                    
+
+
+
                     <li class="nav-item <?php echo $site === "forms" ? "active" : ""; ?>">
                         <a href="forms" class="nav-link">
                             <i class="icon-docs" style="color: orange !important;"></i>

@@ -48369,6 +48369,7 @@
         $current_userEmployerID = employerID($portal_user);
         $current_userID = $_COOKIE['ID'];
 
+        // $selectData = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID = $id" );
         $selectData = mysqli_query( $conn,"SELECT
             l.ID AS l_ID,
             l.parent_id AS l_parent_id,
@@ -48377,11 +48378,6 @@
             l.reason AS l_reason,
             l.name AS l_name,
             l.description AS l_description,
-            l.description_tmp AS l_description_tmp,
-            l.description_reviewed AS l_description_reviewed,
-            l.description_approved AS l_description_approved,
-            l.reviewer AS l_reviewer,
-            l.approver AS l_approver,
             COUNT(r.r_ID) AS review_total,
             COALESCE(SUM(r.r_compliant), 0) AS review_sum
             FROM tbl_library AS l
@@ -48448,6 +48444,10 @@
                 $library_name = implode(" - ",$data_name);
             }
 
+            // $rowExpired = filesExpired($library_ID, $library_child, 0);
+            // $rowExpired30 = filesExpiredNear($library_ID, $library_child, 0, 0, 30);
+            // $rowExpired90 = filesExpiredNear($library_ID, $library_child, 0, 31, 90);
+
             echo '<div class="panel-body">
                 <div class="row">
                     <div class="tabbable-line">
@@ -48495,18 +48495,9 @@
                             echo '<li class=""><a href="#tabTask_'. $library_ID .'" data-toggle="tab" aria-expanded="false">Task</a></li>
                         </ul>
                         <div class="tab-content">
-                            <div class="tab-pane active" id="tabDescription_'. $library_ID .'" style="padding: 0 15px;">
-                                '. $row["l_description"];
-
-                                $user_array_list = array(1, 464);
-                                if (!empty($row["l_description_tmp"]) AND in_array($user_id, $user_array_list)) {
-                                    $arr_tmp = json_decode($row["l_description_tmp"],true);
-                                    if ( (end($arr_tmp)['reviewed'] == 0 OR end($arr_tmp)['reviewed'] == 1) AND end($arr_tmp)['approved'] == 0 ) {
-                                       echo '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$library_ID.')">here</a> to view</span>';
-                                    }
-                                }
-                            
-                            echo '</div>
+                            <div class="tab-pane active" id="tabDescription_'. $library_ID .'">
+                                <h5 style="padding: 0 15px;">'. htmlentities($row["l_description"] ?? '') .'</h5>
+                            </div>
                             <div class="tab-pane" id="tabFiles_'. $library_ID .'">
                                 <div class="mt-actions">';
 
@@ -51424,27 +51415,9 @@
         $id = $_GET['modalEdit_SubItem'];
         $current_userID = $_COOKIE['ID'];
 
-        if (!empty($_COOKIE['switchAccount'])) {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = $_COOKIE['switchAccount'];
-        }
-        else {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = employerID($portal_user);
-        }
-
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID = $id" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
-        }
-
-        $description = htmlentities($row['description'] ?? '');
-        $user_array_list = array(5, 1, 464);
-        if (!empty($row["description_tmp"]) AND in_array($user_id, $user_array_list)) {
-            $arr_tmp = json_decode($row["description_tmp"],true);
-            if ( (end($arr_tmp)['reviewed'] == 0 OR end($arr_tmp)['reviewed'] == 1) AND end($arr_tmp)['approved'] == 0) {
-                $description = htmlentities(end($arr_tmp)['description'] ?? '');
-            }
         }
 
         echo '<input class="form-control" type="hidden" name="parent_id" value="'. $id .'" />
@@ -51466,83 +51439,10 @@
                 <input class="form-control" type="text" name="name" value="'. $row['name'] .'" required />
             </div>
         </div>
-        <div class="form-group '; echo $user_id == 1 OR $user_id == 464 ? '':'hide'; echo '">
-            <label class="col-md-3 control-label">Reviewer</label>
-            <div class="col-md-8">
-                <input type="hidden" name="reviewer_tmp" value="'.$row["reviewer"].'" />
-                <select class="form-control mt-multiselect" name="reviewer">
-                    <option value="">Select</option>';
-                    $selectEmployeee = mysqli_query( $conn,"SELECT 
-                        u.ID AS u_ID,
-                        e.ID AS e_ID,
-                        e.first_name AS e_first_name,
-                        e.last_name AS e_last_name
-                        FROM tbl_hr_employee AS e
-
-                        INNER JOIN (
-                            SELECT
-                            *
-                            FROM tbl_user
-                        ) AS u
-                        ON e.ID = u.employee_id
-
-                        WHERE e.suspended = 0 
-                        AND e.status = 1 
-                        AND e.user_id = $user_id 
-
-                        ORDER BY e.first_name" );
-                    if ( mysqli_num_rows($selectEmployeee) > 0 ) {
-                        while($rowEmployee = mysqli_fetch_array($selectEmployeee)) {
-                            $emp_ID = $rowEmployee["u_ID"];
-                            $emp_name = $rowEmployee["e_first_name"] .' '. $rowEmployee["e_last_name"];
-
-                            echo '<option value="'.$emp_ID.'" '; echo $row["reviewer"] == $emp_ID ? 'selected':''; echo '>'.$emp_name.'</option>';
-                        }
-                    }
-                echo '</select>
-            </div>
-        </div>
-        <div class="form-group '; echo $user_id == 1 OR $user_id == 464 ? '':'hide'; echo '">
-            <label class="col-md-3 control-label">Approver</label>
-            <div class="col-md-8">
-                <input type="hidden" name="approver_tmp" value="'.$row["approver"].'" />
-                <select class="form-control mt-multiselect" name="approver">
-                    <option value="">Select</option>';
-                    $selectEmployeee = mysqli_query( $conn,"SELECT 
-                        u.ID AS u_ID,
-                        e.ID AS e_ID,
-                        e.first_name AS e_first_name,
-                        e.last_name AS e_last_name
-                        FROM tbl_hr_employee AS e
-
-                        INNER JOIN (
-                            SELECT
-                            *
-                            FROM tbl_user
-                        ) AS u
-                        ON e.ID = u.employee_id
-
-                        WHERE e.suspended = 0 
-                        AND e.status = 1 
-                        AND e.user_id = $user_id 
-
-                        ORDER BY e.first_name" );
-                    if ( mysqli_num_rows($selectEmployeee) > 0 ) {
-                        while($rowEmployee = mysqli_fetch_array($selectEmployeee)) {
-                            $emp_ID = $rowEmployee["u_ID"];
-                            $emp_name = $rowEmployee["e_first_name"] .' '. $rowEmployee["e_last_name"];
-
-                            echo '<option value="'.$emp_ID.'" '; echo $row["approver"] == $emp_ID ? 'selected':''; echo '>'.$emp_name.'</option>';
-                        }
-                    }
-                echo '</select>
-            </div>
-        </div>
         <div class="form-group">
             <label class="col-md-3 control-label">Item Description</label>
             <div class="col-md-8">
-                <input type="hidden" name="description_tmp" value="'.htmlentities($row['description'] ?? '').'">
-                <textarea class="form-control summernote" name="description" onkeyup="description_count(\'Edit\')">'.$description.'</textarea>
+                <textarea class="form-control" name="description" required>'. $row['description'] .'</textarea>
             </div>
         </div>
         <div class="form-group">
@@ -52053,103 +51953,19 @@
     }
     if( isset($_POST['btnUpdate_Area_SubItem']) ) {
         $parent_id = $_POST['parent_id'];
-
-        if (!empty($_COOKIE['switchAccount'])) {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = $_COOKIE['switchAccount'];
-        }
-        else {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = employerID($portal_user);
-        }
-
         $type = $_POST['type'];
         $name = addslashes($_POST['name']);
+        $description = addslashes($_POST['description']);
         $due_date = $_POST['due_date'];
         $last_modified = date('Y-m-d');
-        mysqli_query( $conn,"UPDATE tbl_library SET type='". $type ."', name='". $name ."', due_date='". $due_date ."', last_modified='". $last_modified ."' WHERE ID='". $parent_id ."'" );
 
-        if ($_POST['reviewer'] <> $_POST['reviewer_tmp']) {
-            $reviewer = $_POST['reviewer'];
-            mysqli_query( $conn,"UPDATE tbl_library set description_reviewed = 0, description_approved = 0, reviewer = $reviewer WHERE ID = $parent_id" );
-        }
-        if ($_POST['approver'] <> $_POST['approver_tmp']) {
-            $approver = $_POST['approver'];
-            mysqli_query( $conn,"UPDATE tbl_library set description_approved = 0, approver = $approver WHERE ID = $parent_id" );
-        }
-
-        $revise = '';
-        $description = addslashes($_POST['description']);
-        $description_tmp = addslashes($_POST['description_tmp']);
-        if ($user_id == 1 OR $user_id == 464) {
-            if ($description <> $description_tmp) {
-                $arr_tmp = array();
-                $selectDesc = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID=$parent_id" );
-                $rowDesc = mysqli_fetch_array($selectDesc);
-                if (!empty($rowDesc["description_tmp"])) {
-                    $arr_tmp = json_decode($rowDesc["description_tmp"],true);
-                }
-
-                $desc_tmp = array (
-                    'editor' =>  $portal_user,
-                    'reviewed' =>  0,
-                    'approved' =>  0,
-                    'description' =>  addslashes($description)
-                );
-
-                array_push($arr_tmp, $desc_tmp);
-                $description = json_encode($arr_tmp, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
-                $revise = '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$parent_id.')">here</a> to view</span>';
-
-                mysqli_query( $conn,"UPDATE tbl_library set description_reviewed = 0, description_approved = 0, description_tmp = '".$description."' WHERE ID = $parent_id" );
-
-                // Notify Reviewer and Approver
-                if (!empty($_POST['reviewer']) OR !empty($_POST['approver'])) {
-                    if (!empty($_POST['reviewer'])) {
-                        $reviewer = $_POST['reviewer'];
-                        $selectRecipients = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $reviewer" );
-                        $rowRecipients = mysqli_fetch_array($selectRecipients);
-                        $recipients_name = htmlentities($rowRecipients["first_name"] ?? '') .' '. htmlentities($rowRecipients["last_name"] ?? '');
-                        $recipients_email = htmlentities($rowRecipients["email"] ?? '');
-                        $recipients[$recipients_email] = $recipients_name;
-                    }
-                    if (!empty($_POST['approver'])) {
-                        $approver = $_POST['approver'];
-                        $selectRecipients = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $approver" );
-                        $rowRecipients = mysqli_fetch_array($selectRecipients);
-                        $recipients_name = htmlentities($rowRecipients["first_name"] ?? '') .' '. htmlentities($rowRecipients["last_name"] ?? '');
-                        $recipients_email = htmlentities($rowRecipients["email"] ?? '');
-                        $recipients[$recipients_email] = $recipients_name;
-                    }
-
-                    $selectSender = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $user_id" );
-                    $rowSender = mysqli_fetch_array($selectSender);
-                    $sender_name = htmlentities($rowSender["first_name"] ?? '') .' '. htmlentities($rowSender["last_name"] ?? '');
-                    $sender_email = htmlentities($rowSender["email"] ?? '');
-                    $sender[$sender_email] = $sender_name;
-
-                    $subject = 'Compliance Dashboard Description - For Review/Approval - '. $local_date;
-                    $body = 'Hi Team,<br><br>
-
-                    New revision has been made that needs your attention. Click <a href="'.$base_url.'dashboard?d='.$parent_id.'" target="_blank">here</a> to view<br><br>
-
-                    Thanks';
-
-                    php_mailer_dynamic($sender, $recipients, $subject, $body);
-                }
-            }
-        } else {
-            mysqli_query( $conn,"UPDATE tbl_library set description_reviewed = 0, description_approved = 0, description = '".$description."' WHERE ID = $parent_id" );
-            $description_tmp = $description;
-        }
-
-        // mysqli_query( $conn,"UPDATE tbl_library SET type='". $type ."', name='". $name ."', description='". $description ."', due_date='". $due_date ."', last_modified='". $last_modified ."' WHERE ID='". $parent_id ."'" );
+        mysqli_query( $conn,"UPDATE tbl_library SET type='". $type ."', name='". $name ."', description='". $description ."', due_date='". $due_date ."', last_modified='". $last_modified ."' WHERE ID='". $parent_id ."'" );
         if (!mysqli_error($conn)) {
             $output = array(
                 'ID' => $parent_id,
                 'type' => $type,
                 'name' => stripcslashes(htmlentities($name ?? '')),
-                'description' => stripcslashes($description).$revise
+                'description' => stripcslashes(htmlentities($description ?? ''))
             );
             echo json_encode($output);
 
@@ -52161,7 +51977,6 @@
             actionHistory($data_library_id, 2, 0, $parent_id);
         }
 
-        $description = addslashes($_POST['description']);
         //->>>>>>>  START Brandon Auto service log for Editing Subitem in the dashboard <<<<<<<<-
         
         $current_userID = $_COOKIE['ID'];

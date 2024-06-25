@@ -2159,6 +2159,15 @@ License: You must have a valid license purchased only from themeforest(the above
                         </li>
                     <?php } ?>
                     
+                    <?php if($switch_user_id == 1479) { ?>
+                        <li class="nav-item ">
+                            <a href="fsvp" class="nav-link">
+                                <i class="icon-graph"></i>
+                                <span class="title">FSVP</span>
+                                <span class="selected"></span>
+                            </a>
+                        </li>
+                    <?php } ?>
                     <?php if($_COOKIE['ID'] == 481) { ?>
                         <li class="nav-item ">
                             <a href="rvm" class="nav-link">

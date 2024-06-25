@@ -427,7 +427,9 @@
                                                                     1 => 'Approved',
                                                                     2 => 'Non Approved',
                                                                     3 => 'Emergency Use Only',
-                                                                    4 => 'Do Not Use'
+                                                                    4 => 'Do Not Use',
+																	5 => 'Active',
+																	6 => 'Inactive'
                                                                 );
 
                                                                 if ($s_category == "3") {
@@ -748,7 +750,9 @@
                                                                     1 => 'Approved',
                                                                     2 => 'Non Approved',
                                                                     3 => 'Emergency Use Only',
-                                                                    4 => 'Do Not Use'
+                                                                    4 => 'Do Not Use',
+																	5 => 'Active',
+																	6 => 'Inactive'
                                                                 );
 
                                                                 if ($s_category == "3") {

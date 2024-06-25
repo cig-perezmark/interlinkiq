@@ -3388,7 +3388,7 @@
                     $data_filename = stripcslashes(htmlentities($rowData['filename'] ?? ''));
                     $data_description = stripcslashes(htmlentities($rowData['description'] ?? ''));
 
-                    $data_files = $rowData['files'];
+                    $data_files = htmlentities($rowData['files'] ?? '');
                     $type = 'iframe';
                     if (!empty($data_files)) {
                         if ($filetype == 1) {
@@ -3492,7 +3492,7 @@
             }
 
             if ($process == true) {
-                $data_files = $rowData['files'];
+                $data_files = htmlentities($rowData['files'] ?? '');
                 $type = 'iframe';
                 if (!empty($data_files)) {
                     if ($filetype == 1) {
@@ -46974,14 +46974,13 @@
                                     echo '<li class=""><a href="#tabTask_'. $library_ID .'" data-toggle="tab" aria-expanded="false">Task</a></li>
                                 </ul>
                                 <div class="tab-content">
-                                    <div class="tab-pane active" id="tabDescription_'. $library_ID .'" style="padding: 0 15px;">
-                                        '. $row["l_description"];
+                                    <div class="tab-pane active" id="tabDescription_'. $library_ID .'">
+                                        <h5 style="padding: 0 15px;">'. $row["l_description"] .'</h5>';
 
-                                        $user_array_list = array(1, 464);
-                                        if (!empty($row["l_description_tmp"]) AND in_array($user_id, $user_array_list)) {
-                                            $arr_tmp = json_decode($row["l_description_tmp"],true);
-                                            if ( (end($arr_tmp)['reviewed'] == 0 OR end($arr_tmp)['reviewed'] == 1) AND end($arr_tmp)['approved'] == 0 ) {
-                                               echo '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$library_ID.')">here</a> to view</span>';
+                                        if (!empty($row["l_description_tmp"])) {
+                                            echo '<a href="#modalChanges" data-toggle="modal" class="btn text-success" onclick="btnChangesView('.$library_ID.')">View Changes</a>';
+                                            if (($portal_user == $row["l_reviewer"] AND $row["l_description_reviewed"] == 0) OR ($portal_user == $row["l_approver"] AND $row["l_description_reviewed"] == 1 AND $row["l_description_approved"] == 0)) {
+                                                echo ' | <span class="btn text-info" onclick="btnChangesAccept('.$library_ID.')">Accept</span> | <span class="btn text-danger" onclick="btnChangesReject('.$library_ID.')">Reject</span>';
                                             }
                                         }
 
@@ -50944,140 +50943,35 @@
     if( isset($_GET['modalChanges_Area']) ) {
         $ID = $_GET['modalChanges_Area'];
 
-        if (!empty($_COOKIE['switchAccount'])) {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = $_COOKIE['switchAccount'];
-        }
-        else {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = employerID($portal_user);
-        }
-
-        $selectData = mysqli_query( $conn,"SELECT 
-            l.description_tmp AS l_description_tmp,
-            l.description_comment AS l_description_comment,
-            ur.ID AS u_reviewer_ID,
-            CASE WHEN LENGTH(ur.first_name) = 0 AND LENGTH(ur.last_name) = 0 THEN '---' ELSE CONCAT(ur.first_name, ' ', ur.last_name)  END AS u_reviewer,
-            ua.ID AS u_approver_ID,
-            CASE WHEN LENGTH(ua.first_name) = 0 AND LENGTH(ua.last_name) = 0 THEN '---' ELSE CONCAT(ua.first_name, ' ', ua.last_name)  END AS u_approver
-            FROM tbl_library AS l
-
-            LEFT JOIN (
-                SELECT
-                *
-                FROM tbl_user
-            ) AS ur
-            ON l.reviewer = ur.ID
-
-            LEFT JOIN (
-                SELECT
-                *
-                FROM tbl_user
-            ) AS ua
-            ON l.approver = ua.ID
-
-            WHERE l.ID = $ID
-        " );
+        $selectData = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID = $ID" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
-            $u_reviewer = htmlentities($row["u_reviewer"] ?? '');
-            $u_approver = htmlentities($row["u_approver"] ?? '');
+            $arr_tmp = json_decode($row["description_tmp"],true);
+            $lastDescription = end($arr_tmp)['description'];
 
-            $arr_tmp = json_decode($row["l_description_tmp"],true);
-            $l_description = end($arr_tmp)['description'];
+            $lastStatus = 'Pending';
+            if (end($arr_tmp)['approved'] > 0) { $lastStatus = 'Approved'; }
+            if (end($arr_tmp)['reviewed'] > 0) { $lastStatus = 'Reviewed'; }
 
-            $l_status = 'Pending';
-            if (end($arr_tmp)['reviewed'] > 0) { $l_status = 'Reviewed'; }
-            if (end($arr_tmp)['approved'] > 0) { $l_status = 'Approved'; }
+            $lastComment = 'No comment';
+            if (!empty(end($arr_tmp)['comment'])) {
+                $lastComment = '<ul>';
 
-            $l_description_comment = 'No comment!';
-            if (!empty($row["l_description_comment"])) {
-                $comment_arr = json_decode($row["l_description_comment"],true);
-                if (count($comment_arr) > 0) {
-                    $l_description_comment = '<ul style="margin:0;">';
-                        foreach ($comment_arr as $key => $value) {
-                            $l_description_comment .= '<li>'.htmlentities($value['comment'] ?? '').'</li>';
-                        }
-                    $l_description_comment .= '</ul>';
-                }
+                    $items = explode(' | ',end($arr_tmp)['comment']);
+                    foreach($items as $item){
+                        $lastComment .= '<li>'.$item.'</li>';
+                    }
+
+                $lastComment .= '</ul>';
             }
 
             echo '<input type="hidden" name="ID" value="'.$ID.'" />
-            <div class="row">
-                <div class="col-md-9">
-                    '.$l_description.'
-                </div>
-                <div class="col-md-3">
-                    <b>Status:</b> ';
+            <b>Changes:</b><br>'.$lastDescription.'<br><br>
+            <b>Status:</b> '.$lastStatus.'<br><br>
+            <b>Comment(s):</b><br>'.$lastComment.'<br><br>
 
-                    if (($portal_user == $row["u_reviewer_ID"] AND end($arr_tmp)['reviewed'] == 0 AND end($arr_tmp)['approved'] == 0) OR ($portal_user == $row["u_approver_ID"] AND end($arr_tmp)['reviewed'] == 1 AND end($arr_tmp)['approved'] == 0)) {
-                        echo '<select class="form-controlx" onchange="changeStatus('.$ID.', this.value)">
-                            <option value="0">Select</option>
-                            <option value="1">Accept</option>
-                            <option value="2">Reject</option>
-                        </select>';
-                    } else {
-                        echo $l_status;
-                    }
-                    
-                    echo '<br>
-                    <b>Reviewer</b>: '.$u_reviewer.'<br>
-                    <b>Approver</b>: '.$u_approver.'<br>
-                    <b>Comment(s):</b><br>'.$l_description_comment.'<br><br>
-
-                    <textarea class="form-control margin-bottom-15" name="comment" required></textarea>
-                    <button type="submit" class="btn green ladda-button" name="btnComment_changes" id="btnComment_changes" data-style="zoom-out"><span class="ladda-label">Comment</span></button>
-                </div>
-            </div>';
-        }
-    }
-    if( isset($_GET['modalChangesStatus_Area']) ) {
-        $ID = $_GET['modalChangesStatus_Area'];
-        $v = $_GET['v'];
-
-        if (!empty($_COOKIE['switchAccount'])) {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = $_COOKIE['switchAccount'];
-        }
-        else {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = employerID($portal_user);
-        }
-
-        $selectData = mysqli_query( $conn,"SELECT description, description_tmp, reviewer, approver FROM tbl_library WHERE ID = $ID" );
-        if ( mysqli_num_rows($selectData) > 0 ) {
-            $row = mysqli_fetch_array($selectData);
-            $jsonArray = $row["description_tmp"];
-            $phpArray = json_decode($jsonArray, true);
-            $lastDescription = end($phpArray)['description'];
-            $description_reviewed = 0;
-            $description_approved = 0;
-            if ($row["reviewer"] == $portal_user) {
-                $description_reviewed = $v;
-                $phpArray[key($phpArray)]['reviewed'] = $v;
-            }
-            if ($row["approver"] == $portal_user) {
-                $description_approved = $v;
-                $phpArray[key($phpArray)]['approved'] = $v;
-            }
-            $jsonArray = json_encode($phpArray, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
-            mysqli_query( $conn,"UPDATE tbl_library set description_tmp='". $jsonArray ."', description_reviewed = $description_reviewed, description_approved = $description_approved WHERE ID = $ID" );
-
-
-            if ($description_reviewed == 1 AND $description_approved == 1) {
-                mysqli_query( $conn,"UPDATE tbl_library set description = '".$lastDescription."' WHERE ID = $ID" );
-            } else if ($description_reviewed == 1 AND $description_approved == 0) {
-                $revise = '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$ID.')">here</a> to view</span>';
-                $lastDescription = $row["description"].$revise;
-            } else {
-                $lastDescription = $row["description"];
-            }
-
-            $output = array(
-                'ID' => $ID,
-                'description' => stripcslashes($lastDescription)
-            );
-            echo json_encode($output);
+            <textarea class="form-control margin-bottom-15" name="comment"></textarea>
+            <button type="submit" class="btn green ladda-button" name="btnComment_changes" id="btnComment_changes" data-style="zoom-out"><span class="ladda-label">Comment</span></button>';
         }
     }
     if( isset($_GET['modalChangesAccept_Area']) ) {
@@ -51174,15 +51068,6 @@
             $row = mysqli_fetch_array($selectData);
             $library_name = $row["name"];
             $array_name_id = explode(", ", $library_name);
-        }
-
-        $description = htmlentities($row['description'] ?? '');
-        $user_array_list = array(1, 464);
-        if (!empty($row["description_tmp"]) AND in_array($user_id, $user_array_list)) {
-            $arr_tmp = json_decode($row["description_tmp"],true);
-            if ( (end($arr_tmp)['reviewed'] == 0 OR end($arr_tmp)['reviewed'] == 1) AND end($arr_tmp)['approved'] == 0) {
-                $description = htmlentities(end($arr_tmp)['description'] ?? '');
-            }
         }
 
         echo '<input class="form-control" type="hidden" name="ID" value="'. $row['ID'] .'" />
@@ -51302,7 +51187,7 @@
                 <input type="text" class="form-control hide module_others" name="module_others" placeholder="Enter Module / Section Name" style="margin-top: 15px;" />
             </div>
         </div>
-        <div class="form-group '; echo $user_id == 464 OR $user_id == 1 ? '':'hide'; echo '">
+        <div class="form-group '; echo $user_id == 464 ? '':'hide'; echo '">
             <label class="col-md-3 control-label">Reviewer</label>
             <div class="col-md-8">
                 <input type="hidden" name="reviewer_tmp" value="'.$row["reviewer"].'" />
@@ -51338,7 +51223,7 @@
                 echo '</select>
             </div>
         </div>
-        <div class="form-group '; echo $user_id == 464 OR $user_id == 1 ? '':'hide'; echo '">
+        <div class="form-group '; echo $user_id == 464 ? '':'hide'; echo '">
             <label class="col-md-3 control-label">Approver</label>
             <div class="col-md-8">
                 <input type="hidden" name="approver_tmp" value="'.$row["approver"].'" />
@@ -51377,8 +51262,8 @@
         <div class="form-group">
             <label class="col-md-3 control-label">Description</label>
             <div class="col-md-8">
-                <input type="hidden" name="description_tmp" value="'.htmlentities($row['description'] ?? '').'">
-                <textarea class="form-control summernote" name="description" onkeyup="description_count(\'Edit\')">'.$description.'</textarea>
+                <input type="hidden" name="description_tmp" value="'.$row['description'].'">
+                <textarea class="form-control summernote" name="description" onkeyup="description_count(\'Edit\')">'. $row['description'] .'</textarea>
                 <span class="words_count label label-sm label-info hide"><span class="textcount">'.strlen($row['description']).'</span></span>
             </div>
         </div>';
@@ -51733,17 +51618,16 @@
 
         if ($_POST['reviewer'] <> $_POST['reviewer_tmp']) {
             $reviewer = $_POST['reviewer'];
-            mysqli_query( $conn,"UPDATE tbl_library set description_reviewed = 0, description_approved = 0, reviewer = $reviewer WHERE ID = $ID" );
+            mysqli_query( $conn,"UPDATE tbl_library set description_reviewed = 0, description_approved = 0, reviewer = '".$reviewer."' WHERE ID = $ID" );
         }
         if ($_POST['approver'] <> $_POST['approver_tmp']) {
             $approver = $_POST['approver'];
-            mysqli_query( $conn,"UPDATE tbl_library set description_approved = 0, approver = $approver WHERE ID = $ID" );
+            mysqli_query( $conn,"UPDATE tbl_library set description_approved = 0, approver = '".$approver."' WHERE ID = $ID" );
         }
 
-        $revise = '';
         $description = addslashes($_POST['description']);
         $description_tmp = addslashes($_POST['description_tmp']);
-        if ($user_id == 1 OR $user_id == 464) {
+        if ($user_id == 464) {
             if ($description <> $description_tmp) {
                 $arr_tmp = array();
                 $selectDesc = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID=$ID" );
@@ -51753,52 +51637,15 @@
                 }
 
                 $desc_tmp = array (
-                    'editor' =>  $portal_user,
-                    'reviewed' =>  0,
-                    'approved' =>  0,
-                    'description' =>  addslashes($description)
+                    'reviewed'   =>  0,
+                    'approved'   =>  0,
+                    'description'  =>  addslashes($description),
+                    'comment'  =>  ''
                 );
-
                 array_push($arr_tmp, $desc_tmp);
                 $description = json_encode($arr_tmp, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
-                $revise = '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$ID.')">here</a> to view</span>';
 
                 mysqli_query( $conn,"UPDATE tbl_library set description_reviewed = 0, description_approved = 0, description_tmp = '".$description."' WHERE ID = $ID" );
-
-                // Notify Reviewer and Approver
-                if (!empty($_POST['reviewer']) OR !empty($_POST['approver'])) {
-                    if (!empty($_POST['reviewer'])) {
-                        $reviewer = $_POST['reviewer'];
-                        $selectRecipients = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $reviewer" );
-                        $rowRecipients = mysqli_fetch_array($selectRecipients);
-                        $recipients_name = htmlentities($rowRecipients["first_name"] ?? '') .' '. htmlentities($rowRecipients["last_name"] ?? '');
-                        $recipients_email = htmlentities($rowRecipients["email"] ?? '');
-                        $recipients[$recipients_email] = $recipients_name;
-                    }
-                    if (!empty($_POST['approver'])) {
-                        $approver = $_POST['approver'];
-                        $selectRecipients = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $approver" );
-                        $rowRecipients = mysqli_fetch_array($selectRecipients);
-                        $recipients_name = htmlentities($rowRecipients["first_name"] ?? '') .' '. htmlentities($rowRecipients["last_name"] ?? '');
-                        $recipients_email = htmlentities($rowRecipients["email"] ?? '');
-                        $recipients[$recipients_email] = $recipients_name;
-                    }
-
-                    $selectSender = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $user_id" );
-                    $rowSender = mysqli_fetch_array($selectSender);
-                    $sender_name = htmlentities($rowSender["first_name"] ?? '') .' '. htmlentities($rowSender["last_name"] ?? '');
-                    $sender_email = htmlentities($rowSender["email"] ?? '');
-                    $sender[$sender_email] = $sender_name;
-
-                    $subject = 'Compliance Dashboard Description - For Review/Approval - '. $local_date;
-                    $body = 'Hi Team,<br><br>
-
-                    New revision has been made that needs your attention. Click <a href="'.$base_url.'dashboard?d='.$ID.'" target="_blank">here</a> to view<br><br>
-
-                    Thanks';
-
-                    php_mailer_dynamic($sender, $recipients, $subject, $body);
-                }
             }
         } else {
             mysqli_query( $conn,"UPDATE tbl_library set description_reviewed = 0, description_approved = 0, description = '".$description."' WHERE ID = $ID" );
@@ -51836,7 +51683,7 @@
             $output = array(
                 'ID' => $ID,
                 'name' => stripcslashes($data_name),
-                'description' => stripcslashes($description_tmp).$revise
+                'description' => stripcslashes($description_tmp)
             );
             echo json_encode($output);
 
@@ -52020,33 +51867,34 @@
         $ID = $_POST['ID'];
         $comment = addslashes($_POST['comment']);
 
-        if (!empty($_COOKIE['switchAccount'])) {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = $_COOKIE['switchAccount'];
-        }
-        else {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = employerID($portal_user);
-        }
-
-        $comment = addslashes($_POST['comment']);
-        $comment_arr = array();
-
         if (!empty($comment)) {
-            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID = $ID" );
+            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID=$ID" );
             $row = mysqli_fetch_array($selectData);
-            if (!empty($row["description_comment"])) {
-                $comment_arr = json_decode($row["description_comment"], true);
+            $jsonArray = $row["description_tmp"];
+
+            // Convert JSON to PHP array
+            $phpArray = json_decode($jsonArray, true);
+
+            // Get the last item's comment value
+            $lastComment = end($phpArray)['comment'];
+
+            // Update the last comment
+            $updatedComment = array();
+            if (!empty(end($phpArray)['comment'])) {
+                $updatedComment = explode(' | ',end($phpArray)['comment']);
             }
+            array_push($updatedComment, $comment);
+            $updatedComment = implode(' | ', $updatedComment);
+            // $updatedComment = $lastComment . ' | updated_comment';
 
-            $output = array (
-                'user_id' =>  $portal_user,
-                'comment' =>  $comment
-            );
-            array_push($comment_arr, $output);
+            // Update the array with the new comment
+            $phpArray[key($phpArray)]['comment'] = $updatedComment;
 
-            $comment_arr = json_encode($comment_arr, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
-            mysqli_query( $conn,"UPDATE tbl_library SET description_comment = '$comment_arr' WHERE ID = $ID" );
+            // Convert back to JSON
+            // $jsonArray = json_encode($phpArray);
+            $jsonArray = json_encode($phpArray, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
+
+            mysqli_query( $conn,"UPDATE tbl_library SET description_tmp='". $jsonArray ."' WHERE ID='". $ID ."'" );
             if (!mysqli_error($conn)) {
                 echo 'done';
             }

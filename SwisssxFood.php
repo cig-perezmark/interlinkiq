@@ -141,6 +141,10 @@
       }
       .sign-logo {
         max-height: 200px;
+        max-width: inherit;
+        height: auto;
+        width: auto;
+        background: #fbfbfb;
       }
       .error {
         border: 0 !important;
@@ -205,7 +209,7 @@
     <div class="container text-center">
       <div class="row justify-content-center">
         <div class="col-lg-6">
-          <img class="w-100 sign-logo" src="uploads/login/icon/Swiss Food.png" />
+          <img class="sign-logo" src="uploads/login/icon/Swiss Food.png" />
         </div>
       </div>
     </div>

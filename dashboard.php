@@ -2317,7 +2317,7 @@
                     function(){
                         $.ajax({
                             type: "GET",
-                            url: "admin_2/function.php?modalChangesStatus_Area="+id+"&v="+val,
+                            url: "function.php?modalChangesStatus_Area="+id+"&v="+val,
                             dataType: "html",
                             success: function(response){
                                 if ($.trim(response)) {
@@ -3311,6 +3311,8 @@
                     dataType: "html",
                     success: function(data){
                         $("#modalEdit_SubItem .modal-body").html(data);
+                        selectMulti();
+                        widget_summernote();
                     }
                 });
             }

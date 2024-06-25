@@ -146,6 +146,10 @@
         max-height: 200px;
         filter: brightness(0);
         margin-bottom: -38px;
+        max-height: 200px;
+        max-width: inherit;
+        height: auto;
+        width: auto;
       }
       .error {
         border: 0 !important;
@@ -210,7 +214,7 @@
     <div class="container text-center">
       <div class="row justify-content-center">
         <div class="col-lg-6">
-          <img class="w-100 sign-logo" src="uploads/login/icon/Food Safety 360.png" />
+          <img class="sign-logo" src="uploads/login/icon/Food Safety 360.png" />
         </div>
       </div>
     </div>

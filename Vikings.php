@@ -145,8 +145,10 @@
       }
       .sign-logo {
         max-height: 200px;
-        filter: brightness(0);
-        margin-bottom: -38px;
+        max-width: inherit;
+        height: auto;
+        width: auto;
+        background: #fbfbfb;
       }
       .error {
         border: 0 !important;

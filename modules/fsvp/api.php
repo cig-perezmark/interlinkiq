@@ -968,6 +968,63 @@ if(isset($_GET['newCBPRecord'])) {
     }
 }
 
+if(isset($_GET['updateCBPRecord'])) {
+    try {
+        $recordId = $_GET['updateCBPRecord'] ?? null;
+
+        if(empty($recordId)) {
+            throw new Exception('Unable to proceed.');
+        }
+
+        $conn->begin_transaction();
+
+        $values = [
+            $portal_user,
+            $_POST['foods_info'],
+            $_POST['supplier_info'],
+            $_POST['determining_importer'],
+            $_POST['designated_importer'],
+            $_POST['cbp_entry_filer'],
+            $recordId,
+            $user_id,
+        ];
+
+        $conn->execute("UPDATE tbl_fsvp_cbp_records SET
+                portal_user = ?,
+                foods_info = ?,
+                supplier_info = ?,
+                determining_importer = ?,
+                designated_importer = ?,
+                cbp_entry_filer = ?
+            WHERE id = ? AND user_id = ?
+        ", $values);
+
+        $data = $conn->execute("SELECT * FROM tbl_fsvp_cbp_records WHERE id = ? AND user_id = ?", $recordId, $user_id)->fetchAssoc(function ($d) {
+            return [
+                'id' => $d['id'],
+                'ihash' => md5($d['id']),
+                'prev_id' => $d['prev_record_id'],
+                'foods_info' => $d['foods_info'],
+                'supplier_info' => $d['supplier_info'],
+                'determining_importer' => $d['determining_importer'],
+                'designated_importer' => $d['designated_importer'],
+                'cbp_entry_filer' => $d['cbp_entry_filer'],
+            ];
+        });
+
+        $conn->commit();
+        send_response([
+            'message' => 'Successfully updated.',
+            'data' => $data,
+        ]);
+    } catch(Throwable $e) {
+        $conn->rollback();
+        send_response([
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
 if(isset($_GET['foreignSuppliersMaterials'])) {
     $fsClause = ForeignSupplierSQLClause();
     

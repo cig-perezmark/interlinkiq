@@ -1,5 +1,6 @@
 $(function() {
     let importersData = [];
+    let UpdateCBPId = null;
     const alert = Init.createAlert($('#newImporterForm .modal-body'));
     const importerListTable = Init.dataTable($('#tableImporterList'), {
         columnDefs: [
@@ -145,8 +146,13 @@ $(function() {
     });
 
     $('#tableImporterList').on('click', '[data-opencbpfilingform]', function() {
-        $('#CBPFilingForm [name=importer]').val(this.dataset.opencbpfilingform || '');
-        $('#modalCBPFiling').modal('show');
+        showCBPModal(importersData[this.dataset.opencbpfilingform]);
+    });
+
+    $('#tableImporterList').on('click', '[data-updatecbpfilingform]', function() {
+        const data = importersData[this.dataset.updatecbpfilingform];
+        UpdateCBPId = data.cbp.id || null;
+        showCBPModal(data, 'update');
     });
 
     // viewing cbp data
@@ -180,9 +186,9 @@ $(function() {
         e.preventDefault();
 
         const form = e.target;
-        let url = baseUrl + 'newCBPRecord';
+        let url = baseUrl + (UpdateCBPId ? ('updateCBPRecord=' + UpdateCBPId) : 'newCBPRecord');
 
-        if(form.importer.value == '') {
+        if(!UpdateCBPId && form.importer.value == '') {
             CBPFormAlert.setContent('<strong>Error!</strong> Importer not found.').show();
             return;
         }
@@ -214,6 +220,7 @@ $(function() {
             },
             complete: function() {
                 l.stop();
+                UpdateCBPId = null;
             }
         });
     });
@@ -295,7 +302,7 @@ function renderDTRow(importersData, d, table, method = 'add') {
         CBPButtons = `
             <div class="d-flex center">
                 <a href="${(Init.URL || 'fsvp') + '?pdf=cbp&r=' + d.cbp.ihash}" class="btn btn-link btn-sm" target="_blank" data-viewcbpformx="${d.id}">View</a>|
-                <button type="button" class="btn btn-link btn-sm" data-opencbpfilingform="${d.id}">Update</button>
+                <button type="button" class="btn btn-link btn-sm" data-updatecbpfilingform="${d.id}">Update</button>
             </div>
         `;
     } else {
@@ -327,4 +334,28 @@ function renderDTRow(importersData, d, table, method = 'add') {
         table.dt.row.add(rowData);
     }
     return table.dt;
+}
+
+function showCBPModal(data, mode = 'create') {
+    const {cbp} = data;
+    if(!data || !Object.keys(data).length || (mode == 'update' && !cbp)) {
+        bootstrapGrowl('Unable to fetch data.', 'error');
+        console.error("CBP Filing Form: Importer ID not found");
+        return;
+    }
+    
+    if(mode == 'create') {
+        $('#modalCBPFiling .modal-title').text('FSVP CBP Filing Form');
+        $('#modalCBPFiling [name]').val('');
+    } else if(mode == 'update') {
+        $('#modalCBPFiling .modal-title').text('Update CBP Data');
+        $('#cfFoodInfo').val(cbp.foods_info);
+        $('#cfSupplierInfo').val(cbp.supplier_info);
+        $('#cfDetImporter').val(cbp.determining_importer);
+        $('#cfDesImporter').val(cbp.designated_importer);
+        $('#cfEntryFiler').val(cbp.cbp_entry_filer);
+    }
+    
+    $('#CBPFilingForm [name=importer]').val(data.id);
+    $('#modalCBPFiling').modal('show');
 }

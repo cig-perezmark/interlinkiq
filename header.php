@@ -2460,13 +2460,13 @@ License: You must have a valid license purchased only from themeforest(the above
                     
                     
                     <?php if($switch_user_id == 1362): ?>
-                    <li class="nav-item">
-                        <a href="batchproduction" class="nav-link" disabled>
-                            <i class="icon-wrench"></i>
-                            <span class="title">Batch Production</span>
-                            <span class="selected"></span>
-                        </a>
-                    </li>
+                        <!--<li class="nav-item">-->
+                        <!--    <a href="batchproduction" class="nav-link" disabled>-->
+                        <!--        <i class="icon-wrench"></i>-->
+                        <!--        <span class="title">Batch Production</span>-->
+                        <!--        <span class="selected"></span>-->
+                        <!--    </a>-->
+                        <!--</li>-->
                     <?php endif; ?>
 
                     <?php

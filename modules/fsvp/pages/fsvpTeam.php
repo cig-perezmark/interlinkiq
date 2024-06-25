@@ -58,7 +58,7 @@
 }
 </style>
 
-<div class="alert alert-info">
+<div class="alert alert-info hide">
     <strong>Important:</strong>
     <span id="fsvpNoteMessage">The FSVP Team Roster needs review.</span>
     <a href="#modalVerification" data-toggle="modal" class="small underline"><i id="fsvpBtnText">Review now</i></a>
@@ -80,7 +80,7 @@
             <i class="fa fa-close icon-margin-right"></i>
             Cancel
         </button>
-        <button type="button" class="btn default" data-toggle="modal" data-target="#modalHistory">
+        <button type="button" class="btn default hide" data-toggle="modal" data-target="#modalHistory">
             <i class="fa fa-history icon-margin-right"></i>
             History
         </button>

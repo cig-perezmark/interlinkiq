@@ -11,20 +11,20 @@
     include_once ('header.php'); 
     error_reporting(0);
     
-    $select_collab_exist = "SELECT * FROM new_emp_collab WHERE employee_id = {$current_userEmployeeID}";
-    $exist_result = mysqli_query($emp_connection, $select_collab_exist);
-    if (!$exist_result) {
-        // Handle query execution errors
-        header('Location: https://interlinkiq.com/404.php');
+    // $select_collab_exist = "SELECT * FROM new_emp_collab WHERE employee_id = {$current_userEmployeeID}";
+    // $exist_result = mysqli_query($emp_connection, $select_collab_exist);
+    // if (!$exist_result) {
+    //     // Handle query execution errors
+    //     header('Location: https://interlinkiq.com/404.php');
         
-    } else {
-        // Check if any rows were returned
-        if (mysqli_num_rows($exist_result) == 0) {
-            // No record found, redirect to 404
-            echo '<script>window.location.href = "https://interlinkiq.com/404.php";</script>';
-        }
-        // Continue processing if the record exists
-    }
+    // } else {
+    //     // Check if any rows were returned
+    //     if (mysqli_num_rows($exist_result) == 0) {
+    //         // No record found, redirect to 404
+    //         echo '<script>window.location.href = "https://interlinkiq.com/404.php";</script>';
+    //     }
+    //     // Continue processing if the record exists
+    // }
 ?>
 
 	<div class="row">

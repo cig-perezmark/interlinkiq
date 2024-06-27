@@ -322,7 +322,7 @@
                                     <tr>
                                         <td style="width: 60px;">#</td>
                                         <td>Form Name</td>
-                                        <td>Description</td>
+                                        <td class="hide">Description</td>
                                         <td class="text-center" style="width: 205px;">Action</td>
                                     </tr>
                                 </thead>
@@ -345,7 +345,7 @@
                                                 echo '<tr '.$style.'>
                                                      <td>'.$form_counting++.'</td>
                                                      <td>'.$row['afl_form_name'].'</td>
-                                                     <td  eforms_id="'.$row['PK_id'].'" contenteditable oninput="change_Description(this)">'.$row['form_desc'].'</td>
+                                                     <td class="hide" eforms_id="'.$row['PK_id'].'" contenteditable oninput="change_Description(this)">'.$row['form_desc'].'</td>
                                                      <td class="text-center"> 
                                                         <a href="/e-forms/forms/interlink/'.$row['afl_form_code'].'" onclick="myfunction('.$current_userEmployerID.')" target="_blank" class="btn green btn-outline">View</a>';
                                                         

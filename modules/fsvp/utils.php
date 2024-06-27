@@ -132,7 +132,7 @@ function getSupplierList($conn, $userId) {
                     tbl_supplier
                 WHERE 
                     TRIM(SUBSTRING_INDEX(tbl_supplier.address, ',', 1)) NOT LIKE 'US' AND TRIM(SUBSTRING_INDEX(tbl_supplier.address, '|', 1)) NOT LIKE 'US' 
-                    AND tbl_supplier.user_id = 464
+                    AND tbl_supplier.user_id = ?
                     AND tbl_supplier.is_deleted = 0
                     AND tbl_supplier.`status` = 1
                     AND tbl_supplier.ID NOT IN (
@@ -143,7 +143,7 @@ function getSupplierList($conn, $userId) {
                     );
         ";
 
-        $list = $conn->execute($sql, $userId, $userId)->fetchAll();
+        $list = $conn->execute($sql, $userId, $userId, $userId)->fetchAll();
     
         $data = [];
         foreach ($list as $d) {

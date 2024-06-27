@@ -25,7 +25,7 @@
                                             <div class="portlet-title tabbable-line">
                                                 <div class="caption caption-md">
                                                     <i class="icon-globe theme-font hide"></i>
-                                                    <span class="caption-subject font-blue-madison bold uppercase">Profile Account</span>
+                                                    <span class="caption-subject font-blue-madison bold uppercase" translate="no">Profile Account</span>
                                                 </div>
                                                 <ul class="nav nav-tabs">
                                                     <li class="active">

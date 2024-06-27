@@ -728,6 +728,40 @@ License: You must have a valid license purchased only from themeforest(the above
     .multiselect-container {
         z-index: 9999;
     }
+
+
+    /*Header Top Menu*/
+    .listModule ul ul {
+    	max-height: 50rem;
+    	overflow: auto;
+    }
+    .listModule ul ul li:not(.divider) {
+        display: inline-block;
+        margin: 9px;
+        width: 70px;
+        height: 70px;
+        text-align: center;
+    }
+    .listModule ul ul li.divider {
+        display: block;
+        position: relative;
+        overflow: visible;
+    }
+    .listModule ul ul li.divider span {
+        position: absolute;
+        top: -1rem;
+        background: #fff;
+        padding: 0 5px;
+        font-weight: 600;
+        color: #666666;
+    }
+    .listModule ul ul li > a {
+        padding: 0 !important;
+    }
+    .listModule ul ul li > a img {
+        width: 100%;
+        border-radius: 50% !important;
+    }
     </style>
 </head>
 <!-- END HEAD -->
@@ -1160,18 +1194,18 @@ License: You must have a valid license purchased only from themeforest(the above
                 <div class="top-menu">
 
                     <ul class="nav navbar-nav pull-right">
-                        <?php if ($current_client == 0) { ?>
+                        <?php if ($current_client == 0 OR $current_client == 10) { ?> 
                         <li class="dropdown dropdown-extended" id="googleTranslate">
                             <div id="google_translate_element"></div>
                             <script type="text/javascript">
-                            function googleTranslateElementInit() {
-                                new google.translate.TranslateElement({
-                                    pageLanguage: 'en',
-                                    autoDisplay: 'true',
-                                    includedLanguages: 'en,fr,zh-CN,zh-TW,ja,ko,es,it,pt,ar,sw',
-                                    layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
-                                }, 'google_translate_element');
-                            }
+                            // function googleTranslateElementInit() {
+                            //     new google.translate.TranslateElement({
+                            //         pageLanguage: 'en',
+                            //         autoDisplay: 'true',
+                            //         includedLanguages: 'en,fr,zh-CN,zh-TW,hi,ja,ko,es,it,pt,ar,sw',
+                            //         layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL
+                            //     }, 'google_translate_element');
+                            // }
                             </script>
 
                             <!--<div id="customLang"></div>-->
@@ -1190,7 +1224,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                 new google.translate.TranslateElement({
                                     pageLanguage: 'en',
                                     autoDisplay: 'true',
-                                    includedLanguages: 'en,fr,zh-CN,zh-TW,ja,ko,es,it,pt,ar,sw',
+                                    includedLanguages: 'en,fr,zh-CN,zh-TW,hi,ja,ko,es,it,pt,ar,sw',
                                     layout: google.translate.TranslateElement.InlineLayout.SIMPLE
                                 }, 'google_translate_element');
                             }
@@ -1326,6 +1360,89 @@ License: You must have a valid license purchased only from themeforest(the above
                                         echo '</ul>
                                     </li>';
                                 }
+                            }
+                            
+                            // if ($switch_user_id == 1 OR $switch_user_id == 34 OR $switch_user_id == 464) {
+                            if ($switch_user_id == 10000000000) {
+                                
+                                echo '<li class="dropdown dropdown-extended listModule">
+                                    <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" aria-expanded="false" style="padding-top: 22px;">
+                                        <svg width="23px" height="23px" viewBox="0 -2 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+
+                                            <title>grid 2</title>
+                                            <desc>Created with Sketch Beta.</desc>
+                                            <defs></defs>
+                                            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+                                                <g id="Icon-Set-Filled" sketch:type="MSLayerGroup" transform="translate(-154.000000, -935.000000)" fill="#000000">
+                                                    <path d="M170,935 C167.791,935 166,936.791 166,939 C166,941.209 167.791,943 170,943 C172.209,943 174,941.209 174,939 C174,936.791 172.209,935 170,935 L170,935 Z M182,945 C179.791,945 178,946.791 178,949 C178,951.209 179.791,953 182,953 C184.209,953 186,951.209 186,949 C186,946.791 184.209,945 182,945 L182,945 Z M170,955 C167.791,955 166,956.791 166,959 C166,961.209 167.791,963 170,963 C172.209,963 174,961.209 174,959 C174,956.791 172.209,955 170,955 L170,955 Z M182,955 C179.791,955 178,956.791 178,959 C178,961.209 179.791,963 182,963 C184.209,963 186,961.209 186,959 C186,956.791 184.209,955 182,955 L182,955 Z M170,945 C167.791,945 166,946.791 166,949 C166,951.209 167.791,953 170,953 C172.209,953 174,951.209 174,949 C174,946.791 172.209,945 170,945 L170,945 Z M182,943 C184.209,943 186,941.209 186,939 C186,936.791 184.209,935 182,935 C179.791,935 178,936.791 178,939 C178,941.209 179.791,943 182,943 L182,943 Z M158,955 C155.791,955 154,956.791 154,959 C154,961.209 155.791,963 158,963 C160.209,963 162,961.209 162,959 C162,956.791 160.209,955 158,955 L158,955 Z M158,945 C155.791,945 154,946.791 154,949 C154,951.209 155.791,953 158,953 C160.209,953 162,951.209 162,949 C162,946.791 160.209,945 158,945 L158,945 Z M158,935 C155.791,935 154,936.791 154,939 C154,941.209 155.791,943 158,943 C160.209,943 162,941.209 162,939 C162,936.791 160.209,935 158,935 L158,935 Z" id="grid-2" sketch:type="MSShapeGroup">
+
+                                                    </path>
+                                                </g>
+                                            </g>
+                                        </svg>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li class="external hide">
+                                            <h3>Modules!</h3>
+                                            <a href="#modalSpeakUp" data-toggle="modal">Add Separator</a>
+                                        </li>
+                                        <li>
+                                            <ul class="dropdown-menu-list" id="sortlistModule">';
+                                            
+                                                $selectListModule = mysqli_query($conn, "
+                                                    SELECT 
+                                                    m.ID AS m_ID,
+                                                    m.collab AS m_collab,
+                                                    m.icon AS m_icon,
+                                                    m.url AS m_url,
+                                                    m.description AS m_description,
+                                                    s.date_start AS s_date_start,
+                                                    s.date_end AS s_date_end,
+                                                    p.file_attachment AS p_file_attachment
+                                                    FROM tbl_menu AS m
+                                                    
+                                                    LEFT JOIN (
+                                                        SELECT
+                                                        *
+                                                        FROM tbl_menu_subscription
+                                                        WHERE display = 1 
+                                                        AND deleted = 0 
+                                                        AND user_id = $switch_user_id
+                                                    ) AS s
+                                                    ON m.ID = s.menu_id
+                                                    
+                                                    LEFT JOIN (
+                                                        SELECT
+                                                        *
+                                                        FROM tblPlugins
+                                                        WHERE deleted = 0
+                                                    ) AS p
+                                                    ON m.ID = p.menu_id
+                                                    
+                                                    WHERE m.module = 1 
+                                                    AND m.type = 0 
+                                                    AND m.deleted = 0 
+                                                    AND s.date_start IS NOT NULL
+                                                    AND s.date_end IS NOT NULL
+                                                    
+                                                    ORDER BY m.description ASC
+                                                ");
+                                                if(mysqli_num_rows($selectListModule) > 0) {
+                                                    while($rowListModule = mysqli_fetch_array($selectListModule)) {
+                                                        
+                                                        echo '<li>
+                                                            <a href="'.$rowListModule['m_url'].'">
+                                                                <img src="data:image/png;base64,'.$rowListModule['p_file_attachment'].'" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/100x100/EFEFEF/AAAAAA.png?text=no+image\';"  />
+                                                                '.strtok(htmlentities($rowListModule['m_description']), " ").'
+                                                            </a>
+                                                        </li>';
+                                                    }
+                                                }
+                                            echo '</ul>
+                                        </li>';
+
+                                    echo '</ul>
+                                </li>';
                             }
                         ?>
                         <!-- BEGIN NOTIFICATION DROPDOWN -->
@@ -1887,7 +2004,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         </a>
                     </li>
                     <?php endif?>
-                    <?php if(($current_client == 0 AND $switch_user_id <> 1106) OR $switch_user_id == 1360 OR $switch_user_id == 1366 OR $switch_user_id == 1453 OR $switch_user_id == 1482 OR $switch_user_id == 1365 OR $switch_user_id == 1477 OR $switch_user_id == 145) { ?>
+                    <?php if(($current_client == 0 AND $switch_user_id <> 1106) OR $switch_user_id == 1360 OR $switch_user_id == 1366 OR $switch_user_id == 1453 OR $switch_user_id == 1482 OR $switch_user_id == 1365 OR $switch_user_id == 1477 OR $switch_user_id == 145 OR $switch_user_id == 1469) { ?>
                     <li class="nav-item hide <?php echo $site === "tracking" ? "active" : ""; ?>">
                         <a href="tracking" class="nav-link">
                             <i class="icon-target"></i>
@@ -2235,94 +2352,117 @@ License: You must have a valid license purchased only from themeforest(the above
                             }
                             
                             // PAID Section
-                            $selectMenu = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE module = 1 AND type = 0 AND deleted = 0 ORDER BY description ASC" );
+                            $selectMenu = mysqli_query( $conn,"
+                                SELECT 
+                                m.ID AS m_ID,
+                                m.collab AS m_collab,
+                                m.icon AS m_icon,
+                                m.url AS m_url,
+                                m.description AS m_description,
+                                s.date_start AS s_date_start,
+                                s.date_end AS s_date_end
+                                FROM tbl_menu AS m
+
+                                LEFT JOIN (
+                                    SELECT
+                                    *
+                                    FROM tbl_menu_subscription
+                                    WHERE display = 1 
+                                    AND deleted = 0 
+                                    AND type = 2  
+                                    AND user_id = $switch_user_id
+                                ) AS s
+                                ON m.ID = s.menu_id
+
+                                WHERE m.module = 1 
+                                AND m.type = 0 
+                                AND m.deleted = 0 
+                                AND s.date_start IS NOT NULL
+                                AND s.date_end IS NOT NULL
+
+                                ORDER BY m.description ASC
+                            " );
                             if ( mysqli_num_rows($selectMenu) > 0 ) {
                                 while($rowMenu = mysqli_fetch_array($selectMenu)) {
-                                    $menu_ID = $rowMenu['ID'];
-                                    $menu_collab = $rowMenu['collab'];
-                                    $menu_icon = $rowMenu['icon'];
-                                    $menu_url = $rowMenu['url'];
-                                    $menu_description = htmlentities($rowMenu['description']);
+                                    $menu_ID = $rowMenu['m_ID'];
+                                    $menu_collab = $rowMenu['m_collab'];
+                                    $menu_icon = $rowMenu['m_icon'];
+                                    $menu_url = $rowMenu['m_url'];
+                                    $menu_description = $rowMenu['m_description'];
 
-                                    $selectMenuSubs = mysqli_query( $conn,"SELECT * FROM tbl_menu_subscription WHERE display = 1 AND deleted = 0 AND type = 2 AND menu_id = $menu_ID AND user_id = $switch_user_id" );
-                                    if ( mysqli_num_rows($selectMenuSubs) > 0 ) {
-                                        $rowMenuSub = mysqli_fetch_array($selectMenuSubs);
-    		                            $sub_date_start = $rowMenuSub["date_start"];
-    						            $sub_date_start = new DateTime($sub_date_start);
-    						            $sub_date_start_o = $sub_date_start->format('Y/m/d');
-    						            $sub_date_start = $sub_date_start->format('M d, Y');
-    
-    		                            $sub_date_end = $rowMenuSub["date_end"];
-    						            $sub_date_end = new DateTime($sub_date_end);
-    						            $sub_date_end_o = $sub_date_end->format('Y/m/d');
-    						            $sub_date_end = $sub_date_end->format('M d, Y');
+                                    $sub_date_start = $rowMenu["s_date_start"];
+                                    $sub_date_start = new DateTime($sub_date_start);
+                                    $sub_date_start_o = $sub_date_start->format('Y/m/d');
+                                    $sub_date_start = $sub_date_start->format('M d, Y');
 
-                                        if ($sub_date_start_o <= $current_dateNow_o && $sub_date_end_o >= $current_dateNow_o) {
-                                            echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID);
-                                        }
-                                    }
+                                    $sub_date_end = $rowMenu["s_date_end"];
+                                    $sub_date_end = new DateTime($sub_date_end);
+                                    $sub_date_end_o = $sub_date_end->format('Y/m/d');
+                                    $sub_date_end = $sub_date_end->format('M d, Y');
+
+
+                                    echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID);
                                 }
                             }
                             
                             
                             // TRIAL Section
-                            $countTrial = 0;
-                            $selectMenu = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE module = 1 AND type = 0 AND deleted = 0 ORDER BY description ASC" );
+                            $selectMenu = mysqli_query( $conn,"
+                                SELECT 
+                                m.ID AS m_ID,
+                                m.collab AS m_collab,
+                                m.icon AS m_icon,
+                                m.url AS m_url,
+                                m.description AS m_description,
+                                s.date_start AS s_date_start,
+                                s.date_end AS s_date_end
+                                FROM tbl_menu AS m
+
+                                LEFT JOIN (
+                                    SELECT
+                                    *
+                                    FROM tbl_menu_subscription
+                                    WHERE display = 1 
+                                    AND deleted = 0 
+                                    AND type = 1  
+                                    AND user_id = $switch_user_id
+                                ) AS s
+                                ON m.ID = s.menu_id
+
+                                WHERE m.module = 1 
+                                AND m.type = 0 
+                                AND m.deleted = 0 
+                                AND s.date_start IS NOT NULL
+                                AND s.date_end IS NOT NULL
+
+                                ORDER BY m.description ASC
+                            " );
                             if ( mysqli_num_rows($selectMenu) > 0 ) {
-                                while($rowMenu = mysqli_fetch_array($selectMenu)) {
-                                    $menu_ID = $rowMenu['ID'];
-
-                                    $selectMenuSubs = mysqli_query( $conn,"SELECT * FROM tbl_menu_subscription WHERE display = 1 AND deleted = 0 AND type = 1 AND menu_id = $menu_ID AND user_id = $switch_user_id" );
-                                    if ( mysqli_num_rows($selectMenuSubs) > 0 ) {
-                                        $rowMenuSub = mysqli_fetch_array($selectMenuSubs);
-    		                            $sub_date_start = $rowMenuSub["date_start"];
-    						            $sub_date_start = new DateTime($sub_date_start);
-    						            $sub_date_start_o = $sub_date_start->format('Y/m/d');
-    						            $sub_date_start = $sub_date_start->format('M d, Y');
-    
-    		                            $sub_date_end = $rowMenuSub["date_end"];
-    						            $sub_date_end = new DateTime($sub_date_end);
-    						            $sub_date_end_o = $sub_date_end->format('Y/m/d');
-    						            $sub_date_end = $sub_date_end->format('M d, Y');
-
-                                        if ($sub_date_start_o <= $current_dateNow_o && $sub_date_end_o >= $current_dateNow_o) { $countTrial++; }
-                                    }
-                                }
-                            }
-                            if ($countTrial > 0) {
                                 echo '<li class="nav-item nav-item-section nav-item-section-trial active">
                                     <a href="javascript:;" class="nav-link disabled-link disable-targetx" style="cursor: unset !important;">
                                         <span class="title"><b>TRIAL</b></span>
                                     </a>
                                 </li>';
-                            }
-                            
-                            $selectMenu = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE module = 1 AND type = 0 AND deleted = 0 ORDER BY description ASC" );
-                            if ( mysqli_num_rows($selectMenu) > 0 ) {
+
                                 while($rowMenu = mysqli_fetch_array($selectMenu)) {
-                                    $menu_ID = $rowMenu['ID'];
-                                    $menu_collab = $rowMenu['collab'];
-                                    $menu_icon = $rowMenu['icon'];
-                                    $menu_url = $rowMenu['url'];
-                                    $menu_description = htmlentities($rowMenu['description']);
+                                    $menu_ID = $rowMenu['m_ID'];
+                                    $menu_collab = $rowMenu['m_collab'];
+                                    $menu_icon = $rowMenu['m_icon'];
+                                    $menu_url = $rowMenu['m_url'];
+                                    $menu_description = $rowMenu['m_description'];
 
-                                    $selectMenuSubs = mysqli_query( $conn,"SELECT * FROM tbl_menu_subscription WHERE display = 1 AND deleted = 0 AND type = 1 AND menu_id = $menu_ID AND user_id = $switch_user_id" );
-                                    if ( mysqli_num_rows($selectMenuSubs) > 0 ) {
-                                        $rowMenuSub = mysqli_fetch_array($selectMenuSubs);
-    		                            $sub_date_start = $rowMenuSub["date_start"];
-    						            $sub_date_start = new DateTime($sub_date_start);
-    						            $sub_date_start_o = $sub_date_start->format('Y/m/d');
-    						            $sub_date_start = $sub_date_start->format('M d, Y');
-    
-    		                            $sub_date_end = $rowMenuSub["date_end"];
-    						            $sub_date_end = new DateTime($sub_date_end);
-    						            $sub_date_end_o = $sub_date_end->format('Y/m/d');
-    						            $sub_date_end = $sub_date_end->format('M d, Y');
+                                    $sub_date_start = $rowMenu["s_date_start"];
+                                    $sub_date_start = new DateTime($sub_date_start);
+                                    $sub_date_start_o = $sub_date_start->format('Y/m/d');
+                                    $sub_date_start = $sub_date_start->format('M d, Y');
 
-                                        if ($sub_date_start_o <= $current_dateNow_o && $sub_date_end_o >= $current_dateNow_o) {
-                                            echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID);
-                                        }
-                                    }
+                                    $sub_date_end = $rowMenu["s_date_end"];
+                                    $sub_date_end = new DateTime($sub_date_end);
+                                    $sub_date_end_o = $sub_date_end->format('Y/m/d');
+                                    $sub_date_end = $sub_date_end->format('M d, Y');
+
+
+                                    echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID);
                                 }
                             }
                             

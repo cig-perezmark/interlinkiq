@@ -121,10 +121,10 @@
         $selectSM = mysqli_query( $conn,"SELECT * from tbl_user_social_media WHERE user_id = $user_id" );
         if ( mysqli_num_rows($selectSM) > 0 ) {
             $rowSM = mysqli_fetch_array($selectSM);
-            $current_userLinkedIn = htmlentities($rowSM['linkedin']);
-            $current_userFacebook = htmlentities($rowSM['facebook']);
-            $current_userTwitter = htmlentities($rowSM['twitter']);
-            $current_userPage = htmlentities($rowSM['page']);
+            $current_userLinkedIn = htmlentities($rowSM['linkedin'] ?? '');
+            $current_userFacebook = htmlentities($rowSM['facebook'] ?? '');
+            $current_userTwitter = htmlentities($rowSM['twitter'] ?? '');
+            $current_userPage = htmlentities($rowSM['page'] ?? '');
         }
         
         if ($current_userEmployeeID > 0) {

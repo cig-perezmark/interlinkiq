@@ -48,7 +48,11 @@ class mysqli_extended extends mysqli implements CRUD {
 
     public function __destruct()
     {
-        $this->close();
+        try {
+            if($this->ping()) {
+                $this->close();
+            }
+        } catch (Throwable $e) {}
     }
 
     /**

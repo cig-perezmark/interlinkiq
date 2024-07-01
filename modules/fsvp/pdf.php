@@ -286,6 +286,7 @@ if(isset($_GET['pdf'])) {
         }
         case 'report': {
             createFSVPReport($pdf);
+            break;
         }
         default: 
             exit('FSVP PDF Default Page.');

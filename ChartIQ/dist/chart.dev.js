@@ -185,31 +185,31 @@ function createCharts(data) {
   }], "Signed Status"); // Create compliance chart
 
   createBarChart("complianceChart", [{
-    category: "Compliant (".concat(data.compliance.compliance_1, ")"),
+    category: "Compliant",
     value: parseInt(data.compliance.compliance_1)
   }, {
-    category: "Non Compliant (".concat(data.compliance.compliance_0, ")"),
+    category: "Non Compliant",
     value: parseInt(data.compliance.compliance_0),
     isNonCompliant: true
   }], "Compliance Status"); // Create frequency chart
 
   createCurvedColumnChart("frequencyChart", [{
-    category: "Daily (".concat(data.frequency.frequency_0, ")"),
+    category: "Daily",
     value: parseInt(data.frequency.frequency_0)
   }, {
-    category: "Weekly (".concat(data.frequency.frequency_1, ")"),
+    category: "Weekly",
     value: parseInt(data.frequency.frequency_1)
   }, {
-    category: "Monthly (".concat(data.frequency.frequency_2, ")"),
+    category: "Monthly",
     value: parseInt(data.frequency.frequency_2)
   }, {
-    category: "Quarterly (".concat(data.frequency.frequency_3, ")"),
+    category: "Quarterly",
     value: parseInt(data.frequency.frequency_3)
   }, {
-    category: "Biannual (".concat(data.frequency.frequency_4, ")"),
+    category: "Biannual",
     value: parseInt(data.frequency.frequency_4)
   }, {
-    category: "Annually (".concat(data.frequency.frequency_5, ")"),
+    category: "Annually",
     value: parseInt(data.frequency.frequency_5)
   }], "Frequency");
 } // Function to create a donut chart with radial gradient
@@ -280,11 +280,16 @@ function createBarChart(divId, data, title) {
     var root = am5.Root["new"](divId);
     root.setThemes([am5themes_Animated["new"](root)]);
     var chart = root.container.children.push(am5xy.XYChart["new"](root, {
-      panX: true,
-      panY: true,
-      wheelX: "panX",
-      wheelY: "zoomX",
-      pinchZoomX: true
+      panX: false,
+      // Disable panning on X-axis
+      panY: false,
+      // Disable panning on Y-axis
+      wheelX: "none",
+      // Disable zooming on X-axis
+      wheelY: "none",
+      // Disable zooming on Y-axis
+      pinchZoomX: false // Disable pinch zooming on X-axis
+
     }));
     var cursor = chart.set("cursor", am5xy.XYCursor["new"](root, {}));
     cursor.lineY.set("visible", false);
@@ -361,13 +366,25 @@ function createCurvedColumnChart(divId, data, title) {
     var root = am5.Root["new"](divId);
     root.setThemes([am5themes_Animated["new"](root)]);
     var chart = root.container.children.push(am5xy.XYChart["new"](root, {
-      panX: true,
-      panY: true,
-      wheelX: "panX",
-      wheelY: "zoomX",
-      pinchZoomX: true
+      panX: false,
+      // Disable panning on X-axis
+      panY: false,
+      // Disable panning on Y-axis
+      wheelX: "none",
+      // Disable zooming on X-axis
+      wheelY: "none",
+      // Disable zooming on Y-axis
+      pinchZoomX: false,
+      // Disable pinch zooming on X-axis
+      pinchZoomY: false // Disable pinch zooming on Y-axis
+
+    })); // Remove zoom control button
+
+    chart.set("zoomOutButton", false);
+    var cursor = chart.set("cursor", am5xy.XYCursor["new"](root, {
+      behavior: "none" // Disable cursor zooming behavior
+
     }));
-    var cursor = chart.set("cursor", am5xy.XYCursor["new"](root, {}));
     cursor.lineY.set("visible", false);
     var xRenderer = am5xy.AxisRendererX["new"](root, {
       minGridDistance: 30
@@ -452,92 +469,8 @@ window.onload = function _callee() {
     }
   });
 }; // END CHART
-//ASSIGNED TO CHART
+//Assigned Form
 
-
-document.addEventListener('DOMContentLoaded', function _callee2() {
-  var response, chartData, chartDiv;
-  return regeneratorRuntime.async(function _callee2$(_context3) {
-    while (1) {
-      switch (_context3.prev = _context3.next) {
-        case 0:
-          _context3.prev = 0;
-          _context3.next = 3;
-          return regeneratorRuntime.awrap(fetch('ChartIQ/chart_data.php'));
-
-        case 3:
-          response = _context3.sent;
-          console.log(response);
-
-          if (response.ok) {
-            _context3.next = 7;
-            break;
-          }
-
-          throw new Error("HTTP error! status: ".concat(response.status));
-
-        case 7:
-          _context3.next = 9;
-          return regeneratorRuntime.awrap(response.json());
-
-        case 9:
-          chartData = _context3.sent;
-          console.log("Chart Data:", chartData); // Check if data is empty
-
-          if (!(chartData.length === 0)) {
-            _context3.next = 16;
-            break;
-          }
-
-          console.log("No data available for the chart.");
-          chartDiv = document.getElementById("chartdiv3");
-          chartDiv.innerHTML = "<p style='font-size: 20px; text-align: center;'>No data available to display.</p>";
-          return _context3.abrupt("return");
-
-        case 16:
-          // Create root and chart
-          am5.ready(function () {
-            var root = am5.Root["new"]("chartdiv3");
-            root.setThemes([am5themes_Animated["new"](root)]); // Create a pie chart
-
-            var chart = root.container.children.push(am5percent.PieChart["new"](root, {
-              layout: root.verticalLayout
-            })); // Create series
-
-            var series = chart.series.push(am5percent.PieSeries["new"](root, {
-              name: "Assigned Forms",
-              valueField: "assigned_forms",
-              categoryField: "employee",
-              innerRadius: am5.percent(50) // This makes it a donut chart
-
-            }));
-            series.data.setAll(chartData);
-            series.slices.template.setAll({
-              tooltipText: "{category}: {value} forms",
-              tooltipY: 0,
-              tooltipX: 0
-            }); // Add legend
-
-            var legend = chart.children.push(am5.Legend["new"](root, {}));
-            legend.data.setAll(series.dataItems);
-            series.appear(1000, 100);
-            chart.appear(1000, 100);
-          });
-          _context3.next = 22;
-          break;
-
-        case 19:
-          _context3.prev = 19;
-          _context3.t0 = _context3["catch"](0);
-          console.error("Error fetching chart data:", _context3.t0);
-
-        case 22:
-        case "end":
-          return _context3.stop();
-      }
-    }
-  }, null, null, [[0, 19]]);
-}); //Assigned to #2
 
 document.addEventListener('DOMContentLoaded', function (event) {
   // Fetch data using AJAX
@@ -591,389 +524,5 @@ document.addEventListener('DOMContentLoaded', function (event) {
     console.error('Error fetching data:', error);
     document.getElementById("assignedtochart").innerHTML = "<p style='font-size: 20px; text-align: center;'>Error fetching data.</p>";
   });
-}); // document.addEventListener('DOMContentLoaded', (event) => {
-//     // Fetch data using AJAX
-//     fetch('db_query.php')
-//         .then(response => response.json())
-//         .then(data => {
-//             if (data.error) {
-//                 console.error(data.error);
-//                 document.getElementById("chartdiv3").innerHTML = "<p style='font-size: 20px; text-align: center;'>No data available to display.</p>";
-//                 return;
-//             }
-//             // Debugging: Check fetched data
-//             console.log("Chart Data:", data);
-//             // Check if data is empty
-//             if (data.length === 0) {
-//                 console.log("No data available for the chart.");
-//                 document.getElementById("chartdiv3").innerHTML = "<p style='font-size: 20px; text-align: center;'>No data available to display.</p>";
-//                 return;
-//             }
-//             // Create root and chart
-//             am5.ready(function() {
-//                 var root = am5.Root.new("chartdiv3");
-//                 root.setThemes([
-//                     am5themes_Animated.new(root)
-//                 ]);
-//                 // Create a pie chart
-//                 var chart = root.container.children.push(
-//                     am5percent.PieChart.new(root, {
-//                         layout: root.verticalLayout
-//                     })
-//                 );
-//                 // Create series
-//                 var series = chart.series.push(
-//                     am5percent.PieSeries.new(root, {
-//                         name: "Assigned Forms",
-//                         valueField: "assigned_forms",
-//                         categoryField: "employee",
-//                         innerRadius: am5.percent(50) // This makes it a donut chart
-//                     })
-//                 );
-//                 series.data.setAll(data);
-//                 series.slices.template.setAll({
-//                     tooltipText: "{category}: {value} forms",
-//                     tooltipY: 0,
-//                     tooltipX: 0
-//                 });
-//                 // Add legend
-//                 var legend = chart.children.push(am5.Legend.new(root, {}));
-//                 legend.data.setAll(series.dataItems);
-//                 series.appear(1000, 100);
-//                 chart.appear(1000, 100);
-//             });
-//         })
-//         .catch(error => {
-//             console.error('Error fetching data:', error);
-//             document.getElementById("chartdiv3").innerHTML = "<p style='font-size: 20px; text-align: center;'>Error fetching data.</p>";
-//         });
-// });
-//  // NELMAR BAR CHART Fetch data from the server
-//  async function fetchData() {
-//     try {
-//         const response = await fetch('ChartIQ/fetch_rvm_data.php');
-//         const data = await response.json();
-//         console.log("Fetched Data:", data); // Log the fetched data
-//         return data;
-//     } catch (error) {
-//         console.error("Error fetching data:", error);
-//     }
-// }
-// // Function to create charts
-// function createCharts(data) {
-//     console.log("Creating charts with data:", data); // Log the data used for creating charts
-//     // Create filled out chart
-//     createBarChart("filledOutChart", [
-//         { category: `Filled Out (${data.filled_out.filled_out_1})`, value: parseInt(data.filled_out.filled_out_1) },
-//         { category: `Not Filled Out (${data.filled_out.filled_out_0})`, value: parseInt(data.filled_out.filled_out_0) }
-//     ], "Filled Out Status");
-//     // Create signed chart
-//     createBarChart("signedChart", [
-//         { category: `Signed (${data.signed.signed_1})`, value: parseInt(data.signed.signed_1) },
-//         { category: `Not Signed (${data.signed.signed_0})`, value: parseInt(data.signed.signed_0) }
-//     ], "Signed Status");
-//     // Create compliance chart
-//     createBarChart("complianceChart", [
-//         { category: `Compliant (${data.compliance.compliance_1})`, value: parseInt(data.compliance.compliance_1) },
-//         { category: `Non Compliant (${data.compliance.compliance_0})`, value: parseInt(data.compliance.compliance_0) }
-//     ], "Compliance Status");
-//     // Create frequency chart
-//     createBarChart("frequencyChart", [
-//         { category: `Daily (${data.frequency.frequency_0})`, value: parseInt(data.frequency.frequency_0) },
-//         { category: `Weekly (${data.frequency.frequency_1})`, value: parseInt(data.frequency.frequency_1) },
-//         { category: `Monthly (${data.frequency.frequency_2})`, value: parseInt(data.frequency.frequency_2) },
-//         { category: `Quarterly (${data.frequency.frequency_3})`, value: parseInt(data.frequency.frequency_3) },
-//         { category: `Biannual (${data.frequency.frequency_4})`, value: parseInt(data.frequency.frequency_4) },
-//         { category: `Annually (${data.frequency.frequency_5})`, value: parseInt(data.frequency.frequency_5) }
-//     ], "Frequency");
-// }
-// // Function to create a bar chart
-// function createBarChart(divId, data, title) {
-//     am5.ready(function() {
-//         console.log(`Creating bar chart in ${divId} with data:`, data); // Log the data for each chart
-//         var root = am5.Root.new(divId);
-//         root.setThemes([
-//             am5themes_Animated.new(root)
-//         ]);
-//         var chart = root.container.children.push(am5xy.XYChart.new(root, {
-//             panX: true,
-//             panY: true,
-//             wheelX: "panX",
-//             wheelY: "zoomX",
-//             pinchZoomX: true
-//         }));
-//         var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
-//         cursor.lineY.set("visible", false);
-//         var xRenderer = am5xy.AxisRendererX.new(root, { minGridDistance: 30 });
-//         var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
-//             maxDeviation: 0.3,
-//             categoryField: "category",
-//             renderer: xRenderer,
-//             tooltip: am5.Tooltip.new(root, {})
-//         }));
-//         xRenderer.labels.template.setAll({
-//             rotation: -45,
-//             centerY: am5.p50,
-//             centerX: 0
-//         });
-//         var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-//             renderer: am5xy.AxisRendererY.new(root, {})
-//         }));
-//         var series = chart.series.push(am5xy.ColumnSeries.new(root, {
-//             name: title,
-//             xAxis: xAxis,
-//             yAxis: yAxis,
-//             valueYField: "value",
-//             sequencedInterpolation: true,
-//             categoryXField: "category",
-//             tooltip: am5.Tooltip.new(root, {
-//                 labelText: "{valueY}"
-//             })
-//         }));
-//         series.columns.template.setAll({ cornerRadiusTL: 5, cornerRadiusTR: 5 });
-//         series.columns.template.adapters.add("fill", function(fill, target) {
-//             return chart.get("colors").getIndex(series.columns.indexOf(target));
-//         });
-//         series.columns.template.adapters.add("stroke", function(stroke, target) {
-//             return chart.get("colors").getIndex(series.columns.indexOf(target));
-//         });
-//         xAxis.data.setAll(data);
-//         series.data.setAll(data);
-//         var legend = chart.children.push(am5.Legend.new(root, {
-//             centerX: am5.percent(50),
-//             x: am5.percent(50),
-//             layout: root.horizontalLayout
-//         }));
-//         legend.data.setAll(series.dataItems);
-//         legend.labels.template.setAll({
-//             text: "{categoryX}: {valueY}"
-//         });
-//         series.appear(1000);
-//         chart.appear(1000, 100);
-//     });
-// }
-// // Fetch data and create charts when the page loads
-// window.onload = async function() {
-//     const data = await fetchData();
-//     if (data) {
-//         createCharts(data);
-//     }
-// }
-//END BAR CHART
-//BLUE CHART COLOR
-// async function fetchData() {
-//     try {
-//         const response = await fetch('ChartIQ/fetch_rvm_data.php');
-//         const data = await response.json();
-//         console.log("Fetched Data:", data); // Log the fetched data
-//         return data;
-//     } catch (error) {
-//         console.error("Error fetching data:", error);
-//     }
-// }
-// // Function to create charts
-// function createCharts(data) {
-//     console.log("Creating charts with data:", data); // Log the data used for creating charts
-//     // Create filled out chart
-//     createDonutChart("filledOutChart", [
-//         { category: `Filled Out (${data.filled_out.filled_out_1})`, value: parseInt(data.filled_out.filled_out_1) },
-//         { category: `Not Filled Out (${data.filled_out.filled_out_0})`, value: parseInt(data.filled_out.filled_out_0) }
-//     ], "Filled Out Status");
-//     // Create signed chart
-//     createDonutChart("signedChart", [
-//         { category: `Signed (${data.signed.signed_1})`, value: parseInt(data.signed.signed_1) },
-//         { category: `Not Signed (${data.signed.signed_0})`, value: parseInt(data.signed.signed_0) }
-//     ], "Signed Status");
-//     // Create compliance chart
-//     createBarChart("complianceChart", [
-//         { category: `Compliant (${data.compliance.compliance_1})`, value: parseInt(data.compliance.compliance_1) },
-//         { category: `Non Compliant (${data.compliance.compliance_0})`, value: parseInt(data.compliance.compliance_0) }
-//     ], "Compliance Status");
-//     // Create frequency chart
-//     createCurvedColumnChart("frequencyChart", [
-//         { category: `Daily (${data.frequency.frequency_0})`, value: parseInt(data.frequency.frequency_0) },
-//         { category: `Weekly (${data.frequency.frequency_1})`, value: parseInt(data.frequency.frequency_1) },
-//         { category: `Monthly (${data.frequency.frequency_2})`, value: parseInt(data.frequency.frequency_2) },
-//         { category: `Quarterly (${data.frequency.frequency_3})`, value: parseInt(data.frequency.frequency_3) },
-//         { category: `Biannual (${data.frequency.frequency_4})`, value: parseInt(data.frequency.frequency_4) },
-//         { category: `Annually (${data.frequency.frequency_5})`, value: parseInt(data.frequency.frequency_5) }
-//     ], "Frequency");
-// }
-// // Function to create a donut chart with radial gradient
-// function createDonutChart(divId, data, title) {
-//     am5.ready(function() {
-//         console.log(`Creating donut chart in ${divId} with data:`, data); // Log the data for each chart
-//         var root = am5.Root.new(divId);
-//         root.setThemes([
-//             am5themes_Animated.new(root)
-//         ]);
-//         var chart = root.container.children.push(am5percent.PieChart.new(root, {
-//             innerRadius: am5.percent(50)
-//         }));
-//         var series = chart.series.push(am5percent.PieSeries.new(root, {
-//             valueField: "value",
-//             categoryField: "category",
-//             alignLabels: false
-//         }));
-//         series.labels.template.setAll({
-//             textType: "circular",
-//             radius: 10
-//         });
-//         series.slices.template.setAll({
-//             strokeWidth: 2,
-//             strokeOpacity: 1,
-//             radialGradient: am5.RadialGradient.new(root, {
-//                 stops: [{
-//                     brighten: -0.8
-//                 }, {
-//                     brighten: -0.3
-//                 }]
-//             })
-//         });
-//         series.data.setAll(data);
-//         var legend = chart.children.push(am5.Legend.new(root, {
-//             centerX: am5.percent(50),
-//             x: am5.percent(50),
-//             layout: root.horizontalLayout
-//         }));
-//         legend.data.setAll(series.dataItems);
-//     });
-// }
-// // Function to create a bar chart
-// function createBarChart(divId, data, title) {
-//     am5.ready(function() {
-//         console.log(`Creating bar chart in ${divId} with data:`, data); // Log the data for each chart
-//         var root = am5.Root.new(divId);
-//         root.setThemes([
-//             am5themes_Animated.new(root)
-//         ]);
-//         var chart = root.container.children.push(am5xy.XYChart.new(root, {
-//             panX: true,
-//             panY: true,
-//             wheelX: "panX",
-//             wheelY: "zoomX",
-//             pinchZoomX: true
-//         }));
-//         var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
-//         cursor.lineY.set("visible", false);
-//         var xRenderer = am5xy.AxisRendererX.new(root, { minGridDistance: 30 });
-//         var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
-//             maxDeviation: 0.3,
-//             categoryField: "category",
-//             renderer: xRenderer,
-//             tooltip: am5.Tooltip.new(root, {})
-//         }));
-//         xRenderer.labels.template.setAll({
-//             rotation: -45,
-//             centerY: am5.p50,
-//             centerX: 0
-//         });
-//         var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-//             renderer: am5xy.AxisRendererY.new(root, {})
-//         }));
-//         var series = chart.series.push(am5xy.ColumnSeries.new(root, {
-//             name: title,
-//             xAxis: xAxis,
-//             yAxis: yAxis,
-//             valueYField: "value",
-//             sequencedInterpolation: true,
-//             categoryXField: "category",
-//             tooltip: am5.Tooltip.new(root, {
-//                 labelText: "{valueY}"
-//             })
-//         }));
-//         series.columns.template.setAll({ cornerRadiusTL: 5, cornerRadiusTR: 5 });
-//         series.columns.template.adapters.add("fill", function(fill, target) {
-//             return chart.get("colors").getIndex(series.columns.indexOf(target));
-//         });
-//         series.columns.template.adapters.add("stroke", function(stroke, target) {
-//             return chart.get("colors").getIndex(series.columns.indexOf(target));
-//         });
-//         xAxis.data.setAll(data);
-//         series.data.setAll(data);
-//         var legend = chart.children.push(am5.Legend.new(root, {
-//             centerX: am5.percent(50),
-//             x: am5.percent(50),
-//             layout: root.horizontalLayout
-//         }));
-//         legend.data.setAll(series.dataItems);
-//         legend.labels.template.setAll({
-//             text: "{categoryX}: {valueY}"
-//         });
-//         series.appear(1000);
-//         chart.appear(1000, 100);
-//     });
-// }
-// // Function to create a curved column chart
-// function createCurvedColumnChart(divId, data, title) {
-//     am5.ready(function() {
-//         console.log(`Creating curved column chart in ${divId} with data:`, data); // Log the data for each chart
-//         var root = am5.Root.new(divId);
-//         root.setThemes([
-//             am5themes_Animated.new(root)
-//         ]);
-//         var chart = root.container.children.push(am5xy.XYChart.new(root, {
-//             panX: true,
-//             panY: true,
-//             wheelX: "panX",
-//             wheelY: "zoomX",
-//             pinchZoomX: true
-//         }));
-//         var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
-//         cursor.lineY.set("visible", false);
-//         var xRenderer = am5xy.AxisRendererX.new(root, { minGridDistance: 30 });
-//         var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
-//             maxDeviation: 0.3,
-//             categoryField: "category",
-//             renderer: xRenderer,
-//             tooltip: am5.Tooltip.new(root, {})
-//         }));
-//         xRenderer.labels.template.setAll({
-//             rotation: -45,
-//             centerY: am5.p50,
-//             centerX: 0
-//         });
-//         var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
-//             renderer: am5xy.AxisRendererY.new(root, {})
-//         }));
-//         var series = chart.series.push(am5xy.ColumnSeries.new(root, {
-//             name: title,
-//             xAxis: xAxis,
-//             yAxis: yAxis,
-//             valueYField: "value",
-//             sequencedInterpolation: true,
-//             categoryXField: "category",
-//             tooltip: am5.Tooltip.new(root, {
-//                 labelText: "{valueY}"
-//             })
-//         }));
-//         series.columns.template.setAll({ cornerRadiusTL: 5, cornerRadiusTR: 5, radius: 10 });
-//         series.columns.template.adapters.add("fill", function(fill, target) {
-//             return chart.get("colors").getIndex(series.columns.indexOf(target));
-//         });
-//         series.columns.template.adapters.add("stroke", function(stroke, target) {
-//             return chart.get("colors").getIndex(series.columns.indexOf(target));
-//         });
-//         xAxis.data.setAll(data);
-//         series.data.setAll(data);
-//         var legend = chart.children.push(am5.Legend.new(root, {
-//             centerX: am5.percent(50),
-//             x: am5.percent(50),
-//             layout: root.horizontalLayout
-//         }));
-//         legend.data.setAll(series.dataItems);
-//         legend.labels.template.setAll({
-//             text: "{categoryX}: {valueY}"
-//         });
-//         series.appear(1000);
-//         chart.appear(1000, 100);
-//     });
-// }
-// // Fetch data and create charts when the page loads
-// window.onload = async function() {
-//     const data = await fetchData();
-//     if (data) {
-//         createCharts(data);
-//     }
-// }
+});
 //# sourceMappingURL=chart.dev.js.map

@@ -123,6 +123,15 @@
         height: 400px; /* Set the height for the chart */
         margin: 0 auto; /* Center the chart */
     }
+
+    .chart-container {
+            width: 100%;
+            height: 100%;
+            min-height: 300px; /* Adjust the minimum height as needed */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+}
 </style>
 
                     <div class="row">
@@ -264,6 +273,10 @@
                                     </div>
                                 </div>
                             </div>
+
+
+
+                            
                             <div class="tab-pane" id="rvm_analytics">
                                 <div class="widget-row">  
                                     <div class="col-md-12">

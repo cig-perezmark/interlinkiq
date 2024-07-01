@@ -90,7 +90,37 @@
         vertical-align: middle;
     }
 
+    #comchartdiv {
+        width: 100%;
+        height: 400px;
+        max-width: 100%;
+    }
+    @media (max-width: 1024px) {
+        #comchartdiv {
+            height: 350px;
+        }
+    }
+    @media (max-width: 768px) {
+        #comchartdiv {
+            height: 300px;
+        }
+    }
+    @media (max-width: 600px) {
+        #comchartdiv {
+            height: 250px;
+        }
+    }
+
 </style>
+
+
+                <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+                <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+                <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+                <script src="https://cdn.amcharts.com/lib/5/plugins/legend.js"></script>
+
 
                     <?php
                         function dashboardChild($parent_id, $user_id, $dashboard_result) {
@@ -1342,10 +1372,25 @@
                                         }
                                     </style>
                             <?php } ?>
+
+
+                             <!-- Nelmar Chart -->
+                             <div class="col-md-8" style="min-height: 300px;"> 
+                               
+                                     <h3 class="d-flex justify-content-center">Analytics</h3>
+                                        <div class="widget-thumb-wrap">
+                                        <div id="comchartdiv1" style="width: 100%; height: 500px;"></div>
+                                        <div id="comchartdiv" style="width: 100%; height: 500px;"></div>
+                                     </div>                                
+                            </div>
+
                             
                             <div class="col-md-9" id="dashboardData" style="min-height: 300px;">
                                 <div class="panel-group accordion" id="parent"></div>
+                                
                             </div>
+
+
                             
                         </div>
                     <?php } ?>
@@ -2233,8 +2278,11 @@
         <script src="assets/global/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js" type="text/javascript"></script>
         <script src="assets/global/plugins/typeahead/handlebars.min.js" type="text/javascript"></script>
         <script src="assets/global/plugins/typeahead/typeahead.bundle.min.js" type="text/javascript"></script>
-
         <script src="assets/pages/scripts/jquery.table2excel.js" type="text/javascript"></script>
+        <script src="ChartIQ/compliance_chart.js"></script>
+
+
+
         <script>
             $("#btnExport").click(function(){
                 $("#table2excel").table2excel({

@@ -8,6 +8,9 @@ if(!isset($_COOKIE['ID'])) {
 include_once __DIR__ . '../../../alt-setup/setup.php';
 $con = $conn;
 
+// error_reporting(E_ALL);
+default_timezone();
+
 $method = $_SERVER['REQUEST_METHOD'] == 'GET' ? $_GET['method'] : $_POST['method'];
 
 if(function_exists($method)) 
@@ -54,7 +57,7 @@ function getVASummary() {
     $today = date("Y-m-d");
     $last_month = date('Y-m-d', strtotime('-30 days'));
 
-    $showAllClause = 'AND user_id = $portal_user';
+    $showAllClause = "AND user_id = $portal_user";
     if(
         $portal_user == 1105 || 
         $portal_user == 54 || // ms tin
@@ -90,7 +93,7 @@ function getVASummary() {
             
     }
 
-    echo json_encode($data);    
+    echo json_encode($data);
     $con->close();
 }
 

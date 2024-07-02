@@ -368,7 +368,7 @@ function createFSVPReport($conn, &$pdf, $supplierHashId, $css) {
         LEFT JOIN tbl_supplier sup ON fsup.supplier_id = sup.ID
         WHERE MD5(fsup.id) = ?
     ", $supplierHashId)->fetchAssoc(function ($d) {
-        $d['address'] = formatSupplierAddress($d['address   ']);
+        $d['address'] = formatSupplierAddress($d['address']);
         return $d;
     });
     
@@ -480,9 +480,9 @@ function createFSVPReport($conn, &$pdf, $supplierHashId, $css) {
             WHERE aw.importer_id = ? 
                 AND aw.supplier_id = ?
                 AND aw.deleted_at IS NULL
-        ", $imp['id'], $supplierInfo['id'])->fetchAll(function ($d) use ($pdf, $basicInfo, $css) {
+        ", $imp['id'], $supplierInfo['id'])->fetchAll(function ($d) use ($pdf, $basicInfo, $css, $imp) {
             $pdf->AddPage();
-            $pdf->writeHTML($css . getLayout('activities-worksheet', 'FOREIGN SUPPLIER VERIFICATION ACTIVITY(IES) WORKSHEET', array_merge($d, $basicInfo)));
+            $pdf->writeHTML($css . getLayout('activities-worksheet', 'FOREIGN SUPPLIER VERIFICATION ACTIVITY(IES) WORKSHEET', array_merge($d, $basicInfo, ['products' => $imp['products'] ?? ''])));
         });
     }
 

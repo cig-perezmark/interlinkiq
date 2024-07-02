@@ -228,7 +228,7 @@ if(isset($_GET['pdf'])) {
             $title = 'FSVP Ingredient Product Register';
 
             $pdf->SetTitle($title);
-            $pdf->AddPage('L');
+            $pdf->AddPage();
             
             $pdf->writeHTML($css . getLayout('ipr-1', $title, $data));
             $pdf->writeHTML(getLayout('ipr-2', $title, $data));
@@ -285,16 +285,16 @@ if(isset($_GET['pdf'])) {
             break;
         }
         case 'report': {
-            createFSVPReport($pdf);
+            createFSVPReport($conn, $pdf, $recordId, $css);
             break;
         }
         default: 
             exit('FSVP PDF Default Page.');
     }
 
-    if($pdfView !== 'ipr') {
+    if($pdfView !== 'ipr' && $pdfView !== 'report') {
         $pdf->SetTitle($title);
-        $pdf->AddPage('L');
+        $pdf->AddPage();
         $pdf->writeHTML($html);
     }
 

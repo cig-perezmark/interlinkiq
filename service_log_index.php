@@ -1247,11 +1247,6 @@
 <script src='assets/global/plugins/bootstrap-toastr/toastr.min.js'></script>
 <script src='assets/pages/scripts/ui-toastr.min.js'></script>
 
-<!-- JQUERY DATATABLES SCRIPT PLUGINS -->
-<script src='assets/global/scripts/datatable.js' type='text/javascript'></script>
-<script src='assets/global/plugins/datatables/datatables.min.js' type='text/javascript'></script>
-<script src='assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js' type='text/javascript'></script>
-
 <!-- SWEETALERT SCRIPT -->
 <script src='assets/global/plugins/bootstrap-sweetalert/sweetalert.min.js' type='text/javascript'></script>
 <!--<script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>-->

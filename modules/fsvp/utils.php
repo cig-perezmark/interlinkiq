@@ -177,7 +177,7 @@ function getSupplierList($conn, $userId) {
                 }
             }
                         
-            $data[] = [
+            $v = [
                 'id' => $d['id'],
                 'address' => $address,
                 'name' => $d['name'],
@@ -187,6 +187,12 @@ function getSupplierList($conn, $userId) {
                 'supplier_agreement' => $saFiles,
                 // 'source' => $d['source'],
             ];
+
+            if($d['source'] == 'FSVP Supplier') {
+                $v['rhash'] = md5($d['id']);
+            }
+
+            $data[] = $v;
         }
     
         return $data;
@@ -225,8 +231,8 @@ function getEvaluationsPerSupplierAndImporter($conn, $userId) {
             $evalData = getEvaluationRecordID($conn, $d['id']);
             $d['evaluation'] = $evalData;
 
-            if(!empty($evalData['id'])) {
-                $d['rhash'] = md5($d['id']);    
+            if(!empty($evalData['record_id'])) {
+                $d['rhash'] = md5($evalData['record_id']);    
             } 
 
             $data[] = $d;

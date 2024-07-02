@@ -621,7 +621,7 @@ jQuery(function() {
                     evalBtn = `
                         <div class="d-flex center">
                             <div class="btn-group btn-group-circle btn-group-sm btn-group-solid">
-                                <button type="button" class="btn red btn-sm btn-circle btn-outline" title="Re-evaluate" data-reeval="true" data-openreevalform data-eval="${d.id}" data-record="${d.evaluation.record_id}">Evaluate</button>
+                                <button type="button" class="btn red btn-sm btn-circle btn-outline" title="Re-evaluate" data-reeval="true" data-openreevalform data-eval="${d.id}" data-record="${d.evaluation.record_id}">Eval.</button>
                                 <a href="${(Init.URL || 'fsvp') + '?pdf=evaluation_form&r=' + d.rhash}" target="_blank" class="btn dark btn-circle btn-sm" title="PDF Document">PDF</a>
                             </div>
                         </div>
@@ -656,7 +656,13 @@ jQuery(function() {
             if(d.id) {
                 evalBtn = `
                     <div class="d-flex center">
-                        <button type="button" class="btn green btn-sm btn-circle" data-update-foreign-supplier="${d.id}">Edit</button>
+                        <div class="btn-group btn-group-circle btn-group-sm btn-group-solid">
+                            <button type="button" class="btn green btn-sm btn-circle btn-outline" data-update-foreign-supplier="${d.id}">Edit</button>
+                            <a href="${(Init.URL || 'fsvp') + '?pdf=report&r=' + d.rhash}" target="_blank" class="btn dark btn-sm btn-circle" data-update-foreign-supplierx="${d.id}" title="Generate Report">
+                                <i class="fa fa-download icon-margin-right"></i>
+                                PDF
+                            </a>
+                        </div>
                     </div>
                 `;
             } else {
@@ -679,13 +685,6 @@ jQuery(function() {
         }
         
         if(method == 'data') {
-            // const rowId = $('#evaluationForm [name="rowdata"]').val() || null;
-
-            // if(!rowId) {
-            //     bootstrapGrowl('Unable to update the table. Please refresh the page.', 'error');
-            // }
-
-            // const index = $(`#tableSupplierList tr:has([data-eval=${rowId}])`).index();
             supplierTable.dt.row(editDetailsTRIndex).data(rowData);
             editDetailsTRIndex = null;
         } else if(method == 'add') {

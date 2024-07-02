@@ -4,7 +4,9 @@ if(!isset($_COOKIE['ID'])) {
     die("invalid user access");
 }
 
-include "connection.php";
+// include "connection.php";
+include_once __DIR__ . '../../../alt-setup/setup.php';
+$con = $conn;
 
 $method = $_SERVER['REQUEST_METHOD'] == 'GET' ? $_GET['method'] : $_POST['method'];
 
@@ -44,17 +46,39 @@ function getAccounts() {
 
 
 function getVASummary() {
-    global $con;
+    global $con, $portal_user;
     // $date_default_tx = new DateTime(null, new DateTimeZone(date_default_timezone_get()));
     // $date_default_tx->setTimeZone(new DateTimeZone('America/Chicago'));
     // $today = $date_default_tx->format('Y-m-d');
     
     $today = date("Y-m-d");
     $last_month = date('Y-m-d', strtotime('-30 days'));
+
+    $showAllClause = 'AND user_id = $portal_user';
+    if(
+        $portal_user == 1105 || 
+        $portal_user == 54 || // ms tin
+        $portal_user == 387 || // ms girl
+        $portal_user == 34 // hr
+    ) {
+        $showAllClause = "";
+    }
      
-    $results = $con->query("SELECT *,user_id,concat(first_name,' ',last_name) as name, SUM(minute) as total_minutes FROM tbl_service_logs 
-    left join tbl_user on ID = user_id
-    WHERE task_date >= '$last_month' AND task_date <= '$today' AND is_active = 1 AND not_approved = 0 GROUP BY task_date, user_id ORDER BY task_date DESC");
+    $results = $con->query("SELECT 
+            *,
+            user_id,
+            CONCAT(first_name,' ',last_name) AS name, 
+            SUM(minute) AS total_minutes 
+        FROM tbl_service_logs 
+        LEFT JOIN tbl_user on ID = user_id
+        WHERE task_date >= '$last_month' 
+            AND task_date <= '$today' 
+            AND is_active = 1 
+            AND not_approved = 0 
+            $showAllClause
+        GROUP BY task_date, user_id 
+        ORDER BY task_date DESC
+    ");
     $data = array();
 
     if(mysqli_num_rows($results) > 0) {
@@ -66,8 +90,7 @@ function getVASummary() {
             
     }
 
-    echo json_encode($data);
-    
+    echo json_encode($data);    
     $con->close();
 }
 

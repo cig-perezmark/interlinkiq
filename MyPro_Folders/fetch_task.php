@@ -870,7 +870,7 @@ if( isset($_GET['modal_filter_status']) ) {
            </div>
        </div>
     <?php endif; ?>
-        <table class="table table-bordered " id="tableData2">
+        <table class="table table-bordered " id="tableData22">
             <thead class="bg-info">
                 <tr>
                     <th>Assign to</th>
@@ -919,7 +919,7 @@ if( isset($_GET['modal_filter_status_progress']) ) {
            </div>
        </div>
     <?php endif; ?>
-        <table class="table table-bordered " id="sample_1">
+        <table class="table table-bordered " id="sample_11">
             <thead class="bg-info">
                 <tr>
                     <th>Assign to</th>
@@ -968,7 +968,7 @@ $ID = $_GET['modal_filter_status_completed'];
            </div>
        </div>
     <?php endif; ?>
-    <table class="table table-bordered " id="sample_4">
+    <table class="table table-bordered " id="sample_44">
         <thead class="bg-info">
             <tr>
                 <th>Assign to</th>
@@ -1304,9 +1304,9 @@ if( isset($_POST['btnSave_History']) ) {
     <script src="assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
     <script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>
 <script>
-    $(document).ready(function () {
-            $('#tableData2').DataTable();
-              $('#sample_4').DataTable();
-                $('#sample_1').DataTable();
-    });
+    // $(document).ready(function () {
+    //         $('#tableData2').DataTable();
+    //           $('#sample_4').DataTable();
+    //             $('#sample_1').DataTable();
+    // });
 </script>

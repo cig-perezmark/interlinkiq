@@ -873,7 +873,7 @@
         if ( mysqli_num_rows($selectEmail) > 0 ) { 
             $exist = true;
         } else {
-            if ($client > 0) {
+            if ($client > 0 AND $client != 10) {
                 // check if user register was invited (supplier/customer/employee)
                 $selectData = mysqli_query( $conn,"SELECT
                     ID,
@@ -2176,15 +2176,62 @@
                     <a href="#tabTraining" data-toggle="tab">Training Progress</a>
                 </li>
                 <li>
-                    <a href="#tabFile" data-toggle="tab">Employee Files</a>
-                </li>
+                    <a href="#tabFile_0" data-toggle="tab">Employee Files</a>
+                </li>';
+
+                if ($user_id == 1 OR $user_id == 34) {
+                    echo '<li>
+                        <a href="#tabFile_1" data-toggle="tab">Certificate</a>
+                    </li>
+                    <li>
+                        <a href="#tabFile_2" data-toggle="tab">Contract</a>
+                    </li>
+                    <li>
+                        <a href="#tabFile_3" data-toggle="tab">NTE</a>
+                    </li>';
+                }
+            echo '</ul>
             </ul>
             <div class="tab-content margin-top-20">
                 <div class="tab-pane active" id="tabBasic">
-                    <div class="form-group">
+                    <div class="form-group" style="margin-bottom: 0;">
                         <label class="col-md-3 control-label">Email Address</label>
                         <div class="col-md-8">
-                            <input class="form-control" type="email" name="email" value="'. htmlentities($row['email'] ?? '') .'" required />
+                            <div class="mt-repeater mt-repeater-emails">
+                                <div class="mt-repeater-item row" data-repeater-item>
+                                    <div class="col-md-10">
+                                        <input class="form-control" type="email" name="email" value="'. htmlentities($row['email'] ?? '') .'" required />
+                                    </div>
+                                    <div class="col-md-2 text-right">
+                                        <a href="javascript:;" data-repeater-create class="btn btn-success mt-repeater-add"><i class="fa fa-plus"></i></a>
+                                    </div>
+                                </div>
+                                <div data-repeater-list="alt">
+                                    <div class="mt-repeater-item mt-repeater-item-hide row" data-repeater-item>
+                                        <div class="col-md-10">
+                                                <input class="form-control" type="email" name="email" value="" placeholder="Alternate Email" required />
+                                            </div>
+                                        <div class="col-md-2 text-right">
+                                            <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
+                                        </div>
+                                    </div>';
+
+                                    if (!empty($row['alternate_email'])) {
+                                        $alternate_email_arr = explode(', ', $row['alternate_email']);
+                                        foreach($alternate_email_arr as $alternate_email) {
+                                            echo '<div class="mt-repeater-item row" data-repeater-item>
+                                                <div class="col-md-10">
+                                                        <input class="form-control" type="email" name="email" value="'.$alternate_email.'" placeholder="Alternate Email" required />
+                                                    </div>
+                                                <div class="col-md-2 text-right">
+                                                    <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
+                                                </div>
+                                            </div>';
+                                        }
+                                    }
+
+                                echo '</div>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -2501,8 +2548,8 @@
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane" id="tabFile">
-                    <a href="#modalNewFile" data-toggle="modal" class="btn green" onclick="btnNew_File('.$id.')">Add New File</a>
+                <div class="tab-pane" id="tabFile_0">
+                    <a href="#modalNewFile" data-toggle="modal" class="btn green" onclick="btnNew_File('.$id.', 0)">Add New File</a>
                     <div class="table-scrollable">
                         <table class="table table-bordered table-hover">
                             <thead>
@@ -2512,8 +2559,6 @@
                                     <th>Description</th>
                                     <th>Document Date</th>
                                     <th>Uploaded Date</th>
-                                    <th>Review Status</th>
-                                    <th>Reviewed By</th>
                                     <th style="width: 135px;">Action</th>
                                 </tr>
                             </thead>
@@ -2570,8 +2615,6 @@
                                             <td >'. $file_description .'</td>
                                             <td >'. $file_start_date .' - '. $file_due_date .'</td>
                                             <td >'. $file_uploaded_date .'</td>
-                                            <td >For Review</td>
-                                            <td >NA</td>
                                             <td class="text-center">
                                                 <div class="btn-group btn-group-circle">
                                                     <a href="#modalEditFile" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnEdit('.$file_ID.')">Edit</a>
@@ -2585,8 +2628,269 @@
                              echo '</tbody>
                         </table>
                     </div>
-                </div>
-            </div>
+                </div>';
+
+                if ($user_id == 1 OR $user_id == 34) {
+                    echo '<div class="tab-pane" id="tabFile_1">
+                        <a href="#modalNewFile" data-toggle="modal" class="btn green" onclick="btnNew_File('.$id.', 1)">Add New File</a>
+                        <div class="table-scrollable">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="width: 80px;">File</th>
+                                        <th>File Name</th>
+                                        <th>Description</th>
+                                        <th>Document Date</th>
+                                        <th>Uploaded Date</th>
+                                        <th class="text-center" style="width: 135px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>';
+
+                                    $selectFile = mysqli_query( $conn,"SELECT * FROM tbl_hr_file WHERE category = 1 AND deleted = 0 AND user_id = $user_id AND employee_id = $id ORDER BY ID DESC" );
+                                    if ( mysqli_num_rows($selectFile) > 0 ) {
+                                        while($rowFile = mysqli_fetch_array($selectFile)) {
+                                            $file_ID = htmlentities($rowFile["ID"] ?? '');
+                                            $file_name = htmlentities($rowFile["filename"] ?? '');
+                                            $file_description = htmlentities($rowFile["description"] ?? '');
+                                            $file_status = htmlentities($rowFile["status"] ?? '');
+                                            $file_reviewed_by = htmlentities($rowFile["reviewed_by"] ?? '');
+
+                                            $filetype = htmlentities($rowFile['filetype'] ?? '');
+                                            $files = htmlentities($rowFile["files"] ?? '');
+                                            $type = 'iframe';
+                                            if ($filetype == 1) {
+                                                $fileExtension = fileExtension($files);
+                                                $src = $fileExtension['src'];
+                                                $embed = $fileExtension['embed'];
+                                                $type = $fileExtension['type'];
+                                                $file_extension = $fileExtension['file_extension'];
+                                                $url = $base_url.'uploads/hr/';
+
+                                                $files = $src.$url.rawurlencode($files).$embed;
+                                            } else if ($filetype == 3) {
+                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                            }
+
+                                            $file_start_date = htmlentities($rowFile["start_date"] ?? '');
+                                            $file_uploaded_date = htmlentities($rowFile["uploaded_date"] ?? '');
+                                            $file_due_date = htmlentities($rowFile["due_date"] ?? '');
+                                            $file_due_date = new DateTime($file_due_date);
+                                            $file_due_date = $file_due_date->format('M d, Y');
+                                            if (empty($rowFile["start_date"])) {
+                                                $file_start_date = new DateTime($file_due_date);
+                                                $file_start_date = $file_start_date->format('Y-m-d');
+                                                $file_start_date = strtotime($file_start_date.' -1 year');
+                                                $file_start_date = date('Y-m-d', $file_start_date);
+                                                $file_start_date = strtotime($file_start_date.' -1 day');
+                                                $file_uploaded_date = date('Y-m-d', $file_start_date);
+                                                $file_start_date = date('M d, Y', $file_start_date);
+                                            } else {
+                                                $file_start_date = new DateTime($file_start_date);
+                                                $file_start_date = $file_start_date->format('M d, Y');
+                                            }
+                                            $file_uploaded_date = new DateTime($file_uploaded_date);
+                                            $file_uploaded_date = $file_uploaded_date->format('M d, Y');
+
+                                            $file_document_date = "Non-Expiry";
+                                            if ($rowFile["non_expiry"] == 0) {
+                                                $file_document_date = $file_start_date .' - '. $file_due_date;
+                                            }
+
+                                            echo '<tr id="tr_'.$file_ID.'">
+                                                <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p></td>
+                                                <td >'.$file_name.'</td>
+                                                <td >'.$file_description.'</td>
+                                                <td >'.$file_document_date.'</td>
+                                                <td >'.$file_uploaded_date.'</td>
+                                                <td class="text-center">
+                                                    <div class="btn-group btn-group-circle">
+                                                        <a href="#modalEditFile" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnEdit('.$file_ID.')">Edit</a>
+                                                        <a href="javascript:;" class="btn btn-danger btn-sm" onclick="btnDelete('.$file_ID.')">Delete</a>
+                                                   </div>
+                                                </td>
+                                            </tr>';
+                                        }
+                                    }
+
+                                 echo '</tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabFile_2">
+                        <a href="#modalNewFile" data-toggle="modal" class="btn green" onclick="btnNew_File('.$id.', 2)">Add New File</a>
+                        <div class="table-scrollable">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="width: 80px;">File</th>
+                                        <th>File Name</th>
+                                        <th>Description</th>
+                                        <th>Document Date</th>
+                                        <th>Uploaded Date</th>
+                                        <th class="text-center" style="width: 135px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>';
+
+                                    $selectFile = mysqli_query( $conn,"SELECT * FROM tbl_hr_file WHERE category = 2 AND deleted = 0 AND user_id = $user_id AND employee_id = $id ORDER BY ID DESC" );
+                                    if ( mysqli_num_rows($selectFile) > 0 ) {
+                                        while($rowFile = mysqli_fetch_array($selectFile)) {
+                                            $file_ID = htmlentities($rowFile["ID"] ?? '');
+                                            $file_name = htmlentities($rowFile["filename"] ?? '');
+                                            $file_description = htmlentities($rowFile["description"] ?? '');
+                                            $file_status = htmlentities($rowFile["status"] ?? '');
+                                            $file_reviewed_by = htmlentities($rowFile["reviewed_by"] ?? '');
+
+                                            $filetype = htmlentities($rowFile['filetype'] ?? '');
+                                            $files = htmlentities($rowFile["files"] ?? '');
+                                            $type = 'iframe';
+                                            if ($filetype == 1) {
+                                                $fileExtension = fileExtension($files);
+                                                $src = $fileExtension['src'];
+                                                $embed = $fileExtension['embed'];
+                                                $type = $fileExtension['type'];
+                                                $file_extension = $fileExtension['file_extension'];
+                                                $url = $base_url.'uploads/hr/';
+
+                                                $files = $src.$url.rawurlencode($files).$embed;
+                                            } else if ($filetype == 3) {
+                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                            }
+
+                                            $file_start_date = htmlentities($rowFile["start_date"] ?? '');
+                                            $file_uploaded_date = htmlentities($rowFile["uploaded_date"] ?? '');
+                                            $file_due_date = htmlentities($rowFile["due_date"] ?? '');
+                                            $file_due_date = new DateTime($file_due_date);
+                                            $file_due_date = $file_due_date->format('M d, Y');
+                                            if (empty($rowFile["start_date"])) {
+                                                $file_start_date = new DateTime($file_due_date);
+                                                $file_start_date = $file_start_date->format('Y-m-d');
+                                                $file_start_date = strtotime($file_start_date.' -1 year');
+                                                $file_start_date = date('Y-m-d', $file_start_date);
+                                                $file_start_date = strtotime($file_start_date.' -1 day');
+                                                $file_uploaded_date = date('Y-m-d', $file_start_date);
+                                                $file_start_date = date('M d, Y', $file_start_date);
+                                            } else {
+                                                $file_start_date = new DateTime($file_start_date);
+                                                $file_start_date = $file_start_date->format('M d, Y');
+                                            }
+                                            $file_uploaded_date = new DateTime($file_uploaded_date);
+                                            $file_uploaded_date = $file_uploaded_date->format('M d, Y');
+
+                                            $file_document_date = "Non-Expiry";
+                                            if ($rowFile["non_expiry"] == 0) {
+                                                $file_document_date = $file_start_date .' - '. $file_due_date;
+                                            }
+
+                                            echo '<tr id="tr_'.$file_ID.'">
+                                                <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p></td>
+                                                <td >'.$file_name.'</td>
+                                                <td >'.$file_description.'</td>
+                                                <td >'.$file_document_date.'</td>
+                                                <td >'.$file_uploaded_date.'</td>
+                                                <td class="text-center">
+                                                    <div class="btn-group btn-group-circle">
+                                                        <a href="#modalEditFile" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnEdit('.$file_ID.')">Edit</a>
+                                                        <a href="javascript:;" class="btn btn-danger btn-sm" onclick="btnDelete('.$file_ID.')">Delete</a>
+                                                   </div>
+                                                </td>
+                                            </tr>';
+                                        }
+                                    }
+
+                                 echo '</tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabFile_3">
+                        <a href="#modalNewFile" data-toggle="modal" class="btn green" onclick="btnNew_File('.$id.', 3)">Add New File</a>
+                        <div class="table-scrollable">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="width: 80px;">File</th>
+                                        <th>File Name</th>
+                                        <th>Description</th>
+                                        <th>Document Date</th>
+                                        <th>Uploaded Date</th>
+                                        <th class="text-center" style="width: 135px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>';
+
+                                    $selectFile = mysqli_query( $conn,"SELECT * FROM tbl_hr_file WHERE category = 3 AND deleted = 0 AND user_id = $user_id AND employee_id = $id ORDER BY ID DESC" );
+                                    if ( mysqli_num_rows($selectFile) > 0 ) {
+                                        while($rowFile = mysqli_fetch_array($selectFile)) {
+                                            $file_ID = htmlentities($rowFile["ID"] ?? '');
+                                            $file_name = htmlentities($rowFile["filename"] ?? '');
+                                            $file_description = htmlentities($rowFile["description"] ?? '');
+                                            $file_status = htmlentities($rowFile["status"] ?? '');
+                                            $file_reviewed_by = htmlentities($rowFile["reviewed_by"] ?? '');
+
+                                            $filetype = htmlentities($rowFile['filetype'] ?? '');
+                                            $files = htmlentities($rowFile["files"] ?? '');
+                                            $type = 'iframe';
+                                            if ($filetype == 1) {
+                                                $fileExtension = fileExtension($files);
+                                                $src = $fileExtension['src'];
+                                                $embed = $fileExtension['embed'];
+                                                $type = $fileExtension['type'];
+                                                $file_extension = $fileExtension['file_extension'];
+                                                $url = $base_url.'uploads/hr/';
+
+                                                $files = $src.$url.rawurlencode($files).$embed;
+                                            } else if ($filetype == 3) {
+                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                            }
+
+                                            $file_start_date = htmlentities($rowFile["start_date"] ?? '');
+                                            $file_uploaded_date = htmlentities($rowFile["uploaded_date"] ?? '');
+                                            $file_due_date = htmlentities($rowFile["due_date"] ?? '');
+                                            $file_due_date = new DateTime($file_due_date);
+                                            $file_due_date = $file_due_date->format('M d, Y');
+                                            if (empty($rowFile["start_date"])) {
+                                                $file_start_date = new DateTime($file_due_date);
+                                                $file_start_date = $file_start_date->format('Y-m-d');
+                                                $file_start_date = strtotime($file_start_date.' -1 year');
+                                                $file_start_date = date('Y-m-d', $file_start_date);
+                                                $file_start_date = strtotime($file_start_date.' -1 day');
+                                                $file_uploaded_date = date('Y-m-d', $file_start_date);
+                                                $file_start_date = date('M d, Y', $file_start_date);
+                                            } else {
+                                                $file_start_date = new DateTime($file_start_date);
+                                                $file_start_date = $file_start_date->format('M d, Y');
+                                            }
+                                            $file_uploaded_date = new DateTime($file_uploaded_date);
+                                            $file_uploaded_date = $file_uploaded_date->format('M d, Y');
+
+                                            $file_document_date = "Non-Expiry";
+                                            if ($rowFile["non_expiry"] == 0) {
+                                                $file_document_date = $file_start_date .' - '. $file_due_date;
+                                            }
+
+                                            echo '<tr id="tr_'.$file_ID.'">
+                                                <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p></td>
+                                                <td >'.$file_name.'</td>
+                                                <td >'.$file_description.'</td>
+                                                <td >'.$file_document_date.'</td>
+                                                <td >'.$file_uploaded_date.'</td>
+                                                <td class="text-center">
+                                                    <div class="btn-group btn-group-circle">
+                                                        <a href="#modalEditFile" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnEdit('.$file_ID.')">Edit</a>
+                                                        <a href="javascript:;" class="btn btn-danger btn-sm" onclick="btnDelete('.$file_ID.')">Delete</a>
+                                                   </div>
+                                                </td>
+                                            </tr>';
+                                        }
+                                    }
+
+                                 echo '</tbody>
+                            </table>
+                        </div>
+                    </div>';
+                }
+            echo '</div>
         </div>';
 
         mysqli_close($conn);
@@ -3022,7 +3326,19 @@
             $team = implode(", ",$_POST['team']);
         }
 
-        mysqli_query( $conn,"UPDATE tbl_hr_employee set first_name='". $first_name ."', last_name='". $last_name ."', email='". $email ."', type_id='". $type_id ."', id_number='". $id_number ."', keys_assigned='". $keys_assigned ."', alarm_code='". $alarm_code ."', date_hired='". $date_hired ."', department_id='". $department_id ."', job_description_id='". $job_description_id ."', alternate='". $alternate ."', reporting_to_id='". $reporting_to_id ."', team='". $team ."', suspended='". $suspended ."', status='". $status ."', admin='". $admin ."', last_modified='". $status_last_modified ."' WHERE ID='". $ID ."'" );
+        $alternate_email_arr = array();
+        if (!empty($_POST['alt'])) {
+            $alt = $_POST['alt'];
+            for ($i=1; $i < count($alt); $i++) {
+                if (!empty($_POST['alt'][$i]['email'])) {
+                    $alternate_email = addslashes($_POST['alt'][$i]['email']);
+                    array_push($alternate_email_arr, $alternate_email);
+                }
+            }
+        }
+        $alternate_email_arr = implode(', ', $alternate_email_arr);
+
+        mysqli_query( $conn,"UPDATE tbl_hr_employee set first_name='". $first_name ."', last_name='". $last_name ."', email='". $email ."', alternate_email='". $alternate_email_arr ."', type_id='". $type_id ."', id_number='". $id_number ."', keys_assigned='". $keys_assigned ."', alarm_code='". $alarm_code ."', date_hired='". $date_hired ."', department_id='". $department_id ."', job_description_id='". $job_description_id ."', alternate='". $alternate ."', reporting_to_id='". $reporting_to_id ."', team='". $team ."', suspended='". $suspended ."', status='". $status ."', admin='". $admin ."', last_modified='". $status_last_modified ."' WHERE ID='". $ID ."'" );
         
         $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE email = '".$email."'" );
         if ( mysqli_num_rows($selectUser) > 0 ) {
@@ -3200,8 +3516,10 @@
     // File Section
     if( isset($_GET['modalNew_File']) ) {
         $ID = $_GET['modalNew_File'];
+        $c = $_GET['c'];
 
         echo '<input class="form-control" type="hidden" name="ID" value="'. $ID .'" />
+        <input class="form-control" type="hidden" name="category" value="'. $c .'" />
         <div class="form-group">
             <label class="col-md-3 control-label">Upload File</label>
             <div class="col-md-8">
@@ -3228,6 +3546,12 @@
             </div>
         </div>
         <div class="form-group">
+            <label class="col-md-3 control-label">Non Expiry</label>
+            <div class="col-md-8 control-label" style="text-align: left;">
+                <input type="checkbox" name="non_expiry" onchange="changeExpiry(this)" value="1" checked />
+            </div>
+        </div>
+        <div class="form-group document_date hide">
             <label class="col-md-3 control-label">Document Date</label>
             <div class="col-md-8">
                 <div class="input-group">
@@ -3281,9 +3605,13 @@
             } else if ($filetype == 3) {
                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
             }
+
+            $category = htmlentities($row['category'] ?? '');
+            $non_expiry = htmlentities($row['non_expiry'] ?? '');
         }
 
         echo '<input class="form-control" type="hidden" name="ID" value="'. $ID .'" />
+        <input class="form-control" type="hidden" name="category" value="'. $category .'" />
         <input class="form-control" type="hidden" name="uploaded_date" value="'. $uploaded_date .'" />
         <div class="form-group">
             <label class="col-md-3 control-label">Upload File</label>
@@ -3312,6 +3640,12 @@
             </div>
         </div>
         <div class="form-group">
+            <label class="col-md-3 control-label">Non Expiry</label>
+            <div class="col-md-8 control-label" style="text-align: left;">
+                <input type="checkbox" name="non_expiry" onchange="changeExpiry(this)" value="'.$non_expiry.'" '; echo $non_expiry == 1 ? 'checked':''; echo ' />
+            </div>
+        </div>
+        <div class="form-group document_date '; echo $non_expiry == 1 ? 'hide':''; echo '">
             <label class="col-md-3 control-label">Document Date</label>
             <div class="col-md-8">
                 <div class="input-group">
@@ -3340,6 +3674,8 @@
         }
 
         $ID = $_POST['ID'];
+        $category = $_POST['category'];
+        $non_expiry = !empty($_POST['non_expiry']) ? 1:0;
         $filename = addslashes($_POST['filename']);
         $description = addslashes($_POST['description']);
         $arr_item = array();
@@ -3375,8 +3711,8 @@
             array_push($arr_item, $output);
             $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
-            $sql = "INSERT INTO tbl_hr_file (user_id, portal_user, employee_id, files, filetype, filename, filesize, file_history, description, start_date, due_date, uploaded_date)
-            VALUES ('$user_id', '$portal_user', '$ID', '$files', '$filetype', '$filename', '$filesize', '$file_history', '$description', '$date_start', '$date_end', '$last_modified')";
+            $sql = "INSERT INTO tbl_hr_file (user_id, portal_user, employee_id, category, files, filetype, filename, filesize, file_history, description, start_date, due_date, uploaded_date, non_expiry)
+            VALUES ('$user_id', '$portal_user', '$ID', '$category', '$files', '$filetype', '$filename', '$filesize', '$file_history', '$description', '$date_start', '$date_end', '$local_date', '$non_expiry')";
             
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
@@ -3415,14 +3751,29 @@
                     $data_date_end = new DateTime($date_end);
                     $data_date_end = $data_date_end->format('M d, Y');
 
+                    $data_document_date = "Non-Expiry";
+                    if ($rowData["non_expiry"] == 0) {
+                        $data_document_date = $data_date_start .' - '. $data_date_end;
+                    }
+
+                    $data = '<tr id="tr_'.$data_ID.'">
+                        <td >'.$files.'</td>
+                        <td >'.$data_filename.'</td>
+                        <td >'.$data_description.'</td>
+                        <td >'.$data_document_date.'</td>
+                        <td >'.$data_uploaded_date.'</td>
+                        <td class="text-center">
+                            <div class="btn-group btn-group-circle">
+                                <a href="#modalEditFile" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnEdit('.$data_ID.')">Edit</a>
+                                <a href="javascript:;" class="btn btn-danger btn-sm" onclick="btnDelete('.$data_ID.')">Delete</a>
+                           </div>
+                        </td>
+                    </tr>';
+
                     $output = array(
                         "ID" => $data_ID,
-                        "files" => $files,
-                        "filename" => $data_filename,
-                        "description" => $data_description,
-                        "start_date" => $data_date_start,
-                        "due_date" => $data_date_end,
-                        "uploaded_date" => $data_uploaded_date
+                        "data" => $data,
+                        "category" => $category
                     );
                 }
             }
@@ -3432,6 +3783,8 @@
     }
     if( isset($_POST['btnUpdate_HR_File']) ) {
         $ID = $_POST['ID'];
+        $category = $_POST['category'];
+        $non_expiry = !empty($_POST['non_expiry']) ? 1:0;
         $filename = addslashes($_POST['filename']);
         $description = addslashes($_POST['description']);
 
@@ -3443,7 +3796,7 @@
         $date_end = $date[1];
         $process = true;
 
-        mysqli_query( $conn,"UPDATE tbl_hr_file set filename='". $filename ."', description='". $description ."', start_date='". $date_start ."', due_date='". $date_end ."', uploaded_date='". $uploaded_date ."' WHERE ID='". $ID ."'" );
+        mysqli_query( $conn,"UPDATE tbl_hr_file set category = $category, non_expiry = $non_expiry, filename = '$filename', description = '$description', start_date = '$date_start', due_date = '$date_end', uploaded_date = '$uploaded_date' WHERE ID = $ID" );
 
         $selectData = mysqli_query( $conn,'SELECT * FROM tbl_hr_file WHERE ID="'. $ID .'" ORDER BY ID LIMIT 1' );
         if ( mysqli_num_rows($selectData) > 0 ) {
@@ -3520,14 +3873,27 @@
                 $data_date_end = new DateTime($date_end);
                 $data_date_end = $data_date_end->format('M d, Y');
 
+                $data_document_date = "Non-Expiry";
+                if ($rowData["non_expiry"] == 0) {
+                    $data_document_date = $data_date_start .' - '. $data_date_end;
+                }
+
+                $data = '<td >'.$files.'</td>
+                <td >'.$data_filename.'</td>
+                <td >'.$data_description.'</td>
+                <td >'.$data_document_date.'</td>
+                <td >'.$data_uploaded_date.'</td>
+                <td class="text-center">
+                    <div class="btn-group btn-group-circle">
+                        <a href="#modalEditFile" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnEdit('.$data_ID.')">Edit</a>
+                        <a href="javascript:;" class="btn btn-danger btn-sm" onclick="btnDelete('.$data_ID.')">Delete</a>
+                   </div>
+                </td>';
+
                 $output = array(
                     "ID" => $data_ID,
-                    "files" => $files,
-                    "filename" => $data_filename,
-                    "description" => $data_description,
-                    "start_date" => $data_date_start,
-                    "due_date" => $data_date_end,
-                    "uploaded_date" => $data_uploaded_date
+                    "data" => $data,
+                    "category" => $category
                 );
                 mysqli_close($conn);
                 echo json_encode($output);
@@ -12285,6 +12651,8 @@
                 if ($user_id == 27 || $user_id == 34 || $user_id == 464 || $user_id == 504 || $user_id == 475 || $user_id == 683) {
                     echo '<li><a href="#tabPortal_2" data-toggle="tab">Portal</a></li>';
                     echo '<li><a href="#tabUsage_2" data-toggle="tab">Usage</a></li>';
+                } else if ($user_id == 1479) {
+                    echo '<li><a href="#tabPortal_2" data-toggle="tab">Portal</a></li>';
                 }
                 
                 echo '<li class="hide">
@@ -16208,7 +16576,7 @@
                     }
                     
                     $address_array = array();
-                    $address = $rowData["address"];
+                    $address = htmlentities($rowData["address"] ?? '');
                     $address_arr = explode(" | ", $address);
                     if (COUNT($address_arr) < 5) {
                         $address_arr = explode(", ", $address);
@@ -16243,8 +16611,8 @@
                         $selectEnterprise = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE users_entities = $user_id" );
                         if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                             $rowEnterprise = mysqli_fetch_array($selectEnterprise);
-                            $data_company = $rowEnterprise["businessname"];
-                            $data_email = $rowEnterprise["businessemailAddress"];
+                            $data_company = htmlentities($rowEnterprise["businessname"] ?? '');
+                            $data_email = htmlentities($rowEnterprise["businessemailAddress"] ?? '');
                         }
 
                         $to = $email;
@@ -46750,7 +47118,8 @@
         }
         
         // $selectData = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID = $id AND deleted = 0 AND user_id = $user_id" );
-        $selectData = mysqli_query( $conn,"SELECT
+        $selectData = mysqli_query( $conn,"
+            SELECT
             l.ID AS l_ID,
             l.parent_id AS l_parent_id,
             l.child_id AS l_child_id,
@@ -46980,7 +47349,7 @@
                                         $user_array_list = array(1, 464);
                                         if (!empty($row["l_description_tmp"]) AND in_array($user_id, $user_array_list)) {
                                             $arr_tmp = json_decode($row["l_description_tmp"],true);
-                                            if ( (end($arr_tmp)['reviewed'] == 0 OR end($arr_tmp)['reviewed'] == 1) AND end($arr_tmp)['approved'] == 0 ) {
+                                            if (end($arr_tmp)['status'] != 4) {
                                                echo '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$library_ID.')">here</a> to view</span>';
                                             }
                                         }
@@ -48501,7 +48870,7 @@
                                 $user_array_list = array(1, 464);
                                 if (!empty($row["l_description_tmp"]) AND in_array($user_id, $user_array_list)) {
                                     $arr_tmp = json_decode($row["l_description_tmp"],true);
-                                    if ( (end($arr_tmp)['reviewed'] == 0 OR end($arr_tmp)['reviewed'] == 1) AND end($arr_tmp)['approved'] == 0 ) {
+                                    if (end($arr_tmp)['status'] != 4) {
                                        echo '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$library_ID.')">here</a> to view</span>';
                                     }
                                 }
@@ -50962,13 +51331,14 @@
             $user_id = employerID($portal_user);
         }
 
-        $selectData = mysqli_query( $conn,"SELECT 
+        $selectData = mysqli_query( $conn,"
+            SELECT 
             l.description_tmp AS l_description_tmp,
             l.description_comment AS l_description_comment,
             ur.ID AS u_reviewer_ID,
-            CASE WHEN LENGTH(ur.first_name) = 0 AND LENGTH(ur.last_name) = 0 THEN '---' ELSE CONCAT(ur.first_name, ' ', ur.last_name)  END AS u_reviewer,
+            CASE WHEN LENGTH(ur.first_name) = 0 AND LENGTH(ur.last_name) = 0 THEN '---' ELSE CONCAT(ur.first_name, ' ', ur.last_name) END AS u_reviewer,
             ua.ID AS u_approver_ID,
-            CASE WHEN LENGTH(ua.first_name) = 0 AND LENGTH(ua.last_name) = 0 THEN '---' ELSE CONCAT(ua.first_name, ' ', ua.last_name)  END AS u_approver
+            CASE WHEN LENGTH(ua.first_name) = 0 AND LENGTH(ua.last_name) = 0 THEN '---' ELSE CONCAT(ua.first_name, ' ', ua.last_name) END AS u_approver
             FROM tbl_library AS l
 
             LEFT JOIN (
@@ -50995,17 +51365,37 @@
             $arr_tmp = json_decode($row["l_description_tmp"],true);
             $l_description = end($arr_tmp)['description'];
 
-            $l_status = 'Pending';
-            if (end($arr_tmp)['reviewed'] > 0) { $l_status = 'Reviewed'; }
-            if (end($arr_tmp)['approved'] > 0) { $l_status = 'Approved'; }
+            $status_array = array (
+                0 => 'For Review',
+                1 => 'Pending Review',
+                2 => 'For Approval',
+                3 => 'Pending Approval',
+                4 => 'Approved'
+            );
+            $l_status = $status_array[end($arr_tmp)['status']];
 
             $l_description_comment = 'No comment!';
             if (!empty($row["l_description_comment"])) {
                 $comment_arr = json_decode($row["l_description_comment"],true);
                 if (count($comment_arr) > 0) {
-                    $l_description_comment = '<ul style="margin:0;">';
+                    $l_description_comment = '<ul style="margin:0; padding-left: 2rem;">';
                         foreach ($comment_arr as $key => $value) {
-                            $l_description_comment .= '<li>'.htmlentities($value['comment'] ?? '').'</li>';
+                            $comm_user_id = $value['user_id'];
+                            $selectData = mysqli_query( $conn,"SELECT first_name, last_name FROM tbl_user WHERE ID = $comm_user_id" );
+                            if ( mysqli_num_rows($selectData) > 0 ) {
+                                $row = mysqli_fetch_array($selectData);
+                                $comm_name = htmlentities($row["first_name"] ?? '') .' '. htmlentities($row["last_name"] ?? '');
+                            }
+
+                            $comm_date = '';
+                            if (!empty($value['date'])) {
+                                $comm_date = ' <i>('.$value['date'].')</i>';
+                            }
+
+                            $l_description_comment .= '<li>
+                                <small><b>'.$comm_name.'</b>'.$comm_date.'</small><br>
+                                '.htmlentities($value['comment'] ?? '').'
+                            </li>';
                         }
                     $l_description_comment .= '</ul>';
                 }
@@ -51019,11 +51409,13 @@
                 <div class="col-md-3">
                     <b>Status:</b> ';
 
-                    if (($portal_user == $row["u_reviewer_ID"] AND end($arr_tmp)['reviewed'] == 0 AND end($arr_tmp)['approved'] == 0) OR ($portal_user == $row["u_approver_ID"] AND end($arr_tmp)['reviewed'] == 1 AND end($arr_tmp)['approved'] == 0)) {
-                        echo '<select class="form-controlx" onchange="changeStatus('.$ID.', this.value)">
-                            <option value="0">Select</option>
-                            <option value="1">Accept</option>
-                            <option value="2">Reject</option>
+                    if ($portal_user == $row["u_reviewer_ID"] OR $portal_user == $row["u_approver_ID"]) {
+                        echo '<select class="form-controlx" onchange="changeStatus('.$ID.', this)">
+                            <option value="0" '; echo end($arr_tmp)['status'] == 0 ? 'SELECTED':''; echo '>For Review</option>
+                            <option value="1" '; echo end($arr_tmp)['status'] == 1 ? 'SELECTED':''; echo '>Pending Review</option>
+                            <option value="2" '; echo end($arr_tmp)['status'] == 2 ? 'SELECTED':''; echo '>For Approval</option>
+                            <option value="3" '; echo end($arr_tmp)['status'] == 3 ? 'SELECTED':''; echo '>Pending Approval</option>
+                            <option value="4" '; echo end($arr_tmp)['status'] == 4 ? 'SELECTED':''; echo '>Approved</option>
                         </select>';
                     } else {
                         echo $l_status;
@@ -51059,27 +51451,59 @@
             $jsonArray = $row["description_tmp"];
             $phpArray = json_decode($jsonArray, true);
             $lastDescription = end($phpArray)['description'];
-            $description_reviewed = 0;
-            $description_approved = 0;
-            if ($row["reviewer"] == $portal_user) {
-                $description_reviewed = $v;
-                $phpArray[key($phpArray)]['reviewed'] = $v;
-            }
-            if ($row["approver"] == $portal_user) {
-                $description_approved = $v;
-                $phpArray[key($phpArray)]['approved'] = $v;
-            }
+            $phpArray[key($phpArray)]['status'] = $v;
+
             $jsonArray = json_encode($phpArray, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
-            mysqli_query( $conn,"UPDATE tbl_library set description_tmp='". $jsonArray ."', description_reviewed = $description_reviewed, description_approved = $description_approved WHERE ID = $ID" );
+            mysqli_query( $conn,"UPDATE tbl_library set description_tmp='". $jsonArray ."' WHERE ID = $ID" );
 
-
-            if ($description_reviewed == 1 AND $description_approved == 1) {
-                mysqli_query( $conn,"UPDATE tbl_library set description = '".$lastDescription."' WHERE ID = $ID" );
-            } else if ($description_reviewed == 1 AND $description_approved == 0) {
+            if ($v == 4) {
+                mysqli_query( $conn,"UPDATE tbl_library SET description = '".$lastDescription."' WHERE ID = $ID" );
+            } else {
                 $revise = '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$ID.')">here</a> to view</span>';
                 $lastDescription = $row["description"].$revise;
-            } else {
-                $lastDescription = $row["description"];
+            }
+
+            $user_id_arr = array();
+            array_push($user_id_arr, end($phpArray)['editor']);
+            if ($row["reviewer"] > 0) { array_push($user_id_arr, $row["reviewer"]); }
+            if ($row["approver"] > 0) { array_push($user_id_arr, $row["approver"]); }
+            $user_id_arr = array_diff($user_id_arr, [$portal_user]);
+
+            if (count($user_id_arr) > 0) {
+                $user_id_arr = implode(', ', $user_id_arr);
+                $selectRecipients = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID IN ($user_id_arr)" );
+                if (mysqli_num_rows($selectRecipients) > 0) {
+                    while($rowRecipients = mysqli_fetch_array($selectRecipients)) {
+                        $recipients_name = htmlentities($rowRecipients["first_name"] ?? '') .' '. htmlentities($rowRecipients["last_name"] ?? '');
+                        $recipients_email = htmlentities($rowRecipients["email"] ?? '');
+                        $recipients[$recipients_email] = $recipients_name;
+                    }
+                }
+
+                $selectSender = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $portal_user" );
+                $rowSender = mysqli_fetch_array($selectSender);
+                $sender_name = htmlentities($rowSender["first_name"] ?? '') .' '. htmlentities($rowSender["last_name"] ?? '');
+                $sender_email = htmlentities($rowSender["email"] ?? '');
+                $sender[$sender_email] = $sender_name;
+
+                $status_array = array (
+                    0 => 'For Review',
+                    1 => 'Pending Review',
+                    2 => 'For Approval',
+                    3 => 'Pending Approval',
+                    4 => 'Approved'
+                );
+
+                $subject = 'Compliance Dashboard Description - Status - '. $local_date;
+                $body = 'Hi Team,<br><br>
+
+                <b>'.$sender_name.'</b> updated the status into <i>'.$status_array[$v].'</i><br><br>
+
+                Click <a href="'.$base_url.'dashboard?d='.$ID.'" target="_blank">here</a> to view<br><br>
+
+                Thanks';
+
+                php_mailer_dynamic($sender, $recipients, $subject, $body);
             }
 
             $output = array(
@@ -51189,7 +51613,7 @@
         $user_array_list = array(1, 464);
         if (!empty($row["description_tmp"]) AND in_array($user_id, $user_array_list)) {
             $arr_tmp = json_decode($row["description_tmp"],true);
-            if ( (end($arr_tmp)['reviewed'] == 0 OR end($arr_tmp)['reviewed'] == 1) AND end($arr_tmp)['approved'] == 0) {
+            if (end($arr_tmp)['status'] != 4) {
                 $description = htmlentities(end($arr_tmp)['description'] ?? '');
             }
         }
@@ -51399,6 +51823,15 @@
         $type = $_GET['type'];
         $today = date('Y-m-d');
 
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
         echo '<input class="form-control" type="hidden" name="parent_id" value="'. $id .'" />
         <input class="form-control" type="hidden" name="type" value="'. $type .'" />
         <div class="form-group">
@@ -51407,10 +51840,80 @@
                 <input class="form-control" type="text" name="name" required />
             </div>
         </div>
+        <div class="form-group '; echo $user_id == 1 OR $user_id == 464 ? '':'hide'; echo '">
+            <label class="col-md-3 control-label">Reviewer</label>
+            <div class="col-md-8">
+                <select class="form-control mt-multiselect" name="reviewer">
+                    <option value="">Select</option>';
+                    $selectEmployeee = mysqli_query( $conn,"SELECT 
+                        u.ID AS u_ID,
+                        e.ID AS e_ID,
+                        e.first_name AS e_first_name,
+                        e.last_name AS e_last_name
+                        FROM tbl_hr_employee AS e
+
+                        INNER JOIN (
+                            SELECT
+                            *
+                            FROM tbl_user
+                        ) AS u
+                        ON e.ID = u.employee_id
+
+                        WHERE e.suspended = 0 
+                        AND e.status = 1 
+                        AND e.user_id = $user_id 
+
+                        ORDER BY e.first_name" );
+                    if ( mysqli_num_rows($selectEmployeee) > 0 ) {
+                        while($rowEmployee = mysqli_fetch_array($selectEmployeee)) {
+                            $emp_ID = $rowEmployee["u_ID"];
+                            $emp_name = $rowEmployee["e_first_name"] .' '. $rowEmployee["e_last_name"];
+
+                            echo '<option value="'.$emp_ID.'">'.$emp_name.'</option>';
+                        }
+                    }
+                echo '</select>
+            </div>
+        </div>
+        <div class="form-group '; echo $user_id == 1 OR $user_id == 464 ? '':'hide'; echo '">
+            <label class="col-md-3 control-label">Approver</label>
+            <div class="col-md-8">
+                <select class="form-control mt-multiselect" name="approver">
+                    <option value="">Select</option>';
+                    $selectEmployeee = mysqli_query( $conn,"SELECT 
+                        u.ID AS u_ID,
+                        e.ID AS e_ID,
+                        e.first_name AS e_first_name,
+                        e.last_name AS e_last_name
+                        FROM tbl_hr_employee AS e
+
+                        INNER JOIN (
+                            SELECT
+                            *
+                            FROM tbl_user
+                        ) AS u
+                        ON e.ID = u.employee_id
+
+                        WHERE e.suspended = 0 
+                        AND e.status = 1 
+                        AND e.user_id = $user_id 
+
+                        ORDER BY e.first_name" );
+                    if ( mysqli_num_rows($selectEmployeee) > 0 ) {
+                        while($rowEmployee = mysqli_fetch_array($selectEmployeee)) {
+                            $emp_ID = $rowEmployee["u_ID"];
+                            $emp_name = $rowEmployee["e_first_name"] .' '. $rowEmployee["e_last_name"];
+
+                            echo '<option value="'.$emp_ID.'">'.$emp_name.'</option>';
+                        }
+                    }
+                echo '</select>
+            </div>
+        </div>
         <div class="form-group">
             <label class="col-md-3 control-label">Item Description</label>
             <div class="col-md-8">
-                <textarea class="form-control" name="description" required></textarea>
+                <textarea class="form-control summernote" name="description" required></textarea>
             </div>
         </div>
         <div class="form-group">
@@ -51442,7 +51945,7 @@
         $user_array_list = array(5, 1, 464);
         if (!empty($row["description_tmp"]) AND in_array($user_id, $user_array_list)) {
             $arr_tmp = json_decode($row["description_tmp"],true);
-            if ( (end($arr_tmp)['reviewed'] == 0 OR end($arr_tmp)['reviewed'] == 1) AND end($arr_tmp)['approved'] == 0) {
+            if (end($arr_tmp)['status'] != 4) {
                 $description = htmlentities(end($arr_tmp)['description'] ?? '');
             }
         }
@@ -51677,7 +52180,6 @@
 
         $description = addslashes($_POST['description']);
 
-
         $reviewer = 0;
         if (!empty($_POST['reviewer'])) {
             $reviewer = $_POST['reviewer'];
@@ -51833,11 +52335,11 @@
 
         if ($_POST['reviewer'] <> $_POST['reviewer_tmp']) {
             $reviewer = $_POST['reviewer'];
-            mysqli_query( $conn,"UPDATE tbl_library set description_reviewed = 0, description_approved = 0, reviewer = $reviewer WHERE ID = $ID" );
+            mysqli_query( $conn,"UPDATE tbl_library SET reviewer = $reviewer WHERE ID = $ID" );
         }
         if ($_POST['approver'] <> $_POST['approver_tmp']) {
             $approver = $_POST['approver'];
-            mysqli_query( $conn,"UPDATE tbl_library set description_approved = 0, approver = $approver WHERE ID = $ID" );
+            mysqli_query( $conn,"UPDATE tbl_library SET approver = $approver WHERE ID = $ID" );
         }
 
         $revise = '';
@@ -51854,6 +52356,7 @@
 
                 $desc_tmp = array (
                     'editor' =>  $portal_user,
+                    'status' =>  0,
                     'reviewed' =>  0,
                     'approved' =>  0,
                     'description' =>  addslashes($description)
@@ -51863,7 +52366,7 @@
                 $description = json_encode($arr_tmp, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
                 $revise = '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$ID.')">here</a> to view</span>';
 
-                mysqli_query( $conn,"UPDATE tbl_library set description_reviewed = 0, description_approved = 0, description_tmp = '".$description."' WHERE ID = $ID" );
+                mysqli_query( $conn,"UPDATE tbl_library SET description_tmp = '".$description."' WHERE ID = $ID" );
 
                 // Notify Reviewer and Approver
                 if (!empty($_POST['reviewer']) OR !empty($_POST['approver'])) {
@@ -51901,7 +52404,7 @@
                 }
             }
         } else {
-            mysqli_query( $conn,"UPDATE tbl_library set description_reviewed = 0, description_approved = 0, description = '".$description."' WHERE ID = $ID" );
+            mysqli_query( $conn,"UPDATE tbl_library SET description = '".$description."' WHERE ID = $ID" );
             $description_tmp = $description;
         }
         
@@ -51969,9 +52472,19 @@
         $description = addslashes($_POST['description']);
         $due_date = $_POST['due_date'];
         $last_modified = date('Y-m-d');
+        
+        $reviewer = 0;
+        if (!empty($_POST['reviewer'])) {
+            $reviewer = $_POST['reviewer'];
+        }
 
-        $sql = "INSERT INTO tbl_library (user_id, portal_user, parent_id, type, free_access, name, description, due_date, last_modified)
-        VALUES ('$user_id', '$portal_user', '$parent_id', '$type', '$free_access', '$name', '$description', '$due_date', '$last_modified')";
+        $approver = 0;
+        if (!empty($_POST['approver'])) {
+            $approver = $_POST['approver'];
+        }
+
+        $sql = "INSERT INTO tbl_library (user_id, portal_user, parent_id, type, free_access, name, description, reviewer, approver, due_date, last_modified)
+        VALUES ('$user_id', '$portal_user', '$parent_id', '$type', '$free_access', '$name', '$description', '$reviewer', '$approver', '$due_date', '$last_modified')";
         
         //->>>>>>>  START Brandon Auto service log for creating subitem <<<<<<<<-
         
@@ -52092,6 +52605,7 @@
 
                 $desc_tmp = array (
                     'editor' =>  $portal_user,
+                    'status' =>  0,
                     'reviewed' =>  0,
                     'approved' =>  0,
                     'description' =>  addslashes($description)
@@ -52218,7 +52732,7 @@
         $comment_arr = array();
 
         if (!empty($comment)) {
-            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID = $ID" );
+            $selectData = mysqli_query( $conn,"SELECT description_comment FROM tbl_library WHERE ID = $ID" );
             $row = mysqli_fetch_array($selectData);
             if (!empty($row["description_comment"])) {
                 $comment_arr = json_decode($row["description_comment"], true);
@@ -52233,6 +52747,49 @@
             $comment_arr = json_encode($comment_arr, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
             mysqli_query( $conn,"UPDATE tbl_library SET description_comment = '$comment_arr' WHERE ID = $ID" );
             if (!mysqli_error($conn)) {
+                $user_id_arr = array();
+                $selectData = mysqli_query( $conn,"SELECT description_comment, reviewer, approver FROM tbl_library WHERE ID = $ID" );
+                $rowData = mysqli_fetch_array($selectData);
+
+                if (!empty($rowData["description_comment"])) {
+                    $comment_arr = json_decode($rowData["description_comment"],true);
+                    if (count($comment_arr) > 0) {
+                        foreach ($comment_arr as $key => $value) {
+                            array_push($user_id_arr, $value['user_id']);
+                        }
+                    }
+                }
+                if ($rowData["reviewer"] > 0) { array_push($user_id_arr, $rowData["reviewer"]); }
+                if ($rowData["approver"] > 0) { array_push($user_id_arr, $rowData["approver"]); }
+
+                if (count($user_id_arr) > 0) {
+                    $user_id_arr = implode(', ', $user_id_arr);
+                    $selectRecipients = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID IN ($user_id_arr)" );
+                    if (mysqli_num_rows($selectRecipients) > 0) {
+                        while($rowRecipients = mysqli_fetch_array($selectRecipients)) {
+                            $recipients_name = htmlentities($rowRecipients["first_name"] ?? '') .' '. htmlentities($rowRecipients["last_name"] ?? '');
+                            $recipients_email = htmlentities($rowRecipients["email"] ?? '');
+                            $recipients[$recipients_email] = $recipients_name;
+                        }
+                    }
+
+                    $selectSender = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $portal_user" );
+                    $rowSender = mysqli_fetch_array($selectSender);
+                    $sender_name = htmlentities($rowSender["first_name"] ?? '') .' '. htmlentities($rowSender["last_name"] ?? '');
+                    $sender_email = htmlentities($rowSender["email"] ?? '');
+                    $sender[$sender_email] = $sender_name;
+
+                    $subject = 'Compliance Dashboard Description - Comment - '. $local_date;
+                    $body = 'Hi Team,<br><br>
+
+                    <b>'.$sender_name.'</b> said <i>'.$comment.'</i><br><br>
+
+                    Click <a href="'.$base_url.'dashboard?d='.$ID.'" target="_blank">here</a> to view<br><br>
+
+                    Thanks';
+
+                    php_mailer_dynamic($sender, $recipients, $subject, $body);
+                }
                 echo 'done';
             }
         }

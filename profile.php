@@ -67,6 +67,121 @@
                             <!-- BEGIN PROFILE CONTENT -->
                             <div class="profile-content">
                                 <div class="row">
+                                    
+                                    <div class="col-md-12">
+                                        <?php
+                                            if ($switch_user_id == 1) {
+                                                // $selectData = mysqli_query( $conn,"SELECT account_email, flag_2 FROM tbl_Customer_Relationship WHERE flag = 0 AND flag_2 = 0 AND LENGTH(account_email) > 0 LIMIT 200, 100" );
+                                                // $email_arr = array();
+                                                // if ( mysqli_num_rows($selectData) > 0 ) {
+                                                //     while($rowData = mysqli_fetch_array($selectData)) {
+                                                //         array_push($email_arr, htmlentities($rowData["account_email"]));
+                                                //     }
+                                                // }
+                                                // $email_arr = implode(',', $email_arr);
+    
+                                                // $url = 'https://api.addressy.com/EmailValidation/Batch/Validate/v1.20/csv.ws?Key=EH28-GE99-CJ21-FH52&Emails='.$email_arr;
+                                                // $response = file_get_contents($url);
+    
+                                                // $lines = explode("\n", $response);
+                                                // $data = [];
+                                                // foreach ($lines as $line) {
+                                                //     $data[] = str_getcsv($line);
+                                                // }
+    
+                                                // $validEmails = [];
+                                                // $invalidEmails = [];
+    
+                                                // foreach ($data as $row) {
+                                                //     if (isset($row[0]) && $row[0] === 'Valid') {
+                                                //         $validEmails[] = $row[1]; // Assuming email address is always in the second column
+                                                //     } elseif (isset($row[0]) && $row[0] === 'Invalid') {
+                                                //         $invalidEmails[] = $row[1];
+                                                //     }
+                                                // }
+                                                // $email_list = implode('", "', $invalidEmails);
+                                                // mysqli_query( $conn,"UPDATE tbl_Customer_Relationship set flag_2 = 1 WHERE email IN (\"$email_list\")" );
+    
+                                                // echo "Valid Email Addresses:<br>";
+                                                // foreach ($validEmails as $email) {
+                                                //     echo $email . "<br>";
+                                                // }
+                                                // echo '<br><br><br>';
+                                                // echo "Invalid Email Addresses:<br>";
+                                                // foreach ($invalidEmails as $email) {
+                                                //     echo $email . "<br>";
+                                                // }
+                                                
+                                                
+                                                // ====================================================
+                                                
+                                                
+                                                // $selectData = mysqli_query( $conn,"SELECT account_email, flag_2 FROM tbl_Customer_Relationship WHERE flag = 0 AND flag_2 = 0 AND LENGTH(account_email) > 0" );
+                                                // // $email_arr = array();
+                                                // if ( mysqli_num_rows($selectData) > 0 ) {
+                                                //     while($rowData = mysqli_fetch_array($selectData)) {
+                                                        
+                                                //         $url = 'https://api.addressy.com/EmailValidation/Batch/Validate/v1.20/csv.ws?Key=EH28-GE99-CJ21-FH52&Emails='. $rowData["account_email"];
+                                                //         $response = file_get_contents($url);
+            
+                                                //         $lines = explode("\n", $response);
+                                                //         $data = [];
+                                                //         foreach ($lines as $line) {
+                                                //             $data[] = str_getcsv($line);
+                                                //         }
+            
+                                                //         $validEmails = [];
+                                                //         $invalidEmails = [];
+            
+                                                //         foreach ($data as $row) {
+                                                //             if (isset($row[0]) && $row[0] === 'Valid') {
+                                                //                 $validEmails[] = $row[1]; // Assuming email address is always in the second column
+                                                //             } elseif (isset($row[0]) && $row[0] === 'Invalid') {
+                                                //                 $invalidEmails[] = $row[1];
+                                                //             }
+                                                //         }
+                                                //         $email_list = implode('", "', $invalidEmails);
+                                                //         mysqli_query( $conn,"UPDATE tbl_Customer_Relationship set flag_2 = 1 WHERE email IN (\"$email_list\")" );
+            
+                                                //     }
+                                                // }
+                                                // $email_arr = implode(',', $email_arr);
+                                                
+                                                
+                                                
+                                                // =================================================
+                                                
+                                                
+                                                // $selectData = mysqli_query( $conn,"SELECT account_email, flag_2 FROM tbl_Customer_Relationship WHERE flag = 0 AND flag_2 = 0 AND LENGTH(account_email) > 0" );
+                                                // $email_arr = array();
+                                                // if ( mysqli_num_rows($selectData) > 0 ) {
+                                                //     while($rowData = mysqli_fetch_array($selectData)) {
+                                                //         $url = 'https://api.addressy.com/EmailValidation/Batch/Validate/v1.20/csv.ws?Key=EH28-GE99-CJ21-FH52&Emails='.$rowData["account_email"];
+                                                //         $response = file_get_contents($url);
+                                                //         $lines = explode("\n", $response);
+                                                //         $dataArray = [];
+                                                //         foreach ($lines as $line) {
+                                                //             $dataArray[] = str_getcsv($line);
+                                                //         }
+            
+                                                //         // Check each email address
+                                                //         foreach ($dataArray as $row) {
+                                                //             if (isset($row[1])) {
+                                                //                 $email = trim($row[1]); // Assuming email address is always in the second column
+                                                //                 if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                                                //                     echo "$email is a valid email address.\n";
+                                                //                 } else {
+                                                //                     echo "$email is an invalid email address.\n";
+            
+                                                //                     mysqli_query( $conn,"UPDATE tbl_Customer_Relationship set flag_2 = 1 WHERE email = '$email'" );
+                                                //                 }
+                                                //             }
+                                                //         }
+                                                //     }
+                                                // }
+                                            }
+                                        ?>
+                                    </div>
                                     <div class="col-md-12 hide">
                                         <!-- BEGIN PORTLET -->
                                         <div class="portlet light ">

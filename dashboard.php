@@ -270,7 +270,20 @@
 
                     <?php if($newUser == 0) { ?>
                         <div class="row">
-                            <div class="col-md-3" style="margin-top: 5px;">
+
+                        <div class="actions">
+                                <ul class="nav nav-tabs">
+                                        <li class="active">
+                                            <a href="#home" data-toggle="tab">Home</a>
+                                        </li>                                                                
+                                        <li>
+                                            <a href="#com_analytics" data-toggle="tab">Analytics </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                             <div class="tab-content">
+                        <div class="tab-pane active" id="home"> 
+                            <div class="col-md-4" style="margin-top: 5px;">
                                 <div class="input-group">
                                     <input class="form-control" id="deliverable_search" type="text" placeholder="Search" />
                                     <?php if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 163 OR $current_userEmployerID == 27 OR $switch_user_id == 464) { ?>
@@ -1374,25 +1387,59 @@
                             <?php } ?>
 
 
-                             <!-- Nelmar Chart -->
-                             <div class="col-md-8" style="min-height: 300px;"> 
-                               
-                                     <h3 class="d-flex justify-content-center">Analytics</h3>
-                                        <div class="widget-thumb-wrap">
-                                        <div id="comchartdiv1" style="width: 100%; height: 500px;"></div>
-                                        <div id="comchartdiv" style="width: 100%; height: 500px;"></div>
-                                     </div>                                
+                            <div class="col-md-8" id="dashboardData" style="min-height: 300px;">
+                                <div class="panel-group accordion" id="parent">
                             </div>
-
-                            
-                            <div class="col-md-9" id="dashboardData" style="min-height: 300px;">
-                                <div class="panel-group accordion" id="parent"></div>
-                                
-                            </div>
-
-
-                            
                         </div>
+                    </div>   
+
+                    <!-- Nelmar Analytics -->
+                    <div class="tab-pane" id="com_analytics">                       
+                        <div class="row widget-row">                     
+                                <div class="col-md-6">                                     
+                                    <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">   
+                                        <!-- <h3 class="d-flex justify-content-center">Analytics</h3>    -->
+                                                <div class="widget-thumb-wrap">                                       
+                                                <div id="comchartdiv" style="width: 100%; height: 500px;">                                           
+                                                </div>
+                                            </div>     
+                                        </div>                           
+                                    </div>
+
+                                    <div class="col-md-6"> 
+                                    <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">                                         
+                                        <!-- <h3 class="d-flex justify-content-center">Analytics</h3>-->
+                                                <div class="widget-thumb-wrap">
+                                                <div id="comchartdiv1" style="width: 100%; height: 500px;">
+                                                </div>                                 
+                                            </div> 
+                                        </div>                               
+                                    </div>
+                                    
+                                    <div class="col-md-6">  
+                                    <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">                            
+                                            <h3 class="d-flex justify-content-center">Compliance</h3>
+                                                <div class="widget-thumb-wrap">
+                                                <div id="chartdiv4" style="width: 100%; height: 500px;">
+                                                </div>                                 
+                                            </div>     
+                                        </div>                           
+                                    </div>
+
+                                    <div class="col-md-6">  
+                                    <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">                            
+                                            <h3 class="d-flex justify-content-center">Annual Review</h3>
+                                                <div class="widget-thumb-wrap">
+                                                <div id="chartdiv3" style="width: 100%; height: 500px;">
+                                                </div>                                 
+                                            </div>     
+                                        </div>                           
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                                                                                                     
+                     </div> 
+
                     <?php } ?>
 
                     <!-- Item Section -->

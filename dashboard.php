@@ -1375,19 +1375,20 @@
 
 
                              <!-- Nelmar Chart -->
+                             <?php if($switch_user_id == 1) { ?>
                              <div class="col-md-8" style="min-height: 300px;"> 
                                
-                                     <h3 class="d-flex justify-content-center">Analytics</h3>
-                                        <div class="widget-thumb-wrap">
-                                        <div id="comchartdiv1" style="width: 100%; height: 500px;"></div>
-                                        <div id="comchartdiv" style="width: 100%; height: 500px;"></div>
-                                     </div>                                
+                                 <h3 class="d-flex justify-content-center">Analytics</h3>
+                                    <div class="widget-thumb-wrap">
+                                    <div id="comchartdiv1" style="width: 100%; height: 500px;"></div>
+                                    <div id="comchartdiv" style="width: 100%; height: 500px;"></div>
+                                 </div>                                
                             </div>
+                             <?php } ?>
 
                             
                             <div class="col-md-9" id="dashboardData" style="min-height: 300px;">
                                 <div class="panel-group accordion" id="parent"></div>
-                                
                             </div>
 
 
@@ -2279,8 +2280,10 @@
         <script src="assets/global/plugins/typeahead/handlebars.min.js" type="text/javascript"></script>
         <script src="assets/global/plugins/typeahead/typeahead.bundle.min.js" type="text/javascript"></script>
         <script src="assets/pages/scripts/jquery.table2excel.js" type="text/javascript"></script>
-        <script src="ChartIQ/compliance_chart.js"></script>
-
+        
+        <?php if($switch_user_id == 1) { ?>
+            <script src="ChartIQ/compliance_chart.js"></script>
+        <?php } ?>
 
 
         <script>

@@ -728,83 +728,75 @@
                                     </div>
                                     <?php if ($current_client == 0) { ?>
                                         <div class="col-md-12">
-                                            <!-- BEGIN PORTLET -->
-                                            
-                                            <!-- Begin Clockin -->
                                             <?php 
-                                                $currentDateTime = new DateTime();
-                                                $currentDateTime->setTimezone(new DateTimeZone('America/Chicago'));
-                                                $dateToday = "'".$currentDateTime->format('Y-m-d')."'";
-                                                $currentDateTime->modify('-1 day');
-                                                $lastDayDate = "'".$currentDateTime->format('Y-m-d')."'";
                                                 if($current_userEmployerID == 34) {
-                                                    // Settting up time in cst zone 
+                                                    $currentDateTime = new DateTime();
+                                                    $currentDateTime->setTimezone(new DateTimeZone('America/Chicago'));
+                                                    $dateToday = $currentDateTime->format('Y-m-d');
+                                                    
                                                     date_default_timezone_set('America/Chicago');
-                                                    // Check if user has in record today
-                                                    $is_timein = "SELECT time_in_datetime, reset_time FROM tbl_timein WHERE DATE(time_in_datetime) = $dateToday AND action = 'IN' AND user_id = {$current_userEmployeeID}";
+                                                    
+                                                    $is_timein = "SELECT time_in_datetime FROM tbl_timein WHERE DATE(time_in_datetime) = '$dateToday' AND action = 'IN' AND user_id = {$current_userEmployeeID} ORDER BY time_in_datetime DESC LIMIT 1";
                                                     $checktimein = mysqli_query($conn, $is_timein);
-                                                    $is_intoday = ($checktimein->num_rows == 0)? 'IN' : 'OUT';
-                                                    if ($checktimein) {
-                                                    $row = mysqli_fetch_assoc($checktimein);
-                                                        if ($row) {
-                                                            $timeInDateTime = $row['time_in_datetime'];
-                                                            $resetTime = $row['reset_time'];
-                                                        }
-                                                    }
+                                                    $timeInDateTime = ($checktimein && mysqli_num_rows($checktimein) > 0) ? mysqli_fetch_assoc($checktimein)['time_in_datetime'] : null;
                                                     
-                                                    // Check if user has out record today
-                                                    $is_timeout = "SELECT time_in_datetime FROM tbl_timein WHERE DATE(time_in_datetime) = $dateToday AND action = 'OUT' AND user_id = {$current_userEmployeeID}";
+                                                    $is_timeout = "SELECT time_in_datetime FROM tbl_timein WHERE DATE(time_in_datetime) = '$dateToday' AND action = 'OUT' AND user_id = {$current_userEmployeeID} ORDER BY time_in_datetime DESC LIMIT 1";
                                                     $checktimeout = mysqli_query($conn, $is_timeout);
-                                                    if ($checktimeout) {
-                                                        $row2 = mysqli_fetch_assoc($checktimeout);
-                                                        if ($row2) {
-                                                            $timeOutDateTime = $row2['time_in_datetime'];
-                                                        }
-                                                    } 
+                                                    $timeOutDateTime = ($checktimeout && mysqli_num_rows($checktimeout) > 0) ? mysqli_fetch_assoc($checktimeout)['time_in_datetime'] : null;
                                                     
-                                                    // Check if user has in record yesterday
-                                                    $hasin_yesterday = "SELECT time_in_datetime FROM tbl_timein WHERE DATE(time_in_datetime) = $lastDayDate AND action = 'IN' AND user_id = {$current_userEmployeeID}";
-                                                    $is_in_yesterday = mysqli_query($conn,$hasin_yesterday);
-                                                    if($is_in_yesterday) {
-                                                        $res2 = mysqli_fetch_assoc($is_in_yesterday);
-                                                        if ($res2) {
-                                                            $is_timein_yesterday = $res2['time_in_datetime']; 
-                                                        }
+                                                    $is_intoday = is_null($timeInDateTime) || (!is_null($timeOutDateTime) && $timeOutDateTime > $timeInDateTime) ? 'IN' : 'OUT';
+
+                                                    $has_out = "SELECT 
+                                                                    DATE_FORMAT(t.date, '%m-%e-%Y') AS date,
+                                                                    t.last_in_yesterday AS yesterday_in, 
+                                                                    IF(t.last_in_batch = t.last_out_batch, t.last_out_yesterday, '') AS yesterday_out,
+                                                                    t.user_id AS id,
+                                                                    t.reset_time as reset
+                                                                FROM (
+                                                                    SELECT 
+                                                                        DATE(time_in_datetime) AS date, 
+                                                                        MAX(CASE WHEN action = 'IN' THEN time_in_datetime END) AS last_in_yesterday, 
+                                                                        MAX(CASE WHEN action = 'OUT' THEN time_in_datetime END) AS last_out_yesterday,
+                                                                        MAX(CASE WHEN action = 'IN' THEN batch END) AS last_in_batch,
+                                                                        MAX(CASE WHEN action = 'OUT' THEN batch END) AS last_out_batch,
+                                                                        user_id,
+                                                                        reset_time
+                                                                    FROM tbl_timein
+                                                                        WHERE DATE(time_in_datetime) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+                                                                        AND user_id = {$current_userEmployeeID}
+                                                                    GROUP BY DATE(time_in_datetime), user_id
+                                                                ) t
+                                                                ORDER BY t.date DESC";
+                                                    $has_out_check = mysqli_query($conn, $has_out);
+
+                                                    if(!empty($has_out_check)) {
+                                                        $row = mysqli_fetch_assoc($has_out_check);
+                                                        $reset_time = (!empty($row['reset'])) ? $row['reset'] : '';
+                                                        $last_in = (!empty($row['yesterday_in'])) ? $row['yesterday_in'] : '';
+                                                        $last_out = (!empty($row['yesterday_out'])) ? $row['yesterday_out'] : '';
+                                                    } else {
+                                                        $reset_time = NULL;
+                                                        $last_in = NULL;
+                                                        $last_out = NULL;
                                                     }
+                                                ?>
                                                     
-                                                    // Check if user has in record yesterday
-                                                    $hasout_yesterday = "SELECT time_in_datetime FROM tbl_timein WHERE DATE(time_in_datetime) = $lastDayDate AND action = 'OUT' AND user_id = {$current_userEmployeeID}";
-                                                    $is_out_yesterday = mysqli_query($conn,$hasout_yesterday);
-                                                    if($is_out_yesterday) {
-                                                        $res = mysqli_fetch_assoc($is_out_yesterday);
-                                                        if ($res) {
-                                                            $is_timeout_yesterday = $res['time_in_datetime']; 
-                                                        }
-                                                    }
-                                                    $timeToReset = (!empty($resetTime)) ? $resetTime : '0000-00-00 00:00:00';
-                                                    $midnightCST = clone $currentDateTime;
-                                                    $midnightCST->modify('+1 day');
-                                                    $midnightCST->setTime(0, 0, 0);
-                                                    $referenceTime = $midnightCST->getTimestamp();
-                                                    $currentTimestamp = $currentDateTime->getTimestamp();
-                                                    $midnightCSTTimestamp = $timeToReset;
-                                                ?>
-                                                <?php if($current_userEmployeeID == 290) {
-                                                    echo "Current: $currentTimestamp<br>";
-                                                    echo "Midnight: $midnightCSTTimestamp<br>";
-                                                }
-                                                ?>
-                                                
-                                                <?php if(empty($is_timeout_yesterday) && !empty($is_timein_yesterday)):?>
-                                                    <button id="btn-reason" class="btn btn-circle btn-success" style="margin-bottom:10px;width:200px:height:50px;font-size:20px;"><i class="fa fa-clock-o" aria-hidden="true"></i> Start Working</button><br>
-                                                <?php elseif($midnightCSTTimestamp >= $currentTimestamp):
-                                                      if(!empty($timeInDateTime) && empty($timeOutDateTime)):?>
-                                                         <button id="btn-stop" class="btn btn-circle btn-danger center-item-control" style="margin-bottom:50px;width:200px:height:50px;font-size:20px;"><i class="fa fa-clock-o" aria-hidden="true"></i> Stop Working</button>
-                                                        <input id="clockintime" type="hidden" value="<?=$timeInDateTime?>">
+                                               <?php
+                                                    if ( strtotime($dateToday) > $reset_time && !empty($last_in) && empty($last_out) ) {
+                                                        echo '<button id="btn-reason" class="btn btn-circle btn-success" style="margin-bottom:10px;width:200px;height:50px;font-size:20px;"><i class="fa fa-clock-o"></i> Start Working</button><br>';  
+                                                    } else if ($is_intoday == 'IN') {
+                                                        echo '<button id="btn-start" class="btn btn-circle btn-success" style="margin-bottom:10px;width:200px;height:50px;font-size:20px;"><i class="fa fa-clock-o" aria-hidden="true"></i> Start Working</button><br>
+                                                        <input id="timein_current_user_id" type="hidden" value="' . $current_userEmployeeID . '">
+                                                        <input id="current_userfullname" type="hidden" value="' . $current_userFName . ' ' . $current_userLName . '">
+                                                        <input id="trigger" type="hidden" value="' . $is_intoday . '">
+                                                        <input id="timeref" type="hidden" value="' . strtotime('tomorrow', strtotime($dateToday)) . '">';
+                                                    } else {
+                                                        echo '<div style="display:flex; justify-content: center"><button id="btn-stop" class="btn btn-circle btn-danger center-item-control" style="margin-bottom:50px;width:100%;height:50px;font-size:20px;"><i class="fa fa-clock-o" aria-hidden="true"></i> Stop Working</button></div>
+                                                        <input id="clockintime" type="hidden" value="' .$timeInDateTime. '">
                                                         <input id="time_spent" type="hidden" value="">
-                                                        <input id="timein_current_user_id" type="hidden" value="<?php echo $current_userEmployeeID ?>">
-                                                        <input id="current_userfullname" type="hidden" value="<?php echo $current_userFName .' '. $current_userLName;?>">
-                                                        <input id="trigger" type="hidden" value="<?= $is_intoday?>">
+                                                        <input id="timein_current_user_id" type="hidden" value="'. $current_userEmployeeID .'">
+                                                        <input id="current_userfullname" type="hidden" value="' .$current_userFName .' '. $current_userLName.' ">
+                                                        <input id="trigger" type="hidden" value="'. $is_intoday.'">
                                                         <input id="timerefout" type="hidden" value="0">
                                                         <div class="countup" id="countup1">
                                                             <span style="border-radius: 10px 0 0 10px;" class="timeel hours">00</span>
@@ -813,18 +805,9 @@
                                                             <span class="timeel timeRefMinutes">minutes</span>
                                                             <span style="border-radius: 10px 0 0 10px;" class="timeel seconds">00</span>
                                                             <span class="timeel timeRefSeconds">seconds</span>
-                                                        </div>
-                                                      <?php else:?>
-                                                      <button disabled class="btn btn-circle btn-default" style="margin-bottom:10px;width:200px:height:50px;font-size:20px;"><i class="fa fa-clock-o" aria-hidden="true"></i> Start Working</button>
-                                                      <?php endif?>
-                                                <?php else:?>
-                                                    <button id="btn-start" class="btn btn-circle btn-success" style="margin-bottom:10px;width:200px:height:50px;font-size:20px;"><i class="fa fa-clock-o" aria-hidden="true"></i> Start Working</button><br>
-                                                    <input id="timein_current_user_id" type="hidden" value="<?php echo $current_userEmployeeID ?>">
-                                                    <input id="current_userfullname" type="hidden" value="<?php echo $current_userFName .' '. $current_userLName;?>">
-                                                    <input id="trigger" type="hidden" value="<?= $is_intoday?>">
-                                                    <input id="timeref" type="hidden" value="<?=$referenceTime?>">
-                                                <?php endif?>
-
+                                                        </div>';
+                                                    }
+                                                ?>
                                                 <!-- End Clockin -->
                                                 <div class="portlet light projects-widget">
                                                     <div class="portlet-title">
@@ -839,17 +822,26 @@
                                                             <div class="table-responsive">
                                                                 <table class="table table-bordered table-hover">
                                                                     <?php 
-                                                                        $query = "SELECT t.date, t.IN, t.OUT
-                                                                            FROM ( 
-                                                                                SELECT 
-                                                                                DATE(time_in_datetime) AS date, 
-                                                                                MIN(CASE WHEN action = 'IN' THEN time_in_datetime END) AS 'IN', 
-                                                                                MAX(CASE WHEN action = 'OUT' THEN time_in_datetime END) AS 'OUT', user_id 
-                                                                                FROM tbl_timein 
-                                                                                WHERE (tbl_timein.time_in_datetime >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) OR DATE(tbl_timein.time_in_datetime) = CURRENT_DATE()) AND user_id = $current_userEmployeeID
-                                                                                GROUP BY DATE(time_in_datetime)
-                                                                                ORDER BY DATE(time_in_datetime) DESC
-                                                                            ) AS t";
+                                                                        $query = "SELECT 
+                                                                                    DATE_FORMAT(t.date, '%m-%e-%Y') AS date, 
+                                                                                    DATE_FORMAT(t.date, '%Y-%m-%e') AS date2, 
+                                                                                    t.latest_in AS 'IN', 
+                                                                                    IF(t.latest_in_batch = t.latest_out_batch, t.latest_out, '') AS 'OUT',
+                                                                                    t.user_id AS id
+                                                                                FROM (
+                                                                                    SELECT 
+                                                                                        DATE(time_in_datetime) AS date, 
+                                                                                        MAX(CASE WHEN action = 'IN' THEN time_in_datetime END) AS latest_in, 
+                                                                                        MAX(CASE WHEN action = 'OUT' THEN time_in_datetime END) AS latest_out,
+                                                                                        MAX(CASE WHEN action = 'IN' THEN batch END) AS latest_in_batch,
+                                                                                        MAX(CASE WHEN action = 'OUT' THEN batch END) AS latest_out_batch,
+                                                                                        user_id
+                                                                                    FROM tbl_timein 
+                                                                                    WHERE time_in_datetime >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH)
+                                                                                        AND user_id = {$current_userEmployeeID}
+                                                                                    GROUP BY DATE(time_in_datetime), user_id
+                                                                                ) t
+                                                                                ORDER BY t.date DESC";
                                                                     
                                                                         $resultQuery = mysqli_query($conn, $query);
                                                                     ?>
@@ -858,7 +850,9 @@
                                                                         <?php
                                                                         if ($resultQuery) {
                                                                             while($rowQuery = mysqli_fetch_array($resultQuery)) { ?>
-                                                                                <th class="text-bold text-center bg-light" tabindex="0" aria-controls="timein_summary_table" rowspan="1" colspan="2"><?=$rowQuery['date']?></th>
+                                                                                <th class="text-bold text-center bg-light" tabindex="0" aria-controls="timein_summary_table" rowspan="1" colspan="2">
+                                                                                    <a style="text-decoration: none" href="#timeinRecord" data-toggle="modal" class="get_clockin_records" data-id="<?=$rowQuery['id']?>" data-date="<?=$rowQuery['date2']?>"><?=$rowQuery['date']?></a>
+                                                                                </th>
                                                                             <?php } ?>
                                                                             </tr>
                                                                         </thead>
@@ -891,7 +885,6 @@
                                                     </div>
                                                 </div>
                                             <?php } ?>
-                                            <!-- END PORTLET -->
                                         </div>
                                         <div class="col-md-12">
                                         <?php
@@ -1600,6 +1593,40 @@
                       </div>
                     </div>
                     
+                    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="timeinRecord">
+                      <div class="modal-dialog modal-md">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Clock in & out Records</h4>
+                          </div>
+                          <div class="modal-body">
+                            <table class="table table-bordered text-center table-hover table-striped" id="clockin_records_table">
+                                <thead class="text-center bg-info">
+                                    <th class="text-center">Batch</th>
+                                    <th class="text-center">IN</th>
+                                    <th class="text-center">OUT</th>
+                                    <th class="text-center">MINUTES</th>
+                                    <th class="text-center">NOTES</th>
+                                <tbody>
+                                    
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" class="bold">Total rendered minutes</span></td>
+                                        <td colspan="1" class="bold text-success" style="border-right: 1px solid transparent;"><span id="totalMinutes"></span></td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" id="modal-btn-no">Close</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
                     <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="mi-stop-modal">
                       <div class="modal-dialog modal-sm">
                         <div class="modal-content">
@@ -1682,6 +1709,7 @@
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN PAGE LEVEL SCRIPTS -->
         <script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>
+        <script src="clockin/process.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL SCRIPTS -->
         <script>
             var TableDatatablesRowreorderTimeIn = function () {

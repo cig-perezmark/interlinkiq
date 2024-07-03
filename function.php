@@ -47026,7 +47026,7 @@
 
         return $compliant;
     }
-    function commentNotification($target_id, $parent_id, $subject, $from, $sender, $data_names, $team, $comment_comment, $data_user_id) {
+    function commentNotification($target_id, $parent_id, $subject, $from, $sender, $data_names, $team, $comment_comment, $data_user_id, $s) {
         global $conn;
         global $base_url;
 
@@ -47061,7 +47061,7 @@
                                         '.$sender.' has a comment on <b>'.$data_names.'</b><br>
                                         <i>"'.stripcslashes($comment_comment).'"</i><br><br>
 
-                                        <a href="'. $base_url .'dashboard?d='. $target_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+                                        <a href="'. $base_url .'dashboard?d='. $target_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
 
                                         php_mailer_2($to, $user, $subject, $body, $from, $sender);
                                     }
@@ -47074,7 +47074,7 @@
                                         '.$sender.' has a comment on <b>'.$data_names.'</b><br>
                                         <i>"'.stripcslashes($comment_comment).'"</i><br><br>
 
-                                        <a href="'. $base_url .'dashboard?d='. $target_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+                                        <a href="'. $base_url .'dashboard?d='. $target_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
 
                                         php_mailer_2($to, $user, $subject, $body, $from, $sender);
                                     }
@@ -47088,12 +47088,26 @@
 
             // Check if has a parent
             if ($data_parent_id > 0) {
-                commentNotification($target_id, $data_parent_id, $subject, $from, $sender, $data_names, $team, $comment_comment, $data_user_id);
+                commentNotification($target_id, $data_parent_id, $subject, $from, $sender, $data_names, $team, $comment_comment, $data_user_id, $s);
             }
         }
     }
     if( isset($_GET['modalDashboard']) ) {
         $id = $_GET['modalDashboard'];
+
+        $s = 0;
+        if (isset($_GET['s'])) {
+            $s = $_GET['s'];
+            if ($s == 1) {
+                $selectDataUser = mysqli_query( $conn,"SELECT user_id FROM tbl_library WHERE ID = $id AND deleted = 0" );
+                if ( mysqli_num_rows($selectDataUser) > 0 ) {
+                    $rowDataUser = mysqli_fetch_array($selectDataUser);
+                    $datauser_ID = $rowDataUser["user_id"];
+
+                    setcookie('switchAccount', $datauser_ID, time() + (86400 * 1), "/");  // 86400 = 1 day
+                }
+            }
+        }
 
         $current_client = 0;
         if (isset($_COOKIE['client'])) { $current_client = $_COOKIE['client']; }
@@ -51435,10 +51449,12 @@
     if( isset($_GET['modalChangesStatus_Area']) ) {
         $ID = $_GET['modalChangesStatus_Area'];
         $v = $_GET['v'];
+        $s = 0;
 
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
@@ -51499,7 +51515,7 @@
 
                 <b>'.$sender_name.'</b> updated the status into <i>'.$status_array[$v].'</i><br><br>
 
-                Click <a href="'.$base_url.'dashboard?d='.$ID.'" target="_blank">here</a> to view<br><br>
+                Click <a href="'.$base_url.'dashboard?d='.$ID.'&s='.$s.'" target="_blank">here</a> to view<br><br>
 
                 Thanks';
 
@@ -52058,19 +52074,21 @@
         mysqli_close($conn);
     }
     if( isset($_GET['btnDelete_Area']) ) {
+        $id = $_GET['btnDelete_Area'];
+        $current_userID = $_COOKIE['ID'];
+        $reason = addslashes($_GET['reason']);
+        $s = 0;
+
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
             $user_id = employerID($portal_user);
         }
         
-        $id = $_GET['btnDelete_Area'];
-        $current_userID = $_COOKIE['ID'];
-        $reason = addslashes($_GET['reason']);
-
         $message = array();
         array_push($message, $current_userID);
         array_push($message, $reason);
@@ -52159,7 +52177,7 @@
 
         Please click the button below to view the item<br><br>
 
-        <a href="'. $base_url .'dashboard?d='. $id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+        <a href="'. $base_url .'dashboard?d='. $id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
 
         $mail = php_mailer($to, $user, $subject, $body);
     }
@@ -52286,10 +52304,12 @@
     }
     if( isset($_POST['btnUpdate_Area']) ) {
         $ID = $_POST['ID'];
+        $s = 0;
 
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
@@ -52396,7 +52416,7 @@
                     $subject = 'Compliance Dashboard Description - For Review/Approval - '. $local_date;
                     $body = 'Hi Team,<br><br>
 
-                    New revision has been made that needs your attention. Click <a href="'.$base_url.'dashboard?d='.$ID.'" target="_blank">here</a> to view<br><br>
+                    New revision has been made that needs your attention. Click <a href="'.$base_url.'dashboard?d='.$ID.'&s='.$s.'" target="_blank">here</a> to view<br><br>
 
                     Thanks';
 
@@ -52566,10 +52586,12 @@
     }
     if( isset($_POST['btnUpdate_Area_SubItem']) ) {
         $parent_id = $_POST['parent_id'];
+        $s = 0;
 
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
@@ -52645,7 +52667,7 @@
                     $subject = 'Compliance Dashboard Description - For Review/Approval - '. $local_date;
                     $body = 'Hi Team,<br><br>
 
-                    New revision has been made that needs your attention. Click <a href="'.$base_url.'dashboard?d='.$parent_id.'" target="_blank">here</a> to view<br><br>
+                    New revision has been made that needs your attention. Click <a href="'.$base_url.'dashboard?d='.$parent_id.'&s='.$s.'" target="_blank">here</a> to view<br><br>
 
                     Thanks';
 
@@ -52717,11 +52739,12 @@
     }
     if( isset($_POST['btnComment_changes']) ) {
         $ID = $_POST['ID'];
-        $comment = addslashes($_POST['comment']);
+        $s = 0;
 
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
@@ -52784,7 +52807,7 @@
 
                     <b>'.$sender_name.'</b> said <i>'.$comment.'</i><br><br>
 
-                    Click <a href="'.$base_url.'dashboard?d='.$ID.'" target="_blank">here</a> to view<br><br>
+                    Click <a href="'.$base_url.'dashboard?d='.$ID.'&s='.$s.'" target="_blank">here</a> to view<br><br>
 
                     Thanks';
 
@@ -52935,19 +52958,21 @@
         mysqli_close($conn);
     }
     if( isset($_GET['btnDelete_File']) ) {
+        $id = $_GET['btnDelete_File'];
+        $current_userID = $_COOKIE['ID'];
+        $reason = addslashes($_GET['reason']);
+        $s = 0;
+
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
             $user_id = employerID($portal_user);
         }
         
-        $id = $_GET['btnDelete_File'];
-        $current_userID = $_COOKIE['ID'];
-        $reason = addslashes($_GET['reason']);
-
         $message = array();
         array_push($message, $current_userID);
         array_push($message, $reason);
@@ -52990,7 +53015,7 @@
 
             Please click the button below to view the item<br><br>
 
-            <a href="'. $base_url .'dashboard?d='. $data_library_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a><br><br>
+            <a href="'. $base_url .'dashboard?d='. $data_library_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a><br><br>
 
             Cann OS Team';
         } else {
@@ -53001,7 +53026,7 @@
 
             Please click the button below to view the item<br><br>
 
-            <a href="'. $base_url .'dashboard?d='. $data_library_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+            <a href="'. $base_url .'dashboard?d='. $data_library_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
         }
         $mail = php_mailer($to, $user, $subject, $body);
     }
@@ -53451,6 +53476,7 @@
         $title = addslashes($_POST['title']);
         $comment = addslashes($_POST['comment']);
         $team = $_POST['team'];
+        $s = 0;
 
         $sql = "INSERT INTO tbl_library_comment (user_id, library_id, title, comment, team, seen)
         VALUES ('$current_userID', '$parent_id', '$title', '$comment', '$team', '$current_userID')";
@@ -53468,6 +53494,7 @@
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id_account = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
@@ -53591,7 +53618,7 @@
                         '.$sender.' has a comment on <b>'.$data_names.'</b><br>
                         <i>"'.stripcslashes($comment_comment).'"</i><br><br>
 
-                        <a href="'. $base_url .'dashboard?d='. $parent_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+                        <a href="'. $base_url .'dashboard?d='. $parent_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
             
                         $body .= '<br><br>'.$client_name.' Team';
                         
@@ -53599,7 +53626,7 @@
                     }
                 }
 
-                commentNotification($parent_id, $parent_id, $subject, $from, $sender, $data_names, $team, $comment_comment, $data_user_id);
+                commentNotification($parent_id, $parent_id, $subject, $from, $sender, $data_names, $team, $comment_comment, $data_user_id, $s);
             }
         }
         mysqli_close($conn);
@@ -53942,10 +53969,12 @@
     if( isset($_GET['btnAccept_Compliance']) ) {
         $id = $_GET['btnAccept_Compliance'];
         $current_userID = $_COOKIE['ID'];
+        $s = 0;
 
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
@@ -53960,7 +53989,8 @@
         mysqli_query( $conn,"UPDATE tbl_library_compliance SET remark = '1', remark_user = '". $current_userID ."' WHERE ID='". $id ."'" );
 
         // $selectData = mysqli_query( $conn,'SELECT * FROM tbl_library_compliance WHERE ID="'. $id .'"' );
-        $selectData = mysqli_query( $conn, "SELECT
+        $selectData = mysqli_query( $conn, "
+            SELECT
             l.ID AS l_ID,
             c.ID AS c_ID,
             c.type AS c_type,
@@ -53986,7 +54016,8 @@
             ) AS l
             ON l.ID = c.library_id
 
-            WHERE c.ID = $id");
+            WHERE c.ID = $id
+        ");
         $rowData = mysqli_fetch_array($selectData);
         $data_library_id = $rowData['l_ID'];
         $data_compliance_type = $rowData['c_type'];
@@ -53997,7 +54028,7 @@
         // Update History Data
         actionHistory($data_library_id, 4, 3, $id);
 
-        $selectLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE deleted = 0 AND ID = $parent_id" );
+        $selectLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE deleted = 0 AND ID = $id" );
         if ( mysqli_num_rows($selectLibrary) > 0 ) {
             $rowLibrary = mysqli_fetch_array($selectLibrary);
             $library_type = $rowLibrary["type"];
@@ -54017,9 +54048,10 @@
             4 => 'Yearly'
         );
         $array_type = array(
-            0 => 'Performed',
-            1 => 'Verified',
-            2 => 'Reviewed'
+            0 => 'Observed',
+            1 => 'Performed',
+            2 => 'Verified',
+            3 => 'Reviewed'
         );
         $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $user_id" );
         if ( mysqli_num_rows($selectUser) > 0 ) {
@@ -54041,7 +54073,7 @@
             $name = $client_name;
             $body .= $client_name;
 
-            $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $last_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+            $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
             
             php_mailer_1($to, $user, $subject, $body, $from, $name);
         }
@@ -54061,15 +54093,6 @@
         actionHistory($data_library_id, 5, 3, $id);
     }
     if( isset($_POST['btnSave_Compliance']) ) {
-        if (!empty($_COOKIE['switchAccount'])) {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = $_COOKIE['switchAccount'];
-        }
-        else {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = employerID($portal_user);
-        }
-
         $free_access = 0;
         $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
         if ( mysqli_num_rows($hasLibrary) == 0 ) {
@@ -54085,6 +54108,17 @@
         $arr_item = array();
         $filesize = 0;
         $process = true;
+        $s = 0;
+
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
 
         $frequency = $_POST['frequency'];
         $time = $_POST['time'];
@@ -54196,7 +54230,6 @@
                         $month = $array_schedule_id[3];
 
                         if ($compliance_frequency == 1) {             // Daily
-
                             $frequency = 'Daily';
                             if (!empty($time)) {
                                 $frequency = 'Every '. date_format($time_f,"g:i A") .' daily';
@@ -54276,7 +54309,7 @@
                         $name = $client_name;
                         $body .= $client_name.' Team';
 
-                        $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $last_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+                        $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $last_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
 
                         php_mailer_1($to, $user, $subject, $body, $from, $name);
                     }
@@ -54457,15 +54490,6 @@
         }
     }
     if( isset($_POST['btnSaveMore_Compliance']) ) {
-        if (!empty($_COOKIE['switchAccount'])) {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = $_COOKIE['switchAccount'];
-        }
-        else {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = employerID($portal_user);
-        }
-
         $free_access = 0;
         $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
         if ( mysqli_num_rows($hasLibrary) == 0 ) {
@@ -54480,6 +54504,17 @@
         $ID = $_POST['ID'];
         $last_modified = date('Y-m-d');
         $process = true;
+        $s = 0;
+
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
 
         $filetype = $_POST['filetype'];
         if ($filetype == 1) {
@@ -54538,6 +54573,54 @@
                         2 => 'Verified',
                         3 => 'Reviewed'
                     );
+
+                    $compliance_schedule_id = $rowData['schedule'];
+                    $array_schedule_id = explode(", ", $compliance_schedule_id);
+                    $days = array(
+                        1 => 'Monday',
+                        2 => 'Tuesday',
+                        3 => 'Wednesday',
+                        4 => 'Thursday',
+                        5 => 'Friday',
+                        6 => 'Saturday',
+                        7 => 'Sunday'
+                    );
+
+                    $compliance_frequency = $rowData['frequency'];
+                    $frequency = $compliance_frequency;
+                    if ( count($array_schedule_id) == 4 ) {
+                        $time = $array_schedule_id[0];
+                        $time_f = date_create($time);
+                        $day_ms = $array_schedule_id[1];
+                        $day_num = $array_schedule_id[2];
+                        $month = $array_schedule_id[3];
+
+                        if ($compliance_frequency == 1) {             // Daily
+
+                            $frequency = 'Daily';
+                            if (!empty($time)) {
+                                $frequency = 'Every '. date_format($time_f,"g:i A") .' daily';
+                            }
+                        } else if ($compliance_frequency == 2) {      // Weekly
+
+                            $frequency = 'Weekly';
+                            if (!empty($day_ms) AND !empty($time)) {
+                                $frequency = 'Every '. $days[$day_ms] .' at '. date_format($time_f,"g:i A");
+                            }
+                        } else if ($compliance_frequency == 3) {      // Monthly
+
+                            $frequency = 'Monthly';
+                            if (!empty($day_num) AND !empty($time)) {
+                                $frequency = 'Every '. $day_num.date("S", mktime(0, 0, 0, 0, intval($day_num), 0)) .' day of the Month at '. date_format($time_f,"g:i A");
+                            }
+                        } else if ($compliance_frequency == 4) {      // Yearly
+
+                            $frequency = 'Yearly';
+                            if (!empty($day_num) AND !empty($time) AND !empty($month)) {
+                                $frequency = 'Every '. $day_num.date("S", mktime(0, 0, 0, 0, intval($day_num), 0)) .' day of '. date("F", mktime(0, 0, 0, intval($month)+1, 0, 0)) .' at '. date_format($time_f,"g:i A");
+                            }
+                        }
+                    }
 
                     $filetype = $rowData['filetype'];
                     $files = $rowData["files"];
@@ -54598,7 +54681,7 @@
                         $name = $client_name;
                         $body .= $client_name.' Team';
 
-                        $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $last_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+                        $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $last_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
 
                         php_mailer_1($to, $user, $subject, $body, $from, $name);
                     }
@@ -57514,15 +57597,6 @@
         // actionHistory($data_library_id, 3, 8, $id);
     }
     if( isset($_POST['btnSave_Task']) ) {
-        if (!empty($_COOKIE['switchAccount'])) {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = $_COOKIE['switchAccount'];
-        }
-        else {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = employerID($portal_user);
-        }
-
         $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
         if ( mysqli_num_rows($hasLibrary) == 0 ) {
             $user_id = 163;
@@ -57537,6 +57611,17 @@
         $last_modified = date('Y-m-d');
         $rand_id = rand(10,1000000);
         $process = true;
+        $s = 0;
+
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
 
         $files = $_FILES['file']['name'];
         if (!empty($files)) {
@@ -57611,7 +57696,7 @@
                             Project Name: '.stripcslashes($name).'<br>
                             Task Description: '.stripcslashes($description).'<br><br>
 
-                            <a href="'. $base_url .'dashboard?d='. $parent_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a><br><br>';
+                            <a href="'. $base_url .'dashboard?d='. $parent_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a><br><br>';
                 
                             $from = $client_email;
                             $name = $client_name;
@@ -57676,15 +57761,6 @@
         }
     }
     if( isset($_POST['btnUpdate_Task']) ) {
-        if (!empty($_COOKIE['switchAccount'])) {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = $_COOKIE['switchAccount'];
-        }
-        else {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = employerID($portal_user);
-        }
-
         $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
         if ( mysqli_num_rows($hasLibrary) == 0 ) {
             $user_id = 163;
@@ -57699,6 +57775,17 @@
         $desired_date = $_POST['desired_date'];
         $last_modified = date('Y-m-d');
         $process = true;
+        $s = 0;
+
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
 
         $files = $_FILES['file']['name'];
         if (!empty($files)) {
@@ -57774,7 +57861,7 @@
                         Project Name: '.stripcslashes($name).'<br>
                         Task Description: '.stripcslashes($description).'<br><br>
 
-                        <a href="'. $base_url .'dashboard?d='. $parent_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a><br><br>';
+                        <a href="'. $base_url .'dashboard?d='. $parent_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a><br><br>';
             
                         $from = $client_email;
                         $name = $client_name;

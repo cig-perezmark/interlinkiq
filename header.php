@@ -98,9 +98,9 @@
             $rowUser = mysqli_fetch_array($selectUser);
             $current_userID = $rowUser['ID'];
             $current_userEmployeeID = $rowUser['employee_id'];
-            $current_userFName = htmlentities($rowUser['first_name']);
-            $current_userLName = htmlentities($rowUser['last_name']);
-            $current_userEmail = htmlentities($rowUser['email']);
+            $current_userFName = htmlentities($rowUser['first_name'] ?? '');
+            $current_userLName = htmlentities($rowUser['last_name'] ?? '');
+            $current_userEmail = htmlentities($rowUser['email'] ?? '');
             $current_userType = $rowUser['type'];
         }
 
@@ -1116,7 +1116,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <span class="position-relative me-2">
                                         <img class="d-flex justify-content-center border border-default bg-white img-circle" style="width:80px; height:80px; object-fit: contain;" src="'.$base_url.'uploads/avatar/'.$current_userAvatar.'" alt="Avatar" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/150x150/EFEFEF/AAAAAA.png?text=no+image\';" />
                                     </span>
-                                    <h4 class="bold ms-3">'.htmlentities($row['first_name']). " " . htmlentities($row['last_name']).'</h4>
+                                    <h4 class="bold ms-3">'.htmlentities($row['first_name'] ?? ''). " " . htmlentities($row['last_name'] ?? '').'</h4>
                                 </div>
                                 <div class="input-icon right">
                                     <i class="fa fa-search"></i>
@@ -1163,7 +1163,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     while($rowNote = mysqli_fetch_array($selectNote)) {
                                         $note_ID = $rowNote['ID'];
                                         $note_user_id = htmlentities($rowNote['user_id']);
-                                        $note_description = htmlentities($rowNote['description']);
+                                        $note_description = htmlentities($rowNote['description'] ?? '');
                                         $note_last_modified = $rowNote['last_modified'];
 
                                         echo '<div class="userResult" id="note_'.$note_ID.'">
@@ -1224,7 +1224,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                 new google.translate.TranslateElement({
                                     pageLanguage: 'en',
                                     autoDisplay: 'true',
-                                    includedLanguages: 'en,fr,zh-CN,zh-TW,hi,ja,ko,es,it,pt,ar,sw',
+                                    includedLanguages: 'en,fr,zh-CN,zh-TW,hi,ja,ko,es,it,pt,ar,sw,uk',
                                     layout: google.translate.TranslateElement.InlineLayout.SIMPLE
                                 }, 'google_translate_element');
                             }
@@ -1522,7 +1522,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 <span class="details">
                                                     <span class="label label-sm label-icon label-success">
                                                         <i class="fa fa-check"></i>
-                                                    </span> <?= htmlentities($row['first_name']).' '.htmlentities($row['last_name']) ?> </span>
+                                                    </span> <?= htmlentities($row['first_name'] ?? '').' '.htmlentities($row['last_name'] ?? '') ?> </span>
                                             </a>
                                             <?php endforeach; ?>
                                         </li>
@@ -2357,7 +2357,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 $menuDown_ID = $rowMenuDown['ID'];
                                                 $menuDown_collab = $rowMenuDown['collab'];
                                                 $menuDown_url = $rowMenuDown['url'];
-                                                $menuDown_description = htmlentities($rowMenuDown['description']);
+                                                $menuDown_description = htmlentities($rowMenuDown['description'] ?? '');
 
                                                 $output .= '<li class="nav-item '; if ($site == $menuDown_url) { $output .= 'active'; } if ($menuDown_collab == 1 AND $current_userEmployeeID > 0) { $output .= menu($menuDown_url, $current_userEmployerID, $current_userEmployeeID); } $output .= '">
                                                     <a href="'.$menuDown_url.'" class="nav-link ">
@@ -3243,7 +3243,7 @@ License: You must have a valid license purchased only from themeforest(the above
                     <li class="nav-item hide">
                         <a href="<?php echo $row['app_url']; ?>" target="_blank" class="nav-link">
                             <i class="icon-layers"></i>
-                            <span class="title"><?php echo htmlentities($row['application_name']); ?></span>
+                            <span class="title"><?php echo htmlentities($row['application_name'] ?? ''); ?></span>
                             <span class="selected"></span>
                         </a>
                     </li>
@@ -3363,7 +3363,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         </li>
                         <?php echo $breadcrumbs; ?>
                     </ul>
-                    <div class="page-toolbar <?php if ($site == '404' OR $site == '505' OR $site == 'dashboard' OR $current_userEmployerID > 0) { echo 'hide'; } else if (!isset($_COOKIE['switchAccount'])) { if ($current_userEmployeeID > '0' AND $current_userAdminAccess == 0 AND $current_userID <> 532) { echo 'hide'; } } ?>">
+                    <div class="page-toolbar <?php if ($site == '404' OR $site == '505' OR $site == 'dashboard' OR $current_userEmployeeID > 0) { echo 'hide'; } else if (!isset($_COOKIE['switchAccount'])) { if ($current_userEmployeeID > 0 AND $current_userAdminAccess == 0 AND $current_userID <> 532) { echo 'hide'; } } ?>">
                         <!--<div class="page-toolbar <?php //if ($site == '404' OR $site == '505' OR $site == 'dashboard' OR $current_userEmployeeID > '0') { echo 'hide'; } ?>">-->
                         <a href="#modalCollab" data-toggle="modal" class="btn btn-success btn-fit-height">
                             Collaborator <i class="icon-settings"></i>

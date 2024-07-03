@@ -12651,6 +12651,8 @@
                 if ($user_id == 27 || $user_id == 34 || $user_id == 464 || $user_id == 504 || $user_id == 475 || $user_id == 683) {
                     echo '<li><a href="#tabPortal_2" data-toggle="tab">Portal</a></li>';
                     echo '<li><a href="#tabUsage_2" data-toggle="tab">Usage</a></li>';
+                } else if ($user_id == 1479) {
+                    echo '<li><a href="#tabPortal_2" data-toggle="tab">Portal</a></li>';
                 }
                 
                 echo '<li class="hide">
@@ -51334,9 +51336,9 @@
             l.description_tmp AS l_description_tmp,
             l.description_comment AS l_description_comment,
             ur.ID AS u_reviewer_ID,
-            CASE WHEN LENGTH(ur.first_name) = 0 AND LENGTH(ur.last_name) = 0 THEN '---' ELSE CONCAT(ur.first_name, ' ', ur.last_name)  END AS u_reviewer,
+            CASE WHEN LENGTH(ur.first_name) = 0 AND LENGTH(ur.last_name) = 0 THEN '---' ELSE CONCAT(ur.first_name, ' ', ur.last_name) END AS u_reviewer,
             ua.ID AS u_approver_ID,
-            CASE WHEN LENGTH(ua.first_name) = 0 AND LENGTH(ua.last_name) = 0 THEN '---' ELSE CONCAT(ua.first_name, ' ', ua.last_name)  END AS u_approver
+            CASE WHEN LENGTH(ua.first_name) = 0 AND LENGTH(ua.last_name) = 0 THEN '---' ELSE CONCAT(ua.first_name, ' ', ua.last_name) END AS u_approver
             FROM tbl_library AS l
 
             LEFT JOIN (
@@ -51376,9 +51378,24 @@
             if (!empty($row["l_description_comment"])) {
                 $comment_arr = json_decode($row["l_description_comment"],true);
                 if (count($comment_arr) > 0) {
-                    $l_description_comment = '<ul style="margin:0;">';
+                    $l_description_comment = '<ul style="margin:0; padding-left: 2rem;">';
                         foreach ($comment_arr as $key => $value) {
-                            $l_description_comment .= '<li>'.htmlentities($value['comment'] ?? '').'</li>';
+                            $comm_user_id = $value['user_id'];
+                            $selectData = mysqli_query( $conn,"SELECT first_name, last_name FROM tbl_user WHERE ID = $comm_user_id" );
+                            if ( mysqli_num_rows($selectData) > 0 ) {
+                                $row = mysqli_fetch_array($selectData);
+                                $comm_name = htmlentities($row["first_name"] ?? '') .' '. htmlentities($row["last_name"] ?? '');
+                            }
+
+                            $comm_date = '';
+                            if (!empty($value['date'])) {
+                                $comm_date = ' <i>('.$value['date'].')</i>';
+                            }
+
+                            $l_description_comment .= '<li>
+                                <small><b>'.$comm_name.'</b>'.$comm_date.'</small><br>
+                                '.htmlentities($value['comment'] ?? '').'
+                            </li>';
                         }
                     $l_description_comment .= '</ul>';
                 }
@@ -51444,6 +51461,49 @@
             } else {
                 $revise = '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$ID.')">here</a> to view</span>';
                 $lastDescription = $row["description"].$revise;
+            }
+
+            $user_id_arr = array();
+            array_push($user_id_arr, end($phpArray)['editor']);
+            if ($row["reviewer"] > 0) { array_push($user_id_arr, $row["reviewer"]); }
+            if ($row["approver"] > 0) { array_push($user_id_arr, $row["approver"]); }
+            $user_id_arr = array_diff($user_id_arr, [$portal_user]);
+
+            if (count($user_id_arr) > 0) {
+                $user_id_arr = implode(', ', $user_id_arr);
+                $selectRecipients = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID IN ($user_id_arr)" );
+                if (mysqli_num_rows($selectRecipients) > 0) {
+                    while($rowRecipients = mysqli_fetch_array($selectRecipients)) {
+                        $recipients_name = htmlentities($rowRecipients["first_name"] ?? '') .' '. htmlentities($rowRecipients["last_name"] ?? '');
+                        $recipients_email = htmlentities($rowRecipients["email"] ?? '');
+                        $recipients[$recipients_email] = $recipients_name;
+                    }
+                }
+
+                $selectSender = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $portal_user" );
+                $rowSender = mysqli_fetch_array($selectSender);
+                $sender_name = htmlentities($rowSender["first_name"] ?? '') .' '. htmlentities($rowSender["last_name"] ?? '');
+                $sender_email = htmlentities($rowSender["email"] ?? '');
+                $sender[$sender_email] = $sender_name;
+
+                $status_array = array (
+                    0 => 'For Review',
+                    1 => 'Pending Review',
+                    2 => 'For Approval',
+                    3 => 'Pending Approval',
+                    4 => 'Approved'
+                );
+
+                $subject = 'Compliance Dashboard Description - Status - '. $local_date;
+                $body = 'Hi Team,<br><br>
+
+                <b>'.$sender_name.'</b> updated the status into <i>'.$status_array[$v].'</i><br><br>
+
+                Click <a href="'.$base_url.'dashboard?d='.$ID.'" target="_blank">here</a> to view<br><br>
+
+                Thanks';
+
+                php_mailer_dynamic($sender, $recipients, $subject, $body);
             }
 
             $output = array(
@@ -52672,7 +52732,7 @@
         $comment_arr = array();
 
         if (!empty($comment)) {
-            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID = $ID" );
+            $selectData = mysqli_query( $conn,"SELECT description_comment FROM tbl_library WHERE ID = $ID" );
             $row = mysqli_fetch_array($selectData);
             if (!empty($row["description_comment"])) {
                 $comment_arr = json_decode($row["description_comment"], true);
@@ -52687,6 +52747,49 @@
             $comment_arr = json_encode($comment_arr, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
             mysqli_query( $conn,"UPDATE tbl_library SET description_comment = '$comment_arr' WHERE ID = $ID" );
             if (!mysqli_error($conn)) {
+                $user_id_arr = array();
+                $selectData = mysqli_query( $conn,"SELECT description_comment, reviewer, approver FROM tbl_library WHERE ID = $ID" );
+                $rowData = mysqli_fetch_array($selectData);
+
+                if (!empty($rowData["description_comment"])) {
+                    $comment_arr = json_decode($rowData["description_comment"],true);
+                    if (count($comment_arr) > 0) {
+                        foreach ($comment_arr as $key => $value) {
+                            array_push($user_id_arr, $value['user_id']);
+                        }
+                    }
+                }
+                if ($rowData["reviewer"] > 0) { array_push($user_id_arr, $rowData["reviewer"]); }
+                if ($rowData["approver"] > 0) { array_push($user_id_arr, $rowData["approver"]); }
+
+                if (count($user_id_arr) > 0) {
+                    $user_id_arr = implode(', ', $user_id_arr);
+                    $selectRecipients = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID IN ($user_id_arr)" );
+                    if (mysqli_num_rows($selectRecipients) > 0) {
+                        while($rowRecipients = mysqli_fetch_array($selectRecipients)) {
+                            $recipients_name = htmlentities($rowRecipients["first_name"] ?? '') .' '. htmlentities($rowRecipients["last_name"] ?? '');
+                            $recipients_email = htmlentities($rowRecipients["email"] ?? '');
+                            $recipients[$recipients_email] = $recipients_name;
+                        }
+                    }
+
+                    $selectSender = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $portal_user" );
+                    $rowSender = mysqli_fetch_array($selectSender);
+                    $sender_name = htmlentities($rowSender["first_name"] ?? '') .' '. htmlentities($rowSender["last_name"] ?? '');
+                    $sender_email = htmlentities($rowSender["email"] ?? '');
+                    $sender[$sender_email] = $sender_name;
+
+                    $subject = 'Compliance Dashboard Description - Comment - '. $local_date;
+                    $body = 'Hi Team,<br><br>
+
+                    <b>'.$sender_name.'</b> said <i>'.$comment.'</i><br><br>
+
+                    Click <a href="'.$base_url.'dashboard?d='.$ID.'" target="_blank">here</a> to view<br><br>
+
+                    Thanks';
+
+                    php_mailer_dynamic($sender, $recipients, $subject, $body);
+                }
                 echo 'done';
             }
         }

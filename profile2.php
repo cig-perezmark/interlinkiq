@@ -630,18 +630,60 @@
                                                     $timeOutDateTime = ($checktimeout && mysqli_num_rows($checktimeout) > 0) ? mysqli_fetch_assoc($checktimeout)['time_in_datetime'] : null;
                                                     
                                                     $is_intoday = is_null($timeInDateTime) || (!is_null($timeOutDateTime) && $timeOutDateTime > $timeInDateTime) ? 'IN' : 'OUT';
-                                                    
-                                                    ?>
-                                                    
-                                                    <?php
-                                                    if($is_intoday == 'IN') {
-                                                        echo '<button id="btn-start" class="btn btn-circle btn-success" style="margin-bottom:10px;width:200px;height:50px;font-size:20px;"><i class="fa fa-clock-o" aria-hidden="true"></i> Start Working</button><br>
-                                                        <input id="timein_current_user_id" type="hidden" value="'. $current_userEmployeeID .'">
-                                                        <input id="current_userfullname" type="hidden" value="'. $current_userFName .' '. $current_userLName .'">
-                                                        <input id="trigger" type="hidden" value="'. $is_intoday .'">
-                                                        <input id="timeref" type="hidden" value="'. strtotime('tomorrow', strtotime($dateToday)) .'">';
+
+                                                    $has_out = "SELECT 
+                                                                    DATE_FORMAT(t.date, '%m-%e-%Y') AS date,
+                                                                    t.last_in_yesterday AS yesterday_in, 
+                                                                    IF(t.last_in_batch = t.last_out_batch, t.last_out_yesterday, '') AS yesterday_out,
+                                                                    t.user_id AS id,
+                                                                    t.reset_time as reset
+                                                                FROM (
+                                                                    SELECT 
+                                                                        DATE(time_in_datetime) AS date, 
+                                                                        MAX(CASE WHEN action = 'IN' THEN time_in_datetime END) AS last_in_yesterday, 
+                                                                        MAX(CASE WHEN action = 'OUT' THEN time_in_datetime END) AS last_out_yesterday,
+                                                                        MAX(CASE WHEN action = 'IN' THEN batch END) AS last_in_batch,
+                                                                        MAX(CASE WHEN action = 'OUT' THEN batch END) AS last_out_batch,
+                                                                        user_id,
+                                                                        reset_time
+                                                                    FROM tbl_timein
+                                                                        WHERE DATE(time_in_datetime) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+                                                                        AND user_id = 290
+                                                                    GROUP BY DATE(time_in_datetime), user_id
+                                                                ) t
+                                                                ORDER BY t.date DESC";
+                                                    $has_out_check = mysqli_query($conn, $has_out);
+
+                                                    if(!empty($has_out_check)) {
+                                                        $row = mysqli_fetch_assoc($has_out_check);
+                                                        $reset_time = (!empty($row['reset'])) ? $row['reset'] : '';
+                                                        $last_in = (!empty($row['yesterday_in'])) ? $row['yesterday_in'] : '';
+                                                        $last_out = (!empty($row['yesterday_out'])) ? $row['yesterday_out'] : '';
                                                     } else {
-                                                        echo '<div style="display: flex; justify-content: center"><button id="btn-stop" class="btn btn-circle btn-danger center-item-control" style="margin-bottom:50px;width:200px;height:50px;font-size:20px;"><i class="fa fa-clock-o" aria-hidden="true"></i> Stop Working</button></div>
+                                                        $reset_time = NULL;
+                                                        $last_in = NULL;
+                                                        $last_out = NULL;
+                                                    }
+                                                ?>
+                                                    
+                                               <?php
+                                                    // echo $last_in, '<br>';
+                                                    // echo $last_out, '<br>';
+                                                    // if($reset_time > strtotime($dateToday)) {
+                                                    //     echo 'true';
+                                                    // } else {
+                                                    //     echo 'false';
+                                                    // }
+                                                    if ( strtotime($dateToday) > $reset_time && !empty($last_in) && empty($last_out) ) {
+                                                        echo '<button id="btn-reason" class="btn btn-circle btn-success" style="margin-bottom:10px;width:200px;height:50px;font-size:20px;"><i class="fa fa-clock-o"></i> Start Working</button><br>';  
+                                                    } else if ($is_intoday == 'IN') {
+                                                        echo '<button id="btn-start" class="btn btn-circle btn-success" style="margin-bottom:10px;width:200px;height:50px;font-size:20px;"><i class="fa fa-clock-o" aria-hidden="true"></i> Start Working</button><br>
+                                                        <input id="timein_current_user_id" type="hidden" value="' . $current_userEmployeeID . '">
+                                                        <input id="current_userfullname" type="hidden" value="' . $current_userFName . ' ' . $current_userLName . '">
+                                                        <input id="trigger" type="hidden" value="' . $is_intoday . '">
+                                                        <input id="timeref" type="hidden" value="' . strtotime('tomorrow', strtotime($dateToday)) . '">';
+                                                    } else {
+                                                        echo '<div style="display:flex; justify-content: center"><button id="btn-stop" class="btn btn-circle btn-danger center-item-control" style="margin-bottom:50px;width:100%;height:50px;font-size:20px;"><i class="fa fa-clock-o" aria-hidden="true"></i> Stop Working</button></div>
                                                         <input id="clockintime" type="hidden" value="' .$timeInDateTime. '">
                                                         <input id="time_spent" type="hidden" value="">
                                                         <input id="timein_current_user_id" type="hidden" value="'. $current_userEmployeeID .'">
@@ -656,8 +698,8 @@
                                                             <span style="border-radius: 10px 0 0 10px;" class="timeel seconds">00</span>
                                                             <span class="timeel timeRefSeconds">seconds</span>
                                                         </div>';
-                                                }
-                                            ?>
+                                                    }
+                                                ?>
                                                 <!-- End Clockin -->
                                                 <div class="portlet light projects-widget">
                                                     <div class="portlet-title">
@@ -933,8 +975,6 @@
                     var table = $('#table_fatl');
             
                     var oTable = table.dataTable({
-            
-                        // Internationalisation. For more info refer to http://datatables.net/manual/i18n
                         "language": {
                             "aria": {
                                 "sortAscending": ": activate to sort column ascending",
@@ -949,22 +989,11 @@
                             "zeroRecords": "No matching records found"
                         },
             
-                        // Or you can use remote translation file
-                        //"language": {
-                        //   url: '//cdn.datatables.net/plug-ins/3cfcc339e89/i18n/Portuguese.json'
-                        //},
-            
-                        // setup buttons extentension: http://datatables.net/extensions/buttons/
                         buttons: [
                             { extend: 'print', className: 'btn default' },
                             { extend: 'pdf', className: 'btn red' },
                             { extend: 'csv', className: 'btn green ' }
                         ],
-            
-                        // setup rowreorder extension: http://datatables.net/extensions/rowreorder/
-                        // rowReorder: {
-            
-                        // },
             
                         "order": [
                             [1, 'desc']
@@ -972,17 +1001,11 @@
                         
                         "lengthMenu": [
                             [5, 10, 15, 20, -1],
-                            [5, 10, 15, 20, "All"] // change per page values here
+                            [5, 10, 15, 20, "All"]
                         ],
-                        // set the initial value
                         "pageLength": 10,
             
                         "dom": "<'row' <'col-md-12'B>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>", // horizobtal scrollable datatable
-            
-                        // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                        // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js). 
-                        // So when dropdowns used the scrollable div should be removed. 
-                        //"dom": "<'row' <'col-md-12'T>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
                     });
                 }
             
@@ -991,7 +1014,6 @@
             
                     var oTable = table.dataTable({
             
-                        // Internationalisation. For more info refer to http://datatables.net/manual/i18n
                         "language": {
                             "aria": {
                                 "sortAscending": ": activate to sort column ascending",
@@ -1006,11 +1028,6 @@
                             "zeroRecords": "No matching records found"
                         },
             
-                        // Or you can use remote translation file
-                        //"language": {
-                        //   url: '//cdn.datatables.net/plug-ins/3cfcc339e89/i18n/Portuguese.json'
-                        //},
-            
                         buttons: [
                             { extend: 'print', className: 'btn default' },
                             { extend: 'pdf', className: 'btn red' },
@@ -1021,35 +1038,17 @@
                             [1, 'desc']
                         ],
             
-                        // setup colreorder extension: http://datatables.net/extensions/colreorder/
-                        // colReorder: {
-                        //     reorderCallback: function () {
-                        //         console.log( 'callback' );
-                        //     }
-                        // },
-            
-                        // // setup rowreorder extension: http://datatables.net/extensions/rowreorder/
-                        // rowReorder: {
-            
-                        // },
                         "lengthMenu": [
                             [5, 10, 15, 20, -1],
-                            [5, 10, 15, 20, "All"] // change per page values here
+                            [5, 10, 15, 20, "All"] 
                         ],
-                        // set the initial value
                         "pageLength": 10,
             
                         "dom": "<'row' <'col-md-12'B>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>", // horizobtal scrollable datatable
-            
-                        // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                        // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js). 
-                        // So when dropdowns used the scrollable div should be removed. 
-                        //"dom": "<'row' <'col-md-12'T>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
                     });
                 }
                 return {
             
-                    //main function to initiate the module
                     init: function () {
             
                         if (!jQuery().dataTable) {
@@ -1414,6 +1413,8 @@
                             },
                             cache: false,
                             success: function(dataResult){
+                                console.log(dataResult)
+                                var dataResult = JSON.parse(dataResult)
                                 if(dataResult.statusCode == 200){
                                     location.reload();
                                 }   

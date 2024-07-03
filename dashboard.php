@@ -1385,9 +1385,7 @@
                                         }
                                     </style>
                             <?php } ?>
-
-
-                            <div class="col-md-8" id="dashboardData" style="min-height: 300px;">
+                          <div class="col-md-8" id="dashboardData" style="min-height: 300px;">
                                 <div class="panel-group accordion" id="parent">
                             </div>
                         </div>
@@ -1547,7 +1545,7 @@
                                                     <input type="text" class="form-control hide module_others" name="module_others" placeholder="Leave Blank or Enter Module / Section Name" style="margin-top: 15px;" />
                                                 </div>
                                             </div>
-                                            <div class="form-group '; echo $switch_user_id == 464 ? '':'hide'; echo '">
+                                            <div class="form-group '; echo $switch_user_id == 1 OR $switch_user_id == 464 ? '':'hide'; echo '">
                                                 <label class="col-md-3 control-label">Reviewer</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control mt-multiselect" name="reviewer">
@@ -1582,7 +1580,7 @@
                                                     echo '</select>
                                                 </div>
                                             </div>
-                                            <div class="form-group '; echo $switch_user_id == 464 ? '':'hide'; echo '">
+                                            <div class="form-group '; echo $switch_user_id == 1 OR $switch_user_id == 464 ? '':'hide'; echo '">
                                                 <label class="col-md-3 control-label">Approver</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control mt-multiselect" name="approver">
@@ -1669,7 +1667,7 @@
                         </div>
                     </div>
                     <div class="modal fade" id="modalSubItem" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <form method="post" class="form-horizontal modalForm modalSubItem">
                                     <div class="modal-header">
@@ -1686,7 +1684,7 @@
                         </div>
                     </div>
                     <div class="modal fade" id="modalEdit_SubItem" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <form method="post" class="form-horizontal modalForm modalEdit_SubItem">
                                     <div class="modal-header">
@@ -2326,8 +2324,10 @@
         <script src="assets/global/plugins/typeahead/handlebars.min.js" type="text/javascript"></script>
         <script src="assets/global/plugins/typeahead/typeahead.bundle.min.js" type="text/javascript"></script>
         <script src="assets/pages/scripts/jquery.table2excel.js" type="text/javascript"></script>
-        <script src="ChartIQ/compliance_chart.js"></script>
-
+        
+        <?php if($switch_user_id == 1) { ?>
+            <script src="ChartIQ/compliance_chart.js"></script>
+        <?php } ?>
 
 
         <script>
@@ -2392,39 +2392,34 @@
                     $('.type_others').addClass('hide');
                 } 
             }
-            function changeStatus(id, val) {
-                if (val == 1) {
-                    swal_val = "Accept";
-                } else if (val == 2) {
-                    swal_val = "Reject";
-                }
+            function changeStatus(id, e) {
+                val = $(e).val();
+                swal_val = $(e).find("option:selected").text();
 
-                if (val > 0) {
-                    swal({
-                        title: "Are you sure?",
-                        text: "Please confirm if you really want to "+swal_val,
-                        type: "warning",
-                        showCancelButton: true,
-                        confirmButtonClass: "btn-success",
-                        confirmButtonText: "Yes, confirm it!",
-                        closeOnConfirm: false
-                    },
-                    function(){
-                        $.ajax({
-                            type: "GET",
-                            url: "function.php?modalChangesStatus_Area="+id+"&v="+val,
-                            dataType: "html",
-                            success: function(response){
-                                if ($.trim(response)) {
-                                    var obj = jQuery.parseJSON(response);
-                                    $('.panel_'+obj.ID+' .panel-body > .row #tabDescription_'+obj.ID).html(obj.description);
-                                }
-                                $('#modalChanges').modal('hide');
+                swal({
+                    title: "Are you sure?",
+                    text: "Please confirm if you select "+swal_val,
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-success",
+                    confirmButtonText: "Yes, confirm it!",
+                    closeOnConfirm: false
+                },
+                function(){
+                    $.ajax({
+                        type: "GET",
+                        url: "function.php?modalChangesStatus_Area="+id+"&v="+val,
+                        dataType: "html",
+                        success: function(response){
+                            if ($.trim(response)) {
+                                var obj = jQuery.parseJSON(response);
+                                $('.panel_'+obj.ID+' .panel-body > .row #tabDescription_'+obj.ID).html(obj.description);
                             }
-                        });
-                        swal(swal_val+"ed!", "Data is confirmed", "success");
+                            // $('#modalChanges').modal('hide');
+                        }
                     });
-                }
+                    swal(swal_val, "Status Updated", "success");
+                });
             }
             function changedCategory(val) {
                 if (val == 9) {
@@ -3167,7 +3162,7 @@
 
                             var obj = jQuery.parseJSON(response);
                             $('.panel_'+obj.ID+' > .panel-heading h4 a').html(obj.name);
-                            $('.panel_'+obj.ID+' .panel-body > .row #tabDescription_'+obj.ID+' h5').html(obj.description);
+                            $('.panel_'+obj.ID+' .panel-body > .row #tabDescription_'+obj.ID).html(obj.description);
                             $('#modalEdit').modal('hide');
                         } else {
                             msg = "Error!"
@@ -3185,6 +3180,8 @@
                     dataType: "html",
                     success: function(data){
                         $("#modalSubItem .modal-body").html(data);
+                        selectMulti();
+                        widget_summernote();
                     }
                 });
             }
@@ -3459,7 +3456,7 @@
 
                             $('.panel_'+obj.ID+' > div:first-child').attr( "class", "panel-heading "+panelBG );
                             $('.panel_'+obj.ID+' > .panel-heading h4 a').html(obj.name);
-                            $('.panel_'+obj.ID+' .panel-body > .row #tabDescription_'+obj.ID+' h5').html(obj.description);
+                            $('.panel_'+obj.ID+' .panel-body > .row #tabDescription_'+obj.ID).html(obj.description);
                             $('#modalEdit_SubItem').modal('hide');
                         } else {
                             msg = "Error!"

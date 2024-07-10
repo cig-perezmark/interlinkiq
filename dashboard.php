@@ -2324,10 +2324,12 @@
         <script src="assets/global/plugins/typeahead/handlebars.min.js" type="text/javascript"></script>
         <script src="assets/global/plugins/typeahead/typeahead.bundle.min.js" type="text/javascript"></script>
         <script src="assets/pages/scripts/jquery.table2excel.js" type="text/javascript"></script>
+
         
         <?php if($switch_user_id == 1) { ?>
             <script src="ChartIQ/compliance_chart.js"></script>
         <?php } ?>
+
 
 
         <script>

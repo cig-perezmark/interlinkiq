@@ -594,7 +594,7 @@
         <script src="assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
 
 
-        <script src="ChartIQ/chart.js"></script>
+        <script src="AnalyticsIQ/rvm_chart.js"></script>
 
         <script type="text/javascript">
             $(document).ready(function(){

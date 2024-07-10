@@ -58,7 +58,7 @@ am5.ready(function () {
 
   function fetchData(field) {
     $.ajax({
-      url: 'ChartIQ/rvm_data.php',
+      url: 'AnalyticsIQ/rvm_data.php',
       method: 'GET',
       data: {
         field: field
@@ -133,7 +133,7 @@ function fetchData() {
         case 0:
           _context.prev = 0;
           _context.next = 3;
-          return regeneratorRuntime.awrap(fetch('ChartIQ/fetch_rvm_data.php'));
+          return regeneratorRuntime.awrap(fetch('AnalyticsIQ/fetch_rvm_data.php'));
 
         case 3:
           response = _context.sent;
@@ -474,7 +474,7 @@ window.onload = function _callee() {
 
 document.addEventListener('DOMContentLoaded', function (event) {
   // Fetch data using AJAX
-  fetch('ChartIQ/assigned_to_data.php').then(function (response) {
+  fetch('AnalyticsIQ/assigned_to_data.php').then(function (response) {
     return response.json();
   }).then(function (data) {
     if (data.error) {

@@ -918,6 +918,10 @@
                 $recipients_email = 'arnel@consultareinc.com';
                 $recipients[$recipients_email] = $recipients_name;
 
+                $recipients_name = 'InterlinkIQ';
+                $recipients_email = 'info@consultareinc.com';
+                $recipients[$recipients_email] = $recipients_name;
+
                 $subject = 'New User Registered from '.$rowClient['name'];
                 $body = 'Hi Team,<br><br>
 
@@ -2097,7 +2101,7 @@
                 <select class="form-control mt-multiselect btn btn-default" name="department_id[]" multiple="multiple">
                     <option value="">Select</option>';
 
-                    $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status=1 AND user_id = $switch_user_id" );
+                    $selectDepartment = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_department WHERE status=1 AND user_id = $switch_user_id" );
                     if ( mysqli_num_rows($selectDepartment) > 0 ) {
                         while($rowDepartment = mysqli_fetch_array($selectDepartment)) {
                             echo '<option value="'. $rowDepartment["ID"] .'">'. htmlentities($rowDepartment["title"] ?? '') .'</option>';
@@ -2112,7 +2116,7 @@
             <div class="col-md-8">
                 <select class="form-control mt-multiselect btn btn-default" name="job_description_id[]" multiple="multiple">';
 
-                    $selectJB = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE status=1 AND user_id = $switch_user_id" );
+                    $selectJB = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_job_description WHERE status=1 AND user_id = $switch_user_id" );
                     if ( mysqli_num_rows($selectJB) > 0 ) {
                         while($rowJD = mysqli_fetch_array($selectJB)) {
                             echo '<option value="'. $rowJD["ID"] .'">'. htmlentities($rowJD["title"] ?? '') .'</option>';
@@ -2127,7 +2131,7 @@
             <div class="col-md-8">
                 <select class="form-control mt-multiselect btn btn-default" name="reporting_to_id">';
 
-                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id = $switch_user_id" );
+                    $selectEmployee = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_hr_employee WHERE status = 1 AND user_id = $switch_user_id" );
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         echo '<option value="">Select</option>';
                         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
@@ -3202,8 +3206,8 @@
                             $subject = 'You are invited!';
                             $body = 'Hi '. $data_first_name .',<br><br>
 
-                            Your employer, '.$data_company.', invites you to join <a href="'.$base_url.$client_url.'?r=1&i='.$ID.'" target="_blank">InterlinkIQ.com</a> to connect with your assigned duties, work, and tasks.
-                            If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.$client_url.'?r=1&i='.$ID.'" target="_blank">'.$base_url.$client_url.'?r=1&i='.$ID.'</a><br><br>
+                            Your employer, '.$data_company.', invites you to join <a href="'.$base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">InterlinkIQ.com</a> to connect with your assigned duties, work, and tasks.
+                            If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">'.$base_url.$client_url.'?r=1&i='.$last_id.'</a><br><br>
 
                             Should you need assistance, kindly call 202-982-3002 or email <a href="mailto:'.$client_email.'" target="_blank">'.$client_email.'</a><br><br>
                              
@@ -15862,14 +15866,14 @@
 
 
             // Email Compose
-            $user = $rowData['s_name'];
-            $to = $rowData['s_email'];
+            $user = htmlentities($rowData['s_name'] ?? '');
+            $to = htmlentities($rowData['s_email'] ?? '');
 
-            $data_company = $rowData['u_first_name'].' '.$rowData['u_last_name'];
-            if (!empty($rowData['e_name'])) { $data_company = $rowData['e_name']; }
+            $data_company = htmlentities($rowData['u_first_name'] ?? '').' '.htmlentities($rowData['u_last_name'] ?? '');
+            if (!empty($rowData['e_name'])) { $data_company = htmlentities($rowData['e_name'] ?? ''); }
 
-            $data_email = $rowData['u_email'];
-            if (!empty($rowData['e_email'])) { $data_email = $rowData['e_email']; }
+            $data_email = htmlentities($rowData['u_email'] ?? '');
+            if (!empty($rowData['e_email'])) { $data_email = htmlentities($rowData['e_email'] ?? ''); }
 
             $subject = $data_company.' Supplier Invitation via InterlinkIQ.com';
             $body_extra = 'Hi '.$user.',<br><br>';
@@ -25204,39 +25208,40 @@
         echo '<input class="form-control" type="hidden" name="ID" value="'.$id.'" />
         <input class="form-control" type="hidden" name="modal" value="'.$modal.'" />
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Material Name</label>
                     <input class="form-control" type="text" name="material_name" required />
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Brand Name</label>
+                    <input class="form-control" type="text" name="brand_name" required />
+                </div>
+            </div>
+            <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">SKU</label>
                     <input class="form-control" type="text" name="material_id" />
                 </div>
             </div>
-
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">UoM</label>
-                            <input class="form-control" type="text" name="material_uom" />
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Count</label>
-                            <input class="form-control" type="text" name="material_count" />
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Price Per Unit</label>
-                            <input class="form-control" type="text" name="material_ppu" />
-                        </div>
-                    </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">UoM</label>
+                    <input class="form-control" type="text" name="material_uom" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Count</label>
+                    <input class="form-control" type="text" name="material_count" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Price Per Unit</label>
+                    <input class="form-control" type="text" name="material_ppu" />
                 </div>
             </div>
             <div class="col-md-6 hide">
@@ -25413,39 +25418,40 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Material Name</label>
                     <input class="form-control" type="text" name="material_name" value="'.$row['material_name'].'" required />
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Brand Name</label>
+                    <input class="form-control" type="text" name="brand_name" value="'.$row['brand_name'].'" required />
+                </div>
+            </div>
+            <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">SKU</label>
                     <input class="form-control" type="text" name="material_id" value="'.$row['material_id'].'" />
                 </div>
             </div>
-
-            <div class="col-md-6">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">UoM</label>
-                            <input class="form-control" type="text" name="material_uom" value="'.$row['material_uom'].'" />
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Count</label>
-                            <input class="form-control" type="text" name="material_count" value="'.$row['material_count'].'" />
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="control-label">Price Per Unit</label>
-                            <input class="form-control" type="text" name="material_ppu" value="'.$row['material_ppu'].'" />
-                        </div>
-                    </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">UoM</label>
+                    <input class="form-control" type="text" name="material_uom" value="'.$row['material_uom'].'" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Count</label>
+                    <input class="form-control" type="text" name="material_count" value="'.$row['material_count'].'" />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Price Per Unit</label>
+                    <input class="form-control" type="text" name="material_ppu" value="'.$row['material_ppu'].'" />
                 </div>
             </div>
             <div class="col-md-6 hide">
@@ -25625,6 +25631,7 @@
         $process = true;
 
         $material_name = addslashes($_POST['material_name']);
+        $brand_name = addslashes($_POST['brand_name']);
         $material_id = $_POST['material_id'];
         $material_uom = $_POST['material_uom'];
         $material_count = $_POST['material_count'];
@@ -25729,8 +25736,8 @@
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
         if ($process == true) {
-            $sql = "INSERT INTO tbl_supplier_material (user_id, material_name, material_id, material_uom, material_count, material_ppu, cost_kg, cost_lb, cost_oz, description, notes, allergen, allergen_other, spec_file, spec_filesize, spec_date_from, spec_date_to, other, other_filesize, file_history)
-            VALUES ('$ID', '$material_name', '$material_id', '$material_uom', '$material_count', '$material_ppu', '$cost_kg', '$cost_lb', '$cost_oz', '$material_description', '$material_notes', '$allergen', '$allergen_other', '$material_spec_file_final', '$spec_filesize', '$material_spec_date_from', '$material_spec_date_to', '$material_other', '$filesize', '$file_history')";
+            $sql = "INSERT INTO tbl_supplier_material (user_id, material_name, brand_name, material_id, material_uom, material_count, material_ppu, cost_kg, cost_lb, cost_oz, description, notes, allergen, allergen_other, spec_file, spec_filesize, spec_date_from, spec_date_to, other, other_filesize, file_history)
+            VALUES ('$ID', '$material_name', '$brand_name', '$material_id', '$material_uom', '$material_count', '$material_ppu', '$cost_kg', '$cost_lb', '$cost_oz', '$material_description', '$material_notes', '$allergen', '$allergen_other', '$material_spec_file_final', '$spec_filesize', '$material_spec_date_from', '$material_spec_date_to', '$material_other', '$filesize', '$file_history')";
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
             }
@@ -25766,6 +25773,7 @@
         }
 
         $material_name = addslashes($_POST['material_name']);
+        $brand_name = addslashes($_POST['brand_name']);
         $material_id = $_POST['material_id'];
         $material_active = $_POST['active'];
         $material_uom = $_POST['material_uom'];
@@ -25870,7 +25878,7 @@
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
         if ($process == true) {
-            mysqli_query( $conn,"UPDATE tbl_supplier_material set active='". $material_active ."', material_name='". $material_name ."', material_id='". $material_id ."', material_uom='". $material_uom ."', material_count='". $material_count ."', material_ppu='". $material_ppu ."', cost_kg='". $cost_kg ."', cost_lb='". $cost_lb ."', cost_oz='". $cost_oz ."', description='". $material_description ."', notes='". $material_notes ."', allergen='". $allergen ."', allergen_other='". $allergen_other ."', spec_file='". $material_spec_file_final ."', spec_filesize='". $spec_filesize ."', spec_date_from='". $material_spec_date_from ."', spec_date_to='". $material_spec_date_to ."', other='". $material_other ."', other_filesize='". $filesize ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
+            mysqli_query( $conn,"UPDATE tbl_supplier_material set active='". $material_active ."', material_name='". $material_name ."', brand_name='". $brand_name ."', material_id='". $material_id ."', material_uom='". $material_uom ."', material_count='". $material_count ."', material_ppu='". $material_ppu ."', cost_kg='". $cost_kg ."', cost_lb='". $cost_lb ."', cost_oz='". $cost_oz ."', description='". $material_description ."', notes='". $material_notes ."', allergen='". $allergen ."', allergen_other='". $allergen_other ."', spec_file='". $material_spec_file_final ."', spec_filesize='". $spec_filesize ."', spec_date_from='". $material_spec_date_from ."', spec_date_to='". $material_spec_date_to ."', other='". $material_other ."', other_filesize='". $filesize ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
 
             $output = array(
                 "ID" => $ID,
@@ -33041,10 +33049,11 @@
             $selectData = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE ID = $id" );
             if ( mysqli_num_rows($selectData) > 0 ) {
                 $row = mysqli_fetch_array($selectData);
-                $title = $row['title'];
-                $description = $row['description'];
-                $contact = $row['contact'];
-                $email = $row['email'];
+                $name = htmlentities($row['name'] ?? '');
+                $title = htmlentities($row['title'] ?? '');
+                $description = htmlentities($row['description'] ?? '');
+                $contact = htmlentities($row['contact'] ?? '');
+                $email = htmlentities($row['email'] ?? '');
                 $due_date = $row['due_date'];
                 $last_modified = $row['last_modified'];
 
@@ -33071,6 +33080,32 @@
                     $files = 'File: <a data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a>';
                 };
             }
+
+            $sender_name = 'Interlink IQ';
+            $sender_email = 'services@interlinkiq.com';
+            $sender[$sender_email] = $sender_name;
+
+            $recipients_name = $name;
+            $recipients_email = $email;
+            $recipients[$recipients_email] = $recipients_name;
+
+            $subject = 'Resolution of Job Ticket #'.$row['ID'];
+            $body = 'Hi '.$name.',<br><br>
+
+            I am pleased to inform you that the issue reported in job ticket #'.$row['ID'].' has been successfully resolved. Our technical team diligently worked on the problem and implemented a solution that has undergone thorough testing to ensure its effectiveness.<br><br>
+
+            <div style="margin: 0 0 20px; padding: 15px 30px 15px 15px; border-left: 5px solid #eee; border-radius: 0 4px 4px 0; background-color: #f5f8fd; border-color: #8bb4e7; color: #010407;">
+                <strong>Title:</strong> '.$title.'<br>
+                <strong>Description:</strong><br>
+                '.nl2br($description).'
+            </div>
+
+            We thank you for your patience during this procedure and apologize for any inconvenience this may have caused.<br><br>
+
+            Should you require any further assistance or have additional questions, please do not hesitate to reach out.<br><br>
+
+            Best Regards';
+            php_mailer_dynamic($sender, $recipients, $subject, $body);
             
             $output = array(
                 'ID' => $id,
@@ -33092,8 +33127,8 @@
         $c_name = addslashes($_POST['name']);
         $title = addslashes($_POST['title']);
         $description = addslashes($_POST['description']);
-        $contact = $_POST['contact'];
-        $email = $_POST['email'];
+        $contact = addslashes($_POST['contact']);
+        $email = addslashes($_POST['email']);
         $due_date = $_POST['due_date'];
         $last_modified = date("Y-m-d");
         $process = true;
@@ -33116,10 +33151,10 @@
                 if ( mysqli_num_rows($selectData) > 0 ) {
                     $rowData = mysqli_fetch_array($selectData);
                     $data_ID = $rowData['ID'];
-                    $data_title = $rowData['title'];
-                    $data_description = $rowData['description'];
-                    $data_contact = $rowData['contact'];
-                    $data_email = $rowData['email'];
+                    $data_title = htmlentities($rowData['title'] ?? '');
+                    $data_description = htmlentities($rowData['description'] ?? '');
+                    $data_contact = htmlentities($rowData['contact'] ?? '');
+                    $data_email = htmlentities($rowData['email'] ?? '');
                     $data_last_modified = $rowData['last_modified'];
                     $data_due_date = $rowData['due_date'];
 
@@ -33199,7 +33234,7 @@
         $current_userID = $_COOKIE['ID'];
         $last_modified = date("Y-m-d");
 
-        $selectDataTemp = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE ID = $ID" );
+        $selectDataTemp = mysqli_query( $conn,"SELECT assigned_to_id FROM tbl_services WHERE ID = $ID" );
         if ( mysqli_num_rows($selectDataTemp) > 0 ) {
             $rowDataTemp = mysqli_fetch_array($selectDataTemp);
             $rowDataTemp_assigned_to_id = $rowDataTemp['assigned_to_id'];
@@ -33228,10 +33263,10 @@
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
             $c_name = $row['name'];
-            $title = $row['title'];
-            $description = $row['description'];
-            $contact = $row['contact'];
-            $email = $row['email'];
+            $title = htmlentities($row['title'] ?? '');
+            $description = htmlentities($row['description'] ?? '');
+            $contact = htmlentities($row['contact'] ?? '');
+            $email = htmlentities($row['email'] ?? '');
             $due_date = $row['due_date'];
             $last_modified = $row['last_modified'];
 
@@ -33281,15 +33316,55 @@
             );
             echo json_encode($output);
 
-            if (!empty($assigned_to_id) AND !empty($rowDataTemp_assigned_to_id)) {
-                $rowDataTemp_assigned_to_id_array = explode(", ", $rowDataTemp_assigned_to_id);
-                if (!in_array($assigned_to_id, $rowDataTemp_assigned_to_id_array)) {
-                    $sender['services@interlinkiq.com'] = 'Interlink IQ';
-                    $recipients[$email] = $c_name;
-                    $subject = 'Job Ticket Tracker #'.$ID.' - '.$title;
-                    $body = 'Hi, '.$c_name.'!<br><br>
+            $sender['services@interlinkiq.com'] = 'Interlink IQ';
+            $recipients[$email] = $c_name;
+            if (!empty($assigned_to_id)) {
+                if ($assigned_to_id == $rowDataTemp_assigned_to_id) {
+                    if (!empty($comment)) {
+                        $recipients = array();
+                        $assigned_to_id_arr = explode(", ", $assigned_to_id);
+                        foreach ($assigned_to_id_arr as $value) {
+                            $selectEmployee = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_hr_employee WHERE ID=$value" );
+                            if ( mysqli_num_rows($selectEmployee) > 0 ) {
+                                $rowEmp = mysqli_fetch_array($selectEmployee);
+                                $emp_email = htmlentities($rowEmp['email'] ?? '');
+                                $emp_user = htmlentities($rowEmp['first_name'] ?? '') .' '. htmlentities($rowEmp['last_name'] ?? '');
+                                $recipients[$emp_email] = $emp_user;
+                            }
+                        }
+                        $subject = 'Update on Job Ticket #'.$ID.' - New Comment/Question Received';
+                        $body = 'Hi '.$c_name.',<br><br>
+
+                        I hope this message finds you well. I am writing to inform you that Job Ticket #'.$ID.' has received a new comment or question from the client. It is crucial that we address this promptly to maintain our commitment to excellent customer service and support.<br><br>
+
+                        <div style="margin: 0 0 20px; padding: 15px 30px 15px 15px; border-left: 5px solid #eee; border-radius: 0 4px 4px 0; background-color: #f5f8fd; border-color: #8bb4e7; color: #010407;">
+                            <strong>Title:</strong> '.$title.'<br>
+                            <strong>Description:</strong><br>
+                            '.nl2br($description).'<br><br>
+
+                            <strong>New Comment/Question:</strong><br>
+                            '.nl2br($comment).'
+                        </div>
+
+                        Please review the comment at your earliest convenience and provide a comprehensive response or solution. Your timely and effective communication is key to resolving the client\'s concerns and ensuring their satisfaction with our services.<br><br>
+
+                        Thank you for your attention to this matter and for your ongoing dedication<br><br>
+
+                        Best Regards';
+                        php_mailer_dynamic($sender, $recipients, $subject, $body);
+                    }
+                } else {
+                    // Send to requestor
+                    $subject = 'Job Ticket #'.$ID.' - Assigned';
+                    $body = 'Hi '.$c_name.',<br><br>
 
                     Your service request has been assigned to our team. Kindly wait for the next update.<br><br>
+
+                    <div style="margin: 0 0 20px; padding: 15px 30px 15px 15px; border-left: 5px solid #eee; border-radius: 0 4px 4px 0; background-color: #f5f8fd; border-color: #8bb4e7; color: #010407;">
+                        <strong>Title:</strong> '.$title.'<br>
+                        <strong>Description:</strong><br>
+                        '.nl2br($description).'
+                    </div>
 
                     Should you need assistance, kindly call 202-982-3002 or email <a href="mailto:services@interlinkiq.com" target="_blank">services@interlinkiq.com</a><br><br>
                     
@@ -33298,29 +33373,61 @@
                     php_mailer_dynamic($sender, $recipients, $subject, $body);
 
 
+                    // Send to assigned team
+                    $recipients = array();
                     $assigned_to_id_arr = explode(", ", $assigned_to_id);
                     foreach ($assigned_to_id_arr as $value) {
-                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID=$value" );
+                        $selectEmployee = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_hr_employee WHERE ID=$value" );
                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                             $rowEmp = mysqli_fetch_array($selectEmployee);
-                            $emp_email = $rowEmp['email'];
-                            $emp_user = $rowEmp['first_name'] .' '. $rowEmp['last_name'];
+                            $emp_email = htmlentities($rowEmp['email'] ?? '');
+                            $emp_user = htmlentities($rowEmp['first_name'] ?? '') .' '. htmlentities($rowEmp['last_name'] ?? '');
                             $recipients[$emp_email] = $emp_user;
                         }
                     }
-                    $body = 'Job Ticket was assigned to you!<br><br>
+                    $body = 'Hi Team!
 
-                    <b>Description:</b> '.htmlentities($description).'<br>
-                    <b>Contact:</b> '.htmlentities($contact).'<br>
-                    <b>Email:</b> '.htmlentities($email).'<br><br>
+                    I am writing to confirm the assignment of a new job ticket. The details of the job have been entered into our tracking system, and we are counting on your expertise for a timely and effective resolution.<br><br>
 
-                    Should you need assistance, kindly call 202-982-3002 or email <a href="mailto:services@interlinkiq.com" target="_blank">services@interlinkiq.com</a><br><br>
+                    <div style="margin: 0 0 20px; padding: 15px 30px 15px 15px; border-left: 5px solid #eee; border-radius: 0 4px 4px 0; background-color: #f5f8fd; border-color: #8bb4e7; color: #010407;">
+                        <strong>Title:</strong> '.$title.'<br>
+                        <strong>Description:</strong><br>
+                        '.nl2br($description).'<br><br>
+
+                        <strong>Contact:</strong> '.$contact.'<br>
+                        <strong>Email:</strong> '.$email.'
+                    </div>
+
+                    Please review the job ticket at your earliest convenience and provide an estimated timeline for completion. Your prompt attention to this matter is greatly appreciated, as it impacts our service commitments to our clients.<br><br>
+
+                    Thank you for your cooperation and dedication.<br><br>
                     
                     <a href="'. $base_url .'job-ticket-service?i='. $ID .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a><br><br>
 
-                    InterlinkIQ.com Team<br>
-                    Consultare Inc. Group';
+                    Best Regards';
+                    php_mailer_dynamic($sender, $recipients, $subject, $body);
+                }
+            } else {
+                if (!empty($comment)) {
+                    $subject = 'Update on Job Ticket #'.$ID.' - New Comment/Question Received';
+                    $body = 'Hi '.$c_name.',<br><br>
 
+                    I hope this message finds you well. I am writing to inform you that Job Ticket #'.$ID.' has received a new comment or question from the client. It is crucial that we address this promptly to maintain our commitment to excellent customer service and support.<br><br>
+
+                    <div style="margin: 0 0 20px; padding: 15px 30px 15px 15px; border-left: 5px solid #eee; border-radius: 0 4px 4px 0; background-color: #f5f8fd; border-color: #8bb4e7; color: #010407;">
+                        <strong>Title:</strong> '.$title.'<br>
+                        <strong>Description:</strong><br>
+                        '.nl2br($description).'<br><br>
+
+                        <strong>New Comment/Question:</strong><br>
+                        '.nl2br($comment).'
+                    </div>
+
+                    Please review the comment at your earliest convenience and provide a comprehensive response or solution. Your timely and effective communication is key to resolving the client\'s concerns and ensuring their satisfaction with our services.<br><br>
+
+                    Thank you for your attention to this matter and for your ongoing dedication<br><br>
+
+                    Best Regards';
                     php_mailer_dynamic($sender, $recipients, $subject, $body);
                 }
             }
@@ -37057,8 +37164,7 @@
             $optionEmployee = '';
             $optionTraining = '';
             foreach ($department_id_arr as $value) {
-
-                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND department_id = $value AND user_id = $user_id ORDER BY first_name" );
+                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id AND FIND_IN_SET($value, REPLACE(department_id, ' ', '')) ORDER BY first_name" );
                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                         $emp_ID = $rowEmployee["ID"];
@@ -37348,7 +37454,39 @@
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <select class="form-control mt-multiselect employee_id_2" data-placeholder="Select Personnel" name="employee_id[]" multiple="multiple"></select>
+                    <select class="form-control mt-multiselect employee_id_2" data-placeholder="Select Personnel" name="employee_id[]" multiple="multiple">';
+
+                        if (!empty($row['department_id'])) {
+                            $arr_department_id =  explode(', ', $row['department_id']);
+                            $array_employee_id = array();
+                            foreach ($arr_department_id as $value) {
+                                
+                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id AND FIND_IN_SET($value, REPLACE(department_id, ' ', '')) ORDER BY first_name" );
+                                if ( mysqli_num_rows($selectEmployee) > 0 ) {
+                                    while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
+                                        $emp_ID = $rowEmployee["ID"];
+                                        $emp_name = $rowEmployee["first_name"] .' '. $rowEmployee["last_name"];
+                                        $emp_email = $rowEmployee["email"];
+
+                                        if (!in_array($emp_ID, $array_employee_id)) {
+                                            array_push($array_employee_id, $emp_ID);
+
+                                            $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE is_verified = 1 AND is_active = 1 AND email = '".$emp_email."' ORDER BY first_name");
+                                            if ( mysqli_num_rows($selectUser) > 0 ) {
+                                                if (!empty($row["employee_id"])) {
+                                                    $cam_employee_id = explode(',', $row["employee_id"]);
+                                                    echo '<option value="'.$emp_ID.'" '; echo in_array($emp_ID, $cam_employee_id) ? 'SELECTED':''; echo '>'.$emp_name.'</option>';
+                                                } else {
+                                                    echo '<option value="'.$emp_ID.'">'.$emp_name.'</option>';
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    echo '</select>
                 </div>
             </div>
 
@@ -45645,7 +45783,8 @@
                     <label class="col-md-3 control-label">Select Trainer</label>
                     <div class="col-md-9">
                         <select class="form-control" name="trainer" required >
-                            <option value="">Select</option>';
+                            <option value="">Select</option>
+                            <option value="0">Compliance Department</option>';
 
                             $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id = $current_userEmployerID ORDER BY first_name" );
                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
@@ -47026,7 +47165,7 @@
 
         return $compliant;
     }
-    function commentNotification($target_id, $parent_id, $subject, $from, $sender, $data_names, $team, $comment_comment, $data_user_id) {
+    function commentNotification($target_id, $parent_id, $subject, $from, $sender, $data_names, $team, $comment_comment, $data_user_id, $s) {
         global $conn;
         global $base_url;
 
@@ -47061,7 +47200,7 @@
                                         '.$sender.' has a comment on <b>'.$data_names.'</b><br>
                                         <i>"'.stripcslashes($comment_comment).'"</i><br><br>
 
-                                        <a href="'. $base_url .'dashboard?d='. $target_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+                                        <a href="'. $base_url .'dashboard?d='. $target_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
 
                                         php_mailer_2($to, $user, $subject, $body, $from, $sender);
                                     }
@@ -47074,7 +47213,7 @@
                                         '.$sender.' has a comment on <b>'.$data_names.'</b><br>
                                         <i>"'.stripcslashes($comment_comment).'"</i><br><br>
 
-                                        <a href="'. $base_url .'dashboard?d='. $target_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+                                        <a href="'. $base_url .'dashboard?d='. $target_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
 
                                         php_mailer_2($to, $user, $subject, $body, $from, $sender);
                                     }
@@ -47088,26 +47227,46 @@
 
             // Check if has a parent
             if ($data_parent_id > 0) {
-                commentNotification($target_id, $data_parent_id, $subject, $from, $sender, $data_names, $team, $comment_comment, $data_user_id);
+                commentNotification($target_id, $data_parent_id, $subject, $from, $sender, $data_names, $team, $comment_comment, $data_user_id, $s);
             }
         }
     }
     if( isset($_GET['modalDashboard']) ) {
         $id = $_GET['modalDashboard'];
 
+        $s = 0;
+        if (isset($_GET['s'])) {
+            $s = $_GET['s'];
+            if ($s == 1) {
+                $selectDataUser = mysqli_query( $conn,"SELECT user_id FROM tbl_library WHERE ID = $id AND deleted = 0" );
+                if ( mysqli_num_rows($selectDataUser) > 0 ) {
+                    $rowDataUser = mysqli_fetch_array($selectDataUser);
+                    $datauser_ID = $rowDataUser["user_id"];
+
+                    setcookie('switchAccount', $datauser_ID, time() + (86400 * 1), "/");  // 86400 = 1 day
+                }
+            }
+        }
+
         $current_client = 0;
         if (isset($_COOKIE['client'])) { $current_client = $_COOKIE['client']; }
 
-        if (!empty($_COOKIE['switchAccount'])) {
+
+        if ($s == 1) {
             $portal_user = $_COOKIE['ID'];
-            $user_id = $_COOKIE['switchAccount'];
-        }
-        else {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = employerID($portal_user);
+            $user_id = $datauser_ID;
+        } else {
+            if (!empty($_COOKIE['switchAccount'])) {
+                $portal_user = $_COOKIE['ID'];
+                $user_id = $_COOKIE['switchAccount'];
+            }
+            else {
+                $portal_user = $_COOKIE['ID'];
+                $user_id = employerID($portal_user);
+            }
         }
 
-        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        $hasLibrary = mysqli_query( $conn,"SELECT ID FROM tbl_library WHERE user_id = $user_id" );
         if ( mysqli_num_rows($hasLibrary) == 0 ) {
             $user_id = 163;
             $current_userEmployerID = $user_id;
@@ -47149,7 +47308,8 @@
 
             WHERE l.deleted = 0
             AND l.ID = $id
-            AND l.user_id = $user_id" );
+            AND l.user_id = $user_id
+        " );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
             $library_ID = $row["l_ID"];
@@ -47349,7 +47509,7 @@
                                         $user_array_list = array(1, 464);
                                         if (!empty($row["l_description_tmp"]) AND in_array($user_id, $user_array_list)) {
                                             $arr_tmp = json_decode($row["l_description_tmp"],true);
-                                            if (end($arr_tmp)['status'] != 4) {
+                                            if (isset(end($arr_tmp)['status']) AND end($arr_tmp)['status'] != 4) {
                                                echo '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$library_ID.')">here</a> to view</span>';
                                             }
                                         }
@@ -47695,7 +47855,7 @@
                                                         <th class="text-center" style="width: 130px;">Completed</th>
                                                         <th>Requirements</th>
                                                         <th>Action Items</th>
-                                                        <th style="width: 300px;">Frequency</th>
+                                                        <th>Frequency</th>
                                                         <th class="text-center" style="width: 130px;">Uploaded Files</th>
                                                         <th style="width: 175px;"></th>
                                                     </tr>
@@ -48870,7 +49030,7 @@
                                 $user_array_list = array(1, 464);
                                 if (!empty($row["l_description_tmp"]) AND in_array($user_id, $user_array_list)) {
                                     $arr_tmp = json_decode($row["l_description_tmp"],true);
-                                    if (end($arr_tmp)['status'] != 4) {
+                                    if (isset(end($arr_tmp)['status']) AND end($arr_tmp)['status'] != 4) {
                                        echo '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$library_ID.')">here</a> to view</span>';
                                     }
                                 }
@@ -49212,7 +49372,7 @@
                                                 <th class="text-center" style="width: 130px;">Completed</th>
                                                 <th>Requirements</th>
                                                 <th>Action Items</th>
-                                                <th style="width: 300px;">Frequency</th>
+                                                <th>Frequency</th>
                                                 <th class="text-center" style="width: 130px;">Uploaded Files</th>
                                                 <th style="width: 175px;"></th>
                                             </tr>
@@ -51435,10 +51595,12 @@
     if( isset($_GET['modalChangesStatus_Area']) ) {
         $ID = $_GET['modalChangesStatus_Area'];
         $v = $_GET['v'];
+        $s = 0;
 
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
@@ -51499,7 +51661,7 @@
 
                 <b>'.$sender_name.'</b> updated the status into <i>'.$status_array[$v].'</i><br><br>
 
-                Click <a href="'.$base_url.'dashboard?d='.$ID.'" target="_blank">here</a> to view<br><br>
+                Click <a href="'.$base_url.'dashboard?d='.$ID.'&s='.$s.'" target="_blank">here</a> to view<br><br>
 
                 Thanks';
 
@@ -51613,7 +51775,7 @@
         $user_array_list = array(1, 464);
         if (!empty($row["description_tmp"]) AND in_array($user_id, $user_array_list)) {
             $arr_tmp = json_decode($row["description_tmp"],true);
-            if (end($arr_tmp)['status'] != 4) {
+            if (isset(end($arr_tmp)['status']) AND end($arr_tmp)['status'] != 4) {
                 $description = htmlentities(end($arr_tmp)['description'] ?? '');
             }
         }
@@ -51945,7 +52107,7 @@
         $user_array_list = array(5, 1, 464);
         if (!empty($row["description_tmp"]) AND in_array($user_id, $user_array_list)) {
             $arr_tmp = json_decode($row["description_tmp"],true);
-            if (end($arr_tmp)['status'] != 4) {
+            if (isset(end($arr_tmp)['status']) AND end($arr_tmp)['status'] != 4) {
                 $description = htmlentities(end($arr_tmp)['description'] ?? '');
             }
         }
@@ -52058,19 +52220,21 @@
         mysqli_close($conn);
     }
     if( isset($_GET['btnDelete_Area']) ) {
+        $id = $_GET['btnDelete_Area'];
+        $current_userID = $_COOKIE['ID'];
+        $reason = addslashes($_GET['reason']);
+        $s = 0;
+
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
             $user_id = employerID($portal_user);
         }
         
-        $id = $_GET['btnDelete_Area'];
-        $current_userID = $_COOKIE['ID'];
-        $reason = addslashes($_GET['reason']);
-
         $message = array();
         array_push($message, $current_userID);
         array_push($message, $reason);
@@ -52159,7 +52323,7 @@
 
         Please click the button below to view the item<br><br>
 
-        <a href="'. $base_url .'dashboard?d='. $id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+        <a href="'. $base_url .'dashboard?d='. $id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
 
         $mail = php_mailer($to, $user, $subject, $body);
     }
@@ -52286,10 +52450,12 @@
     }
     if( isset($_POST['btnUpdate_Area']) ) {
         $ID = $_POST['ID'];
+        $s = 0;
 
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
@@ -52396,7 +52562,7 @@
                     $subject = 'Compliance Dashboard Description - For Review/Approval - '. $local_date;
                     $body = 'Hi Team,<br><br>
 
-                    New revision has been made that needs your attention. Click <a href="'.$base_url.'dashboard?d='.$ID.'" target="_blank">here</a> to view<br><br>
+                    New revision has been made that needs your attention. Click <a href="'.$base_url.'dashboard?d='.$ID.'&s='.$s.'" target="_blank">here</a> to view<br><br>
 
                     Thanks';
 
@@ -52566,10 +52732,12 @@
     }
     if( isset($_POST['btnUpdate_Area_SubItem']) ) {
         $parent_id = $_POST['parent_id'];
+        $s = 0;
 
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
@@ -52645,7 +52813,7 @@
                     $subject = 'Compliance Dashboard Description - For Review/Approval - '. $local_date;
                     $body = 'Hi Team,<br><br>
 
-                    New revision has been made that needs your attention. Click <a href="'.$base_url.'dashboard?d='.$parent_id.'" target="_blank">here</a> to view<br><br>
+                    New revision has been made that needs your attention. Click <a href="'.$base_url.'dashboard?d='.$parent_id.'&s='.$s.'" target="_blank">here</a> to view<br><br>
 
                     Thanks';
 
@@ -52717,11 +52885,12 @@
     }
     if( isset($_POST['btnComment_changes']) ) {
         $ID = $_POST['ID'];
-        $comment = addslashes($_POST['comment']);
+        $s = 0;
 
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
@@ -52784,7 +52953,7 @@
 
                     <b>'.$sender_name.'</b> said <i>'.$comment.'</i><br><br>
 
-                    Click <a href="'.$base_url.'dashboard?d='.$ID.'" target="_blank">here</a> to view<br><br>
+                    Click <a href="'.$base_url.'dashboard?d='.$ID.'&s='.$s.'" target="_blank">here</a> to view<br><br>
 
                     Thanks';
 
@@ -52935,19 +53104,21 @@
         mysqli_close($conn);
     }
     if( isset($_GET['btnDelete_File']) ) {
+        $id = $_GET['btnDelete_File'];
+        $current_userID = $_COOKIE['ID'];
+        $reason = addslashes($_GET['reason']);
+        $s = 0;
+
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
             $user_id = employerID($portal_user);
         }
         
-        $id = $_GET['btnDelete_File'];
-        $current_userID = $_COOKIE['ID'];
-        $reason = addslashes($_GET['reason']);
-
         $message = array();
         array_push($message, $current_userID);
         array_push($message, $reason);
@@ -52990,7 +53161,7 @@
 
             Please click the button below to view the item<br><br>
 
-            <a href="'. $base_url .'dashboard?d='. $data_library_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a><br><br>
+            <a href="'. $base_url .'dashboard?d='. $data_library_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a><br><br>
 
             Cann OS Team';
         } else {
@@ -53001,7 +53172,7 @@
 
             Please click the button below to view the item<br><br>
 
-            <a href="'. $base_url .'dashboard?d='. $data_library_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+            <a href="'. $base_url .'dashboard?d='. $data_library_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
         }
         $mail = php_mailer($to, $user, $subject, $body);
     }
@@ -53451,6 +53622,7 @@
         $title = addslashes($_POST['title']);
         $comment = addslashes($_POST['comment']);
         $team = $_POST['team'];
+        $s = 0;
 
         $sql = "INSERT INTO tbl_library_comment (user_id, library_id, title, comment, team, seen)
         VALUES ('$current_userID', '$parent_id', '$title', '$comment', '$team', '$current_userID')";
@@ -53468,6 +53640,7 @@
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id_account = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
@@ -53591,7 +53764,7 @@
                         '.$sender.' has a comment on <b>'.$data_names.'</b><br>
                         <i>"'.stripcslashes($comment_comment).'"</i><br><br>
 
-                        <a href="'. $base_url .'dashboard?d='. $parent_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+                        <a href="'. $base_url .'dashboard?d='. $parent_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
             
                         $body .= '<br><br>'.$client_name.' Team';
                         
@@ -53599,7 +53772,7 @@
                     }
                 }
 
-                commentNotification($parent_id, $parent_id, $subject, $from, $sender, $data_names, $team, $comment_comment, $data_user_id);
+                commentNotification($parent_id, $parent_id, $subject, $from, $sender, $data_names, $team, $comment_comment, $data_user_id, $s);
             }
         }
         mysqli_close($conn);
@@ -53942,10 +54115,12 @@
     if( isset($_GET['btnAccept_Compliance']) ) {
         $id = $_GET['btnAccept_Compliance'];
         $current_userID = $_COOKIE['ID'];
+        $s = 0;
 
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
@@ -54044,7 +54219,7 @@
             $name = $client_name;
             $body .= $client_name;
 
-            $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+            $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
             
             php_mailer_1($to, $user, $subject, $body, $from, $name);
         }
@@ -54064,22 +54239,6 @@
         actionHistory($data_library_id, 5, 3, $id);
     }
     if( isset($_POST['btnSave_Compliance']) ) {
-        if (!empty($_COOKIE['switchAccount'])) {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = $_COOKIE['switchAccount'];
-        }
-        else {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = employerID($portal_user);
-        }
-
-        $free_access = 0;
-        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
-        if ( mysqli_num_rows($hasLibrary) == 0 ) {
-            $user_id = 163;
-            $free_access = 1;
-        }
-
         $current_userID = $_COOKIE['ID'];
         $parent_id = $_POST['parent_id'];
         $action_items = addslashes($_POST['action_items']);
@@ -54088,6 +54247,24 @@
         $arr_item = array();
         $filesize = 0;
         $process = true;
+        $s = 0;
+
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+        
+        $free_access = 0;
+        $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
+        if ( mysqli_num_rows($hasLibrary) == 0 ) {
+            $user_id = 163;
+            $free_access = 1;
+        }
 
         $frequency = $_POST['frequency'];
         $time = $_POST['time'];
@@ -54278,7 +54455,7 @@
                         $name = $client_name;
                         $body .= $client_name.' Team';
 
-                        $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $last_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+                        $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $last_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
 
                         php_mailer_1($to, $user, $subject, $body, $from, $name);
                     }
@@ -54459,9 +54636,19 @@
         }
     }
     if( isset($_POST['btnSaveMore_Compliance']) ) {
+        $current_userID = $_COOKIE['ID'];
+        $library_id = $_POST['library_id'];
+        $type = $_POST['type'];
+        $comment = addslashes($_POST['comment']);
+        $ID = $_POST['ID'];
+        $last_modified = date('Y-m-d');
+        $process = true;
+        $s = 0;
+
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
@@ -54474,14 +54661,6 @@
             $user_id = 163;
             $free_access = 1;
         }
-
-        $current_userID = $_COOKIE['ID'];
-        $library_id = $_POST['library_id'];
-        $type = $_POST['type'];
-        $comment = addslashes($_POST['comment']);
-        $ID = $_POST['ID'];
-        $last_modified = date('Y-m-d');
-        $process = true;
 
         $filetype = $_POST['filetype'];
         if ($filetype == 1) {
@@ -54541,8 +54720,6 @@
                         3 => 'Reviewed'
                     );
 
-
-                    
                     $compliance_schedule_id = $rowData['schedule'];
                     $array_schedule_id = explode(", ", $compliance_schedule_id);
                     $days = array(
@@ -54650,7 +54827,7 @@
                         $name = $client_name;
                         $body .= $client_name.' Team';
 
-                        $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $last_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+                        $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $last_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
 
                         php_mailer_1($to, $user, $subject, $body, $from, $name);
                     }
@@ -56482,6 +56659,9 @@
 
                     mysqli_query( $conn,"UPDATE tbl_library_template SET files='". $files ."', filetype='". $filetype ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
                 }
+            } else {
+                $files = $rowData['files'];
+                $filetype = $rowData['filetype'];
             }
 
             if ($process == true) {
@@ -56880,6 +57060,9 @@
 
                     mysqli_query( $conn,"UPDATE tbl_library_references SET files='". $files ."', filetype='". $filetype ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
                 }
+            } else {
+                $files = $rowData['files'];
+                $filetype = $rowData['filetype'];
             }
 
             if ($process == true) {
@@ -57566,9 +57749,21 @@
         // actionHistory($data_library_id, 3, 8, $id);
     }
     if( isset($_POST['btnSave_Task']) ) {
+        $current_userID = $_COOKIE['ID'];
+        $parent_id = $_POST['parent_id'];
+        $name = addslashes($_POST['name']);
+        $description = addslashes($_POST['description']);
+        $start_date = $_POST['start_date'];
+        $desired_date = $_POST['desired_date'];
+        $last_modified = date('Y-m-d');
+        $rand_id = rand(10,1000000);
+        $process = true;
+        $s = 0;
+
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
@@ -57579,16 +57774,6 @@
         if ( mysqli_num_rows($hasLibrary) == 0 ) {
             $user_id = 163;
         }
-
-        $current_userID = $_COOKIE['ID'];
-        $parent_id = $_POST['parent_id'];
-        $name = addslashes($_POST['name']);
-        $description = addslashes($_POST['description']);
-        $start_date = $_POST['start_date'];
-        $desired_date = $_POST['desired_date'];
-        $last_modified = date('Y-m-d');
-        $rand_id = rand(10,1000000);
-        $process = true;
 
         $files = $_FILES['file']['name'];
         if (!empty($files)) {
@@ -57663,7 +57848,7 @@
                             Project Name: '.stripcslashes($name).'<br>
                             Task Description: '.stripcslashes($description).'<br><br>
 
-                            <a href="'. $base_url .'dashboard?d='. $parent_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a><br><br>';
+                            <a href="'. $base_url .'dashboard?d='. $parent_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a><br><br>';
                 
                             $from = $client_email;
                             $name = $client_name;
@@ -57728,9 +57913,21 @@
         }
     }
     if( isset($_POST['btnUpdate_Task']) ) {
+        $ID = $_POST['ID'];
+        $parent_id = $_POST['parent_id'];
+        $current_userID = $_COOKIE['ID'];
+        $name = addslashes($_POST['name']);
+        $description = addslashes($_POST['description']);
+        $start_date = $_POST['start_date'];
+        $desired_date = $_POST['desired_date'];
+        $last_modified = date('Y-m-d');
+        $process = true;
+        $s = 0;
+
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
@@ -57741,16 +57938,6 @@
         if ( mysqli_num_rows($hasLibrary) == 0 ) {
             $user_id = 163;
         }
-
-        $ID = $_POST['ID'];
-        $parent_id = $_POST['parent_id'];
-        $current_userID = $_COOKIE['ID'];
-        $name = addslashes($_POST['name']);
-        $description = addslashes($_POST['description']);
-        $start_date = $_POST['start_date'];
-        $desired_date = $_POST['desired_date'];
-        $last_modified = date('Y-m-d');
-        $process = true;
 
         $files = $_FILES['file']['name'];
         if (!empty($files)) {
@@ -57826,7 +58013,7 @@
                         Project Name: '.stripcslashes($name).'<br>
                         Task Description: '.stripcslashes($description).'<br><br>
 
-                        <a href="'. $base_url .'dashboard?d='. $parent_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a><br><br>';
+                        <a href="'. $base_url .'dashboard?d='. $parent_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a><br><br>';
             
                         $from = $client_email;
                         $name = $client_name;

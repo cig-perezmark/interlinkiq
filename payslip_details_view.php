@@ -149,7 +149,7 @@
                                                 Basic Pay
                                             </td>
                                             <td style="text-align:center" id="basic_pay">
-                                               <?= "$" ?><?= $row['pay_rate'] ?>
+                                               <?= "$" ?><?= ($row['hourly_rate'] == 0) ? $row['pay_rate'] : $row['hourly_rate'] ?>
                                             </td>
                                             <td colspan="2">
                                                 Leave Without Pay

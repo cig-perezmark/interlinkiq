@@ -16,6 +16,8 @@
  * blog link: https://codeshack.io/super-fast-php-mysql-database-class/
  *
  */
+ 
+error_reporting(0);
 
 interface CRUD {
     public function insert(string $tableName, ParamBuilder | array $params);

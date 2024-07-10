@@ -183,7 +183,13 @@
                                                     $result = mysqli_query($e_connection, $query);
                                                     while($row = mysqli_fetch_array($result))
                                                     {?> 
-                                                        <tr>
+                                                        <?php
+                                                            $color = '';
+                                                            if($row['is_new'] == 1){
+                                                                $color = '#FFD54F';
+                                                            }
+                                                        ?>
+                                                        <tr style='background-color:<?= $color ?>'>
                                                             <td>
                                                                 <?= $row['afl_form_name']; ?>
                                                             </td>

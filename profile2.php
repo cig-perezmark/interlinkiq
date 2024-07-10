@@ -619,10 +619,8 @@
                                                     $currentDateTime->setTimezone(new DateTimeZone('America/Chicago'));
                                                     $dateToday = $currentDateTime->format('Y-m-d');
                                                     
-                                                    // Settting up time in CST zone 
                                                     date_default_timezone_set('America/Chicago');
                                                     
-                                                    // Get the most recent 'IN' and 'OUT' records for today
                                                     $is_timein = "SELECT time_in_datetime FROM tbl_timein WHERE DATE(time_in_datetime) = '$dateToday' AND action = 'IN' AND user_id = {$current_userEmployeeID} ORDER BY time_in_datetime DESC LIMIT 1";
                                                     $checktimein = mysqli_query($conn, $is_timein);
                                                     $timeInDateTime = ($checktimein && mysqli_num_rows($checktimein) > 0) ? mysqli_fetch_assoc($checktimein)['time_in_datetime'] : null;
@@ -632,18 +630,60 @@
                                                     $timeOutDateTime = ($checktimeout && mysqli_num_rows($checktimeout) > 0) ? mysqli_fetch_assoc($checktimeout)['time_in_datetime'] : null;
                                                     
                                                     $is_intoday = is_null($timeInDateTime) || (!is_null($timeOutDateTime) && $timeOutDateTime > $timeInDateTime) ? 'IN' : 'OUT';
-                                                    
-                                                    ?>
-                                                    
-                                                    <?php
-                                                    if($is_intoday == 'IN') {
-                                                        echo '<button id="btn-start" class="btn btn-circle btn-success" style="margin-bottom:10px;width:200px;height:50px;font-size:20px;"><i class="fa fa-clock-o" aria-hidden="true"></i> Start Working</button><br>
-                                                        <input id="timein_current_user_id" type="hidden" value="'. $current_userEmployeeID .'">
-                                                        <input id="current_userfullname" type="hidden" value="'. $current_userFName .' '. $current_userLName .'">
-                                                        <input id="trigger" type="hidden" value="'. $is_intoday .'">
-                                                        <input id="timeref" type="hidden" value="'. strtotime('tomorrow', strtotime($dateToday)) .'">';
+
+                                                    $has_out = "SELECT 
+                                                                    DATE_FORMAT(t.date, '%m-%e-%Y') AS date,
+                                                                    t.last_in_yesterday AS yesterday_in, 
+                                                                    IF(t.last_in_batch = t.last_out_batch, t.last_out_yesterday, '') AS yesterday_out,
+                                                                    t.user_id AS id,
+                                                                    t.reset_time as reset
+                                                                FROM (
+                                                                    SELECT 
+                                                                        DATE(time_in_datetime) AS date, 
+                                                                        MAX(CASE WHEN action = 'IN' THEN time_in_datetime END) AS last_in_yesterday, 
+                                                                        MAX(CASE WHEN action = 'OUT' THEN time_in_datetime END) AS last_out_yesterday,
+                                                                        MAX(CASE WHEN action = 'IN' THEN batch END) AS last_in_batch,
+                                                                        MAX(CASE WHEN action = 'OUT' THEN batch END) AS last_out_batch,
+                                                                        user_id,
+                                                                        reset_time
+                                                                    FROM tbl_timein
+                                                                        WHERE DATE(time_in_datetime) = DATE_SUB(CURDATE(), INTERVAL 1 DAY)
+                                                                        AND user_id = 290
+                                                                    GROUP BY DATE(time_in_datetime), user_id
+                                                                ) t
+                                                                ORDER BY t.date DESC";
+                                                    $has_out_check = mysqli_query($conn, $has_out);
+
+                                                    if(!empty($has_out_check)) {
+                                                        $row = mysqli_fetch_assoc($has_out_check);
+                                                        $reset_time = (!empty($row['reset'])) ? $row['reset'] : '';
+                                                        $last_in = (!empty($row['yesterday_in'])) ? $row['yesterday_in'] : '';
+                                                        $last_out = (!empty($row['yesterday_out'])) ? $row['yesterday_out'] : '';
                                                     } else {
-                                                        echo '<button id="btn-stop" class="btn btn-circle btn-danger center-item-control" style="margin-bottom:50px;width:200px;height:50px;font-size:20px;"><i class="fa fa-clock-o" aria-hidden="true"></i> Stop Working</button>
+                                                        $reset_time = NULL;
+                                                        $last_in = NULL;
+                                                        $last_out = NULL;
+                                                    }
+                                                ?>
+                                                    
+                                               <?php
+                                                    // echo $last_in, '<br>';
+                                                    // echo $last_out, '<br>';
+                                                    // if($reset_time > strtotime($dateToday)) {
+                                                    //     echo 'true';
+                                                    // } else {
+                                                    //     echo 'false';
+                                                    // }
+                                                    if ( strtotime($dateToday) > $reset_time && !empty($last_in) && empty($last_out) ) {
+                                                        echo '<button id="btn-reason" class="btn btn-circle btn-success" style="margin-bottom:10px;width:200px;height:50px;font-size:20px;"><i class="fa fa-clock-o"></i> Start Working</button><br>';  
+                                                    } else if ($is_intoday == 'IN') {
+                                                        echo '<button id="btn-start" class="btn btn-circle btn-success" style="margin-bottom:10px;width:200px;height:50px;font-size:20px;"><i class="fa fa-clock-o" aria-hidden="true"></i> Start Working</button><br>
+                                                        <input id="timein_current_user_id" type="hidden" value="' . $current_userEmployeeID . '">
+                                                        <input id="current_userfullname" type="hidden" value="' . $current_userFName . ' ' . $current_userLName . '">
+                                                        <input id="trigger" type="hidden" value="' . $is_intoday . '">
+                                                        <input id="timeref" type="hidden" value="' . strtotime('tomorrow', strtotime($dateToday)) . '">';
+                                                    } else {
+                                                        echo '<div style="display:flex; justify-content: center"><button id="btn-stop" class="btn btn-circle btn-danger center-item-control" style="margin-bottom:50px;width:100%;height:50px;font-size:20px;"><i class="fa fa-clock-o" aria-hidden="true"></i> Stop Working</button></div>
                                                         <input id="clockintime" type="hidden" value="' .$timeInDateTime. '">
                                                         <input id="time_spent" type="hidden" value="">
                                                         <input id="timein_current_user_id" type="hidden" value="'. $current_userEmployeeID .'">
@@ -658,8 +698,8 @@
                                                             <span style="border-radius: 10px 0 0 10px;" class="timeel seconds">00</span>
                                                             <span class="timeel timeRefSeconds">seconds</span>
                                                         </div>';
-                                                }
-                                            ?>
+                                                    }
+                                                ?>
                                                 <!-- End Clockin -->
                                                 <div class="portlet light projects-widget">
                                                     <div class="portlet-title">
@@ -674,17 +714,26 @@
                                                             <div class="table-responsive">
                                                                 <table class="table table-bordered table-hover">
                                                                     <?php 
-                                                                        $query = "SELECT t.date, t.IN, t.OUT
-                                                                            FROM ( 
-                                                                                SELECT 
-                                                                                DATE(time_in_datetime) AS date, 
-                                                                                MIN(CASE WHEN action = 'IN' THEN time_in_datetime END) AS 'IN', 
-                                                                                MAX(CASE WHEN action = 'OUT' THEN time_in_datetime END) AS 'OUT', user_id 
-                                                                                FROM tbl_timein 
-                                                                                WHERE (tbl_timein.time_in_datetime >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) OR DATE(tbl_timein.time_in_datetime) = CURRENT_DATE()) AND user_id = $current_userEmployeeID
-                                                                                GROUP BY DATE(time_in_datetime)
-                                                                                ORDER BY DATE(time_in_datetime) DESC
-                                                                            ) AS t";
+                                                                        $query = "SELECT 
+                                                                                    DATE_FORMAT(t.date, '%m-%e-%Y') AS date, 
+                                                                                    DATE_FORMAT(t.date, '%Y-%m-%e') AS date2, 
+                                                                                    t.latest_in AS 'IN', 
+                                                                                    IF(t.latest_in_batch = t.latest_out_batch, t.latest_out, '') AS 'OUT',
+                                                                                    t.user_id AS id
+                                                                                FROM (
+                                                                                    SELECT 
+                                                                                        DATE(time_in_datetime) AS date, 
+                                                                                        MAX(CASE WHEN action = 'IN' THEN time_in_datetime END) AS latest_in, 
+                                                                                        MAX(CASE WHEN action = 'OUT' THEN time_in_datetime END) AS latest_out,
+                                                                                        MAX(CASE WHEN action = 'IN' THEN batch END) AS latest_in_batch,
+                                                                                        MAX(CASE WHEN action = 'OUT' THEN batch END) AS latest_out_batch,
+                                                                                        user_id
+                                                                                    FROM tbl_timein 
+                                                                                    WHERE time_in_datetime >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH)
+                                                                                        AND user_id = 290
+                                                                                    GROUP BY DATE(time_in_datetime), user_id
+                                                                                ) t
+                                                                                ORDER BY t.date DESC";
                                                                     
                                                                         $resultQuery = mysqli_query($conn, $query);
                                                                     ?>
@@ -693,7 +742,9 @@
                                                                         <?php
                                                                         if ($resultQuery) {
                                                                             while($rowQuery = mysqli_fetch_array($resultQuery)) { ?>
-                                                                                <th class="text-bold text-center bg-light" tabindex="0" aria-controls="timein_summary_table" rowspan="1" colspan="2"><?=$rowQuery['date']?></th>
+                                                                                <th class="text-bold text-center bg-light" tabindex="0" aria-controls="timein_summary_table" rowspan="1" colspan="2">
+                                                                                    <a style="text-decoration: none" href="#timeinRecord" data-toggle="modal" class="get_clockin_records" data-id="<?=$rowQuery['id']?>" data-date="<?=$rowQuery['date2']?>"><?=$rowQuery['date']?></a>
+                                                                                </th>
                                                                             <?php } ?>
                                                                             </tr>
                                                                         </thead>
@@ -726,662 +777,13 @@
                                                     </div>
                                                 </div>
                                             <?php } ?>
-                                            <!-- END PORTLET -->
-                                        </div>
-                                        <div class="col-md-12">
-                                        <?php
-                                            if($current_userEmployerID == 34) {
-                                                if ($current_userID == 456 OR $current_userID == 34 OR $current_userID == 32 OR $current_userID == 43) {?>
-                                                    <!-- BEGIN PORTLET -->
-                                                    <div class="portlet light tasks-widget">
-                                                        <div class="portlet-title">
-                                                            <div class="caption caption-md">
-                                                                <i class="icon-bar-chart theme-font hide"></i>
-                                                                <span class="caption-subject font-blue-madison bold uppercase">For Approval</span>
-                                                            </div>
-                                                        </div>
-                                                        <div class="portlet-body">
-                                                            <div class="tabbable-line">
-                                                                <ul class="nav nav-tabs ">
-                                                                    <li class="active">
-                                                                        <a href="#fatl" data-toggle="tab"> For Approval Timeout Logs </a>
-                                                                    </li>
-                                                                    <li>
-                                                                        <a href="#atl" data-toggle="tab"> Approved Timeout Logs </a>
-                                                                    </li>
-                                                                </ul>
-                                                                <div class="tab-content">
-                                                                    <div class="tab-pane active" id="fatl">
-                                                                        <table class="table table-striped table-bordered table-hover" id="table_fatl">
-                                                                            <thead>
-                                                                                <tr role="row">
-                                                                                    <th class="hide"></th>
-                                                                                    <th>Name</th>
-                                                                                    <th>Date</th>
-                                                                                    <th>Timeout</th>
-                                                                                    <th>Reason</th>
-                                                                                    <th class="text-center">Action</th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                                <?php
-                                                                                $for_approval = "SELECT timeid, userid, employee_name, correspond_date, actual_timeout, incident_explanation, is_approved FROM tbl_time_approval WHERE is_approved = 'No' ORDER BY correspond_date DESC";
-                                                                                $result = mysqli_query($conn, $for_approval);
-                                                                                
-                                                                                while($timout_approval = mysqli_fetch_array($result)){ ?>
-                                                                                    <tr role="row">
-                                                                                        <td class="to_userid<?=$timout_approval['timeid']?>" id="<?=$timout_approval['userid']?>" style="display:none"><?=$timout_approval['userid']?></td>
-                                                                                        <td class="to_emp_name<?=$timout_approval['timeid']?>" id="<?=$timout_approval['employee_name']?>"><?=$timout_approval['employee_name']?></td>
-                                                                                        <td class="to_date<?=$timout_approval['timeid']?>" id="<?=$timout_approval['correspond_date']?>"><?=$timout_approval['correspond_date']?></td>
-                                                                                        <td class="to_timeout<?=$timout_approval['timeid']?>" id="<?=$timout_approval['actual_timeout']?>"><?=$timout_approval['actual_timeout']?></td>
-                                                                                        <td class="to_explanation<?=$timout_approval['timeid']?>" id="<?=$timout_approval['incident_explanation']?>"><?=$timout_approval['incident_explanation']?></td>
-                                                                                        <td class="text-center"><button type="button" class="btn btn-primary approveTimeout" id="<?=$timout_approval['timeid']?>">Approve</button></td>
-                                                                                    </tr>
-                                                                                <?php } ?>
-                                                                            </tbody>
-                                                                        </table>
-                                                                    </div>
-                                                                    <div class="tab-pane" id="atl">
-                                                                        <table class="table table-bordered table-hover" id="table_atl">
-                                                                            <thead>
-                                                                                <tr>
-                                                                                    <th>Name</th>
-                                                                                    <th>Date</th>
-                                                                                    <th>Timeout</th>
-                                                                                    <th>Reason</th>
-                                                                                    <th class="text-center">Action</th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                                <?php
-                                                                                $for_approval = "SELECT timeid, userid, employee_name, correspond_date, actual_timeout, incident_explanation, is_approved FROM tbl_time_approval WHERE is_approved = 'Yes' ORDER BY correspond_date DESC";
-                                                                                $result = mysqli_query($conn, $for_approval);
-                                                                                
-                                                                                while($timout_approval = mysqli_fetch_array($result)){ ?>
-                                                                                    <tr>
-                                                                                        <td><?=$timout_approval['employee_name']?></td>
-                                                                                        <td><?=$timout_approval['correspond_date']?></td>
-                                                                                        <td><?=$timout_approval['actual_timeout']?></td>
-                                                                                        <td><?=$timout_approval['incident_explanation']?></td>
-                                                                                        <td class="text-center"><span class="text-success">Approved</span></td>
-                                                                                    </tr>
-                                                                                <?php } ?>
-                                                                            </tbody>
-                                                                        </table>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            
-                                                            <!--<div class="task-footer">-->
-                                                            <!--    <div class="btn-arrow-link text-right">-->
-                                                            <!--        <a data-toggle="modal" href="#modalTask">See All Tasks</a>-->
-                                                            <!--    </div>-->
-                                                            <!--</div>-->
-                                                        </div>
-                                                    </div>
-                                                    <!-- END PORTLET -->
-                                                <?php }
-                                            }
-                                        ?>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <!-- BEGIN PORTLET -->
-                                            <div class="portlet light tasks-widget">
-                                                <div class="portlet-title">
-                                                    <div class="caption caption-md">
-                                                        <i class="icon-bar-chart theme-font hide"></i>
-                                                        <span class="caption-subject font-blue-madison bold uppercase">Tasks</span>
-                                                        <span class="caption-helper"></span>
-                                                    </div>
-                                                </div>
-                                                <div class="portlet-body">
-                                                    <div class="task-content">
-                                                        <?php if($_COOKIE['ID']== 185 || $_COOKIE['ID']== 95 || $_COOKIE['ID']== 42 || $_COOKIE['ID']== 88 || $_COOKIE['ID']== 35 || $_COOKIE['ID']== 228 || $_COOKIE['ID']== 208 || $_COOKIE['ID']== 43 || $_COOKIE['ID']== 38): ?>
-                                                        <!--Marketing-->
-                                                        <div class="row hide">
-                                                            <div class="col-md-3">
-                                                                <div class="dashboard-stat2 counterup_1">
-                                                                    <div class="display" style="position: relative;">
-                                                                        <div class="number">
-                                                                            
-                                                                            <h3 class="font-green-sharp"><span><?php echo 'Maintenance'; ?></span></h3>
-                                                                            <small>Sent Email (Today)</small>
-                                                                        </div>
-                                                                        <div class="icon" style="position: absolute; right: 0;"><i class="fa fa-paper-plane" aria-hidden="true"></i></div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="dashboard-stat2 counterup_2">
-                                                                    <div class="display" style="position: relative;">
-                                                                        <div class="number">
-                                                                            
-                                                                            <h3 class="font-red-haze"><span><?php echo 'Maintenance'; ?></span></h3>
-                                                                            <small>Sent Email (Weekly)</small>
-                                                                        </div>
-                                                                        <div class="icon" style="position: absolute; right: 0;"><i class="fa fa-paper-plane" aria-hidden="true"></i></div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="dashboard-stat2 counterup_3">
-                                                                    <div class="display" style="position: relative;">
-                                                                        <div class="number">
-                                                                            
-                                                                            <h3 class="font-blue-sharp"><span><?php echo 'Maintenance'; ?></span></h3>
-                                                                            <small>Sent Email (Montly)</small>
-                                                                        </div>
-                                                                        <div class="icon" style="position: absolute; right: 0;"><i class="fa fa-paper-plane" aria-hidden="true"></i></div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="dashboard-stat2 counterup_4">
-                                                                    <div class="display" style="position: relative;">
-                                                                        <div class="number">
-                                                                           
-                                                                            <h3 class="font-purple-soft"><span><?php echo 'Maintenance'; ?></span></h3>
-                                                                            <small>Sent Email (Total)</small>
-                                                                        </div>
-                                                                        <div class="icon" style="position: absolute; right: 0;"><i class="fa fa-paper-plane" aria-hidden="true"></i></div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <!--Category-->
-                                                        <div class="row hide">
-                                                            <div class="col-md-3">
-                                                                <div class="dashboard-stat2 counterup_1">
-                                                                    <div class="display" style="position: relative;">
-                                                                        <div class="number">
-                                                                           
-                                                                                <!--$prospect = $p + $crm-->
-                                                                            <h3 class="font-green-sharp"><span><?php echo 'Maintenance'; ?></span></h3>
-                                                                            <small>Prospect (Today)</small>
-                                                                        </div>
-                                                                        <div class="icon" style="position: absolute; right: 0;"><i class="fa fa-paper-plane" aria-hidden="true"></i></div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="dashboard-stat2 counterup_2">
-                                                                    <div class="display" style="position: relative;">
-                                                                        <div class="number">
-                                                                           
-                                                                            <h3 class="font-red-haze"><span><?php echo  'Maintenance'; ?></span></h3>
-                                                                            <small>Contact (Today)</small>
-                                                                        </div>
-                                                                        <div class="icon" style="position: absolute; right: 0;"><i class="fa fa-paper-plane" aria-hidden="true"></i></div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="dashboard-stat2 counterup_3">
-                                                                    <div class="display" style="position: relative;">
-                                                                        <div class="number">
-                                                                           
-                                                                                <!--$Presentation = $p + $crm-->
-                                                                            <h3 class="font-blue-sharp"><span><?php echo  'Maintenance';  ?></span></h3>
-                                                                            <small>Presentation (Today)</small>
-                                                                        </div>
-                                                                        <div class="icon" style="position: absolute; right: 0;"><i class="fa fa-paper-plane" aria-hidden="true"></i></div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="dashboard-stat2 counterup_4">
-                                                                    <div class="display" style="position: relative;">
-                                                                        <div class="number">
-                                                                           
-                                                                                <!--$Follow_Up = $fu + $crm-->
-                                                                            <h3 class="font-purple-soft"><span><?php echo  'Maintenance';  ?></span></h3>
-                                                                            <small>Follow-Up (Today)</small>
-                                                                        </div>
-                                                                        <div class="icon" style="position: absolute; right: 0;"><i class="fa fa-paper-plane" aria-hidden="true"></i></div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        
-                                                        <!--Call Summary-->
-                                                        <div class="row hide">
-                                                            <div class="col-md-3">
-                                                                <div class="dashboard-stat2 counterup_1">
-                                                                    <div class="display" style="position: relative;">
-                                                                        <div class="number">
-                                                                            <?php
-                                                                                
-                                                                                $date_default_tx = new DateTime(null, new DateTimeZone(date_default_timezone_get()));
-                                                                                $date_default_tx->setTimeZone(new DateTimeZone('America/Chicago'));
-                                                                                $today1 = $date_default_tx->format('Y/m/d');
-                                                                                
-                                                                                $querySummary = "SELECT * FROM tbl_Customer_Relationship_Notes where Title = 'Call Summary'";
-                                                                                $resultSummary = mysqli_query($conn, $querySummary);
-                                                                                
-                                                                                $count_CS_Today = 1;
-                                                                                $total_CS_Today = 0;
-                                                                                while($rowSummary = mysqli_fetch_array($resultSummary)){
-                                                                                    $dateCS = date_create($rowSummary['notes_stamp']);
-                                                                                   $date_get_cs = date_format($dateCS,"Y/m/d");echo '';
-                                                                                    // $date_function = false;
-                                                                                    if($today1 == $date_get_cs){
-                                                                                       $total_CS_Today = $count_CS_Today++;
-                                                                                       
-                                                                                    }
-                                                                                    
-                                                                                }
-                                                                                
-                                                                                for ($cs = 0; $cs < $total_CS_Today; $cs++) {} 
-                                                                                ?>
-                                                                            <h3 class="font-green-sharp"><span><?php echo $cs; ?></span></h3>
-                                                                            <small>Call Summary (Today)</small>
-                                                                        </div>
-                                                                        <div class="icon" style="position: absolute; right: 0;"><i class="fa fa-phone" aria-hidden="true"></i></div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="dashboard-stat2 counterup_2">
-                                                                    <div class="display" style="position: relative;">
-                                                                        <div class="number">
-                                                                            <?php
-                                                                            
-                                                                            $date_default_tx = new DateTime(null, new DateTimeZone(date_default_timezone_get()));
-                                                                            $date_default_tx->setTimeZone(new DateTimeZone('America/Chicago'));
-                                                                            $today = $date_default_tx->format('Y/m/d');
-                                                                            
-                                                                            $querySummary = "SELECT * FROM tbl_Customer_Relationship_Notes where Title = 'Call Summary'";
-                                                                            $resultSummary = mysqli_query($conn, $querySummary);
-                                                                            
-                                                                            $count = 1;
-                                                                            $total = 0;
-                                                                            $total2 = 0;
-                                                                            $final = 0;
-                                                                            while($rowSummary = mysqli_fetch_array($resultSummary)){
-                                                                               
-                                                                               
-                                                                               
-                                                                                $date = date_create($rowSummary['notes_stamp']);
-                                                                                $date_get = date_format($date,"Y/m/d");
-                                                                                $startTimeStamp = strtotime($date_get);
-                                                                                $endTimeStamp = strtotime($today);
-                                                                                $timeDiff = abs($endTimeStamp - $startTimeStamp);
-                                                                                $numberDays = $timeDiff/86400;  // 86400 seconds in one day
-                                                                                // and you might want to convert to integer
-                                                                                 $numberDays = intval($numberDays);
-                                                                                if($numberDays < 7){
-                                                                                   $total = $count++;
-                                                                                   
-                                                                                }
-                                                                                
-                                                                            }
-                                                                            
-                                                                            for ($x = 0; $x < $total; $x++) {} 
-                                                                        ?>
-                                                                            <h3 class="font-red-haze"><span><?php echo $x; ?></span></h3>
-                                                                            <small>Call Summary (Weekly)</small>
-                                                                        </div>
-                                                                        <div class="icon" style="position: absolute; right: 0;"><i class="fa fa-phone" aria-hidden="true"></i></div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="dashboard-stat2 counterup_3">
-                                                                    <div class="display" style="position: relative;">
-                                                                        <div class="number">
-                                                                             <?php
-                                                                                
-                                                                                $date_default_tx = new DateTime(null, new DateTimeZone(date_default_timezone_get()));
-                                                                                $date_default_tx->setTimeZone(new DateTimeZone('America/Chicago'));
-                                                                                $today = $date_default_tx->format('Y/m/d');
-                                                                                
-                                                                                $querySummary = "SELECT * FROM tbl_Customer_Relationship_Notes where Title = 'Call Summary'";
-                                                                                $resultSummary = mysqli_query($conn, $querySummary);
-                                                                                
-                                                                                $count = 1;
-                                                                                $total = 0;
-                                                                                $total2 = 0;
-                                                                                $final = 0;
-                                                                                while($rowSummary = mysqli_fetch_array($resultSummary)){
-                                                                                   
-                                                                                   
-                                                                                   
-                                                                                    $date = date_create($rowSummary['notes_date']);
-                                                                                    $date_get = date_format($date,"Y/m/d");
-                                                                                    $startTimeStamp = strtotime($date_get);
-                                                                                    $endTimeStamp = strtotime($today);
-                                                                                    $timeDiff = abs($endTimeStamp - $startTimeStamp);
-                                                                                    $numberDays = $timeDiff/86400;  // 86400 seconds in one day
-                                                                                    // and you might want to convert to integer
-                                                                                     $numberDays = intval($numberDays);
-                                                                                    if($numberDays < 30){
-                                                                                       $total = $count++;
-                                                                                       
-                                                                                    }
-                                                                                    
-                                                                                }
-                                                                                
-                                                                                for ($x = 0; $x < $total; $x++) {} 
-                                                                            ?>
-                                                                            <h3 class="font-blue-sharp"><span><?php echo $x; ?></span></h3>
-                                                                            <small>Call Summary (Monthly)</small>
-                                                                        </div>
-                                                                        <div class="icon" style="position: absolute; right: 0;"><i class="fa fa-phone" aria-hidden="true"></i></div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-md-3">
-                                                                <div class="dashboard-stat2 counterup_4">
-                                                                    <div class="display" style="position: relative;">
-                                                                        <div class="number">
-                                                                            <?php
-                                                                                
-                                                                                $date_default_tx = new DateTime(null, new DateTimeZone(date_default_timezone_get()));
-                                                                                $date_default_tx->setTimeZone(new DateTimeZone('America/Chicago'));
-                                                                                $today = $date_default_tx->format('Y/m/d'); 
-                                                                                $querySummary = "SELECT count(*) as count  FROM tbl_Customer_Relationship_Notes where Title = 'Call Summary'";
-                                                                                $resultSummary = mysqli_query($conn, $querySummary);
-                                                                                                            
-                                                                                while($rowSummary = mysqli_fetch_array($resultSummary)){
-                                                                                ?>
-                                                                                
-                                                                            
-                                                                            <h3 class="font-purple-soft"><span><?php echo $rowSummary['count']; ?></span></h3>
-                                                                                <?php } ?>
-                                                                            <small>Call Summary (Total)</small>
-                                                                        </div>
-                                                                        <div class="icon" style="position: absolute; right: 0;"><i class="fa fa-phone" aria-hidden="true"></i></div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <?php endif; ?>
-                                                        <div class="mt-actions"></div>
-                                                        <h4>Contacts Relationship Management</h4><br>
-                                                        <table class="table table-bordered table-hover" id="sample_1_2">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>No.</th>
-                                                                    <th>From</th>
-                                                                    <th>Account</th>
-                                                                    <th>Task</th>
-                                                                    <th>Description</th>
-                                                                    <th>Date Added</th>
-                                                                    <th>Deadline</th>
-                                                                    <th>Status</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <?php
-                                                                    $t=1;
-                                                                    $queryPending = "SELECT * FROM tbl_Customer_Relationship_Task  where Task_Status = 1 and Assigned_to = '$current_userEmail'";
-                                                                    $resultPending = mysqli_query($conn, $queryPending);
-                                                                                                
-                                                                    while($rowPending = mysqli_fetch_array($resultPending)){?>
-                                                                <tr>
-                                                                    <td><?php echo $t++; ?></td>
-                                                                    <td>
-                                                                        <?php
-                                                                            $getids = $rowPending['user_cookies'];
-                                                                            $queryUser = "SELECT * FROM tbl_user  where ID = $getids";
-                                                                            $resultUser = mysqli_query($conn, $queryUser);
-                                                                                                        
-                                                                            while($rowUser = mysqli_fetch_array($resultUser)){ 
-                                                                                echo htmlentities($rowUser['first_name']);
-                                                                                echo ' ';
-                                                                                echo htmlentities($rowUser['last_name']);
-                                                                            }
-                                                                        ?>
-                                                                    </td>
-                                                                    <td><a href="customer_details.php?view_id=<?php echo $rowPending['crm_ids'] ?>#tasks">
-                                                                        <?php
-                                                                            $crm_ids = $rowPending['crm_ids'];
-                                                                            $queryAccount = "SELECT * FROM tbl_Customer_Relationship  where crm_id = $crm_ids";
-                                                                            $resultAccount = mysqli_query($conn, $queryAccount);
-                                                                                                        
-                                                                            while($rowAccount = mysqli_fetch_array($resultAccount)){ 
-                                                                                echo htmlentities($rowAccount['account_name']);
-                                                                            }
-                                                                        ?></a>
-                                                                    </td>
-                                                                    <td><?php echo htmlentities($rowPending['assign_task']); ?></td>
-                                                                    <td><?php echo htmlentities($rowPending['Task_Description']); ?></td>
-                                                                    <td><?php echo $rowPending['Task_added']; ?></td>
-                                                                    <td><?php echo $rowPending['Deadline']; ?></td>
-                                                                    <td><b style="color:red;">Pending</b></td>
-                                                                </tr>
-                                                                <?php } ?>
-                                                                <?php
-                                                                    $queryInprogress = "SELECT * FROM tbl_Customer_Relationship_Task  where Task_Status = 2 and Assigned_to = '$current_userEmail'";
-                                                                    $resultInprogress = mysqli_query($conn, $queryInprogress);
-                                                                                                
-                                                                    while($rowInprogress = mysqli_fetch_array($resultInprogress)){?>
-                                                                <tr>
-                                                                    <td><?php echo $t++; ?></td>
-                                                                    <td>
-                                                                        <?php
-                                                                            $getids = $rowInprogress['user_cookies'];
-                                                                            $queryUser = "SELECT * FROM tbl_user  where ID = $getids";
-                                                                            $resultUser = mysqli_query($conn, $queryUser);
-                                                                                                        
-                                                                            while($rowUser = mysqli_fetch_array($resultUser)){ 
-                                                                                echo htmlentities($rowUser['first_name']);
-                                                                                echo ' ';
-                                                                                echo htmlentities($rowUser['last_name']);
-                                                                            }
-                                                                        ?>
-                                                                    </td>
-                                                                    <td><a href="customer_details.php?view_id=<?php echo $rowInprogress['crm_ids'] ?>#tasks">
-                                                                        <?php
-                                                                            $crm_ids = $rowInprogress['crm_ids'];
-                                                                            $queryAccount = "SELECT * FROM tbl_Customer_Relationship  where crm_id = $crm_ids";
-                                                                            $resultAccount = mysqli_query($conn, $queryAccount);
-                                                                                                        
-                                                                            while($rowAccount = mysqli_fetch_array($resultAccount)){ 
-                                                                                echo htmlentities($rowAccount['account_name']);
-                                                                            }
-                                                                        ?></a>
-                                                                    </td>
-                                                                    <td><?php echo htmlentities($rowInprogress['assign_task']); ?></td>
-                                                                    <td><?php echo htmlentities($rowInprogress['Task_Description']); ?></td>
-                                                                    <td><?php echo $rowInprogress['Task_added']; ?></td>
-                                                                    <td><?php echo $rowInprogress['Deadline']; ?></td>
-                                                                    <td><b style="color:orange;">Inprogress</b></td>
-                                                                </tr>
-                                                                <?php } ?>
-                                                                <?php
-                                                                    $queryDone = "SELECT * FROM tbl_Customer_Relationship_Task  where Task_Status = 3 and Assigned_to = '$current_userEmail'";
-                                                                    $resultDone = mysqli_query($conn, $queryDone);
-                                                                                                
-                                                                    while($rowDone = mysqli_fetch_array($resultDone)){?>
-                                                                <tr>
-                                                                    <td><?php echo $t++; ?></td>
-                                                                    <td>
-                                                                        <?php
-                                                                            $getids = $rowDone['user_cookies'];
-                                                                            $queryUser = "SELECT * FROM tbl_user  where ID = $getids";
-                                                                            $resultUser = mysqli_query($conn, $queryUser);
-                                                                                                        
-                                                                            while($rowUser = mysqli_fetch_array($resultUser)){ 
-                                                                                echo htmlentities($rowUser['first_name']);
-                                                                                echo ' ';
-                                                                                echo htmlentities($rowUser['last_name']);
-                                                                            }
-                                                                        ?>
-                                                                    </td>
-                                                                    <td> <a href="customer_details.php?view_id=<?php echo $rowDone['crm_ids'] ?>#tasks">
-                                                                        <?php
-                                                                            $crm_ids = $rowDone['crm_ids'];
-                                                                            $queryAccount = "SELECT * FROM tbl_Customer_Relationship  where crm_id = $crm_ids";
-                                                                            $resultAccount = mysqli_query($conn, $queryAccount);
-                                                                                                        
-                                                                            while($rowAccount = mysqli_fetch_array($resultAccount)){ 
-                                                                                echo htmlentities($rowAccount['account_name']);
-                                                                            }
-                                                                        ?></a>
-                                                                    </td>
-                                                                    <td><?php echo htmlentities($rowDone['assign_task']); ?></td>
-                                                                    <td><?php echo htmlentities($rowDone['Task_Description']); ?></td>
-                                                                    <td><?php echo $rowDone['Task_added']; ?></td>
-                                                                    <td><?php echo $rowDone['Deadline']; ?></td>
-                                                                    <td><b style="color:green;">Done</b></td>
-                                                                </tr>
-                                                                <?php } ?>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                    <!--<div class="task-footer">-->
-                                                    <!--    <div class="btn-arrow-link text-right">-->
-                                                    <!--        <a data-toggle="modal" href="#modalTask">See All Tasks</a>-->
-                                                    <!--    </div>-->
-                                                    <!--</div>-->
-                                                </div>
-                                            </div>
-                                            <!-- END PORTLET -->
                                         </div>
                                     <?php } ?>
-
-                                    <?php
-                                        if ($current_userEmployeeID > 0) {
-                                            echo '<div class="col-md-12">
-                                                <div class="portlet light">
-                                                    <div class="portlet-title">
-                                                        <div class="caption caption-md">
-                                                            <span class="caption-subject font-blue-madison bold uppercase">List of Trainings</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="portlet-body">
-                                                        <div class="table-scrollable">
-                                                            <table class="table table-bordered table-hover" id="tableData_training">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Description</th>
-                                                                        <th class="text-center" style="width: 150px;">Date Completed</th>
-                                                                        <th class="text-center" style="width: 150px;">Due Date</th>
-                                                                        <th style="width: 140px;">Status</th>
-                                                                        <th class="text-center" style="width: 150px;">Record</th>
-                                                                        <th class="text-center" style="width: 110px;">Document</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>';
-                                                            
-                                                                    $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = $current_userEmployeeID" ); // 83
-                                                                    if ( mysqli_num_rows($selectUser) > 0 ) {
-                                                                        $rowUser = mysqli_fetch_array($selectUser);
-
-                                                                        $selectTrainings = mysqli_query( $conn,"SELECT 
-                                                                            *
-                                                                            FROM (
-                                                                                SELECT
-                                                                                t.ID AS t_ID,
-                                                                                t.title AS t_title,
-                                                                                t.job_description_id AS t_job_description_id,
-                                                                                replace(t.quiz_id , ' ','') AS t_quiz_id,
-                                                                                t.last_modified AS t_last_modified,
-                                                                                t.frequency AS t_frequency,
-                                                                                q.ID AS q_ID,
-                                                                                q.quiz_id AS q_quiz_id,
-                                                                                q.result AS q_result,
-                                                                                q.last_modified AS q_last_modified
-                                                                                FROM tbl_hr_trainings AS t
-                                                                                
-                                                                                LEFT JOIN (
-                                                                                    SELECT * 
-                                                                                    FROM tbl_hr_quiz_result 
-                                                                                    WHERE ID IN 
-                                                                                    ( 
-                                                                                    SELECT MAX(ID) 
-                                                                                    FROM tbl_hr_quiz_result
-                                                                                    WHERE user_id = $current_userID
-                                                                                    GROUP BY quiz_id 
-                                                                                    )
-                                                                                ) AS q
-                                                                                ON FIND_IN_SET(q.quiz_id, t.quiz_id) > 0
-                                                                                
-                                                                                WHERE t.status = 1
-                                                                                AND t.deleted = 0
-                                                                                AND t.user_id = $current_userEmployerID
-                                                                            ) AS r" );
-                                                                        if ( mysqli_num_rows($selectTrainings) > 0 ) {
-                                                                            while($rowTraining = mysqli_fetch_array($selectTrainings)) {
-                                                                                $training_ID = $rowTraining['t_ID'];
-                                                                                $title = htmlentities($rowTraining['t_title']);
-                                                                                $array_rowTraining = explode(", ", $rowTraining["t_job_description_id"]);
-
-                                                                                $array_frequency = array(
-                                                                                    0 => '+1 month',
-                                                                                    1 => '+3 month',
-                                                                                    2 => '+6 month',
-                                                                                    3 => '+1 year'
-                                                                                );
-
-                                                                                $found = null;
-                                                                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $current_userEmployeeID" );
-                                                                                if ( mysqli_num_rows($selectEmployee) > 0 ) {
-                                                                                    $rowEmployee = mysqli_fetch_array($selectEmployee);
-                                                                                    $array_row = explode(", ", $rowEmployee["job_description_id"]);
-                                                                                    foreach($array_row as $emp_JD) {
-                                                                                        if (in_array($emp_JD,$array_rowTraining)) {
-                                                                                            $found = true;
-                                                                                        }
-                                                                                    }
-                                                                                }
-
-                                                                                if ( $found == true ) {
-                                                                                    $trainingStatus = "Not Yet Started";
-                                                                                    $trainingResult = 0;
-                                                                                    $completed_date = '';
-                                                                                    $due_date = '';
-                                                                                    $pdf_quiz = '';
-                                                                                    if (!empty($rowTraining['t_quiz_id'])) {
-                                                                                        $trainingQuizID = $rowTraining['q_quiz_id'];
-                                                                                        $trainingResult = $rowTraining['q_result'];
-                                                                                        $pdf_quiz = $rowTraining['q_ID'];
-
-                                                                                        if ($trainingResult == 100) {
-                                                                                            $trainingStatus = "Completed";
-
-                                                                                            $completed_date = $rowTraining['q_last_modified'];
-                                                                                            $completed_date = new DateTime($completed_date);
-                                                                                            $completed_date = $completed_date->format('M d, Y');
-
-                                                                                            $due_date = date('Y-m-d', strtotime($array_frequency[$rowTraining['t_frequency']], strtotime($completed_date)) );
-                                                                                            $due_date = new DateTime($due_date);
-                                                                                            $due_date = $due_date->format('M d, Y');
-
-                                                                                            if (date('Y-m-d') > date('Y-m-d', strtotime($array_frequency[$rowTraining['t_frequency']], strtotime($completed_date)) )) {
-                                                                                                $trainingStatus = '<i class="text-danger sbold">Pass Due</i>';
-                                                                                            }
-                                                                                        }
-                                                                                    }
-
-                                                                                    echo '<tr id="tr_'.$training_ID.'">
-                                                                                        <td >'. $title .'</td>
-                                                                                        <td class="text-center">'; echo $trainingResult == 100 ? $completed_date:''; echo '</td>
-                                                                                        <td class="text-center">'; echo $trainingResult == 100 ? $due_date:''; echo '</td>
-                                                                                        <td>'.$trainingStatus.'</td>
-                                                                                        <td class="text-center">'; echo $trainingResult == 100 ? '<a href="pdf?id='.$pdf_quiz.'" target="_blank" class="btn btn-circle btn-success">View</a>':''; echo '</td>
-                                                                                        <td class="text-center"><a href="#modalView" class="btn btn-circle btn-success" data-toggle="modal" onclick="btnView('.$training_ID.')">View</a></td>
-                                                                                    </tr>';
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                
-                                                                echo '</tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>';
-                                        }
-                                    ?>
                                 </div>
                             </div>
-                            <!-- END PROFILE CONTENT -->
                         </div>
                     </div>
+
 
                     <div class="modal fade bs-modal-lg" id="modalAttachedEdit" tabindex="-1" role="dialog" aria-hidden="true">
                         <div class="modal-dialog">
@@ -1420,16 +822,57 @@
                     
                     <!-- Start MODALS FOR Start working button confirmation -->
                     <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="mi-start-modal">
-                      <div class="modal-dialog modal-sm">
+                      <div class="modal-dialog modal-md">
                         <div class="modal-content">
                           <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="myModalLabel">Are you sure you want to start working?</h4>
+                                <h4 class="modal-title" id="myModalLabel">Are you sure you want to start working ?</h4>
                                 <h5>If you click yes you will be tagged as present for today</h5>
+                          </div>
+                          <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <textarea name="notes" id="timein_notes" rows="5" class="form-control" required></textarea>
+                                </div>
+                            </div>
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-default" id="modal-btn-si">YES</button>
                             <button type="button" class="btn btn-primary" data-dismiss="modal" id="modal-btn-no">CANCEL</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="timeinRecord">
+                      <div class="modal-dialog modal-md">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Clock in & out Records</h4>
+                          </div>
+                          <div class="modal-body">
+                            <table class="table table-bordered text-center table-hover table-striped" id="clockin_records_table">
+                                <thead class="text-center bg-info">
+                                    <th class="text-center">Batch</th>
+                                    <th class="text-center">IN</th>
+                                    <th class="text-center">OUT</th>
+                                    <th class="text-center">MINUTES</th>
+                                    <th class="text-center">NOTES</th>
+                                <tbody>
+                                    
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" class="bold">Total rendered minutes</span></td>
+                                        <td colspan="1" class="bold text-success" style="border-right: 1px solid transparent;"><span id="totalMinutes"></span></td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal" id="modal-btn-no">Close</button>
                           </div>
                         </div>
                       </div>
@@ -1524,6 +967,7 @@
         <!-- END PAGE LEVEL PLUGINS -->
         <!-- BEGIN PAGE LEVEL SCRIPTS -->
         <script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>
+        <script src="clockin/process.js" type="text/javascript"></script>
         <!-- END PAGE LEVEL SCRIPTS -->
         <script>
             var TableDatatablesRowreorderTimeIn = function () {
@@ -1531,8 +975,6 @@
                     var table = $('#table_fatl');
             
                     var oTable = table.dataTable({
-            
-                        // Internationalisation. For more info refer to http://datatables.net/manual/i18n
                         "language": {
                             "aria": {
                                 "sortAscending": ": activate to sort column ascending",
@@ -1547,22 +989,11 @@
                             "zeroRecords": "No matching records found"
                         },
             
-                        // Or you can use remote translation file
-                        //"language": {
-                        //   url: '//cdn.datatables.net/plug-ins/3cfcc339e89/i18n/Portuguese.json'
-                        //},
-            
-                        // setup buttons extentension: http://datatables.net/extensions/buttons/
                         buttons: [
                             { extend: 'print', className: 'btn default' },
                             { extend: 'pdf', className: 'btn red' },
                             { extend: 'csv', className: 'btn green ' }
                         ],
-            
-                        // setup rowreorder extension: http://datatables.net/extensions/rowreorder/
-                        // rowReorder: {
-            
-                        // },
             
                         "order": [
                             [1, 'desc']
@@ -1570,17 +1001,11 @@
                         
                         "lengthMenu": [
                             [5, 10, 15, 20, -1],
-                            [5, 10, 15, 20, "All"] // change per page values here
+                            [5, 10, 15, 20, "All"]
                         ],
-                        // set the initial value
                         "pageLength": 10,
             
                         "dom": "<'row' <'col-md-12'B>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>", // horizobtal scrollable datatable
-            
-                        // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                        // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js). 
-                        // So when dropdowns used the scrollable div should be removed. 
-                        //"dom": "<'row' <'col-md-12'T>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
                     });
                 }
             
@@ -1589,7 +1014,6 @@
             
                     var oTable = table.dataTable({
             
-                        // Internationalisation. For more info refer to http://datatables.net/manual/i18n
                         "language": {
                             "aria": {
                                 "sortAscending": ": activate to sort column ascending",
@@ -1604,11 +1028,6 @@
                             "zeroRecords": "No matching records found"
                         },
             
-                        // Or you can use remote translation file
-                        //"language": {
-                        //   url: '//cdn.datatables.net/plug-ins/3cfcc339e89/i18n/Portuguese.json'
-                        //},
-            
                         buttons: [
                             { extend: 'print', className: 'btn default' },
                             { extend: 'pdf', className: 'btn red' },
@@ -1619,35 +1038,17 @@
                             [1, 'desc']
                         ],
             
-                        // setup colreorder extension: http://datatables.net/extensions/colreorder/
-                        // colReorder: {
-                        //     reorderCallback: function () {
-                        //         console.log( 'callback' );
-                        //     }
-                        // },
-            
-                        // // setup rowreorder extension: http://datatables.net/extensions/rowreorder/
-                        // rowReorder: {
-            
-                        // },
                         "lengthMenu": [
                             [5, 10, 15, 20, -1],
-                            [5, 10, 15, 20, "All"] // change per page values here
+                            [5, 10, 15, 20, "All"] 
                         ],
-                        // set the initial value
                         "pageLength": 10,
             
                         "dom": "<'row' <'col-md-12'B>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r><'table-scrollable't><'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>", // horizobtal scrollable datatable
-            
-                        // Uncomment below line("dom" parameter) to fix the dropdown overflow issue in the datatable cells. The default datatable layout
-                        // setup uses scrollable div(table-scrollable) with overflow:auto to enable vertical scroll(see: assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js). 
-                        // So when dropdowns used the scrollable div should be removed. 
-                        //"dom": "<'row' <'col-md-12'T>><'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>",
                     });
                 }
                 return {
             
-                    //main function to initiate the module
                     init: function () {
             
                         if (!jQuery().dataTable) {
@@ -1736,6 +1137,7 @@
                     swal("Nice!", "You wrote: " + inputValue, "success");
                 });
             }
+            
             function btnProjectReject(id) {
                 swal({
                     title: "Are you sure?",
@@ -1794,6 +1196,7 @@
                     swal("Nice!", "You wrote: " + inputValue, "success");
                 });
             }
+            
             function btnTaskReject(id) {
                 swal({
                     title: "Are you sure?",
@@ -1834,6 +1237,7 @@
                     }
                 });
             }
+            
             $(".modalAttachedEdit").on('submit',(function(e) {
                 e.preventDefault();
 
@@ -1885,6 +1289,7 @@
                     }
                 });
             }
+
             function changedQuiz(sel) {
                 if (sel.value == "") {
                     $("#quizSet").html('');
@@ -1901,6 +1306,7 @@
                     $("#signatureContainer").show();
                 }
             }
+           
             $(".modalUpdate").on('submit',(function(e) {
                 e.preventDefault();
 
@@ -1985,31 +1391,40 @@
             };
             
             modalConfirm(function(confirm){
-              if(confirm){
-                var current_user_timein = document.querySelector('#timein_current_user_id').value;
-                var fullname = document.querySelector('#current_userfullname').value;
-                var action = document.querySelector('#trigger').value;
-                var timeref = document.querySelector('#timeref').value;
-                $('#mi-start-modal').modal('hide');
-           
-                $.ajax({
-                    url: "timein_records.php",
-                    type: "POST",
-                    data: {current_user_id:current_user_timein,
-                           fullname_user:fullname,
-                           user_action:action, reset_timeref:timeref
-                    },
-                    cache: false,
-                    success: function(dataResult){
-                        var dataResult = JSON.parse(dataResult);
-                        if(dataResult.statusCode==200){
-                            location.reload();
-                        }
-                    }
+                if(confirm){
+                    var current_user_timein = document.querySelector('#timein_current_user_id').value;
+                    var fullname = document.querySelector('#current_userfullname').value;
+                    var action = document.querySelector('#trigger').value;
+                    var timeref = document.querySelector('#timeref').value;
+                    var notes = document.querySelector('#timein_notes').value;
                     
-                });
-              }
+                    if(notes === "" || notes === 0) {
+                        alert("Notes is required");
+                    } else { 
+                        $.ajax({
+                            url: "timein_records.php",
+                            type: "POST",
+                            data: {
+                                current_user_id: current_user_timein,
+                                fullname_user: fullname,
+                                user_action: action,
+                                reset_timeref: timeref,
+                                notes: notes
+                            },
+                            cache: false,
+                            success: function(dataResult){
+                                console.log(dataResult)
+                                var dataResult = JSON.parse(dataResult)
+                                if(dataResult.statusCode == 200){
+                                    location.reload();
+                                }   
+                            }
+                        });
+                    }
+                }
             });
+
+
             // End modal confirmation script from clock in function;
             $('.stopWorkingToday').on('click', function(e){
                 $('#modal-btn-stop').attr('disabled', true);
@@ -2023,10 +1438,11 @@
                 $.ajax({
                     url: "timein_records.php",
                     type: "POST",
-                    data: {current_user_id:current_user_timein,
-                           fullname_user:fullname,
-                           user_action:action, reset_timeref:timerefout
-                    },
+                    data: {
+                            current_user_id:current_user_timein,
+                            fullname_user:fullname,
+                            user_action:action, reset_timeref:timerefout
+                        },
                     cache: false,
                     success: function(dataResult){
                         var dataResult = JSON.parse(dataResult);
@@ -2071,7 +1487,7 @@
                     }
                 });
             })
-            $('.approveTimeout').on('click', function(e){
+            $('.approveTimeout').on('click', function(e){   
                 let timeid = $(this).attr('id');
                 let userid = $('.to_userid'+timeid).attr('id');
                 let emp_name = $('.to_emp_name'+timeid).attr('id');

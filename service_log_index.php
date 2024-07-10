@@ -496,52 +496,61 @@
                                                         <tr role="row">
                                                             <th class="text-bold text-center bg-light" aria-controls="timein_summary_table" width="10%">Name</th>
                                                             <?php
-                                                        $query = "SELECT DISTINCT DATE(tbl_timein.time_in_datetime) AS date FROM tbl_timein LEFT JOIN tbl_hr_employee ON tbl_hr_employee.ID = tbl_timein.user_id WHERE (tbl_timein.time_in_datetime >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) OR DATE(tbl_timein.time_in_datetime) = CURRENT_DATE()) AND tbl_hr_employee.type_id = 1 AND tbl_hr_employee.suspended = 0 AND tbl_hr_employee.status = 1 ORDER BY tbl_timein.time_in_datetime DESC";
-                                            
-                                                        $resultQuery = mysqli_query($conn, $query);
-                                                        while ($rowQuery = mysqli_fetch_array($resultQuery)) {
-                                                            echo '<th class="text-bold text-center bg-light" aria-controls="timein_summary_table">' . date('Y-m-d', strtotime($rowQuery['date'])) . '</th>';
-                                                        }
-                                                        ?>
+                                                            $query = "SELECT DISTINCT DATE(tbl_timein.time_in_datetime) AS date 
+                                                                        FROM tbl_timein 
+                                                                        LEFT JOIN tbl_hr_employee 
+                                                                        ON tbl_hr_employee.ID = tbl_timein.user_id 
+                                                                        WHERE (tbl_timein.time_in_datetime >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) 
+                                                                        OR DATE(tbl_timein.time_in_datetime) = CURRENT_DATE()) 
+                                                                        AND tbl_hr_employee.type_id = 1 
+                                                                        AND tbl_hr_employee.suspended = 0 
+                                                                        AND tbl_hr_employee.status = 1 
+                                                                        ORDER BY tbl_timein.time_in_datetime DESC";
+                                                
+                                                            $resultQuery = mysqli_query($conn, $query);
+                                                            while ($rowQuery = mysqli_fetch_array($resultQuery)) {
+                                                                echo '<th class="text-bold text-center bg-light" aria-controls="timein_summary_table">' . date('Y-m-d', strtotime($rowQuery['date'])) . '</th>';
+                                                            }
+                                                            ?>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <?php
-                                                    $query2 = "SELECT * FROM `tbl_hr_employee` WHERE `user_id` = {$switch_user_id} AND `type_id` = 1 AND `suspended` = 0 AND `status` = 1 AND `first_name` != 'Admin' AND `first_name` != 'Arnel'";
-                                                    $resultQuery2 = mysqli_query($conn, $query2);
-                                                    while ($rowQuery2 = mysqli_fetch_array($resultQuery2)) {
-                                                        echo '<tr width="10%" role="row" class="odd">';
-                                                        echo '<td class="text-center">' . $rowQuery2['last_name'] . ' ' . $rowQuery2['first_name'] . '</td>';
-                                            
-                                                        mysqli_data_seek($resultQuery, 0);
-                                                        while ($rowQuery = mysqli_fetch_array($resultQuery)) {
-                                                            $date = date('Y-m-d', strtotime($rowQuery['date']));
-                                                            $query3 = "SELECT MAX(CASE WHEN tbl_timein.action = 'IN' THEN tbl_timein.time_in_datetime END) AS timein,
-                                                                                MAX(CASE WHEN tbl_timein.action = 'OUT' THEN tbl_timein.time_in_datetime END) AS timeout 
-                                                                        FROM tbl_timein 
-                                                                        WHERE user_id = {$rowQuery2['ID']} AND DATE(tbl_timein.time_in_datetime) = '{$date}'";
-                                                            $resultQuery3 = mysqli_query($conn, $query3);
-                                                            $rowQuery3 = mysqli_fetch_array($resultQuery3);
-                                                            
-                                                            echo '<td class="text-center">';
-                                                            if ($rowQuery3) {
-                                                                if (!empty($rowQuery3['timein']) && !empty($rowQuery3['timeout'])) {
-                                                                    echo '<span class="bold text-success">' . date('h:i A', strtotime($rowQuery3['timein'])) . '</span> | <span class="bold text-danger">' . date('h:i A', strtotime($rowQuery3['timeout'])) . '</span>';
-                                                                } elseif(!empty($rowQuery3['timein']) && empty($rowQuery3['timeout'])) {
-                                                                    echo '<span class="bold text-success">' . date('h:i A', strtotime($rowQuery3['timein'])) . '</span> | <span class="bold text-danger">-</span>';
-                                                                }elseif(empty($rowQuery3['timein']) && !empty($rowQuery3['timeout'])) {
-                                                                    echo '<span class="bold text-success">-</span> | <span class="bold text-danger">' . date('h:i A', strtotime($rowQuery3['timeout'])) . '</span>';
+                                                        $query2 = "SELECT * FROM `tbl_hr_employee` WHERE `user_id` = {$switch_user_id} AND `type_id` = 1 AND `suspended` = 0 AND `status` = 1 AND `first_name` != 'Admin' AND `first_name` != 'Arnel'";
+                                                        $resultQuery2 = mysqli_query($conn, $query2);
+                                                        while ($rowQuery2 = mysqli_fetch_array($resultQuery2)) {
+                                                            echo '<tr width="10%" role="row" class="odd">';
+                                                            echo '<td class="text-center">' . $rowQuery2['last_name'] . ' ' . $rowQuery2['first_name'] . '</td>';
+                                                
+                                                            mysqli_data_seek($resultQuery, 0);
+                                                            while ($rowQuery = mysqli_fetch_array($resultQuery)) {
+                                                                $date = date('Y-m-d', strtotime($rowQuery['date']));
+                                                                $query3 = "SELECT MIN(CASE WHEN tbl_timein.action = 'IN' THEN tbl_timein.time_in_datetime END) AS timein,
+                                                                                    MAX(CASE WHEN tbl_timein.action = 'OUT' THEN tbl_timein.time_in_datetime END) AS timeout 
+                                                                            FROM tbl_timein 
+                                                                            WHERE user_id = {$rowQuery2['ID']} AND DATE(tbl_timein.time_in_datetime) = '{$date}'";
+                                                                $resultQuery3 = mysqli_query($conn, $query3);
+                                                                $rowQuery3 = mysqli_fetch_array($resultQuery3);
+                                                                
+                                                                echo '<td class="text-center">';
+                                                                if ($rowQuery3) {
+                                                                    if (!empty($rowQuery3['timein']) && !empty($rowQuery3['timeout'])) {
+                                                                        echo '<a style="text-decoration: none" href="#timeinRecord" data-toggle="modal" class="get_clockin_records" data-id="' . $rowQuery2['ID'] . '" data-date="' . $date . '"><span class="bold text-success">' . date('h:i A', strtotime($rowQuery3['timein'])) . '</span> | <span class="bold text-danger">' . date('h:i A', strtotime($rowQuery3['timeout'])) . '</span></a>';
+                                                                    } elseif(!empty($rowQuery3['timein']) && empty($rowQuery3['timeout'])) {
+                                                                        echo '<a style="text-decoration: none" href="#timeinRecord" data-toggle="modal" class="get_clockin_records" data-id="' . $rowQuery2['ID'] . '" data-date="' . $date . '"><span class="bold text-success">' . date('h:i A', strtotime($rowQuery3['timein'])) . '</span> | <span class="bold text-danger">-</span></a>';
+                                                                    }elseif(empty($rowQuery3['timein']) && !empty($rowQuery3['timeout'])) {
+                                                                        echo '<span class="bold text-success">-</span> | <span class="bold text-danger">' . date('h:i A', strtotime($rowQuery3['timeout'])) . '</span>';
+                                                                    } else {
+                                                                        echo '<span class="bold text-warning">-</span>';
+                                                                    }
                                                                 } else {
                                                                     echo '<span class="bold text-warning">-</span>';
                                                                 }
-                                                            } else {
-                                                                echo '<span class="bold text-warning">-</span>';
+                                                                echo '</td>';
                                                             }
-                                                            echo '</td>';
+                                                            echo '</tr>';
                                                         }
-                                                        echo '</tr>';
-                                                    }
-                                                    ?>
+                                                        ?>
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -551,52 +560,61 @@
                                                         <tr role="row">
                                                             <th class="text-bold text-center bg-light" aria-controls="timein_summary_table" width="10%">Name</th>
                                                             <?php
-                                                        $query = "SELECT DISTINCT DATE(tbl_timein.time_in_datetime) AS date FROM tbl_timein LEFT JOIN tbl_hr_employee ON tbl_hr_employee.ID = tbl_timein.user_id WHERE (tbl_timein.time_in_datetime >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) OR DATE(tbl_timein.time_in_datetime) = CURRENT_DATE()) AND tbl_hr_employee.type_id = 1 AND tbl_hr_employee.suspended = 0 AND tbl_hr_employee.status = 1 ORDER BY tbl_timein.time_in_datetime DESC";
-                                            
-                                                        $resultQuery = mysqli_query($conn, $query);
-                                                        while ($rowQuery = mysqli_fetch_array($resultQuery)) {
-                                                            echo '<th class="text-bold text-center bg-light" aria-controls="timein_summary_table">' . date('Y-m-d', strtotime($rowQuery['date'])) . '</th>';
-                                                        }
-                                                        ?>
+                                                                $query = "SELECT DISTINCT DATE(tbl_timein.time_in_datetime) AS date 
+                                                                            FROM tbl_timein 
+                                                                            LEFT JOIN tbl_hr_employee 
+                                                                            ON tbl_hr_employee.ID = tbl_timein.user_id 
+                                                                            WHERE (tbl_timein.time_in_datetime >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) 
+                                                                            OR DATE(tbl_timein.time_in_datetime) = CURRENT_DATE()) 
+                                                                            AND tbl_hr_employee.type_id = 1 
+                                                                            AND tbl_hr_employee.suspended = 0 
+                                                                            AND tbl_hr_employee.status = 1 
+                                                                            ORDER BY tbl_timein.time_in_datetime DESC";
+                                                    
+                                                                $resultQuery = mysqli_query($conn, $query);
+                                                                while ($rowQuery = mysqli_fetch_array($resultQuery)) {
+                                                                    echo '<th class="text-bold text-center bg-light" aria-controls="timein_summary_table">' . date('Y-m-d', strtotime($rowQuery['date'])) . '</th>';
+                                                                }
+                                                            ?>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <?php
-                                                    $query2 = "SELECT * FROM `tbl_hr_employee` WHERE `user_id` = {$switch_user_id} AND `type_id` = 5 AND `suspended` = 0 AND `status` = 1";
-                                                    $resultQuery2 = mysqli_query($conn, $query2);
-                                                    while ($rowQuery2 = mysqli_fetch_array($resultQuery2)) {
-                                                        echo '<tr width="10%" role="row" class="odd">';
-                                                        echo '<td class="text-center">' . $rowQuery2['last_name'] . ' ' . $rowQuery2['first_name'] . '</td>';
-                                            
-                                                        mysqli_data_seek($resultQuery, 0);
-                                                        while ($rowQuery = mysqli_fetch_array($resultQuery)) {
-                                                            $date = date('Y-m-d', strtotime($rowQuery['date']));
-                                                            $query3 = "SELECT MAX(CASE WHEN tbl_timein.action = 'IN' THEN tbl_timein.time_in_datetime END) AS timein,
-                                                                                MAX(CASE WHEN tbl_timein.action = 'OUT' THEN tbl_timein.time_in_datetime END) AS timeout 
-                                                                        FROM tbl_timein 
-                                                                        WHERE user_id = {$rowQuery2['ID']} AND DATE(tbl_timein.time_in_datetime) = '{$date}'";
-                                                            $resultQuery3 = mysqli_query($conn, $query3);
-                                                            $rowQuery3 = mysqli_fetch_array($resultQuery3);
-                                                            
-                                                            echo '<td class="text-center">';
-                                                            if ($rowQuery3) {
-                                                                if (!empty($rowQuery3['timein']) && !empty($rowQuery3['timeout'])) {
-                                                                    echo '<span class="bold text-success">' . date('h:i A', strtotime($rowQuery3['timein'])) . '</span> | <span class="bold text-danger">' . date('h:i A', strtotime($rowQuery3['timeout'])) . '</span>';
-                                                                } elseif(!empty($rowQuery3['timein']) && empty($rowQuery3['timeout'])) {
-                                                                    echo '<span class="bold text-success">' . date('h:i A', strtotime($rowQuery3['timein'])) . '</span> | <span class="bold text-danger">-</span>';
-                                                                }elseif(empty($rowQuery3['timein']) && !empty($rowQuery3['timeout'])) {
-                                                                    echo '<span class="bold text-success">-</span> | <span class="bold text-danger">' . date('h:i A', strtotime($rowQuery3['timeout'])) . '</span>';
-                                                                } else {
-                                                                    echo '<span class="bold text-warning">-</span>';
+                                                            $query2 = "SELECT * FROM `tbl_hr_employee` WHERE `user_id` = {$switch_user_id} AND `type_id` = 5 AND `suspended` = 0 AND `status` = 1";
+                                                            $resultQuery2 = mysqli_query($conn, $query2);
+                                                            while ($rowQuery2 = mysqli_fetch_array($resultQuery2)) {
+                                                                echo '<tr width="10%" role="row" class="odd">';
+                                                                echo '<td class="text-center">' . $rowQuery2['last_name'] . ' ' . $rowQuery2['first_name'] . '</td>';
+                                                    
+                                                                mysqli_data_seek($resultQuery, 0);
+                                                                while ($rowQuery = mysqli_fetch_array($resultQuery)) {
+                                                                    $date = date('Y-m-d', strtotime($rowQuery['date']));
+                                                                    $query3 = "SELECT MIN(CASE WHEN tbl_timein.action = 'IN' THEN tbl_timein.time_in_datetime END) AS timein,
+                                                                                        MAX(CASE WHEN tbl_timein.action = 'OUT' THEN tbl_timein.time_in_datetime END) AS timeout 
+                                                                                FROM tbl_timein 
+                                                                                WHERE user_id = {$rowQuery2['ID']} AND DATE(tbl_timein.time_in_datetime) = '{$date}'";
+                                                                    $resultQuery3 = mysqli_query($conn, $query3);
+                                                                    $rowQuery3 = mysqli_fetch_array($resultQuery3);
+                                                                    
+                                                                    echo '<td class="text-center">';
+                                                                    if ($rowQuery3) {
+                                                                        if (!empty($rowQuery3['timein']) && !empty($rowQuery3['timeout'])) {
+                                                                            echo '<a style="text-decoration: none" href="#timeinRecord" data-toggle="modal" class="get_clockin_records" data-id="' . $rowQuery2['ID'] . '" data-date="' . $date . '"><span class="bold text-success">' . date('h:i A', strtotime($rowQuery3['timein'])) . '</span> | <span class="bold text-danger">' . date('h:i A', strtotime($rowQuery3['timeout'])) . '</span></a>';
+                                                                        } elseif(!empty($rowQuery3['timein']) && empty($rowQuery3['timeout'])) {
+                                                                            echo '<a style="text-decoration: none" href="#timeinRecord" data-toggle="modal" class="get_clockin_records" data-id="' . $rowQuery2['ID'] . '" data-date="' . $date . '"><span class="bold text-success">' . date('h:i A', strtotime($rowQuery3['timein'])) . '</span> | <span class="bold text-danger">-</span></a>';
+                                                                        }elseif(empty($rowQuery3['timein']) && !empty($rowQuery3['timeout'])) {
+                                                                            echo '<span class="bold text-success">-</span> | <span class="bold text-danger">' . date('h:i A', strtotime($rowQuery3['timeout'])) . '</span>';
+                                                                        } else {
+                                                                            echo '<span class="bold text-warning">-</span>';
+                                                                        }
+                                                                    } else {
+                                                                        echo '<span class="bold text-warning">-</span>';
+                                                                    }
+                                                                    echo '</td>';
                                                                 }
-                                                            } else {
-                                                                echo '<span class="bold text-warning">-</span>';
+                                                                echo '</tr>';
                                                             }
-                                                            echo '</td>';
-                                                        }
-                                                        echo '</tr>';
-                                                    }
-                                                    ?>
+                                                        ?>
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -606,52 +624,61 @@
                                                         <tr role="row">
                                                             <th class="text-bold text-center bg-light" aria-controls="timein_summary_table" width="10%">Name</th>
                                                             <?php
-                                                        $query = "SELECT DISTINCT DATE(tbl_timein.time_in_datetime) AS date FROM tbl_timein LEFT JOIN tbl_hr_employee ON tbl_hr_employee.ID = tbl_timein.user_id WHERE (tbl_timein.time_in_datetime >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) OR DATE(tbl_timein.time_in_datetime) = CURRENT_DATE()) AND tbl_hr_employee.type_id = 1 AND tbl_hr_employee.suspended = 0 AND tbl_hr_employee.status = 1 ORDER BY tbl_timein.time_in_datetime DESC";
-                                            
-                                                        $resultQuery = mysqli_query($conn, $query);
-                                                        while ($rowQuery = mysqli_fetch_array($resultQuery)) {
-                                                            echo '<th class="text-bold text-center bg-light" aria-controls="timein_summary_table">' . date('Y-m-d', strtotime($rowQuery['date'])) . '</th>';
-                                                        }
-                                                        ?>
+                                                                $query = "SELECT DISTINCT DATE(tbl_timein.time_in_datetime) AS date 
+                                                                            FROM tbl_timein 
+                                                                            LEFT JOIN tbl_hr_employee 
+                                                                            ON tbl_hr_employee.ID = tbl_timein.user_id 
+                                                                            WHERE (tbl_timein.time_in_datetime >= DATE_SUB(CURRENT_DATE(), INTERVAL 1 MONTH) 
+                                                                            OR DATE(tbl_timein.time_in_datetime) = CURRENT_DATE()) 
+                                                                            AND tbl_hr_employee.type_id = 1 
+                                                                            AND tbl_hr_employee.suspended = 0 
+                                                                            AND tbl_hr_employee.status = 1 
+                                                                            ORDER BY tbl_timein.time_in_datetime DESC";
+                                                    
+                                                                $resultQuery = mysqli_query($conn, $query);
+                                                                while ($rowQuery = mysqli_fetch_array($resultQuery)) {
+                                                                    echo '<th class="text-bold text-center bg-light" aria-controls="timein_summary_table">' . date('Y-m-d', strtotime($rowQuery['date'])) . '</th>';
+                                                                }
+                                                            ?>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <?php
-                                                    $query2 = "SELECT * FROM `tbl_hr_employee` WHERE `user_id` = {$switch_user_id} AND `type_id` = 2 AND `suspended` = 0 AND `status` = 1";
-                                                    $resultQuery2 = mysqli_query($conn, $query2);
-                                                    while ($rowQuery2 = mysqli_fetch_array($resultQuery2)) {
-                                                        echo '<tr width="10%" role="row" class="odd">';
-                                                        echo '<td class="text-center">' . $rowQuery2['last_name'] . ' ' . $rowQuery2['first_name'] . '</td>';
-                                            
-                                                        mysqli_data_seek($resultQuery, 0);
-                                                        while ($rowQuery = mysqli_fetch_array($resultQuery)) {
-                                                            $date = date('Y-m-d', strtotime($rowQuery['date']));
-                                                            $query3 = "SELECT MAX(CASE WHEN tbl_timein.action = 'IN' THEN tbl_timein.time_in_datetime END) AS timein,
-                                                                                MAX(CASE WHEN tbl_timein.action = 'OUT' THEN tbl_timein.time_in_datetime END) AS timeout 
-                                                                        FROM tbl_timein 
-                                                                        WHERE user_id = {$rowQuery2['ID']} AND DATE(tbl_timein.time_in_datetime) = '{$date}'";
-                                                            $resultQuery3 = mysqli_query($conn, $query3);
-                                                            $rowQuery3 = mysqli_fetch_array($resultQuery3);
-                                                            
-                                                            echo '<td class="text-center">';
-                                                            if ($rowQuery3) {
-                                                                if (!empty($rowQuery3['timein']) && !empty($rowQuery3['timeout'])) {
-                                                                    echo '<span class="bold text-success">' . date('h:i A', strtotime($rowQuery3['timein'])) . '</span> | <span class="bold text-danger">' . date('h:i A', strtotime($rowQuery3['timeout'])) . '</span>';
-                                                                } elseif(!empty($rowQuery3['timein']) && empty($rowQuery3['timeout'])) {
-                                                                    echo '<span class="bold text-success">' . date('h:i A', strtotime($rowQuery3['timein'])) . '</span> | <span class="bold text-danger">-</span>';
-                                                                }elseif(empty($rowQuery3['timein']) && !empty($rowQuery3['timeout'])) {
-                                                                    echo '<span class="bold text-success">-</span> | <span class="bold text-danger">' . date('h:i A', strtotime($rowQuery3['timeout'])) . '</span>';
-                                                                } else {
-                                                                    echo '<span class="bold text-warning">-</span>';
+                                                            $query2 = "SELECT * FROM `tbl_hr_employee` WHERE `user_id` = {$switch_user_id} AND `type_id` = 2 AND `suspended` = 0 AND `status` = 1";
+                                                            $resultQuery2 = mysqli_query($conn, $query2);
+                                                            while ($rowQuery2 = mysqli_fetch_array($resultQuery2)) {
+                                                                echo '<tr width="10%" role="row" class="odd">';
+                                                                echo '<td class="text-center">' . $rowQuery2['last_name'] . ' ' . $rowQuery2['first_name'] . '</td>';
+                                                    
+                                                                mysqli_data_seek($resultQuery, 0);
+                                                                while ($rowQuery = mysqli_fetch_array($resultQuery)) {
+                                                                    $date = date('Y-m-d', strtotime($rowQuery['date']));
+                                                                    $query3 = "SELECT MIN(CASE WHEN tbl_timein.action = 'IN' THEN tbl_timein.time_in_datetime END) AS timein,
+                                                                                        MAX(CASE WHEN tbl_timein.action = 'OUT' THEN tbl_timein.time_in_datetime END) AS timeout 
+                                                                                FROM tbl_timein 
+                                                                                WHERE user_id = {$rowQuery2['ID']} AND DATE(tbl_timein.time_in_datetime) = '{$date}'";
+                                                                    $resultQuery3 = mysqli_query($conn, $query3);
+                                                                    $rowQuery3 = mysqli_fetch_array($resultQuery3);
+                                                                    
+                                                                    echo '<td class="text-center">';
+                                                                    if ($rowQuery3) {
+                                                                        if (!empty($rowQuery3['timein']) && !empty($rowQuery3['timeout'])) {
+                                                                            echo '<a style="text-decoration: none" href="#timeinRecord" data-toggle="modal" class="get_clockin_records" data-id="' . $rowQuery2['ID'] . '" data-date="' . $date . '"><span class="bold text-success">' . date('h:i A', strtotime($rowQuery3['timein'])) . '</span> | <span class="bold text-danger">' . date('h:i A', strtotime($rowQuery3['timeout'])) . '</span></a>';
+                                                                        } elseif(!empty($rowQuery3['timein']) && empty($rowQuery3['timeout'])) {
+                                                                            echo '<a style="text-decoration: none" href="#timeinRecord" data-toggle="modal" class="get_clockin_records" data-id="' . $rowQuery2['ID'] . '" data-date="' . $date . '"><span class="bold text-success">' . date('h:i A', strtotime($rowQuery3['timein'])) . '</span> | <span class="bold text-danger">-</span></a>';
+                                                                        }elseif(empty($rowQuery3['timein']) && !empty($rowQuery3['timeout'])) {
+                                                                            echo '<span class="bold text-success">-</span> | <span class="bold text-danger">' . date('h:i A', strtotime($rowQuery3['timeout'])) . '</span>';
+                                                                        } else {
+                                                                            echo '<span class="bold text-warning">-</span>';
+                                                                        }
+                                                                    } else {
+                                                                        echo '<span class="bold text-warning">-</span>';
+                                                                    }
+                                                                    echo '</td>';
                                                                 }
-                                                            } else {
-                                                                echo '<span class="bold text-warning">-</span>';
+                                                                echo '</tr>';
                                                             }
-                                                            echo '</td>';
-                                                        }
-                                                        echo '</tr>';
-                                                    }
-                                                    ?>
+                                                        ?>
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -1239,6 +1266,41 @@
     </div>
 </div>
 
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="timeinRecord">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Clock in & out Records</h4>
+            </div>
+            <div class="modal-body">
+            <table class="table table-bordered text-center table-hover table-striped" id="clockin_records_table">
+                <thead class="text-center bg-info">
+                    <th class="text-center">Batch</th>
+                    <th class="text-center">IN</th>
+                    <th class="text-center">OUT</th>
+                    <th class="text-center">MINUTES</th>
+                    <th class="text-center">NOTES</th>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="bold">Total rendered minutes</span></td>
+                        <td colspan="1" class="bold text-success" style="border-right: 1px solid transparent;"><span id="totalMinutes"></span></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="modal-btn-no">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php include_once ('footer.php'); ?>
 <script src='assets/global/plugins/jquery-validation/js/jquery.validate.min.js' type='text/javascript'></script>
 <script src='assets/global/plugins/jquery-validation/js/additional-methods.min.js' type='text/javascript'></script>
@@ -1247,17 +1309,13 @@
 <script src='assets/global/plugins/bootstrap-toastr/toastr.min.js'></script>
 <script src='assets/pages/scripts/ui-toastr.min.js'></script>
 
-<!-- JQUERY DATATABLES SCRIPT PLUGINS -->
-<script src='assets/global/scripts/datatable.js' type='text/javascript'></script>
-<script src='assets/global/plugins/datatables/datatables.min.js' type='text/javascript'></script>
-<script src='assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js' type='text/javascript'></script>
-
 <!-- SWEETALERT SCRIPT -->
 <script src='assets/global/plugins/bootstrap-sweetalert/sweetalert.min.js' type='text/javascript'></script>
 <!--<script src="assets/pages/scripts/table-datatables-managed.min.js" type="text/javascript"></script>-->
 <!-- ADVANCE SEARCH FIELD TYPEAHEAD -->
 <script src='assets/global/plugins/bootstrap-multiselect/js/bootstrap-multiselect.js' type='text/javascript'></script>
 <script src='assets/global/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js' type='text/javascript'></script>
+<script src="clockin/process.js" type="text/javascript"></script>
 
 <!-- CUSTOM SCRIPT -->
 

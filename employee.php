@@ -11,6 +11,128 @@
 
     include_once ('header.php'); 
 ?>
+<style type="text/css">
+    .highcharts-figure,
+    .highcharts-data-table table {
+        min-width: 360px;
+        max-width: 800px;
+        margin: 1em auto;
+    }
+
+    .highcharts-data-table table {
+        font-family: Verdana, sans-serif;
+        border-collapse: collapse;
+        border: 1px solid #ebebeb;
+        margin: 10px auto;
+        text-align: center;
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .highcharts-data-table caption {
+        padding: 1em 0;
+        font-size: 1.2em;
+        color: #555;
+    }
+
+    .highcharts-data-table th {
+        font-weight: 600;
+        padding: 0.5em;
+    }
+
+    .highcharts-data-table td,
+    .highcharts-data-table th,
+    .highcharts-data-table caption {
+        padding: 0.5em;
+    }
+
+    .highcharts-data-table thead tr,
+    .highcharts-data-table tr:nth-child(even) {
+        background: #f8f8f8;
+    }
+
+    .highcharts-data-table tr:hover {
+        background: #f1f7ff;
+    }
+
+    #container h4 {
+        text-transform: none;
+        font-size: 14px;
+        font-weight: normal;
+    }
+
+    #container p {
+        font-size: 13px;
+        line-height: 16px;
+    }
+
+    @media screen and (max-width: 600px) {
+        #container h4 {
+            font-size: 2.3vw;
+            line-height: 3vw;
+        }
+
+        #container p {
+            font-size: 2.3vw;
+            line-height: 3vw;
+        }
+    }
+
+    #modalView .table-scrollable {
+        overflow: unset;
+        border: 0;
+    }
+
+    /* DataTable*/
+    .dt-buttons {
+        margin: unset !important;
+        float: left !important;
+        margin-left: 15px !important;
+    }
+    div.dt-button-collection .dt-button.active:after {
+        position: absolute;
+        top: 50%;
+        margin-top: -10px;
+        right: 1em;
+        display: inline-block;
+        content: "✓";
+        color: inherit;
+    }
+    .table {
+        width: 100% !important;
+    }
+    .table-scrollable .dataTable td>.btn-group, .table-scrollable .dataTable th>.btn-group {
+        position: relative;
+    }
+    .table thead tr th {
+        vertical-align: middle;
+    }
+
+    .txta {
+        width: 100%;
+        max-width: 500px;
+        min-height: 26px;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        overflow: hidden;
+        line-height: 1.4;
+        border: 0;
+        resize: none;
+    }
+    table.table-bordered.dataTable th:last-child {
+        border-right-width: unset;
+    }
+    #tableData_category tfoot input {
+        border: 1px solid #ccc;
+        padding: 1rem;
+        width: 100%;
+    }
+    
+    .mt-repeater .mt-repeater-item {
+        border-bottom: unset;
+        padding-bottom: unset;
+    }
+</style>
 
                     <div class="row">
                         <div class="col-md-3">
@@ -166,8 +288,6 @@
                                                 <option disabled selected>Select</option>
                                             </optgroup>
                                             <optgroup>
-                                                <option value='Consultant'>Consultant</option>
-                                                <option value='Contractor'>Contractor</option>
                                                 <option value='Freelance'>Freelance</option>
                                                 <option value='Full-time'>Full-time</option>
                                                 <option value='OJT'>OJT</option>
@@ -177,7 +297,6 @@
                                                     echo $_COOKIE['client'] == 1 ? '<option value=\'Part-Time\'>Part-Time</option><option value=\'Salaried\'>Salaried</option><option value=\'Seasonal\'>Seasonal</option>':'<option value=\'Part-Time Project\'>Part-Time Project</option>';
                                                 ?>
                                                 
-                                            <option value='Trainee'>Trainee</option>
                                             </optgroup>
                                             <optgroup>
                                                 <option value='HACCP'>HACCP</option>
@@ -1150,6 +1269,31 @@
                 }
             });
 
+            function repeaterForm() {
+                var FormRepeater=function(){
+                    return{
+                        init:function(){
+                            $(".mt-repeater").each(function(){
+                                $(this).repeater({
+                                    show:function(){
+                                        $(this).slideDown();
+                                    },
+                                    hide:function(e){
+                                        let text = "Are you sure you want to delete this row?";
+                                        if (confirm(text) == true) {
+                                            $(this).slideUp(e);
+                                            setTimeout(function() { 
+                                            }, 500);
+                                        }
+                                    },
+                                    ready:function(e){}
+                                })
+                            })
+                        }
+                    }
+                }();
+                jQuery(document).ready(function(){FormRepeater.init()});
+            }
             function btnReset(view) {
                 $('#'+view+' form')[0].reset();
             }
@@ -1159,6 +1303,13 @@
             function uploadNew(e) {
                 $(e).parent().hide();
                 $(e).parent().parent().find('select').removeClass('hide');
+            }
+            function changeExpiry(e) {
+                if ($(e).is(':checked')) {
+                    $('.document_date').addClass('hide');
+                } else {
+                    $('.document_date').removeClass('hide');
+                }
             }
             function changeType(e) {
                 $(e).parent().find('input').hide();
@@ -1227,6 +1378,7 @@
                         $("#modalView .modal-body").html(data);
                         $(".make-switch").bootstrapSwitch();
                         selectMulti();
+                        repeaterForm();
                         $(function(){
                             $('#modalView .modal-body .status').editable({
                                 source: [
@@ -1240,6 +1392,38 @@
                                 }
                             });
                             fancyBoxes();
+                        });
+
+                        $('#modalView table').DataTable({
+                            dom: 'lBfrtip',
+                            lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+                            buttons: [
+                                {
+                                    extend: 'print',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                },
+                                {
+                                    extend: 'pdf',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                },
+                                {
+                                    extend: 'csv',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                },
+                                {
+                                    extend: 'excel',
+                                    exportOptions: {
+                                        columns: ':visible'
+                                    }
+                                },
+                                'colvis'
+                            ]
                         });
                     }
                 });
@@ -1605,10 +1789,10 @@
             }));
 
             // File Section
-            function btnNew_File(id) {
+            function btnNew_File(id, c) {
                 $.ajax({
                     type: "GET",
-                    url: "function.php?modalNew_File="+id,
+                    url: "function.php?modalNew_File="+id+"&c="+c,
                     dataType: "html",
                     success: function(data){
                         $("#modalNewFile .modal-body").html(data);
@@ -1651,23 +1835,7 @@
                             msg = "Sucessfully Save!";
 
                             var obj = jQuery.parseJSON(response);
-                            var html = '<tr id="tr_'+obj.ID+'">';
-                                html += '<td >'+obj.files+'</td>';
-                                html += '<td >'+obj.filename+'</td>';
-                                html += '<td >'+obj.description+'</td>';
-                                html += '<td >'+obj.start_date+' - '+obj.due_date+'</td>';
-                                html += '<td >'+obj.uploaded_date+'</td>';
-                                html += '<td >For Review</td>';
-                                html += '<td >NA</td>';
-                                html += '<td class="text-center">';
-                                    html += '<div class="btn-group btn-group-circle">';
-                                        html += '<a href="#modalEditFile" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnEdit('+obj.ID+')">Edit</a>';
-                                        html += '<a href="javascript:;" class="btn btn-danger btn-sm" onclick="btnDelete('+obj.ID+')">Delete</a>';
-                                   html += '</div>';
-                                html += '</td>';
-                            html += '</tr>';
-
-                            $('#tabFile table tbody').prepend(html);
+                            $('#tabFile_'+obj.category+' table tbody').prepend(obj.data);
                             $('#modalNewFile').modal('hide');
                         } else {
                             msg = "Error!"
@@ -1724,21 +1892,7 @@
                             msg = "Sucessfully Save!";
 
                             var obj = jQuery.parseJSON(response);
-                            var html = '<td >'+obj.files+'</td>';
-                            html += '<td >'+obj.filename+'</td>';
-                            html += '<td >'+obj.description+'</td>';
-                            html += '<td >'+obj.start_date+' - '+obj.due_date+'</td>';
-                            html += '<td >'+obj.uploaded_date+'</td>';
-                            html += '<td >For Review</td>';
-                            html += '<td >NA</td>';
-                            html += '<td class="text-center">';
-                                html += '<div class="btn-group btn-group-circle">';
-                                    html += '<a href="#modalEditFile" class="btn btn-outline dark btn-sm" data-toggle="modal" onclick="btnEdit('+obj.ID+')">Edit</a>';
-                                    html += '<a href="javascript:;" class="btn btn-danger btn-sm" onclick="btnDelete('+obj.ID+')">Delete</a>';
-                               html += '</div>';
-                            html += '</td>';
-
-                            $('#tabFile table tbody #tr_'+obj.ID).html(html);
+                            $('#tabFile_'+obj.category+' table tbody #tr_'+obj.ID).html(obj.data);
                             $('#modalEditFile').modal('hide');
                         } else {
                             msg = "Error!"

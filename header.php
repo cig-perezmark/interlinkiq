@@ -98,9 +98,9 @@
             $rowUser = mysqli_fetch_array($selectUser);
             $current_userID = $rowUser['ID'];
             $current_userEmployeeID = $rowUser['employee_id'];
-            $current_userFName = htmlentities($rowUser['first_name']);
-            $current_userLName = htmlentities($rowUser['last_name']);
-            $current_userEmail = htmlentities($rowUser['email']);
+            $current_userFName = htmlentities($rowUser['first_name'] ?? '');
+            $current_userLName = htmlentities($rowUser['last_name'] ?? '');
+            $current_userEmail = htmlentities($rowUser['email'] ?? '');
             $current_userType = $rowUser['type'];
         }
 
@@ -1116,7 +1116,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <span class="position-relative me-2">
                                         <img class="d-flex justify-content-center border border-default bg-white img-circle" style="width:80px; height:80px; object-fit: contain;" src="'.$base_url.'uploads/avatar/'.$current_userAvatar.'" alt="Avatar" onerror="this.onerror=null;this.src=\'https://via.placeholder.com/150x150/EFEFEF/AAAAAA.png?text=no+image\';" />
                                     </span>
-                                    <h4 class="bold ms-3">'.htmlentities($row['first_name']). " " . htmlentities($row['last_name']).'</h4>
+                                    <h4 class="bold ms-3">'.htmlentities($row['first_name'] ?? ''). " " . htmlentities($row['last_name'] ?? '').'</h4>
                                 </div>
                                 <div class="input-icon right">
                                     <i class="fa fa-search"></i>
@@ -1163,7 +1163,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     while($rowNote = mysqli_fetch_array($selectNote)) {
                                         $note_ID = $rowNote['ID'];
                                         $note_user_id = htmlentities($rowNote['user_id']);
-                                        $note_description = htmlentities($rowNote['description']);
+                                        $note_description = htmlentities($rowNote['description'] ?? '');
                                         $note_last_modified = $rowNote['last_modified'];
 
                                         echo '<div class="userResult" id="note_'.$note_ID.'">
@@ -1224,7 +1224,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                 new google.translate.TranslateElement({
                                     pageLanguage: 'en',
                                     autoDisplay: 'true',
-                                    includedLanguages: 'en,fr,zh-CN,zh-TW,hi,ja,ko,es,it,pt,ar,sw',
+                                    includedLanguages: 'en,fr,zh-CN,zh-TW,hi,ja,ko,es,it,pt,ar,sw,uk',
                                     layout: google.translate.TranslateElement.InlineLayout.SIMPLE
                                 }, 'google_translate_element');
                             }
@@ -1522,7 +1522,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                                 <span class="details">
                                                     <span class="label label-sm label-icon label-success">
                                                         <i class="fa fa-check"></i>
-                                                    </span> <?= htmlentities($row['first_name']).' '.htmlentities($row['last_name']) ?> </span>
+                                                    </span> <?= htmlentities($row['first_name'] ?? '').' '.htmlentities($row['last_name'] ?? '') ?> </span>
                                             </a>
                                             <?php endforeach; ?>
                                         </li>
@@ -1869,9 +1869,9 @@ License: You must have a valid license purchased only from themeforest(the above
                             <a href="javascript:;" class="dropdown-toggle profile-avatar" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                                 <?php
                                         if ( empty($current_userAvatar) ) {
-                                            echo '<img src="https://via.placeholder.com/150x150/EFEFEF/AAAAAA.png?text=no+image" class="img-circle" alt="Avatar" />';
+                                            echo '<img src="https://via.placeholder.com/150x150/EFEFEF/AAAAAA.png?text=no+image" class="img-circle" alt="Avatar" style="object-fit: cover; object-position:center;" />';
                                         } else {
-                                            echo '<img src="uploads/avatar/'. $current_userAvatar .'" class="img-circle" alt="Avatar" />';
+                                            echo '<img src="uploads/avatar/'. $current_userAvatar .'" class="img-circle" alt="Avatar" style="object-fit: cover; object-position:center;" />';
                                         }
                                     ?>
                                 <span class="username username-hide-on-mobile"><?php echo $current_userFName .' '. $current_userLName; ?></span>
@@ -2004,6 +2004,31 @@ License: You must have a valid license purchased only from themeforest(the above
                         </a>
                     </li>
                     <?php endif?>
+                    <?php
+                        if ($switch_user_id == 1479) {
+                            echo '<li class="nav-item ">
+                                <a href="paid" class="nav-link">
+                                    <i class="icon-tag"></i>
+                                    <span class="title" style="color: #ffff00; font-weight: bold;">My Tools</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a href="form-owned" class="nav-link">
+                                    <i class="icon-graph"></i>
+                                    <span class="title" style="color: #ffff00; font-weight: bold;">My Forms</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a href="free-access" class="nav-link">
+                                    <i class="icon-heart"></i>
+                                    <span class="title" style="color: #ffff00; font-weight: bold;">Free Access</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>';
+                        }
+                    ?>
                     <?php if(($current_client == 0 AND $switch_user_id <> 1106) OR $switch_user_id == 1360 OR $switch_user_id == 1366 OR $switch_user_id == 1453 OR $switch_user_id == 1482 OR $switch_user_id == 1365 OR $switch_user_id == 1477 OR $switch_user_id == 145 OR $switch_user_id == 1469) { ?>
                     <li class="nav-item hide <?php echo $site === "tracking" ? "active" : ""; ?>">
                         <a href="tracking" class="nav-link">
@@ -2021,16 +2046,16 @@ License: You must have a valid license purchased only from themeforest(the above
                     </li>
 
                     <?php
-                            if ($current_userEmployerID == 46400 OR $switch_user_id == 464) {
-                                echo '<li class="nav-item ">
-                                    <a href="form-owned" class="nav-link">
-                                        <i class="icon-graph"></i>
-                                        <span class="title">E-Forms</span>
-                                        <span class="selected"></span>
-                                    </a>
-                                </li>';
-                            }
-                        ?>
+                        if ($current_userEmployerID == 46400 OR $switch_user_id == 464) {
+                            echo '<li class="nav-item ">
+                                <a href="form-owned" class="nav-link">
+                                    <i class="icon-graph"></i>
+                                    <span class="title">E-Forms</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>';
+                        }
+                    ?>
 
                     <li class="nav-item">
                         <a href="javascript:;" class="nav-link nav-toggle">
@@ -2295,62 +2320,63 @@ License: You must have a valid license purchased only from themeforest(the above
                     <?php } ?>
 
                     <?php
-                            // Sidebar Menu
-                            function sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID) {
-                                global $conn;
-                                $output = '';
+                        // Sidebar Menu
+                        function sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID) {
+                            global $conn;
+                            $output = '';
 
-                                if (!empty($menu_url)) {
-                                    $output = '<li class="nav-item '; if ($site == $menu_url) { $output .= 'active'; } if ($menu_collab == 1 AND $current_userEmployeeID > 0) { $output .= menu($menu_url, $current_userEmployerID, $current_userEmployeeID); } $output .= '">
-                                        <a href="'.$menu_url.'" class="nav-link">
-                                            <i class="'.$menu_icon.'"></i>
-                                            <span class="title">'.$menu_description.'</span>
-                                            <span class="selected"></span>
-                                        </a>
-                                    </li>';
-                                } else {
-                                    $selectMenuDown = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE deleted = 0 AND parent_id = $menu_ID ORDER BY ordering ASC" );
-                                    if ( mysqli_num_rows($selectMenuDown) > 0 ) {
-                                        $menuDown_array = array();
-                                        while($rowMenuDown = mysqli_fetch_array($selectMenuDown)) {
-                                            array_push($menuDown_array, $rowMenuDown['url']);
-                                        }
+                            if (!empty($menu_url)) {
+                                $output = '<li class="nav-item '; if ($site == $menu_url) { $output .= 'active'; } if ($menu_collab == 1 AND $current_userEmployeeID > 0) { $output .= menu($menu_url, $current_userEmployerID, $current_userEmployeeID); } $output .= '">
+                                    <a href="'.$menu_url.'" class="nav-link">
+                                        <i class="'.$menu_icon.'"></i>
+                                        <span class="title">'.$menu_description.'</span>
+                                        <span class="selected"></span>
+                                    </a>
+                                </li>';
+                            } else {
+                                $selectMenuDown = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE deleted = 0 AND parent_id = $menu_ID ORDER BY ordering ASC" );
+                                if ( mysqli_num_rows($selectMenuDown) > 0 ) {
+                                    $menuDown_array = array();
+                                    while($rowMenuDown = mysqli_fetch_array($selectMenuDown)) {
+                                        array_push($menuDown_array, $rowMenuDown['url']);
                                     }
-
-                                    $output = '<li class="nav-item '; if (in_array($site, $menuDown_array)) { $output .= 'active open start'; } $output .= '">
-                                        <a href="javascript:;" class="nav-link nav-toggle">
-                                            <i class="icon-user-female"></i>
-                                            <span class="title">'.$menu_description.'</span>
-                                            <span class="selected"></span>
-                                            <span class="arrow '; if (in_array($site, $menuDown_array)) { $output .= 'open'; } $output .= '"></span>
-                                        </a>
-                                        <ul class="sub-menu">';
-
-                                            $selectMenuDown = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE deleted = 0 AND parent_id = $menu_ID ORDER BY ordering ASC" );
-                                            if ( mysqli_num_rows($selectMenuDown) > 0 ) {
-                                                while($rowMenuDown = mysqli_fetch_array($selectMenuDown)) {
-                                                    $menuDown_ID = $rowMenuDown['ID'];
-                                                    $menuDown_collab = $rowMenuDown['collab'];
-                                                    $menuDown_url = $rowMenuDown['url'];
-                                                    $menuDown_description = htmlentities($rowMenuDown['description']);
-
-                                                    $output .= '<li class="nav-item '; if ($site == $menuDown_url) { $output .= 'active'; } if ($menuDown_collab == 1 AND $current_userEmployeeID > 0) { $output .= menu($menuDown_url, $current_userEmployerID, $current_userEmployeeID); } $output .= '">
-                                                        <a href="'.$menuDown_url.'" class="nav-link ">
-                                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                                            <span class="title">'.$menuDown_description.'</span>
-                                                            <span class="selected"></span>
-                                                        </a>
-                                                    </li>';
-                                                }
-                                            }
-
-                                        $output .= '</ul>
-                                    </li>';
                                 }
 
-                                return $output;
+                                $output = '<li class="nav-item '; if (in_array($site, $menuDown_array)) { $output .= 'active open start'; } $output .= '">
+                                    <a href="javascript:;" class="nav-link nav-toggle">
+                                        <i class="icon-user-female"></i>
+                                        <span class="title">'.$menu_description.'</span>
+                                        <span class="selected"></span>
+                                        <span class="arrow '; if (in_array($site, $menuDown_array)) { $output .= 'open'; } $output .= '"></span>
+                                    </a>
+                                    <ul class="sub-menu">';
+
+                                        $selectMenuDown = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE deleted = 0 AND parent_id = $menu_ID ORDER BY ordering ASC" );
+                                        if ( mysqli_num_rows($selectMenuDown) > 0 ) {
+                                            while($rowMenuDown = mysqli_fetch_array($selectMenuDown)) {
+                                                $menuDown_ID = $rowMenuDown['ID'];
+                                                $menuDown_collab = $rowMenuDown['collab'];
+                                                $menuDown_url = $rowMenuDown['url'];
+                                                $menuDown_description = htmlentities($rowMenuDown['description'] ?? '');
+
+                                                $output .= '<li class="nav-item '; if ($site == $menuDown_url) { $output .= 'active'; } if ($menuDown_collab == 1 AND $current_userEmployeeID > 0) { $output .= menu($menuDown_url, $current_userEmployerID, $current_userEmployeeID); } $output .= '">
+                                                    <a href="'.$menuDown_url.'" class="nav-link ">
+                                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                        <span class="title">'.$menuDown_description.'</span>
+                                                        <span class="selected"></span>
+                                                    </a>
+                                                </li>';
+                                            }
+                                        }
+
+                                    $output .= '</ul>
+                                </li>';
                             }
-                            
+
+                            return $output;
+                        }
+                        
+                        if ($switch_user_id != 1479) {
                             // PAID Section
                             $selectMenu = mysqli_query( $conn,"
                                 SELECT 
@@ -2362,7 +2388,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                 s.date_start AS s_date_start,
                                 s.date_end AS s_date_end
                                 FROM tbl_menu AS m
-
+    
                                 LEFT JOIN (
                                     SELECT
                                     *
@@ -2373,13 +2399,13 @@ License: You must have a valid license purchased only from themeforest(the above
                                     AND user_id = $switch_user_id
                                 ) AS s
                                 ON m.ID = s.menu_id
-
+    
                                 WHERE m.module = 1 
                                 AND m.type = 0 
                                 AND m.deleted = 0 
                                 AND s.date_start IS NOT NULL
                                 AND s.date_end IS NOT NULL
-
+    
                                 ORDER BY m.description ASC
                             " );
                             if ( mysqli_num_rows($selectMenu) > 0 ) {
@@ -2389,18 +2415,18 @@ License: You must have a valid license purchased only from themeforest(the above
                                     $menu_icon = $rowMenu['m_icon'];
                                     $menu_url = $rowMenu['m_url'];
                                     $menu_description = $rowMenu['m_description'];
-
+    
                                     $sub_date_start = $rowMenu["s_date_start"];
                                     $sub_date_start = new DateTime($sub_date_start);
                                     $sub_date_start_o = $sub_date_start->format('Y/m/d');
                                     $sub_date_start = $sub_date_start->format('M d, Y');
-
+    
                                     $sub_date_end = $rowMenu["s_date_end"];
                                     $sub_date_end = new DateTime($sub_date_end);
                                     $sub_date_end_o = $sub_date_end->format('Y/m/d');
                                     $sub_date_end = $sub_date_end->format('M d, Y');
-
-
+    
+    
                                     echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID);
                                 }
                             }
@@ -2417,7 +2443,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                 s.date_start AS s_date_start,
                                 s.date_end AS s_date_end
                                 FROM tbl_menu AS m
-
+    
                                 LEFT JOIN (
                                     SELECT
                                     *
@@ -2428,13 +2454,13 @@ License: You must have a valid license purchased only from themeforest(the above
                                     AND user_id = $switch_user_id
                                 ) AS s
                                 ON m.ID = s.menu_id
-
+    
                                 WHERE m.module = 1 
                                 AND m.type = 0 
                                 AND m.deleted = 0 
                                 AND s.date_start IS NOT NULL
                                 AND s.date_end IS NOT NULL
-
+    
                                 ORDER BY m.description ASC
                             " );
                             if ( mysqli_num_rows($selectMenu) > 0 ) {
@@ -2443,25 +2469,25 @@ License: You must have a valid license purchased only from themeforest(the above
                                         <span class="title"><b>TRIAL</b></span>
                                     </a>
                                 </li>';
-
+    
                                 while($rowMenu = mysqli_fetch_array($selectMenu)) {
                                     $menu_ID = $rowMenu['m_ID'];
                                     $menu_collab = $rowMenu['m_collab'];
                                     $menu_icon = $rowMenu['m_icon'];
                                     $menu_url = $rowMenu['m_url'];
                                     $menu_description = $rowMenu['m_description'];
-
+    
                                     $sub_date_start = $rowMenu["s_date_start"];
                                     $sub_date_start = new DateTime($sub_date_start);
                                     $sub_date_start_o = $sub_date_start->format('Y/m/d');
                                     $sub_date_start = $sub_date_start->format('M d, Y');
-
+    
                                     $sub_date_end = $rowMenu["s_date_end"];
                                     $sub_date_end = new DateTime($sub_date_end);
                                     $sub_date_end_o = $sub_date_end->format('Y/m/d');
                                     $sub_date_end = $sub_date_end->format('M d, Y');
-
-
+    
+    
                                     echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID);
                                 }
                             }
@@ -2530,40 +2556,39 @@ License: You must have a valid license purchased only from themeforest(the above
                             //         }
                             //     }
                             // }
-                            
-                            
-                            
-                            if ($current_userEmployerID == 464000 OR $switch_user_id == 464) {
-                                echo '<li class="nav-item ">
-                                    <a href="inventory" class="nav-link">
-                                        <i class="icon-graph"></i>
-                                        <span class="title">Inventory</span>
-                                        <span class="selected"></span>
-                                    </a>
-                                </li>';
-                                echo '<li class="nav-item ">
-                                    <a href="sales" class="nav-link">
-                                        <i class="icon-graph"></i>
-                                        <span class="title">Sales</span>
-                                        <span class="selected"></span>
-                                    </a>
-                                </li>';
-                                echo '<li class="nav-item ">
-                                    <a href="production" class="nav-link">
-                                        <i class="icon-graph"></i>
-                                        <span class="title">Production</span>
-                                        <span class="selected"></span>
-                                    </a>
-                                </li>';
-                                echo '<li class="nav-item ">
-                                    <a href="product_and_formulation" class="nav-link">
-                                        <i class="icon-graph"></i>
-                                        <span class="title">Product and Formulation</span>
-                                        <span class="selected"></span>
-                                    </a>
-                                </li>';
-                            }
-                        ?>
+                        }
+                        
+                        if ($switch_user_id == 464) {
+                            echo '<li class="nav-item ">
+                                <a href="inventory" class="nav-link">
+                                    <i class="icon-graph"></i>
+                                    <span class="title">Inventory</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>';
+                            echo '<li class="nav-item ">
+                                <a href="sales" class="nav-link">
+                                    <i class="icon-graph"></i>
+                                    <span class="title">Sales</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>';
+                            echo '<li class="nav-item ">
+                                <a href="production" class="nav-link">
+                                    <i class="icon-graph"></i>
+                                    <span class="title">Production</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>';
+                            echo '<li class="nav-item ">
+                                <a href="product_and_formulation" class="nav-link">
+                                    <i class="icon-graph"></i>
+                                    <span class="title">Product and Formulation</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>';
+                        }
+                    ?>
                     <?php if($_COOKIE['ID'] == 48100 OR $switch_user_id == 163 OR $_COOKIE['ID'] == 1167 OR $_COOKIE['ID'] == 117 OR $switch_user_id == 464 ): ?>
                     <li class="nav-item">
                         <a href="glp_dashboard" class="nav-link" disabled>
@@ -3081,14 +3106,55 @@ License: You must have a valid license purchased only from themeforest(the above
 
 
 
-                    <li class="nav-item <?php echo $site === "forms" ? "active" : ""; ?>">
+                    <?php
+                        if ($switch_user_id == 1479) {
+                            echo '<li class="nav-item '; echo $site === "forms" OR $site === "module" ? "active" : ""; echo '">
+                                <a href="javascript:;" class="nav-link nav-toggle">
+                                    <i class="icon-docs" style="color: orange !important;"></i>
+                                    <span class="title">Catalog</span>
+                                    <span class="selected"></span>
+                                    <span class="arrow "></span>
+                                </a>
+                                <ul class="sub-menu">
+                                    <li class="nav-item">
+                                        <a href="forms" class="nav-link ">
+                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                            <span class="title">Forms</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="module" class="nav-link ">
+                                            <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                            <span class="title">Tools</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>';
+                        } else {
+                            echo '<li class="nav-item '; echo $site === "forms" ? "active" : ""; echo '">
+                                <a href="forms" class="nav-link">
+                                    <i class="icon-docs" style="color: orange !important;"></i>
+                                    <span class="title">Forms</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>
+                            <li class="nav-item '; echo $site === "module" ? "active" : ""; echo '">
+                                <a href="module" class="nav-link">
+                                    <i class="icon-social-dropbox" style="color: orange !important;"></i>
+                                    <span class="title">Module</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>';
+                        }
+                    ?>
+                    <li class="nav-item hide <?php echo $site === "forms" ? "active" : ""; ?>">
                         <a href="forms" class="nav-link">
                             <i class="icon-docs" style="color: orange !important;"></i>
                             <span class="title">Forms</span>
                             <span class="selected"></span>
                         </a>
                     </li>
-                    <li class="nav-item <?php echo $site === "module" ? "active" : ""; ?>">
+                    <li class="nav-item hide <?php echo $site === "module" ? "active" : ""; ?>">
                         <a href="module" class="nav-link">
                             <i class="icon-social-dropbox" style="color: orange !important;"></i>
                             <span class="title">Module</span>
@@ -3177,7 +3243,7 @@ License: You must have a valid license purchased only from themeforest(the above
                     <li class="nav-item hide">
                         <a href="<?php echo $row['app_url']; ?>" target="_blank" class="nav-link">
                             <i class="icon-layers"></i>
-                            <span class="title"><?php echo htmlentities($row['application_name']); ?></span>
+                            <span class="title"><?php echo htmlentities($row['application_name'] ?? ''); ?></span>
                             <span class="selected"></span>
                         </a>
                     </li>
@@ -3297,7 +3363,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         </li>
                         <?php echo $breadcrumbs; ?>
                     </ul>
-                    <div class="page-toolbar <?php if ($site == '404' OR $site == '505' OR $site == 'dashboard' OR $current_userEmployerID > 0) { echo 'hide'; } else if (!isset($_COOKIE['switchAccount'])) { if ($current_userEmployeeID > '0' AND $current_userAdminAccess == 0 AND $current_userID <> 532) { echo 'hide'; } } ?>">
+                    <div class="page-toolbar <?php if ($site == '404' OR $site == '505' OR $site == 'dashboard' OR $current_userEmployeeID > 0) { echo 'hide'; } else if (!isset($_COOKIE['switchAccount'])) { if ($current_userEmployeeID > 0 AND $current_userAdminAccess == 0 AND $current_userID <> 532) { echo 'hide'; } } ?>">
                         <!--<div class="page-toolbar <?php //if ($site == '404' OR $site == '505' OR $site == 'dashboard' OR $current_userEmployeeID > '0') { echo 'hide'; } ?>">-->
                         <a href="#modalCollab" data-toggle="modal" class="btn btn-success btn-fit-height">
                             Collaborator <i class="icon-settings"></i>

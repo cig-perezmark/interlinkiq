@@ -150,11 +150,11 @@
                                             <table class="table table-bordered table-hover" id="tableDataOpen">
                                                 <thead>
                                                     <tr>
+                                                        <th>Date Created</th>
                                                         <th>CAPA ID</th>
 
                                                         <?php echo $current_client == 0 ? '<th>CAPA Reference No.</th>':''; ?>
                                                         
-                                                        <th>Date Created</th>
                                                         <th>Observed By</th>
                                                         <th>Reported By</th>
 
@@ -222,12 +222,12 @@
                                                                 $data_employee_id = implode(", ",$data_employee_id);
 
                                                                 echo '<tr id="tr_'.$cam_ID.'">
+                                                                    <td>'.$cam_date.'</td>
                                                                     <td>'.$cam_ID.'</td>';
 
                                                                     if ($current_client == 0) { echo '<td>'.htmlentities($cam_reference).'</td>'; }
                                                                     
-                                                                    echo '<td>'.$cam_date.'</td>
-                                                                    <td>'.htmlentities($cam_observed_by).'</td>
+                                                                    echo '<td>'.htmlentities($cam_observed_by).'</td>
                                                                     <td>'.htmlentities($cam_reported_by).'</td>';
 
                                                                     if ($current_client == 1) { echo '<td>'.$data_employee_id.'</td>'; }
@@ -299,12 +299,12 @@
                                                                 $data_employee_id = implode(", ",$data_employee_id);
 
                                                                 echo '<tr id="tr_cc_'.$cam_ID.'">
+                                                                    <td>'.$cam_date.'</td>
                                                                     <td>'.$cam_ID.'</td>';
 
                                                                     if ($current_client == 0) { echo '<td>'.htmlentities($cam_reference).'</td>'; }
                                                                     
-                                                                    echo '<td>'.$cam_date.'</td>
-                                                                    <td>'.htmlentities($cam_observed_by).'</td>
+                                                                    echo '<td>'.htmlentities($cam_observed_by).'</td>
                                                                     <td>'.htmlentities($cam_reported_by).'</td>';
 
                                                                     if ($current_client == 1) { echo '<td>'.$data_employee_id.'</td>'; }
@@ -333,11 +333,11 @@
                                             <table class="table table-bordered table-hover" id="tableDataClose">
                                                 <thead>
                                                     <tr>
+                                                        <th>Date Created</th>
                                                         <th>CAPA ID</th>
 
                                                         <?php echo $current_client == 0 ? '<th>CAPA Reference No.</th>':''; ?>
                                                         
-                                                        <th>Date Created</th>
                                                         <th>Observed By</th>
                                                         <th>Reported By</th>
 
@@ -405,12 +405,12 @@
                                                                 $data_employee_id = implode(", ",$data_employee_id);
 
                                                                 echo '<tr id="tr_'.$cam_ID.'">
+                                                                    <td>'.$cam_date.'</td>
                                                                     <td>'.$cam_ID.'</td>';
 
                                                                     if ($current_client == 0) { echo '<td>'.htmlentities($cam_reference).'</td>'; }
                                                                     
-                                                                    echo '<td>'.$cam_date.'</td>
-                                                                    <td>'.htmlentities($cam_observed_by).'</td>
+                                                                    echo '<td>'.htmlentities($cam_observed_by).'</td>
                                                                     <td>'.htmlentities($cam_reported_by).'</td>';
 
                                                                     if ($current_client == 1) { echo '<td>'.$data_employee_id.'</td>'; }
@@ -457,12 +457,12 @@
                                                                 $data_employee_id = implode(", ",$data_employee_id);
 
                                                                 echo '<tr id="tr_cc_'.$cam_ID.'">
+                                                                    <td>'.$cam_date.'</td>
                                                                     <td>'.$cam_ID.'</td>';
 
                                                                     if ($current_client == 0) { echo '<td>'.htmlentities($cam_reference).'</td>'; }
-                                                                    
-                                                                    echo '<td>'.$cam_date.'</td>
-                                                                    <td>'.htmlentities($cam_observed_by).'</td>
+
+                                                                    echo '<td>'.htmlentities($cam_observed_by).'</td>
                                                                     <td>'.htmlentities($cam_reported_by).'</td>';
 
                                                                     if ($current_client == 1) { echo '<td>'.$data_employee_id.'</td>'; }
@@ -1124,7 +1124,7 @@
                                                                 <span></span>
                                                             </label>
                                                             <?php
-                                                                $selectYYYY = mysqli_query( $conn,'SELECT *, YEAR(date) AS YYYY FROM tbl_cam WHERE LENGTH(YEAR(date)) > 0 GROUP BY YYYY' );
+                                                                $selectYYYY = mysqli_query( $conn,'SELECT YEAR(date) AS YYYY FROM tbl_cam WHERE LENGTH(YEAR(date)) > 0 GROUP BY YYYY ORDER BY date' );
                                                                 if ( mysqli_num_rows($selectYYYY) > 0 ) {
                                                                     while($rowYYYY = mysqli_fetch_array($selectYYYY)) {
                                                                         $data_YYYY = $rowYYYY['YYYY'];
@@ -1139,7 +1139,7 @@
                                                         </div>
                                                         <div class="mt-radio-list navSummary hide">
                                                             <?php
-                                                                $selectYYYY = mysqli_query( $conn,'SELECT *, YEAR(date) AS YYYY FROM tbl_cam WHERE LENGTH(YEAR(date)) > 0 GROUP BY YYYY' );
+                                                                $selectYYYY = mysqli_query( $conn,'SELECT YEAR(date) AS YYYY FROM tbl_cam WHERE LENGTH(YEAR(date)) > 0 GROUP BY YYYY ORDER BY date' );
                                                                 if ( mysqli_num_rows($selectYYYY) > 0 ) {
                                                                     while($rowYYYY = mysqli_fetch_array($selectYYYY)) {
                                                                         $data_YYYY = $rowYYYY['YYYY'];
@@ -1518,7 +1518,8 @@
                     success: function(data){
                         $("#modalEdit .modal-body").html(data);
                         widget_repeaterForm();
-                        changeDepartment(2, id);
+                        widget_multiselect();
+                        // changeDepartment(2, id);
                     }
                 });
             }

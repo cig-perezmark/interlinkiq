@@ -1366,7 +1366,8 @@
 												<option value="">Select</option>
 												<?php
 													// $selectCategory = mysqli_query( $conn,"SELECT * FROM tbl_supplier_category WHERE deleted = 0 AND FIND_IN_SET($current_client, REPLACE(client, ' ', '')) ORDER BY name" );
-													$selectCategory = mysqli_query( $conn,"SELECT
+													$selectCategory = mysqli_query( $conn,"
+													    SELECT
 														c.ID AS c_ID,
 														c.name AS c_name
 
@@ -1391,7 +1392,39 @@
 
 														WHERE m.user_id = $switch_user_id
 
-														GROUP BY c.ID" );
+														GROUP BY c.ID
+													" );
+													if ($switch_user_id == 1211) {
+    													$selectCategory = mysqli_query( $conn,"
+    													    SELECT 
+    														m.category AS c_ID,
+    														pc.name AS c_name
+    
+    														FROM tbl_supplier_material AS m
+    
+    														LEFT JOIN (
+    															SELECT
+    														    *
+    														    FROM tbl_products_category
+    														) AS pc
+    														ON m.category = pc.ID
+    
+    														INNER JOIN (
+    														    SELECT
+    														    *
+    														    FROM tbl_supplier
+    														    WHERE page = 1 
+    														    AND is_deleted = 0
+    														) AS s
+    														ON FIND_IN_SET(m.ID, REPLACE(s.material, ' ', ''))
+    
+    														WHERE m.user_id = $switch_user_id
+    														AND LENGTH(pc.name) > 0
+    
+    														GROUP BY pc.name
+    													" );
+													}
+													
 													if ( mysqli_num_rows($selectCategory) > 0 ) {
 														while($row = mysqli_fetch_array($selectCategory)) {
 															echo '<option value="'.$row["c_ID"].'">'.$row["c_name"].'</option>';
@@ -1414,7 +1447,8 @@
 												<tbody>
 													<?php
 														// Material
-														$result = mysqli_query( $conn,"SELECT
+														$result = mysqli_query( $conn,"
+														    SELECT
 															m.ID AS m_ID,
 															m.material_name AS m_material_name,
 															m.allergen AS m_allergen,
@@ -1445,7 +1479,43 @@
 															) AS c
 															ON s.category = c.ID
 
-															WHERE m.user_id = $switch_user_id" );
+															WHERE m.user_id = $switch_user_id
+														" );
+													    if ($switch_user_id == 1211) {
+    														$result = mysqli_query( $conn,"
+    														    SELECT 
+    															m.ID AS m_ID,
+    															m.material_name AS m_material_name,
+    															m.allergen AS m_allergen,
+    															m.allergen_other AS m_allergen_other,
+    															m.category AS c_ID,
+    															pc.name AS c_name,
+    															s.ID AS s_ID,
+    															s.name AS s_name,
+    															s.status AS s_status
+    
+    															FROM tbl_supplier_material AS m
+    
+    															LEFT JOIN (
+    																SELECT
+    															    *
+    															    FROM tbl_products_category
+    															) AS pc
+    															ON m.category = pc.ID
+    
+    															INNER JOIN (
+    															    SELECT
+    															    *
+    															    FROM tbl_supplier
+    															    WHERE page = 1 
+    															    AND is_deleted = 0
+    															) AS s
+    															ON FIND_IN_SET(m.ID, REPLACE(s.material, ' ', ''))
+    
+    															WHERE m.user_id = $switch_user_id
+    														" );
+													    }
+													    
 														if ( mysqli_num_rows($result) > 0 ) {
 															$table_counter = 1;
 															while($row = mysqli_fetch_array($result)) {
@@ -4497,10 +4567,11 @@
                             msg = "Sucessfully Save!";
                             var obj = jQuery.parseJSON(response);
                             var html = '<tr id="tr_'+obj.ID+'">';
-								html += '<td class="text-center">Yes</td>';
                                 html += '<td>'+obj.material_name+'</td>';
-                                html += '<td>'+obj.material_id+'</td>';
                                 html += '<td>'+obj.material_description+'</td>';
+								html += '<td class="text-center">Yes</td>';
+								html += '<td class="text-center">0%</td>';
+                                html += '<td class="text-center">'+obj.material_id+'</td>';
                                 html += '<td class="text-center">';
                                     html += '<input type="hidden" class="form-control" name="material_id[]" value="'+obj.ID+'" readonly />';
                                     html += '<div class="mt-action-buttons">';
@@ -4572,10 +4643,11 @@
                         if ($.trim(response)) {
                             msg = "Sucessfully Save!";
                             var obj = jQuery.parseJSON(response);
-							var html = '<td class="text-center">'+obj.material_active+'</td>';
-							html += '<td>'+obj.material_name+'</td>';
-                            html += '<td>'+obj.material_id+'</td>';
+							var html = '<td>'+obj.material_name+'</td>';
                             html += '<td>'+obj.material_description+'</td>';
+                            html += '<td class="text-center">'+obj.material_active+'</td>';
+                            html += '<td class="text-center">0%</td>';
+                            html += '<td class="text-center">'+obj.material_id+'</td>';
                             html += '<td class="text-center">';
                                 html += '<input type="hidden" class="form-control" name="material_id[]" value="'+obj.ID+'" readonly />';
                                 html += '<div class="mt-action-buttons">';

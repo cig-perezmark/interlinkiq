@@ -151,13 +151,13 @@
                                                                         <td>'.$counter++.'</td>
                                                                         <td>'.$category[$category_id].'</td>
                                                                         <td>
-                                                                            <p style="margin: 0;"><b>'.$row["s_title"].'</b></p>
-                                                                            <p style="margin: 0;">'.$row["s_description"].'</p>';
+                                                                            <p style="margin: 0;"><b>'.htmlentities($row["s_title"] ?? '').'</b></p>
+                                                                            <p style="margin: 0;">'.htmlentities($row["s_description"] ?? '').'</p>';
                                                                             echo !empty($file_files) ? '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-fancybox data-type="'.$type.'">'.$file_files.'</a></p>' : '';
                                                                         echo '</td>
                                                                         <td>
-                                                                            <p style="margin: 0;">'.$row["s_contact"].'</p>
-                                                                            <p style="margin: 0;"><a href="mailto:'.$row["s_email"].'" target="_blank">'.$row["s_email"].'</a></p>
+                                                                            <p style="margin: 0;">'.htmlentities($row["s_contact"] ?? '').'</p>
+                                                                            <p style="margin: 0;"><a href="mailto:'.htmlentities($row["s_email"] ?? '').'" target="_blank">'.htmlentities($row["s_email"] ?? '').'</a></p>
                                                                         </td>
                                                                         <td class="text-center">'.$row["s_last_modified"].'</td>
                                                                         <td class="text-center">'.$row["s_due_date"].'</td>
@@ -263,13 +263,13 @@
                                                                         <td>'.$counter++.'</td>
                                                                         <td>'.$category[$category_id].'</td>
                                                                         <td>
-                                                                            <p style="margin: 0;">'.$row["s_title"].'</p>
-                                                                            <p style="margin: 0;">'.$row["s_description"].'</p>';
+                                                                            <p style="margin: 0;">'.htmlentities($row["s_title"] ?? '').'</p>
+                                                                            <p style="margin: 0;">'.htmlentities($row["s_description"] ?? '').'</p>';
                                                                             echo !empty($file_files) ? '<p style="margin: 0;">File: <a data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-fancybox data-type="'.$type.'">'.$file_files.'</a></p>' : '';
                                                                         echo '</td>
                                                                         <td>
-                                                                            <p style="margin: 0;">'.$row["s_contact"].'</p>
-                                                                            <p style="margin: 0;"><a href="mailto:'.$row["s_email"].'" target="_blank">'.$row["s_email"].'</a></p>
+                                                                            <p style="margin: 0;">'.htmlentities($row["s_contact"] ?? '').'</p>
+                                                                            <p style="margin: 0;"><a href="mailto:'.htmlentities($row["s_email"] ?? '').'" target="_blank">'.htmlentities($row["s_email"] ?? '').'</a></p>
                                                                         </td>
                                                                         <td class="text-center">'.$row["s_due_date"].'</td>
                                                                         <td class="text-center">'.$row["e_assigned_to"].'</td>

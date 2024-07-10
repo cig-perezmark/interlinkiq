@@ -8,7 +8,17 @@
         include_once __DIR__ .'/database_iiq.php';
         include_once __DIR__ . '/alt-setup/setup.php';
         
-        $result = mysqli_query( $conn,"SELECT * FROM tbl_products WHERE deleted = 0 AND user_id = $user_id" );
+        $result = mysqli_query( $conn,"SELECT ID, image, name, category, category_other, description, last_modified FROM tbl_products WHERE deleted = 0 AND user_id = $user_id" );
+        $result = mysqli_query( $conn,"SELECT
+            ID, image, name, category, category_other, description, last_modified,
+            CASE WHEN LENGTH(specifcation) > 0 THEN 1 ELSE 0 END AS specifcation_result,
+            CASE WHEN LENGTH(artwork) > 0 THEN 1 ELSE 0 END AS artwork_result,
+            CASE WHEN LENGTH(haccp) > 0 THEN 1 ELSE 0 END AS haccp_result,
+            CASE WHEN LENGTH(label) > 0 THEN 1 ELSE 0 END AS label_result,
+            CASE WHEN LENGTH(formulation) > 0 THEN 1 ELSE 0 END AS formulation_result,
+            docs
+            
+            FROM tbl_products WHERE deleted = 0 AND user_id = $user_id" );
         $data = [];
         if ( mysqli_num_rows($result) > 0 ) {
             while($row = mysqli_fetch_array($result)) {
@@ -32,14 +42,34 @@
                 } else {
                     $resultCategory = mysqli_query( $conn,"SELECT * FROM tbl_products_category WHERE ID = $data_category_id" );
                     $rowCategory = mysqli_fetch_array($resultCategory);
-                    $category = $rowCategory['name'];
+                    $category = htmlentities($rowCategory['name'] ?? '');
                 }
+                
+                // $docs_count = 0;
+                // $docs_file_count = 0;
+                // if (!empty($row['docs'])) {
+                //     $docs_arr= json_decode($row["docs"], true);
+                //     $docs_count = count($docs_arr);
+                //     if ($docs_count > 0) {
+                //         foreach ($docs_arr as $key => $value) {
+                //             if (!empty($value['docs_file'])) {
+                //                 $docs_file_count++;
+                //             }
+                //         }
+                //     }
+                // }
+                
+                // $compliance_tot = $row['specifcation_result'] + $row['artwork_result'] + $row['haccp_result'] + $row['label_result'] + $row['formulation_result'];
+                // $compliance_per = (100 / (5 + $docs_count) ) * ($compliance_tot + $docs_file_count);
+                //     'compliance' => round($compliance_per, 2),
+                
+                
                 
                 $data[] = [
                     'id' => $row['ID'],
                     'image' => $url_base.$image_main,
-                    'description' => htmlentities($row["description"]),
-                    'name' => htmlentities($row["name"]),
+                    'description' => htmlentities($row["description"] ?? ''),
+                    'name' => htmlentities($row["name"] ?? ''),
                     'category' => $category,
                     'last_update' => $row["last_modified"]
                 ];
@@ -237,8 +267,8 @@
                                             <tr>
                                                 <th>Product Name</th>
                                                 <th style="width: 150px;">Category</th>
-                                                <th style="width: 135px;">Last Update</th>
-                                                <th style="width: 90px;">Actions</th>
+                                                <th class="text-center" style="width: 135px;">Last Update</th>
+                                                <th class="text-center" style="width: 90px;">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody></tbody>
@@ -496,7 +526,7 @@
                                                                             if ( mysqli_num_rows($selectProductCategory) > 0 ) {
                                                                                 while($rowPC = mysqli_fetch_array($selectProductCategory)) {
                                                                                     $pc_ID = $rowPC['ID'];
-                                                                                    $pc_name = $rowPC['name'];
+                                                                                    $pc_name = htmlentities($rowPC['name'] ?? '');
                                                                                     echo '<option value="'. $pc_ID .'">'. $pc_name .'</option>';
                                                                                 }
                                                                             }
@@ -557,7 +587,7 @@
                                                                             if ( mysqli_num_rows($selectIntended) > 0 ) {
                                                                                 while($rowIntended = mysqli_fetch_array($selectIntended)) {
                                                                                     $intended_ID = $rowIntended["ID"];
-                                                                                    $intended_name = $rowIntended["name"];
+                                                                                    $intended_name = htmlentities($rowIntended["name"] ?? '');
 
                                                                                     echo '<option value="'.$intended_ID.'">'.$intended_name.'</option>';
                                                                                 }
@@ -577,7 +607,7 @@
                                                                             if ( mysqli_num_rows($selectClaims) > 0 ) {
                                                                                 while($rowClaims = mysqli_fetch_array($selectClaims)) {
                                                                                     $claims_ID = $rowClaims["ID"];
-                                                                                    $claims_name = $rowClaims["name"];
+                                                                                    $claims_name = htmlentities($rowClaims["name"] ?? '');
 
                                                                                     echo '<label class="mt-checkbox mt-checkbox-outline"> '.$claims_name.'
                                                                                         <input type="checkbox" value="'.$claims_ID.'" name="claims[]">

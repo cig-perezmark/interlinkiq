@@ -2327,7 +2327,7 @@
 
         
         <?php if($switch_user_id == 1) { ?>
-            <script src="ChartIQ/compliance_chart.js"></script>
+            <script src="AnalyticsIQ/compliance_chart.js"></script>
         <?php } ?>
 
 

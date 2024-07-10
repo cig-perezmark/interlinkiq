@@ -4,7 +4,6 @@ header('Content-Type: application/json');
 // Include database connection setup
 require '../database.php';
 
-
 if (!empty($_COOKIE['switchAccount'])) {
     $portal_user = $_COOKIE['ID'];
     $user_id = $_COOKIE['switchAccount'];
@@ -12,7 +11,6 @@ if (!empty($_COOKIE['switchAccount'])) {
     $portal_user = $_COOKIE['ID'];
     $user_id = employerID($portal_user);
 }
-
 function employerID($ID) {
     global $conn;
 

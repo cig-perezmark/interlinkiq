@@ -57,7 +57,7 @@ $sql = "
     ON t1.ID = c.library_id
     WHERE t1.deleted = 0 
         AND t1.user_id = $user_id
-      /*AND t1.parent_id = 0 */
+      /*AND t1.parent_id = 0*/
 ";
 
 // Execute the query

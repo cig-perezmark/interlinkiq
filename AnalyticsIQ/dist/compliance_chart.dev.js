@@ -1,7 +1,7 @@
 "use strict";
 
 document.addEventListener('DOMContentLoaded', function () {
-  fetch('ChartIQ/compliance_data.php').then(function (response) {
+  fetch('AnalyticsIQ/compliance_data.php').then(function (response) {
     return response.json();
   }).then(function (data) {
     if (!data || !data.folderData || !data.folderData.length || !data.fileData) {
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
         layout: root.verticalLayout
       }));
       chart.set("colors", am5.ColorSet["new"](root, {
-        colors: [am5.color(0xFFFF00), am5.color(0xFFA500), am5.color(0x228B22), // Color for non-expired
+        colors: [am5.color(0xFFD700), am5.color(0xFFA500), am5.color(0x228B22), // Color for non-expired
         am5.color(0xFF0000), am5.color(0xEE4B2B), am5.color(0xFF5C5C), am5.color(0xFF8A8A)]
       }));
       var xRenderer = am5xy.AxisRendererX["new"](root, {
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function () {
 }); //LEFT TO RIGHT ANALYTICS
 
 document.addEventListener('DOMContentLoaded', function () {
-  fetch('ChartIQ/compliance_data.php').then(function (response) {
+  fetch('AnalyticsIQ/compliance_data.php').then(function (response) {
     return response.json();
   }).then(function (data) {
     if (!data || !data.folderData || !data.folderData.length || !data.fileData) {
@@ -295,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function () {
           } else {
             switch (category) {
               case "Folders":
-                return am5.color(0xFFFF00);
+                return am5.color(0xFFD700);
 
               case "Documents":
                 return am5.color(0xFFA500);
@@ -331,7 +331,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         var category = dataItem.get("categoryY"); // Check if the category is Expired, Nearly Expired 30 Days, Nearly Expired 60 Days, or Nearly Expired 90 Days
 
-        var displayPercentage = ["Nearly Expired 30 Days", "Nearly Expired 60 Days", "Nearly Expired 90 Days"].includes(category);
+        var displayPercentage = ["Nearly Expired 30 Days", "Nearly Expired 60 Days", "Nearly Expired 90 Days"].includes(category); // Determine the label color based on the category
+
+        var labelColor = category === "Folders" ? am5.color(0x000000) : am5.color(0xFFFFFF);
         return am5.Bullet["new"](root, {
           locationX: labelInside ? 0.5 : 1.05,
           locationY: 0.5,
@@ -339,7 +341,7 @@ document.addEventListener('DOMContentLoaded', function () {
             centerX: labelInside ? am5.p50 : am5.p0,
             centerY: am5.p50,
             text: value === 100 ? "{valueX}%" : "{valueX}",
-            fill: am5.color(0xFFFFFF),
+            fill: labelColor,
             populateText: true
           })
         });
@@ -405,7 +407,7 @@ document.addEventListener('DOMContentLoaded', function () {
 }); //COMPLIANCE AND NON COMPLIANCE ANALYTICS
 
 $.ajax({
-  url: 'ChartIQ/compliance_non_data.php',
+  url: 'AnalyticsIQ/compliance_non_data.php',
   method: 'GET',
   dataType: 'json',
   success: function success(data) {
@@ -471,11 +473,11 @@ $.ajax({
   error: function error(xhr, status, _error) {
     console.error('AJAX request failed:', status, _error);
   }
-}); //ANNUALL REVIEW ANALYTICS
+}); //ANNUAL REVIEW ANALYTICS
 
 $(document).ready(function () {
   $.ajax({
-    url: 'ChartIQ/annual_review_data.php',
+    url: 'AnalyticsIQ/annual_review_data.php',
     type: 'GET',
     dataType: 'json',
     success: function success(data) {

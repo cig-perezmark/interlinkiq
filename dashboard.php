@@ -275,10 +275,12 @@
                                 <ul class="nav nav-tabs">
                                         <li class="active">
                                             <a href="#home" data-toggle="tab">Home</a>
-                                        </li>                                                                
-                                        <li>
+                                        </li>         
+                                        <?php if($switch_user_id == 464) { ?>
+                                         <li>
                                             <a href="#com_analytics" data-toggle="tab">Analytics </a>
                                         </li>
+                                        <?php } ?>
                                     </ul>
                                 </div>
                              <div class="tab-content">
@@ -2326,7 +2328,7 @@
         <script src="assets/pages/scripts/jquery.table2excel.js" type="text/javascript"></script>
 
         
-        <?php if($switch_user_id == 1) { ?>
+        <?php if($switch_user_id == 464) { ?>
             <script src="AnalyticsIQ/compliance_chart.js"></script>
         <?php } ?>
 
@@ -2837,10 +2839,15 @@
             }
             <?php if (!empty($_GET['d'])) { ?>
                 var req_id = '<?php echo $_GET['d']; ?>';
+                var s = 0;
+                <?php if (isset($_GET['s']) AND $_GET['s'] == 1) { ?>
+                    s = '<?php echo $_GET['s']; ?>';
+                <?php }; ?>
+                
                 uiBlock();
                 $.ajax({
                     type: "GET",
-                    url: "function.php?modalDashboard="+req_id,
+                    url: "function.php?modalDashboard="+req_id+"&s="+s,
                     dataType: "html",
                     success: function(data){
                         $(".left").hide();

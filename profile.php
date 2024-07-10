@@ -1578,12 +1578,19 @@
                     
                     <!-- Start MODALS FOR Start working button confirmation -->
                     <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="mi-start-modal">
-                      <div class="modal-dialog modal-sm">
+                      <div class="modal-dialog modal-md">
                         <div class="modal-content">
                           <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="myModalLabel">Are you sure you want to start working?</h4>
+                                <h4 class="modal-title" id="myModalLabel">Are you sure you want to start working ?</h4>
                                 <h5>If you click yes you will be tagged as present for today</h5>
+                          </div>
+                          <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <textarea name="notes" id="timein_notes" rows="5" class="form-control" required></textarea>
+                                </div>
+                            </div>
                           </div>
                           <div class="modal-footer">
                             <button type="button" class="btn btn-default" id="modal-btn-si">YES</button>
@@ -2176,6 +2183,8 @@
                 var fullname = document.querySelector('#current_userfullname').value;
                 var action = document.querySelector('#trigger').value;
                 var timeref = document.querySelector('#timeref').value;
+                var notes = document.querySelector('#timein_notes').value;
+                
                 $('#mi-start-modal').modal('hide');
            
                 $.ajax({
@@ -2183,7 +2192,9 @@
                     type: "POST",
                     data: {current_user_id:current_user_timein,
                            fullname_user:fullname,
-                           user_action:action, reset_timeref:timeref
+                           user_action:action, 
+                           reset_timeref:timeref,
+                           notes:notes
                     },
                     cache: false,
                     success: function(dataResult){

@@ -681,3 +681,8 @@ span[data-tasksbadge] {
     background-color: #fbe1e3;
     display: inline;
 }
+
+
+.accordion .panel-heading h4 a.btn {
+    padding: 5px 10px !important;
+}

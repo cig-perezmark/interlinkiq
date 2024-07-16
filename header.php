@@ -732,9 +732,10 @@ License: You must have a valid license purchased only from themeforest(the above
 
     /*Header Top Menu*/
     .listModule ul ul {
-    	max-height: 50rem;
-    	overflow: auto;
+        max-height: 50rem;
+        overflow: auto;
     }
+
     .listModule ul ul li:not(.divider) {
         display: inline-block;
         margin: 9px;
@@ -742,11 +743,13 @@ License: You must have a valid license purchased only from themeforest(the above
         height: 70px;
         text-align: center;
     }
+
     .listModule ul ul li.divider {
         display: block;
         position: relative;
         overflow: visible;
     }
+
     .listModule ul ul li.divider span {
         position: absolute;
         top: -1rem;
@@ -755,10 +758,12 @@ License: You must have a valid license purchased only from themeforest(the above
         font-weight: 600;
         color: #666666;
     }
-    .listModule ul ul li > a {
+
+    .listModule ul ul li>a {
         padding: 0 !important;
     }
-    .listModule ul ul li > a img {
+
+    .listModule ul ul li>a img {
         width: 100%;
         border-radius: 50% !important;
     }
@@ -1203,7 +1208,7 @@ License: You must have a valid license purchased only from themeforest(the above
                 <div class="top-menu">
 
                     <ul class="nav navbar-nav pull-right">
-                        <?php if ($current_client == 0 OR $current_client == 10) { ?> 
+                        <?php if ($current_client == 0 OR $current_client == 10) { ?>
                         <li class="dropdown dropdown-extended" id="googleTranslate">
                             <div id="google_translate_element"></div>
                             <script type="text/javascript">
@@ -2310,13 +2315,13 @@ License: You must have a valid license purchased only from themeforest(the above
                     </li>
                     <?php } ?>
                     <?php if($switch_user_id == 1479 || $_COOKIE['ID'] == 481) { ?>
-                        <li class="nav-item ">
-                            <a href="fsvp" class="nav-link">
-                                <i class="icon-graph"></i>
-                                <span class="title">FSVP</span>
-                                <span class="selected"></span>
-                            </a>
-                        </li>
+                    <li class="nav-item ">
+                        <a href="fsvp" class="nav-link">
+                            <i class="icon-graph"></i>
+                            <span class="title">FSVP</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
                     <?php } ?>
                     <?php if($_COOKIE['ID'] == 481) { ?>
                     <li class="nav-item ">

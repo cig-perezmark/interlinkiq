@@ -374,7 +374,7 @@ function createFSVPReport($conn, &$pdf, $supplierHashId, $css) {
     
  
     $title = (($supplierInfo['name'] . ' - ') ?? '') . "FSVP Report";
-    $basicInfo = [
+    $basicSupplierInfo = [
         'supplier_name' => $supplierInfo['name'],
         'supplier_address' => $supplierInfo['address'],
     ];
@@ -418,11 +418,11 @@ function createFSVPReport($conn, &$pdf, $supplierHashId, $css) {
         return $d;
     });
 
-    foreach($importersInfo as &$imp) {
+    foreach($importersInfo as $imp) {
         $pdf->AddPage();
-        $pdf->writeHTML($css . getLayout('importer_information', 'Foreign Supplier Importer Information Form', array_merge($imp, $basicInfo)));
+        $pdf->writeHTML($css . getLayout('importer_information', 'Foreign Supplier Importer Information Form', array_merge($imp, $basicSupplierInfo)));
 
-        $basicInfo = array_merge($basicInfo, [
+        $basicInfo = array_merge($basicSupplierInfo, [
             'importer_name' => $imp['importer_name'],
             'importer_address' => $imp['importer_address'],
         ]);

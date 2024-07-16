@@ -96,8 +96,8 @@
                                                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                             while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                                 $rowEmployeeID = $rowEmployee["ID"];
-                                                                $rowEmployeeFName = htmlentities($rowEmployee["first_name"]);
-                                                                $rowEmployeeLName = htmlentities($rowEmployee["last_name"]);
+                                                                $rowEmployeeFName = htmlentities($rowEmployee["first_name"] ?? '');
+                                                                $rowEmployeeLName = htmlentities($rowEmployee["last_name"] ?? '');
                                                                 $rowEmployeeSelected = "";
 
                                                                 // Base on Current Page
@@ -155,7 +155,7 @@
                                                 $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $current_userEmployerID" );
                                                 if ( mysqli_num_rows($selectUser) > 0 ) {
                                                     $rowUser = mysqli_fetch_array($selectUser);
-                                                    $user_email = $rowUser["email"];
+                                                    $user_email = htmlentities($rowUser["email"] ?? '');
                                                     $switch_ID = 1;
                                                     $switch_name = 'Company Name';
                                                     $switch_email = 'company@gmail.com';
@@ -164,9 +164,9 @@
                                                     $selectEnterprise = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE businessemailAddress = '".$user_email."'" );
                                                     if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                                                         $rowEnterprise = mysqli_fetch_array($selectEnterprise);
-                                                        $switch_ID = $rowEnterprise["users_entities"];
-                                                        $switch_name = $rowEnterprise["businessname"];
-                                                        $switch_logo = $rowEnterprise["BrandLogos"];
+                                                        $switch_ID = htmlentities($rowEnterprise["users_entities"] ?? '');
+                                                        $switch_name = htmlentities($rowEnterprise["businessname"] ?? '');
+                                                        $switch_logo = htmlentities($rowEnterprise["BrandLogos"] ?? '');
 
                                                         echo '<div class="mt-action">
                                                             <div class="mt-action-img"><img src="'.$base_url.'companyDetailsFolder/'.$switch_logo.'" style="width: 39px; height: 39px; object-fit: contain; object-position: center; border: 1px solid #ccc;"></div>
@@ -242,10 +242,10 @@
 												}
                                                 if ( mysqli_num_rows($selectSupplier) > 0 ) {
                                                     while($rowSupplier = mysqli_fetch_array($selectSupplier)) {
-                                                        $switch_name = $rowSupplier["e_businessname"];
-                                                        $switch_email = $rowSupplier["s_email"];
-                                                        $switch_ID = $rowSupplier["e_users_entities"];
-                                                        $switch_logo = $rowSupplier["e_BrandLogos"];
+                                                        $switch_name = htmlentities($rowSupplier["e_businessname"] ?? '');
+                                                        $switch_email = htmlentities($rowSupplier["s_email"] ?? '');
+                                                        $switch_ID = htmlentities($rowSupplier["e_users_entities"] ?? '');
+                                                        $switch_logo = htmlentities($rowSupplier["e_BrandLogos"] ?? '');
                                                         
                                                         echo '<div class="mt-action">
                                                             <div class="mt-action-img"><img src="'.$base_url.'companyDetailsFolder/'.$switch_logo.'" style="width: 39px; height: 39px; object-fit: contain; object-position: center;"></div>
@@ -353,7 +353,7 @@
                                                         $result = mysqli_query($conn, $query);
                                                                                 
                                                         while($row = mysqli_fetch_array($result)) {
-                                                            echo 'Hello '.$row['first_name'].', What can I help you with?';
+                                                            echo 'Hello '.htmlentities($row['first_name'] ?? '').', What can I help you with?';
                                                         }
                                                     ?>
                                                 </div>
@@ -495,7 +495,7 @@
                                                     $selectEmployeee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $current_userEmployerID ORDER BY first_name" );
                                                     if ( mysqli_num_rows($selectEmployeee) > 0 ) {
                                                         while($rowEmployee = mysqli_fetch_array($selectEmployeee)) {
-                                                            echo '<option value="'. $rowEmployee["ID"] .'">'. htmlentities($rowEmployee["first_name"]) .' '. htmlentities($rowEmployee["last_name"]) .'</option>';
+                                                            echo '<option value="'. $rowEmployee["ID"] .'">'. htmlentities($rowEmployee["first_name"] ?? '') .' '. htmlentities($rowEmployee["last_name"] ?? '') .'</option>';
                                                         }
                                                     }
                                                 ?>
@@ -508,7 +508,7 @@
                                                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE is_verified = 1 AND is_active = 1 AND ID IN ($current_userEmployerID, 189) ORDER BY first_name" );
                                                     if ( mysqli_num_rows($selectUser) > 0 ) {
                                                         while($rowUser = mysqli_fetch_array($selectUser)) {
-                                                            echo '<option value="'. $rowUser["ID"] .'">'. htmlentities($rowUser["first_name"]) .' '. htmlentities($rowUser["last_name"]) .'</option>';
+                                                            echo '<option value="'. $rowUser["ID"] .'">'. htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '') .'</option>';
                                                         }
                                                     }
                                                     $selectEmployeee = mysqli_query( $conn,"SELECT USER.ID AS userID, USER.employee_id AS userEMPID, USER.first_name AS userFN, USER.last_name AS userLN, USER.email AS userEmail, USER.is_verified AS userVerified, USER.is_active AS userActive, EMPLOYEE.ID AS empID, EMPLOYEE.user_id AS empUSERID, EMPLOYEE.suspended AS empSUSPENDED, EMPLOYEE.status AS empSTATUS, EMPLOYEE.verified AS empVERIFIED
@@ -519,7 +519,7 @@
 														ORDER BY USER.first_name" );
                                                     if ( mysqli_num_rows($selectEmployeee) > 0 ) {
                                                         while($rowEmployee = mysqli_fetch_array($selectEmployeee)) {
-                                                            echo '<option value="'. $rowEmployee["userID"] .'">'. $rowEmployee["userFN"] .' '. $rowEmployee["userLN"] .'</option>';
+                                                            echo '<option value="'. $rowEmployee["userID"] .'">'. htmlentities($rowEmployee["userFN"] ?? '') .' '. htmlentities($rowEmployee["userLN"] ?? '') .'</option>';
                                                         }
                                                     }
                                                 ?>

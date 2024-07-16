@@ -22,6 +22,52 @@ if(!isset($_COOKIE['ID'])){
     
     
 ?>
+<style type="text/css">
+	/* DataTable*/
+    .dt-buttons {
+        margin: unset !important;
+        float: left !important;
+        margin-left: 15px !important;
+    }
+    div.dt-button-collection .dt-button.active:after {
+	    position: absolute;
+	    top: 50%;
+	    margin-top: -10px;
+	    right: 1em;
+	    display: inline-block;
+	    content: "✓";
+	    color: inherit;
+	}
+	.table {
+		width: 100% !important;
+	}
+	.table-scrollable .dataTable td>.btn-group, .table-scrollable .dataTable th>.btn-group {
+		position: relative;
+	}
+	.table thead tr th {
+		vertical-align: middle;
+	}
+
+	.txta {
+		width: 100%;
+		max-width: 500px;
+		min-height: 26px;
+		font-family: Arial, sans-serif;
+		font-size: 16px;
+		overflow: hidden;
+		line-height: 1.4;
+		border: 0;
+		resize: none;
+	}
+    table.table-bordered.dataTable th:last-child {
+		border-right-width: unset;
+	}
+	#tableData_category tfoot input {
+	    border: 1px solid #ccc;
+	    padding: 1rem;
+	    width: 100%;
+	}
+</style>
 
     <div class="row">
         <div class="col-md-12">
@@ -191,11 +237,6 @@ if(!isset($_COOKIE['ID'])){
     <script src="assets/pages/scripts/jquery.table2excel.js" type="text/javascript"></script>
      <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <script type="text/javascript">
-    $(document).ready(function () {
-            $('#tableData2').DataTable();
-            $('#sample_1').DataTable();
-            $('#sample_4').DataTable();
-    });
    // print
     $(document).on('click', '#pdf_report_notstarted', function(){
         var pdf_notstarted_id = $(this).attr('data-id');
@@ -1523,6 +1564,38 @@ if(!isset($_COOKIE['ID'])){
             success: function(data){
                 $("#modalGet_filter_notstarted .modal-body").html(data);
                 $(".modalForm").validate();
+                
+    			$('#tableData22').DataTable({
+    		        dom: 'lBfrtip',
+    		        lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+    		        buttons: [
+    		            {
+    		                extend: 'print',
+    		                exportOptions: {
+    		                    columns: ':visible'
+    		                }
+    		            },
+    		            {
+    		                extend: 'pdf',
+    		                exportOptions: {
+    		                    columns: ':visible'
+    		                }
+    		            },
+    		            {
+    		                extend: 'csv',
+    		                exportOptions: {
+    		                    columns: ':visible'
+    		                }
+    		            },
+    		            {
+    		                extend: 'excel',
+    		                exportOptions: {
+    		                    columns: ':visible'
+    		                }
+    		            },
+    		            'colvis'
+    		        ]
+    		    });
             }
         });
     }
@@ -1536,6 +1609,38 @@ if(!isset($_COOKIE['ID'])){
             success: function(data){
                 $("#modalGet_filter_progress .modal-body").html(data);
                 $(".modalForm").validate();
+                
+    			$('#sample_11').DataTable({
+    		        dom: 'lBfrtip',
+    		        lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+    		        buttons: [
+    		            {
+    		                extend: 'print',
+    		                exportOptions: {
+    		                    columns: ':visible'
+    		                }
+    		            },
+    		            {
+    		                extend: 'pdf',
+    		                exportOptions: {
+    		                    columns: ':visible'
+    		                }
+    		            },
+    		            {
+    		                extend: 'csv',
+    		                exportOptions: {
+    		                    columns: ':visible'
+    		                }
+    		            },
+    		            {
+    		                extend: 'excel',
+    		                exportOptions: {
+    		                    columns: ':visible'
+    		                }
+    		            },
+    		            'colvis'
+    		        ]
+    		    });
             }
         });
     }
@@ -1549,6 +1654,39 @@ if(!isset($_COOKIE['ID'])){
             success: function(data){
                 $("#modalGet_filter_completed .modal-body").html(data);
                 $(".modalForm").validate();
+                
+                
+    			$('#sample_44').DataTable({
+    		        dom: 'lBfrtip',
+    		        lengthMenu: [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
+    		        buttons: [
+    		            {
+    		                extend: 'print',
+    		                exportOptions: {
+    		                    columns: ':visible'
+    		                }
+    		            },
+    		            {
+    		                extend: 'pdf',
+    		                exportOptions: {
+    		                    columns: ':visible'
+    		                }
+    		            },
+    		            {
+    		                extend: 'csv',
+    		                exportOptions: {
+    		                    columns: ':visible'
+    		                }
+    		            },
+    		            {
+    		                extend: 'excel',
+    		                exportOptions: {
+    		                    columns: ':visible'
+    		                }
+    		            },
+    		            'colvis'
+    		        ]
+    		    });
             }
         });
     }

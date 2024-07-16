@@ -182,12 +182,18 @@
                                                     $query = "SELECT * FROM tbl_afia_forms_list WHERE PK_id = '$value'";
                                                     $result = mysqli_query($e_connection, $query);
                                                     while($row = mysqli_fetch_array($result))
-                                                    {?>
-                                <tr>
-                                    <td>
-                                        <?= $row['afl_form_name']; ?>
-                                    </td>
-                                    <?php
+                                                    {?> 
+                                                        <?php
+                                                            $color = '';
+                                                            if($row['is_new'] == 1){
+                                                                $color = '#FFD54F';
+                                                            }
+                                                        ?>
+                                                        <tr style='background-color:<?= $color ?>'>
+                                                            <td>
+                                                                <?= $row['afl_form_name']; ?>
+                                                            </td>
+                                                            <?php
                                                                 if($_COOKIE['ID'] == 481):
                                                                    $select_kpi_reviewer = "SELECT * FROM kpi_reviewer INNER JOIN kpi_frequency ON kpi_frequency.PK_id =  kpi_reviewer.id WHERE kpi_reviewer.employee_id = {$_COOKIE['employee_id']} AND kpi_reviewer.form_id = {$row['PK_id']}";
                                                                     $kpi_reviewer_result = mysqli_query($e_connection,$select_kpi_reviewer);

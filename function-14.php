@@ -918,6 +918,10 @@
                 $recipients_email = 'arnel@consultareinc.com';
                 $recipients[$recipients_email] = $recipients_name;
 
+                $recipients_name = 'InterlinkIQ';
+                $recipients_email = 'info@consultareinc.com';
+                $recipients[$recipients_email] = $recipients_name;
+
                 $subject = 'New User Registered from '.$rowClient['name'];
                 $body = 'Hi Team,<br><br>
 
@@ -2097,7 +2101,7 @@
                 <select class="form-control mt-multiselect btn btn-default" name="department_id[]" multiple="multiple">
                     <option value="">Select</option>';
 
-                    $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status=1 AND user_id = $switch_user_id" );
+                    $selectDepartment = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_department WHERE status=1 AND user_id = $switch_user_id" );
                     if ( mysqli_num_rows($selectDepartment) > 0 ) {
                         while($rowDepartment = mysqli_fetch_array($selectDepartment)) {
                             echo '<option value="'. $rowDepartment["ID"] .'">'. htmlentities($rowDepartment["title"] ?? '') .'</option>';
@@ -2112,7 +2116,7 @@
             <div class="col-md-8">
                 <select class="form-control mt-multiselect btn btn-default" name="job_description_id[]" multiple="multiple">';
 
-                    $selectJB = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE status=1 AND user_id = $switch_user_id" );
+                    $selectJB = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_job_description WHERE status=1 AND user_id = $switch_user_id" );
                     if ( mysqli_num_rows($selectJB) > 0 ) {
                         while($rowJD = mysqli_fetch_array($selectJB)) {
                             echo '<option value="'. $rowJD["ID"] .'">'. htmlentities($rowJD["title"] ?? '') .'</option>';
@@ -2127,7 +2131,7 @@
             <div class="col-md-8">
                 <select class="form-control mt-multiselect btn btn-default" name="reporting_to_id">';
 
-                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id = $switch_user_id" );
+                    $selectEmployee = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_hr_employee WHERE status = 1 AND user_id = $switch_user_id" );
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         echo '<option value="">Select</option>';
                         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
@@ -33082,7 +33086,7 @@
             $sender[$sender_email] = $sender_name;
 
             $recipients_name = $name;
-            $recipients_email = 'greeggimongala@gmail.com';
+            $recipients_email = $email;
             $recipients[$recipients_email] = $recipients_name;
 
             $subject = 'Resolution of Job Ticket #'.$row['ID'];
@@ -33123,8 +33127,8 @@
         $c_name = addslashes($_POST['name']);
         $title = addslashes($_POST['title']);
         $description = addslashes($_POST['description']);
-        $contact = $_POST['contact'];
-        $email = $_POST['email'];
+        $contact = addslashes($_POST['contact']);
+        $email = addslashes($_POST['email']);
         $due_date = $_POST['due_date'];
         $last_modified = date("Y-m-d");
         $process = true;
@@ -33147,10 +33151,10 @@
                 if ( mysqli_num_rows($selectData) > 0 ) {
                     $rowData = mysqli_fetch_array($selectData);
                     $data_ID = $rowData['ID'];
-                    $data_title = $rowData['title'];
-                    $data_description = $rowData['description'];
-                    $data_contact = $rowData['contact'];
-                    $data_email = $rowData['email'];
+                    $data_title = htmlentities($rowData['title'] ?? '');
+                    $data_description = htmlentities($rowData['description'] ?? '');
+                    $data_contact = htmlentities($rowData['contact'] ?? '');
+                    $data_email = htmlentities($rowData['email'] ?? '');
                     $data_last_modified = $rowData['last_modified'];
                     $data_due_date = $rowData['due_date'];
 
@@ -33230,7 +33234,7 @@
         $current_userID = $_COOKIE['ID'];
         $last_modified = date("Y-m-d");
 
-        $selectDataTemp = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE ID = $ID" );
+        $selectDataTemp = mysqli_query( $conn,"SELECT assigned_to_id FROM tbl_services WHERE ID = $ID" );
         if ( mysqli_num_rows($selectDataTemp) > 0 ) {
             $rowDataTemp = mysqli_fetch_array($selectDataTemp);
             $rowDataTemp_assigned_to_id = $rowDataTemp['assigned_to_id'];
@@ -33259,10 +33263,10 @@
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
             $c_name = $row['name'];
-            $title = $row['title'];
-            $description = $row['description'];
-            $contact = $row['contact'];
-            $email = $row['email'];
+            $title = htmlentities($row['title'] ?? '');
+            $description = htmlentities($row['description'] ?? '');
+            $contact = htmlentities($row['contact'] ?? '');
+            $email = htmlentities($row['email'] ?? '');
             $due_date = $row['due_date'];
             $last_modified = $row['last_modified'];
 
@@ -33312,15 +33316,55 @@
             );
             echo json_encode($output);
 
-            if (!empty($assigned_to_id) AND !empty($rowDataTemp_assigned_to_id)) {
-                $rowDataTemp_assigned_to_id_array = explode(", ", $rowDataTemp_assigned_to_id);
-                if (!in_array($assigned_to_id, $rowDataTemp_assigned_to_id_array)) {
-                    $sender['services@interlinkiq.com'] = 'Interlink IQ';
-                    $recipients[$email] = $c_name;
-                    $subject = 'Job Ticket Tracker #'.$ID.' - '.$title;
-                    $body = 'Hi, '.$c_name.'!<br><br>
+            $sender['services@interlinkiq.com'] = 'Interlink IQ';
+            $recipients[$email] = $c_name;
+            if (!empty($assigned_to_id)) {
+                if ($assigned_to_id == $rowDataTemp_assigned_to_id) {
+                    if (!empty($comment)) {
+                        $recipients = array();
+                        $assigned_to_id_arr = explode(", ", $assigned_to_id);
+                        foreach ($assigned_to_id_arr as $value) {
+                            $selectEmployee = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_hr_employee WHERE ID=$value" );
+                            if ( mysqli_num_rows($selectEmployee) > 0 ) {
+                                $rowEmp = mysqli_fetch_array($selectEmployee);
+                                $emp_email = htmlentities($rowEmp['email'] ?? '');
+                                $emp_user = htmlentities($rowEmp['first_name'] ?? '') .' '. htmlentities($rowEmp['last_name'] ?? '');
+                                $recipients[$emp_email] = $emp_user;
+                            }
+                        }
+                        $subject = 'Update on Job Ticket #'.$ID.' - New Comment/Question Received';
+                        $body = 'Hi '.$c_name.',<br><br>
+
+                        I hope this message finds you well. I am writing to inform you that Job Ticket #'.$ID.' has received a new comment or question from the client. It is crucial that we address this promptly to maintain our commitment to excellent customer service and support.<br><br>
+
+                        <div style="margin: 0 0 20px; padding: 15px 30px 15px 15px; border-left: 5px solid #eee; border-radius: 0 4px 4px 0; background-color: #f5f8fd; border-color: #8bb4e7; color: #010407;">
+                            <strong>Title:</strong> '.$title.'<br>
+                            <strong>Description:</strong><br>
+                            '.nl2br($description).'<br><br>
+
+                            <strong>New Comment/Question:</strong><br>
+                            '.nl2br($comment).'
+                        </div>
+
+                        Please review the comment at your earliest convenience and provide a comprehensive response or solution. Your timely and effective communication is key to resolving the client\'s concerns and ensuring their satisfaction with our services.<br><br>
+
+                        Thank you for your attention to this matter and for your ongoing dedication<br><br>
+
+                        Best Regards';
+                        php_mailer_dynamic($sender, $recipients, $subject, $body);
+                    }
+                } else {
+                    // Send to requestor
+                    $subject = 'Job Ticket #'.$ID.' - Assigned';
+                    $body = 'Hi '.$c_name.',<br><br>
 
                     Your service request has been assigned to our team. Kindly wait for the next update.<br><br>
+
+                    <div style="margin: 0 0 20px; padding: 15px 30px 15px 15px; border-left: 5px solid #eee; border-radius: 0 4px 4px 0; background-color: #f5f8fd; border-color: #8bb4e7; color: #010407;">
+                        <strong>Title:</strong> '.$title.'<br>
+                        <strong>Description:</strong><br>
+                        '.nl2br($description).'
+                    </div>
 
                     Should you need assistance, kindly call 202-982-3002 or email <a href="mailto:services@interlinkiq.com" target="_blank">services@interlinkiq.com</a><br><br>
                     
@@ -33329,29 +33373,61 @@
                     php_mailer_dynamic($sender, $recipients, $subject, $body);
 
 
+                    // Send to assigned team
+                    $recipients = array();
                     $assigned_to_id_arr = explode(", ", $assigned_to_id);
                     foreach ($assigned_to_id_arr as $value) {
-                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID=$value" );
+                        $selectEmployee = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_hr_employee WHERE ID=$value" );
                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                             $rowEmp = mysqli_fetch_array($selectEmployee);
-                            $emp_email = $rowEmp['email'];
-                            $emp_user = $rowEmp['first_name'] .' '. $rowEmp['last_name'];
+                            $emp_email = htmlentities($rowEmp['email'] ?? '');
+                            $emp_user = htmlentities($rowEmp['first_name'] ?? '') .' '. htmlentities($rowEmp['last_name'] ?? '');
                             $recipients[$emp_email] = $emp_user;
                         }
                     }
-                    $body = 'Job Ticket was assigned to you!<br><br>
+                    $body = 'Hi Team!
 
-                    <b>Description:</b> '.htmlentities($description).'<br>
-                    <b>Contact:</b> '.htmlentities($contact).'<br>
-                    <b>Email:</b> '.htmlentities($email).'<br><br>
+                    I am writing to confirm the assignment of a new job ticket. The details of the job have been entered into our tracking system, and we are counting on your expertise for a timely and effective resolution.<br><br>
 
-                    Should you need assistance, kindly call 202-982-3002 or email <a href="mailto:services@interlinkiq.com" target="_blank">services@interlinkiq.com</a><br><br>
+                    <div style="margin: 0 0 20px; padding: 15px 30px 15px 15px; border-left: 5px solid #eee; border-radius: 0 4px 4px 0; background-color: #f5f8fd; border-color: #8bb4e7; color: #010407;">
+                        <strong>Title:</strong> '.$title.'<br>
+                        <strong>Description:</strong><br>
+                        '.nl2br($description).'<br><br>
+
+                        <strong>Contact:</strong> '.$contact.'<br>
+                        <strong>Email:</strong> '.$email.'
+                    </div>
+
+                    Please review the job ticket at your earliest convenience and provide an estimated timeline for completion. Your prompt attention to this matter is greatly appreciated, as it impacts our service commitments to our clients.<br><br>
+
+                    Thank you for your cooperation and dedication.<br><br>
                     
                     <a href="'. $base_url .'job-ticket-service?i='. $ID .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a><br><br>
 
-                    InterlinkIQ.com Team<br>
-                    Consultare Inc. Group';
+                    Best Regards';
+                    php_mailer_dynamic($sender, $recipients, $subject, $body);
+                }
+            } else {
+                if (!empty($comment)) {
+                    $subject = 'Update on Job Ticket #'.$ID.' - New Comment/Question Received';
+                    $body = 'Hi '.$c_name.',<br><br>
 
+                    I hope this message finds you well. I am writing to inform you that Job Ticket #'.$ID.' has received a new comment or question from the client. It is crucial that we address this promptly to maintain our commitment to excellent customer service and support.<br><br>
+
+                    <div style="margin: 0 0 20px; padding: 15px 30px 15px 15px; border-left: 5px solid #eee; border-radius: 0 4px 4px 0; background-color: #f5f8fd; border-color: #8bb4e7; color: #010407;">
+                        <strong>Title:</strong> '.$title.'<br>
+                        <strong>Description:</strong><br>
+                        '.nl2br($description).'<br><br>
+
+                        <strong>New Comment/Question:</strong><br>
+                        '.nl2br($comment).'
+                    </div>
+
+                    Please review the comment at your earliest convenience and provide a comprehensive response or solution. Your timely and effective communication is key to resolving the client\'s concerns and ensuring their satisfaction with our services.<br><br>
+
+                    Thank you for your attention to this matter and for your ongoing dedication<br><br>
+
+                    Best Regards';
                     php_mailer_dynamic($sender, $recipients, $subject, $body);
                 }
             }
@@ -37088,8 +37164,7 @@
             $optionEmployee = '';
             $optionTraining = '';
             foreach ($department_id_arr as $value) {
-
-                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND department_id = $value AND user_id = $user_id ORDER BY first_name" );
+                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id AND FIND_IN_SET($value, REPLACE(department_id, ' ', '')) ORDER BY first_name" );
                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                         $emp_ID = $rowEmployee["ID"];
@@ -37379,7 +37454,39 @@
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <select class="form-control mt-multiselect employee_id_2" data-placeholder="Select Personnel" name="employee_id[]" multiple="multiple"></select>
+                    <select class="form-control mt-multiselect employee_id_2" data-placeholder="Select Personnel" name="employee_id[]" multiple="multiple">';
+
+                        if (!empty($row['department_id'])) {
+                            $arr_department_id =  explode(', ', $row['department_id']);
+                            $array_employee_id = array();
+                            foreach ($arr_department_id as $value) {
+                                
+                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id AND FIND_IN_SET($value, REPLACE(department_id, ' ', '')) ORDER BY first_name" );
+                                if ( mysqli_num_rows($selectEmployee) > 0 ) {
+                                    while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
+                                        $emp_ID = $rowEmployee["ID"];
+                                        $emp_name = $rowEmployee["first_name"] .' '. $rowEmployee["last_name"];
+                                        $emp_email = $rowEmployee["email"];
+
+                                        if (!in_array($emp_ID, $array_employee_id)) {
+                                            array_push($array_employee_id, $emp_ID);
+
+                                            $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE is_verified = 1 AND is_active = 1 AND email = '".$emp_email."' ORDER BY first_name");
+                                            if ( mysqli_num_rows($selectUser) > 0 ) {
+                                                if (!empty($row["employee_id"])) {
+                                                    $cam_employee_id = explode(',', $row["employee_id"]);
+                                                    echo '<option value="'.$emp_ID.'" '; echo in_array($emp_ID, $cam_employee_id) ? 'SELECTED':''; echo '>'.$emp_name.'</option>';
+                                                } else {
+                                                    echo '<option value="'.$emp_ID.'">'.$emp_name.'</option>';
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    echo '</select>
                 </div>
             </div>
 
@@ -47402,7 +47509,7 @@
                                         $user_array_list = array(1, 464);
                                         if (!empty($row["l_description_tmp"]) AND in_array($user_id, $user_array_list)) {
                                             $arr_tmp = json_decode($row["l_description_tmp"],true);
-                                            if (end($arr_tmp)['status'] != 4) {
+                                            if (isset(end($arr_tmp)['status']) AND end($arr_tmp)['status'] != 4) {
                                                echo '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$library_ID.')">here</a> to view</span>';
                                             }
                                         }
@@ -48923,7 +49030,7 @@
                                 $user_array_list = array(1, 464);
                                 if (!empty($row["l_description_tmp"]) AND in_array($user_id, $user_array_list)) {
                                     $arr_tmp = json_decode($row["l_description_tmp"],true);
-                                    if (end($arr_tmp)['status'] != 4) {
+                                    if (isset(end($arr_tmp)['status']) AND end($arr_tmp)['status'] != 4) {
                                        echo '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$library_ID.')">here</a> to view</span>';
                                     }
                                 }
@@ -51668,7 +51775,7 @@
         $user_array_list = array(1, 464);
         if (!empty($row["description_tmp"]) AND in_array($user_id, $user_array_list)) {
             $arr_tmp = json_decode($row["description_tmp"],true);
-            if (end($arr_tmp)['status'] != 4) {
+            if (isset(end($arr_tmp)['status']) AND end($arr_tmp)['status'] != 4) {
                 $description = htmlentities(end($arr_tmp)['description'] ?? '');
             }
         }
@@ -52000,7 +52107,7 @@
         $user_array_list = array(5, 1, 464);
         if (!empty($row["description_tmp"]) AND in_array($user_id, $user_array_list)) {
             $arr_tmp = json_decode($row["description_tmp"],true);
-            if (end($arr_tmp)['status'] != 4) {
+            if (isset(end($arr_tmp)['status']) AND end($arr_tmp)['status'] != 4) {
                 $description = htmlentities(end($arr_tmp)['description'] ?? '');
             }
         }
@@ -56552,6 +56659,9 @@
 
                     mysqli_query( $conn,"UPDATE tbl_library_template SET files='". $files ."', filetype='". $filetype ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
                 }
+            } else {
+                $files = $rowData['files'];
+                $filetype = $rowData['filetype'];
             }
 
             if ($process == true) {
@@ -56950,6 +57060,9 @@
 
                     mysqli_query( $conn,"UPDATE tbl_library_references SET files='". $files ."', filetype='". $filetype ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
                 }
+            } else {
+                $files = $rowData['files'];
+                $filetype = $rowData['filetype'];
             }
 
             if ($process == true) {

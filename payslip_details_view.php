@@ -69,6 +69,7 @@
                         }
                         $bi_pay = $row_employee['pay_rate'] / 2;
                         $total_gross_pay = $row['pay_rate'] + $row['royaltee'] + $row['comission'] + $row['incentives'] + $adjustment_deduction + $row['other_fees'];
+                        $freelance_gross_pay = $row['hourly_rate'] * $row['total_hours'];
                     ?>
                     <!-- List of apps in tbl_app_store table -->
                     <div class="portlet-body">
@@ -248,6 +249,19 @@
                                             </td>
                                         </tr>
                                         <tr>
+                                            <td colspan="2" >
+                                                Total Hours
+                                            </td>
+                                            <td style="text-align:center" id="adjustment">
+                                                <?= $row['total_hours'] ?>
+                                            </td>
+                                            <td colspan="2">
+                                            </td>
+                                            <td >
+                                                
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <td colspan="4" ></td>
                                         </tr>
                                         <tr>
@@ -255,7 +269,7 @@
                                                 Total Earnings
                                             </td>
                                             <td style="text-align:center">
-                                               <?= "$" ?><?=  $total_gross_pay ?>
+                                               <?= "$" ?><?= ($row['hourly_rate'] != 0) ? $freelance_gross_pay : $gross_pay ?>
                                             </td>
                                             <td colspan="2" style="text-align:center" >
                                                 Total Deduction

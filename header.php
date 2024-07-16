@@ -762,6 +762,15 @@ License: You must have a valid license purchased only from themeforest(the above
         width: 100%;
         border-radius: 50% !important;
     }
+
+    .pictogram {
+        background-image: url(uploads/pictogram/interlinkIQ.png); 
+        background-position: center; 
+        background-repeat: no-repeat; 
+        background-size: contain; 
+        width: 60px; 
+        height: 60px;
+    }
     </style>
 </head>
 <!-- END HEAD -->
@@ -3345,7 +3354,54 @@ License: You must have a valid license purchased only from themeforest(the above
                 </div>
                 <!-- END THEME PANEL -->
 
-                <h1 class="page-title"><?php echo $title; ?></h1>
+                <div class="margin-bottom-15" style="display: flex; align-items: center;">
+                    <h1 class="page-title" style="margin: 0;"><?php echo $title; ?></h1>
+                    <?php
+                        $pictogram = 'title_cd_'.$site;
+                        if ($switch_user_id == 163) {
+                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                        } else {
+                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                $row = mysqli_fetch_array($selectPictogram);
+
+                                $files = '';
+                                $type = 'iframe';
+                                if (!empty($row["files"])) {
+                                    $arr_filename = explode(' | ', $row["files"]);
+                                    $arr_filetype = explode(' | ', $row["filetype"]);
+                                    $str_filename = '';
+
+                                    foreach($arr_filename as $val_filename) {
+                                        $str_filename = $val_filename;
+                                    }
+                                    foreach($arr_filetype as $val_filetype) {
+                                        $str_filetype = $val_filetype;
+                                    }
+
+                                    $files = $row["files"];
+                                    if ($row["filetype"] == 1) {
+                                        $fileExtension = fileExtension($files);
+                                        $src = $fileExtension['src'];
+                                        $embed = $fileExtension['embed'];
+                                        $type = $fileExtension['type'];
+                                        $file_extension = $fileExtension['file_extension'];
+                                        $url = $base_url.'uploads/pictogram/';
+
+                                        $files = $src.$url.rawurlencode($files).$embed;
+                                    } else if ($row["filetype"] == 3) {
+                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                    }
+                                }
+
+                                if (!empty($files)) {
+                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                }
+                            }
+                        }
+                    ?>
+                </div>
+                
                 <!--<input type='text' id='secondsRemaining' value='' readonly>-->
                 <!--<a href='#' class='60Left btn btn-default'>60 Secs Left</a>-->
                 <!--<a href='#' class='0Left btn btn-default'>Timed Out</a>-->

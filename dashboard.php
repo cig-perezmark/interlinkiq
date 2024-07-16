@@ -110,7 +110,6 @@
             height: 250px;
         }
     }
-
 </style>
 
 
@@ -276,10 +275,10 @@
                                         <li class="active">
                                             <a href="#home" data-toggle="tab">Home</a>
                                         </li>         
-                                        <?php if($switch_user_id == 464) { ?>
-                                         <li>
-                                            <a href="#com_analytics" data-toggle="tab">Analytics </a>
-                                        </li>
+                                        <?php if($switch_user_id == 464 OR $switch_user_id == 1457) { ?>
+                                             <li>
+                                                <a href="#com_analytics" data-toggle="tab">Analytics </a>
+                                            </li>
                                         <?php } ?>
                                     </ul>
                                 </div>
@@ -1551,7 +1550,7 @@
                                                 <label class="col-md-3 control-label">Reviewer</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control mt-multiselect" name="reviewer">
-                                                        <option value="">Select</option>';
+                                                        <option value="0">Select</option>';
                                                         $selectEmployeee = mysqli_query( $conn,"SELECT 
                                                             u.ID AS u_ID,
                                                             e.ID AS e_ID,
@@ -1586,7 +1585,7 @@
                                                 <label class="col-md-3 control-label">Approver</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control mt-multiselect" name="approver">
-                                                        <option value="">Select</option>';
+                                                        <option value="0">Select</option>';
                                                         $selectEmployeee = mysqli_query( $conn,"SELECT 
                                                             u.ID AS u_ID,
                                                             e.ID AS e_ID,
@@ -2328,7 +2327,7 @@
         <script src="assets/pages/scripts/jquery.table2excel.js" type="text/javascript"></script>
 
         
-        <?php if($switch_user_id == 464) { ?>
+        <?php if($switch_user_id == 464 OR $switch_user_id == 1457) { ?>
             <script src="AnalyticsIQ/compliance_chart.js"></script>
         <?php } ?>
 

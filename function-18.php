@@ -510,16 +510,48 @@
     //LOGIN PORTAL
     if (isset($_COOKIE['client'])) {
         $client_ID = $_COOKIE['client'];
-        $selectClient = mysqli_query( $conn,"SELECT * FROM tbl_user_client WHERE ID = $client_ID" );
-        if ( mysqli_num_rows($selectClient) > 0 ) {
-            $rowClient = mysqli_fetch_array($selectClient);
-            $client_url = $rowClient["url"];
-            $client_name = $rowClient["name"];
-            $client_email = $rowClient["email"];
+
+        if (isset($_COOKIE['switchAccount'])) {
+            $user_id = $_COOKIE['switchAccount'];
+            $selectClient = mysqli_query( $conn,"
+                SELECT
+                u.client AS u_client,
+                c.url AS c_url,
+                c.name AS c_name,
+                c.email AS c_email
+                FROM tbl_user AS u
+
+                RIGHT JOIN (
+                    SELECT
+                    *
+                    FROM tbl_user_client
+                ) AS c
+                ON u.client = c.ID
+
+                WHERE u.ID = $user_id
+            " );
+            if ( mysqli_num_rows($selectClient) > 0 ) {
+                $rowClient = mysqli_fetch_array($selectClient);
+                $client_url = $rowClient["c_url"];
+                $client_name = $rowClient["c_name"];
+                $client_email = $rowClient["c_email"];
+            } else {
+                $client_url = 'login';
+                $client_name = 'Interlink IQ';
+                $client_email = 'services@interlinkiq.com';
+            }
         } else {
-            $client_url = 'login';
-            $client_name = 'Interlink IQ';
-            $client_email = 'services@interlinkiq.com';
+            $selectClient = mysqli_query( $conn,"SELECT * FROM tbl_user_client WHERE ID = $client_ID" );
+            if ( mysqli_num_rows($selectClient) > 0 ) {
+                $rowClient = mysqli_fetch_array($selectClient);
+                $client_url = $rowClient["url"];
+                $client_name = $rowClient["name"];
+                $client_email = $rowClient["email"];
+            } else {
+                $client_url = 'login';
+                $client_name = 'Interlink IQ';
+                $client_email = 'services@interlinkiq.com';
+            }
         }
     }
 
@@ -685,6 +717,7 @@
         $first_name = addslashes($_POST['first_name']);
         $last_name = addslashes($_POST['last_name']);
         $email = $_POST['email'];
+        $phone = addslashes($_POST['phone']);
         $password = $_POST['password'];
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
         $exist = false;
@@ -697,20 +730,41 @@
             $sql = "INSERT INTO tbl_user (employee_id, first_name, last_name, email, password, client)
             VALUES ( '$ID', '$first_name', '$last_name', '$email', '$password_hash', '$client')";
             if (mysqli_query($conn, $sql)) {
-                // $last_id = mysqli_insert_id($conn);
+                $last_id = mysqli_insert_id($conn);
+                $sql = "INSERT INTO tbl_user_info (user_id, mobile) VALUES ('$last_id', '$phone')";
+                mysqli_query($conn, $sql);
 
-                // $to = $email;
-                // $user = $first_name .' '. $last_name;
-                // $subject = 'Welcome to InterlinkIQ.com';
-                // $body = 'Hi '. $first_name .', please click <a href="'. $base_url .'login?c=1&i='. $last_id .'">here</a> to confirm your account';
-                
-                // $mail = php_mailer($to, $user, $subject, $body);
-                // $message = 'Registration success. Please check your email for validation.';
-                $message = 'Welcome to InterlinkIQ Community! Please log in to your account.';
+                $sender_name = 'Interlink IQ';
+                $sender_email = 'services@interlinkiq.com';
+                $sender[$sender_email] = $sender_name;
+
+                $recipients_name = 'Arnel Ryan';
+                $recipients_email = 'arnel@consultareinc.com';
+                $recipients[$recipients_email] = $recipients_name;
+
+                $recipients_name = 'InterlinkIQ';
+                $recipients_email = 'info@consultareinc.com';
+                $recipients[$recipients_email] = $recipients_name;
+
+                $recipients_name = 'Customer Success';
+                $recipients_email = 'csuccess@consultareinc.com';
+                $recipients[$recipients_email] = $recipients_name;
+
+                $subject = 'New User Registered from IIQ';
+                $body = 'Hi Team,<br><br>
+
+                See details for our new user registered below<br><br>
+
+                Name: '.$first_name.' '.$last_name.'<br>
+                Email: '.$email.'<br>
+                Phone: '.$phone.'<br><br>
+
+                InterlinkIQ.com Team<br>
+                Consultare Inc. Group';
+
+                php_mailer_dynamic($sender, $recipients, $subject, $body);
+                $message = 'Welcome to our Community! Please logged in to your account.';
             }
-            // else {
-            //     $message = "Error: " . $sql . "<br>" . mysqli_error($conn);
-            // }
         }
         $output = array(
             'exist' => $exist,
@@ -916,6 +970,14 @@
 
                 $recipients_name = 'Arnel Ryan';
                 $recipients_email = 'arnel@consultareinc.com';
+                $recipients[$recipients_email] = $recipients_name;
+
+                $recipients_name = 'InterlinkIQ';
+                $recipients_email = 'info@consultareinc.com';
+                $recipients[$recipients_email] = $recipients_name;
+
+                $recipients_name = 'Customer Success';
+                $recipients_email = 'csuccess@consultareinc.com';
                 $recipients[$recipients_email] = $recipients_name;
 
                 $subject = 'New User Registered from '.$rowClient['name'];
@@ -2097,7 +2159,7 @@
                 <select class="form-control mt-multiselect btn btn-default" name="department_id[]" multiple="multiple">
                     <option value="">Select</option>';
 
-                    $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status=1 AND user_id = $switch_user_id" );
+                    $selectDepartment = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_department WHERE status=1 AND user_id = $switch_user_id" );
                     if ( mysqli_num_rows($selectDepartment) > 0 ) {
                         while($rowDepartment = mysqli_fetch_array($selectDepartment)) {
                             echo '<option value="'. $rowDepartment["ID"] .'">'. htmlentities($rowDepartment["title"] ?? '') .'</option>';
@@ -2112,7 +2174,7 @@
             <div class="col-md-8">
                 <select class="form-control mt-multiselect btn btn-default" name="job_description_id[]" multiple="multiple">';
 
-                    $selectJB = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE status=1 AND user_id = $switch_user_id" );
+                    $selectJB = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_job_description WHERE status=1 AND user_id = $switch_user_id" );
                     if ( mysqli_num_rows($selectJB) > 0 ) {
                         while($rowJD = mysqli_fetch_array($selectJB)) {
                             echo '<option value="'. $rowJD["ID"] .'">'. htmlentities($rowJD["title"] ?? '') .'</option>';
@@ -2127,7 +2189,7 @@
             <div class="col-md-8">
                 <select class="form-control mt-multiselect btn btn-default" name="reporting_to_id">';
 
-                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id = $switch_user_id" );
+                    $selectEmployee = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_hr_employee WHERE status = 1 AND user_id = $switch_user_id" );
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         echo '<option value="">Select</option>';
                         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
@@ -12554,6 +12616,8 @@
             $frequency_custom = $row["frequency_custom"];
             $frequency_custom_arr = explode(" | ", $frequency_custom);
 
+            $facility = $row["facility"];
+
             $department_id = $row["department_id"];
             if (!empty($department_id)) { $department_id_arr = explode(", ", $department_id); }
             
@@ -12648,7 +12712,7 @@
                     </li>';
                 }
 
-                if ($user_id == 27 || $user_id == 34 || $user_id == 464 || $user_id == 504 || $user_id == 475 || $user_id == 683) {
+                if ($user_id == 27 || $current_userEmployerID == 34 || $user_id == 464 || $user_id == 504 || $user_id == 475 || $user_id == 683) {
                     echo '<li><a href="#tabPortal_2" data-toggle="tab">Portal</a></li>';
                     echo '<li><a href="#tabUsage_2" data-toggle="tab">Usage</a></li>';
                 } else if ($user_id == 1479) {
@@ -12849,6 +12913,15 @@
                                     <option value="7" '; echo $frequency == 7 ? 'SELECTED':''; echo '>Once Per Three Months (Quarterly)</option>
                                     <option value="8" '; echo $frequency == 8 ? 'SELECTED':''; echo '>Once Per Six Months (Bi-Annual)</option>
                                     <option value="5" '; echo $frequency == 5 ? 'SELECTED':''; echo '>Once Per Year</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3 '; echo $current_userEmployerID == 34 ? '':'hide'; echo '">
+                            <div class="form-group">
+                                <label class="control-label">Facility User</label>
+                                <select class="form-control" name="facility">
+                                    <option value="0" '; echo $facility == 0 ? 'SELECTED':''; echo '>No</option>
+                                    <option value="1" '; echo $facility == 1 ? 'SELECTED':''; echo '>Yes</option>
                                 </select>
                             </div>
                         </div>
@@ -14013,7 +14086,7 @@
                                 <label class="control-label">Department</label>
                                 <select class="form-control mt-multiselect department_id" name="department_id[]" onchange="changeDepartment(this, 2)" multiple="multiple">';
                                     
-                                    $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $current_userEmployerID ORDER BY title");
+                                    $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $user_id ORDER BY title");
                                     if ( mysqli_num_rows($selectDepartment) > 0 ) {
                                         while($rowDepartment = mysqli_fetch_array($selectDepartment)) {
                                             $dept_ID = $rowDepartment["ID"];
@@ -14037,7 +14110,7 @@
                                     
                                     if (!empty($department_id)) {
                                         foreach ($department_id_arr as $value) {
-                                            $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND department_id = $value AND user_id = $current_userEmployerID ORDER BY first_name");
+                                            $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND department_id = $value AND user_id = $user_id ORDER BY first_name");
                                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                     $emp_ID = $rowEmployee["ID"];
@@ -14057,7 +14130,7 @@
                                             }
                                         }
                                     } else {
-                                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $current_userEmployerID ORDER BY first_name");
+                                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id ORDER BY first_name");
                                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                             while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                 $emp_ID = $rowEmployee["ID"];
@@ -16005,6 +16078,7 @@
         $status = $_POST['status'];
         // $notification = $_POST['notification'];
         $nda = $_POST['nda'];
+        $facility = $_POST['facility'];
         $notification = 0;
         $date = date('Y-m-d');
 
@@ -16142,8 +16216,8 @@
         if (!empty($_POST['employee_id'])) { $employee_id = implode(", ",$_POST['employee_id']); }
 
         if ($process == true) {
-            $sql = "INSERT INTO tbl_supplier (user_id, portal_user, page, name, address, phone, fax, email, website, category, industry, contact, document, document_other, material, service, audit, audit_report, audit_certificate, audit_action, reviewed_by, reviewed_date, reviewed_due, department_id, employee_id, status, notification, nda, frequency, frequency_custom, last_modified)
-            VALUES ('$user_id', '$portal_user', '2', '$name', '$address', '$phone', '$fax', '$email', '$website', '$category', '$industry', '$contact', '$document_name', '$document_other_name', '$material', '$service', '$audit', '$audit_report', '$audit_certificate', '$audit_action', '$reviewed_by', '$reviewed_date', '$reviewed_due', '$department_id', '$employee_id', '$status', '$notification', '$nda', '$supplier_frequency', '$supplier_frequency_custom', '$date')";
+            $sql = "INSERT INTO tbl_supplier (user_id, portal_user, page, name, address, phone, fax, email, website, category, industry, contact, document, document_other, material, service, audit, audit_report, audit_certificate, audit_action, reviewed_by, reviewed_date, reviewed_due, department_id, employee_id, status, notification, nda, frequency, frequency_custom, facility, last_modified)
+            VALUES ('$user_id', '$portal_user', '2', '$name', '$address', '$phone', '$fax', '$email', '$website', '$category', '$industry', '$contact', '$document_name', '$document_other_name', '$material', '$service', '$audit', '$audit_report', '$audit_certificate', '$audit_action', '$reviewed_by', '$reviewed_date', '$reviewed_due', '$department_id', '$employee_id', '$status', '$notification', '$nda', '$supplier_frequency', '$supplier_frequency_custom', '$facility', '$date')";
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
 
@@ -16862,6 +16936,7 @@
         $website = $_POST['website'];
         $status = $_POST['status'];
         $nda = $_POST['nda'];
+        $facility = $_POST['facility'];
         $notification = $_POST['notification'];
         $date = date('Y-m-d');
 
@@ -17038,7 +17113,7 @@
             }
             $temp_document = json_encode($temp_docs);
 
-            mysqli_query( $conn,"UPDATE tbl_supplier set name='". $name ."', address='". $address ."', phone='". $phone ."', fax='". $fax ."', email='". $email ."', website='". $website ."', category='". $category ."', industry='". $industry ."', contact='". $contact ."', document='". $document_name ."', document_other='". $document_other_name ."', material='". $material ."', service='". $service ."', audit='". $audit ."', audit_report='". $audit_report ."', audit_certificate='". $audit_certificate ."', audit_action='". $audit_action ."', audit_filesize='". $audit_filesize ."', audit_file_history='". $audit_file_history ."', reviewed_by='". $reviewed_by ."', reviewed_date='". $reviewed_date ."', reviewed_due='". $reviewed_due ."', department_id='". $department_id ."', employee_id='". $employee_id ."', status='". $status ."' , notification='". $notification ."', nda='". $nda ."', frequency='". $supplier_frequency ."', frequency_custom='". $supplier_frequency_custom ."' WHERE ID='". $ID ."'" );
+            mysqli_query( $conn,"UPDATE tbl_supplier set name='". $name ."', address='". $address ."', phone='". $phone ."', fax='". $fax ."', email='". $email ."', website='". $website ."', category='". $category ."', industry='". $industry ."', contact='". $contact ."', document='". $document_name ."', document_other='". $document_other_name ."', material='". $material ."', service='". $service ."', audit='". $audit ."', audit_report='". $audit_report ."', audit_certificate='". $audit_certificate ."', audit_action='". $audit_action ."', audit_filesize='". $audit_filesize ."', audit_file_history='". $audit_file_history ."', reviewed_by='". $reviewed_by ."', reviewed_date='". $reviewed_date ."', reviewed_due='". $reviewed_due ."', department_id='". $department_id ."', employee_id='". $employee_id ."', status='". $status ."' , notification='". $notification ."', nda='". $nda ."', facility='". $facility ."', frequency='". $supplier_frequency ."', frequency_custom='". $supplier_frequency_custom ."' WHERE ID='". $ID ."'" );
             
             if (!mysqli_error($conn)) {
                 $selectData = mysqli_query( $conn,'SELECT * FROM tbl_supplier WHERE ID="'. $ID .'" ORDER BY ID LIMIT 1' );
@@ -18989,10 +19064,10 @@
                 }
             }
 
-            $regulatory = $row["regulatory"];
-            $contact = $row["contact"];
-            $material = $row["material"];
-            $service = $row["service"];
+            $regulatory = htmlentities($row["regulatory"] ?? '');
+            $contact = htmlentities($row["contact"] ?? '');
+            $material = htmlentities($row["material"] ?? '');
+            $service = htmlentities($row["service"] ?? '');
 
             $audit_report = '';
             if (!empty($row["audit_report"])) {
@@ -19012,8 +19087,8 @@
                 $audit_action_arr = explode(" | ", $audit_action);
             }
 
-            $audit = $row["audit"];
-            $audit_score = $row["audit_score"];
+            $audit = htmlentities($row["audit"] ?? '');
+            $audit_score = htmlentities($row["audit_score"] ?? '');
             $reviewed_by = $row["reviewed_by"];
             $reviewed_date = $row["reviewed_date"];
             $reviewed_due = $row["reviewed_due"];
@@ -19025,15 +19100,15 @@
             if ($page == 2) {
                 $selectUser = mysqli_query( $conn,'SELECT * FROM tbl_user WHERE ID="'. $user_account_id .'" ORDER BY ID LIMIT 1' );
                 $rowUser = mysqli_fetch_array($selectUser);
-                $name = $rowUser['first_name'] .' '. $rowUser['last_name'];
+                $name = htmlentities($rowUser['first_name'] ?? '') .' '. htmlentities($rowUser['last_name'] ?? '');
 
                 $selectCategory = mysqli_query( $conn,"SELECT * FROM tbl_supplier_category WHERE ID = $category" );
                 $rowCategory = mysqli_fetch_array($selectCategory);
-                $enterprise_category = $rowCategory["name"];
+                $enterprise_category = htmlentities($rowCategory["name"] ?? '');
 
                 $selectIndustry = mysqli_query( $conn,"SELECT * FROM tbl_supplier_industry WHERE ID = $industry" );
                 $rowIndustry = mysqli_fetch_array($selectIndustry);
-                $enterprise_industry = $rowIndustry["name"];
+                $enterprise_industry = htmlentities($rowIndustry["name"] ?? '');
 
                 $enterprise_name = "";
                 $enterprise_bldg = "";
@@ -19048,21 +19123,21 @@
                 $selectEnterprise = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE users_entities = $user_account_id" );
                 if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                     $rowEnterprise = mysqli_fetch_array($selectEnterprise);
-                    $enterprise_name = $rowEnterprise["businessname"];
-                    $enterprise_bldg = $rowEnterprise["Bldg"];
-                    $enterprise_city = $rowEnterprise["city"];
-                    $enterprise_state = $rowEnterprise["States"];
-                    $enterprise_zip = $rowEnterprise["ZipCode"];
+                    $enterprise_name = htmlentities($rowEnterprise["businessname"] ?? '');
+                    $enterprise_bldg = htmlentities($rowEnterprise["Bldg"] ?? '');
+                    $enterprise_city = htmlentities($rowEnterprise["city"] ?? '');
+                    $enterprise_state = htmlentities($rowEnterprise["States"] ?? '');
+                    $enterprise_zip = htmlentities($rowEnterprise["ZipCode"] ?? '');
 
                     $enterprise_country = $rowEnterprise["country"];
                     $selectCountry = mysqli_query( $conn,"SELECT * FROM countries WHERE id = $enterprise_country" );
                     $rowCountry = mysqli_fetch_array($selectCountry);
-                    $enterprise_country = $rowCountry["name"];
+                    $enterprise_country = htmlentities($rowCountry["name"] ?? '');
 
-                    $enterprise_email = $rowEnterprise["businessemailAddress"];
-                    $enterprise_phone = $rowEnterprise["businesstelephone"];
-                    $enterprise_fax = $rowEnterprise["businessfax"];
-                    $enterprise_website = $rowEnterprise["businesswebsite"];
+                    $enterprise_email = htmlentities($rowEnterprise["businessemailAddress"] ?? '');
+                    $enterprise_phone = htmlentities($rowEnterprise["businesstelephone"] ?? '');
+                    $enterprise_fax = htmlentities($rowEnterprise["businessfax"] ?? '');
+                    $enterprise_website = htmlentities($rowEnterprise["businesswebsite"] ?? '');
                 }
             }
         }
@@ -20257,10 +20332,11 @@
                         <table class="table table-bordered table-hover" id="tableData_Material_2">
                             <thead>
                                 <tr>
-                                    <th class="text-center">Active</th>
                                     <th>Material Name</th>
-                                    <th>SKU</th>
-                                    <th>Description</th>';
+                                    <th>Description</th>
+                                    <th class="text-center" style="width:90px">Active</th>
+                                    <th class="text-center" style="width:90px">Compliance</th>
+                                    <th class="text-center" style="width:90px">SKU</th>';
 
                                     if ($page == 1) { echo '<th class="text-center" style="width: 135px;">Action</th>'; }
                                 
@@ -20271,28 +20347,54 @@
                                 if (!empty($material)) {
                                     $material_arr = explode(", ", $material);
                                     foreach ($material_arr as $value) {
-                                        $selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_supplier_material WHERE ID=$value" );
+                                        $selectMaterial = mysqli_query( $conn,"SELECT ID, active, material_name, material_id, description, spec_file, spec_date_to, spec_reviewer, spec_approver, other FROM tbl_supplier_material WHERE ID=$value" );
                                         if ( mysqli_num_rows($selectMaterial) > 0 ) {
                                             while($rowMaterial = mysqli_fetch_array($selectMaterial)) {
                                                 $material_mid = $rowMaterial["ID"];
                                                 $material_active = $rowMaterial["active"] == 1 ? 'Yes':'No';
-                                                $material_name = $rowMaterial["material_name"];
+                                                $material_name = htmlentities($rowMaterial["material_name"] ?? '');
                                                 $material_id = $rowMaterial["material_id"];
-                                                $material_description = $rowMaterial["description"];
+                                                $material_description = htmlentities($rowMaterial["description"] ?? '');
 
                                                 if ($page == 2) {
-                                                    $selectProduct = mysqli_query( $conn,"SELECT * FROM tbl_products WHERE ID=$material_name" );
+                                                    $selectProduct = mysqli_query( $conn,"SELECT name, code, description FROM tbl_products WHERE ID=$material_name" );
                                                     $rowProduct = mysqli_fetch_array($selectProduct);
-                                                    $material_name = $rowProduct["name"];
-                                                    $material_id = $rowProduct["code"];
-                                                    $material_description = $rowProduct["description"];
+                                                    $material_name = htmlentities($rowProduct["name"] ?? '');
+                                                    $material_id = htmlentities($rowProduct["code"] ?? '');
+                                                    $material_description = htmlentities($rowProduct["description"] ?? '');
                                                 }
 
+                                                $material_total = 1;
+                                                $material_count = 0;
+                                                if (!empty($rowMaterial["spec_file"]) AND !empty($rowMaterial["spec_date_to"])) {
+                                                    $material_spec_date_to = date("Y-m-d", strtotime($rowMaterial["spec_date_to"]));
+                                                    if ($material_spec_date_to > $local_date AND $rowMaterial["spec_reviewer"] > 0 AND $rowMaterial["spec_approver"] > 0) {
+                                                        $material_count++;
+                                                    }
+                                                }
+                                                if (!empty($rowMaterial["other"])) {
+                                                    $material_other_arr = $rowMaterial['other'];
+                                                    $output = json_decode($material_other_arr, true);
+                                                    $material_total += count($output);
+                                                    foreach ($output as $key => $value) {
+                                                        if (!empty($value['material_file_doc']) AND !empty($value['to'])) {
+                                                            $material_spec_date_to = date("Y-m-d", strtotime($value["to"]));
+                                                            if (isset($value['reviewer']) AND isset($value['approver'])) {
+                                                                if ($material_spec_date_to > $local_date AND $value['reviewer'] > 0 AND $value['approver'] > 0) {
+                                                                    $material_count++;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                $material_percentage = (100 / $material_total) * $material_count;
+
                                                 echo '<tr id="tr_'.$material_mid.'">
-                                                    <td class="text-center">'.$material_active.'</td>
                                                     <td><input type="hidden" class="form-control" name="material_id[]" value="'.$material_mid.'" readonly />'.$material_name.'</td>
-                                                    <td>'.$material_id.'</td>
-                                                    <td>'.$material_description.'</td>';
+                                                    <td>'.$material_description.'</td>
+                                                    <td class="text-center">'.$material_active.'</td>
+                                                    <td class="text-center">'.round($material_percentage, 2).'%</td>
+                                                    <td class="text-center">'.$material_id.'</td>';
 
                                                     if ($page == 1) { 
                                                         echo '<td class="text-center">
@@ -25213,28 +25315,43 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Brand Name</label>
-                    <input class="form-control" type="text" name="brand_name" required />
+                    <input class="form-control" type="text" name="brand_name" />
                 </div>
             </div>
             <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Category</label>
+                    <select class="form-control" name="category" required>
+                        <option value="0">Select</option>';
+                        $selectData = mysqli_query( $conn,"SELECT ID, name from tbl_products_category ORDER BY name" );
+                        if ( mysqli_num_rows($selectData) > 0 ) {
+                            while($rowData = mysqli_fetch_array($selectData)) {
+                                echo '<option value="'.$rowData["ID"].'">'.htmlentities($rowData["name"] ?? '').'</option>';
+                            }
+                        }
+                    echo '</select>
+                </div>
+            </div>
+
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">SKU</label>
                     <input class="form-control" type="text" name="material_id" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">UoM</label>
                     <input class="form-control" type="text" name="material_uom" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">Count</label>
                     <input class="form-control" type="text" name="material_count" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">Price Per Unit</label>
                     <input class="form-control" type="text" name="material_ppu" />
@@ -25375,6 +25492,17 @@
         $id = $_GET['modalView_Supplier_Material'];
         $modal = $_GET['m'];
 
+        $s = 0;
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
         $selectData = mysqli_query( $conn,"SELECT * from tbl_supplier_material WHERE ID = $id" );
         $row = mysqli_fetch_array($selectData);
 
@@ -25417,37 +25545,52 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Material Name</label>
-                    <input class="form-control" type="text" name="material_name" value="'.$row['material_name'].'" required />
+                    <input class="form-control" type="text" name="material_name" value="'.htmlentities($row['material_name'] ?? '').'" required />
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Brand Name</label>
-                    <input class="form-control" type="text" name="brand_name" value="'.$row['brand_name'].'" required />
+                    <input class="form-control" type="text" name="brand_name" value="'.htmlentities($row['brand_name'] ?? '').'" />
                 </div>
             </div>
             <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Category</label>
+                    <select class="form-control" name="category" required>
+                        <option value="0">Select</option>';
+                        $selectData = mysqli_query( $conn,"SELECT ID, name from tbl_products_category ORDER BY name" );
+                        if ( mysqli_num_rows($selectData) > 0 ) {
+                            while($rowData = mysqli_fetch_array($selectData)) {
+                                echo '<option value="'.$rowData["ID"].'" '; echo $row['category'] == $rowData["ID"] ? 'SELECTED':''; echo '>'.htmlentities($rowData["name"] ?? '').'</option>';
+                            }
+                        }
+                    echo '</select>
+                </div>
+            </div>
+
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">SKU</label>
-                    <input class="form-control" type="text" name="material_id" value="'.$row['material_id'].'" />
+                    <input class="form-control" type="text" name="material_id" value="'.htmlentities($row['material_id'] ?? '').'" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">UoM</label>
-                    <input class="form-control" type="text" name="material_uom" value="'.$row['material_uom'].'" />
+                    <input class="form-control" type="text" name="material_uom" value="'.htmlentities($row['material_uom'] ?? '').'" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">Count</label>
-                    <input class="form-control" type="text" name="material_count" value="'.$row['material_count'].'" />
+                    <input class="form-control" type="text" name="material_count" value="'.htmlentities($row['material_count'] ?? '').'" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">Price Per Unit</label>
-                    <input class="form-control" type="text" name="material_ppu" value="'.$row['material_ppu'].'" />
+                    <input class="form-control" type="text" name="material_ppu" value="'.htmlentities($row['material_ppu'] ?? '').'" />
                 </div>
             </div>
             <div class="col-md-6 hide">
@@ -25457,19 +25600,19 @@
                         <div class="col-md-4">
                             <div class="input-icon right">
                                 <i class="fax fa-microphonex">/kg</i>
-                                <input type="number" class="form-control cost_kg" placeholder="Amount" name="cost_kg" onkeyup="changeCost(this.value, 1)" value="'.$row['cost_kg'].'" />
+                                <input type="number" class="form-control cost_kg" placeholder="Amount" name="cost_kg" onkeyup="changeCost(this.value, 1)" value="'.htmlentities($row['cost_kg'] ?? '').'" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="input-icon right">
                                 <i class="fax fa-microphonex">/lb</i>
-                                <input type="number" class="form-control cost_lb" placeholder="Amount" name="cost_lb" onkeyup="changeCost(this.value, 2)" value="'.$row['cost_lb'].'" />
+                                <input type="number" class="form-control cost_lb" placeholder="Amount" name="cost_lb" onkeyup="changeCost(this.value, 2)" value="'.htmlentities($row['cost_lb'] ?? '').'" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="input-icon right">
                                 <i class="fax fa-microphonex">/oz</i>
-                                <input type="number" class="form-control cost_oz" placeholder="Amount" name="cost_oz" onkeyup="changeCost(this.value, 3)" value="'.$row['cost_oz'].'" />
+                                <input type="number" class="form-control cost_oz" placeholder="Amount" name="cost_oz" onkeyup="changeCost(this.value, 3)" value="'.htmlentities($row['cost_oz'] ?? '').'" />
                             </div>
                         </div>
                     </div>
@@ -25480,13 +25623,13 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="control-label">Description of Use</label>
-                    <textarea class="form-control" name="material_description" required>'.$row['description'].'</textarea>
+                    <textarea class="form-control" name="material_description" required>'.htmlentities($row['description'] ?? '').'</textarea>
                 </div>
             </div>
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="control-label">Comments / Notes</label>
-                    <textarea class="form-control" name="material_notes">'.$row['notes'].'</textarea>
+                    <textarea class="form-control" name="material_notes">'.htmlentities($row['notes'] ?? '').'</textarea>
                 </div>
             </div>
             <div class="col-md-6">
@@ -25509,7 +25652,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label">Allergen Other</label>
-                    <input type="text" class="form-control tagsinput" name="allergen_other" data-role="tagsinput" value="'.$row['allergen_other'].'" placeholder="Enter allergen" />
+                    <input type="text" class="form-control tagsinput" name="allergen_other" data-role="tagsinput" value="'.htmlentities($row['allergen_other'] ?? '').'" placeholder="Enter allergen" />
                 </div>
             </div>
         </div>
@@ -25541,6 +25684,62 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Reviewer</label>';
+
+                    if ($row['spec_reviewer'] == 0 OR $row['spec_reviewer'] == $portal_user) {
+                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $portal_user" );
+                        $rowUser = mysqli_fetch_array($selectUser);
+                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                        echo '<select class="form-control" name="spec_reviewer">
+                            <option value="0">Select</option>
+                            <option value="'.$portal_user.'" '; echo $row['spec_reviewer'] == $portal_user ? 'SELECTED':''; echo '>'.$name.'</option>
+                        </select>';
+                    } else {
+                        $spec_reviewer = $row['spec_reviewer'];
+                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $spec_reviewer" );
+                        $rowUser = mysqli_fetch_array($selectUser);
+                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                        echo '<input class="form-control" type="hidden" name="spec_reviewer" value="'.$spec_reviewer.'" />
+                        <input class="form-control" type="text" value="'.$name.'" readonly />';
+                    }
+
+                echo '</div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Approver</label>';
+
+                    if ($row['spec_approver'] == 0 OR $row['spec_approver'] == $portal_user) {
+                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $portal_user" );
+                        $rowUser = mysqli_fetch_array($selectUser);
+                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                        echo '<select class="form-control" name="spec_approver">
+                            <option value="0">Select</option>
+                            <option value="'.$portal_user.'" '; echo $row['spec_approver'] == $portal_user ? 'SELECTED':''; echo '>'.$name.'</option>
+                        </select>';
+                    } else {
+                        $spec_approver = $row['spec_approver'];
+                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $spec_approver" );
+                        $rowUser = mysqli_fetch_array($selectUser);
+                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                        echo '<input class="form-control" type="hidden" name="spec_approver" value="'.$spec_approver.'" />
+                        <input class="form-control" type="text" value="'.$name.'" readonly />';
+                    }
+                    
+                echo '</div>
+            </div>
+        </div>
         <div class="mt-repeater">
             <div data-repeater-list="material_other">';
 
@@ -25549,7 +25748,7 @@
                 $other_count = count($other_arr);
                 if (!empty($other)) {
                     foreach ($other_arr as $key => $value) {
-                        $name = $value['name'];
+                        $name = htmlentities($value['name'] ?? '');
                         $material_file_doc = $value['material_file_doc'];
 
                         $from = $value['from'];
@@ -25608,6 +25807,66 @@
                                 <label style="visibility: hidden; display: block;">Remove</label>
                                 <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Reviewer</label>';
+
+                                    $val_reviewer = 0;
+                                    if (isset($value['reviewer'])) { $val_reviewer = $value['reviewer']; }
+
+                                    if ($val_reviewer == 0 OR $val_reviewer == $portal_user) {
+                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $portal_user" );
+                                        $rowUser = mysqli_fetch_array($selectUser);
+                                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                                        echo '<select class="form-control" name="reviewer">
+                                            <option value="0">Select</option>
+                                            <option value="'.$portal_user.'" '; echo $val_reviewer == $portal_user ? 'SELECTED':''; echo '>'.$name.'</option>
+                                        </select>';
+                                    } else {
+                                        $reviewer = $reviewer;
+                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $reviewer" );
+                                        $rowUser = mysqli_fetch_array($selectUser);
+                                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                                        echo '<input class="form-control" type="hidden" name="reviewer" value="'.$reviewer.'" />
+                                        <input class="form-control" type="text" value="'.$name.'" readonly />';
+                                    }
+
+                                echo '</div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Approver</label>';
+
+                                    $val_approver = 0;
+                                    if (isset($value['approver'])) { $val_approver = $value['approver']; }
+
+                                    if ($val_approver == 0 OR $val_approver == $portal_user) {
+                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $portal_user" );
+                                        $rowUser = mysqli_fetch_array($selectUser);
+                                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                                        echo '<select class="form-control" name="approver">
+                                            <option value="0">Select</option>
+                                            <option value="'.$portal_user.'" '; echo $val_approver == $portal_user ? 'SELECTED':''; echo '>'.$name.'</option>
+                                        </select>';
+                                    } else {
+                                        $approver = $val_approver;
+                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $approver" );
+                                        $rowUser = mysqli_fetch_array($selectUser);
+                                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                                        echo '<input class="form-control" type="hidden" name="approver" value="'.$approver.'" />
+                                        <input class="form-control" type="text" value="'.$name.'" readonly />';
+                                    }
+                                    
+                                echo '</div>
+                            </div>
                         </div>';
                     }
                 }
@@ -25628,6 +25887,7 @@
 
         $material_name = addslashes($_POST['material_name']);
         $brand_name = addslashes($_POST['brand_name']);
+        $category = $_POST['category'];
         $material_id = $_POST['material_id'];
         $material_uom = $_POST['material_uom'];
         $material_count = $_POST['material_count'];
@@ -25660,8 +25920,6 @@
                 array_push($arr_item, $output);
             }
         }
-        // $material_spec_date_from = $_POST['material_spec_date_from'];
-        // $material_spec_date_to = $_POST['material_spec_date_to'];
 
         $material_spec_date_from = '';
         $material_spec_date_to = '';
@@ -25675,10 +25933,6 @@
         $material_other_arr = array();
         for ($i=0; $i < count($_POST['material_other']); $i++) {
             $material_file_name = $_POST['material_other'][$i]['material_file_name'];
-
-            // $material_file_from = $_POST['material_other'][$i]['material_file_from'];
-            // $material_file_to = $_POST['material_other'][$i]['material_file_to'];
-
             $material_file_from = '';
             $material_file_to = '';
             $material_file_daterange = $_POST['material_other'][$i]['material_file_daterange'];
@@ -25695,7 +25949,7 @@
                 $spec_filesize_other = implode('*', $_FILES['material_other']['size'][$i]);
                 $material_file_doc_tmp = implode('*', $_FILES['material_other']['tmp_name'][$i]);
                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($material_file_doc, PATHINFO_EXTENSION));
+                $ext = strtolower(pathinfo($material_file_doc_final, PATHINFO_EXTENSION));
 
                 $mime = mime_content_type($material_file_doc_tmp);
                 $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
@@ -25720,20 +25974,24 @@
                 }
             }
 
-            $material_other_data = array (
-                'name' => $material_file_name,
-                'material_file_doc' =>$material_file_doc_final,
-                'from' =>$material_file_from,
-                'to' =>$material_file_to
-            );
-            array_push( $material_other_arr, $material_other_data );
+            if (!empty($material_file_doc_final) AND !empty($material_file_from) AND !empty($material_file_to)) {
+                $material_other_data = array (
+                    'name' => $material_file_name,
+                    'material_file_doc' => $material_file_doc_final,
+                    'from' => $material_file_from,
+                    'to' => $material_file_to,
+                    'reviewer' => 0,
+                    'approver' => 0
+                );
+                array_push( $material_other_arr, $material_other_data );
+            }
         }
         $material_other = json_encode($material_other_arr);
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
         if ($process == true) {
-            $sql = "INSERT INTO tbl_supplier_material (user_id, material_name, brand_name, material_id, material_uom, material_count, material_ppu, cost_kg, cost_lb, cost_oz, description, notes, allergen, allergen_other, spec_file, spec_filesize, spec_date_from, spec_date_to, other, other_filesize, file_history)
-            VALUES ('$ID', '$material_name', '$brand_name', '$material_id', '$material_uom', '$material_count', '$material_ppu', '$cost_kg', '$cost_lb', '$cost_oz', '$material_description', '$material_notes', '$allergen', '$allergen_other', '$material_spec_file_final', '$spec_filesize', '$material_spec_date_from', '$material_spec_date_to', '$material_other', '$filesize', '$file_history')";
+            $sql = "INSERT INTO tbl_supplier_material (user_id, material_name, brand_name, category, material_id, material_uom, material_count, material_ppu, cost_kg, cost_lb, cost_oz, description, notes, allergen, allergen_other, spec_file, spec_filesize, spec_date_from, spec_date_to, other, other_filesize, file_history)
+            VALUES ('$ID', '$material_name', '$brand_name', '$category', '$material_id', '$material_uom', '$material_count', '$material_ppu', '$cost_kg', '$cost_lb', '$cost_oz', '$material_description', '$material_notes', '$allergen', '$allergen_other', '$material_spec_file_final', '$spec_filesize', '$material_spec_date_from', '$material_spec_date_to', '$material_other', '$filesize', '$file_history')";
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
             }
@@ -25770,6 +26028,7 @@
 
         $material_name = addslashes($_POST['material_name']);
         $brand_name = addslashes($_POST['brand_name']);
+        $category = $_POST['category'];
         $material_id = $_POST['material_id'];
         $material_active = $_POST['active'];
         $material_uom = $_POST['material_uom'];
@@ -25780,6 +26039,8 @@
         $cost_oz = $_POST['cost_oz'];
         $material_description = addslashes($_POST['material_description']);
         $material_notes = addslashes($_POST['material_notes']);
+        $spec_reviewer = $_POST['spec_reviewer'];
+        $spec_approver = $_POST['spec_approver'];
 
         $allergen = "";
         if (!empty($_POST["allergen"])) { $allergen = implode(", ", $_POST["allergen"]); }
@@ -25803,8 +26064,6 @@
                 array_push($arr_item, $output);
             }
         }
-        // $material_spec_date_from = $_POST['material_spec_date_from'];
-        // $material_spec_date_to = $_POST['material_spec_date_to'];
 
         $material_spec_date_from = '';
         $material_spec_date_to = '';
@@ -25818,8 +26077,8 @@
         $material_other_arr = array();
         for ($i=0; $i < count($_POST['material_other']); $i++) {
             $material_file_name = $_POST['material_other'][$i]['material_file_name'];
-            // $material_file_from = $_POST['material_other'][$i]['material_file_from'];
-            // $material_file_to = $_POST['material_other'][$i]['material_file_to'];
+            $material_file_reviewer = $_POST['material_other'][$i]['reviewer'];
+            $material_file_approver = $_POST['material_other'][$i]['approver'];
 
             $material_file_from = '';
             $material_file_to = '';
@@ -25866,7 +26125,9 @@
                 'name' => $material_file_name,
                 'material_file_doc' =>$material_file_doc_final,
                 'from' =>$material_file_from,
-                'to' =>$material_file_to
+                'to' =>$material_file_to,
+                'reviewer' =>$material_file_reviewer,
+                'approver' =>$material_file_approver
             );
             array_push( $material_other_arr, $material_other_data );
         }
@@ -25874,7 +26135,7 @@
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
         if ($process == true) {
-            mysqli_query( $conn,"UPDATE tbl_supplier_material set active='". $material_active ."', material_name='". $material_name ."', brand_name='". $brand_name ."', material_id='". $material_id ."', material_uom='". $material_uom ."', material_count='". $material_count ."', material_ppu='". $material_ppu ."', cost_kg='". $cost_kg ."', cost_lb='". $cost_lb ."', cost_oz='". $cost_oz ."', description='". $material_description ."', notes='". $material_notes ."', allergen='". $allergen ."', allergen_other='". $allergen_other ."', spec_file='". $material_spec_file_final ."', spec_filesize='". $spec_filesize ."', spec_date_from='". $material_spec_date_from ."', spec_date_to='". $material_spec_date_to ."', other='". $material_other ."', other_filesize='". $filesize ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
+            mysqli_query( $conn,"UPDATE tbl_supplier_material set active='". $material_active ."', material_name='". $material_name ."', brand_name='". $brand_name ."', category='". $category ."', material_id='". $material_id ."', material_uom='". $material_uom ."', material_count='". $material_count ."', material_ppu='". $material_ppu ."', cost_kg='". $cost_kg ."', cost_lb='". $cost_lb ."', cost_oz='". $cost_oz ."', description='". $material_description ."', notes='". $material_notes ."', allergen='". $allergen ."', allergen_other='". $allergen_other ."', spec_file='". $material_spec_file_final ."', spec_filesize='". $spec_filesize ."', spec_date_from='". $material_spec_date_from ."', spec_date_to='". $material_spec_date_to ."', spec_reviewer='". $spec_reviewer ."', spec_approver='". $spec_approver ."', other='". $material_other ."', other_filesize='". $filesize ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
 
             $output = array(
                 "ID" => $ID,
@@ -33045,6 +33306,7 @@
             $selectData = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE ID = $id" );
             if ( mysqli_num_rows($selectData) > 0 ) {
                 $row = mysqli_fetch_array($selectData);
+                $name = htmlentities($row['name'] ?? '');
                 $title = htmlentities($row['title'] ?? '');
                 $description = htmlentities($row['description'] ?? '');
                 $contact = htmlentities($row['contact'] ?? '');
@@ -33075,6 +33337,36 @@
                     $files = 'File: <a data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a>';
                 };
             }
+
+            $sender_name = 'Interlink IQ';
+            $sender_email = 'services@interlinkiq.com';
+            $sender[$sender_email] = $sender_name;
+
+            $recipients_name = $name;
+            $recipients_email = $email;
+            $recipients[$recipients_email] = $recipients_name;
+
+            $recipients_name = 'Customer Success';
+            $recipients_email = 'csuccess@consultareinc.com';
+            $recipients[$recipients_email] = $recipients_name;
+
+            $subject = 'Resolution of Job Ticket #'.$row['ID'];
+            $body = 'Hi '.$name.',<br><br>
+
+            I am pleased to inform you that the issue reported in job ticket #'.$row['ID'].' has been successfully resolved. Our technical team diligently worked on the problem and implemented a solution that has undergone thorough testing to ensure its effectiveness.<br><br>
+
+            <div style="margin: 0 0 20px; padding: 15px 30px 15px 15px; border-left: 5px solid #eee; border-radius: 0 4px 4px 0; background-color: #f5f8fd; border-color: #8bb4e7; color: #010407;">
+                <strong>Title:</strong> '.$title.'<br>
+                <strong>Description:</strong><br>
+                '.nl2br($description).'
+            </div>
+
+            We thank you for your patience during this procedure and apologize for any inconvenience this may have caused.<br><br>
+
+            Should you require any further assistance or have additional questions, please do not hesitate to reach out.<br><br>
+
+            Best Regards';
+            php_mailer_dynamic($sender, $recipients, $subject, $body);
             
             $output = array(
                 'ID' => $id,
@@ -33096,8 +33388,8 @@
         $c_name = addslashes($_POST['name']);
         $title = addslashes($_POST['title']);
         $description = addslashes($_POST['description']);
-        $contact = $_POST['contact'];
-        $email = $_POST['email'];
+        $contact = addslashes($_POST['contact']);
+        $email = addslashes($_POST['email']);
         $due_date = $_POST['due_date'];
         $last_modified = date("Y-m-d");
         $process = true;
@@ -33120,10 +33412,10 @@
                 if ( mysqli_num_rows($selectData) > 0 ) {
                     $rowData = mysqli_fetch_array($selectData);
                     $data_ID = $rowData['ID'];
-                    $data_title = $rowData['title'];
-                    $data_description = $rowData['description'];
-                    $data_contact = $rowData['contact'];
-                    $data_email = $rowData['email'];
+                    $data_title = htmlentities($rowData['title'] ?? '');
+                    $data_description = htmlentities($rowData['description'] ?? '');
+                    $data_contact = htmlentities($rowData['contact'] ?? '');
+                    $data_email = htmlentities($rowData['email'] ?? '');
                     $data_last_modified = $rowData['last_modified'];
                     $data_due_date = $rowData['due_date'];
 
@@ -33164,8 +33456,8 @@
 
                     // Customer Service
                     $sender['services@interlinkiq.com'] = 'Interlink IQ';
-                    $recipients['csuccess@consultareinc.com'] = 'Christopher Santianez';
-                    $recipients['chris@consultareinc.com'] = 'Customer Success';
+                    $recipients['csuccess@consultareinc.com'] = 'Customer Success';
+                    $recipients['chris@consultareinc.com'] = 'Christopher Santianez';
                     $subject = 'New Job Ticket';
                     $body = 'Good day!<br><br>
 
@@ -33203,7 +33495,7 @@
         $current_userID = $_COOKIE['ID'];
         $last_modified = date("Y-m-d");
 
-        $selectDataTemp = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE ID = $ID" );
+        $selectDataTemp = mysqli_query( $conn,"SELECT assigned_to_id FROM tbl_services WHERE ID = $ID" );
         if ( mysqli_num_rows($selectDataTemp) > 0 ) {
             $rowDataTemp = mysqli_fetch_array($selectDataTemp);
             $rowDataTemp_assigned_to_id = $rowDataTemp['assigned_to_id'];
@@ -33232,10 +33524,10 @@
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
             $c_name = $row['name'];
-            $title = $row['title'];
-            $description = $row['description'];
-            $contact = $row['contact'];
-            $email = $row['email'];
+            $title = htmlentities($row['title'] ?? '');
+            $description = htmlentities($row['description'] ?? '');
+            $contact = htmlentities($row['contact'] ?? '');
+            $email = htmlentities($row['email'] ?? '');
             $due_date = $row['due_date'];
             $last_modified = $row['last_modified'];
 
@@ -33285,15 +33577,55 @@
             );
             echo json_encode($output);
 
-            if (!empty($assigned_to_id) AND !empty($rowDataTemp_assigned_to_id)) {
-                $rowDataTemp_assigned_to_id_array = explode(", ", $rowDataTemp_assigned_to_id);
-                if (!in_array($assigned_to_id, $rowDataTemp_assigned_to_id_array)) {
-                    $sender['services@interlinkiq.com'] = 'Interlink IQ';
-                    $recipients[$email] = $c_name;
-                    $subject = 'Job Ticket Tracker #'.$ID.' - '.$title;
-                    $body = 'Hi, '.$c_name.'!<br><br>
+            $sender['services@interlinkiq.com'] = 'Interlink IQ';
+            $recipients[$email] = $c_name;
+            if (!empty($assigned_to_id)) {
+                if ($assigned_to_id == $rowDataTemp_assigned_to_id) {
+                    if (!empty($comment)) {
+                        $recipients = array();
+                        $assigned_to_id_arr = explode(", ", $assigned_to_id);
+                        foreach ($assigned_to_id_arr as $value) {
+                            $selectEmployee = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_hr_employee WHERE ID=$value" );
+                            if ( mysqli_num_rows($selectEmployee) > 0 ) {
+                                $rowEmp = mysqli_fetch_array($selectEmployee);
+                                $emp_email = htmlentities($rowEmp['email'] ?? '');
+                                $emp_user = htmlentities($rowEmp['first_name'] ?? '') .' '. htmlentities($rowEmp['last_name'] ?? '');
+                                $recipients[$emp_email] = $emp_user;
+                            }
+                        }
+                        $subject = 'Update on Job Ticket #'.$ID.' - New Comment/Question Received';
+                        $body = 'Hi '.$c_name.',<br><br>
+
+                        I hope this message finds you well. I am writing to inform you that Job Ticket #'.$ID.' has received a new comment or question from the client. It is crucial that we address this promptly to maintain our commitment to excellent customer service and support.<br><br>
+
+                        <div style="margin: 0 0 20px; padding: 15px 30px 15px 15px; border-left: 5px solid #eee; border-radius: 0 4px 4px 0; background-color: #f5f8fd; border-color: #8bb4e7; color: #010407;">
+                            <strong>Title:</strong> '.$title.'<br>
+                            <strong>Description:</strong><br>
+                            '.nl2br($description).'<br><br>
+
+                            <strong>New Comment/Question:</strong><br>
+                            '.nl2br($comment).'
+                        </div>
+
+                        Please review the comment at your earliest convenience and provide a comprehensive response or solution. Your timely and effective communication is key to resolving the client\'s concerns and ensuring their satisfaction with our services.<br><br>
+
+                        Thank you for your attention to this matter and for your ongoing dedication<br><br>
+
+                        Best Regards';
+                        php_mailer_dynamic($sender, $recipients, $subject, $body);
+                    }
+                } else {
+                    // Send to requestor
+                    $subject = 'Job Ticket #'.$ID.' - Assigned';
+                    $body = 'Hi '.$c_name.',<br><br>
 
                     Your service request has been assigned to our team. Kindly wait for the next update.<br><br>
+
+                    <div style="margin: 0 0 20px; padding: 15px 30px 15px 15px; border-left: 5px solid #eee; border-radius: 0 4px 4px 0; background-color: #f5f8fd; border-color: #8bb4e7; color: #010407;">
+                        <strong>Title:</strong> '.$title.'<br>
+                        <strong>Description:</strong><br>
+                        '.nl2br($description).'
+                    </div>
 
                     Should you need assistance, kindly call 202-982-3002 or email <a href="mailto:services@interlinkiq.com" target="_blank">services@interlinkiq.com</a><br><br>
                     
@@ -33302,29 +33634,61 @@
                     php_mailer_dynamic($sender, $recipients, $subject, $body);
 
 
+                    // Send to assigned team
+                    $recipients = array();
                     $assigned_to_id_arr = explode(", ", $assigned_to_id);
                     foreach ($assigned_to_id_arr as $value) {
-                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID=$value" );
+                        $selectEmployee = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_hr_employee WHERE ID=$value" );
                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                             $rowEmp = mysqli_fetch_array($selectEmployee);
-                            $emp_email = $rowEmp['email'];
-                            $emp_user = $rowEmp['first_name'] .' '. $rowEmp['last_name'];
+                            $emp_email = htmlentities($rowEmp['email'] ?? '');
+                            $emp_user = htmlentities($rowEmp['first_name'] ?? '') .' '. htmlentities($rowEmp['last_name'] ?? '');
                             $recipients[$emp_email] = $emp_user;
                         }
                     }
-                    $body = 'Job Ticket was assigned to you!<br><br>
+                    $body = 'Hi Team!
 
-                    <b>Description:</b> '.htmlentities($description).'<br>
-                    <b>Contact:</b> '.htmlentities($contact).'<br>
-                    <b>Email:</b> '.htmlentities($email).'<br><br>
+                    I am writing to confirm the assignment of a new job ticket. The details of the job have been entered into our tracking system, and we are counting on your expertise for a timely and effective resolution.<br><br>
 
-                    Should you need assistance, kindly call 202-982-3002 or email <a href="mailto:services@interlinkiq.com" target="_blank">services@interlinkiq.com</a><br><br>
+                    <div style="margin: 0 0 20px; padding: 15px 30px 15px 15px; border-left: 5px solid #eee; border-radius: 0 4px 4px 0; background-color: #f5f8fd; border-color: #8bb4e7; color: #010407;">
+                        <strong>Title:</strong> '.$title.'<br>
+                        <strong>Description:</strong><br>
+                        '.nl2br($description).'<br><br>
+
+                        <strong>Contact:</strong> '.$contact.'<br>
+                        <strong>Email:</strong> '.$email.'
+                    </div>
+
+                    Please review the job ticket at your earliest convenience and provide an estimated timeline for completion. Your prompt attention to this matter is greatly appreciated, as it impacts our service commitments to our clients.<br><br>
+
+                    Thank you for your cooperation and dedication.<br><br>
                     
                     <a href="'. $base_url .'job-ticket-service?i='. $ID .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a><br><br>
 
-                    InterlinkIQ.com Team<br>
-                    Consultare Inc. Group';
+                    Best Regards';
+                    php_mailer_dynamic($sender, $recipients, $subject, $body);
+                }
+            } else {
+                if (!empty($comment)) {
+                    $subject = 'Update on Job Ticket #'.$ID.' - New Comment/Question Received';
+                    $body = 'Hi '.$c_name.',<br><br>
 
+                    I hope this message finds you well. I am writing to inform you that Job Ticket #'.$ID.' has received a new comment or question from the client. It is crucial that we address this promptly to maintain our commitment to excellent customer service and support.<br><br>
+
+                    <div style="margin: 0 0 20px; padding: 15px 30px 15px 15px; border-left: 5px solid #eee; border-radius: 0 4px 4px 0; background-color: #f5f8fd; border-color: #8bb4e7; color: #010407;">
+                        <strong>Title:</strong> '.$title.'<br>
+                        <strong>Description:</strong><br>
+                        '.nl2br($description).'<br><br>
+
+                        <strong>New Comment/Question:</strong><br>
+                        '.nl2br($comment).'
+                    </div>
+
+                    Please review the comment at your earliest convenience and provide a comprehensive response or solution. Your timely and effective communication is key to resolving the client\'s concerns and ensuring their satisfaction with our services.<br><br>
+
+                    Thank you for your attention to this matter and for your ongoing dedication<br><br>
+
+                    Best Regards';
                     php_mailer_dynamic($sender, $recipients, $subject, $body);
                 }
             }
@@ -37061,8 +37425,7 @@
             $optionEmployee = '';
             $optionTraining = '';
             foreach ($department_id_arr as $value) {
-
-                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND department_id = $value AND user_id = $user_id ORDER BY first_name" );
+                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id AND FIND_IN_SET($value, REPLACE(department_id, ' ', '')) ORDER BY first_name" );
                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                         $emp_ID = $rowEmployee["ID"];
@@ -37352,7 +37715,39 @@
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <select class="form-control mt-multiselect employee_id_2" data-placeholder="Select Personnel" name="employee_id[]" multiple="multiple"></select>
+                    <select class="form-control mt-multiselect employee_id_2" data-placeholder="Select Personnel" name="employee_id[]" multiple="multiple">';
+
+                        if (!empty($row['department_id'])) {
+                            $arr_department_id =  explode(', ', $row['department_id']);
+                            $array_employee_id = array();
+                            foreach ($arr_department_id as $value) {
+                                
+                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id AND FIND_IN_SET($value, REPLACE(department_id, ' ', '')) ORDER BY first_name" );
+                                if ( mysqli_num_rows($selectEmployee) > 0 ) {
+                                    while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
+                                        $emp_ID = $rowEmployee["ID"];
+                                        $emp_name = $rowEmployee["first_name"] .' '. $rowEmployee["last_name"];
+                                        $emp_email = $rowEmployee["email"];
+
+                                        if (!in_array($emp_ID, $array_employee_id)) {
+                                            array_push($array_employee_id, $emp_ID);
+
+                                            $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE is_verified = 1 AND is_active = 1 AND email = '".$emp_email."' ORDER BY first_name");
+                                            if ( mysqli_num_rows($selectUser) > 0 ) {
+                                                if (!empty($row["employee_id"])) {
+                                                    $cam_employee_id = explode(',', $row["employee_id"]);
+                                                    echo '<option value="'.$emp_ID.'" '; echo in_array($emp_ID, $cam_employee_id) ? 'SELECTED':''; echo '>'.$emp_name.'</option>';
+                                                } else {
+                                                    echo '<option value="'.$emp_ID.'">'.$emp_name.'</option>';
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    echo '</select>
                 </div>
             </div>
 
@@ -47375,7 +47770,7 @@
                                         $user_array_list = array(1, 464);
                                         if (!empty($row["l_description_tmp"]) AND in_array($user_id, $user_array_list)) {
                                             $arr_tmp = json_decode($row["l_description_tmp"],true);
-                                            if (end($arr_tmp)['status'] != 4) {
+                                            if (isset(end($arr_tmp)['status']) AND end($arr_tmp)['status'] != 4) {
                                                echo '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$library_ID.')">here</a> to view</span>';
                                             }
                                         }
@@ -48896,7 +49291,7 @@
                                 $user_array_list = array(1, 464);
                                 if (!empty($row["l_description_tmp"]) AND in_array($user_id, $user_array_list)) {
                                     $arr_tmp = json_decode($row["l_description_tmp"],true);
-                                    if (end($arr_tmp)['status'] != 4) {
+                                    if (isset(end($arr_tmp)['status']) AND end($arr_tmp)['status'] != 4) {
                                        echo '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$library_ID.')">here</a> to view</span>';
                                     }
                                 }
@@ -51641,7 +52036,7 @@
         $user_array_list = array(1, 464);
         if (!empty($row["description_tmp"]) AND in_array($user_id, $user_array_list)) {
             $arr_tmp = json_decode($row["description_tmp"],true);
-            if (end($arr_tmp)['status'] != 4) {
+            if (isset(end($arr_tmp)['status']) AND end($arr_tmp)['status'] != 4) {
                 $description = htmlentities(end($arr_tmp)['description'] ?? '');
             }
         }
@@ -51768,7 +52163,7 @@
             <div class="col-md-8">
                 <input type="hidden" name="reviewer_tmp" value="'.$row["reviewer"].'" />
                 <select class="form-control mt-multiselect" name="reviewer">
-                    <option value="">Select</option>';
+                    <option value="0">Select</option>';
                     $selectEmployeee = mysqli_query( $conn,"SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
@@ -51804,7 +52199,7 @@
             <div class="col-md-8">
                 <input type="hidden" name="approver_tmp" value="'.$row["approver"].'" />
                 <select class="form-control mt-multiselect" name="approver">
-                    <option value="">Select</option>';
+                    <option value="0">Select</option>';
                     $selectEmployeee = mysqli_query( $conn,"SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
@@ -51872,7 +52267,7 @@
             <label class="col-md-3 control-label">Reviewer</label>
             <div class="col-md-8">
                 <select class="form-control mt-multiselect" name="reviewer">
-                    <option value="">Select</option>';
+                    <option value="0">Select</option>';
                     $selectEmployeee = mysqli_query( $conn,"SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
@@ -51907,7 +52302,7 @@
             <label class="col-md-3 control-label">Approver</label>
             <div class="col-md-8">
                 <select class="form-control mt-multiselect" name="approver">
-                    <option value="">Select</option>';
+                    <option value="0">Select</option>';
                     $selectEmployeee = mysqli_query( $conn,"SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
@@ -51973,7 +52368,7 @@
         $user_array_list = array(5, 1, 464);
         if (!empty($row["description_tmp"]) AND in_array($user_id, $user_array_list)) {
             $arr_tmp = json_decode($row["description_tmp"],true);
-            if (end($arr_tmp)['status'] != 4) {
+            if (isset(end($arr_tmp)['status']) AND end($arr_tmp)['status'] != 4) {
                 $description = htmlentities(end($arr_tmp)['description'] ?? '');
             }
         }
@@ -52002,7 +52397,7 @@
             <div class="col-md-8">
                 <input type="hidden" name="reviewer_tmp" value="'.$row["reviewer"].'" />
                 <select class="form-control mt-multiselect" name="reviewer">
-                    <option value="">Select</option>';
+                    <option value="0">Select</option>';
                     $selectEmployeee = mysqli_query( $conn,"SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
@@ -52038,7 +52433,7 @@
             <div class="col-md-8">
                 <input type="hidden" name="approver_tmp" value="'.$row["approver"].'" />
                 <select class="form-control mt-multiselect" name="approver">
-                    <option value="">Select</option>';
+                    <option value="0">Select</option>';
                     $selectEmployeee = mysqli_query( $conn,"SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
@@ -56525,6 +56920,9 @@
 
                     mysqli_query( $conn,"UPDATE tbl_library_template SET files='". $files ."', filetype='". $filetype ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
                 }
+            } else {
+                $files = $rowData['files'];
+                $filetype = $rowData['filetype'];
             }
 
             if ($process == true) {
@@ -56923,6 +57321,9 @@
 
                     mysqli_query( $conn,"UPDATE tbl_library_references SET files='". $files ."', filetype='". $filetype ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
                 }
+            } else {
+                $files = $rowData['files'];
+                $filetype = $rowData['filetype'];
             }
 
             if ($process == true) {

@@ -20261,10 +20261,11 @@
                         <table class="table table-bordered table-hover" id="tableData_Material_2">
                             <thead>
                                 <tr>
-                                    <th class="text-center">Active</th>
                                     <th>Material Name</th>
-                                    <th>SKU</th>
-                                    <th>Description</th>';
+                                    <th>Description</th>
+                                    <th class="text-center" style="width:90px">Active</th>
+                                    <th class="text-center" style="width:90px">Compliance</th>
+                                    <th class="text-center" style="width:90px">SKU</th>';
 
                                     if ($page == 1) { echo '<th class="text-center" style="width: 135px;">Action</th>'; }
                                 
@@ -20275,28 +20276,54 @@
                                 if (!empty($material)) {
                                     $material_arr = explode(", ", $material);
                                     foreach ($material_arr as $value) {
-                                        $selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_supplier_material WHERE ID=$value" );
+                                        $selectMaterial = mysqli_query( $conn,"SELECT ID, active, material_name, material_id, description, spec_file, spec_date_to, spec_reviewer, spec_approver, other FROM tbl_supplier_material WHERE ID=$value" );
                                         if ( mysqli_num_rows($selectMaterial) > 0 ) {
                                             while($rowMaterial = mysqli_fetch_array($selectMaterial)) {
                                                 $material_mid = $rowMaterial["ID"];
                                                 $material_active = $rowMaterial["active"] == 1 ? 'Yes':'No';
-                                                $material_name = $rowMaterial["material_name"];
+                                                $material_name = htmlentities($rowMaterial["material_name"] ?? '');
                                                 $material_id = $rowMaterial["material_id"];
-                                                $material_description = $rowMaterial["description"];
+                                                $material_description = htmlentities($rowMaterial["description"] ?? '');
 
                                                 if ($page == 2) {
-                                                    $selectProduct = mysqli_query( $conn,"SELECT * FROM tbl_products WHERE ID=$material_name" );
+                                                    $selectProduct = mysqli_query( $conn,"SELECT name, code, description FROM tbl_products WHERE ID=$material_name" );
                                                     $rowProduct = mysqli_fetch_array($selectProduct);
-                                                    $material_name = $rowProduct["name"];
-                                                    $material_id = $rowProduct["code"];
-                                                    $material_description = $rowProduct["description"];
+                                                    $material_name = htmlentities($rowProduct["name"] ?? '');
+                                                    $material_id = htmlentities($rowProduct["code"] ?? '');
+                                                    $material_description = htmlentities($rowProduct["description"] ?? '');
                                                 }
 
+                                                $material_total = 1;
+                                                $material_count = 0;
+                                                if (!empty($rowMaterial["spec_file"]) AND !empty($rowMaterial["spec_date_to"])) {
+                                                    $material_spec_date_to = date("Y-m-d", strtotime($rowMaterial["spec_date_to"]));
+                                                    if ($material_spec_date_to > $local_date AND $rowMaterial["spec_reviewer"] > 0 AND $rowMaterial["spec_approver"] > 0) {
+                                                        $material_count++;
+                                                    }
+                                                }
+                                                if (!empty($rowMaterial["other"])) {
+                                                    $material_other_arr = $rowMaterial['other'];
+                                                    $output = json_decode($material_other_arr, true);
+                                                    $material_total += count($output);
+                                                    foreach ($output as $key => $value) {
+                                                        if (!empty($value['material_file_doc']) AND !empty($value['to'])) {
+                                                            $material_spec_date_to = date("Y-m-d", strtotime($value["to"]));
+                                                            if (isset($value['reviewer']) AND isset($value['approver'])) {
+                                                                if ($material_spec_date_to > $local_date AND $value['reviewer'] > 0 AND $value['approver'] > 0) {
+                                                                    $material_count++;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                $material_percentage = (100 / $material_total) * $material_count;
+
                                                 echo '<tr id="tr_'.$material_mid.'">
-                                                    <td class="text-center">'.$material_active.'</td>
                                                     <td><input type="hidden" class="form-control" name="material_id[]" value="'.$material_mid.'" readonly />'.$material_name.'</td>
-                                                    <td>'.$material_id.'</td>
-                                                    <td>'.$material_description.'</td>';
+                                                    <td>'.$material_description.'</td>
+                                                    <td class="text-center">'.$material_active.'</td>
+                                                    <td class="text-center">'.round($material_percentage, 2).'%</td>
+                                                    <td class="text-center">'.$material_id.'</td>';
 
                                                     if ($page == 1) { 
                                                         echo '<td class="text-center">
@@ -25217,28 +25244,43 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Brand Name</label>
-                    <input class="form-control" type="text" name="brand_name" required />
+                    <input class="form-control" type="text" name="brand_name" />
                 </div>
             </div>
             <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Category</label>
+                    <select class="form-control" name="category" required>
+                        <option value="0">Select</option>';
+                        $selectData = mysqli_query( $conn,"SELECT ID, name from tbl_products_category ORDER BY name" );
+                        if ( mysqli_num_rows($selectData) > 0 ) {
+                            while($rowData = mysqli_fetch_array($selectData)) {
+                                echo '<option value="'.$rowData["ID"].'">'.htmlentities($rowData["name"] ?? '').'</option>';
+                            }
+                        }
+                    echo '</select>
+                </div>
+            </div>
+
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">SKU</label>
                     <input class="form-control" type="text" name="material_id" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">UoM</label>
                     <input class="form-control" type="text" name="material_uom" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">Count</label>
                     <input class="form-control" type="text" name="material_count" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">Price Per Unit</label>
                     <input class="form-control" type="text" name="material_ppu" />
@@ -25379,6 +25421,17 @@
         $id = $_GET['modalView_Supplier_Material'];
         $modal = $_GET['m'];
 
+        $s = 0;
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
         $selectData = mysqli_query( $conn,"SELECT * from tbl_supplier_material WHERE ID = $id" );
         $row = mysqli_fetch_array($selectData);
 
@@ -25421,37 +25474,52 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Material Name</label>
-                    <input class="form-control" type="text" name="material_name" value="'.$row['material_name'].'" required />
+                    <input class="form-control" type="text" name="material_name" value="'.htmlentities($row['material_name'] ?? '').'" required />
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Brand Name</label>
-                    <input class="form-control" type="text" name="brand_name" value="'.$row['brand_name'].'" required />
+                    <input class="form-control" type="text" name="brand_name" value="'.htmlentities($row['brand_name'] ?? '').'" />
                 </div>
             </div>
             <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Category</label>
+                    <select class="form-control" name="category" required>
+                        <option value="0">Select</option>';
+                        $selectData = mysqli_query( $conn,"SELECT ID, name from tbl_products_category ORDER BY name" );
+                        if ( mysqli_num_rows($selectData) > 0 ) {
+                            while($rowData = mysqli_fetch_array($selectData)) {
+                                echo '<option value="'.$rowData["ID"].'" '; echo $row['category'] == $rowData["ID"] ? 'SELECTED':''; echo '>'.htmlentities($rowData["name"] ?? '').'</option>';
+                            }
+                        }
+                    echo '</select>
+                </div>
+            </div>
+
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">SKU</label>
-                    <input class="form-control" type="text" name="material_id" value="'.$row['material_id'].'" />
+                    <input class="form-control" type="text" name="material_id" value="'.htmlentities($row['material_id'] ?? '').'" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">UoM</label>
-                    <input class="form-control" type="text" name="material_uom" value="'.$row['material_uom'].'" />
+                    <input class="form-control" type="text" name="material_uom" value="'.htmlentities($row['material_uom'] ?? '').'" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">Count</label>
-                    <input class="form-control" type="text" name="material_count" value="'.$row['material_count'].'" />
+                    <input class="form-control" type="text" name="material_count" value="'.htmlentities($row['material_count'] ?? '').'" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">Price Per Unit</label>
-                    <input class="form-control" type="text" name="material_ppu" value="'.$row['material_ppu'].'" />
+                    <input class="form-control" type="text" name="material_ppu" value="'.htmlentities($row['material_ppu'] ?? '').'" />
                 </div>
             </div>
             <div class="col-md-6 hide">
@@ -25461,19 +25529,19 @@
                         <div class="col-md-4">
                             <div class="input-icon right">
                                 <i class="fax fa-microphonex">/kg</i>
-                                <input type="number" class="form-control cost_kg" placeholder="Amount" name="cost_kg" onkeyup="changeCost(this.value, 1)" value="'.$row['cost_kg'].'" />
+                                <input type="number" class="form-control cost_kg" placeholder="Amount" name="cost_kg" onkeyup="changeCost(this.value, 1)" value="'.htmlentities($row['cost_kg'] ?? '').'" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="input-icon right">
                                 <i class="fax fa-microphonex">/lb</i>
-                                <input type="number" class="form-control cost_lb" placeholder="Amount" name="cost_lb" onkeyup="changeCost(this.value, 2)" value="'.$row['cost_lb'].'" />
+                                <input type="number" class="form-control cost_lb" placeholder="Amount" name="cost_lb" onkeyup="changeCost(this.value, 2)" value="'.htmlentities($row['cost_lb'] ?? '').'" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="input-icon right">
                                 <i class="fax fa-microphonex">/oz</i>
-                                <input type="number" class="form-control cost_oz" placeholder="Amount" name="cost_oz" onkeyup="changeCost(this.value, 3)" value="'.$row['cost_oz'].'" />
+                                <input type="number" class="form-control cost_oz" placeholder="Amount" name="cost_oz" onkeyup="changeCost(this.value, 3)" value="'.htmlentities($row['cost_oz'] ?? '').'" />
                             </div>
                         </div>
                     </div>
@@ -25484,13 +25552,13 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="control-label">Description of Use</label>
-                    <textarea class="form-control" name="material_description" required>'.$row['description'].'</textarea>
+                    <textarea class="form-control" name="material_description" required>'.htmlentities($row['description'] ?? '').'</textarea>
                 </div>
             </div>
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="control-label">Comments / Notes</label>
-                    <textarea class="form-control" name="material_notes">'.$row['notes'].'</textarea>
+                    <textarea class="form-control" name="material_notes">'.htmlentities($row['notes'] ?? '').'</textarea>
                 </div>
             </div>
             <div class="col-md-6">
@@ -25513,7 +25581,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label">Allergen Other</label>
-                    <input type="text" class="form-control tagsinput" name="allergen_other" data-role="tagsinput" value="'.$row['allergen_other'].'" placeholder="Enter allergen" />
+                    <input type="text" class="form-control tagsinput" name="allergen_other" data-role="tagsinput" value="'.htmlentities($row['allergen_other'] ?? '').'" placeholder="Enter allergen" />
                 </div>
             </div>
         </div>
@@ -25545,6 +25613,62 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Reviewer</label>';
+
+                    if ($row['spec_reviewer'] == 0 OR $row['spec_reviewer'] == $portal_user) {
+                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $portal_user" );
+                        $rowUser = mysqli_fetch_array($selectUser);
+                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                        echo '<select class="form-control" name="spec_reviewer">
+                            <option value="0">Select</option>
+                            <option value="'.$portal_user.'" '; echo $row['spec_reviewer'] == $portal_user ? 'SELECTED':''; echo '>'.$name.'</option>
+                        </select>';
+                    } else {
+                        $spec_reviewer = $row['spec_reviewer'];
+                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $spec_reviewer" );
+                        $rowUser = mysqli_fetch_array($selectUser);
+                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                        echo '<input class="form-control" type="hidden" name="spec_reviewer" value="'.$spec_reviewer.'" />
+                        <input class="form-control" type="text" value="'.$name.'" readonly />';
+                    }
+
+                echo '</div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Approver</label>';
+
+                    if ($row['spec_approver'] == 0 OR $row['spec_approver'] == $portal_user) {
+                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $portal_user" );
+                        $rowUser = mysqli_fetch_array($selectUser);
+                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                        echo '<select class="form-control" name="spec_approver">
+                            <option value="0">Select</option>
+                            <option value="'.$portal_user.'" '; echo $row['spec_approver'] == $portal_user ? 'SELECTED':''; echo '>'.$name.'</option>
+                        </select>';
+                    } else {
+                        $spec_approver = $row['spec_approver'];
+                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $spec_approver" );
+                        $rowUser = mysqli_fetch_array($selectUser);
+                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                        echo '<input class="form-control" type="hidden" name="spec_approver" value="'.$spec_approver.'" />
+                        <input class="form-control" type="text" value="'.$name.'" readonly />';
+                    }
+                    
+                echo '</div>
+            </div>
+        </div>
         <div class="mt-repeater">
             <div data-repeater-list="material_other">';
 
@@ -25553,7 +25677,7 @@
                 $other_count = count($other_arr);
                 if (!empty($other)) {
                     foreach ($other_arr as $key => $value) {
-                        $name = $value['name'];
+                        $name = htmlentities($value['name'] ?? '');
                         $material_file_doc = $value['material_file_doc'];
 
                         $from = $value['from'];
@@ -25612,6 +25736,66 @@
                                 <label style="visibility: hidden; display: block;">Remove</label>
                                 <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Reviewer</label>';
+
+                                    $val_reviewer = 0;
+                                    if (isset($value['reviewer'])) { $val_reviewer = $value['reviewer']; }
+
+                                    if ($val_reviewer == 0 OR $val_reviewer == $portal_user) {
+                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $portal_user" );
+                                        $rowUser = mysqli_fetch_array($selectUser);
+                                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                                        echo '<select class="form-control" name="reviewer">
+                                            <option value="0">Select</option>
+                                            <option value="'.$portal_user.'" '; echo $val_reviewer == $portal_user ? 'SELECTED':''; echo '>'.$name.'</option>
+                                        </select>';
+                                    } else {
+                                        $reviewer = $reviewer;
+                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $reviewer" );
+                                        $rowUser = mysqli_fetch_array($selectUser);
+                                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                                        echo '<input class="form-control" type="hidden" name="reviewer" value="'.$reviewer.'" />
+                                        <input class="form-control" type="text" value="'.$name.'" readonly />';
+                                    }
+
+                                echo '</div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Approver</label>';
+
+                                    $val_approver = 0;
+                                    if (isset($value['approver'])) { $val_approver = $value['approver']; }
+
+                                    if ($val_approver == 0 OR $val_approver == $portal_user) {
+                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $portal_user" );
+                                        $rowUser = mysqli_fetch_array($selectUser);
+                                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                                        echo '<select class="form-control" name="approver">
+                                            <option value="0">Select</option>
+                                            <option value="'.$portal_user.'" '; echo $val_approver == $portal_user ? 'SELECTED':''; echo '>'.$name.'</option>
+                                        </select>';
+                                    } else {
+                                        $approver = $val_approver;
+                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $approver" );
+                                        $rowUser = mysqli_fetch_array($selectUser);
+                                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                                        echo '<input class="form-control" type="hidden" name="approver" value="'.$approver.'" />
+                                        <input class="form-control" type="text" value="'.$name.'" readonly />';
+                                    }
+                                    
+                                echo '</div>
+                            </div>
                         </div>';
                     }
                 }
@@ -25632,6 +25816,7 @@
 
         $material_name = addslashes($_POST['material_name']);
         $brand_name = addslashes($_POST['brand_name']);
+        $category = $_POST['category'];
         $material_id = $_POST['material_id'];
         $material_uom = $_POST['material_uom'];
         $material_count = $_POST['material_count'];
@@ -25664,8 +25849,6 @@
                 array_push($arr_item, $output);
             }
         }
-        // $material_spec_date_from = $_POST['material_spec_date_from'];
-        // $material_spec_date_to = $_POST['material_spec_date_to'];
 
         $material_spec_date_from = '';
         $material_spec_date_to = '';
@@ -25679,10 +25862,6 @@
         $material_other_arr = array();
         for ($i=0; $i < count($_POST['material_other']); $i++) {
             $material_file_name = $_POST['material_other'][$i]['material_file_name'];
-
-            // $material_file_from = $_POST['material_other'][$i]['material_file_from'];
-            // $material_file_to = $_POST['material_other'][$i]['material_file_to'];
-
             $material_file_from = '';
             $material_file_to = '';
             $material_file_daterange = $_POST['material_other'][$i]['material_file_daterange'];
@@ -25699,7 +25878,7 @@
                 $spec_filesize_other = implode('*', $_FILES['material_other']['size'][$i]);
                 $material_file_doc_tmp = implode('*', $_FILES['material_other']['tmp_name'][$i]);
                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($material_file_doc, PATHINFO_EXTENSION));
+                $ext = strtolower(pathinfo($material_file_doc_final, PATHINFO_EXTENSION));
 
                 $mime = mime_content_type($material_file_doc_tmp);
                 $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
@@ -25724,20 +25903,24 @@
                 }
             }
 
-            $material_other_data = array (
-                'name' => $material_file_name,
-                'material_file_doc' =>$material_file_doc_final,
-                'from' =>$material_file_from,
-                'to' =>$material_file_to
-            );
-            array_push( $material_other_arr, $material_other_data );
+            if (!empty($material_file_doc_final) AND !empty($material_file_from) AND !empty($material_file_to)) {
+                $material_other_data = array (
+                    'name' => $material_file_name,
+                    'material_file_doc' => $material_file_doc_final,
+                    'from' => $material_file_from,
+                    'to' => $material_file_to,
+                    'reviewer' => 0,
+                    'approver' => 0
+                );
+                array_push( $material_other_arr, $material_other_data );
+            }
         }
         $material_other = json_encode($material_other_arr);
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
         if ($process == true) {
-            $sql = "INSERT INTO tbl_supplier_material (user_id, material_name, brand_name, material_id, material_uom, material_count, material_ppu, cost_kg, cost_lb, cost_oz, description, notes, allergen, allergen_other, spec_file, spec_filesize, spec_date_from, spec_date_to, other, other_filesize, file_history)
-            VALUES ('$ID', '$material_name', '$brand_name', '$material_id', '$material_uom', '$material_count', '$material_ppu', '$cost_kg', '$cost_lb', '$cost_oz', '$material_description', '$material_notes', '$allergen', '$allergen_other', '$material_spec_file_final', '$spec_filesize', '$material_spec_date_from', '$material_spec_date_to', '$material_other', '$filesize', '$file_history')";
+            $sql = "INSERT INTO tbl_supplier_material (user_id, material_name, brand_name, category, material_id, material_uom, material_count, material_ppu, cost_kg, cost_lb, cost_oz, description, notes, allergen, allergen_other, spec_file, spec_filesize, spec_date_from, spec_date_to, other, other_filesize, file_history)
+            VALUES ('$ID', '$material_name', '$brand_name', '$category', '$material_id', '$material_uom', '$material_count', '$material_ppu', '$cost_kg', '$cost_lb', '$cost_oz', '$material_description', '$material_notes', '$allergen', '$allergen_other', '$material_spec_file_final', '$spec_filesize', '$material_spec_date_from', '$material_spec_date_to', '$material_other', '$filesize', '$file_history')";
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
             }
@@ -25774,6 +25957,7 @@
 
         $material_name = addslashes($_POST['material_name']);
         $brand_name = addslashes($_POST['brand_name']);
+        $category = $_POST['category'];
         $material_id = $_POST['material_id'];
         $material_active = $_POST['active'];
         $material_uom = $_POST['material_uom'];
@@ -25784,6 +25968,8 @@
         $cost_oz = $_POST['cost_oz'];
         $material_description = addslashes($_POST['material_description']);
         $material_notes = addslashes($_POST['material_notes']);
+        $spec_reviewer = $_POST['spec_reviewer'];
+        $spec_approver = $_POST['spec_approver'];
 
         $allergen = "";
         if (!empty($_POST["allergen"])) { $allergen = implode(", ", $_POST["allergen"]); }
@@ -25807,8 +25993,6 @@
                 array_push($arr_item, $output);
             }
         }
-        // $material_spec_date_from = $_POST['material_spec_date_from'];
-        // $material_spec_date_to = $_POST['material_spec_date_to'];
 
         $material_spec_date_from = '';
         $material_spec_date_to = '';
@@ -25822,8 +26006,8 @@
         $material_other_arr = array();
         for ($i=0; $i < count($_POST['material_other']); $i++) {
             $material_file_name = $_POST['material_other'][$i]['material_file_name'];
-            // $material_file_from = $_POST['material_other'][$i]['material_file_from'];
-            // $material_file_to = $_POST['material_other'][$i]['material_file_to'];
+            $material_file_reviewer = $_POST['material_other'][$i]['reviewer'];
+            $material_file_approver = $_POST['material_other'][$i]['approver'];
 
             $material_file_from = '';
             $material_file_to = '';
@@ -25870,7 +26054,9 @@
                 'name' => $material_file_name,
                 'material_file_doc' =>$material_file_doc_final,
                 'from' =>$material_file_from,
-                'to' =>$material_file_to
+                'to' =>$material_file_to,
+                'reviewer' =>$material_file_reviewer,
+                'approver' =>$material_file_approver
             );
             array_push( $material_other_arr, $material_other_data );
         }
@@ -25878,7 +26064,7 @@
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
         if ($process == true) {
-            mysqli_query( $conn,"UPDATE tbl_supplier_material set active='". $material_active ."', material_name='". $material_name ."', brand_name='". $brand_name ."', material_id='". $material_id ."', material_uom='". $material_uom ."', material_count='". $material_count ."', material_ppu='". $material_ppu ."', cost_kg='". $cost_kg ."', cost_lb='". $cost_lb ."', cost_oz='". $cost_oz ."', description='". $material_description ."', notes='". $material_notes ."', allergen='". $allergen ."', allergen_other='". $allergen_other ."', spec_file='". $material_spec_file_final ."', spec_filesize='". $spec_filesize ."', spec_date_from='". $material_spec_date_from ."', spec_date_to='". $material_spec_date_to ."', other='". $material_other ."', other_filesize='". $filesize ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
+            mysqli_query( $conn,"UPDATE tbl_supplier_material set active='". $material_active ."', material_name='". $material_name ."', brand_name='". $brand_name ."', category='". $category ."', material_id='". $material_id ."', material_uom='". $material_uom ."', material_count='". $material_count ."', material_ppu='". $material_ppu ."', cost_kg='". $cost_kg ."', cost_lb='". $cost_lb ."', cost_oz='". $cost_oz ."', description='". $material_description ."', notes='". $material_notes ."', allergen='". $allergen ."', allergen_other='". $allergen_other ."', spec_file='". $material_spec_file_final ."', spec_filesize='". $spec_filesize ."', spec_date_from='". $material_spec_date_from ."', spec_date_to='". $material_spec_date_to ."', spec_reviewer='". $spec_reviewer ."', spec_approver='". $spec_approver ."', other='". $material_other ."', other_filesize='". $filesize ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
 
             $output = array(
                 "ID" => $ID,
@@ -51902,7 +52088,7 @@
             <div class="col-md-8">
                 <input type="hidden" name="reviewer_tmp" value="'.$row["reviewer"].'" />
                 <select class="form-control mt-multiselect" name="reviewer">
-                    <option value="">Select</option>';
+                    <option value="0">Select</option>';
                     $selectEmployeee = mysqli_query( $conn,"SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
@@ -51938,7 +52124,7 @@
             <div class="col-md-8">
                 <input type="hidden" name="approver_tmp" value="'.$row["approver"].'" />
                 <select class="form-control mt-multiselect" name="approver">
-                    <option value="">Select</option>';
+                    <option value="0">Select</option>';
                     $selectEmployeee = mysqli_query( $conn,"SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
@@ -52006,7 +52192,7 @@
             <label class="col-md-3 control-label">Reviewer</label>
             <div class="col-md-8">
                 <select class="form-control mt-multiselect" name="reviewer">
-                    <option value="">Select</option>';
+                    <option value="0">Select</option>';
                     $selectEmployeee = mysqli_query( $conn,"SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
@@ -52041,7 +52227,7 @@
             <label class="col-md-3 control-label">Approver</label>
             <div class="col-md-8">
                 <select class="form-control mt-multiselect" name="approver">
-                    <option value="">Select</option>';
+                    <option value="0">Select</option>';
                     $selectEmployeee = mysqli_query( $conn,"SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
@@ -52136,7 +52322,7 @@
             <div class="col-md-8">
                 <input type="hidden" name="reviewer_tmp" value="'.$row["reviewer"].'" />
                 <select class="form-control mt-multiselect" name="reviewer">
-                    <option value="">Select</option>';
+                    <option value="0">Select</option>';
                     $selectEmployeee = mysqli_query( $conn,"SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
@@ -52172,7 +52358,7 @@
             <div class="col-md-8">
                 <input type="hidden" name="approver_tmp" value="'.$row["approver"].'" />
                 <select class="form-control mt-multiselect" name="approver">
-                    <option value="">Select</option>';
+                    <option value="0">Select</option>';
                     $selectEmployeee = mysqli_query( $conn,"SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,

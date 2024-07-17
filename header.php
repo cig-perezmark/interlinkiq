@@ -769,16 +769,21 @@ License: You must have a valid license purchased only from themeforest(the above
     }
 
     .pictogram {
-        background-image: url(uploads/pictogram/interlinkIQ.png); 
-        background-position: center; 
-        background-repeat: no-repeat; 
-        background-size: contain; 
-        width: 60px; 
+        background-image: url(uploads/pictogram/interlinkIQ.png);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        width: 60px;
         height: 60px;
     }
+
     .pictogram-align {
         display: flex;
         align-items: center;
+    }
+
+    body.is-loading * {
+        cursor: progress !important;
     }
     </style>
 </head>
@@ -3410,7 +3415,7 @@ License: You must have a valid license purchased only from themeforest(the above
                         }
                     ?>
                 </div>
-                
+
                 <!--<input type='text' id='secondsRemaining' value='' readonly>-->
                 <!--<a href='#' class='60Left btn btn-default'>60 Secs Left</a>-->
                 <!--<a href='#' class='0Left btn btn-default'>Timed Out</a>-->

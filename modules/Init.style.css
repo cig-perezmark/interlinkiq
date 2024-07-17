@@ -23,3 +23,7 @@ div.dt-button-collection {
 table.dataTable {
     width: 100% !important;
 }
+
+.icon-margin-right {
+    margin-right: .5rem;
+}

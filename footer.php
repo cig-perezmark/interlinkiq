@@ -172,10 +172,9 @@
                                                             <div class="mt-action-img"><img src="'.$base_url.'companyDetailsFolder/'.$switch_logo.'" style="width: 39px; height: 39px; object-fit: contain; object-position: center; border: 1px solid #ccc;"></div>
                                                             <div class="mt-action-body">
                                                                 <div class="mt-action-row">
-                                                                    <div class="mt-action-info ">
+                                                                    <div class="mt-action-info" style="vertical-align: middle;">
                                                                         <div class="mt-action-details ">
-                                                                            <span class="mt-action-author">'.$switch_name.'</span><br>
-                                                                            <span class="text-muted">'.$user_email.'</span>
+                                                                            <span class="mt-action-author">'.$switch_name.'</span>
                                                                         </div>
                                                                     </div>
                                                                     <div class="text-right">
@@ -251,10 +250,9 @@
                                                             <div class="mt-action-img"><img src="'.$base_url.'companyDetailsFolder/'.$switch_logo.'" style="width: 39px; height: 39px; object-fit: contain; object-position: center;"></div>
                                                             <div class="mt-action-body">
                                                                 <div class="mt-action-row">
-                                                                    <div class="mt-action-info ">
+                                                                    <div class="mt-action-info" style="vertical-align: middle;">
                                                                         <div class="mt-action-details ">
-                                                                            <span class="mt-action-author">'.$switch_name.'</span><br>
-                                                                            <span class="text-muted">'.$switch_email.'</span>
+                                                                            <span class="mt-action-author">'.$switch_name.'</span>
                                                                         </div>
                                                                     </div>
                                                                     <div class="text-right">

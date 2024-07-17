@@ -776,6 +776,10 @@ License: You must have a valid license purchased only from themeforest(the above
         width: 60px; 
         height: 60px;
     }
+    .pictogram-align {
+        display: flex;
+        align-items: center;
+    }
     </style>
 </head>
 <!-- END HEAD -->

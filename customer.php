@@ -2511,6 +2511,7 @@
                                 data += '<option value="1">Manual Upload</option>';
                                 data += '<option value="2">Youtube URL</option>';
                                 data += '<option value="3">Google Drive URL</option>';
+                                data += '<option value="4">Sharepoint URL</option>';
                             data += '</select>';
                             data += '<input class="form-control margin-top-15 fileUpload" type="file" name="document_other_file[]" onchange="changeFile(this, this.value)" style="display: none;" />';
                             data += '<input class="form-control margin-top-15 fileURL" type="url" name="document_other_fileurl[]" style="display: none;" placeholder="https://" />';
@@ -2602,6 +2603,7 @@
                                 data += '<option value="1">Manual Upload</option>';
                                 data += '<option value="2">Youtube URL</option>';
                                 data += '<option value="3">Google Drive URL</option>';
+                                data += '<option value="4">Sharepoint URL</option>';
                             data += '</select>';
                             data += '<input class="form-control margin-top-15 fileUpload" type="file" name="document_other_file[]" onchange="changeFile(this, this.value)" style="display: none;" />';
                             data += '<input class="form-control margin-top-15 fileURL" type="url" name="document_other_fileurl[]" style="display: none;" placeholder="https://" />';

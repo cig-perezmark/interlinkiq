@@ -2132,6 +2132,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -2764,6 +2765,10 @@
                                             $files = $src.$url.rawurlencode($files).$embed;
                                         } else if ($filetype == 3) {
                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                        } else if ($filetype == 4) {
+                                            $files = preg_replace('#[^/]*$#', '', $files);
+                                            $file_extension = 'fa-strikethrough';
+                                            $target = '_blank';
                                         }
 
                                         $file_start_date = $rowFile["start_date"];
@@ -2847,6 +2852,10 @@
                                                 $files = $src.$url.rawurlencode($files).$embed;
                                             } else if ($filetype == 3) {
                                                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                            } else if ($filetype == 4) {
+                                                $files = preg_replace('#[^/]*$#', '', $files);
+                                                $file_extension = 'fa-strikethrough';
+                                                $target = '_blank';
                                             }
 
                                             $file_start_date = htmlentities($rowFile["start_date"] ?? '');
@@ -2933,6 +2942,10 @@
                                                 $files = $src.$url.rawurlencode($files).$embed;
                                             } else if ($filetype == 3) {
                                                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                            } else if ($filetype == 4) {
+                                                $files = preg_replace('#[^/]*$#', '', $files);
+                                                $file_extension = 'fa-strikethrough';
+                                                $target = '_blank';
                                             }
 
                                             $file_start_date = htmlentities($rowFile["start_date"] ?? '');
@@ -3019,6 +3032,10 @@
                                                 $files = $src.$url.rawurlencode($files).$embed;
                                             } else if ($filetype == 3) {
                                                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                            } else if ($filetype == 4) {
+                                                $files = preg_replace('#[^/]*$#', '', $files);
+                                                $file_extension = 'fa-strikethrough';
+                                                $target = '_blank';
                                             }
 
                                             $file_start_date = htmlentities($rowFile["start_date"] ?? '');
@@ -3213,12 +3230,9 @@
                     
                     $body = 'Dear '. $data_first_name .',<br><br>
 
-
                     Welcome to Consultare Inc. Group.<br><br>
 
-
                     Please connect with your assigned trainings by accessing this link: <a href="'.$base_url.'login?r=1&i='.$ID.'" target="_blank">InterlinkIQ.com</a><br><br>
-
 
                     Thank you.<br><br>
 
@@ -3244,9 +3258,7 @@
                         $subject = 'Welcome to '.$client_name.'!';
                         $body = 'Hi '. $data_first_name .',<br><br>
 
-                        Your employer, '.$data_company.',<br><br>
-
-                        invites you to join <a href="'. $base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">'.$client_name.'</a> to connect with your assigned duties, work, and tasks. 
+                        Your employer, '.$data_company.', invites you to join <a href="'. $base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">'.$client_name.'</a> to connect with your assigned duties, work, and tasks. 
                         If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">'.$base_url.$client_url.'?r=1&i='.$last_id.'</a><br><br>
 
                         Should you need assistance, kindly call 202-982-3002 or email <a href="mailto:'.$client_email.'" target="_blank">'.$client_email.'</a><br><br>
@@ -3705,6 +3717,7 @@
                     <option value="1">Manual Upload</option>
                     <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -3781,6 +3794,10 @@
                 $files = $src.$url.rawurlencode($files).$embed;
             } else if ($filetype == 3) {
                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
+            } else if ($filetype == 4) {
+                $files = preg_replace('#[^/]*$#', '', $files);
+                $file_extension = 'fa-strikethrough';
+                $target = '_blank';
             }
 
             $category = htmlentities($row['category'] ?? '');
@@ -3798,6 +3815,7 @@
                     <option value="1">Manual Upload</option>
                     <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -3915,6 +3933,10 @@
                             $data_files = $src.$url.rawurlencode($data_files).$embed;
                         } else if ($filetype == 3) {
                             $data_files = preg_replace('#[^/]*$#', '', $data_files).'preview';
+                        } else if ($filetype == 4) {
+                            $data_files = preg_replace('#[^/]*$#', '', $data_files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                         $files = '<p style="margin: 0;"><a data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
                     }
@@ -4036,6 +4058,10 @@
                         $data_files = $src.$url.rawurlencode($data_files).$embed;
                     } else if ($filetype == 3) {
                         $data_files = preg_replace('#[^/]*$#', '', $data_files).'preview';
+                    } else if ($filetype == 4) {
+                        $data_files = preg_replace('#[^/]*$#', '', $data_files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                     $files = '<p style="margin: 0;"><a data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
                 }
@@ -4138,6 +4164,10 @@
                         $files = $src.$url.rawurlencode($files).$embed;
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                    } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                 }
 
@@ -4192,7 +4222,11 @@
                     $files = $src.$url.rawurlencode($files).$embed;
                 } else if ($filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                }
+                } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
+                    }
             }
         }
 
@@ -4270,6 +4304,7 @@
                     <option value="1">Manual Upload</option>
                     <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -4467,6 +4502,10 @@
                             $file_doc = $src.$url.rawurlencode($file_doc).$embed;
                         } else if ($filetype == 3) {
                             $file_doc = preg_replace('#[^/]*$#', '', $file_doc).'preview';
+                        } else if ($filetype == 4) {
+                            $file_doc = preg_replace('#[^/]*$#', '', $file_doc);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
 
                         if (!empty($file_doc)) {
@@ -4547,6 +4586,10 @@
                             $files = $src.$url.rawurlencode($files).$embed;
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                        } else if ($filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                     }
                     $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
@@ -4678,6 +4721,10 @@
                             $files = $src.$url.rawurlencode($files).$embed;
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                        } else if ($filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                     }
                     $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
@@ -4810,6 +4857,7 @@
                                     <option value="1">Manual Upload</option>
                                     <option value="2">Youtube URL</option>
                                     <option value="3">Google Drive URL</option>
+                                    <option value="4">Sharepoint URL</option>
                                 </select>
                                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -4993,6 +5041,7 @@
                                                     <option value="1">Manual Upload</option>
                                                     <option value="2">Youtube URL</option>
                                                     <option value="3">Google Drive URL</option>
+                                                    <option value="4">Sharepoint URL</option>
                                                 </select>
                                                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                                                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -5029,6 +5078,10 @@
                                                 $file_doc = $src.$url.rawurlencode($file_doc).$embed;
                                             } else if ($filetype == 3) {
                                                 $file_doc = preg_replace('#[^/]*$#', '', $file_doc).'preview';
+                                            } else if ($filetype == 4) {
+                                                $file_doc = preg_replace('#[^/]*$#', '', $file_doc);
+                                                $file_extension = 'fa-strikethrough';
+                                                $target = '_blank';
                                             }
 
                                             echo '<div class="mt-repeater-item row" data-repeater-item>
@@ -5040,6 +5093,7 @@
                                                         <option value="1">Manual Upload</option>
                                                         <option value="2">Youtube URL</option>
                                                         <option value="3">Google Drive URL</option>
+                                                        <option value="4">Sharepoint URL</option>
                                                     </select>
                                                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" value="'.$file_doc.'" />
                                                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" value="'.$file_doc.'" />
@@ -5065,6 +5119,7 @@
                                                     <option value="1">Manual Upload</option>
                                                     <option value="2">Youtube URL</option>
                                                     <option value="3">Google Drive URL</option>
+                                                    <option value="4">Sharepoint URL</option>
                                                 </select>
                                                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                                                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -6716,6 +6771,10 @@
                     $files = $src.$url.rawurlencode($files).$embed;
                 } else if ($filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                } else if ($filetype == 4) {
+                    $files = preg_replace('#[^/]*$#', '', $files);
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
                 }
             }
         }
@@ -6743,6 +6802,7 @@
                     <option value="1">Manual Upload</option>
                     <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -6907,6 +6967,10 @@
                             $files = $src.$url.rawurlencode($files).$embed;
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                        } else if ($filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                     }
                     $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
@@ -7006,6 +7070,10 @@
                         $files = $src.$url.rawurlencode($files).$embed;
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                    } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                 }
                 $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
@@ -13374,6 +13442,7 @@
                                                                     <option value="1">Manual Upload</option>
                                                                     <option value="2">Youtube URL</option>
                                                                     <option value="3">Google Drive URL</option>
+                                                                    <option value="4">Sharepoint URL</option>
                                                                 </select>
                                                                 <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                                 <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
@@ -13384,6 +13453,7 @@
                                                                     <option value="1">Manual Upload</option>
                                                                     <option value="2">Youtube URL</option>
                                                                     <option value="3">Google Drive URL</option>
+                                                                    <option value="4">Sharepoint URL</option>
                                                                 </select>
                                                                 <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                                 <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
@@ -13434,6 +13504,10 @@
                                                                     $temp_file = $src.$url.rawurlencode($temp_file).$embed;
                                                                 } else if ($filetype == 3) {
                                                                     $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
+                                                                } else if ($filetype == 4) {
+                                                                    $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
+                                                                    $file_extension = 'fa-strikethrough';
+                                                                    $target = '_blank';
                                                                 }
 
                                                                 echo '<p style="margin: 0;">
@@ -13640,6 +13714,7 @@
                                                             <option value="1">Manual Upload</option>
                                                             <option value="2">Youtube URL</option>
                                                             <option value="3">Google Drive URL</option>
+                                                            <option value="4">Sharepoint URL</option>
                                                         </select>
                                                         <input class="form-control margin-top-15 fileUpload" type="file" name="document_other_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                         <input class="form-control margin-top-15 fileURL" type="url" name="document_other_fileurl[]" style="display: none;" placeholder="https://" />
@@ -13650,6 +13725,7 @@
                                                             <option value="1">Manual Upload</option>
                                                             <option value="2">Youtube URL</option>
                                                             <option value="3">Google Drive URL</option>
+                                                            <option value="4">Sharepoint URL</option>
                                                         </select>
                                                         <input class="form-control margin-top-15 fileUpload" type="file" name="document_other_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                         <input class="form-control margin-top-15 fileURL" type="url" name="document_other_fileurl[]" style="display: none;" placeholder="https://" />
@@ -13724,6 +13800,10 @@
                                                             $temp_file = $src.$url.rawurlencode($temp_file).$embed;
                                                         } else if ($filetype == 3) {
                                                             $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
+                                                        } else if ($filetype == 4) {
+                                                            $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
+                                                            $file_extension = 'fa-strikethrough';
+                                                            $target = '_blank';
                                                         }
 
                                                         echo '<p style="margin: 0;">
@@ -15574,6 +15654,7 @@
                                                 <option value="1">Manual Upload</option>
                                                 <option value="2">Youtube URL</option>
                                                 <option value="3">Google Drive URL</option>
+                                                <option value="4">Sharepoint URL</option>
                                             </select>
                                             <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                             <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
@@ -15584,6 +15665,7 @@
                                                 <option value="1">Manual Upload</option>
                                                 <option value="2">Youtube URL</option>
                                                 <option value="3">Google Drive URL</option>
+                                                <option value="4">Sharepoint URL</option>
                                             </select>
                                             <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                             <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
@@ -15634,6 +15716,10 @@
                                                 $temp_file = $src.$url.rawurlencode($temp_file).$embed;
                                             } else if ($filetype == 3) {
                                                 $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
+                                            } else if ($filetype == 4) {
+                                                $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
+                                                $file_extension = 'fa-strikethrough';
+                                                $target = '_blank';
                                             }
 
                                             echo '<p style="margin: 0;">
@@ -15848,6 +15934,7 @@
                                 <option value="1">Manual Upload</option>
                                 <option value="2">Youtube URL</option>
                                 <option value="3">Google Drive URL</option>
+                                <option value="4">Sharepoint URL</option>
                             </select>
                             <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                             <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
@@ -15888,6 +15975,10 @@
                                     $temp_file = $src.$url.rawurlencode($temp_file).$embed;
                                 } else if ($filetype == 3) {
                                     $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
+                                } else if ($filetype == 4) {
+                                    $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
+                                    $file_extension = 'fa-strikethrough';
+                                    $target = '_blank';
                                 }
 
                                 echo '<p style="margin: 0;">
@@ -19716,6 +19807,10 @@
                                                     $files = $src.$url.rawurlencode($files).$embed;
                                                 } else if ($filetype == 3) {
                                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                } else if ($filetype == 4) {
+                                                    $files = preg_replace('#[^/]*$#', '', $files);
+                                                    $file_extension = 'fa-strikethrough';
+                                                    $target = '_blank';
                                                 }
                                                 $files = '<p style="margin: 0;"><a data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
                                             }
@@ -19938,6 +20033,7 @@
                                                                     <option value="1">Manual Upload</option>
                                                                     <option value="2">Youtube URL</option>
                                                                     <option value="3">Google Drive URL</option>
+                                                                    <option value="4">Sharepoint URL</option>
                                                                 </select>
                                                                 <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                                 <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
@@ -19948,6 +20044,7 @@
                                                                     <option value="1">Manual Upload</option>
                                                                     <option value="2">Youtube URL</option>
                                                                     <option value="3">Google Drive URL</option>
+                                                                    <option value="4">Sharepoint URL</option>
                                                                 </select>
                                                                 <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                                 <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
@@ -19998,6 +20095,10 @@
                                                                     $temp_file = $src.$url.rawurlencode($temp_file).$embed;
                                                                 } else if ($filetype == 3) {
                                                                     $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
+                                                                } else if ($filetype == 4) {
+                                                                    $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
+                                                                    $file_extension = 'fa-strikethrough';
+                                                                    $target = '_blank';
                                                                 }
 
                                                                 echo '<p style="margin: 0;">
@@ -20206,6 +20307,7 @@
                                                             <option value="1">Manual Upload</option>
                                                             <option value="2">Youtube URL</option>
                                                             <option value="3">Google Drive URL</option>
+                                                            <option value="4">Sharepoint URL</option>
                                                         </select>
                                                         <input class="form-control margin-top-15 fileUpload" type="file" name="document_other_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                         <input class="form-control margin-top-15 fileURL" type="url" name="document_other_fileurl[]" style="display: none;" placeholder="https://" />
@@ -20216,6 +20318,7 @@
                                                             <option value="1">Manual Upload</option>
                                                             <option value="2">Youtube URL</option>
                                                             <option value="3">Google Drive URL</option>
+                                                            <option value="4">Sharepoint URL</option>
                                                         </select>
                                                         <input class="form-control margin-top-15 fileUpload" type="file" name="document_other_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                         <input class="form-control margin-top-15 fileURL" type="url" name="document_other_fileurl[]" style="display: none;" placeholder="https://" />
@@ -20290,6 +20393,10 @@
                                                             $temp_file = $src.$url.rawurlencode($temp_file).$embed;
                                                         } else if ($filetype == 3) {
                                                             $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
+                                                        } else if ($filetype == 4) {
+                                                            $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
+                                                            $file_extension = 'fa-strikethrough';
+                                                            $target = '_blank';
                                                         }
 
                                                         echo '<p style="margin: 0;">
@@ -21049,6 +21156,7 @@
                                                         <option value="1">Manual Upload</option>
                                                         <option value="2">Youtube URL</option>
                                                         <option value="3">Google Drive URL</option>
+                                                        <option value="4">Sharepoint URL</option>
                                                     </select>
                                                     <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                     <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
@@ -21059,6 +21167,7 @@
                                                         <option value="1">Manual Upload</option>
                                                         <option value="2">Youtube URL</option>
                                                         <option value="3">Google Drive URL</option>
+                                                        <option value="4">Sharepoint URL</option>
                                                     </select>
                                                     <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                     <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
@@ -21124,6 +21233,10 @@
                                                         $temp_file = $src.$url.rawurlencode($temp_file).$embed;
                                                     } else if ($filetype == 3) {
                                                         $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
+                                                    } else if ($filetype == 4) {
+                                                        $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
+                                                        $file_extension = 'fa-strikethrough';
+                                                        $target = '_blank';
                                                     }
 
                                                     echo '<p style="margin: 0;">
@@ -21317,6 +21430,7 @@
                                                 <option value="1">Manual Upload</option>
                                                 <option value="2">Youtube URL</option>
                                                 <option value="3">Google Drive URL</option>
+                                                <option value="4">Sharepoint URL</option>
                                             </select>
                                             <input class="form-control margin-top-15 fileUpload" type="file" name="document_other_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                             <input class="form-control margin-top-15 fileURL" type="url" name="document_other_fileurl[]" style="display: none;" placeholder="https://" />
@@ -21327,6 +21441,7 @@
                                                 <option value="1">Manual Upload</option>
                                                 <option value="2">Youtube URL</option>
                                                 <option value="3">Google Drive URL</option>
+                                                <option value="4">Sharepoint URL</option>
                                             </select>
                                             <input class="form-control margin-top-15 fileUpload" type="file" name="document_other_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                             <input class="form-control margin-top-15 fileURL" type="url" name="document_other_fileurl[]" style="display: none;" placeholder="https://" />
@@ -21372,6 +21487,10 @@
                                                 $doc_file_template = $src.$url.rawurlencode($doc_file_template).$embed;
                                             } else if ($filetype == 3) {
                                                 $doc_file_template = preg_replace('#[^/]*$#', '', $doc_file_template).'preview';
+                                            } else if ($filetype == 4) {
+                                                $doc_file_template = preg_replace('#[^/]*$#', '', $doc_file_template);
+                                                $file_extension = 'fa-strikethrough';
+                                                $target = '_blank';
                                             }
 
                                             echo '<p style="margin: 0;">
@@ -24935,6 +25054,7 @@
                         <option value="1">Manual Upload</option>
                         <option value="2">Youtube URL</option>
                         <option value="3">Google Drive URL</option>
+                        <option value="4">Sharepoint URL</option>
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;">
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://">
@@ -24977,6 +25097,10 @@
                 $files = $src.$url.rawurlencode($files).$embed;
             } else if ($filetype == 3) {
                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
+            } else if ($filetype == 4) {
+                $files = preg_replace('#[^/]*$#', '', $files);
+                $file_extension = 'fa-strikethrough';
+                $target = '_blank';
             }
         }
 
@@ -25005,6 +25129,7 @@
                         <option value="1">Manual Upload</option>
                         <option value="2">Youtube URL</option>
                         <option value="3">Google Drive URL</option>
+                        <option value="4">Sharepoint URL</option>
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -25095,6 +25220,10 @@
                         $files = $src.$url.rawurlencode($files).$embed;
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                    } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                     $files = '<p style="margin: 0;"><a data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
                 }
@@ -25205,6 +25334,10 @@
                     $files = $src.$url.rawurlencode($files).$embed;
                 } else if ($filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                } else if ($filetype == 4) {
+                    $files = preg_replace('#[^/]*$#', '', $files);
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
                 }
                 $files = '<p style="margin: 0;"><a data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
             }
@@ -26696,6 +26829,7 @@
                         <option value="1">Manual Upload</option>
                         <option value="2">Youtube URL</option>
                         <option value="3">Google Drive URL</option>
+                        <option value="4">Sharepoint URL</option>
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -26773,6 +26907,10 @@
                     $file_final = $src.$url.rawurlencode($file_final).$embed;
                 } else if ($filetype == 3) {
                     $file_final = preg_replace('#[^/]*$#', '', $file_final).'preview';
+                } else if ($filetype == 4) {
+                    $file_final = preg_replace('#[^/]*$#', '', $file_final);
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
                 }
                 $view = '<p style="margin: 0;">
                     <a href="'.$file_final.'" data-src="'.$file_final.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> |
@@ -26804,6 +26942,7 @@
                         <option value="1">Manual Upload</option>
                         <option value="2">Youtube URL</option>
                         <option value="3">Google Drive URL</option>
+                        <option value="4">Sharepoint URL</option>
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -26880,6 +27019,10 @@
                     $file_final = $src.$url.rawurlencode($file_final).$embed;
                 } else if ($filetype == 3) {
                     $file_final = preg_replace('#[^/]*$#', '', $file_final).'preview';
+                } else if ($filetype == 4) {
+                    $file_final = preg_replace('#[^/]*$#', '', $file_final);
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
                 }
 
                 $view = '<p style="margin: 0;">
@@ -31158,6 +31301,10 @@
                     $data_files = $src.$url.rawurlencode($data_files).$embed;
                 } else if ($filetype == 3) {
                     $data_files = preg_replace('#[^/]*$#', '', $data_files).'preview';
+                } else if ($filetype == 4) {
+                    $data_files = preg_replace('#[^/]*$#', '', $data_files);
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
                 }
             }
         }
@@ -31325,6 +31472,7 @@
                         <option value="1">Manual Upload</option>
                         <option value="2">Youtube URL</option>
                         <option value="3">Google Drive URL</option>
+                        <option value="4">Sharepoint URL</option>
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -31882,6 +32030,10 @@
                     $data_files = $src.$url.rawurlencode($data_files).$embed;
                 } else if ($filetype == 3) {
                     $data_files = preg_replace('#[^/]*$#', '', $data_files).'preview';
+                } else if ($filetype == 4) {
+                    $data_files = preg_replace('#[^/]*$#', '', $data_files);
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
                 }
             }
         }
@@ -31921,6 +32073,7 @@
                         <option value="1">Manual Upload</option>
                         <option value="2">Youtube URL</option>
                         <option value="3">Google Drive URL</option>
+                        <option value="4">Sharepoint URL</option>
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -32327,6 +32480,10 @@
                     $data_files = $src.$url.rawurlencode($data_files).$embed;
                 } else if ($filetype == 3) {
                     $data_files = preg_replace('#[^/]*$#', '', $data_files).'preview';
+                } else if ($filetype == 4) {
+                    $data_files = preg_replace('#[^/]*$#', '', $data_files);
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
                 }
             }
         }
@@ -32382,6 +32539,7 @@
                         <option value="1">Manual Upload</option>
                         <option value="2">Youtube URL</option>
                         <option value="3">Google Drive URL</option>
+                        <option value="4">Sharepoint URL</option>
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -45044,7 +45202,7 @@
                 }
             }
         } else if ($page === "employee") {
-            $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE user_id = $user_id" );
+            $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID <> 1240 AND ID <> 1241 AND user_id = $user_id" );
             if ( mysqli_num_rows($selectEmployeeCounter) > 0 ) {
                 while($rowEmployeeCounter = mysqli_fetch_array($selectEmployeeCounter)) {
                     $suspended = $rowEmployeeCounter["suspended"];
@@ -46120,6 +46278,10 @@
                                     $file_doc = $src.$url.rawurlencode($file_doc).$embed;
                                 } else if ($filetype == 3) {
                                     $file_doc = preg_replace('#[^/]*$#', '', $file_doc).'preview';
+                                } else if ($filetype == 4) {
+                                    $file_doc = preg_replace('#[^/]*$#', '', $file_doc);
+                                    $file_extension = 'fa-strikethrough';
+                                    $target = '_blank';
                                 }
 
 
@@ -47334,7 +47496,7 @@
                             <div class="panel-heading '. $panelBG .'">
                                 <div class="row">
                                     <div class="col-md-10">
-                                        <h4 class="panel-title bold">
+                                        <h4 class="panel-title bold pictogram-align">
                                             <a class="accordion-toggle font-white" data-toggle="collapse" data-parent="#parent'. $parent_id .'" onclick="selectedAccordion('. $item_ID .')" href="#item_'. $item_ID .'">'. htmlentities($rowItem["l_name"] ?? '');
                                                 if (!empty($reason)) {
                                                     $output .= '<i class="fa fa-warning font-red itemWarning" style="margin-left: 5px;"></i>';
@@ -47346,8 +47508,52 @@
                                                         </span>';
                                                     }
                                                 }
-                                            $output .= '</a>
-                                        </h4>
+                                            $output .= '</a>';
+
+                                            // $pictogram = 'cd_accordion';
+                                            // if ($user_id == 163) {
+                                            //     $output .= '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                            // } else {
+                                            //     $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                            //     if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                            //         $row = mysqli_fetch_array($selectPictogram);
+
+                                            //         $files = '';
+                                            //         $type = 'iframe';
+                                            //         if (!empty($row["files"])) {
+                                            //             $arr_filename = explode(' | ', $row["files"]);
+                                            //             $arr_filetype = explode(' | ', $row["filetype"]);
+                                            //             $str_filename = '';
+
+                                            //             foreach($arr_filename as $val_filename) {
+                                            //                 $str_filename = $val_filename;
+                                            //             }
+                                            //             foreach($arr_filetype as $val_filetype) {
+                                            //                 $str_filetype = $val_filetype;
+                                            //             }
+
+                                            //             $files = $row["files"];
+                                            //             if ($row["filetype"] == 1) {
+                                            //                 $fileExtension = fileExtension($files);
+                                            //                 $src = $fileExtension['src'];
+                                            //                 $embed = $fileExtension['embed'];
+                                            //                 $type = $fileExtension['type'];
+                                            //                 $file_extension = $fileExtension['file_extension'];
+                                            //                 $url = $base_url.'uploads/pictogram/';
+
+                                            //                 $files = $src.$url.rawurlencode($files).$embed;
+                                            //             } else if ($row["filetype"] == 3) {
+                                            //                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                            //             }
+                                            //         }
+
+                                            //         if (!empty($files)) {
+                                            //             $output .= '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                            //         }
+                                            //     }
+                                            // }
+
+                                        $output .= '</h4>
                                         <ul class="list-inline muted h6">';
                                             // <li><i class="fa fa-calendar-check-o"></i> Compliance (0%)</li>
                                             // <li><i class="fa fa-calendar-times-o"></i> Expires ('. $rowExpired .')</li>
@@ -47376,7 +47582,7 @@
                                                     <li><a href="javascript:;" class="btnDelete" data-id="'. $item_ID .'" onclick="btnDelete('. $item_ID .')">Delete</a></li>
                                                     <li><a href="#modalReport" class="btnReport" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnReport('. $item_ID .')">Report</a></li>';
                                             
-                                                    if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477) {
+                                                    if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477 OR $portal_user == 1486) {
                                                         $output .= '<li><a href="#modalClone" data-toggle="modal" onclick="btnClone('. $item_ID .')">Clone</a></li>';
                                                     }
 
@@ -47752,7 +47958,7 @@
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-md-10">
-                            <h4 class="panel-title bold">
+                            <h4 class="panel-title bold pictogram-align">
                                 <a class="accordion-toggle font-dark" data-toggle="collapse" data-parent="#parent" href="#item_'. $library_ID .'">'. htmlentities($library_name ?? '');
                                     if (!empty($reason)) {
                                         echo '<i class="fa fa-warning font-red itemWarning" style="margin-left: 5px;"></i>';
@@ -47764,8 +47970,52 @@
                                             </span>';
                                         }
                                     }
-                                echo '</a>
-                            </h4>
+                                echo '</a>';
+
+                                $pictogram = 'cd_accordion';
+                                if ($user_id == 163) {
+                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                } else {
+                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                        $files = '';
+                                        $type = 'iframe';
+                                        if (!empty($row["files"])) {
+                                            $arr_filename = explode(' | ', $row["files"]);
+                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                            $str_filename = '';
+
+                                            foreach($arr_filename as $val_filename) {
+                                                $str_filename = $val_filename;
+                                            }
+                                            foreach($arr_filetype as $val_filetype) {
+                                                $str_filetype = $val_filetype;
+                                            }
+
+                                            $files = $row["files"];
+                                            if ($row["filetype"] == 1) {
+                                                $fileExtension = fileExtension($files);
+                                                $src = $fileExtension['src'];
+                                                $embed = $fileExtension['embed'];
+                                                $type = $fileExtension['type'];
+                                                $file_extension = $fileExtension['file_extension'];
+                                                $url = $base_url.'uploads/pictogram/';
+
+                                                $files = $src.$url.rawurlencode($files).$embed;
+                                            } else if ($row["filetype"] == 3) {
+                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                            }
+                                        }
+
+                                        if (!empty($files)) {
+                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                        }
+                                    }
+                                }
+                            
+                            echo '</h4>
                             <ul class="list-inline muted h6">';
                                 // <li><i class="fa fa-calendar-check-o"></i> Compliance (0%)</li>
                                 // <li><i class="fa fa-calendar-times-o"></i> Expires ('. $rowExpired .')</li>
@@ -47800,7 +48050,7 @@
                                         echo '<li><a href="javascript:;" class="btnDelete" data-id="'. $library_ID .'" onclick="btnDelete('. $library_ID .')">Delete</a></li>
                                         <li><a href="#modalReport" class="btnReport" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnReport('. $library_ID .')">Report</a></li>';
                                         
-                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477) {
+                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477 OR $portal_user == 1486) {
                                             echo '<li><a href="#modalClone" data-toggle="modal" onclick="btnClone('. $library_ID .')">Clone</a></li>';
                                         }
                                         
@@ -48341,6 +48591,10 @@
                                                                 } else if ($filetype == 3) {
                                                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                                     $file_extension = 'fa-google';
+                                                                } else if ($filetype == 4) {
+                                                                    $files = preg_replace('#[^/]*$#', '', $files);
+                                                                    $file_extension = 'fa-strikethrough';
+                                                                    $target = '_blank';
                                                                 }
                                                                 $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                                                             }
@@ -48413,6 +48667,10 @@
                                                                                 } else if ($filetype == 3) {
                                                                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                                                     $file_extension = 'fa-google';
+                                                                                } else if ($filetype == 4) {
+                                                                                    $files = preg_replace('#[^/]*$#', '', $files);
+                                                                                    $file_extension = 'fa-strikethrough';
+                                                                                    $target = '_blank';
                                                                                 }
                                                                                 $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                                                                             }
@@ -49862,6 +50120,10 @@
                                                         } else if ($filetype == 3) {
                                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                             $file_extension = 'fa-google';
+                                                        } else if ($filetype == 4) {
+                                                            $files = preg_replace('#[^/]*$#', '', $files);
+                                                            $file_extension = 'fa-strikethrough';
+                                                            $target = '_blank';
                                                         }
                                                         $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                                                     }
@@ -49921,6 +50183,10 @@
                                                                         } else if ($filetype == 3) {
                                                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                                             $file_extension = 'fa-google';
+                                                                        } else if ($filetype == 4) {
+                                                                            $files = preg_replace('#[^/]*$#', '', $files);
+                                                                            $file_extension = 'fa-strikethrough';
+                                                                            $target = '_blank';
                                                                         }
                                                                         $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                                                                     }
@@ -53683,7 +53949,7 @@
                                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                 $file_extension = 'fa-google';
                             } else if ($str_filetype == 4) {
-                                $files = preg_replace('#[^/]*$#', '', $str_filename);
+                                $files = preg_replace('#[^/]*$#', '', $files);
                                 $file_extension = 'fa-strikethrough';
                                 $target = '_blank';
                             }
@@ -53827,7 +54093,7 @@
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
                         } else if ($str_filetype == 4) {
-                            $files = preg_replace('#[^/]*$#', '', $str_filename);
+                            $files = preg_replace('#[^/]*$#', '', $files);
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
                         }
@@ -54240,6 +54506,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -54274,6 +54541,10 @@
                     $files = $src.$url.rawurlencode($files).$embed;
                 } else if ($filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                } else if ($filetype == 4) {
+                    $files = preg_replace('#[^/]*$#', '', $files);
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
                 }
             }
         }
@@ -54355,6 +54626,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -54392,6 +54664,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -54431,6 +54704,10 @@
                     $files = $src.$url.rawurlencode($files).$embed;
                 } else if ($filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                } else if ($filetype == 4) {
+                    $files = preg_replace('#[^/]*$#', '', $files);
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
                 }
             }
         }
@@ -54454,6 +54731,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -54794,6 +55072,10 @@
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
+                        } else if ($filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                         $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                     }
@@ -54990,6 +55272,10 @@
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
+                    } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                     $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                 }
@@ -55161,6 +55447,10 @@
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
+                        } else if ($filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                         $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                     }
@@ -55316,6 +55606,10 @@
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
+                    } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                     $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                 }
@@ -55442,6 +55736,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -55518,6 +55813,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -55571,6 +55867,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -55655,6 +55952,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -55714,6 +56012,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -55803,6 +56102,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -55977,6 +56277,10 @@
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
+                        } else if ($filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                         $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                     }
@@ -56078,6 +56382,10 @@
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
+                    } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                     $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                 }
@@ -56259,6 +56567,10 @@
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
+                        } else if ($filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                         $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                     }
@@ -56390,6 +56702,10 @@
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
+                    } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                     $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                 }
@@ -56533,6 +56849,10 @@
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
+                        } else if ($filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                         $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                     }
@@ -56674,6 +56994,10 @@
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
+                    } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                     $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                 }
@@ -56713,6 +57037,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -56773,6 +57098,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -56927,6 +57253,10 @@
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
+                        } else if ($filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                     }
 
@@ -57056,6 +57386,10 @@
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
+                    } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                 }
 
@@ -57111,6 +57445,7 @@
                     <option value="1">Manual Upload</option>
                     <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -57172,6 +57507,7 @@
                     <option value="1">Manual Upload</option>
                     <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -57328,6 +57664,10 @@
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
+                        } else if ($filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                     }
 
@@ -57457,6 +57797,10 @@
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
+                    } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                 }
 
@@ -59133,6 +59477,8 @@
                                 $files = '<a data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'">'.$files_name.'</a>';
                             } else if ($filetype == 3) {
                                 $files = '<a data-src="'.preg_replace('#[^/]*$#', '', $files).'preview" data-fancybox data-type="'.$type.'">'.$files_name.'</a>';
+                            } else if ($filetype == 4) {
+                                $files = '<a data-src="'.preg_replace('#[^/]*$#', '', $files).'" data-fancybox data-type="'.$type.'">'.$files_name.'</a>';
                             }
 
                             $t_files = $rowItem["t_files"];

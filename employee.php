@@ -334,7 +334,7 @@
                                                                 2 => 'Food Defense',
                                                                 3 => 'Food Safety'
                                                             );
-                                                            $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $switch_user_id ORDER BY last_name " );
+                                                            $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID <> 1240 AND ID <> 1241 AND suspended = 0 AND status = 1 AND user_id = $switch_user_id ORDER BY last_name " );
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 $table_counter = 1;
                                                                 while($row = mysqli_fetch_array($result)) {

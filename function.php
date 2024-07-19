@@ -10,7 +10,7 @@
     $arnel_signature_spi = 'data:image/png;base64,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';
     $arnel_signature_spi .= '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';
     $local_date = date('Y-m-d');
-
+    $target = '';
 
     // PHP MAILER FUNCTION
     use PHPMailer\PHPMailer\PHPMailer;
@@ -507,55 +507,6 @@
     }
 
 
-    //LOGIN PORTAL
-    if (isset($_COOKIE['client'])) {
-        $client_ID = $_COOKIE['client'];
-
-        if (isset($_COOKIE['switchAccount'])) {
-            $user_id = $_COOKIE['switchAccount'];
-            $selectClient = mysqli_query( $conn,"
-                SELECT
-                u.client AS u_client,
-                c.url AS c_url,
-                c.name AS c_name,
-                c.email AS c_email
-                FROM tbl_user AS u
-
-                RIGHT JOIN (
-                    SELECT
-                    *
-                    FROM tbl_user_client
-                ) AS c
-                ON u.client = c.ID
-
-                WHERE u.ID = $user_id
-            " );
-            if ( mysqli_num_rows($selectClient) > 0 ) {
-                $rowClient = mysqli_fetch_array($selectClient);
-                $client_url = $rowClient["c_url"];
-                $client_name = $rowClient["c_name"];
-                $client_email = $rowClient["c_email"];
-            } else {
-                $client_url = 'login';
-                $client_name = 'Interlink IQ';
-                $client_email = 'services@interlinkiq.com';
-            }
-        } else {
-            $selectClient = mysqli_query( $conn,"SELECT * FROM tbl_user_client WHERE ID = $client_ID" );
-            if ( mysqli_num_rows($selectClient) > 0 ) {
-                $rowClient = mysqli_fetch_array($selectClient);
-                $client_url = $rowClient["url"];
-                $client_name = $rowClient["name"];
-                $client_email = $rowClient["email"];
-            } else {
-                $client_url = 'login';
-                $client_name = 'Interlink IQ';
-                $client_email = 'services@interlinkiq.com';
-            }
-        }
-    }
-
-
     //FILE UPLOAD VALIDATION
     function fileValidation($type, $file, $path) {
         // Type
@@ -621,34 +572,6 @@
 
 
     // LOGIN SECTION
-    if( isset($_GET['logout']) ) {
-        unset($_COOKIE['ID']);
-        setcookie('ID', '', time() - 3600, '/'); // empty value and old timestamp
-        
-        unset($_COOKIE['first_name']);
-        setcookie('first_name', '', time() - 3600, '/'); // empty value and old timestamp
-        
-        unset($_COOKIE['last_name']);
-        setcookie('last_name', '', time() - 3600, '/'); // empty value and old timestamp
-
-        unset($_COOKIE['locked']);
-        setcookie('locked', '', time() - 3600, '/'); // empty value and old timestamp
-
-        unset($_COOKIE['switchAccount']);
-        setcookie('switchAccount', '', time() - 3600, '/'); // empty value and old timestamp
-        
-        unset($_COOKIE['employee_id']);
-        setcookie('employee_id', '', time() - 3600, '/'); // empty value and old timestamp
-        
-        unset($_COOKIE['driver_license']);
-        setcookie('driver_license', '', time() - 3600, '/'); // empty value and old timestamp
-
-        if(isset($_COOKIE['client'])) {
-            unset($client_ID);
-            setcookie('client', '', time() - 3600, '/'); // empty value and old timestamp
-            echo '<script>window.location.href = "'.$client_url.'"</script>';
-        }
-    }
     if( isset($_POST['btnSignIn']) ) {
         $client = $_POST['client'];
         $email = $_POST['email'];
@@ -1294,6 +1217,82 @@
             'message' => $message
         );
         echo json_encode($output);
+    }
+
+    //LOGIN PORTAL
+    if (isset($_COOKIE['client'])) {
+        $client_ID = $_COOKIE['client'];
+
+        if (isset($_COOKIE['switchAccount'])) {
+            $user_id = $_COOKIE['switchAccount'];
+            $selectClient = mysqli_query( $conn,"
+                SELECT
+                u.client AS u_client,
+                c.url AS c_url,
+                c.name AS c_name,
+                c.email AS c_email
+                FROM tbl_user AS u
+
+                RIGHT JOIN (
+                    SELECT
+                    *
+                    FROM tbl_user_client
+                ) AS c
+                ON u.client = c.ID
+
+                WHERE u.ID = $user_id
+            " );
+            if ( mysqli_num_rows($selectClient) > 0 ) {
+                $rowClient = mysqli_fetch_array($selectClient);
+                $client_url = $rowClient["c_url"];
+                $client_name = $rowClient["c_name"];
+                $client_email = $rowClient["c_email"];
+            } else {
+                $client_url = 'login';
+                $client_name = 'Interlink IQ';
+                $client_email = 'services@interlinkiq.com';
+            }
+        } else {
+            $selectClient = mysqli_query( $conn,"SELECT * FROM tbl_user_client WHERE ID = $client_ID" );
+            if ( mysqli_num_rows($selectClient) > 0 ) {
+                $rowClient = mysqli_fetch_array($selectClient);
+                $client_url = $rowClient["url"];
+                $client_name = $rowClient["name"];
+                $client_email = $rowClient["email"];
+            } else {
+                $client_url = 'login';
+                $client_name = 'Interlink IQ';
+                $client_email = 'services@interlinkiq.com';
+            }
+        }
+    }
+    if( isset($_GET['logout']) ) {
+        unset($_COOKIE['ID']);
+        setcookie('ID', '', time() - 3600, '/'); // empty value and old timestamp
+        
+        unset($_COOKIE['first_name']);
+        setcookie('first_name', '', time() - 3600, '/'); // empty value and old timestamp
+        
+        unset($_COOKIE['last_name']);
+        setcookie('last_name', '', time() - 3600, '/'); // empty value and old timestamp
+
+        unset($_COOKIE['locked']);
+        setcookie('locked', '', time() - 3600, '/'); // empty value and old timestamp
+
+        unset($_COOKIE['switchAccount']);
+        setcookie('switchAccount', '', time() - 3600, '/'); // empty value and old timestamp
+        
+        unset($_COOKIE['employee_id']);
+        setcookie('employee_id', '', time() - 3600, '/'); // empty value and old timestamp
+        
+        unset($_COOKIE['driver_license']);
+        setcookie('driver_license', '', time() - 3600, '/'); // empty value and old timestamp
+
+        if(isset($_COOKIE['client'])) {
+            unset($client_ID);
+            setcookie('client', '', time() - 3600, '/'); // empty value and old timestamp
+            echo '<script>window.location.href = "'.$client_url.'"</script>';
+        }
     }
 
 
@@ -2136,7 +2135,7 @@
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
             </div>
         </div>';
 
@@ -2766,7 +2765,6 @@
                                         } else if ($filetype == 3) {
                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                         } else if ($filetype == 4) {
-                                            $files = preg_replace('#[^/]*$#', '', $files);
                                             $file_extension = 'fa-strikethrough';
                                             $target = '_blank';
                                         }
@@ -2792,7 +2790,7 @@
                                         $file_uploaded_date = $file_uploaded_date->format('M d, Y');
 
                                         echo '<tr id="tr_'.$file_ID.'">
-                                            <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p></td>
+                                            <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p></td>
                                             <td >'. $file_name .'</td>
                                             <td >'. $file_description .'</td>
                                             <td >'. $file_start_date .' - '. $file_due_date .'</td>
@@ -2853,7 +2851,6 @@
                                             } else if ($filetype == 3) {
                                                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                             } else if ($filetype == 4) {
-                                                $files = preg_replace('#[^/]*$#', '', $files);
                                                 $file_extension = 'fa-strikethrough';
                                                 $target = '_blank';
                                             }
@@ -2884,7 +2881,7 @@
                                             }
 
                                             echo '<tr id="tr_'.$file_ID.'">
-                                                <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p></td>
+                                                <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p></td>
                                                 <td >'.$file_name.'</td>
                                                 <td >'.$file_description.'</td>
                                                 <td >'.$file_document_date.'</td>
@@ -2943,7 +2940,6 @@
                                             } else if ($filetype == 3) {
                                                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                             } else if ($filetype == 4) {
-                                                $files = preg_replace('#[^/]*$#', '', $files);
                                                 $file_extension = 'fa-strikethrough';
                                                 $target = '_blank';
                                             }
@@ -2974,7 +2970,7 @@
                                             }
 
                                             echo '<tr id="tr_'.$file_ID.'">
-                                                <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p></td>
+                                                <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p></td>
                                                 <td >'.$file_name.'</td>
                                                 <td >'.$file_description.'</td>
                                                 <td >'.$file_document_date.'</td>
@@ -3033,7 +3029,6 @@
                                             } else if ($filetype == 3) {
                                                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                             } else if ($filetype == 4) {
-                                                $files = preg_replace('#[^/]*$#', '', $files);
                                                 $file_extension = 'fa-strikethrough';
                                                 $target = '_blank';
                                             }
@@ -3064,7 +3059,7 @@
                                             }
 
                                             echo '<tr id="tr_'.$file_ID.'">
-                                                <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p></td>
+                                                <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p></td>
                                                 <td >'.$file_name.'</td>
                                                 <td >'.$file_description.'</td>
                                                 <td >'.$file_document_date.'</td>
@@ -3795,7 +3790,6 @@
             } else if ($filetype == 3) {
                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
             } else if ($filetype == 4) {
-                $files = preg_replace('#[^/]*$#', '', $files);
                 $file_extension = 'fa-strikethrough';
                 $target = '_blank';
             }
@@ -3819,7 +3813,7 @@
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
             </div>
         </div>
         <div class="form-group">
@@ -3934,11 +3928,10 @@
                         } else if ($filetype == 3) {
                             $data_files = preg_replace('#[^/]*$#', '', $data_files).'preview';
                         } else if ($filetype == 4) {
-                            $data_files = preg_replace('#[^/]*$#', '', $data_files);
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
                         }
-                        $files = '<p style="margin: 0;"><a data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
+                        $files = '<p style="margin: 0;"><a data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
                     }
 
                     $data_uploaded_date = new DateTime($last_modified);
@@ -4059,11 +4052,10 @@
                     } else if ($filetype == 3) {
                         $data_files = preg_replace('#[^/]*$#', '', $data_files).'preview';
                     } else if ($filetype == 4) {
-                        $data_files = preg_replace('#[^/]*$#', '', $data_files);
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
                     }
-                    $files = '<p style="margin: 0;"><a data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
+                    $files = '<p style="margin: 0;"><a data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
                 }
 
                 $data_uploaded_date = $rowData['uploaded_date'];
@@ -4165,7 +4157,6 @@
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                     } else if ($filetype == 4) {
-                        $files = preg_replace('#[^/]*$#', '', $files);
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
                     }
@@ -4176,7 +4167,7 @@
                     <td>'. htmlentities($row["j_title"] ?? '') .'</td>
                     <td>'. htmlentities($row["j_description"] ?? '') .'</td>
                     <td>'. htmlentities($row["t_job_description_id"] ?? '') .'</td>
-                    <td class="text-center"><p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p></td>';
+                    <td class="text-center"><p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p></td>';
 
                     if ( $row["j_status"] == 0 ) {
                         echo '<td class="text-center"><span class="label label-sm label-danger">Inactive</span></td>';
@@ -4223,7 +4214,6 @@
                 } else if ($filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                 } else if ($filetype == 4) {
-                        $files = preg_replace('#[^/]*$#', '', $files);
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
                     }
@@ -4308,7 +4298,7 @@
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
             </div>
         </div>
         <div class="form-group">
@@ -4503,7 +4493,6 @@
                         } else if ($filetype == 3) {
                             $file_doc = preg_replace('#[^/]*$#', '', $file_doc).'preview';
                         } else if ($filetype == 4) {
-                            $file_doc = preg_replace('#[^/]*$#', '', $file_doc);
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
                         }
@@ -4511,7 +4500,7 @@
                         if (!empty($file_doc)) {
                             echo '<tr>
                                 <td>'.$file_lang.'</td>
-                                <td class="text-center"><a href="'.$file_doc.'" data-src="'.$file_doc.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></td>
+                                <td class="text-center"><a href="'.$file_doc.'" data-src="'.$file_doc.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></td>
                             </tr>';
                         }
                     }
@@ -4587,12 +4576,11 @@
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         } else if ($filetype == 4) {
-                            $files = preg_replace('#[^/]*$#', '', $files);
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
                         }
                     }
-                    $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
+                    $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
 
                     $countTraining = 0;
                     $selectTrainings = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings" );
@@ -4722,12 +4710,11 @@
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         } else if ($filetype == 4) {
-                            $files = preg_replace('#[^/]*$#', '', $files);
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
                         }
                     }
-                    $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
+                    $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
                 }
 
                 if ($process == true) {
@@ -5079,7 +5066,6 @@
                                             } else if ($filetype == 3) {
                                                 $file_doc = preg_replace('#[^/]*$#', '', $file_doc).'preview';
                                             } else if ($filetype == 4) {
-                                                $file_doc = preg_replace('#[^/]*$#', '', $file_doc);
                                                 $file_extension = 'fa-strikethrough';
                                                 $target = '_blank';
                                             }
@@ -5097,7 +5083,7 @@
                                                     </select>
                                                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" value="'.$file_doc.'" />
                                                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" value="'.$file_doc.'" />
-                                                    <p class="'; echo !empty($file_doc) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$file_doc.'" data-src="'.$file_doc.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                    <p class="'; echo !empty($file_doc) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$file_doc.'" data-src="'.$file_doc.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <select class="form-control" name="language" required="">
@@ -6772,7 +6758,6 @@
                 } else if ($filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                 } else if ($filetype == 4) {
-                    $files = preg_replace('#[^/]*$#', '', $files);
                     $file_extension = 'fa-strikethrough';
                     $target = '_blank';
                 }
@@ -6806,7 +6791,7 @@
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
             </div>
         </div>
         <div class="form-group">
@@ -6968,12 +6953,11 @@
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         } else if ($filetype == 4) {
-                            $files = preg_replace('#[^/]*$#', '', $files);
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
                         }
                     }
-                    $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
+                    $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
 
                     $counterup_tbl = counterup_tbl('department');
                     $output = array(
@@ -7071,12 +7055,11 @@
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                     } else if ($filetype == 4) {
-                        $files = preg_replace('#[^/]*$#', '', $files);
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
                     }
                 }
-                $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
+                $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
 
                 // $dept_id = $row["ID"];
                 $countDepartment = 0;
@@ -11368,7 +11351,7 @@
                                 <b>Assigned by</b><br>
                                 Arnel Ryan<br><br>
 
-                                <a href="'. $base_url .'ffva?v='.$last_id.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
+                                <a href="'. $base_url .'ffva?v='.$last_id.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
                                 <a href="'. $base_url .'pdf_ffva?id='.$last_id.'&signed=1" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #e73d4a; border-color: #e73d4a; display: inline-block;">PDF</a>';
                     
                                 php_mailer_1($to, $user, $subject, $body, $from, $sender);
@@ -11401,7 +11384,7 @@
                                 <b>Assigned by</b><br>
                                 Arnel Ryan<br><br>
 
-                                <a href="'. $base_url .'ffva?v='.$last_id.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
+                                <a href="'. $base_url .'ffva?v='.$last_id.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
                                 <a href="'. $base_url .'pdf_ffva?id='.$last_id.'&signed=1" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #e73d4a; border-color: #e73d4a; display: inline-block;">PDF</a>';
                     
                                 if ($countSend > 0) {
@@ -11971,7 +11954,7 @@
                                 <b>Assigned by</b><br>
                                 Arnel Ryan<br><br>
 
-                                <a href="'. $base_url .'ffva?v='.$last_id.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
+                                <a href="'. $base_url .'ffva?v='.$last_id.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
                                 <a href="'. $base_url .'pdf_ffva?id='.$last_id.'&signed=1" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #e73d4a; border-color: #e73d4a; display: inline-block;">PDF</a>';
                     
                                 php_mailer_1($to, $user, $subject, $body, $from, $sender);
@@ -12003,7 +11986,7 @@
                                 <b>Assigned by</b><br>
                                 Arnel Ryan<br><br>
 
-                                <a href="'. $base_url .'ffva?v='.$last_id.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
+                                <a href="'. $base_url .'ffva?v='.$last_id.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
                                 <a href="'. $base_url .'pdf_ffva?id='.$last_id.'&signed=1" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #e73d4a; border-color: #e73d4a; display: inline-block;">PDF</a>';
                     
                                 if ($countSend > 0) {
@@ -12198,7 +12181,7 @@
             <b>Assigned by</b><br>
             Arnel Ryan<br><br>
 
-            <a href="'. $base_url .'ffva" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+            <a href="'. $base_url .'ffva?c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
             
             php_mailer_1($to, $user, $subject, $body, $from, $name);
         }
@@ -12250,7 +12233,7 @@
             <b>Assigned to</b><br>
             '.$name.'<br><br>
 
-            <a href="'. $base_url .'ffva" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+            <a href="'. $base_url .'ffva?c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
 
             if ($mail_sent == 0) {
                 php_mailer_1($to, $user, $subject, $body, $from, $name); 
@@ -12279,7 +12262,7 @@
                 <b>Assigned by</b><br>
                 '.$user.'<br><br>
 
-                <a href="'. $base_url .'ffva" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+                <a href="'. $base_url .'ffva?c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
 
                 if ($mail_sent == 0) {
                     php_mailer_1($to2, $user2, $subject2, $body2, $to, $user);
@@ -12302,7 +12285,7 @@
             <b>Assigned to</b><br>
             '.$name.'<br><br>
 
-            <a href="'. $base_url .'ffva" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+            <a href="'. $base_url .'ffva?c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
 
             if ($mail_sent == 0) {
                 php_mailer_1($to, $user, $subject, $body, $from, $name);
@@ -12355,7 +12338,7 @@
                         <b>Assigned by</b><br>
                         Arnel Ryan<br><br>
 
-                        <a href="'. $base_url .'ffva" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+                        <a href="'. $base_url .'ffva?c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
             
                         if ($mail_sent == 0) {
                             php_mailer_1($to, $user, $subject, $body, $from, $sender);
@@ -12396,7 +12379,7 @@
                         <b>Assigned by</b><br>
                         Arnel Ryan<br><br>
 
-                        <a href="'. $base_url .'ffva" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+                        <a href="'. $base_url .'ffva?c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
             
                         if ($mail_sent == 0) {
                             php_mailer_1($to, $user, $subject, $body, $from, $sender);
@@ -13505,13 +13488,12 @@
                                                                 } else if ($filetype == 3) {
                                                                     $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
                                                                 } else if ($filetype == 4) {
-                                                                    $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
                                                                     $file_extension = 'fa-strikethrough';
                                                                     $target = '_blank';
                                                                 }
 
                                                                 echo '<p style="margin: 0;">
-                                                                    <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info">View</a> |
+                                                                    <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
                                                                     <a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$req_id.', '.$temp_ID.', 2)">Upload</a>
                                                                 </p>';
                                                             } else {
@@ -13801,13 +13783,12 @@
                                                         } else if ($filetype == 3) {
                                                             $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
                                                         } else if ($filetype == 4) {
-                                                            $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
                                                             $file_extension = 'fa-strikethrough';
                                                             $target = '_blank';
                                                         }
 
                                                         echo '<p style="margin: 0;">
-                                                            <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info">View</a> |
+                                                            <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
                                                             <a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$doc_id.', '.$temp_ID.', 2)">Upload</a>
                                                         </p>';
                                                     } else {
@@ -15717,13 +15698,12 @@
                                             } else if ($filetype == 3) {
                                                 $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
                                             } else if ($filetype == 4) {
-                                                $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
                                                 $file_extension = 'fa-strikethrough';
                                                 $target = '_blank';
                                             }
 
                                             echo '<p style="margin: 0;">
-                                                <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info">View</a> |
+                                                <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
                                                 <a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$req_id.', '.$temp_ID.', 2)">Upload</a>
                                             </p>';
                                         } else {
@@ -15976,13 +15956,12 @@
                                 } else if ($filetype == 3) {
                                     $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
                                 } else if ($filetype == 4) {
-                                    $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
                                     $file_extension = 'fa-strikethrough';
                                     $target = '_blank';
                                 }
 
                                 echo '<p style="margin: 0;">
-                                    <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info">View</a> |
+                                    <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
                                     <a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$data_ID.', '.$temp_ID.', '.$modal.')">Upload</a>
                                 </p>';
                             } else {
@@ -19808,11 +19787,10 @@
                                                 } else if ($filetype == 3) {
                                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                 } else if ($filetype == 4) {
-                                                    $files = preg_replace('#[^/]*$#', '', $files);
                                                     $file_extension = 'fa-strikethrough';
                                                     $target = '_blank';
                                                 }
-                                                $files = '<p style="margin: 0;"><a data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
+                                                $files = '<p style="margin: 0;"><a data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
                                             }
 
                                             echo '<tr id="tr_'.$regulatory_id.'">
@@ -20096,13 +20074,12 @@
                                                                 } else if ($filetype == 3) {
                                                                     $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
                                                                 } else if ($filetype == 4) {
-                                                                    $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
                                                                     $file_extension = 'fa-strikethrough';
                                                                     $target = '_blank';
                                                                 }
 
                                                                 echo '<p style="margin: 0;">
-                                                                    <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info">View</a> |
+                                                                    <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
                                                                     <a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$req_id.', '.$temp_ID.', 2)">Upload</a>
                                                                 </p>';
                                                             } else {
@@ -20394,13 +20371,12 @@
                                                         } else if ($filetype == 3) {
                                                             $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
                                                         } else if ($filetype == 4) {
-                                                            $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
                                                             $file_extension = 'fa-strikethrough';
                                                             $target = '_blank';
                                                         }
 
                                                         echo '<p style="margin: 0;">
-                                                            <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info">View</a> |
+                                                            <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
                                                             <a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$doc_id.', '.$temp_ID.', 2)">Upload</a>
                                                         </p>';
                                                     } else {
@@ -21234,13 +21210,12 @@
                                                     } else if ($filetype == 3) {
                                                         $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
                                                     } else if ($filetype == 4) {
-                                                        $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
                                                         $file_extension = 'fa-strikethrough';
                                                         $target = '_blank';
                                                     }
 
                                                     echo '<p style="margin: 0;">
-                                                        <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info">View</a> |
+                                                        <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
                                                         <a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$req_id.', '.$temp_ID.', 2)">Upload</a>
                                                     </p>';
                                                 } else {
@@ -21488,13 +21463,12 @@
                                             } else if ($filetype == 3) {
                                                 $doc_file_template = preg_replace('#[^/]*$#', '', $doc_file_template).'preview';
                                             } else if ($filetype == 4) {
-                                                $doc_file_template = preg_replace('#[^/]*$#', '', $doc_file_template);
                                                 $file_extension = 'fa-strikethrough';
                                                 $target = '_blank';
                                             }
 
                                             echo '<p style="margin: 0;">
-                                                <a href="'.$doc_file_template.'" data-src="'.$doc_file_template.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info">View</a> |
+                                                <a href="'.$doc_file_template.'" data-src="'.$doc_file_template.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
                                                 <a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$id.', '.$doc_id.', 2)">Upload</a>
                                             </p>';
                                         } else {
@@ -25098,7 +25072,6 @@
             } else if ($filetype == 3) {
                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
             } else if ($filetype == 4) {
-                $files = preg_replace('#[^/]*$#', '', $files);
                 $file_extension = 'fa-strikethrough';
                 $target = '_blank';
             }
@@ -25133,7 +25106,7 @@
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                    <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                    <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                 </div>
             </div>
             <div class="col-md-6">
@@ -25221,11 +25194,10 @@
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                     } else if ($filetype == 4) {
-                        $files = preg_replace('#[^/]*$#', '', $files);
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
                     }
-                    $files = '<p style="margin: 0;"><a data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
+                    $files = '<p style="margin: 0;"><a data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
                 }
 
                 $data = '<tr id="tr_'.$last_id.'">
@@ -25335,11 +25307,10 @@
                 } else if ($filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                 } else if ($filetype == 4) {
-                    $files = preg_replace('#[^/]*$#', '', $files);
                     $file_extension = 'fa-strikethrough';
                     $target = '_blank';
                 }
-                $files = '<p style="margin: 0;"><a data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
+                $files = '<p style="margin: 0;"><a data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
             }
 
             $data = '<td>'.$name.'</td>
@@ -26908,12 +26879,11 @@
                 } else if ($filetype == 3) {
                     $file_final = preg_replace('#[^/]*$#', '', $file_final).'preview';
                 } else if ($filetype == 4) {
-                    $file_final = preg_replace('#[^/]*$#', '', $file_final);
                     $file_extension = 'fa-strikethrough';
                     $target = '_blank';
                 }
                 $view = '<p style="margin: 0;">
-                    <a href="'.$file_final.'" data-src="'.$file_final.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> |
+                    <a href="'.$file_final.'" data-src="'.$file_final.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> |
                     <a href="#modalTemplate" class="btn btn-link" data-toggle="modal" onclick="btnTemplate('.$ID.', '.$temp.')">Upload</a>
                 </p>';
             }
@@ -27020,18 +26990,17 @@
                 } else if ($filetype == 3) {
                     $file_final = preg_replace('#[^/]*$#', '', $file_final).'preview';
                 } else if ($filetype == 4) {
-                    $file_final = preg_replace('#[^/]*$#', '', $file_final);
                     $file_extension = 'fa-strikethrough';
                     $target = '_blank';
                 }
 
                 $view = '<p style="margin: 0;">
-                    <a href="'.$file_final.'" data-src="'.$file_final.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> |
+                    <a href="'.$file_final.'" data-src="'.$file_final.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> |
                     <a href="#modalTemplate" class="btn btn-link" data-toggle="modal" onclick="btnTemplate('.$ID.', '.$temp.')">Upload</a>
                 </p>';
                 $view2 = '<input type="file" class="form-control hide" name="document_template[]">
                 <p style="margin: 0;">
-                    <a href="'.$file_final.'" data-src="'.$file_final.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info">View</a> |
+                    <a href="'.$file_final.'" data-src="'.$file_final.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
                     <a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$ID.', '.$temp.', '.$modal.')">Upload</a>
                 </p>';
             }
@@ -31302,7 +31271,6 @@
                 } else if ($filetype == 3) {
                     $data_files = preg_replace('#[^/]*$#', '', $data_files).'preview';
                 } else if ($filetype == 4) {
-                    $data_files = preg_replace('#[^/]*$#', '', $data_files);
                     $file_extension = 'fa-strikethrough';
                     $target = '_blank';
                 }
@@ -31476,7 +31444,7 @@
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                    <p class="'; echo !empty($data_files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$data_files.'" data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                    <p class="'; echo !empty($data_files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$data_files.'" data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                 </div>
                 <div class="form-group">
                     <label class="ccontrol-label">Document Date</label>
@@ -32031,7 +31999,6 @@
                 } else if ($filetype == 3) {
                     $data_files = preg_replace('#[^/]*$#', '', $data_files).'preview';
                 } else if ($filetype == 4) {
-                    $data_files = preg_replace('#[^/]*$#', '', $data_files);
                     $file_extension = 'fa-strikethrough';
                     $target = '_blank';
                 }
@@ -32077,7 +32044,7 @@
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                    <p class="'; echo !empty($data_files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$data_files.'" data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                    <p class="'; echo !empty($data_files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$data_files.'" data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                 </div>
             </div>
             <div class="col-md-3">
@@ -32481,7 +32448,6 @@
                 } else if ($filetype == 3) {
                     $data_files = preg_replace('#[^/]*$#', '', $data_files).'preview';
                 } else if ($filetype == 4) {
-                    $data_files = preg_replace('#[^/]*$#', '', $data_files);
                     $file_extension = 'fa-strikethrough';
                     $target = '_blank';
                 }
@@ -32543,7 +32509,7 @@
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                    <p class="'; echo !empty($data_files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$data_files.'" data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                    <p class="'; echo !empty($data_files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$data_files.'" data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                 </div>
             </div>
             <div class="col-md-3">
@@ -33740,7 +33706,7 @@
                     <b>Contact:</b> '.htmlentities($contact).'<br>
                     <b>Email:</b> '.htmlentities($email).'<br><br>
 
-                    <a href="'. $base_url .'job-ticket-service?i='. $last_id .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a><br><br>
+                    <a href="'. $base_url .'job-ticket-service?i='. $last_id .'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a><br><br>
 
                     InterlinkIQ.com Team<br>
                     Consultare Inc. Group';
@@ -33936,7 +33902,7 @@
 
                     Thank you for your cooperation and dedication.<br><br>
                     
-                    <a href="'. $base_url .'job-ticket-service?i='. $ID .'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a><br><br>
+                    <a href="'. $base_url .'job-ticket-service?i='. $ID .'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a><br><br>
 
                     Best Regards';
                     php_mailer_dynamic($sender, $recipients, $subject, $body);
@@ -37702,8 +37668,8 @@
                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                         $emp_ID = $rowEmployee["ID"];
-                        $emp_name = $rowEmployee["first_name"] .' '. $rowEmployee["last_name"];
-                        $emp_email = $rowEmployee["email"];
+                        $emp_name = htmlentities($rowEmployee["first_name"] ?? '') .' '. htmlentities($rowEmployee["last_name"] ?? '');
+                        $emp_email = htmlentities($rowEmployee["email"] ?? '');
 
                         if (!in_array($emp_ID, $array_employee_id)) {
                             array_push($array_employee_id, $emp_ID);
@@ -37761,7 +37727,7 @@
                 if ( mysqli_num_rows($selectTrainings) > 0 ) {
                     while($rowTraining = mysqli_fetch_array($selectTrainings)) {
                         $t_ID = $rowTraining["t_ID"];
-                        $t_title = $rowTraining["t_title"];
+                        $t_title = htmlentities($rowTraining["t_title"] ?? '');
 
                         if (!empty($cam_training)) {
                             $optionTraining .= '<option value="'.$t_ID.'" '; $optionTraining .= in_array($t_ID, $cam_training) ? 'SELECTED':''; $optionTraining .= '>'.$t_title.'</option>';
@@ -37824,15 +37790,15 @@
                         </div>
                         <div class="col-md-2 col-md-offset-1">
                             <label class="control-label">Observed By</label>
-                            <input type="text" class="form-control" name="observed_by" value="'.$row['observed_by'].'"  />
+                            <input type="text" class="form-control" name="observed_by" value="'.htmlentities($row['observed_by'] ?? '').'"  />
                         </div>
                         <div class="col-md-2">
                             <label class="control-label">Reported By</label>
-                            <input type="text" class="form-control" name="reported_by" value="'.$row['reported_by'].'" />
+                            <input type="text" class="form-control" name="reported_by" value="'.htmlentities($row['reported_by'] ?? '').'" />
                         </div>
                         <div class="col-md-2 col-md-offset-1 '; echo $current_client == 1 ? 'hide':''; echo '">
                             <label class="control-label">CAPA Reference No.</label>
-                            <input type="text" class="form-control" name="reference" value="'.$row['reference'].'" />
+                            <input type="text" class="form-control" name="reference" value="'.htmlentities($row['reference'] ?? '').'" />
                         </div>
                     </div>
                 </div>
@@ -37852,7 +37818,7 @@
                             if ( mysqli_num_rows($selectProgram) > 0 ) {
                                 while ($rowProgram = mysqli_fetch_array($selectProgram)) {
                                     $program_ID = $rowProgram['ID'];
-                                    $program_name = $rowProgram['name'];
+                                    $program_name = htmlentities($rowProgram['name'] ?? '');
 
                                     $arr_program_ID =  array();
                                     if (!empty($row['program_id'])) {
@@ -37883,7 +37849,7 @@
                             if ( mysqli_num_rows($selectComplaint) > 0 ) {
                                 while ($rowComp = mysqli_fetch_array($selectComplaint)) {
                                     $comp_ID = $rowComp['ID'];
-                                    $comp_name = $rowComp['name'];
+                                    $comp_name = htmlentities($rowComp['name'] ?? '');
                                     $arr_complaint_id =  explode(', ', $row['complaint_id']);
 
                                     echo '<label class="mt-checkbox mt-checkbox-outline">
@@ -37897,7 +37863,7 @@
                                 <input type="checkbox" name="complaint_id[]" value="0" '; echo !empty($row['complaint_other']) ? 'checked':''; echo ' onClick="btnCategory(this)"> Other
                                 <span></span>
                             </label>
-                            <input type="text" class="form-control '; echo !empty($row['category_other']) ? '':'hide'; echo '" name="category_other" placeholder="Specify Complaint Category" value="'.$row['complaint_other'].'" />
+                            <input type="text" class="form-control '; echo !empty($row['category_other']) ? '':'hide'; echo '" name="category_other" placeholder="Specify Complaint Category" value="'.htmlentities($row['complaint_other'] ?? '').'" />
                         </div>
                     </div>
                 </div>';
@@ -37915,7 +37881,7 @@
                             if ( mysqli_num_rows($selectCategory) > 0 ) {
                                 while ($rowCat = mysqli_fetch_array($selectCategory)) {
                                     $cat_ID = $rowCat['ID'];
-                                    $cat_name = $rowCat['name'];
+                                    $cat_name = htmlentities($rowCat['name'] ?? '');
                                     $arr_category_id =  explode(', ', $row['category_id']);
 
                                     echo '<label class="mt-checkbox mt-checkbox-outline">
@@ -37929,7 +37895,7 @@
                                 <input type="checkbox" name="category_id[]" value="0" '; echo !empty($row['category_other']) ? 'checked':''; echo ' onClick="btnCategory(this)"> Other
                                 <span></span>
                             </label>
-                            <input type="text" class="form-control '; echo !empty($row['category_other']) ? '':'hide'; echo '" name="category_other" placeholder="Specify Category" value="'.$row['category_other'].'" />
+                            <input type="text" class="form-control '; echo !empty($row['category_other']) ? '':'hide'; echo '" name="category_other" placeholder="Specify Category" value="'.htmlentities($row['category_other'] ?? '').'" />
                         </div>
                     </div>
                 </div>';
@@ -37962,7 +37928,7 @@
                             if ( mysqli_num_rows($selectDepartment) > 0 ) {
                                 while ($rowDept = mysqli_fetch_array($selectDepartment)) {
                                     $dept_ID = $rowDept['ID'];
-                                    $dept_title = $rowDept['title'];
+                                    $dept_title = htmlentities($rowDept['title'] ?? '');
                                     $arr_department_id =  explode(', ', $row['department_id']);
 
                                     echo '<label class="mt-checkbox mt-checkbox-outline">
@@ -37976,7 +37942,7 @@
                             <input type="checkbox" name="department_id[]" value="0"> Other
                             <span></span>
                         </label>
-                        <input type="text" class="form-control hide" name="department_other" placeholder="Specify Department" value="'.$row['department_other'].'" />
+                        <input type="text" class="form-control hide" name="department_other" placeholder="Specify Department" value="'.htmlentities($row['department_other'] ?? '').'" />
                     </div>
                 </div>
             </div>
@@ -37999,8 +37965,8 @@
                                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                         $emp_ID = $rowEmployee["ID"];
-                                        $emp_name = $rowEmployee["first_name"] .' '. $rowEmployee["last_name"];
-                                        $emp_email = $rowEmployee["email"];
+                                        $emp_name = htmlentities($rowEmployee["first_name"] ?? '') .' '. htmlentities($rowEmployee["last_name"] ?? '');
+                                        $emp_email = htmlentities($rowEmployee["email"] ?? '');
 
                                         if (!in_array($emp_ID, $array_employee_id)) {
                                             array_push($array_employee_id, $emp_ID);
@@ -38031,7 +37997,7 @@
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <textarea class="form-control" rows="3" name="description">'.$row['description'].'</textarea>
+                    <textarea class="form-control" rows="3" name="description">'.htmlentities($row['description'] ?? '').'</textarea>
                 </div>
             </div>
 
@@ -38076,7 +38042,7 @@
                 <div class="portlet-body">
                     <div class="row">
                         <div class="col-md-7">
-                            <textarea class="form-control" rows="10" name="observation_desc">'.$row['observation'].'</textarea>
+                            <textarea class="form-control" rows="10" name="observation_desc">'.htmlentities($row['observation'] ?? '').'</textarea>
                         </div>
                         <div class="col-md-5">
                             <label>Supporting Documents / Evidence:</label>
@@ -38147,7 +38113,7 @@
                 <div class="portlet-body">
                     <div class="row">
                         <div class="col-md-7">
-                            <textarea class="form-control" rows="10" name="root_cause_desc">'.$row['root_cause'].'</textarea>
+                            <textarea class="form-control" rows="10" name="root_cause_desc">'.htmlentities($row['root_cause'] ?? '').'</textarea>
                         </div>
                         <div class="col-md-5">
                             <label>Supporting Documents / Evidence:</label>
@@ -38223,7 +38189,7 @@
                                 <option value="1" '; echo $row['corrective_status'] == 1 ? 'SELECTED':''; echo '>Proposed</option>
                                 <option value="2" '; echo $row['corrective_status'] == 2 ? 'SELECTED':''; echo '>Implemented</option>
                             </select>
-                            <textarea class="form-control margin-bottom-15" rows="10" name="corrective_desc">'.$row['corrective_desc'].'</textarea>
+                            <textarea class="form-control margin-bottom-15" rows="10" name="corrective_desc">'.htmlentities($row['corrective_desc'] ?? '').'</textarea>
                             <div class="row">
                                 <div class="col-md-4">
                                     <input type="date" class="form-control margin-bottom-15" name="corrective_date" placeholder="Date" value="'.$row['corrective_date'].'" />
@@ -38232,7 +38198,7 @@
                                     <input type="time" class="form-control margin-bottom-15" name="corrective_time" placeholder="Time" value="'.$row['corrective_time'].'" />
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control margin-bottom-15" name="corrective_by" placeholder="Corrected By" value="'.$row['corrective_by'].'" />
+                                    <input type="text" class="form-control margin-bottom-15" name="corrective_by" placeholder="Corrected By" value="'.htmlentities($row['corrective_by'] ?? '').'" />
                                 </div>
                             </div>
                         </div>
@@ -38310,7 +38276,7 @@
                                 <option value="1" '; echo $row['implementation_status'] == 1 ? 'SELECTED':''; echo '>Proposed</option>
                                 <option value="2" '; echo $row['implementation_status'] == 2 ? 'SELECTED':''; echo '>Implemented</option>
                             </select>
-                            <textarea class="form-control margin-bottom-15" rows="10" name="implementation_desc">'.$row['implementation_desc'].'</textarea>
+                            <textarea class="form-control margin-bottom-15" rows="10" name="implementation_desc">'.htmlentities($row['implementation_desc'] ?? '').'</textarea>
                             <div class="row form-horizontal">
                                 <div class="col-md-4">
                                     <label class="control-label">Effective Date of Resolution</label>
@@ -38319,7 +38285,7 @@
                                     <input type="date" class="form-control margin-bottom-15" name="implementation_date" placeholder="Date" value="'.$row['implementation_date'].'"/>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control margin-bottom-15" name="implementation_by" placeholder="Implemented By" value="'.$row['implementation_by'].'" />
+                                    <input type="text" class="form-control margin-bottom-15" name="implementation_by" placeholder="Implemented By" value="'.htmlentities($row['implementation_by'] ?? '').'" />
                                 </div>
                             </div>
                         </div>
@@ -38397,7 +38363,7 @@
                                 <option value="1" '; echo $row['implementation_status'] == 1 ? 'SELECTED':''; echo '>Proposed</option>
                                 <option value="2" '; echo $row['implementation_status'] == 2 ? 'SELECTED':''; echo '>Implemented</option>
                             </select>
-                            <textarea class="form-control margin-bottom-15" rows="10" name="preventive_desc">'.$row['preventive_desc'].'</textarea>
+                            <textarea class="form-control margin-bottom-15" rows="10" name="preventive_desc">'.htmlentities($row['preventive_desc'] ?? '').'</textarea>
                         </div>
                         <div class="col-md-5">
                             <label>Supporting Documents / Evidence:</label>
@@ -38473,7 +38439,7 @@
                                 <option value="1" '; echo $row['evaluation_status'] == 1 ? 'SELECTED':''; echo '>Proposed</option>
                                 <option value="2" '; echo $row['evaluation_status'] == 2 ? 'SELECTED':''; echo '>Implemented</option>
                             </select>
-                            <textarea class="form-control margin-bottom-15" rows="10" name="evaluation_desc">'.$row['evaluation_desc'].'</textarea>
+                            <textarea class="form-control margin-bottom-15" rows="10" name="evaluation_desc">'.htmlentities($row['evaluation_desc'] ?? '').'</textarea>
                         </div>
                         <div class="col-md-5">
                             <label>Supporting Documents / Evidence:</label>
@@ -38544,7 +38510,7 @@
                 <div class="portlet-body">
                     <div class="row">
                         <div class="col-md-7">
-                            <textarea class="form-control margin-bottom-15" rows="10" name="comment_desc">'.$row['comment'].'</textarea>
+                            <textarea class="form-control margin-bottom-15" rows="10" name="comment_desc">'.htmlentities($row['comment'] ?? '').'</textarea>
                         </div>
                         <div class="col-md-5">
                             <label>Supporting Documents / Evidence:</label>
@@ -38692,45 +38658,86 @@
             <div class="portlet box default margin-bottom-15">
                 <div class="portlet-body">
                     <div class="row">
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="investigated_by" placeholder="Investigated By" value="'.$row['investigated_by'].'" />
+                        <div class="col-md-4">
+                            <div class="signatureContainer hide">
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Signature</label>
+                                    <div class="col-md-5">
+                                        <select class="form-control margin-bottom-15" onchange="selectType(this)" name="investigated_type">
+                                            <option value="0">Select</option>
+                                            <option value="1">Sign</option>
+                                            <option value="2">Upload</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <input type="file" class="form-control margin-bottom-15 hide sign signature_upload" name="investigated_file" />
+                                <div class="hide sign signature_sign">
+                                    <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
+                                    <div class="signature investigated_sign"></div>
+                                </div>
+                            </div>
+                            <div class="signatureResult text-center">
+                                <button type="button" class="btn btn-link btn-sm" onclick="editSignature(this)"><i class="fa fa-pencil"></i> [edit signature]</button>
+                                <img src="'.$row['investigated_sign'].'" class="signature_img" style="display: block; border: 0; border-bottom: 1px solid; object-fit: contain;"/>
+                                <input type="hidden" name="investigated_sign_temp" value="'.$row['investigated_sign'].'" />
+                            </div>
+                            <input type="text" class="form-control margin-bottom-15" name="investigated_by" placeholder="Investigated By" value="'.htmlentities($row['investigated_by'] ?? '').'" />
+                            <input type="text" class="form-control margin-bottom-15" name="investigated_title" placeholder="Title" value="'.htmlentities($row['investigated_title'] ?? '').'" />
+                            <input type="datetime-local" class="form-control margin-bottom-15" name="investigated_datetime" value="'.$row['investigated_date'].'T'.$row['investigated_time'].'" />
                         </div>
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="investigated_title" placeholder="Title" value="'.$row['investigated_title'].'" />
+                        <div class="col-md-4">
+                            <div class="signatureContainer hide">
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Signature</label>
+                                    <div class="col-md-5">
+                                        <select class="form-control margin-bottom-15" onchange="selectType(this)" name="verified_type">
+                                            <option value="0">Select</option>
+                                            <option value="1">Sign</option>
+                                            <option value="2">Upload</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <input type="file" class="form-control margin-bottom-15 hide sign signature_upload" name="verified_file" />
+                                <div class="hide sign signature_sign">
+                                    <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
+                                    <div class="signature verified_sign"></div>
+                                </div>
+                            </div>
+                            <div class="signatureResult text-center">
+                                <button type="button" class="btn btn-link btn-sm" onclick="editSignature(this)"><i class="fa fa-pencil"></i> [edit signature]</button>
+                                <img src="'.$row['verified_sign'].'" class="signature_img" style="display: block; border: 0; border-bottom: 1px solid; object-fit: contain;"/>
+                                <input type="hidden" name="verified_sign_temp" value="'.$row['verified_sign'].'" />
+                            </div>
+                            <input type="text" class="form-control margin-bottom-15" name="verified_by" placeholder="CAPA Verified By" value="'.htmlentities($row['verified_by'] ?? '').'" />
+                            <input type="text" class="form-control margin-bottom-15" name="verified_title" placeholder="Title" value="'.htmlentities($row['verified_title'] ?? '').'" />
+                            <input type="datetime-local" class="form-control margin-bottom-15" name="verified_datetime" value="'.$row['verified_date'].'T'.$row['verified_time'].'" />
                         </div>
-                        <div class="col-md-3">
-                            <input type="date" class="form-control margin-bottom-15" name="investigated_date" placeholder="text" value="'.$row['investigated_date'].'" />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="time" class="form-control margin-bottom-15" name="investigated_time" placeholder="text" value="'.$row['investigated_time'].'" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="verified_by" placeholder="CAPA Verified By" value="'.$row['verified_by'].'" />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="verified_title" placeholder="Title" value="'.$row['verified_title'].'" />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="date" class="form-control margin-bottom-15" name="verified_date" placeholder="text" value="'.$row['verified_date'].'" />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="time" class="form-control margin-bottom-15" name="verified_time" placeholder="text" value="'.$row['verified_time'].'" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="completed_by" placeholder="CAPA Completed By" value="'.$row['completed_by'].'" />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="completed_title" placeholder="Title" value="'.$row['completed_title'].'" />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="date" class="form-control margin-bottom-15" name="completed_date" placeholder="text" value="'.$row['completed_date'].'" />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="time" class="form-control margin-bottom-15" name="completed_time" placeholder="text" value="'.$row['completed_time'].'" />
+                        <div class="col-md-4">
+                            <div class="signatureContainer hide">
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Signature</label>
+                                    <div class="col-md-5">
+                                        <select class="form-control margin-bottom-15" onchange="selectType(this)" name="completed_type">
+                                            <option value="0">Select</option>
+                                            <option value="1">Sign</option>
+                                            <option value="2">Upload</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <input type="file" class="form-control margin-bottom-15 hide sign signature_upload" name="completed_file" />
+                                <div class="hide sign signature_sign">
+                                    <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
+                                    <div class="signature completed_sign"></div>
+                                </div>
+                            </div>
+                            <div class="signatureResult text-center">
+                                <button type="button" class="btn btn-link btn-sm" onclick="editSignature(this)"><i class="fa fa-pencil"></i> [edit signature]</button>
+                                <img src="'.$row['completed_sign'].'" class="signature_img" style="display: block; border: 0; border-bottom: 1px solid; object-fit: contain;"/>
+                                <input type="hidden" name="completed_sign_temp" value="'.$row['completed_sign'].'" />
+                            </div>
+                            <input type="text" class="form-control margin-bottom-15" name="completed_by" placeholder="CAPA Completed By" value="'.htmlentities($row['completed_by'] ?? '').'" />
+                            <input type="text" class="form-control margin-bottom-15" name="completed_title" placeholder="Title" value="'.htmlentities($row['completed_title'] ?? '').'" />
+                            <input type="datetime-local" class="form-control margin-bottom-15" name="completed_datetime" value="'.$row['completed_date'].'T'.$row['completed_time'].'" />
                         </div>
                     </div>
                 </div>
@@ -38781,15 +38788,15 @@
                         </div>
                         <div class="col-md-2 col-md-offset-1">
                             <label class="control-label">Observed By</label>
-                            <input type="text" class="form-control" name="observed_by" value="'.$row['observed_by'].'"  />
+                            <input type="text" class="form-control" name="observed_by" value="'.htmlentities($row['observed_by'] ?? '').'"  />
                         </div>
                         <div class="col-md-2">
                             <label class="control-label">Reported By</label>
-                            <input type="text" class="form-control" name="reported_by" value="'.$row['reported_by'].'" />
+                            <input type="text" class="form-control" name="reported_by" value="'.htmlentities($row['reported_by'] ?? '').'" />
                         </div>
                         <div class="col-md-2 col-md-offset-1 '; echo $current_client == 1 ? 'hide':''; echo '">
                             <label class="control-label">CAPA Reference No.</label>
-                            <input type="text" class="form-control" name="reference" value="'.$row['reference'].'" />
+                            <input type="text" class="form-control" name="reference" value="'.htmlentities($row['reference'] ?? '').'" />
                         </div>
                     </div>
                 </div>
@@ -38809,7 +38816,7 @@
                             if ( mysqli_num_rows($selectProgram) > 0 ) {
                                 while ($rowProgram = mysqli_fetch_array($selectProgram)) {
                                     $program_ID = $rowProgram['ID'];
-                                    $program_name = $rowProgram['name'];
+                                    $program_name = htmlentities($rowProgram['name'] ?? '');
 
                                     $arr_program_ID =  array();
                                     if (!empty($row['program_id'])) {
@@ -38841,7 +38848,7 @@
                             if ( mysqli_num_rows($selectComplaint) > 0 ) {
                                 while ($rowComp = mysqli_fetch_array($selectComplaint)) {
                                     $comp_ID = $rowComp['ID'];
-                                    $comp_name = $rowComp['name'];
+                                    $comp_name = htmlentities($rowComp['name'] ?? '');
 
                                     echo '<label class="mt-checkbox mt-checkbox-outline">
                                         <input type="checkbox" name="complaint_id[]" value="'.$comp_ID.'" '; echo in_array($comp_ID, $arr_complaint_id) ? 'checked':''; echo '> '.$comp_name.'
@@ -38854,7 +38861,7 @@
                                 <input type="checkbox" name="complaint_id[]" value="0" '; echo !is_numeric($row['complaint_category']) ? 'checked':''; echo ' onClick="btnCategory(this)"> Other
                                 <span></span>
                             </label>
-                            <input type="text" class="form-control '; echo !is_numeric($row['complaint_category']) ? '':'hide'; echo '" name="category_other" placeholder="Specify Complaint Category" value="'.$row['complaint_category'].'" />
+                            <input type="text" class="form-control '; echo !is_numeric($row['complaint_category']) ? '':'hide'; echo '" name="category_other" placeholder="Specify Complaint Category" value="'.htmlentities($row['complaint_category'] ?? '').'" />
                         </div>
                     </div>
                 </div>';
@@ -38872,7 +38879,7 @@
                             if ( mysqli_num_rows($selectCategory) > 0 ) {
                                 while ($rowCat = mysqli_fetch_array($selectCategory)) {
                                     $cat_ID = $rowCat['ID'];
-                                    $cat_name = $rowCat['name'];
+                                    $cat_name = htmlentities($rowCat['name'] ?? '');
                                     $arr_category_id =  explode(', ', $row['category_id']);
 
                                     echo '<label class="mt-checkbox mt-checkbox-outline">
@@ -38886,7 +38893,7 @@
                                 <input type="checkbox" name="category_id[]" value="0" '; echo !empty($row['category_other']) ? 'checked':''; echo ' onClick="btnCategory(this)"> Other
                                 <span></span>
                             </label>
-                            <input type="text" class="form-control '; echo !empty($row['category_other']) ? '':'hide'; echo '" name="category_other" placeholder="Specify Category" value="'.$row['category_other'].'" />
+                            <input type="text" class="form-control '; echo !empty($row['category_other']) ? '':'hide'; echo '" name="category_other" placeholder="Specify Category" value="'.htmlentities($row['category_other'] ?? '').'" />
                         </div>
                     </div>
                 </div>';
@@ -38902,7 +38909,7 @@
                     <div class="mt-checkbox-inline">';
 
                         $arr_department_id = array();
-                        $cam_person_handlingn = $row['person_handling'];
+                        $cam_person_handlingn = htmlentities($row['person_handling'] ?? '');
                         if ($cam_person_handlingn > 0) {
                             $selectEmp = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $cam_person_handlingn" );
                             if ( mysqli_num_rows($selectEmp) > 0 ) {
@@ -38916,7 +38923,7 @@
                         if ( mysqli_num_rows($selectDepartment) > 0 ) {
                             while ($rowDept = mysqli_fetch_array($selectDepartment)) {
                                 $dept_ID = $rowDept['ID'];
-                                $dept_title = $rowDept['title'];
+                                $dept_title = htmlentities($rowDept['title'] ?? '');
 
                                 echo '<label class="mt-checkbox mt-checkbox-outline">
                                     <input type="checkbox" class="department_id_2" name="department_id[]" value="'.$dept_ID.'" '; echo in_array($dept_ID, $arr_department_id) ? 'checked':''; echo ' onclick="changeDepartment(2, '.$dept_ID.')" /> '.$dept_title.'
@@ -38929,7 +38936,7 @@
                             <input type="checkbox" name="department_id[]" value="0"> Other
                             <span></span>
                         </label>
-                        <input type="text" class="form-control hide" name="department_other" placeholder="Specify Department" value="'.$row['department_other'].'" />
+                        <input type="text" class="form-control hide" name="department_other" placeholder="Specify Department" value="'.htmlentities($row['department_other'] ?? '').'" />
                     </div>
                 </div>
             </div>
@@ -38952,7 +38959,7 @@
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <textarea class="form-control" rows="3" name="description">'.$row['nature_complaint'].'</textarea>
+                    <textarea class="form-control" rows="3" name="description">'.htmlentities($row['nature_complaint'] ?? '').'</textarea>
                 </div>
             </div>
 
@@ -38997,7 +39004,7 @@
                 <div class="portlet-body">
                     <div class="row">
                         <div class="col-md-7">
-                            <textarea class="form-control" rows="10" name="observation_desc">'.$row['observation'].'</textarea>
+                            <textarea class="form-control" rows="10" name="observation_desc">'.htmlentities($row['observation'] ?? '').'</textarea>
                         </div>
                         <div class="col-md-5">
                             <label>Supporting Documents / Evidence:</label>
@@ -39058,7 +39065,7 @@
                 <div class="portlet-body">
                     <div class="row">
                         <div class="col-md-7">
-                            <textarea class="form-control" rows="10" name="root_cause_desc">'.$row['root_cause'].'</textarea>
+                            <textarea class="form-control" rows="10" name="root_cause_desc">'.htmlentities($row['root_cause'] ?? '').'</textarea>
                         </div>
                         <div class="col-md-5">
                             <label>Supporting Documents / Evidence:</label>
@@ -39124,7 +39131,7 @@
                                 <option value="1" '; echo $row['corrective_status'] == 1 ? 'SELECTED':''; echo '>Proposed</option>
                                 <option value="2" '; echo $row['corrective_status'] == 2 ? 'SELECTED':''; echo '>Implemented</option>
                             </select>
-                            <textarea class="form-control margin-bottom-15" rows="10" name="corrective_desc">'.$row['action_taken'].'</textarea>
+                            <textarea class="form-control margin-bottom-15" rows="10" name="corrective_desc">'.htmlentities($row['action_taken'] ?? '').'</textarea>
                             <div class="row">
                                 <div class="col-md-4">
                                     <input type="date" class="form-control margin-bottom-15" name="corrective_date" placeholder="Date" value="'.date('Y-m-d', strtotime($row['date_resolution'])).'" />
@@ -39133,7 +39140,7 @@
                                     <input type="time" class="form-control margin-bottom-15" name="corrective_time" placeholder="Time" value="'.$row['corrective_time'].'" />
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control margin-bottom-15" name="corrective_by" placeholder="Corrected By" value="'.$row['corrective_by'].'" />
+                                    <input type="text" class="form-control margin-bottom-15" name="corrective_by" placeholder="Corrected By" value="'.htmlentities($row['corrective_by'] ?? '').'" />
                                 </div>
                             </div>
                         </div>
@@ -39210,7 +39217,7 @@
                                     <input type="date" class="form-control margin-bottom-15" name="implementation_date" placeholder="Date" value="'.$row['implementation_date'].'"/>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control margin-bottom-15" name="implementation_by" placeholder="Implemented By" value="'.$row['implementation_by'].'" />
+                                    <input type="text" class="form-control margin-bottom-15" name="implementation_by" placeholder="Implemented By" value="'.htmlentities($row['implementation_by'] ?? '').'" />
                                 </div>
                             </div>
                         </div>
@@ -39278,7 +39285,7 @@
                                 <option value="1" '; echo $row['implementation_status'] == 1 ? 'SELECTED':''; echo '>Proposed</option>
                                 <option value="2" '; echo $row['implementation_status'] == 2 ? 'SELECTED':''; echo '>Implemented</option>
                             </select>
-                            <textarea class="form-control margin-bottom-15" rows="10" name="preventive_desc">'.$row['preventive_desc'].'</textarea>
+                            <textarea class="form-control margin-bottom-15" rows="10" name="preventive_desc">'.htmlentities($row['preventive_desc'] ?? '').'</textarea>
                         </div>
                         <div class="col-md-5">
                             <label>Supporting Documents / Evidence:</label>
@@ -39344,7 +39351,7 @@
                                 <option value="1" '; echo $row['evaluation_status'] == 1 ? 'SELECTED':''; echo '>Proposed</option>
                                 <option value="2" '; echo $row['evaluation_status'] == 2 ? 'SELECTED':''; echo '>Implemented</option>
                             </select>
-                            <textarea class="form-control margin-bottom-15" rows="10" name="evaluation_desc">'.$row['evaluation_desc'].'</textarea>
+                            <textarea class="form-control margin-bottom-15" rows="10" name="evaluation_desc">'.htmlentities($row['evaluation_desc'] ?? '').'</textarea>
                         </div>
                         <div class="col-md-5">
                             <label>Supporting Documents / Evidence:</label>
@@ -39405,7 +39412,7 @@
                 <div class="portlet-body">
                     <div class="row">
                         <div class="col-md-7">
-                            <textarea class="form-control margin-bottom-15" rows="10" name="comment_desc">'.$row['comment'].'</textarea>
+                            <textarea class="form-control margin-bottom-15" rows="10" name="comment_desc">'.htmlentities($row['comment'] ?? '').'</textarea>
                         </div>
                         <div class="col-md-5">
                             <label>Supporting Documents / Evidence:</label>
@@ -39533,45 +39540,86 @@
             <div class="portlet box default margin-bottom-15">
                 <div class="portlet-body">
                     <div class="row">
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="investigated_by" placeholder="Investigated By" value="'.$row['investigated_by'].'" />
+                        <div class="col-md-4">
+                            <div class="signatureContainer hide">
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Signature</label>
+                                    <div class="col-md-5">
+                                        <select class="form-control margin-bottom-15" onchange="selectType(this)" name="investigated_type">
+                                            <option value="0">Select</option>
+                                            <option value="1">Sign</option>
+                                            <option value="2">Upload</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <input type="file" class="form-control margin-bottom-15 hide sign signature_upload" name="investigated_file" />
+                                <div class="hide sign signature_sign">
+                                    <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
+                                    <div class="signature investigated_sign"></div>
+                                </div>
+                            </div>
+                            <div class="signatureResult text-center">
+                                <button type="button" class="btn btn-link btn-sm" onclick="editSignature(this)"><i class="fa fa-pencil"></i> [edit signature]</button>
+                                <img src="'.$row['investigated_sign'].'" class="signature_img" style="display: block; border: 0; border-bottom: 1px solid; object-fit: contain;"/>
+                                <input type="hidden" name="investigated_sign_temp" value="'.$row['investigated_sign'].'" />
+                            </div>
+                            <input type="text" class="form-control margin-bottom-15" name="investigated_by" placeholder="Investigated By" value="'.htmlentities($row['investigated_by'] ?? '').'" />
+                            <input type="text" class="form-control margin-bottom-15" name="investigated_title" placeholder="Title" value="'.htmlentities($row['investigated_title'] ?? '').'" />
+                            <input type="datetime-local" class="form-control margin-bottom-15" name="investigated_datetime" value="'.$row['investigated_date'].'T'.$row['investigated_time'].'" />
                         </div>
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="investigated_title" placeholder="Title" value="'.$row['investigated_title'].'" />
+                        <div class="col-md-4">
+                            <div class="signatureContainer hide">
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Signature</label>
+                                    <div class="col-md-5">
+                                        <select class="form-control margin-bottom-15" onchange="selectType(this)" name="verified_type">
+                                            <option value="0">Select</option>
+                                            <option value="1">Sign</option>
+                                            <option value="2">Upload</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <input type="file" class="form-control margin-bottom-15 hide sign signature_upload" name="verified_file" />
+                                <div class="hide sign signature_sign">
+                                    <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
+                                    <div class="signature verified_sign"></div>
+                                </div>
+                            </div>
+                            <div class="signatureResult text-center">
+                                <button type="button" class="btn btn-link btn-sm" onclick="editSignature(this)"><i class="fa fa-pencil"></i> [edit signature]</button>
+                                <img src="'.$row['verified_sign'].'" class="signature_img" style="display: block; border: 0; border-bottom: 1px solid; object-fit: contain;"/>
+                                <input type="hidden" name="verified_sign_temp" value="'.$row['verified_sign'].'" />
+                            </div>
+                            <input type="text" class="form-control margin-bottom-15" name="verified_by" placeholder="CAPA Verified By" value="'.htmlentities($row['verified_by'] ?? '').'" />
+                            <input type="text" class="form-control margin-bottom-15" name="verified_title" placeholder="Title" value="'.htmlentities($row['verified_title'] ?? '').'" />
+                            <input type="datetime-local" class="form-control margin-bottom-15" name="verified_datetime" value="'.$row['verified_date'].'T'.$row['verified_time'].'" />
                         </div>
-                        <div class="col-md-3">
-                            <input type="date" class="form-control margin-bottom-15" name="investigated_date" placeholder="text" value="'.$row['investigated_date'].'" />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="time" class="form-control margin-bottom-15" name="investigated_time" placeholder="text" value="'.$row['investigated_time'].'" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="verified_by" placeholder="CAPA Verified By" value="'.$row['verified_by'].'" />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="verified_title" placeholder="Title" value="'.$row['verified_title'].'" />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="date" class="form-control margin-bottom-15" name="verified_date" placeholder="text" value="'.$row['verified_date'].'" />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="time" class="form-control margin-bottom-15" name="verified_time" placeholder="text" value="'.$row['verified_time'].'" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="completed_by" placeholder="CAPA Completed By" value="'.$row['completed_by'].'" />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="completed_title" placeholder="Title" value="'.$row['completed_title'].'" />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="date" class="form-control margin-bottom-15" name="completed_date" placeholder="text" value="'.$row['completed_date'].'" />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="time" class="form-control margin-bottom-15" name="completed_time" placeholder="text" value="'.$row['completed_time'].'" />
+                        <div class="col-md-4">
+                            <div class="signatureContainer hide">
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Signature</label>
+                                    <div class="col-md-5">
+                                        <select class="form-control margin-bottom-15" onchange="selectType(this)" name="completed_type">
+                                            <option value="0">Select</option>
+                                            <option value="1">Sign</option>
+                                            <option value="2">Upload</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <input type="file" class="form-control margin-bottom-15 hide sign signature_upload" name="completed_file" />
+                                <div class="hide sign signature_sign">
+                                    <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
+                                    <div class="signature completed_sign"></div>
+                                </div>
+                            </div>
+                            <div class="signatureResult text-center">
+                                <button type="button" class="btn btn-link btn-sm" onclick="editSignature(this)"><i class="fa fa-pencil"></i> [edit signature]</button>
+                                <img src="'.$row['completed_sign'].'" class="signature_img" style="display: block; border: 0; border-bottom: 1px solid; object-fit: contain;"/>
+                                <input type="hidden" name="completed_sign_temp" value="'.$row['completed_sign'].'" />
+                            </div>
+                            <input type="text" class="form-control margin-bottom-15" name="completed_by" placeholder="CAPA Completed By" value="'.htmlentities($row['completed_by'] ?? '').'" />
+                            <input type="text" class="form-control margin-bottom-15" name="completed_title" placeholder="Title" value="'.htmlentities($row['completed_title'] ?? '').'" />
+                            <input type="datetime-local" class="form-control margin-bottom-15" name="completed_datetime" value="'.$row['completed_date'].'T'.$row['completed_time'].'" />
                         </div>
                     </div>
                 </div>
@@ -40183,15 +40231,15 @@
                         </div>
                         <div class="col-md-2 col-md-offset-1">
                             <label class="control-label">Observed By</label>
-                            <input type="text" class="form-control" name="observed_by" value="'.$row['observed_by'].'" disabled />
+                            <input type="text" class="form-control" name="observed_by" value="'.htmlentities($row['observed_by'] ?? '').'" disabled />
                         </div>
                         <div class="col-md-2">
                             <label class="control-label">Reported By</label>
-                            <input type="text" class="form-control" name="reported_by" value="'.$row['reported_by'].'" disabled />
+                            <input type="text" class="form-control" name="reported_by" value="'.htmlentities($row['reported_by'] ?? '').'" disabled />
                         </div>
                         <div class="col-md-2 col-md-offset-1 '; echo $current_client == 1 ? 'hide':''; echo '">
                             <label class="control-label">CAPA Reference No.</label>
-                            <input type="text" class="form-control" name="reference" value="'.$row['reference'].'" disabled />
+                            <input type="text" class="form-control" name="reference" value="'.htmlentities($row['reference'] ?? '').'" disabled />
                         </div>
                     </div>
                 </div>
@@ -40211,7 +40259,7 @@
                             if ( mysqli_num_rows($selectProgram) > 0 ) {
                                 while ($rowProgram = mysqli_fetch_array($selectProgram)) {
                                     $program_ID = $rowProgram['ID'];
-                                    $program_name = $rowProgram['name'];
+                                    $program_name = htmlentities($rowProgram['name'] ?? '');
 
                                     $arr_program_ID =  array();
                                     if (!empty($row['program_id'])) {
@@ -40242,7 +40290,7 @@
                             if ( mysqli_num_rows($selectCategory) > 0 ) {
                                 while ($rowCat = mysqli_fetch_array($selectCategory)) {
                                     $cat_ID = $rowCat['ID'];
-                                    $cat_name = $rowCat['name'];
+                                    $cat_name = htmlentities($rowCat['name'] ?? '');
                                     $arr_category_id =  explode(', ', $row['category_id']);
 
                                     echo '<label class="mt-checkbox mt-checkbox-outline">
@@ -40256,7 +40304,7 @@
                                 <input type="checkbox" name="category_id[]" value="0" '; echo !empty($row['category_other']) ? 'checked':''; echo ' onClick="btnCategory(this)" disabled /> Other
                                 <span></span>
                             </label>
-                            <input type="text" class="form-control '; echo !empty($row['category_other']) ? '':'hide'; echo '" name="category_other" placeholder="Specify Category" value="'.$row['category_other'].'" disabled />
+                            <input type="text" class="form-control '; echo !empty($row['category_other']) ? '':'hide'; echo '" name="category_other" placeholder="Specify Category" value="'.htmlentities($row['category_other'] ?? '').'" disabled />
                         </div>
                     </div>
                 </div>';
@@ -40289,7 +40337,7 @@
                         if ( mysqli_num_rows($selectDepartment) > 0 ) {
                             while ($rowDept = mysqli_fetch_array($selectDepartment)) {
                                 $dept_ID = $rowDept['ID'];
-                                $dept_title = $rowDept['title'];
+                                $dept_title = htmlentities($rowDept['title'] ?? '');
                                 $arr_department_id =  explode(', ', $row['department_id']);
 
                                 echo '<label class="mt-checkbox mt-checkbox-outline">
@@ -40303,7 +40351,7 @@
                             <input type="checkbox" name="department_id[]" value="0" disabled> Other
                             <span></span>
                         </label>
-                        <input type="text" class="form-control hide" name="department_other" placeholder="Specify Department" value="'.$row['department_other'].'" disabled />
+                        <input type="text" class="form-control hide" name="department_other" placeholder="Specify Department" value="'.htmlentities($row['department_other'] ?? '').'" disabled />
                     </div>
                 </div>
             </div>
@@ -40367,7 +40415,7 @@
                 <div class="portlet-body">
                     <div class="row">
                         <div class="col-md-7">
-                            <textarea class="form-control" rows="10" name="observation_desc" disabled>'.$row['observation'].'</textarea>
+                            <textarea class="form-control" rows="10" name="observation_desc" disabled>'.htmlentities($row['observation'] ?? '').'</textarea>
                         </div>
                         <div class="col-md-5">
                             <label>Supporting Documents / Evidence:</label>
@@ -40462,7 +40510,7 @@
                                 <option value="1" '; echo $row['corrective_status'] == 1 ? 'SELECTED':''; echo '>Proposed</option>
                                 <option value="2" '; echo $row['corrective_status'] == 2 ? 'SELECTED':''; echo '>Implemented</option>
                             </select>
-                            <textarea class="form-control margin-bottom-15" rows="10" name="corrective_desc" disabled>'.$row['corrective_desc'].'</textarea>
+                            <textarea class="form-control margin-bottom-15" rows="10" name="corrective_desc" disabled>'.htmlentities($row['corrective_desc'] ?? '').'</textarea>
                             <div class="row">
                                 <div class="col-md-4">
                                     <input type="date" class="form-control margin-bottom-15" name="corrective_date" placeholder="Date" value="'.$row['corrective_date'].'" disabled />
@@ -40471,7 +40519,7 @@
                                     <input type="time" class="form-control margin-bottom-15" name="corrective_time" placeholder="Time" value="'.$row['corrective_time'].'" disabled />
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control margin-bottom-15" name="corrective_by" placeholder="Corrected By" value="'.$row['corrective_by'].'" disabled />
+                                    <input type="text" class="form-control margin-bottom-15" name="corrective_by" placeholder="Corrected By" value="'.htmlentities($row['corrective_by'] ?? '').'" disabled />
                                 </div>
                             </div>
                         </div>
@@ -40523,7 +40571,7 @@
                                 <option value="1" '; echo $row['implementation_status'] == 1 ? 'SELECTED':''; echo '>Proposed</option>
                                 <option value="2" '; echo $row['implementation_status'] == 2 ? 'SELECTED':''; echo '>Implemented</option>
                             </select>
-                            <textarea class="form-control margin-bottom-15" rows="10" name="implementation_desc" disabled>'.$row['implementation_desc'].'</textarea>
+                            <textarea class="form-control margin-bottom-15" rows="10" name="implementation_desc" disabled>'.htmlentities($row['implementation_desc'] ?? '').'</textarea>
                             <div class="row form-horizontal">
                                 <div class="col-md-4">
                                     <label class="control-label">Effective Date of Resolution</label>
@@ -40532,7 +40580,7 @@
                                     <input type="date" class="form-control margin-bottom-15" name="implementation_date" placeholder="Date" value="'.$row['implementation_date'].'" disabled/>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control margin-bottom-15" name="implementation_by" placeholder="Implemented By" value="'.$row['implementation_by'].'" disabled />
+                                    <input type="text" class="form-control margin-bottom-15" name="implementation_by" placeholder="Implemented By" value="'.htmlentities($row['implementation_by'] ?? '').'" disabled />
                                 </div>
                             </div>
                         </div>
@@ -40634,7 +40682,7 @@
                                 <option value="1" '; echo $row['evaluation_status'] == 1 ? 'SELECTED':''; echo '>Proposed</option>
                                 <option value="2" '; echo $row['evaluation_status'] == 2 ? 'SELECTED':''; echo '>Implemented</option>
                             </select>
-                            <textarea class="form-control margin-bottom-15" rows="10" name="evaluation_desc" disabled>'.$row['evaluation_desc'].'</textarea>
+                            <textarea class="form-control margin-bottom-15" rows="10" name="evaluation_desc" disabled>'.htmlentities($row['evaluation_desc'] ?? '').'</textarea>
                         </div>
                         <div class="col-md-5">
                             <label>Supporting Documents / Evidence:</label>
@@ -40679,7 +40727,7 @@
                 <div class="portlet-body">
                     <div class="row">
                         <div class="col-md-7">
-                            <textarea class="form-control margin-bottom-15" rows="10" name="comment_desc" disabled>'.$row['comment'].'</textarea>
+                            <textarea class="form-control margin-bottom-15" rows="10" name="comment_desc" disabled>'.htmlentities($row['comment'] ?? '').'</textarea>
                         </div>
                         <div class="col-md-5">
                             <label>Supporting Documents / Evidence:</label>
@@ -40775,45 +40823,86 @@
             <div class="portlet box default margin-bottom-15">
                 <div class="portlet-body">
                     <div class="row">
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="investigated_by" placeholder="Investigated By" value="'.$row['investigated_by'].'" disabled />
+                        <div class="col-md-4">
+                            <div class="signatureContainer hide">
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Signature</label>
+                                    <div class="col-md-5">
+                                        <select class="form-control margin-bottom-15" onchange="selectType(this)" name="investigated_type">
+                                            <option value="0">Select</option>
+                                            <option value="1">Sign</option>
+                                            <option value="2">Upload</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <input type="file" class="form-control margin-bottom-15 hide sign signature_upload" name="investigated_file" />
+                                <div class="hide sign signature_sign">
+                                    <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
+                                    <div class="signature investigated_sign"></div>
+                                </div>
+                            </div>
+                            <div class="signatureResult text-center">
+                                <button type="button" class="btn btn-link btn-sm" onclick="editSignature(this)"><i class="fa fa-pencil"></i> [edit signature]</button>
+                                <img src="'.$row['investigated_sign'].'" class="signature_img" style="display: block; border: 0; border-bottom: 1px solid; object-fit: contain;"/>
+                                <input type="hidden" name="investigated_sign_temp" value="'.$row['investigated_sign'].'" />
+                            </div>
+                            <input type="text" class="form-control margin-bottom-15" name="investigated_by" placeholder="Investigated By" value="'.htmlentities($row['investigated_by'] ?? '').'" />
+                            <input type="text" class="form-control margin-bottom-15" name="investigated_title" placeholder="Title" value="'.htmlentities($row['investigated_title'] ?? '').'" />
+                            <input type="datetime-local" class="form-control margin-bottom-15" name="investigated_datetime" value="'.$row['investigated_date'].'T'.$row['investigated_time'].'" />
                         </div>
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="investigated_title" placeholder="Title" value="'.$row['investigated_title'].'" disabled />
+                        <div class="col-md-4">
+                            <div class="signatureContainer hide">
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Signature</label>
+                                    <div class="col-md-5">
+                                        <select class="form-control margin-bottom-15" onchange="selectType(this)" name="verified_type">
+                                            <option value="0">Select</option>
+                                            <option value="1">Sign</option>
+                                            <option value="2">Upload</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <input type="file" class="form-control margin-bottom-15 hide sign signature_upload" name="verified_file" />
+                                <div class="hide sign signature_sign">
+                                    <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
+                                    <div class="signature verified_sign"></div>
+                                </div>
+                            </div>
+                            <div class="signatureResult text-center">
+                                <button type="button" class="btn btn-link btn-sm" onclick="editSignature(this)"><i class="fa fa-pencil"></i> [edit signature]</button>
+                                <img src="'.$row['verified_sign'].'" class="signature_img" style="display: block; border: 0; border-bottom: 1px solid; object-fit: contain;"/>
+                                <input type="hidden" name="verified_sign_temp" value="'.$row['verified_sign'].'" />
+                            </div>
+                            <input type="text" class="form-control margin-bottom-15" name="verified_by" placeholder="CAPA Verified By" value="'.htmlentities($row['verified_by'] ?? '').'" />
+                            <input type="text" class="form-control margin-bottom-15" name="verified_title" placeholder="Title" value="'.htmlentities($row['verified_title'] ?? '').'" />
+                            <input type="datetime-local" class="form-control margin-bottom-15" name="verified_datetime" value="'.$row['verified_date'].'T'.$row['verified_time'].'" />
                         </div>
-                        <div class="col-md-3">
-                            <input type="date" class="form-control margin-bottom-15" name="investigated_date" placeholder="text" value="'.$row['investigated_date'].'" disabled />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="time" class="form-control margin-bottom-15" name="investigated_time" placeholder="text" value="'.$row['investigated_time'].'" disabled />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="verified_by" placeholder="CAPA Verified By" value="'.$row['verified_by'].'" disabled />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="verified_title" placeholder="Title" value="'.$row['verified_title'].'" disabled />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="date" class="form-control margin-bottom-15" name="verified_date" placeholder="text" value="'.$row['verified_date'].'" disabled />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="time" class="form-control margin-bottom-15" name="verified_time" placeholder="text" value="'.$row['verified_time'].'" disabled />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="completed_by" placeholder="CAPA Completed By" value="'.$row['completed_by'].'" disabled />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="completed_title" placeholder="Title" value="'.$row['completed_title'].'" disabled />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="date" class="form-control margin-bottom-15" name="completed_date" placeholder="text" value="'.$row['completed_date'].'" disabled />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="time" class="form-control margin-bottom-15" name="completed_time" placeholder="text" value="'.$row['completed_time'].'" disabled />
+                        <div class="col-md-4">
+                            <div class="signatureContainer hide">
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Signature</label>
+                                    <div class="col-md-5">
+                                        <select class="form-control margin-bottom-15" onchange="selectType(this)" name="completed_type">
+                                            <option value="0">Select</option>
+                                            <option value="1">Sign</option>
+                                            <option value="2">Upload</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <input type="file" class="form-control margin-bottom-15 hide sign signature_upload" name="completed_file" />
+                                <div class="hide sign signature_sign">
+                                    <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
+                                    <div class="signature completed_sign"></div>
+                                </div>
+                            </div>
+                            <div class="signatureResult text-center">
+                                <button type="button" class="btn btn-link btn-sm" onclick="editSignature(this)"><i class="fa fa-pencil"></i> [edit signature]</button>
+                                <img src="'.$row['completed_sign'].'" class="signature_img" style="display: block; border: 0; border-bottom: 1px solid; object-fit: contain;"/>
+                                <input type="hidden" name="completed_sign_temp" value="'.$row['completed_sign'].'" />
+                            </div>
+                            <input type="text" class="form-control margin-bottom-15" name="completed_by" placeholder="CAPA Completed By" value="'.htmlentities($row['completed_by'] ?? '').'" />
+                            <input type="text" class="form-control margin-bottom-15" name="completed_title" placeholder="Title" value="'.htmlentities($row['completed_title'] ?? '').'" />
+                            <input type="datetime-local" class="form-control margin-bottom-15" name="completed_datetime" value="'.$row['completed_date'].'T'.$row['completed_time'].'" />
                         </div>
                     </div>
                 </div>
@@ -40864,15 +40953,15 @@
                         </div>
                         <div class="col-md-2 col-md-offset-1">
                             <label class="control-label">Observed By</label>
-                            <input type="text" class="form-control" name="observed_by" value="'.$row['observed_by'].'" disabled />
+                            <input type="text" class="form-control" name="observed_by" value="'.htmlentities($row['observed_by'] ?? '').'" disabled />
                         </div>
                         <div class="col-md-2">
                             <label class="control-label">Reported By</label>
-                            <input type="text" class="form-control" name="reported_by" value="'.$row['reported_by'].'" disabled />
+                            <input type="text" class="form-control" name="reported_by" value="'.htmlentities($row['reported_by'] ?? '').'" disabled />
                         </div>
                         <div class="col-md-2 col-md-offset-1 '; echo $current_client == 1 ? 'hide':''; echo '">
                             <label class="control-label">CAPA Reference No.</label>
-                            <input type="text" class="form-control" name="reference" value="'.$row['reference'].'" disabled />
+                            <input type="text" class="form-control" name="reference" value="'.htmlentities($row['reference'] ?? '').'" disabled />
                         </div>
                     </div>
                 </div>
@@ -40892,7 +40981,7 @@
                             if ( mysqli_num_rows($selectProgram) > 0 ) {
                                 while ($rowProgram = mysqli_fetch_array($selectProgram)) {
                                     $program_ID = $rowProgram['ID'];
-                                    $program_name = $rowProgram['name'];
+                                    $program_name = htmlentities($rowProgram['name'] ?? '');
 
                                     $arr_program_ID =  array();
                                     if (!empty($row['program_id'])) {
@@ -40923,7 +41012,7 @@
                             if ( mysqli_num_rows($selectCategory) > 0 ) {
                                 while ($rowCat = mysqli_fetch_array($selectCategory)) {
                                     $cat_ID = $rowCat['ID'];
-                                    $cat_name = $rowCat['name'];
+                                    $cat_name = htmlentities($rowCat['name'] ?? '');
                                     $arr_category_id =  explode(', ', $row['category_id']);
 
                                     echo '<label class="mt-checkbox mt-checkbox-outline">
@@ -40937,7 +41026,7 @@
                                 <input type="checkbox" name="category_id[]" value="0" '; echo !empty($row['category_other']) ? 'checked':''; echo ' onClick="btnCategory(this)" disabled /> Other
                                 <span></span>
                             </label>
-                            <input type="text" class="form-control '; echo !empty($row['category_other']) ? '':'hide'; echo '" name="category_other" placeholder="Specify Category" value="'.$row['category_other'].'" disabled />
+                            <input type="text" class="form-control '; echo !empty($row['category_other']) ? '':'hide'; echo '" name="category_other" placeholder="Specify Category" value="'.htmlentities($row['category_other'] ?? '').'" disabled />
                         </div>
                     </div>
                 </div>';
@@ -40970,7 +41059,7 @@
                         if ( mysqli_num_rows($selectDepartment) > 0 ) {
                             while ($rowDept = mysqli_fetch_array($selectDepartment)) {
                                 $dept_ID = $rowDept['ID'];
-                                $dept_title = $rowDept['title'];
+                                $dept_title = htmlentities($rowDept['title'] ?? '');
                                 $arr_department_id =  explode(', ', $row['department_id']);
 
                                 echo '<label class="mt-checkbox mt-checkbox-outline">
@@ -40984,7 +41073,7 @@
                             <input type="checkbox" name="department_id[]" value="0" disabled> Other
                             <span></span>
                         </label>
-                        <input type="text" class="form-control hide" name="department_other" placeholder="Specify Department" value="'.$row['department_other'].'" disabled />
+                        <input type="text" class="form-control hide" name="department_other" placeholder="Specify Department" value="'.htmlentities($row['department_other'] ?? '').'" disabled />
                     </div>
                 </div>
             </div>
@@ -41007,7 +41096,7 @@
                     </div>
                 </div>
                 <div class="portlet-body">
-                    <textarea class="form-control" rows="3" name="description" disabled>'.$row['nature_complaint'].'</textarea>
+                    <textarea class="form-control" rows="3" name="description" disabled>'.htmlentities($row['nature_complaint'] ?? '').'</textarea>
                 </div>
             </div>
 
@@ -41048,7 +41137,7 @@
                 <div class="portlet-body">
                     <div class="row">
                         <div class="col-md-7">
-                            <textarea class="form-control" rows="10" name="observation_desc" disabled>'.$row['observation'].'</textarea>
+                            <textarea class="form-control" rows="10" name="observation_desc" disabled>'.htmlentities($row['observation'] ?? '').'</textarea>
                         </div>
                         <div class="col-md-5">
                             <label>Supporting Documents / Evidence:</label>
@@ -41093,7 +41182,7 @@
                 <div class="portlet-body">
                     <div class="row">
                         <div class="col-md-7">
-                            <textarea class="form-control" rows="10" name="root_cause_desc" disabled>'.$row['root_cause'].'</textarea>
+                            <textarea class="form-control" rows="10" name="root_cause_desc" disabled>'.htmlentities($row['root_cause'] ?? '').'</textarea>
                         </div>
                         <div class="col-md-5">
                             <label>Supporting Documents / Evidence:</label>
@@ -41143,7 +41232,7 @@
                                 <option value="1" '; echo $row['corrective_status'] == 1 ? 'SELECTED':''; echo '>Proposed</option>
                                 <option value="2" '; echo $row['corrective_status'] == 2 ? 'SELECTED':''; echo '>Implemented</option>
                             </select>
-                            <textarea class="form-control margin-bottom-15" rows="10" name="corrective_desc" disabled>'.$row['action_taken'].'</textarea>
+                            <textarea class="form-control margin-bottom-15" rows="10" name="corrective_desc" disabled>'.htmlentities($row['action_taken'] ?? '').'</textarea>
                             <div class="row">
                                 <div class="col-md-4">
                                     <input type="date" class="form-control margin-bottom-15" name="corrective_date" placeholder="Date" value="'.date('Y-m-d', strtotime($row['date_resolution'])).'" disabled />
@@ -41152,7 +41241,7 @@
                                     <input type="time" class="form-control margin-bottom-15" name="corrective_time" placeholder="Time" value="'.$row['corrective_time'].'" disabled />
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control margin-bottom-15" name="corrective_by" placeholder="Corrected By" value="'.$row['corrective_by'].'" disabled />
+                                    <input type="text" class="form-control margin-bottom-15" name="corrective_by" placeholder="Corrected By" value="'.htmlentities($row['corrective_by'] ?? '').'" disabled />
                                 </div>
                             </div>
                         </div>
@@ -41204,7 +41293,7 @@
                                 <option value="1" '; echo $row['implementation_status'] == 1 ? 'SELECTED':''; echo '>Proposed</option>
                                 <option value="2" '; echo $row['implementation_status'] == 2 ? 'SELECTED':''; echo '>Implemented</option>
                             </select>
-                            <textarea class="form-control margin-bottom-15" rows="10" name="implementation_desc" disabled>'.$row['implementation_desc'].'</textarea>
+                            <textarea class="form-control margin-bottom-15" rows="10" name="implementation_desc" disabled>'.htmlentities($row['implementation_desc'] ?? '').'</textarea>
                             <div class="row form-horizontal">
                                 <div class="col-md-4">
                                     <label class="control-label">Effective Date of Resolution</label>
@@ -41213,7 +41302,7 @@
                                     <input type="date" class="form-control margin-bottom-15" name="implementation_date" placeholder="Date" value="'.$row['implementation_date'].'" disabled/>
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="text" class="form-control margin-bottom-15" name="implementation_by" placeholder="Implemented By" value="'.$row['implementation_by'].'" disabled />
+                                    <input type="text" class="form-control margin-bottom-15" name="implementation_by" placeholder="Implemented By" value="'.htmlentities($row['implementation_by'] ?? '').'" disabled />
                                 </div>
                             </div>
                         </div>
@@ -41265,7 +41354,7 @@
                                 <option value="1" '; echo $row['implementation_status'] == 1 ? 'SELECTED':''; echo '>Proposed</option>
                                 <option value="2" '; echo $row['implementation_status'] == 2 ? 'SELECTED':''; echo '>Implemented</option>
                             </select>
-                            <textarea class="form-control margin-bottom-15" rows="10" name="preventive_desc" disabled>'.$row['preventive_desc'].'</textarea>
+                            <textarea class="form-control margin-bottom-15" rows="10" name="preventive_desc" disabled>'.htmlentities($row['preventive_desc'] ?? '').'</textarea>
                         </div>
                         <div class="col-md-5">
                             <label>Supporting Documents / Evidence:</label>
@@ -41315,7 +41404,7 @@
                                 <option value="1" '; echo $row['evaluation_status'] == 1 ? 'SELECTED':''; echo '>Proposed</option>
                                 <option value="2" '; echo $row['evaluation_status'] == 2 ? 'SELECTED':''; echo '>Implemented</option>
                             </select>
-                            <textarea class="form-control margin-bottom-15" rows="10" name="evaluation_desc" disabled>'.$row['evaluation_desc'].'</textarea>
+                            <textarea class="form-control margin-bottom-15" rows="10" name="evaluation_desc" disabled>'.htmlentities($row['evaluation_desc'] ?? '').'</textarea>
                         </div>
                         <div class="col-md-5">
                             <label>Supporting Documents / Evidence:</label>
@@ -41360,7 +41449,7 @@
                 <div class="portlet-body">
                     <div class="row">
                         <div class="col-md-7">
-                            <textarea class="form-control margin-bottom-15" rows="10" name="comment_desc" disabled>'.$row['comment'].'</textarea>
+                            <textarea class="form-control margin-bottom-15" rows="10" name="comment_desc" disabled>'.htmlentities($row['comment'] ?? '').'</textarea>
                         </div>
                         <div class="col-md-5">
                             <label>Supporting Documents / Evidence:</label>
@@ -41456,45 +41545,86 @@
             <div class="portlet box default margin-bottom-15">
                 <div class="portlet-body">
                     <div class="row">
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="investigated_by" placeholder="Investigated By" value="'.$row['investigated_by'].'" disabled />
+                        <div class="col-md-4">
+                            <div class="signatureContainer hide">
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Signature</label>
+                                    <div class="col-md-5">
+                                        <select class="form-control margin-bottom-15" onchange="selectType(this)" name="investigated_type">
+                                            <option value="0">Select</option>
+                                            <option value="1">Sign</option>
+                                            <option value="2">Upload</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <input type="file" class="form-control margin-bottom-15 hide sign signature_upload" name="investigated_file" />
+                                <div class="hide sign signature_sign">
+                                    <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
+                                    <div class="signature investigated_sign"></div>
+                                </div>
+                            </div>
+                            <div class="signatureResult text-center">
+                                <button type="button" class="btn btn-link btn-sm" onclick="editSignature(this)"><i class="fa fa-pencil"></i> [edit signature]</button>
+                                <img src="'.$row['investigated_sign'].'" class="signature_img" style="display: block; border: 0; border-bottom: 1px solid; object-fit: contain;"/>
+                                <input type="hidden" name="investigated_sign_temp" value="'.$row['investigated_sign'].'" />
+                            </div>
+                            <input type="text" class="form-control margin-bottom-15" name="investigated_by" placeholder="Investigated By" value="'.htmlentities($row['investigated_by'] ?? '').'" />
+                            <input type="text" class="form-control margin-bottom-15" name="investigated_title" placeholder="Title" value="'.htmlentities($row['investigated_title'] ?? '').'" />
+                            <input type="datetime-local" class="form-control margin-bottom-15" name="investigated_datetime" value="'.$row['investigated_date'].'T'.$row['investigated_time'].'" />
                         </div>
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="investigated_title" placeholder="Title" value="'.$row['investigated_title'].'" disabled />
+                        <div class="col-md-4">
+                            <div class="signatureContainer hide">
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Signature</label>
+                                    <div class="col-md-5">
+                                        <select class="form-control margin-bottom-15" onchange="selectType(this)" name="verified_type">
+                                            <option value="0">Select</option>
+                                            <option value="1">Sign</option>
+                                            <option value="2">Upload</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <input type="file" class="form-control margin-bottom-15 hide sign signature_upload" name="verified_file" />
+                                <div class="hide sign signature_sign">
+                                    <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
+                                    <div class="signature verified_sign"></div>
+                                </div>
+                            </div>
+                            <div class="signatureResult text-center">
+                                <button type="button" class="btn btn-link btn-sm" onclick="editSignature(this)"><i class="fa fa-pencil"></i> [edit signature]</button>
+                                <img src="'.$row['verified_sign'].'" class="signature_img" style="display: block; border: 0; border-bottom: 1px solid; object-fit: contain;"/>
+                                <input type="hidden" name="verified_sign_temp" value="'.$row['verified_sign'].'" />
+                            </div>
+                            <input type="text" class="form-control margin-bottom-15" name="verified_by" placeholder="CAPA Verified By" value="'.htmlentities($row['verified_by'] ?? '').'" />
+                            <input type="text" class="form-control margin-bottom-15" name="verified_title" placeholder="Title" value="'.htmlentities($row['verified_title'] ?? '').'" />
+                            <input type="datetime-local" class="form-control margin-bottom-15" name="verified_datetime" value="'.$row['verified_date'].'T'.$row['verified_time'].'" />
                         </div>
-                        <div class="col-md-3">
-                            <input type="date" class="form-control margin-bottom-15" name="investigated_date" placeholder="text" value="'.$row['investigated_date'].'" disabled />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="time" class="form-control margin-bottom-15" name="investigated_time" placeholder="text" value="'.$row['investigated_time'].'" disabled />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="verified_by" placeholder="CAPA Verified By" value="'.$row['verified_by'].'" disabled />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="verified_title" placeholder="Title" value="'.$row['verified_title'].'" disabled />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="date" class="form-control margin-bottom-15" name="verified_date" placeholder="text" value="'.$row['verified_date'].'" disabled />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="time" class="form-control margin-bottom-15" name="verified_time" placeholder="text" value="'.$row['verified_time'].'" disabled />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="completed_by" placeholder="CAPA Completed By" value="'.$row['completed_by'].'" disabled />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="text" class="form-control margin-bottom-15" name="completed_title" placeholder="Title" value="'.$row['completed_title'].'" disabled />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="date" class="form-control margin-bottom-15" name="completed_date" placeholder="text" value="'.$row['completed_date'].'" disabled />
-                        </div>
-                        <div class="col-md-3">
-                            <input type="time" class="form-control margin-bottom-15" name="completed_time" placeholder="text" value="'.$row['completed_time'].'" disabled />
+                        <div class="col-md-4">
+                            <div class="signatureContainer hide">
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label">Signature</label>
+                                    <div class="col-md-5">
+                                        <select class="form-control margin-bottom-15" onchange="selectType(this)" name="completed_type">
+                                            <option value="0">Select</option>
+                                            <option value="1">Sign</option>
+                                            <option value="2">Upload</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <input type="file" class="form-control margin-bottom-15 hide sign signature_upload" name="completed_file" />
+                                <div class="hide sign signature_sign">
+                                    <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
+                                    <div class="signature completed_sign"></div>
+                                </div>
+                            </div>
+                            <div class="signatureResult text-center">
+                                <button type="button" class="btn btn-link btn-sm" onclick="editSignature(this)"><i class="fa fa-pencil"></i> [edit signature]</button>
+                                <img src="'.$row['completed_sign'].'" class="signature_img" style="display: block; border: 0; border-bottom: 1px solid; object-fit: contain;"/>
+                                <input type="hidden" name="completed_sign_temp" value="'.$row['completed_sign'].'" />
+                            </div>
+                            <input type="text" class="form-control margin-bottom-15" name="completed_by" placeholder="CAPA Completed By" value="'.htmlentities($row['completed_by'] ?? '').'" />
+                            <input type="text" class="form-control margin-bottom-15" name="completed_title" placeholder="Title" value="'.htmlentities($row['completed_title'] ?? '').'" />
+                            <input type="datetime-local" class="form-control margin-bottom-15" name="completed_datetime" value="'.$row['completed_date'].'T'.$row['completed_time'].'" />
                         </div>
                     </div>
                 </div>
@@ -41786,7 +41916,7 @@
                 if ($selectProgram_count > 0) {
                     while ($rowProgram = mysqli_fetch_array($selectProgram)) {
                         $l_ID = $rowProgram['l_ID'];
-                        $l_name = $rowProgram['l_name'];
+                        $l_name = htmlentities($rowProgram['l_name'] ?? '');
 
                         for ($x=0; $x < 2 ; $x++) { 
                             $count_program_arr = array();
@@ -41957,7 +42087,7 @@
                 if ($selectProgram_count > 0) {
                     while ($rowProgram = mysqli_fetch_array($selectProgram)) {
                         $l_ID = $rowProgram['l_ID'];
-                        $l_name = $rowProgram['l_name'];
+                        $l_name = htmlentities($rowProgram['l_name'] ?? '');
 
                         $count_program_arr = array();
                         if (!empty($complaints) AND !empty($years) AND !empty($months)) {
@@ -42102,7 +42232,7 @@
                 if ($selectProgram_count > 0) {
                     while ($rowProgram = mysqli_fetch_array($selectProgram)) {
                         $l_ID = $rowProgram['l_ID'];
-                        $l_name = $rowProgram['l_name'];
+                        $l_name = htmlentities($rowProgram['l_name'] ?? '');
 
                         $count_program_arr = array();
                         if (!empty($complaints) AND !empty($years) AND !empty($months)) {
@@ -42567,7 +42697,7 @@
                 if ($selectProgram_count > 0) {
                     while ($rowProgram = mysqli_fetch_array($selectProgram)) {
                         $l_ID = $rowProgram['l_ID'];
-                        $l_name = $rowProgram['l_name'];
+                        $l_name = htmlentities($rowProgram['l_name'] ?? '');
 
                         for ($x=0; $x < 2 ; $x++) { 
                             $count_program_arr = array();
@@ -42738,7 +42868,7 @@
                 if ($selectProgram_count > 0) {
                     while ($rowProgram = mysqli_fetch_array($selectProgram)) {
                         $l_ID = $rowProgram['l_ID'];
-                        $l_name = $rowProgram['l_name'];
+                        $l_name = htmlentities($rowProgram['l_name'] ?? '');
 
                         $count_program_arr = array();
                         if (!empty($complaints) AND !empty($year) AND !empty($months)) {
@@ -42883,7 +43013,7 @@
                 if ($selectProgram_count > 0) {
                     while ($rowProgram = mysqli_fetch_array($selectProgram)) {
                         $l_ID = $rowProgram['l_ID'];
-                        $l_name = $rowProgram['l_name'];
+                        $l_name = htmlentities($rowProgram['l_name'] ?? '');
 
                         $count_program_arr = array();
                         if (!empty($complaints) AND !empty($year) AND !empty($months)) {
@@ -43317,22 +43447,72 @@
             $training_file = implode(' | ', $arr_item);
         }
 
+        $investigated_sign = $empty_signature;
+        if ($_POST['investigated_type'] == 1) {
+            $investigated_sign = $_POST['investigated_sigData'];
+        } else if ($_POST['investigated_type'] == 2) {
+            if (!empty($_FILES['investigated_file']['name'])) {
+                $base_tmp = $_FILES['investigated_file']['tmp_name'];
+                $base_type = pathinfo($base_tmp, PATHINFO_EXTENSION);
+                $base_data = file_get_contents($base_tmp);
+                $investigated_sign = 'data:image/png;base64,' . base64_encode($base_data);
+            }
+        }
         $investigated_by = $_POST['investigated_by'];
         $investigated_title = $_POST['investigated_title'];
-        $investigated_date = $_POST['investigated_date'];
-        $investigated_time = $_POST['investigated_time'];
+        $investigated_date = '';
+        $investigated_time = '';
+        if (!empty($_POST['investigated_datetime'])) {
+            $datetime_arr = explode('T', $_POST['investigated_datetime']);
+            $investigated_date = $datetime_arr[0];
+            $investigated_time = $datetime_arr[1];
+        }
+
+        $verified_sign = $empty_signature;
+        if ($_POST['verified_type'] == 1) {
+            $verified_sign = $_POST['verified_sigData'];
+        } else if ($_POST['verified_type'] == 2) {
+            if (!empty($_FILES['verified_file']['name'])) {
+                $base_tmp = $_FILES['verified_file']['tmp_name'];
+                $base_type = pathinfo($base_tmp, PATHINFO_EXTENSION);
+                $base_data = file_get_contents($base_tmp);
+                $verified_sign = 'data:image/png;base64,' . base64_encode($base_data);
+            }
+        }
         $verified_by = $_POST['verified_by'];
         $verified_title = $_POST['verified_title'];
-        $verified_date = $_POST['verified_date'];
-        $verified_time = $_POST['verified_time'];
+        $verified_date = '';
+        $verified_time = '';
+        if (!empty($_POST['verified_datetime'])) {
+            $datetime_arr = explode('T', $_POST['verified_datetime']);
+            $verified_date = $datetime_arr[0];
+            $verified_time = $datetime_arr[1];
+        }
+
+        $completed_sign = $empty_signature;
+        if ($_POST['completed_type'] == 1) {
+            $completed_sign = $_POST['completed_sigData'];
+        } else if ($_POST['completed_type'] == 2) {
+            if (!empty($_FILES['completed_file']['name'])) {
+                $base_tmp = $_FILES['completed_file']['tmp_name'];
+                $base_type = pathinfo($base_tmp, PATHINFO_EXTENSION);
+                $base_data = file_get_contents($base_tmp);
+                $completed_sign = 'data:image/png;base64,' . base64_encode($base_data);
+            }
+        }
         $completed_by = $_POST['completed_by'];
         $completed_title = $_POST['completed_title'];
-        $completed_date = $_POST['completed_date'];
-        $completed_time = $_POST['completed_time'];
+        $completed_date = '';
+        $completed_time = '';
+        if (!empty($_POST['completed_datetime'])) {
+            $datetime_arr = explode('T', $_POST['completed_datetime']);
+            $completed_date = $datetime_arr[0];
+            $completed_time = $datetime_arr[1];
+        }
 
         if ($process == true) {
-            $sql = "INSERT INTO tbl_cam (user_id, portal_user, product_related, date, time, observed_by, reported_by, reference, description, program_id, complaint_id, complaint_other, category_id, category_other, department_id, department_other, employee_id, trend, observation, observation_file, root_cause, root_cause_file, corrective_status, corrective_desc, corrective_date, corrective_time, corrective_by, corrective_file, implementation_status, implementation_desc, implementation_date, implementation_by, implementation_file, preventive_status, preventive_desc, preventive_file, evaluation_status, evaluation_desc, evaluation_file, comment, comment_file, training, training_date, training_file, investigated_by, investigated_title, investigated_date, investigated_time, verified_by, verified_title, verified_date, verified_time, completed_by, completed_title, completed_date, completed_time)
-            VALUES ('$user_id', '$portal_user', '$product_related', '$date', '$time', '$observed_by', '$reported_by', '$reference', '$description', '$program_id', '$complaint_id', '$complaint_other', '$category_id', '$category_other', '$department_id', '$department_other', '$employee_id', '$trend', '$observation', '$observation_file', '$root_cause', '$root_cause_file', '$corrective_status', '$corrective_desc', '$corrective_date', '$corrective_time', '$corrective_by', '$corrective_file', '$implementation_status', '$implementation_desc', '$implementation_date', '$implementation_by', '$implementation_file', '$preventive_status', '$preventive_desc', '$preventive_file', '$evaluation_status', '$evaluation_desc', '$evaluation_file', '$comment', '$comment_file', '$training', '$training_date', '$training_file', '$investigated_by', '$investigated_title', '$investigated_date', '$investigated_time', '$verified_by', '$verified_title', '$verified_date', '$verified_time', '$completed_by', '$completed_title', '$completed_date', '$completed_time')";
+            $sql = "INSERT INTO tbl_cam (user_id, portal_user, product_related, date, time, observed_by, reported_by, reference, description, program_id, complaint_id, complaint_other, category_id, category_other, department_id, department_other, employee_id, trend, observation, observation_file, root_cause, root_cause_file, corrective_status, corrective_desc, corrective_date, corrective_time, corrective_by, corrective_file, implementation_status, implementation_desc, implementation_date, implementation_by, implementation_file, preventive_status, preventive_desc, preventive_file, evaluation_status, evaluation_desc, evaluation_file, comment, comment_file, training, training_date, training_file, investigated_sign, investigated_by, investigated_title, investigated_date, investigated_time, verified_sign, verified_by, verified_title, verified_date, verified_time, completed_sign, completed_by, completed_title, completed_date, completed_time)
+            VALUES ('$user_id', '$portal_user', '$product_related', '$date', '$time', '$observed_by', '$reported_by', '$reference', '$description', '$program_id', '$complaint_id', '$complaint_other', '$category_id', '$category_other', '$department_id', '$department_other', '$employee_id', '$trend', '$observation', '$observation_file', '$root_cause', '$root_cause_file', '$corrective_status', '$corrective_desc', '$corrective_date', '$corrective_time', '$corrective_by', '$corrective_file', '$implementation_status', '$implementation_desc', '$implementation_date', '$implementation_by', '$implementation_file', '$preventive_status', '$preventive_desc', '$preventive_file', '$evaluation_status', '$evaluation_desc', '$evaluation_file', '$comment', '$comment_file', '$training', '$training_date', '$training_file', '$investigated_sign', '$investigated_by', '$investigated_title', '$investigated_date', '$investigated_time', '$verified_sign', '$verified_by', '$verified_title', '$verified_date', '$verified_time', '$completed_sign', '$completed_by', '$completed_title', '$completed_date', '$completed_time')";
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
 
@@ -43387,8 +43567,8 @@
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         while ($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                             if (in_array($rowEmployee["ID"], $array_employee_id)) {
-                                $to = $rowEmployee["email"];
-                                $user = $rowEmployee["first_name"].' '.$rowEmployee["last_name"];
+                                $to = htmlentities($rowEmployee["email"] ?? '');
+                                $user = htmlentities($rowEmployee["first_name"] ?? '').' '.htmlentities($rowEmployee["last_name"] ?? '');
                                 $body = 'You are being notified of your involvement in the following CAPA record:<br><br>
 
                                 CAPA ID – '.$last_id.'<br>
@@ -43410,8 +43590,8 @@
                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $user_id" );
                     if ( mysqli_num_rows($selectUser) > 0 ) {
                         $rowUser = mysqli_fetch_array($selectUser);
-                        $to = $rowUser["email"];
-                        $user = $rowUser["first_name"].' '.$rowUser["last_name"];
+                        $to = htmlentities($rowUser["email"] ?? '');
+                        $user = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
 
                         $body = 'Hi [User],<br><br>
 
@@ -43790,19 +43970,70 @@
         if ($process == true) {
             mysqli_query( $conn,"UPDATE tbl_cam set training = '".$training."', training_date = '".$training_date."', training_file = '".$training_file."' WHERE ID = $ID" );
 
+            $investigated_sign = $_POST['investigated_sign_temp'];
+            if ($_POST['investigated_type'] == 1) {
+                $investigated_sign = $_POST['investigated_sigData'];
+            } else if ($_POST['investigated_type'] == 2) {
+                if (!empty($_FILES['investigated_file']['name'])) {
+                    $base_tmp = $_FILES['investigated_file']['tmp_name'];
+                    $base_type = pathinfo($base_tmp, PATHINFO_EXTENSION);
+                    $base_data = file_get_contents($base_tmp);
+                    $investigated_sign = 'data:image/png;base64,' . base64_encode($base_data);
+                }
+            }
             $investigated_by = $_POST['investigated_by'];
             $investigated_title = $_POST['investigated_title'];
-            $investigated_date = $_POST['investigated_date'];
-            $investigated_time = $_POST['investigated_time'];
+            $investigated_date = '';
+            $investigated_time = '';
+            if (!empty($_POST['investigated_datetime'])) {
+                $datetime_arr = explode('T', $_POST['investigated_datetime']);
+                $investigated_date = $datetime_arr[0];
+                $investigated_time = $datetime_arr[1];
+            }
+
+            $verified_sign = $_POST['verified_sign_temp'];
+            if ($_POST['verified_type'] == 1) {
+                $verified_sign = $_POST['verified_sigData'];
+            } else if ($_POST['verified_type'] == 2) {
+                if (!empty($_FILES['verified_file']['name'])) {
+                    $base_tmp = $_FILES['verified_file']['tmp_name'];
+                    $base_type = pathinfo($base_tmp, PATHINFO_EXTENSION);
+                    $base_data = file_get_contents($base_tmp);
+                    $verified_sign = 'data:image/png;base64,' . base64_encode($base_data);
+                }
+            }
             $verified_by = $_POST['verified_by'];
             $verified_title = $_POST['verified_title'];
-            $verified_date = $_POST['verified_date'];
-            $verified_time = $_POST['verified_time'];
+            $verified_date = '';
+            $verified_time = '';
+            if (!empty($_POST['verified_datetime'])) {
+                $datetime_arr = explode('T', $_POST['verified_datetime']);
+                $verified_date = $datetime_arr[0];
+                $verified_time = $datetime_arr[1];
+            }
+
+            $completed_sign = $_POST['completed_sign_temp'];
+            if ($_POST['completed_type'] == 1) {
+                $completed_sign = $_POST['completed_sigData'];
+            } else if ($_POST['completed_type'] == 2) {
+                if (!empty($_FILES['completed_file']['name'])) {
+                    $base_tmp = $_FILES['completed_file']['tmp_name'];
+                    $base_type = pathinfo($base_tmp, PATHINFO_EXTENSION);
+                    $base_data = file_get_contents($base_tmp);
+                    $completed_sign = 'data:image/png;base64,' . base64_encode($base_data);
+                }
+            }
             $completed_by = $_POST['completed_by'];
             $completed_title = $_POST['completed_title'];
-            $completed_date = $_POST['completed_date'];
-            $completed_time = $_POST['completed_time'];
-            mysqli_query( $conn,"UPDATE tbl_cam set investigated_by = '".$investigated_by."', investigated_title = '".$investigated_title."', investigated_date = '".$investigated_date."', investigated_time = '".$investigated_time."', verified_by = '".$verified_by."', verified_title = '".$verified_title."', verified_date = '".$verified_date."', verified_time = '".$verified_time."', completed_by = '".$completed_by."', completed_title = '".$completed_title."', completed_date = '".$completed_date."', completed_time = '".$completed_time."' WHERE ID = $ID" );
+            $completed_date = '';
+            $completed_time = '';
+            if (!empty($_POST['completed_datetime'])) {
+                $datetime_arr = explode('T', $_POST['completed_datetime']);
+                $completed_date = $datetime_arr[0];
+                $completed_time = $datetime_arr[1];
+            }
+
+            mysqli_query( $conn,"UPDATE tbl_cam set investigated_sign = '".$investigated_sign."', investigated_by = '".$investigated_by."', investigated_title = '".$investigated_title."', investigated_date = '".$investigated_date."', investigated_time = '".$investigated_time."', verified_sign = '".$verified_sign."', verified_by = '".$verified_by."', verified_title = '".$verified_title."', verified_date = '".$verified_date."', verified_time = '".$verified_time."', completed_sign = '".$completed_sign."', completed_by = '".$completed_by."', completed_title = '".$completed_title."', completed_date = '".$completed_date."', completed_time = '".$completed_time."' WHERE ID = $ID" );
 
 
             $data_department_id = array();
@@ -44640,7 +44871,7 @@
             <b>'.$sender_fullname.'</b> said:<br>
             <i>"'.stripcslashes($message).'"</i><br><br>
 
-            <a href="'. $base_url .'profile" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">Reply</a>';
+            <a href="'. $base_url .'profile?c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">Reply</a>';
             
             php_mailer_chat($to, $user, $subject, $body, $from, $name);
         }
@@ -46279,7 +46510,6 @@
                                 } else if ($filetype == 3) {
                                     $file_doc = preg_replace('#[^/]*$#', '', $file_doc).'preview';
                                 } else if ($filetype == 4) {
-                                    $file_doc = preg_replace('#[^/]*$#', '', $file_doc);
                                     $file_extension = 'fa-strikethrough';
                                     $target = '_blank';
                                 }
@@ -46297,7 +46527,7 @@
                                     } else {
                                         echo '<iframe src="'.$file_doc.'" style="width: 100%; height: 400px;"></iframe>';
                                     }
-                                    echo '<a data-src="'.$file_doc.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a>';
+                                    echo '<a data-src="'.$file_doc.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a>';
 
                                 echo '</div>';
                             }
@@ -47782,7 +48012,7 @@
                                         '.$sender.' has a comment on <b>'.$data_names.'</b><br>
                                         <i>"'.stripcslashes($comment_comment).'"</i><br><br>
 
-                                        <a href="'. $base_url .'dashboard?d='. $target_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+                                        <a href="'. $base_url .'dashboard?d='. $target_id .'&s='.$s.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
 
                                         php_mailer_2($to, $user, $subject, $body, $from, $sender);
                                     }
@@ -47795,7 +48025,7 @@
                                         '.$sender.' has a comment on <b>'.$data_names.'</b><br>
                                         <i>"'.stripcslashes($comment_comment).'"</i><br><br>
 
-                                        <a href="'. $base_url .'dashboard?d='. $target_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+                                        <a href="'. $base_url .'dashboard?d='. $target_id .'&s='.$s.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
 
                                         php_mailer_2($to, $user, $subject, $body, $from, $sender);
                                     }
@@ -48121,10 +48351,10 @@
                                     <li class=""><a href="#tabReview_'. $library_ID .'" data-toggle="tab" aria-expanded="false">Annual Review</a></li>
                                     <li class=""><a href="#tabTemplate_'. $library_ID .'" data-toggle="tab" aria-expanded="false">Templates</a></li>';
 
-                                    if ($current_client == 0) {
+                                    // if ($current_client == 0) {
                                         echo '<li class=""><a href="#tabReferences_'. $library_ID .'" data-toggle="tab" aria-expanded="false">References</a></li>
                                         <li class=""><a href="#tabVideo_'. $library_ID .'" data-toggle="tab" aria-expanded="false">Video</a></li>';
-                                    }
+                                    // }
                                     
                                     echo '<li class=""><a href="#tabTask_'. $library_ID .'" data-toggle="tab" aria-expanded="false">Task</a></li>
                                 </ul>
@@ -48189,7 +48419,6 @@
                                                             $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                             $file_extension = 'fa-google';
                                                         } else if ($str_filetype == 4) {
-                                                            $files = preg_replace('#[^/]*$#', '', $str_filename);
                                                             $file_extension = 'fa-strikethrough';
                                                             $target = '_blank';
                                                         }
@@ -48592,11 +48821,10 @@
                                                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                                     $file_extension = 'fa-google';
                                                                 } else if ($filetype == 4) {
-                                                                    $files = preg_replace('#[^/]*$#', '', $files);
                                                                     $file_extension = 'fa-strikethrough';
                                                                     $target = '_blank';
                                                                 }
-                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
+                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
                                                             }
 
                                                             $displayLibrary = false;
@@ -48668,11 +48896,10 @@
                                                                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                                                     $file_extension = 'fa-google';
                                                                                 } else if ($filetype == 4) {
-                                                                                    $files = preg_replace('#[^/]*$#', '', $files);
                                                                                     $file_extension = 'fa-strikethrough';
                                                                                     $target = '_blank';
                                                                                 }
-                                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
+                                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
                                                                             }
 
                                                                             $compliance_type = $rowComplinaceItem["type"];
@@ -49211,7 +49438,7 @@
                                         <a href="#modalTemplate" class="btn btn-circle btn-success" data-toggle="modal" onclick="btnTemplate('. $library_ID .')" style="margin: 15px;">Add Templates</a>
                                     </div>';
 
-                                    if ($current_client == 0) {
+                                    // if ($current_client == 0) {
                                         echo '<div class="tab-pane" id="tabReferences_'. $library_ID .'">
                                             <div class="mt-actions">';
 
@@ -49391,7 +49618,7 @@
                                             echo '</div>
                                             <a href="#modalVideo" class="btn btn-circle btn-success" data-toggle="modal" onclick="btnVideo('. $library_ID .')" style="margin: 15px;">Add Video</a>
                                         </div>';
-                                    }
+                                    // }
                                     
                                     echo '<div class="tab-pane" id="tabTask_'. $library_ID .'">
                                         <div class="mt-actions">';
@@ -49650,10 +49877,10 @@
                             <li class=""><a href="#tabReview_'. $library_ID .'" data-toggle="tab" aria-expanded="false">Annual Review</a></li>
                             <li class=""><a href="#tabTemplate_'. $library_ID .'" data-toggle="tab" aria-expanded="false">Templates</a></li>';
 
-                            if ($current_client == 0) {
+                            // if ($current_client == 0) {
                                 echo '<li class=""><a href="#tabReferences_'. $library_ID .'" data-toggle="tab" aria-expanded="false">References</a></li>
                                 <li class=""><a href="#tabVideo_'. $library_ID .'" data-toggle="tab" aria-expanded="false">Video</a></li>';
-                            }
+                            // }
                             
                             echo '<li class=""><a href="#tabTask_'. $library_ID .'" data-toggle="tab" aria-expanded="false">Task</a></li>
                         </ul>
@@ -49723,7 +49950,6 @@
                                                     $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                     $file_extension = 'fa-google';
                                                 } else if ($str_filetype == 4) {
-                                                    $files = preg_replace('#[^/]*$#', '', $str_filename);
                                                     $file_extension = 'fa-strikethrough';
                                                     $target = '_blank';
                                                 }
@@ -50121,11 +50347,10 @@
                                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                             $file_extension = 'fa-google';
                                                         } else if ($filetype == 4) {
-                                                            $files = preg_replace('#[^/]*$#', '', $files);
                                                             $file_extension = 'fa-strikethrough';
                                                             $target = '_blank';
                                                         }
-                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
+                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
                                                     }
 
                                                     echo '<tr id="tr_'. $compliance_ID .'">
@@ -50184,11 +50409,10 @@
                                                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                                             $file_extension = 'fa-google';
                                                                         } else if ($filetype == 4) {
-                                                                            $files = preg_replace('#[^/]*$#', '', $files);
                                                                             $file_extension = 'fa-strikethrough';
                                                                             $target = '_blank';
                                                                         }
-                                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
+                                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
                                                                     }
 
                                                                     $compliance_type = $rowComplinaceItem["type"];
@@ -50667,7 +50891,7 @@
                                 <a href="#modalTemplate" class="btn btn-circle btn-success" data-toggle="modal" onclick="btnTemplate('. $library_ID .')" style="margin: 15px;">Add Templates</a>
                             </div>';
 
-                            if ($current_client == 0) {
+                            // if ($current_client == 0) {
                                 echo '<div class="tab-pane" id="tabReferences_'. $library_ID .'">
                                     <div class="mt-actions">';
 
@@ -50829,7 +51053,7 @@
                                     echo '</div>
                                     <a href="#modalVideo" class="btn btn-circle btn-success" data-toggle="modal" onclick="btnVideo('. $library_ID .')" style="margin: 15px;">Add Video</a>
                                 </div>';
-                            }
+                            // }
                             
                             echo '<div class="tab-pane" id="tabTask_'. $library_ID .'">
                                 <div class="mt-actions">';
@@ -52303,7 +52527,7 @@
 
                 <b>'.$sender_name.'</b> updated the status into <i>'.$status_array[$v].'</i><br><br>
 
-                Click <a href="'.$base_url.'dashboard?d='.$ID.'&s='.$s.'" target="_blank">here</a> to view<br><br>
+                Click <a href="'.$base_url.'dashboard?d='.$ID.'&s='.$s.'&c='.$client_ID.'" target="_blank">here</a> to view<br><br>
 
                 Thanks';
 
@@ -52965,7 +53189,7 @@
 
         Please click the button below to view the item<br><br>
 
-        <a href="'. $base_url .'dashboard?d='. $id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+        <a href="'. $base_url .'dashboard?d='. $id .'&s='.$s.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
 
         $mail = php_mailer($to, $user, $subject, $body);
     }
@@ -53204,7 +53428,7 @@
                     $subject = 'Compliance Dashboard Description - For Review/Approval - '. $local_date;
                     $body = 'Hi Team,<br><br>
 
-                    New revision has been made that needs your attention. Click <a href="'.$base_url.'dashboard?d='.$ID.'&s='.$s.'" target="_blank">here</a> to view<br><br>
+                    New revision has been made that needs your attention. Click <a href="'.$base_url.'dashboard?d='.$ID.'&s='.$s.'&c='.$client_ID.'" target="_blank">here</a> to view<br><br>
 
                     Thanks';
 
@@ -53455,7 +53679,7 @@
                     $subject = 'Compliance Dashboard Description - For Review/Approval - '. $local_date;
                     $body = 'Hi Team,<br><br>
 
-                    New revision has been made that needs your attention. Click <a href="'.$base_url.'dashboard?d='.$parent_id.'&s='.$s.'" target="_blank">here</a> to view<br><br>
+                    New revision has been made that needs your attention. Click <a href="'.$base_url.'dashboard?d='.$parent_id.'&s='.$s.'&c='.$client_ID.'" target="_blank">here</a> to view<br><br>
 
                     Thanks';
 
@@ -53595,7 +53819,7 @@
 
                     <b>'.$sender_name.'</b> said <i>'.$comment.'</i><br><br>
 
-                    Click <a href="'.$base_url.'dashboard?d='.$ID.'&s='.$s.'" target="_blank">here</a> to view<br><br>
+                    Click <a href="'.$base_url.'dashboard?d='.$ID.'&s='.$s.'&c='.$client_ID.'" target="_blank">here</a> to view<br><br>
 
                     Thanks';
 
@@ -53696,8 +53920,8 @@
                 } else if ($str_filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                 } else if ($str_filetype == 4) {
-                    $files = preg_replace('#[^/]*$#', '', $str_filename);
                     $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
                 }
             }
         }
@@ -53715,7 +53939,7 @@
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
             </div>
         </div>
         <div class="form-group">
@@ -53803,7 +54027,7 @@
 
             Please click the button below to view the item<br><br>
 
-            <a href="'. $base_url .'dashboard?d='. $data_library_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a><br><br>
+            <a href="'. $base_url .'dashboard?d='. $data_library_id .'&s='.$s.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a><br><br>
 
             Cann OS Team';
         } else {
@@ -53814,7 +54038,7 @@
 
             Please click the button below to view the item<br><br>
 
-            <a href="'. $base_url .'dashboard?d='. $data_library_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+            <a href="'. $base_url .'dashboard?d='. $data_library_id .'&s='.$s.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
         }
         $mail = php_mailer($to, $user, $subject, $body);
     }
@@ -53949,7 +54173,6 @@
                                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                 $file_extension = 'fa-google';
                             } else if ($str_filetype == 4) {
-                                $files = preg_replace('#[^/]*$#', '', $files);
                                 $file_extension = 'fa-strikethrough';
                                 $target = '_blank';
                             }
@@ -54093,7 +54316,6 @@
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
                         } else if ($str_filetype == 4) {
-                            $files = preg_replace('#[^/]*$#', '', $files);
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
                         }
@@ -54406,7 +54628,7 @@
                         '.$sender.' has a comment on <b>'.$data_names.'</b><br>
                         <i>"'.stripcslashes($comment_comment).'"</i><br><br>
 
-                        <a href="'. $base_url .'dashboard?d='. $parent_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+                        <a href="'. $base_url .'dashboard?d='. $parent_id .'&s='.$s.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
             
                         $body .= '<br><br>'.$client_name.' Team';
                         
@@ -54542,7 +54764,6 @@
                 } else if ($filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                 } else if ($filetype == 4) {
-                    $files = preg_replace('#[^/]*$#', '', $files);
                     $file_extension = 'fa-strikethrough';
                     $target = '_blank';
                 }
@@ -54630,7 +54851,7 @@
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
             </div>
         </div>';
 
@@ -54705,7 +54926,6 @@
                 } else if ($filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                 } else if ($filetype == 4) {
-                    $files = preg_replace('#[^/]*$#', '', $files);
                     $file_extension = 'fa-strikethrough';
                     $target = '_blank';
                 }
@@ -54735,7 +54955,7 @@
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
             </div>
         </div>
         <div class="form-group">
@@ -54873,7 +55093,7 @@
             $name = $client_name;
             $body .= $client_name;
 
-            $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+            $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $id .'&s='.$s.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
             
             php_mailer_1($to, $user, $subject, $body, $from, $name);
         }
@@ -55073,11 +55293,10 @@
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
                         } else if ($filetype == 4) {
-                            $files = preg_replace('#[^/]*$#', '', $files);
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
                         }
-                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
+                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
                     }
 
                     $selectLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE deleted = 0 AND ID = $parent_id" );
@@ -55113,7 +55332,7 @@
                         $name = $client_name;
                         $body .= $client_name.' Team';
 
-                        $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $last_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+                        $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $last_id .'&s='.$s.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
 
                         php_mailer_1($to, $user, $subject, $body, $from, $name);
                     }
@@ -55273,11 +55492,10 @@
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
                     } else if ($filetype == 4) {
-                        $files = preg_replace('#[^/]*$#', '', $files);
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
                     }
-                    $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
+                    $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
                 }
 
                 $output = array(
@@ -55448,11 +55666,10 @@
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
                         } else if ($filetype == 4) {
-                            $files = preg_replace('#[^/]*$#', '', $files);
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
                         }
-                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
+                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
                     }
 
                     $compliance_last_modified = $rowData["last_modified"];
@@ -55493,7 +55710,7 @@
                         $name = $client_name;
                         $body .= $client_name.' Team';
 
-                        $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $last_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
+                        $body .= '<br><br><a href="'. $base_url .'dashboard?d='. $last_id .'&s='.$s.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a>';
 
                         php_mailer_1($to, $user, $subject, $body, $from, $name);
                     }
@@ -55607,11 +55824,10 @@
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
                     } else if ($filetype == 4) {
-                        $files = preg_replace('#[^/]*$#', '', $files);
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
                     }
-                    $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
+                    $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
                 }
 
                 $compliance_last_modified = $rowData["last_modified"];
@@ -56278,11 +56494,10 @@
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
                         } else if ($filetype == 4) {
-                            $files = preg_replace('#[^/]*$#', '', $files);
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
                         }
-                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
+                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
                     }
 
                     $output = array(
@@ -56383,11 +56598,10 @@
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
                     } else if ($filetype == 4) {
-                        $files = preg_replace('#[^/]*$#', '', $files);
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
                     }
-                    $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
+                    $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
                 }
 
                 $output = array(
@@ -56568,11 +56782,10 @@
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
                         } else if ($filetype == 4) {
-                            $files = preg_replace('#[^/]*$#', '', $files);
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
                         }
-                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
+                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
                     }
 
                     $output = array(
@@ -56703,11 +56916,10 @@
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
                     } else if ($filetype == 4) {
-                        $files = preg_replace('#[^/]*$#', '', $files);
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
                     }
-                    $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
+                    $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
                 }
 
                 $output = array(
@@ -56850,11 +57062,10 @@
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
                         } else if ($filetype == 4) {
-                            $files = preg_replace('#[^/]*$#', '', $files);
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
                         }
-                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
+                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
                     }
 
                     $output = array(
@@ -56995,11 +57206,10 @@
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
                     } else if ($filetype == 4) {
-                        $files = preg_replace('#[^/]*$#', '', $files);
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
                     }
-                    $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
+                    $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
                 }
 
                 $output = array(
@@ -57254,7 +57464,6 @@
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
                         } else if ($filetype == 4) {
-                            $files = preg_replace('#[^/]*$#', '', $files);
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
                         }
@@ -57265,7 +57474,7 @@
                             <div class="mt-action-row">
                                 <div class="mt-action-info">
                                     <div class="mt-action-icon">
-                                        <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                        <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                     </div>
                                     <div class="mt-action-details" style="vertical-align: middle;">
                                         <p class="mt-action-desc">
@@ -57387,7 +57596,6 @@
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
                     } else if ($filetype == 4) {
-                        $files = preg_replace('#[^/]*$#', '', $files);
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
                     }
@@ -57397,7 +57605,7 @@
                     <div class="mt-action-row">
                         <div class="mt-action-info">
                             <div class="mt-action-icon">
-                                <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                             </div>
                             <div class="mt-action-details" style="vertical-align: middle;">
                                 <p class="mt-action-desc">
@@ -57665,7 +57873,6 @@
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
                         } else if ($filetype == 4) {
-                            $files = preg_replace('#[^/]*$#', '', $files);
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
                         }
@@ -57676,7 +57883,7 @@
                             <div class="mt-action-row">
                                 <div class="mt-action-info">
                                     <div class="mt-action-icon">
-                                        <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                        <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                     </div>
                                     <div class="mt-action-details" style="vertical-align: middle;">
                                         <p class="mt-action-desc">
@@ -57798,7 +58005,6 @@
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
                     } else if ($filetype == 4) {
-                        $files = preg_replace('#[^/]*$#', '', $files);
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
                     }
@@ -57808,7 +58014,7 @@
                     <div class="mt-action-row">
                         <div class="mt-action-info">
                             <div class="mt-action-icon">
-                                <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                             </div>
                             <div class="mt-action-details" style="vertical-align: middle;">
                                 <p class="mt-action-desc">
@@ -58568,7 +58774,7 @@
                             Project Name: '.stripcslashes($name).'<br>
                             Task Description: '.stripcslashes($description).'<br><br>
 
-                            <a href="'. $base_url .'dashboard?d='. $parent_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a><br><br>';
+                            <a href="'. $base_url .'dashboard?d='. $parent_id .'&s='.$s.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a><br><br>';
                 
                             $from = $client_email;
                             $name = $client_name;
@@ -58733,7 +58939,7 @@
                         Project Name: '.stripcslashes($name).'<br>
                         Task Description: '.stripcslashes($description).'<br><br>
 
-                        <a href="'. $base_url .'dashboard?d='. $parent_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a><br><br>';
+                        <a href="'. $base_url .'dashboard?d='. $parent_id .'&s='.$s.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View Here</a><br><br>';
             
                         $from = $client_email;
                         $name = $client_name;
@@ -58979,7 +59185,7 @@
 
         $current_userEmployerID = employerID($_COOKIE['ID']);
         $current_client = 0;
-        if (!empty($_COOKIE['client'])) { $current_client = 1; }
+        if (!empty($_COOKIE['client']) AND $_COOKIE['client'] == 1) { $current_client = 1; }
 
         echo '<input class="form-control" type="hidden" name="ID" value="'. $id .'" />
         <div class="form-group">
@@ -58988,7 +59194,7 @@
                 <select class="form-control mt-multiselect btn btn-default" name="user" required>
                     <option value="">Select</option>';
 
-                    if ($portal_user == 1 OR $portal_user == 2 OR $portal_user == 19 OR $portal_user == 163 OR $current_userEmployerID == 27 OR $user_id == 464 OR $portal_user == 481) {
+                    if ($portal_user == 1 OR $portal_user == 2 OR $portal_user == 19 OR $portal_user == 163 OR $current_userEmployerID == 27 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1486) {
                         $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = 0 AND is_verified = 1 AND is_active = 1" );
                         if ($current_client == 1) { $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = 0 AND is_verified = 1 AND is_active = 1 AND client = 1" ); }
 

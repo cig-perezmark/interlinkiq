@@ -677,32 +677,36 @@ html {
     <div class="tab-pane" id="process_monitoring_forms">
         <div class="panel-group accordion margin-top-20" id="eformsAccordion">
             <?php 
-                $conn2 = new mysqli_extended($servername, $username, $password, 'brandons_qc-forms');
-                
-                if($conn2->connect_errno) {
-                    echo 'Unable to display forms at the moment.';
+                if($user_id != 464) {
+                    echo '<h3>Coming soon</h3>';
                 } else {
-                    $haccpEforms = array(
-                        23200014,
-                        23200049,
-                        23200082,
-                        23200048,
-                        13,
-                    );
+                
+                    $conn2 = new mysqli_extended($servername, $username, $password, 'brandons_qc-forms');
                     
-                    $eforms = $conn2->execute("SELECT PK_id, afl_form_name, afl_form_code FROM `tbl_afia_forms_list` WHERE PK_id IN (".(implode(',' , $haccpEforms)).")")->fetchAll();
-                    
-                    foreach($eforms as $index => $form) {
+                    if($conn2->connect_errno) {
+                        echo 'Unable to display forms at the moment.';
+                    } else {
+                        $haccpEforms = array(
+                            23200014,
+                            23200049,
+                            23200082,
+                            23200048,
+                            13,
+                        );
+                        
+                        $eforms = $conn2->execute("SELECT PK_id, afl_form_name, afl_form_code FROM `tbl_afia_forms_list` WHERE PK_id IN (".(implode(',' , $haccpEforms)).")")->fetchAll();
+                        
+                        foreach($eforms as $index => $form) {
                         
             ?>
-            <div class="panel panel-default margin-bottom-20">
+            <div class="panel panel-default margin-bottom-20x">
                 <div class="panel-heading">
-                    <h4 class="panel-title" style="display: flex; align-items: center; justify-content:space-between;">
+                    <h6 class="panel-title" style="display: flex; align-items: center; justify-content:space-between;">
                         <a class="accordion-toggle bold" data-toggle="collapse" data-parent="#eformsAccordion" href="#eformAccItem<?= $index ?>"> <?= $form['afl_form_name'] ?> </a>
                         <a href="https://interlinkiq.com/e-forms/Welcome/index/<?= $switch_user_id ?>/<?= $_COOKIE['ID'] ?>/<?= $form['afl_form_code'] ?>/add_records/<?= $form['PK_id'] ?>" target="_blank" style="padding: revert;" class=" btn blue btn-sm" title="Add record">
                             <i class="fa fa-plus"></i>
                         </a>
-                    </h4>
+                    </h6>
                 </div>
                 <div id="eformAccItem<?= $index ?>" class="panel-collapse collapse">
                     <div class="panel-body">
@@ -711,6 +715,7 @@ html {
                 </div>
             </div>
             <?php
+                        }
                     }
                 }
             ?>

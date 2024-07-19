@@ -75,8 +75,18 @@
         //     header("Location: " . $_SERVER["HTTP_REFERER"]);
         // }
         
+        $location = 'login';
+        if (isset($_GET['c'])) {
+            $client_ID = $_GET['c'];
+            $selectClient = mysqli_query( $conn,"SELECT * FROM tbl_user_client WHERE ID = $client_ID" );
+            if ( mysqli_num_rows($selectClient) > 0 ) {
+                $rowClient = mysqli_fetch_array($selectClient);
+                $location = $rowClient["url"];
+            }
+        }
+        
         echo '<script>
-            window.location.href = "login";
+            window.location.href = "'.$location.'";
             // if (document.referrer == "") {
             //     window.location.href = "login";
             // } else {
@@ -955,6 +965,17 @@ License: You must have a valid license purchased only from themeforest(the above
                                     echo '<a href="dashboard"><img src="companyDetailsFolder/852876 - New Focuss Logo.png" height="60px" alt="logo" /></a>';
                                 }
                                 
+                            } else if ($current_client == 11) {
+                                if ($switch_user_id == 1486) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/449248 - marukan logo.png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/449248 - marukan logo.png" height="60px" alt="logo" /></a>';
+                                }
+                                
                             } else {
                                 if (isset($_COOKIE['switchAccount'])) {
                                     echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
@@ -1281,6 +1302,12 @@ License: You must have a valid license purchased only from themeforest(the above
                             //     </li>';
                             // }
                             if ($switch_user_id == 1 OR $switch_user_id == 34 OR $switch_user_id == 163) {
+                                // echo '<li class="dropdown dropdown-extended">
+                                //     <a href="javascript:;" class="dropdown-toggle">
+                                //         <i class="icon-clock"></i>
+                                //     </a>
+                                //     <ul class="dropdown-menu hide"></ul>
+                                // </li>';
                                 echo '<li class="dropdown dropdown-extended">
                                     <a href="javascript:;" class="dropdown-toggle" onclick="offCanvas(1)">
                                         <i class="icon-envelope"></i>
@@ -2607,7 +2634,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             </li>';
                         }
                     ?>
-                    <?php if($_COOKIE['ID'] == 48100 OR $switch_user_id == 163 OR $_COOKIE['ID'] == 1167 OR $_COOKIE['ID'] == 117 OR $switch_user_id == 464 ): ?>
+                    <?php if($_COOKIE['ID'] == 48100 OR $switch_user_id == 163 OR $_COOKIE['ID'] == 1167 OR $_COOKIE['ID'] == 117 OR $switch_user_id == 464 OR $switch_user_id == 1563 ): ?>
                     <li class="nav-item">
                         <a href="glp_dashboard" class="nav-link" disabled>
                             <i class="icon-graph"></i>

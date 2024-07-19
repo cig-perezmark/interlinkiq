@@ -479,7 +479,7 @@
                                                                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $int_verify_assigned" );
                                                                     if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                         $rowUser = mysqli_fetch_array($selectUser);
-                                                                        $int_verify_assigned_name = htmlentities($rowUser["first_name"]) .' '. htmlentities($rowUser["last_name"]);
+                                                                        $int_verify_assigned_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
                                                                     }
                                                                 }
                                                                 

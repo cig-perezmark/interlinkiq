@@ -122,8 +122,8 @@ function renderDTRow(dataset, rowData, table, mode = 'add') {
     table.dt.row.add([
         rowData.importer_name || na,
         rowData.supplier_name || na,
-        rowData.qi_name || na,
         rowData.products || na,
+        rowData.qi_name || na,
         rowData.approval_date || na,
         rowData.evaluation_date || na,
         actionBtn,

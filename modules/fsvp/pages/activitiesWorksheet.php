@@ -49,7 +49,10 @@
         <form class="modal-content" role="form" id="newActivityWorksheetForm">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">FSVP Activity(ies) Worksheet</h4>
+                <h4 class="modal-title">
+                    <span data-edit-span>Edit </span>
+                    FSVP Activity(ies) Worksheet
+                </h4>
             </div>
             <div class="modal-body form-body">
                 <div class="row">

@@ -619,5 +619,50 @@ function saveNewEvaluationRecord($conn, $post, $evalId, $preRecordId = null) {
     }
 }
 
+function updateAWData($conn, $POST, $portal_user, $id, $importerId, $fsvpqiId, $supplierId) {
+    $sql = "UPDATE tbl_fsvp_activities_worksheets SET
+            portal_user = ?,
+            importer_id = ?,
+            fsvpqi_id = ?,
+            supplier_id = ?,
+            verification_date = ?,
+            supplier_evaluation_date = ?,
+            approval_date = ?,
+            fdfsc = ?,
+            pdipm = ?,
+            fshc = ?,
+            dfsc = ?,
+            vaf = ?,
+            justification_vaf = ?,
+            verification_records = ?,
+            assessment_results = ?,
+            corrective_actions = ?,
+            reevaluation_date = ?
+        WHERE id = ?
+    ";
+    $values = [
+        $portal_user,
+        $importerId,
+        $fsvpqiId,
+        $supplierId,
+        emptyIsNull($POST['verification_date']),
+        emptyIsNull($POST['supplier_evaluation_date']),
+        emptyIsNull($POST['approval_date']),
+        emptyIsNull($POST['fdfsc']),
+        emptyIsNull($POST['pdipm']),
+        emptyIsNull($POST['fshc']),
+        emptyIsNull($POST['dfsc']),
+        emptyIsNull($POST['vaf']),
+        emptyIsNull($POST['justification_vaf']),
+        emptyIsNull($POST['verification_records']),
+        emptyIsNull($POST['assessment_results']),
+        emptyIsNull($POST['corrective_actions']),
+        emptyIsNull($POST['reevaluation_date']),
+        $id
+    ];
+
+    return $conn->execute($sql, $values);
+}
+
 // schedule
 // function 

@@ -1,34 +1,25 @@
 jQuery(function() {
     const datatableAW = Init.dataTable($('#tableActivitiesWorksheet'));
     const supplierSelect = Init.multiSelect($('#awForeignSupplierSelect'), {
-        onChange: function(option) {
-            const address = $('#awForeignSupplierSelect option:selected').attr('data-address') || '';
-            $('#awForeignSupplierAddress').val(address);
-
-            const supplierId = $(option).val();
-            const importerId = $('#awImporterSelect').val() || '';
-
-            populateFoodProducts(supplierId, importerId);
-        }
+        onChange: SSOnChange
     });
     const fsvpqiSelect = Init.multiSelect($('#awFSVPQISelect'));
     const importerSelect = Init.multiSelect($('#awImporterSelect'), {
-        onChange: function(option) {
-            const id = $(option).val();
-            const address = $('#awImporterSelect option:selected').attr('data-address') || '';
-            $('#awImporterAddress').val(address);
-
-            supplierSelect.reset();
-            fsvpqiSelect.reset();
-            $('#awForeignSupplierAddress').val('');
-            $('#awProductsImported').val('');
-        }
+        onChange: ISOnChange
     });
 
-    let ActivitiesWorksheetData = [];
+    let ActivitiesWorksheetData = {};
+    let onViewAWId = null;
 
     // init
     fetchInitialData(ActivitiesWorksheetData, datatableAW);
+
+    $('#tableActivitiesWorksheet').on('click', '[data-awid]', function() {
+        const id = this.dataset.awid ?? 0;
+
+        onViewAWId = id;
+        showEditModal(id)
+    })
 
     $('#newActivityWorksheetForm').on('submit', function(e) {
         e.preventDefault();
@@ -36,6 +27,10 @@ jQuery(function() {
         const form = e.target;
         const data = new FormData(form);
         let url = Init.baseUrl + 'newActivityWorksheet';
+
+        if(onViewAWId) {
+            data.append('editawid', onViewAWId);
+        }
 
         $.ajax({
             url,
@@ -52,7 +47,7 @@ jQuery(function() {
                 fsvpqiSelect.reset();
                 
                 $('#modalActWorksheet').modal('hide');
-                bootstrapGrowl(message || 'Successfully saved!');
+                bootstrapGrowl((onViewAWId ? (message || 'Successfully saved!') : 'Changes saved.'));
             },
             error: function({responseJSON}) {
                 bootstrapGrowl(responseJSON.error || 'Error!', 'danger');
@@ -61,7 +56,84 @@ jQuery(function() {
                 // l.stop();
             }
         });
-    })
+    });
+
+    $('#modalActWorksheet').on('hidden.bs.modal', function() {
+        resetAWForm();
+    });
+
+    function SSOnChange(option) {
+        const address = $('#awForeignSupplierSelect option:selected').attr('data-address') || '';
+        $('#awForeignSupplierAddress').val(address);
+
+        const supplierId = $(option).val();
+        const importerId = $('#awImporterSelect').val() || '';
+
+        populateFoodProducts(supplierId, importerId);
+    }
+
+    function ISOnChange(option) {
+        const id = $(option).val();
+        const address = $('#awImporterSelect option:selected').attr('data-address') || '';
+        $('#awImporterAddress').val(address);
+
+        supplierSelect.reset();
+        fsvpqiSelect.reset();
+        $('#awForeignSupplierAddress').val('');
+        $('#awProductsImported').val('');
+    }
+
+    function showEditModal(id) {
+        $.ajax({
+            url: Init.baseUrl + "getActivitiesWorksheet=" + (id ?? 0),
+            type: "GET",
+            contentType: false,
+            processData: false,
+            success: function({data}) {
+
+                setTimeout(() => {
+                    $('#awFSVPQISelect').multiselect('select', [data.fsvpqi_id]);
+                }, 500)
+                
+                $('#modalActWorksheet [name=importer_id]').multiselect('select', [data.importer_id]);
+                ISOnChange($('#modalActWorksheet [name=importer_id]'));
+
+                $('#modalActWorksheet [name=supplier_id]').multiselect('select', [data.supplier_id]);
+                SSOnChange($('#modalActWorksheet [name=supplier_id]'));
+
+                $('#modalActWorksheet [name=verification_date]').val(data.verification_date);
+                $('#modalActWorksheet [name=supplier_evaluation_date]').val(data.supplier_evaluation_date);
+                $('#modalActWorksheet [name=approval_date]').val(data.approval_date);
+
+                $('#modalActWorksheet [name=fdfsc]').val(data.fdfsc);
+                $('#modalActWorksheet [name=pdipm]').val(data.pdipm);
+                $('#modalActWorksheet [name=fshc]').val(data.fshc);
+
+                $('#modalActWorksheet [name=dfsc]').val(data.dfsc);
+                $('#modalActWorksheet [name=vaf]').val(data.vaf);
+                $('#modalActWorksheet [name=justification_vaf]').val(data.justification_vaf);
+
+                $('#modalActWorksheet [name=verification_records]').val(data.verification_records);
+                $('#modalActWorksheet [name=assessment_results]').val(data.assessment_results);
+                $('#modalActWorksheet [name=corrective_actions]').val(data.corrective_actions);
+                $('#modalActWorksheet [name=reevaluation_date]').val(data.reevaluation_date);
+
+                $('#modalActWorksheet').modal('show');
+            },
+            error: function() {
+                bootstrapGrowl('Error fetching record!', 'error');
+            },
+        });
+    }
+
+    function resetAWForm() {
+        $('#modalActWorksheet form .form-control').val('');
+        supplierSelect.reset();
+        fsvpqiSelect.reset();
+        importerSelect.reset();
+    
+        onViewAWId = null;
+    }
 });
 
 function refreshDropdownsByImporter(importerId) {
@@ -105,16 +177,16 @@ function renderDTRow(dataset, rowData, table, mode = 'add') {
     if(rowData.rhash) {
         actionBtn = `
             <div class="d-flex center">
-                <div class="btn-group btn-group-circle btn-group-sm btn-group-solid hide">
-                    <a href="#" class="btn blue btn-circle btn-sm btn-outline" data-editipr="${rowData.id}">Edit</a>
-                    </div>
+                <div class="btn-group btn-group-circle btn-group-sm btn-group-solid hidex">
+                    <a href="javascript:void(0)" class="btn blue btn-circle btn-sm btn-outline" data-awid="${rowData.id}">Edit</a>
                     <a href="${(Init.URL || 'fsvp') + '?pdf=activities-worksheet&r=' + rowData.rhash}" class="btn dark btn-circle btn-sm" target="_blank" title="PDF Document">PDF</a>
+                </div>
             </div>
         `;
     } else {
         actionBtn = `
             <div class="d-flex center">
-                <a href="#" class="btn dark btn-circle btn-sm btn-outline" data-editipr="${rowData.id}">Edit details</a>
+                <a href="#" class="btn dark btn-circle btn-sm btn-outline" data-awid="${rowData.id}">Edit details</a>
             </div>
         `;
     }
@@ -122,8 +194,8 @@ function renderDTRow(dataset, rowData, table, mode = 'add') {
     table.dt.row.add([
         rowData.importer_name || na,
         rowData.supplier_name || na,
-        rowData.qi_name || na,
         rowData.products || na,
+        rowData.qi_name || na,
         rowData.approval_date || na,
         rowData.evaluation_date || na,
         actionBtn,

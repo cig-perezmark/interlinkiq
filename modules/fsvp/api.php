@@ -1225,51 +1225,56 @@ if(isset($_GET['newActivityWorksheet'])) {
         if(!$isValid) {
             throw new Exception('Incorrect details.');
         }
-        
-        $sql = "INSERT INTO tbl_fsvp_activities_worksheets (
-                user_id,
-                portal_user,
-                importer_id,
-                fsvpqi_id,
-                supplier_id,
-                verification_date,
-                supplier_evaluation_date,
-                approval_date,
-                fdfsc,
-                pdipm,
-                fshc,
-                dfsc,
-                vaf,
-                justification_vaf,
-                verification_records,
-                assessment_results,
-                corrective_actions,
-                reevaluation_date
-            ) VALUE (" . (implode(',', array_fill(0, 18, '?'))) . ")
-        ";
-        $values = [
-            $user_id,
-            $portal_user,
-            $importerId,
-            $fsvpqiId,
-            $supplierId,
-            emptyIsNull($_POST['verification_date']),
-            emptyIsNull($_POST['supplier_evaluation_date']),
-            emptyIsNull($_POST['approval_date']),
-            emptyIsNull($_POST['fdfsc']),
-            emptyIsNull($_POST['pdipm']),
-            emptyIsNull($_POST['fshc']),
-            emptyIsNull($_POST['dfsc']),
-            emptyIsNull($_POST['vaf']),
-            emptyIsNull($_POST['justification_vaf']),
-            emptyIsNull($_POST['verification_records']),
-            emptyIsNull($_POST['assessment_results']),
-            emptyIsNull($_POST['corrective_actions']),
-            emptyIsNull($_POST['reevaluation_date']),
-        ];
 
-        $conn->execute($sql, $values);
-        $id = $conn->getInsertId();
+        if(isset($_POST['editawid']) && !empty($_POST['editawid'])) {
+            updateAWData($conn, $_POST, $portal_user, $_POST['editawid'], $importerId, $fsvpqiId, $supplierId);
+        } else {
+            $sql = "INSERT INTO tbl_fsvp_activities_worksheets (
+                    user_id,
+                    portal_user,
+                    importer_id,
+                    fsvpqi_id,
+                    supplier_id,
+                    verification_date,
+                    supplier_evaluation_date,
+                    approval_date,
+                    fdfsc,
+                    pdipm,
+                    fshc,
+                    dfsc,
+                    vaf,
+                    justification_vaf,
+                    verification_records,
+                    assessment_results,
+                    corrective_actions,
+                    reevaluation_date
+                ) VALUE (" . (implode(',', array_fill(0, 18, '?'))) . ")
+            ";
+            $values = [
+                $user_id,
+                $portal_user,
+                $importerId,
+                $fsvpqiId,
+                $supplierId,
+                emptyIsNull($_POST['verification_date']),
+                emptyIsNull($_POST['supplier_evaluation_date']),
+                emptyIsNull($_POST['approval_date']),
+                emptyIsNull($_POST['fdfsc']),
+                emptyIsNull($_POST['pdipm']),
+                emptyIsNull($_POST['fshc']),
+                emptyIsNull($_POST['dfsc']),
+                emptyIsNull($_POST['vaf']),
+                emptyIsNull($_POST['justification_vaf']),
+                emptyIsNull($_POST['verification_records']),
+                emptyIsNull($_POST['assessment_results']),
+                emptyIsNull($_POST['corrective_actions']),
+                emptyIsNull($_POST['reevaluation_date']),
+            ];
+    
+            $conn->execute($sql, $values);
+            $id = $conn->getInsertId();
+        }
+        
         
         $conn->commit();
         send_response([
@@ -1388,4 +1393,22 @@ if(isset($_GET['fetchProductsBySupplierAndImporter'])) {
             'error' => $e->getMessage(),
         ], 500);
     }
+}
+
+
+if(isset($_GET['getActivitiesWorksheet']) && !empty($_GET['getActivitiesWorksheet'])) {
+    $id = $_GET['getActivitiesWorksheet'] ?? 0;
+    
+    $data = $conn->execute("SELECT 
+            aw.*
+        FROM tbl_fsvp_activities_worksheets aw
+        WHERE aw.user_id = ?
+            AND aw.deleted_at IS NULL
+            AND aw.id = ?
+            
+    ", $user_id, $id)->fetchAssoc();
+
+    send_response([
+        'data' => $data,
+    ]);
 }

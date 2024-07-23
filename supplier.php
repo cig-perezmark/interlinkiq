@@ -81,7 +81,32 @@
 	    padding: 1rem;
 	    width: 100%;
 	}
+
+	#waterfallChart1, #donutChart2 {
+    width: 100%;
+    height: 500px;
+  }
+
+  @media (max-width: 768px) {
+    #waterfallChart1, #donutChart2 {
+      height: 300px;
+    }
+  }
+
+   #supplierchartdiv, #compliancePieChartDiv, #materialDonutChartDiv {
+            width: 100%;
+            height: 500px;
+        } 
 </style>
+
+				<script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+				<script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+				<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+				<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+				<script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+				<script src="https://cdn.amcharts.com/lib/5/plugins/legend.js"></script>
+  				<script src="https://cdn.amcharts.com/lib/5/radar.js"></script>
+
 
                     <div class="row hide">
                         <div class="col-md-3">
@@ -234,7 +259,7 @@
                                             <a href="#tab_actions_received" data-toggle="tab" onclick="selectTab(0)">Received</a>
                                         </li>
 										<li>
-											<a href="#tab_actions_category" data-toggle="tab" onclick="selectTab(1)">Category</a>
+											<a href="#tab_actions_category" data-toggle="tab" onclick="selectTab(2)">Category</a>
 										</li>
 										<li>
 											<a href="#tab_actions_requirement" data-toggle="tab" onclick="selectTab(0)">Requirement</a>
@@ -246,11 +271,17 @@
                                                 </li>';
                                             }
                                         ?>
+
+										<li>
+											<a href="#tab_supplier_analytics" data-toggle="tab" onclick="selectTab(3)">Analytics</a>
+										</li>
+
                                     </ul>
                                 </div>
                                 <div class="portlet-body">
                                     <div class="tab-content">
                                         <div class="tab-pane active" id="tab_actions_sent">
+										<div class="table-responsive">
 											<select class="form-control margin-bottom-15" id="filterSent">
 												<option value="">Select</option>
 												<option value="1">Foreign Supplier</option>
@@ -792,6 +823,10 @@
 																	<td class="text-center">
 																		<div class="btn-group btn-group-circle">
 																			<a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView('. $s_ID .')">View</a>
+
+																			<a href="#modalChart" class="btn btn-info btn-sm btnChart" data-toggle="modal" data-id="'. $s_ID .'">
+																			<i class="fas fa-chart-line"></i> </a>
+
 																			<a href="javascript:;" class="btn btn-danger btn-sm btnDelete" onclick="btnDelete('. $s_ID .')">Delete</a>
 																		</div>
 																	</td>
@@ -802,6 +837,7 @@
                                                 </tbody>
                                             </table>
                                         </div>
+									</div>
                                         <div class="tab-pane" id="tab_actions_received">
 											<select class="form-control margin-bottom-15" id="filterReceived">
 												<option value="">Select</option>
@@ -1878,6 +1914,58 @@
                                                 </table>
                                             </div>
                                         </div>
+								
+										<!-- Nelmar Supplier Analytics -->
+											<div class="tab-pane" id="tab_supplier_analytics">                       
+												<div class="row widget-row">   																																	
+													<div class="col-md-6">                                     
+														<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">   
+															<h3 class="d-flex justify-content-center">Send</h3>   
+																<div class="widget-thumb-wrap">                                       
+																	<div id="waterfallChart1" style="width: 100%; height: 500px;">																		
+																	</div>                                        
+																</div>
+															</div>     
+														</div>  
+													<div class="col-md-6">                                     
+														<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">   
+															<h3 class="d-flex justify-content-center">Received</h3>   
+																<div class="widget-thumb-wrap">                                       
+																	<div id="receivedchartdiv" style="width: 100%; height: 500px;">																		
+																	</div>                                        
+																</div>
+															</div>     
+														</div>  													
+													<div class="col-md-6">                                     
+														<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">   
+															<h3 class="d-flex justify-content-center">Requirements</h3>   
+																<div class="widget-thumb-wrap">                                       
+																	<div id="requirementchartdiv" style="width: 100%; height: 500px;">																		
+																	</div>                                        
+																</div>
+															</div>     
+														</div> 
+													<div class="col-md-6">                                     
+														<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">   
+															<h3 class="d-flex justify-content-center">Materials</h3>   
+																<div class="widget-thumb-wrap">                                       
+																	<div id="materialchartdiv" style="width: 100%; height: 500px;">																	
+																</div>                                        
+															</div>
+														</div>     
+													</div> 
+												<div class="col-md-12"> 
+													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">                                         
+														<h3 class="d-flex justify-content-center">Frequency</h3>
+															<div class="widget-thumb-wrap">
+																<div id="donutChart2" style="width: 90%; height: 400px;">
+																</div>                                 
+															</div> 
+														</div>                               
+													</div>																
+												</div>
+											</div>
+										</div>
                                     </div>
                                 </div>
                             </div>
@@ -2866,23 +2954,81 @@
                             </div>
                         </div>
                         
-                        <!-- / END MODAL AREA -->
-                                     
-                    </div><!-- END CONTENT BODY -->
+					<!--Nelmar Supplier Analytics Modal -->
+						<div id="modalChart" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+							<div class="modal-dialog modal-lg">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+										<h4 class="modal-title">Vendor Chart</h4>
+									  </div>
+									<div class="modal-body">																			
+										<div class="row ">   
+											<div class="col-md-12">   											                                  
+													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-10">   
+														<h3 class="d-flex justify-content-center">Requirements</h3>   
+																<div class="widget-thumb-wrap">                                       																
+																	<div id="requirementChartDiv" style="width: 100%; height: 500px;">																	
+																	</div>
+																</div>
+															</div>     
+														</div> 
+												<div class="col-md-12">                                     
+													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-10">   
+														<h3 class="d-flex justify-content-center">Compliance</h3>   
+																<div class="widget-thumb-wrap">                                       																
+																	<div id="complianceChartDiv" style="width: 100%; height: 500px;">																	
+																	</div>
+																</div>
+															</div>     
+														</div> 
+												<div class="col-md-12"> 
+													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-10">                                         
+														 <h3 class="d-flex justify-content-center">Materials</h3>
+																<div class="widget-thumb-wrap">
+																	<div id="materialsChartDiv" style="width: 100%; height: 500px;">																	
+																	</div>
+																</div>                                 
+															</div> 
+														</div>  
+																				
+														<!-- <div class="col-md-12"> 
+													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-10">                                         
+														 <h3 class="d-flex justify-content-center">Audit & Review</h3>
+																<div class="widget-thumb-wrap">
+																	<div id="auditChartdiv" style="width: 100%; height: 500px;">																	
+																	</div>
+																</div>                                 
+															</div> 
+														</div> -->
+
+													</div>													
+												</div>
+										  	<div class="modal-footer">
+										<button type="button" class="btn btn-outline dark" data-dismiss="modal">Close</button>
+									</div>
+								</div>
+							</div>
+						</div>
+                    <!-- / END MODAL AREA -->                                   
+                </div><!-- END CONTENT BODY -->
 
         <?php include_once ('footer.php'); ?>
         
         <script src="assets/global/plugins/bootstrap-tabdrop/js/bootstrap-tabdrop.js" type="text/javascript"></script>
         <script src="assets/global/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js" type="text/javascript"></script>
-
         <script src="assets/global/scripts/datatable.js" type="text/javascript"></script>
         <script src="assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
-        
+        <script src="assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>    
         <script src="assets/pages/scripts/jquery.table2excel.js" type="text/javascript"></script>
-
         <script type="text/javascript" src="exes/tableExport.js"></script>
+
+
+        <?php if($switch_user_id == 464) { ?>
+            <script src="AnalyticsIQ/supplier_chart.js"></script>
+        <?php } ?>		
         
+
         <script type="text/javascript">
             var current_client = '<?php echo $_COOKIE['client']; ?>';
             $(document).ready(function(){
@@ -3218,15 +3364,41 @@
 
                 return error;
             }
+
+
 			function selectTab(tab) {
-				if (tab == 1) {
-					$('.portlet-title .caption-subject').html('List of Materials');
+				if (tab == 2) {
+					$('.portlet-title .caption').html(`
+						<span class="icon-basket-loaded font-dark"></span>
+						<span class="caption-subject font-dark bold uppercase">List of Materials</span>
+					`);
+					$('.portlet-title .caption > a').hide();
+				} else if (tab == 3) {
+					$('.portlet-title .caption').html(`
+						<span class="fas fa-chart-line font-dark"></span>
+						<span class="caption-subject font-dark bold uppercase">Analytics</span>
+					`);
 					$('.portlet-title .caption > a').hide();
 				} else {
-					$('.portlet-title .caption-subject').html('List of Supplier');
+					$('.portlet-title .caption').html(`
+						<span class="icon-basket-loaded font-dark"></span>
+						<span class="caption-subject font-dark bold uppercase">List of Supplier</span>
+					`);
 					$('.portlet-title .caption > a').show();
 				}
 			}
+
+			
+
+			// function selectTab(tab) {
+			// 	if (tab == 1) {
+			// 		$('.portlet-title .caption-subject').html('List of Materials');
+			// 		$('.portlet-title .caption > a').hide();
+			// 	} else {
+			// 		$('.portlet-title .caption-subject').html('List of Supplier');
+			// 		$('.portlet-title .caption > a').show();
+			// 	}
+			// }
 
             function changedCategory(sel) {
                 if (sel.value == 3) {

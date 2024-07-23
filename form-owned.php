@@ -186,7 +186,13 @@
                                                         <?php
                                                             $color = '';
                                                             if($row['is_new'] == 1){
-                                                                $color = '#FFD54F';
+                                                                $color = '#FFF9C4';
+                                                            }
+                                                            if($row['is_new'] == 2){
+                                                                $color = '#CE93D8';
+                                                            }
+                                                            if($row['is_new'] == 3){
+                                                                $color = '#A5D6A7';
                                                             }
                                                         ?>
                                                         <tr style='background-color:<?= $color ?>'>

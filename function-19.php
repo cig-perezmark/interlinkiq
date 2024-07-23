@@ -510,16 +510,48 @@
     //LOGIN PORTAL
     if (isset($_COOKIE['client'])) {
         $client_ID = $_COOKIE['client'];
-        $selectClient = mysqli_query( $conn,"SELECT * FROM tbl_user_client WHERE ID = $client_ID" );
-        if ( mysqli_num_rows($selectClient) > 0 ) {
-            $rowClient = mysqli_fetch_array($selectClient);
-            $client_url = $rowClient["url"];
-            $client_name = $rowClient["name"];
-            $client_email = $rowClient["email"];
+
+        if (isset($_COOKIE['switchAccount'])) {
+            $user_id = $_COOKIE['switchAccount'];
+            $selectClient = mysqli_query( $conn,"
+                SELECT
+                u.client AS u_client,
+                c.url AS c_url,
+                c.name AS c_name,
+                c.email AS c_email
+                FROM tbl_user AS u
+
+                RIGHT JOIN (
+                    SELECT
+                    *
+                    FROM tbl_user_client
+                ) AS c
+                ON u.client = c.ID
+
+                WHERE u.ID = $user_id
+            " );
+            if ( mysqli_num_rows($selectClient) > 0 ) {
+                $rowClient = mysqli_fetch_array($selectClient);
+                $client_url = $rowClient["c_url"];
+                $client_name = $rowClient["c_name"];
+                $client_email = $rowClient["c_email"];
+            } else {
+                $client_url = 'login';
+                $client_name = 'Interlink IQ';
+                $client_email = 'services@interlinkiq.com';
+            }
         } else {
-            $client_url = 'login';
-            $client_name = 'Interlink IQ';
-            $client_email = 'services@interlinkiq.com';
+            $selectClient = mysqli_query( $conn,"SELECT * FROM tbl_user_client WHERE ID = $client_ID" );
+            if ( mysqli_num_rows($selectClient) > 0 ) {
+                $rowClient = mysqli_fetch_array($selectClient);
+                $client_url = $rowClient["url"];
+                $client_name = $rowClient["name"];
+                $client_email = $rowClient["email"];
+            } else {
+                $client_url = 'login';
+                $client_name = 'Interlink IQ';
+                $client_email = 'services@interlinkiq.com';
+            }
         }
     }
 
@@ -685,6 +717,7 @@
         $first_name = addslashes($_POST['first_name']);
         $last_name = addslashes($_POST['last_name']);
         $email = $_POST['email'];
+        $phone = addslashes($_POST['phone']);
         $password = $_POST['password'];
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
         $exist = false;
@@ -697,20 +730,41 @@
             $sql = "INSERT INTO tbl_user (employee_id, first_name, last_name, email, password, client)
             VALUES ( '$ID', '$first_name', '$last_name', '$email', '$password_hash', '$client')";
             if (mysqli_query($conn, $sql)) {
-                // $last_id = mysqli_insert_id($conn);
+                $last_id = mysqli_insert_id($conn);
+                $sql = "INSERT INTO tbl_user_info (user_id, mobile) VALUES ('$last_id', '$phone')";
+                mysqli_query($conn, $sql);
 
-                // $to = $email;
-                // $user = $first_name .' '. $last_name;
-                // $subject = 'Welcome to InterlinkIQ.com';
-                // $body = 'Hi '. $first_name .', please click <a href="'. $base_url .'login?c=1&i='. $last_id .'">here</a> to confirm your account';
-                
-                // $mail = php_mailer($to, $user, $subject, $body);
-                // $message = 'Registration success. Please check your email for validation.';
-                $message = 'Welcome to InterlinkIQ Community! Please log in to your account.';
+                $sender_name = 'Interlink IQ';
+                $sender_email = 'services@interlinkiq.com';
+                $sender[$sender_email] = $sender_name;
+
+                $recipients_name = 'Arnel Ryan';
+                $recipients_email = 'arnel@consultareinc.com';
+                $recipients[$recipients_email] = $recipients_name;
+
+                $recipients_name = 'InterlinkIQ';
+                $recipients_email = 'info@consultareinc.com';
+                $recipients[$recipients_email] = $recipients_name;
+
+                $recipients_name = 'Customer Success';
+                $recipients_email = 'csuccess@consultareinc.com';
+                $recipients[$recipients_email] = $recipients_name;
+
+                $subject = 'New User Registered from IIQ';
+                $body = 'Hi Team,<br><br>
+
+                See details for our new user registered below<br><br>
+
+                Name: '.$first_name.' '.$last_name.'<br>
+                Email: '.$email.'<br>
+                Phone: '.$phone.'<br><br>
+
+                InterlinkIQ.com Team<br>
+                Consultare Inc. Group';
+
+                php_mailer_dynamic($sender, $recipients, $subject, $body);
+                $message = 'Welcome to our Community! Please logged in to your account.';
             }
-            // else {
-            //     $message = "Error: " . $sql . "<br>" . mysqli_error($conn);
-            // }
         }
         $output = array(
             'exist' => $exist,
@@ -920,6 +974,10 @@
 
                 $recipients_name = 'InterlinkIQ';
                 $recipients_email = 'info@consultareinc.com';
+                $recipients[$recipients_email] = $recipients_name;
+
+                $recipients_name = 'Customer Success';
+                $recipients_email = 'csuccess@consultareinc.com';
                 $recipients[$recipients_email] = $recipients_name;
 
                 $subject = 'New User Registered from '.$rowClient['name'];
@@ -2024,6 +2082,122 @@
     }
 
 
+    // Pictogram
+    if( isset($_GET['modalPictogram']) ) {
+        $code = $_GET['modalPictogram'];
+        $files = '';
+        $type = '';
+
+        $selectData = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$code'" );
+        if ( mysqli_num_rows($selectData) > 0 ) {
+            $row = mysqli_fetch_array($selectData);
+
+            $type = 'iframe';
+            if (!empty($row["files"])) {
+                $arr_filename = explode(' | ', $row["files"]);
+                $arr_filetype = explode(' | ', $row["filetype"]);
+                $str_filename = '';
+
+                foreach($arr_filename as $val_filename) {
+                    $str_filename = $val_filename;
+                }
+                foreach($arr_filetype as $val_filetype) {
+                    $str_filetype = $val_filetype;
+                }
+
+                $files = $row["files"];
+                if ($row["filetype"] == 1) {
+                    $fileExtension = fileExtension($files);
+                    $src = $fileExtension['src'];
+                    $embed = $fileExtension['embed'];
+                    $type = $fileExtension['type'];
+                    $file_extension = $fileExtension['file_extension'];
+                    $url = $base_url.'uploads/pictogram/';
+
+                    $files = $src.$url.rawurlencode($files).$embed;
+                } else if ($row["filetype"] == 3) {
+                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                } else if ($row["filetype"] == 4) {
+                    $files = preg_replace('#[^/]*$#', '', $files);
+                    $file_extension = 'fa-strikethrough';
+                }
+            }
+        }
+
+        echo '<input class="form-control" type="hidden" name="code" value="'.$code.'" />
+        <div class="form-group">
+            <label class="col-md-3 control-label">Select File</label>
+            <div class="col-md-8">
+                <select class="form-control '; echo !empty($files) ? 'hide':''; echo '" name="filetype" onchange="changeType(this)" required>
+                    <option value="0">Select option</option>
+                    <option value="1">Manual Upload</option>
+                    <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
+                </select>
+                <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
+                <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+            </div>
+        </div>';
+
+        mysqli_close($conn);
+    }
+    if( isset($_POST['btnSave_Pictogram']) ) {
+        $code = $_POST['code'];
+        $filetype = $_POST['filetype'];
+        $files = '';
+        $process = true;
+        $msg = '';
+
+        $selectData = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$code'" );
+        if ( mysqli_num_rows($selectData) > 0 ) {
+
+            if ($filetype > 0) {
+                if ($filetype == 1) {
+                    $files = $_FILES['file']['name'];
+                    if (!empty($files)) {
+                        $fileValidation = fileValidation(0, 'file', 'pictogram/');
+                        $files = $fileValidation['files'];
+                        $filesize = $fileValidation['size'];
+                        $process = $fileValidation['valid'];
+                    }
+                } else {
+                    $str_filetype = $filetype;
+                    $files = $_POST['fileurl'];
+                    $filesize = 0;
+                }
+
+                if (!empty($files) AND $process == true) {
+                    mysqli_query( $conn,"UPDATE tbl_pictogram SET filetype = $filetype, files = '". $files ."' WHERE code = '$code'" );
+                    $msg = 'success';
+                }
+            }
+        } else {
+            if ($filetype == 1) {
+                $files = $_FILES['file']['name'];
+                if (!empty($files)) {
+                    $fileValidation = fileValidation(0, 'file', 'pictogram/');
+                    $files = $fileValidation['files'];
+                    $filesize = $fileValidation['size'];
+                    $process = $fileValidation['valid'];
+                }
+            } else if ($filetype == 3) {
+                $files = $_POST['fileurl'];
+                $filesize = 0;
+            }
+
+            if (!empty($files) AND $process == true) {
+                $sql = "INSERT INTO tbl_pictogram (code, filetype, files)
+                VALUES ('$code', '$filetype', '$files')";
+                mysqli_query($conn, $sql);
+                $msg = 'success';
+            }
+        }
+
+        echo $msg;
+    }
+
+
     // EMPLOYEE PAGE
     if( isset($_GET['modalNew_HR_Employee']) ) {
         $switch_user_id = $_GET['modalNew_HR_Employee'];
@@ -2591,6 +2765,10 @@
                                             $files = $src.$url.rawurlencode($files).$embed;
                                         } else if ($filetype == 3) {
                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                        } else if ($filetype == 4) {
+                                            $files = preg_replace('#[^/]*$#', '', $files);
+                                            $file_extension = 'fa-strikethrough';
+                                            $target = '_blank';
                                         }
 
                                         $file_start_date = $rowFile["start_date"];
@@ -2674,6 +2852,10 @@
                                                 $files = $src.$url.rawurlencode($files).$embed;
                                             } else if ($filetype == 3) {
                                                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                            } else if ($filetype == 4) {
+                                                $files = preg_replace('#[^/]*$#', '', $files);
+                                                $file_extension = 'fa-strikethrough';
+                                                $target = '_blank';
                                             }
 
                                             $file_start_date = htmlentities($rowFile["start_date"] ?? '');
@@ -2760,6 +2942,10 @@
                                                 $files = $src.$url.rawurlencode($files).$embed;
                                             } else if ($filetype == 3) {
                                                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                            } else if ($filetype == 4) {
+                                                $files = preg_replace('#[^/]*$#', '', $files);
+                                                $file_extension = 'fa-strikethrough';
+                                                $target = '_blank';
                                             }
 
                                             $file_start_date = htmlentities($rowFile["start_date"] ?? '');
@@ -2846,6 +3032,10 @@
                                                 $files = $src.$url.rawurlencode($files).$embed;
                                             } else if ($filetype == 3) {
                                                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                            } else if ($filetype == 4) {
+                                                $files = preg_replace('#[^/]*$#', '', $files);
+                                                $file_extension = 'fa-strikethrough';
+                                                $target = '_blank';
                                             }
 
                                             $file_start_date = htmlentities($rowFile["start_date"] ?? '');
@@ -3040,12 +3230,9 @@
                     
                     $body = 'Dear '. $data_first_name .',<br><br>
 
-
                     Welcome to Consultare Inc. Group.<br><br>
 
-
                     Please connect with your assigned trainings by accessing this link: <a href="'.$base_url.'login?r=1&i='.$ID.'" target="_blank">InterlinkIQ.com</a><br><br>
-
 
                     Thank you.<br><br>
 
@@ -3071,9 +3258,7 @@
                         $subject = 'Welcome to '.$client_name.'!';
                         $body = 'Hi '. $data_first_name .',<br><br>
 
-                        Your employer, '.$data_company.',<br><br>
-
-                        invites you to join <a href="'. $base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">'.$client_name.'</a> to connect with your assigned duties, work, and tasks. 
+                        Your employer, '.$data_company.', invites you to join <a href="'. $base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">'.$client_name.'</a> to connect with your assigned duties, work, and tasks. 
                         If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">'.$base_url.$client_url.'?r=1&i='.$last_id.'</a><br><br>
 
                         Should you need assistance, kindly call 202-982-3002 or email <a href="mailto:'.$client_email.'" target="_blank">'.$client_email.'</a><br><br>
@@ -3532,6 +3717,7 @@
                     <option value="1">Manual Upload</option>
                     <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -3608,6 +3794,10 @@
                 $files = $src.$url.rawurlencode($files).$embed;
             } else if ($filetype == 3) {
                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
+            } else if ($filetype == 4) {
+                $files = preg_replace('#[^/]*$#', '', $files);
+                $file_extension = 'fa-strikethrough';
+                $target = '_blank';
             }
 
             $category = htmlentities($row['category'] ?? '');
@@ -3625,6 +3815,7 @@
                     <option value="1">Manual Upload</option>
                     <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -3742,6 +3933,10 @@
                             $data_files = $src.$url.rawurlencode($data_files).$embed;
                         } else if ($filetype == 3) {
                             $data_files = preg_replace('#[^/]*$#', '', $data_files).'preview';
+                        } else if ($filetype == 4) {
+                            $data_files = preg_replace('#[^/]*$#', '', $data_files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                         $files = '<p style="margin: 0;"><a data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
                     }
@@ -3863,6 +4058,10 @@
                         $data_files = $src.$url.rawurlencode($data_files).$embed;
                     } else if ($filetype == 3) {
                         $data_files = preg_replace('#[^/]*$#', '', $data_files).'preview';
+                    } else if ($filetype == 4) {
+                        $data_files = preg_replace('#[^/]*$#', '', $data_files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                     $files = '<p style="margin: 0;"><a data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
                 }
@@ -3965,6 +4164,10 @@
                         $files = $src.$url.rawurlencode($files).$embed;
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                    } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                 }
 
@@ -4019,7 +4222,11 @@
                     $files = $src.$url.rawurlencode($files).$embed;
                 } else if ($filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                }
+                } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
+                    }
             }
         }
 
@@ -4097,6 +4304,7 @@
                     <option value="1">Manual Upload</option>
                     <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -4294,6 +4502,10 @@
                             $file_doc = $src.$url.rawurlencode($file_doc).$embed;
                         } else if ($filetype == 3) {
                             $file_doc = preg_replace('#[^/]*$#', '', $file_doc).'preview';
+                        } else if ($filetype == 4) {
+                            $file_doc = preg_replace('#[^/]*$#', '', $file_doc);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
 
                         if (!empty($file_doc)) {
@@ -4374,6 +4586,10 @@
                             $files = $src.$url.rawurlencode($files).$embed;
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                        } else if ($filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                     }
                     $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
@@ -4505,6 +4721,10 @@
                             $files = $src.$url.rawurlencode($files).$embed;
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                        } else if ($filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                     }
                     $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
@@ -4637,6 +4857,7 @@
                                     <option value="1">Manual Upload</option>
                                     <option value="2">Youtube URL</option>
                                     <option value="3">Google Drive URL</option>
+                                    <option value="4">Sharepoint URL</option>
                                 </select>
                                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -4820,6 +5041,7 @@
                                                     <option value="1">Manual Upload</option>
                                                     <option value="2">Youtube URL</option>
                                                     <option value="3">Google Drive URL</option>
+                                                    <option value="4">Sharepoint URL</option>
                                                 </select>
                                                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                                                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -4856,6 +5078,10 @@
                                                 $file_doc = $src.$url.rawurlencode($file_doc).$embed;
                                             } else if ($filetype == 3) {
                                                 $file_doc = preg_replace('#[^/]*$#', '', $file_doc).'preview';
+                                            } else if ($filetype == 4) {
+                                                $file_doc = preg_replace('#[^/]*$#', '', $file_doc);
+                                                $file_extension = 'fa-strikethrough';
+                                                $target = '_blank';
                                             }
 
                                             echo '<div class="mt-repeater-item row" data-repeater-item>
@@ -4867,6 +5093,7 @@
                                                         <option value="1">Manual Upload</option>
                                                         <option value="2">Youtube URL</option>
                                                         <option value="3">Google Drive URL</option>
+                                                        <option value="4">Sharepoint URL</option>
                                                     </select>
                                                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" value="'.$file_doc.'" />
                                                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" value="'.$file_doc.'" />
@@ -4892,6 +5119,7 @@
                                                     <option value="1">Manual Upload</option>
                                                     <option value="2">Youtube URL</option>
                                                     <option value="3">Google Drive URL</option>
+                                                    <option value="4">Sharepoint URL</option>
                                                 </select>
                                                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                                                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -6543,6 +6771,10 @@
                     $files = $src.$url.rawurlencode($files).$embed;
                 } else if ($filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                } else if ($filetype == 4) {
+                    $files = preg_replace('#[^/]*$#', '', $files);
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
                 }
             }
         }
@@ -6570,6 +6802,7 @@
                     <option value="1">Manual Upload</option>
                     <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -6734,6 +6967,10 @@
                             $files = $src.$url.rawurlencode($files).$embed;
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                        } else if ($filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                     }
                     $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
@@ -6833,6 +7070,10 @@
                         $files = $src.$url.rawurlencode($files).$embed;
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                    } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                 }
                 $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
@@ -12558,6 +12799,8 @@
             $frequency_custom = $row["frequency_custom"];
             $frequency_custom_arr = explode(" | ", $frequency_custom);
 
+            $facility = $row["facility"];
+
             $department_id = $row["department_id"];
             if (!empty($department_id)) { $department_id_arr = explode(", ", $department_id); }
             
@@ -12652,7 +12895,7 @@
                     </li>';
                 }
 
-                if ($user_id == 27 || $user_id == 34 || $user_id == 464 || $user_id == 504 || $user_id == 475 || $user_id == 683) {
+                if ($user_id == 27 || $current_userEmployerID == 34 || $user_id == 464 || $user_id == 504 || $user_id == 475 || $user_id == 683) {
                     echo '<li><a href="#tabPortal_2" data-toggle="tab">Portal</a></li>';
                     echo '<li><a href="#tabUsage_2" data-toggle="tab">Usage</a></li>';
                 } else if ($user_id == 1479) {
@@ -12853,6 +13096,15 @@
                                     <option value="7" '; echo $frequency == 7 ? 'SELECTED':''; echo '>Once Per Three Months (Quarterly)</option>
                                     <option value="8" '; echo $frequency == 8 ? 'SELECTED':''; echo '>Once Per Six Months (Bi-Annual)</option>
                                     <option value="5" '; echo $frequency == 5 ? 'SELECTED':''; echo '>Once Per Year</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3 '; echo $current_userEmployerID == 34 ? '':'hide'; echo '">
+                            <div class="form-group">
+                                <label class="control-label">Facility User</label>
+                                <select class="form-control" name="facility">
+                                    <option value="0" '; echo $facility == 0 ? 'SELECTED':''; echo '>No</option>
+                                    <option value="1" '; echo $facility == 1 ? 'SELECTED':''; echo '>Yes</option>
                                 </select>
                             </div>
                         </div>
@@ -13190,6 +13442,7 @@
                                                                     <option value="1">Manual Upload</option>
                                                                     <option value="2">Youtube URL</option>
                                                                     <option value="3">Google Drive URL</option>
+                                                                    <option value="4">Sharepoint URL</option>
                                                                 </select>
                                                                 <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                                 <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
@@ -13200,6 +13453,7 @@
                                                                     <option value="1">Manual Upload</option>
                                                                     <option value="2">Youtube URL</option>
                                                                     <option value="3">Google Drive URL</option>
+                                                                    <option value="4">Sharepoint URL</option>
                                                                 </select>
                                                                 <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                                 <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
@@ -13250,6 +13504,10 @@
                                                                     $temp_file = $src.$url.rawurlencode($temp_file).$embed;
                                                                 } else if ($filetype == 3) {
                                                                     $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
+                                                                } else if ($filetype == 4) {
+                                                                    $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
+                                                                    $file_extension = 'fa-strikethrough';
+                                                                    $target = '_blank';
                                                                 }
 
                                                                 echo '<p style="margin: 0;">
@@ -13456,6 +13714,7 @@
                                                             <option value="1">Manual Upload</option>
                                                             <option value="2">Youtube URL</option>
                                                             <option value="3">Google Drive URL</option>
+                                                            <option value="4">Sharepoint URL</option>
                                                         </select>
                                                         <input class="form-control margin-top-15 fileUpload" type="file" name="document_other_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                         <input class="form-control margin-top-15 fileURL" type="url" name="document_other_fileurl[]" style="display: none;" placeholder="https://" />
@@ -13466,6 +13725,7 @@
                                                             <option value="1">Manual Upload</option>
                                                             <option value="2">Youtube URL</option>
                                                             <option value="3">Google Drive URL</option>
+                                                            <option value="4">Sharepoint URL</option>
                                                         </select>
                                                         <input class="form-control margin-top-15 fileUpload" type="file" name="document_other_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                         <input class="form-control margin-top-15 fileURL" type="url" name="document_other_fileurl[]" style="display: none;" placeholder="https://" />
@@ -13540,6 +13800,10 @@
                                                             $temp_file = $src.$url.rawurlencode($temp_file).$embed;
                                                         } else if ($filetype == 3) {
                                                             $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
+                                                        } else if ($filetype == 4) {
+                                                            $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
+                                                            $file_extension = 'fa-strikethrough';
+                                                            $target = '_blank';
                                                         }
 
                                                         echo '<p style="margin: 0;">
@@ -14017,7 +14281,7 @@
                                 <label class="control-label">Department</label>
                                 <select class="form-control mt-multiselect department_id" name="department_id[]" onchange="changeDepartment(this, 2)" multiple="multiple">';
                                     
-                                    $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $current_userEmployerID ORDER BY title");
+                                    $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $user_id ORDER BY title");
                                     if ( mysqli_num_rows($selectDepartment) > 0 ) {
                                         while($rowDepartment = mysqli_fetch_array($selectDepartment)) {
                                             $dept_ID = $rowDepartment["ID"];
@@ -14041,7 +14305,7 @@
                                     
                                     if (!empty($department_id)) {
                                         foreach ($department_id_arr as $value) {
-                                            $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND department_id = $value AND user_id = $current_userEmployerID ORDER BY first_name");
+                                            $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND department_id = $value AND user_id = $user_id ORDER BY first_name");
                                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                     $emp_ID = $rowEmployee["ID"];
@@ -14061,7 +14325,7 @@
                                             }
                                         }
                                     } else {
-                                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $current_userEmployerID ORDER BY first_name");
+                                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id ORDER BY first_name");
                                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                             while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                 $emp_ID = $rowEmployee["ID"];
@@ -15390,6 +15654,7 @@
                                                 <option value="1">Manual Upload</option>
                                                 <option value="2">Youtube URL</option>
                                                 <option value="3">Google Drive URL</option>
+                                                <option value="4">Sharepoint URL</option>
                                             </select>
                                             <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                             <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
@@ -15400,6 +15665,7 @@
                                                 <option value="1">Manual Upload</option>
                                                 <option value="2">Youtube URL</option>
                                                 <option value="3">Google Drive URL</option>
+                                                <option value="4">Sharepoint URL</option>
                                             </select>
                                             <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                             <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
@@ -15450,6 +15716,10 @@
                                                 $temp_file = $src.$url.rawurlencode($temp_file).$embed;
                                             } else if ($filetype == 3) {
                                                 $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
+                                            } else if ($filetype == 4) {
+                                                $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
+                                                $file_extension = 'fa-strikethrough';
+                                                $target = '_blank';
                                             }
 
                                             echo '<p style="margin: 0;">
@@ -15664,6 +15934,7 @@
                                 <option value="1">Manual Upload</option>
                                 <option value="2">Youtube URL</option>
                                 <option value="3">Google Drive URL</option>
+                                <option value="4">Sharepoint URL</option>
                             </select>
                             <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                             <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
@@ -15704,6 +15975,10 @@
                                     $temp_file = $src.$url.rawurlencode($temp_file).$embed;
                                 } else if ($filetype == 3) {
                                     $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
+                                } else if ($filetype == 4) {
+                                    $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
+                                    $file_extension = 'fa-strikethrough';
+                                    $target = '_blank';
                                 }
 
                                 echo '<p style="margin: 0;">
@@ -16009,6 +16284,7 @@
         $status = $_POST['status'];
         // $notification = $_POST['notification'];
         $nda = $_POST['nda'];
+        $facility = $_POST['facility'];
         $notification = 0;
         $date = date('Y-m-d');
 
@@ -16146,8 +16422,8 @@
         if (!empty($_POST['employee_id'])) { $employee_id = implode(", ",$_POST['employee_id']); }
 
         if ($process == true) {
-            $sql = "INSERT INTO tbl_supplier (user_id, portal_user, page, name, address, phone, fax, email, website, category, industry, contact, document, document_other, material, service, audit, audit_report, audit_certificate, audit_action, reviewed_by, reviewed_date, reviewed_due, department_id, employee_id, status, notification, nda, frequency, frequency_custom, last_modified)
-            VALUES ('$user_id', '$portal_user', '2', '$name', '$address', '$phone', '$fax', '$email', '$website', '$category', '$industry', '$contact', '$document_name', '$document_other_name', '$material', '$service', '$audit', '$audit_report', '$audit_certificate', '$audit_action', '$reviewed_by', '$reviewed_date', '$reviewed_due', '$department_id', '$employee_id', '$status', '$notification', '$nda', '$supplier_frequency', '$supplier_frequency_custom', '$date')";
+            $sql = "INSERT INTO tbl_supplier (user_id, portal_user, page, name, address, phone, fax, email, website, category, industry, contact, document, document_other, material, service, audit, audit_report, audit_certificate, audit_action, reviewed_by, reviewed_date, reviewed_due, department_id, employee_id, status, notification, nda, frequency, frequency_custom, facility, last_modified)
+            VALUES ('$user_id', '$portal_user', '2', '$name', '$address', '$phone', '$fax', '$email', '$website', '$category', '$industry', '$contact', '$document_name', '$document_other_name', '$material', '$service', '$audit', '$audit_report', '$audit_certificate', '$audit_action', '$reviewed_by', '$reviewed_date', '$reviewed_due', '$department_id', '$employee_id', '$status', '$notification', '$nda', '$supplier_frequency', '$supplier_frequency_custom', '$facility', '$date')";
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
 
@@ -16866,6 +17142,7 @@
         $website = $_POST['website'];
         $status = $_POST['status'];
         $nda = $_POST['nda'];
+        $facility = $_POST['facility'];
         $notification = $_POST['notification'];
         $date = date('Y-m-d');
 
@@ -17042,7 +17319,7 @@
             }
             $temp_document = json_encode($temp_docs);
 
-            mysqli_query( $conn,"UPDATE tbl_supplier set name='". $name ."', address='". $address ."', phone='". $phone ."', fax='". $fax ."', email='". $email ."', website='". $website ."', category='". $category ."', industry='". $industry ."', contact='". $contact ."', document='". $document_name ."', document_other='". $document_other_name ."', material='". $material ."', service='". $service ."', audit='". $audit ."', audit_report='". $audit_report ."', audit_certificate='". $audit_certificate ."', audit_action='". $audit_action ."', audit_filesize='". $audit_filesize ."', audit_file_history='". $audit_file_history ."', reviewed_by='". $reviewed_by ."', reviewed_date='". $reviewed_date ."', reviewed_due='". $reviewed_due ."', department_id='". $department_id ."', employee_id='". $employee_id ."', status='". $status ."' , notification='". $notification ."', nda='". $nda ."', frequency='". $supplier_frequency ."', frequency_custom='". $supplier_frequency_custom ."' WHERE ID='". $ID ."'" );
+            mysqli_query( $conn,"UPDATE tbl_supplier set name='". $name ."', address='". $address ."', phone='". $phone ."', fax='". $fax ."', email='". $email ."', website='". $website ."', category='". $category ."', industry='". $industry ."', contact='". $contact ."', document='". $document_name ."', document_other='". $document_other_name ."', material='". $material ."', service='". $service ."', audit='". $audit ."', audit_report='". $audit_report ."', audit_certificate='". $audit_certificate ."', audit_action='". $audit_action ."', audit_filesize='". $audit_filesize ."', audit_file_history='". $audit_file_history ."', reviewed_by='". $reviewed_by ."', reviewed_date='". $reviewed_date ."', reviewed_due='". $reviewed_due ."', department_id='". $department_id ."', employee_id='". $employee_id ."', status='". $status ."' , notification='". $notification ."', nda='". $nda ."', facility='". $facility ."', frequency='". $supplier_frequency ."', frequency_custom='". $supplier_frequency_custom ."' WHERE ID='". $ID ."'" );
             
             if (!mysqli_error($conn)) {
                 $selectData = mysqli_query( $conn,'SELECT * FROM tbl_supplier WHERE ID="'. $ID .'" ORDER BY ID LIMIT 1' );
@@ -18993,10 +19270,10 @@
                 }
             }
 
-            $regulatory = $row["regulatory"];
-            $contact = $row["contact"];
-            $material = $row["material"];
-            $service = $row["service"];
+            $regulatory = htmlentities($row["regulatory"] ?? '');
+            $contact = htmlentities($row["contact"] ?? '');
+            $material = htmlentities($row["material"] ?? '');
+            $service = htmlentities($row["service"] ?? '');
 
             $audit_report = '';
             if (!empty($row["audit_report"])) {
@@ -19016,8 +19293,8 @@
                 $audit_action_arr = explode(" | ", $audit_action);
             }
 
-            $audit = $row["audit"];
-            $audit_score = $row["audit_score"];
+            $audit = htmlentities($row["audit"] ?? '');
+            $audit_score = htmlentities($row["audit_score"] ?? '');
             $reviewed_by = $row["reviewed_by"];
             $reviewed_date = $row["reviewed_date"];
             $reviewed_due = $row["reviewed_due"];
@@ -19029,15 +19306,15 @@
             if ($page == 2) {
                 $selectUser = mysqli_query( $conn,'SELECT * FROM tbl_user WHERE ID="'. $user_account_id .'" ORDER BY ID LIMIT 1' );
                 $rowUser = mysqli_fetch_array($selectUser);
-                $name = $rowUser['first_name'] .' '. $rowUser['last_name'];
+                $name = htmlentities($rowUser['first_name'] ?? '') .' '. htmlentities($rowUser['last_name'] ?? '');
 
                 $selectCategory = mysqli_query( $conn,"SELECT * FROM tbl_supplier_category WHERE ID = $category" );
                 $rowCategory = mysqli_fetch_array($selectCategory);
-                $enterprise_category = $rowCategory["name"];
+                $enterprise_category = htmlentities($rowCategory["name"] ?? '');
 
                 $selectIndustry = mysqli_query( $conn,"SELECT * FROM tbl_supplier_industry WHERE ID = $industry" );
                 $rowIndustry = mysqli_fetch_array($selectIndustry);
-                $enterprise_industry = $rowIndustry["name"];
+                $enterprise_industry = htmlentities($rowIndustry["name"] ?? '');
 
                 $enterprise_name = "";
                 $enterprise_bldg = "";
@@ -19052,21 +19329,21 @@
                 $selectEnterprise = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE users_entities = $user_account_id" );
                 if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                     $rowEnterprise = mysqli_fetch_array($selectEnterprise);
-                    $enterprise_name = $rowEnterprise["businessname"];
-                    $enterprise_bldg = $rowEnterprise["Bldg"];
-                    $enterprise_city = $rowEnterprise["city"];
-                    $enterprise_state = $rowEnterprise["States"];
-                    $enterprise_zip = $rowEnterprise["ZipCode"];
+                    $enterprise_name = htmlentities($rowEnterprise["businessname"] ?? '');
+                    $enterprise_bldg = htmlentities($rowEnterprise["Bldg"] ?? '');
+                    $enterprise_city = htmlentities($rowEnterprise["city"] ?? '');
+                    $enterprise_state = htmlentities($rowEnterprise["States"] ?? '');
+                    $enterprise_zip = htmlentities($rowEnterprise["ZipCode"] ?? '');
 
                     $enterprise_country = $rowEnterprise["country"];
                     $selectCountry = mysqli_query( $conn,"SELECT * FROM countries WHERE id = $enterprise_country" );
                     $rowCountry = mysqli_fetch_array($selectCountry);
-                    $enterprise_country = $rowCountry["name"];
+                    $enterprise_country = htmlentities($rowCountry["name"] ?? '');
 
-                    $enterprise_email = $rowEnterprise["businessemailAddress"];
-                    $enterprise_phone = $rowEnterprise["businesstelephone"];
-                    $enterprise_fax = $rowEnterprise["businessfax"];
-                    $enterprise_website = $rowEnterprise["businesswebsite"];
+                    $enterprise_email = htmlentities($rowEnterprise["businessemailAddress"] ?? '');
+                    $enterprise_phone = htmlentities($rowEnterprise["businesstelephone"] ?? '');
+                    $enterprise_fax = htmlentities($rowEnterprise["businessfax"] ?? '');
+                    $enterprise_website = htmlentities($rowEnterprise["businesswebsite"] ?? '');
                 }
             }
         }
@@ -19530,6 +19807,10 @@
                                                     $files = $src.$url.rawurlencode($files).$embed;
                                                 } else if ($filetype == 3) {
                                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                } else if ($filetype == 4) {
+                                                    $files = preg_replace('#[^/]*$#', '', $files);
+                                                    $file_extension = 'fa-strikethrough';
+                                                    $target = '_blank';
                                                 }
                                                 $files = '<p style="margin: 0;"><a data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
                                             }
@@ -19752,6 +20033,7 @@
                                                                     <option value="1">Manual Upload</option>
                                                                     <option value="2">Youtube URL</option>
                                                                     <option value="3">Google Drive URL</option>
+                                                                    <option value="4">Sharepoint URL</option>
                                                                 </select>
                                                                 <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                                 <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
@@ -19762,6 +20044,7 @@
                                                                     <option value="1">Manual Upload</option>
                                                                     <option value="2">Youtube URL</option>
                                                                     <option value="3">Google Drive URL</option>
+                                                                    <option value="4">Sharepoint URL</option>
                                                                 </select>
                                                                 <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                                 <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
@@ -19812,6 +20095,10 @@
                                                                     $temp_file = $src.$url.rawurlencode($temp_file).$embed;
                                                                 } else if ($filetype == 3) {
                                                                     $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
+                                                                } else if ($filetype == 4) {
+                                                                    $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
+                                                                    $file_extension = 'fa-strikethrough';
+                                                                    $target = '_blank';
                                                                 }
 
                                                                 echo '<p style="margin: 0;">
@@ -20020,6 +20307,7 @@
                                                             <option value="1">Manual Upload</option>
                                                             <option value="2">Youtube URL</option>
                                                             <option value="3">Google Drive URL</option>
+                                                            <option value="4">Sharepoint URL</option>
                                                         </select>
                                                         <input class="form-control margin-top-15 fileUpload" type="file" name="document_other_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                         <input class="form-control margin-top-15 fileURL" type="url" name="document_other_fileurl[]" style="display: none;" placeholder="https://" />
@@ -20030,6 +20318,7 @@
                                                             <option value="1">Manual Upload</option>
                                                             <option value="2">Youtube URL</option>
                                                             <option value="3">Google Drive URL</option>
+                                                            <option value="4">Sharepoint URL</option>
                                                         </select>
                                                         <input class="form-control margin-top-15 fileUpload" type="file" name="document_other_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                         <input class="form-control margin-top-15 fileURL" type="url" name="document_other_fileurl[]" style="display: none;" placeholder="https://" />
@@ -20104,6 +20393,10 @@
                                                             $temp_file = $src.$url.rawurlencode($temp_file).$embed;
                                                         } else if ($filetype == 3) {
                                                             $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
+                                                        } else if ($filetype == 4) {
+                                                            $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
+                                                            $file_extension = 'fa-strikethrough';
+                                                            $target = '_blank';
                                                         }
 
                                                         echo '<p style="margin: 0;">
@@ -20261,10 +20554,11 @@
                         <table class="table table-bordered table-hover" id="tableData_Material_2">
                             <thead>
                                 <tr>
-                                    <th class="text-center">Active</th>
                                     <th>Material Name</th>
-                                    <th>SKU</th>
-                                    <th>Description</th>';
+                                    <th>Description</th>
+                                    <th class="text-center" style="width:90px">Active</th>
+                                    <th class="text-center" style="width:90px">Compliance</th>
+                                    <th class="text-center" style="width:90px">SKU</th>';
 
                                     if ($page == 1) { echo '<th class="text-center" style="width: 135px;">Action</th>'; }
                                 
@@ -20275,28 +20569,54 @@
                                 if (!empty($material)) {
                                     $material_arr = explode(", ", $material);
                                     foreach ($material_arr as $value) {
-                                        $selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_supplier_material WHERE ID=$value" );
+                                        $selectMaterial = mysqli_query( $conn,"SELECT ID, active, material_name, material_id, description, spec_file, spec_date_to, spec_reviewer, spec_approver, other FROM tbl_supplier_material WHERE ID=$value" );
                                         if ( mysqli_num_rows($selectMaterial) > 0 ) {
                                             while($rowMaterial = mysqli_fetch_array($selectMaterial)) {
                                                 $material_mid = $rowMaterial["ID"];
                                                 $material_active = $rowMaterial["active"] == 1 ? 'Yes':'No';
-                                                $material_name = $rowMaterial["material_name"];
+                                                $material_name = htmlentities($rowMaterial["material_name"] ?? '');
                                                 $material_id = $rowMaterial["material_id"];
-                                                $material_description = $rowMaterial["description"];
+                                                $material_description = htmlentities($rowMaterial["description"] ?? '');
 
                                                 if ($page == 2) {
-                                                    $selectProduct = mysqli_query( $conn,"SELECT * FROM tbl_products WHERE ID=$material_name" );
+                                                    $selectProduct = mysqli_query( $conn,"SELECT name, code, description FROM tbl_products WHERE ID=$material_name" );
                                                     $rowProduct = mysqli_fetch_array($selectProduct);
-                                                    $material_name = $rowProduct["name"];
-                                                    $material_id = $rowProduct["code"];
-                                                    $material_description = $rowProduct["description"];
+                                                    $material_name = htmlentities($rowProduct["name"] ?? '');
+                                                    $material_id = htmlentities($rowProduct["code"] ?? '');
+                                                    $material_description = htmlentities($rowProduct["description"] ?? '');
                                                 }
 
+                                                $material_total = 1;
+                                                $material_count = 0;
+                                                if (!empty($rowMaterial["spec_file"]) AND !empty($rowMaterial["spec_date_to"])) {
+                                                    $material_spec_date_to = date("Y-m-d", strtotime($rowMaterial["spec_date_to"]));
+                                                    if ($material_spec_date_to > $local_date AND $rowMaterial["spec_reviewer"] > 0 AND $rowMaterial["spec_approver"] > 0) {
+                                                        $material_count++;
+                                                    }
+                                                }
+                                                if (!empty($rowMaterial["other"])) {
+                                                    $material_other_arr = $rowMaterial['other'];
+                                                    $output = json_decode($material_other_arr, true);
+                                                    $material_total += count($output);
+                                                    foreach ($output as $key => $value) {
+                                                        if (!empty($value['material_file_doc']) AND !empty($value['to'])) {
+                                                            $material_spec_date_to = date("Y-m-d", strtotime($value["to"]));
+                                                            if (isset($value['reviewer']) AND isset($value['approver'])) {
+                                                                if ($material_spec_date_to > $local_date AND $value['reviewer'] > 0 AND $value['approver'] > 0) {
+                                                                    $material_count++;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                $material_percentage = (100 / $material_total) * $material_count;
+
                                                 echo '<tr id="tr_'.$material_mid.'">
-                                                    <td class="text-center">'.$material_active.'</td>
                                                     <td><input type="hidden" class="form-control" name="material_id[]" value="'.$material_mid.'" readonly />'.$material_name.'</td>
-                                                    <td>'.$material_id.'</td>
-                                                    <td>'.$material_description.'</td>';
+                                                    <td>'.$material_description.'</td>
+                                                    <td class="text-center">'.$material_active.'</td>
+                                                    <td class="text-center">'.round($material_percentage, 2).'%</td>
+                                                    <td class="text-center">'.$material_id.'</td>';
 
                                                     if ($page == 1) { 
                                                         echo '<td class="text-center">
@@ -20836,6 +21156,7 @@
                                                         <option value="1">Manual Upload</option>
                                                         <option value="2">Youtube URL</option>
                                                         <option value="3">Google Drive URL</option>
+                                                        <option value="4">Sharepoint URL</option>
                                                     </select>
                                                     <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                     <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
@@ -20846,6 +21167,7 @@
                                                         <option value="1">Manual Upload</option>
                                                         <option value="2">Youtube URL</option>
                                                         <option value="3">Google Drive URL</option>
+                                                        <option value="4">Sharepoint URL</option>
                                                     </select>
                                                     <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                     <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
@@ -20911,6 +21233,10 @@
                                                         $temp_file = $src.$url.rawurlencode($temp_file).$embed;
                                                     } else if ($filetype == 3) {
                                                         $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
+                                                    } else if ($filetype == 4) {
+                                                        $temp_file = preg_replace('#[^/]*$#', '', $temp_file);
+                                                        $file_extension = 'fa-strikethrough';
+                                                        $target = '_blank';
                                                     }
 
                                                     echo '<p style="margin: 0;">
@@ -21104,6 +21430,7 @@
                                                 <option value="1">Manual Upload</option>
                                                 <option value="2">Youtube URL</option>
                                                 <option value="3">Google Drive URL</option>
+                                                <option value="4">Sharepoint URL</option>
                                             </select>
                                             <input class="form-control margin-top-15 fileUpload" type="file" name="document_other_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                             <input class="form-control margin-top-15 fileURL" type="url" name="document_other_fileurl[]" style="display: none;" placeholder="https://" />
@@ -21114,6 +21441,7 @@
                                                 <option value="1">Manual Upload</option>
                                                 <option value="2">Youtube URL</option>
                                                 <option value="3">Google Drive URL</option>
+                                                <option value="4">Sharepoint URL</option>
                                             </select>
                                             <input class="form-control margin-top-15 fileUpload" type="file" name="document_other_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                             <input class="form-control margin-top-15 fileURL" type="url" name="document_other_fileurl[]" style="display: none;" placeholder="https://" />
@@ -21159,6 +21487,10 @@
                                                 $doc_file_template = $src.$url.rawurlencode($doc_file_template).$embed;
                                             } else if ($filetype == 3) {
                                                 $doc_file_template = preg_replace('#[^/]*$#', '', $doc_file_template).'preview';
+                                            } else if ($filetype == 4) {
+                                                $doc_file_template = preg_replace('#[^/]*$#', '', $doc_file_template);
+                                                $file_extension = 'fa-strikethrough';
+                                                $target = '_blank';
                                             }
 
                                             echo '<p style="margin: 0;">
@@ -24722,6 +25054,7 @@
                         <option value="1">Manual Upload</option>
                         <option value="2">Youtube URL</option>
                         <option value="3">Google Drive URL</option>
+                        <option value="4">Sharepoint URL</option>
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;">
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://">
@@ -24764,6 +25097,10 @@
                 $files = $src.$url.rawurlencode($files).$embed;
             } else if ($filetype == 3) {
                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
+            } else if ($filetype == 4) {
+                $files = preg_replace('#[^/]*$#', '', $files);
+                $file_extension = 'fa-strikethrough';
+                $target = '_blank';
             }
         }
 
@@ -24792,6 +25129,7 @@
                         <option value="1">Manual Upload</option>
                         <option value="2">Youtube URL</option>
                         <option value="3">Google Drive URL</option>
+                        <option value="4">Sharepoint URL</option>
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -24882,6 +25220,10 @@
                         $files = $src.$url.rawurlencode($files).$embed;
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                    } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                     $files = '<p style="margin: 0;"><a data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
                 }
@@ -24992,6 +25334,10 @@
                     $files = $src.$url.rawurlencode($files).$embed;
                 } else if ($filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                } else if ($filetype == 4) {
+                    $files = preg_replace('#[^/]*$#', '', $files);
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
                 }
                 $files = '<p style="margin: 0;"><a data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
             }
@@ -25217,28 +25563,43 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Brand Name</label>
-                    <input class="form-control" type="text" name="brand_name" required />
+                    <input class="form-control" type="text" name="brand_name" />
                 </div>
             </div>
             <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Category</label>
+                    <select class="form-control" name="category" required>
+                        <option value="0">Select</option>';
+                        $selectData = mysqli_query( $conn,"SELECT ID, name from tbl_products_category ORDER BY name" );
+                        if ( mysqli_num_rows($selectData) > 0 ) {
+                            while($rowData = mysqli_fetch_array($selectData)) {
+                                echo '<option value="'.$rowData["ID"].'">'.htmlentities($rowData["name"] ?? '').'</option>';
+                            }
+                        }
+                    echo '</select>
+                </div>
+            </div>
+
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">SKU</label>
                     <input class="form-control" type="text" name="material_id" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">UoM</label>
                     <input class="form-control" type="text" name="material_uom" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">Count</label>
                     <input class="form-control" type="text" name="material_count" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">Price Per Unit</label>
                     <input class="form-control" type="text" name="material_ppu" />
@@ -25379,6 +25740,17 @@
         $id = $_GET['modalView_Supplier_Material'];
         $modal = $_GET['m'];
 
+        $s = 0;
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
         $selectData = mysqli_query( $conn,"SELECT * from tbl_supplier_material WHERE ID = $id" );
         $row = mysqli_fetch_array($selectData);
 
@@ -25421,37 +25793,52 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Material Name</label>
-                    <input class="form-control" type="text" name="material_name" value="'.$row['material_name'].'" required />
+                    <input class="form-control" type="text" name="material_name" value="'.htmlentities($row['material_name'] ?? '').'" required />
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="control-label">Brand Name</label>
-                    <input class="form-control" type="text" name="brand_name" value="'.$row['brand_name'].'" required />
+                    <input class="form-control" type="text" name="brand_name" value="'.htmlentities($row['brand_name'] ?? '').'" />
                 </div>
             </div>
             <div class="col-md-4">
+                <div class="form-group">
+                    <label class="control-label">Category</label>
+                    <select class="form-control" name="category" required>
+                        <option value="0">Select</option>';
+                        $selectData = mysqli_query( $conn,"SELECT ID, name from tbl_products_category ORDER BY name" );
+                        if ( mysqli_num_rows($selectData) > 0 ) {
+                            while($rowData = mysqli_fetch_array($selectData)) {
+                                echo '<option value="'.$rowData["ID"].'" '; echo $row['category'] == $rowData["ID"] ? 'SELECTED':''; echo '>'.htmlentities($rowData["name"] ?? '').'</option>';
+                            }
+                        }
+                    echo '</select>
+                </div>
+            </div>
+
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">SKU</label>
-                    <input class="form-control" type="text" name="material_id" value="'.$row['material_id'].'" />
+                    <input class="form-control" type="text" name="material_id" value="'.htmlentities($row['material_id'] ?? '').'" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">UoM</label>
-                    <input class="form-control" type="text" name="material_uom" value="'.$row['material_uom'].'" />
+                    <input class="form-control" type="text" name="material_uom" value="'.htmlentities($row['material_uom'] ?? '').'" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">Count</label>
-                    <input class="form-control" type="text" name="material_count" value="'.$row['material_count'].'" />
+                    <input class="form-control" type="text" name="material_count" value="'.htmlentities($row['material_count'] ?? '').'" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">Price Per Unit</label>
-                    <input class="form-control" type="text" name="material_ppu" value="'.$row['material_ppu'].'" />
+                    <input class="form-control" type="text" name="material_ppu" value="'.htmlentities($row['material_ppu'] ?? '').'" />
                 </div>
             </div>
             <div class="col-md-6 hide">
@@ -25461,19 +25848,19 @@
                         <div class="col-md-4">
                             <div class="input-icon right">
                                 <i class="fax fa-microphonex">/kg</i>
-                                <input type="number" class="form-control cost_kg" placeholder="Amount" name="cost_kg" onkeyup="changeCost(this.value, 1)" value="'.$row['cost_kg'].'" />
+                                <input type="number" class="form-control cost_kg" placeholder="Amount" name="cost_kg" onkeyup="changeCost(this.value, 1)" value="'.htmlentities($row['cost_kg'] ?? '').'" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="input-icon right">
                                 <i class="fax fa-microphonex">/lb</i>
-                                <input type="number" class="form-control cost_lb" placeholder="Amount" name="cost_lb" onkeyup="changeCost(this.value, 2)" value="'.$row['cost_lb'].'" />
+                                <input type="number" class="form-control cost_lb" placeholder="Amount" name="cost_lb" onkeyup="changeCost(this.value, 2)" value="'.htmlentities($row['cost_lb'] ?? '').'" />
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="input-icon right">
                                 <i class="fax fa-microphonex">/oz</i>
-                                <input type="number" class="form-control cost_oz" placeholder="Amount" name="cost_oz" onkeyup="changeCost(this.value, 3)" value="'.$row['cost_oz'].'" />
+                                <input type="number" class="form-control cost_oz" placeholder="Amount" name="cost_oz" onkeyup="changeCost(this.value, 3)" value="'.htmlentities($row['cost_oz'] ?? '').'" />
                             </div>
                         </div>
                     </div>
@@ -25484,13 +25871,13 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="control-label">Description of Use</label>
-                    <textarea class="form-control" name="material_description" required>'.$row['description'].'</textarea>
+                    <textarea class="form-control" name="material_description" required>'.htmlentities($row['description'] ?? '').'</textarea>
                 </div>
             </div>
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="control-label">Comments / Notes</label>
-                    <textarea class="form-control" name="material_notes">'.$row['notes'].'</textarea>
+                    <textarea class="form-control" name="material_notes">'.htmlentities($row['notes'] ?? '').'</textarea>
                 </div>
             </div>
             <div class="col-md-6">
@@ -25513,7 +25900,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="control-label">Allergen Other</label>
-                    <input type="text" class="form-control tagsinput" name="allergen_other" data-role="tagsinput" value="'.$row['allergen_other'].'" placeholder="Enter allergen" />
+                    <input type="text" class="form-control tagsinput" name="allergen_other" data-role="tagsinput" value="'.htmlentities($row['allergen_other'] ?? '').'" placeholder="Enter allergen" />
                 </div>
             </div>
         </div>
@@ -25545,6 +25932,62 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Reviewer</label>';
+
+                    if ($row['spec_reviewer'] == 0 OR $row['spec_reviewer'] == $portal_user) {
+                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $portal_user" );
+                        $rowUser = mysqli_fetch_array($selectUser);
+                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                        echo '<select class="form-control" name="spec_reviewer">
+                            <option value="0">Select</option>
+                            <option value="'.$portal_user.'" '; echo $row['spec_reviewer'] == $portal_user ? 'SELECTED':''; echo '>'.$name.'</option>
+                        </select>';
+                    } else {
+                        $spec_reviewer = $row['spec_reviewer'];
+                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $spec_reviewer" );
+                        $rowUser = mysqli_fetch_array($selectUser);
+                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                        echo '<input class="form-control" type="hidden" name="spec_reviewer" value="'.$spec_reviewer.'" />
+                        <input class="form-control" type="text" value="'.$name.'" readonly />';
+                    }
+
+                echo '</div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label">Approver</label>';
+
+                    if ($row['spec_approver'] == 0 OR $row['spec_approver'] == $portal_user) {
+                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $portal_user" );
+                        $rowUser = mysqli_fetch_array($selectUser);
+                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                        echo '<select class="form-control" name="spec_approver">
+                            <option value="0">Select</option>
+                            <option value="'.$portal_user.'" '; echo $row['spec_approver'] == $portal_user ? 'SELECTED':''; echo '>'.$name.'</option>
+                        </select>';
+                    } else {
+                        $spec_approver = $row['spec_approver'];
+                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $spec_approver" );
+                        $rowUser = mysqli_fetch_array($selectUser);
+                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                        echo '<input class="form-control" type="hidden" name="spec_approver" value="'.$spec_approver.'" />
+                        <input class="form-control" type="text" value="'.$name.'" readonly />';
+                    }
+                    
+                echo '</div>
+            </div>
+        </div>
         <div class="mt-repeater">
             <div data-repeater-list="material_other">';
 
@@ -25553,7 +25996,7 @@
                 $other_count = count($other_arr);
                 if (!empty($other)) {
                     foreach ($other_arr as $key => $value) {
-                        $name = $value['name'];
+                        $name = htmlentities($value['name'] ?? '');
                         $material_file_doc = $value['material_file_doc'];
 
                         $from = $value['from'];
@@ -25612,6 +26055,66 @@
                                 <label style="visibility: hidden; display: block;">Remove</label>
                                 <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Reviewer</label>';
+
+                                    $val_reviewer = 0;
+                                    if (isset($value['reviewer'])) { $val_reviewer = $value['reviewer']; }
+
+                                    if ($val_reviewer == 0 OR $val_reviewer == $portal_user) {
+                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $portal_user" );
+                                        $rowUser = mysqli_fetch_array($selectUser);
+                                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                                        echo '<select class="form-control" name="reviewer">
+                                            <option value="0">Select</option>
+                                            <option value="'.$portal_user.'" '; echo $val_reviewer == $portal_user ? 'SELECTED':''; echo '>'.$name.'</option>
+                                        </select>';
+                                    } else {
+                                        $reviewer = $reviewer;
+                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $reviewer" );
+                                        $rowUser = mysqli_fetch_array($selectUser);
+                                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                                        echo '<input class="form-control" type="hidden" name="reviewer" value="'.$reviewer.'" />
+                                        <input class="form-control" type="text" value="'.$name.'" readonly />';
+                                    }
+
+                                echo '</div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Approver</label>';
+
+                                    $val_approver = 0;
+                                    if (isset($value['approver'])) { $val_approver = $value['approver']; }
+
+                                    if ($val_approver == 0 OR $val_approver == $portal_user) {
+                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $portal_user" );
+                                        $rowUser = mysqli_fetch_array($selectUser);
+                                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                                        echo '<select class="form-control" name="approver">
+                                            <option value="0">Select</option>
+                                            <option value="'.$portal_user.'" '; echo $val_approver == $portal_user ? 'SELECTED':''; echo '>'.$name.'</option>
+                                        </select>';
+                                    } else {
+                                        $approver = $val_approver;
+                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $approver" );
+                                        $rowUser = mysqli_fetch_array($selectUser);
+                                        $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
+                                        if ($s == 1) { $name = 'Compliance Team'; }
+
+                                        echo '<input class="form-control" type="hidden" name="approver" value="'.$approver.'" />
+                                        <input class="form-control" type="text" value="'.$name.'" readonly />';
+                                    }
+                                    
+                                echo '</div>
+                            </div>
                         </div>';
                     }
                 }
@@ -25632,6 +26135,7 @@
 
         $material_name = addslashes($_POST['material_name']);
         $brand_name = addslashes($_POST['brand_name']);
+        $category = $_POST['category'];
         $material_id = $_POST['material_id'];
         $material_uom = $_POST['material_uom'];
         $material_count = $_POST['material_count'];
@@ -25664,8 +26168,6 @@
                 array_push($arr_item, $output);
             }
         }
-        // $material_spec_date_from = $_POST['material_spec_date_from'];
-        // $material_spec_date_to = $_POST['material_spec_date_to'];
 
         $material_spec_date_from = '';
         $material_spec_date_to = '';
@@ -25679,10 +26181,6 @@
         $material_other_arr = array();
         for ($i=0; $i < count($_POST['material_other']); $i++) {
             $material_file_name = $_POST['material_other'][$i]['material_file_name'];
-
-            // $material_file_from = $_POST['material_other'][$i]['material_file_from'];
-            // $material_file_to = $_POST['material_other'][$i]['material_file_to'];
-
             $material_file_from = '';
             $material_file_to = '';
             $material_file_daterange = $_POST['material_other'][$i]['material_file_daterange'];
@@ -25699,7 +26197,7 @@
                 $spec_filesize_other = implode('*', $_FILES['material_other']['size'][$i]);
                 $material_file_doc_tmp = implode('*', $_FILES['material_other']['tmp_name'][$i]);
                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($material_file_doc, PATHINFO_EXTENSION));
+                $ext = strtolower(pathinfo($material_file_doc_final, PATHINFO_EXTENSION));
 
                 $mime = mime_content_type($material_file_doc_tmp);
                 $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
@@ -25724,20 +26222,24 @@
                 }
             }
 
-            $material_other_data = array (
-                'name' => $material_file_name,
-                'material_file_doc' =>$material_file_doc_final,
-                'from' =>$material_file_from,
-                'to' =>$material_file_to
-            );
-            array_push( $material_other_arr, $material_other_data );
+            if (!empty($material_file_doc_final) AND !empty($material_file_from) AND !empty($material_file_to)) {
+                $material_other_data = array (
+                    'name' => $material_file_name,
+                    'material_file_doc' => $material_file_doc_final,
+                    'from' => $material_file_from,
+                    'to' => $material_file_to,
+                    'reviewer' => 0,
+                    'approver' => 0
+                );
+                array_push( $material_other_arr, $material_other_data );
+            }
         }
         $material_other = json_encode($material_other_arr);
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
         if ($process == true) {
-            $sql = "INSERT INTO tbl_supplier_material (user_id, material_name, brand_name, material_id, material_uom, material_count, material_ppu, cost_kg, cost_lb, cost_oz, description, notes, allergen, allergen_other, spec_file, spec_filesize, spec_date_from, spec_date_to, other, other_filesize, file_history)
-            VALUES ('$ID', '$material_name', '$brand_name', '$material_id', '$material_uom', '$material_count', '$material_ppu', '$cost_kg', '$cost_lb', '$cost_oz', '$material_description', '$material_notes', '$allergen', '$allergen_other', '$material_spec_file_final', '$spec_filesize', '$material_spec_date_from', '$material_spec_date_to', '$material_other', '$filesize', '$file_history')";
+            $sql = "INSERT INTO tbl_supplier_material (user_id, material_name, brand_name, category, material_id, material_uom, material_count, material_ppu, cost_kg, cost_lb, cost_oz, description, notes, allergen, allergen_other, spec_file, spec_filesize, spec_date_from, spec_date_to, other, other_filesize, file_history)
+            VALUES ('$ID', '$material_name', '$brand_name', '$category', '$material_id', '$material_uom', '$material_count', '$material_ppu', '$cost_kg', '$cost_lb', '$cost_oz', '$material_description', '$material_notes', '$allergen', '$allergen_other', '$material_spec_file_final', '$spec_filesize', '$material_spec_date_from', '$material_spec_date_to', '$material_other', '$filesize', '$file_history')";
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
             }
@@ -25774,6 +26276,7 @@
 
         $material_name = addslashes($_POST['material_name']);
         $brand_name = addslashes($_POST['brand_name']);
+        $category = $_POST['category'];
         $material_id = $_POST['material_id'];
         $material_active = $_POST['active'];
         $material_uom = $_POST['material_uom'];
@@ -25784,6 +26287,8 @@
         $cost_oz = $_POST['cost_oz'];
         $material_description = addslashes($_POST['material_description']);
         $material_notes = addslashes($_POST['material_notes']);
+        $spec_reviewer = $_POST['spec_reviewer'];
+        $spec_approver = $_POST['spec_approver'];
 
         $allergen = "";
         if (!empty($_POST["allergen"])) { $allergen = implode(", ", $_POST["allergen"]); }
@@ -25807,8 +26312,6 @@
                 array_push($arr_item, $output);
             }
         }
-        // $material_spec_date_from = $_POST['material_spec_date_from'];
-        // $material_spec_date_to = $_POST['material_spec_date_to'];
 
         $material_spec_date_from = '';
         $material_spec_date_to = '';
@@ -25822,8 +26325,8 @@
         $material_other_arr = array();
         for ($i=0; $i < count($_POST['material_other']); $i++) {
             $material_file_name = $_POST['material_other'][$i]['material_file_name'];
-            // $material_file_from = $_POST['material_other'][$i]['material_file_from'];
-            // $material_file_to = $_POST['material_other'][$i]['material_file_to'];
+            $material_file_reviewer = $_POST['material_other'][$i]['reviewer'];
+            $material_file_approver = $_POST['material_other'][$i]['approver'];
 
             $material_file_from = '';
             $material_file_to = '';
@@ -25870,7 +26373,9 @@
                 'name' => $material_file_name,
                 'material_file_doc' =>$material_file_doc_final,
                 'from' =>$material_file_from,
-                'to' =>$material_file_to
+                'to' =>$material_file_to,
+                'reviewer' =>$material_file_reviewer,
+                'approver' =>$material_file_approver
             );
             array_push( $material_other_arr, $material_other_data );
         }
@@ -25878,7 +26383,7 @@
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
         if ($process == true) {
-            mysqli_query( $conn,"UPDATE tbl_supplier_material set active='". $material_active ."', material_name='". $material_name ."', brand_name='". $brand_name ."', material_id='". $material_id ."', material_uom='". $material_uom ."', material_count='". $material_count ."', material_ppu='". $material_ppu ."', cost_kg='". $cost_kg ."', cost_lb='". $cost_lb ."', cost_oz='". $cost_oz ."', description='". $material_description ."', notes='". $material_notes ."', allergen='". $allergen ."', allergen_other='". $allergen_other ."', spec_file='". $material_spec_file_final ."', spec_filesize='". $spec_filesize ."', spec_date_from='". $material_spec_date_from ."', spec_date_to='". $material_spec_date_to ."', other='". $material_other ."', other_filesize='". $filesize ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
+            mysqli_query( $conn,"UPDATE tbl_supplier_material set active='". $material_active ."', material_name='". $material_name ."', brand_name='". $brand_name ."', category='". $category ."', material_id='". $material_id ."', material_uom='". $material_uom ."', material_count='". $material_count ."', material_ppu='". $material_ppu ."', cost_kg='". $cost_kg ."', cost_lb='". $cost_lb ."', cost_oz='". $cost_oz ."', description='". $material_description ."', notes='". $material_notes ."', allergen='". $allergen ."', allergen_other='". $allergen_other ."', spec_file='". $material_spec_file_final ."', spec_filesize='". $spec_filesize ."', spec_date_from='". $material_spec_date_from ."', spec_date_to='". $material_spec_date_to ."', spec_reviewer='". $spec_reviewer ."', spec_approver='". $spec_approver ."', other='". $material_other ."', other_filesize='". $filesize ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
 
             $output = array(
                 "ID" => $ID,
@@ -26324,6 +26829,7 @@
                         <option value="1">Manual Upload</option>
                         <option value="2">Youtube URL</option>
                         <option value="3">Google Drive URL</option>
+                        <option value="4">Sharepoint URL</option>
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -26401,6 +26907,10 @@
                     $file_final = $src.$url.rawurlencode($file_final).$embed;
                 } else if ($filetype == 3) {
                     $file_final = preg_replace('#[^/]*$#', '', $file_final).'preview';
+                } else if ($filetype == 4) {
+                    $file_final = preg_replace('#[^/]*$#', '', $file_final);
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
                 }
                 $view = '<p style="margin: 0;">
                     <a href="'.$file_final.'" data-src="'.$file_final.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> |
@@ -26432,6 +26942,7 @@
                         <option value="1">Manual Upload</option>
                         <option value="2">Youtube URL</option>
                         <option value="3">Google Drive URL</option>
+                        <option value="4">Sharepoint URL</option>
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -26508,6 +27019,10 @@
                     $file_final = $src.$url.rawurlencode($file_final).$embed;
                 } else if ($filetype == 3) {
                     $file_final = preg_replace('#[^/]*$#', '', $file_final).'preview';
+                } else if ($filetype == 4) {
+                    $file_final = preg_replace('#[^/]*$#', '', $file_final);
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
                 }
 
                 $view = '<p style="margin: 0;">
@@ -30786,6 +31301,10 @@
                     $data_files = $src.$url.rawurlencode($data_files).$embed;
                 } else if ($filetype == 3) {
                     $data_files = preg_replace('#[^/]*$#', '', $data_files).'preview';
+                } else if ($filetype == 4) {
+                    $data_files = preg_replace('#[^/]*$#', '', $data_files);
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
                 }
             }
         }
@@ -30953,6 +31472,7 @@
                         <option value="1">Manual Upload</option>
                         <option value="2">Youtube URL</option>
                         <option value="3">Google Drive URL</option>
+                        <option value="4">Sharepoint URL</option>
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -31510,6 +32030,10 @@
                     $data_files = $src.$url.rawurlencode($data_files).$embed;
                 } else if ($filetype == 3) {
                     $data_files = preg_replace('#[^/]*$#', '', $data_files).'preview';
+                } else if ($filetype == 4) {
+                    $data_files = preg_replace('#[^/]*$#', '', $data_files);
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
                 }
             }
         }
@@ -31549,6 +32073,7 @@
                         <option value="1">Manual Upload</option>
                         <option value="2">Youtube URL</option>
                         <option value="3">Google Drive URL</option>
+                        <option value="4">Sharepoint URL</option>
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -31955,6 +32480,10 @@
                     $data_files = $src.$url.rawurlencode($data_files).$embed;
                 } else if ($filetype == 3) {
                     $data_files = preg_replace('#[^/]*$#', '', $data_files).'preview';
+                } else if ($filetype == 4) {
+                    $data_files = preg_replace('#[^/]*$#', '', $data_files);
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
                 }
             }
         }
@@ -32010,6 +32539,7 @@
                         <option value="1">Manual Upload</option>
                         <option value="2">Youtube URL</option>
                         <option value="3">Google Drive URL</option>
+                        <option value="4">Sharepoint URL</option>
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -33089,6 +33619,10 @@
             $recipients_email = $email;
             $recipients[$recipients_email] = $recipients_name;
 
+            $recipients_name = 'Customer Success';
+            $recipients_email = 'csuccess@consultareinc.com';
+            $recipients[$recipients_email] = $recipients_name;
+
             $subject = 'Resolution of Job Ticket #'.$row['ID'];
             $body = 'Hi '.$name.',<br><br>
 
@@ -33195,8 +33729,8 @@
 
                     // Customer Service
                     $sender['services@interlinkiq.com'] = 'Interlink IQ';
-                    $recipients['csuccess@consultareinc.com'] = 'Christopher Santianez';
-                    $recipients['chris@consultareinc.com'] = 'Customer Success';
+                    $recipients['csuccess@consultareinc.com'] = 'Customer Success';
+                    $recipients['chris@consultareinc.com'] = 'Christopher Santianez';
                     $subject = 'New Job Ticket';
                     $body = 'Good day!<br><br>
 
@@ -44668,7 +45202,7 @@
                 }
             }
         } else if ($page === "employee") {
-            $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE user_id = $user_id" );
+            $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID <> 1240 AND ID <> 1241 AND user_id = $user_id" );
             if ( mysqli_num_rows($selectEmployeeCounter) > 0 ) {
                 while($rowEmployeeCounter = mysqli_fetch_array($selectEmployeeCounter)) {
                     $suspended = $rowEmployeeCounter["suspended"];
@@ -45744,6 +46278,10 @@
                                     $file_doc = $src.$url.rawurlencode($file_doc).$embed;
                                 } else if ($filetype == 3) {
                                     $file_doc = preg_replace('#[^/]*$#', '', $file_doc).'preview';
+                                } else if ($filetype == 4) {
+                                    $file_doc = preg_replace('#[^/]*$#', '', $file_doc);
+                                    $file_extension = 'fa-strikethrough';
+                                    $target = '_blank';
                                 }
 
 
@@ -46958,7 +47496,7 @@
                             <div class="panel-heading '. $panelBG .'">
                                 <div class="row">
                                     <div class="col-md-10">
-                                        <h4 class="panel-title bold">
+                                        <h4 class="panel-title bold pictogram-align">
                                             <a class="accordion-toggle font-white" data-toggle="collapse" data-parent="#parent'. $parent_id .'" onclick="selectedAccordion('. $item_ID .')" href="#item_'. $item_ID .'">'. htmlentities($rowItem["l_name"] ?? '');
                                                 if (!empty($reason)) {
                                                     $output .= '<i class="fa fa-warning font-red itemWarning" style="margin-left: 5px;"></i>';
@@ -46970,8 +47508,52 @@
                                                         </span>';
                                                     }
                                                 }
-                                            $output .= '</a>
-                                        </h4>
+                                            $output .= '</a>';
+
+                                            // $pictogram = 'cd_accordion';
+                                            // if ($user_id == 163) {
+                                            //     $output .= '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                            // } else {
+                                            //     $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                            //     if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                            //         $row = mysqli_fetch_array($selectPictogram);
+
+                                            //         $files = '';
+                                            //         $type = 'iframe';
+                                            //         if (!empty($row["files"])) {
+                                            //             $arr_filename = explode(' | ', $row["files"]);
+                                            //             $arr_filetype = explode(' | ', $row["filetype"]);
+                                            //             $str_filename = '';
+
+                                            //             foreach($arr_filename as $val_filename) {
+                                            //                 $str_filename = $val_filename;
+                                            //             }
+                                            //             foreach($arr_filetype as $val_filetype) {
+                                            //                 $str_filetype = $val_filetype;
+                                            //             }
+
+                                            //             $files = $row["files"];
+                                            //             if ($row["filetype"] == 1) {
+                                            //                 $fileExtension = fileExtension($files);
+                                            //                 $src = $fileExtension['src'];
+                                            //                 $embed = $fileExtension['embed'];
+                                            //                 $type = $fileExtension['type'];
+                                            //                 $file_extension = $fileExtension['file_extension'];
+                                            //                 $url = $base_url.'uploads/pictogram/';
+
+                                            //                 $files = $src.$url.rawurlencode($files).$embed;
+                                            //             } else if ($row["filetype"] == 3) {
+                                            //                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                            //             }
+                                            //         }
+
+                                            //         if (!empty($files)) {
+                                            //             $output .= '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                            //         }
+                                            //     }
+                                            // }
+
+                                        $output .= '</h4>
                                         <ul class="list-inline muted h6">';
                                             // <li><i class="fa fa-calendar-check-o"></i> Compliance (0%)</li>
                                             // <li><i class="fa fa-calendar-times-o"></i> Expires ('. $rowExpired .')</li>
@@ -47000,7 +47582,7 @@
                                                     <li><a href="javascript:;" class="btnDelete" data-id="'. $item_ID .'" onclick="btnDelete('. $item_ID .')">Delete</a></li>
                                                     <li><a href="#modalReport" class="btnReport" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnReport('. $item_ID .')">Report</a></li>';
                                             
-                                                    if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477) {
+                                                    if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477 OR $portal_user == 1486) {
                                                         $output .= '<li><a href="#modalClone" data-toggle="modal" onclick="btnClone('. $item_ID .')">Clone</a></li>';
                                                     }
 
@@ -47376,7 +47958,7 @@
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-md-10">
-                            <h4 class="panel-title bold">
+                            <h4 class="panel-title bold pictogram-align">
                                 <a class="accordion-toggle font-dark" data-toggle="collapse" data-parent="#parent" href="#item_'. $library_ID .'">'. htmlentities($library_name ?? '');
                                     if (!empty($reason)) {
                                         echo '<i class="fa fa-warning font-red itemWarning" style="margin-left: 5px;"></i>';
@@ -47388,8 +47970,52 @@
                                             </span>';
                                         }
                                     }
-                                echo '</a>
-                            </h4>
+                                echo '</a>';
+
+                                $pictogram = 'cd_accordion';
+                                if ($user_id == 163) {
+                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                } else {
+                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                        $files = '';
+                                        $type = 'iframe';
+                                        if (!empty($row["files"])) {
+                                            $arr_filename = explode(' | ', $row["files"]);
+                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                            $str_filename = '';
+
+                                            foreach($arr_filename as $val_filename) {
+                                                $str_filename = $val_filename;
+                                            }
+                                            foreach($arr_filetype as $val_filetype) {
+                                                $str_filetype = $val_filetype;
+                                            }
+
+                                            $files = $row["files"];
+                                            if ($row["filetype"] == 1) {
+                                                $fileExtension = fileExtension($files);
+                                                $src = $fileExtension['src'];
+                                                $embed = $fileExtension['embed'];
+                                                $type = $fileExtension['type'];
+                                                $file_extension = $fileExtension['file_extension'];
+                                                $url = $base_url.'uploads/pictogram/';
+
+                                                $files = $src.$url.rawurlencode($files).$embed;
+                                            } else if ($row["filetype"] == 3) {
+                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                            }
+                                        }
+
+                                        if (!empty($files)) {
+                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                        }
+                                    }
+                                }
+                            
+                            echo '</h4>
                             <ul class="list-inline muted h6">';
                                 // <li><i class="fa fa-calendar-check-o"></i> Compliance (0%)</li>
                                 // <li><i class="fa fa-calendar-times-o"></i> Expires ('. $rowExpired .')</li>
@@ -47424,7 +48050,7 @@
                                         echo '<li><a href="javascript:;" class="btnDelete" data-id="'. $library_ID .'" onclick="btnDelete('. $library_ID .')">Delete</a></li>
                                         <li><a href="#modalReport" class="btnReport" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnReport('. $library_ID .')">Report</a></li>';
                                         
-                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477) {
+                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477 OR $portal_user == 1486) {
                                             echo '<li><a href="#modalClone" data-toggle="modal" onclick="btnClone('. $library_ID .')">Clone</a></li>';
                                         }
                                         
@@ -47965,6 +48591,10 @@
                                                                 } else if ($filetype == 3) {
                                                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                                     $file_extension = 'fa-google';
+                                                                } else if ($filetype == 4) {
+                                                                    $files = preg_replace('#[^/]*$#', '', $files);
+                                                                    $file_extension = 'fa-strikethrough';
+                                                                    $target = '_blank';
                                                                 }
                                                                 $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                                                             }
@@ -48037,6 +48667,10 @@
                                                                                 } else if ($filetype == 3) {
                                                                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                                                     $file_extension = 'fa-google';
+                                                                                } else if ($filetype == 4) {
+                                                                                    $files = preg_replace('#[^/]*$#', '', $files);
+                                                                                    $file_extension = 'fa-strikethrough';
+                                                                                    $target = '_blank';
                                                                                 }
                                                                                 $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                                                                             }
@@ -49486,6 +50120,10 @@
                                                         } else if ($filetype == 3) {
                                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                             $file_extension = 'fa-google';
+                                                        } else if ($filetype == 4) {
+                                                            $files = preg_replace('#[^/]*$#', '', $files);
+                                                            $file_extension = 'fa-strikethrough';
+                                                            $target = '_blank';
                                                         }
                                                         $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                                                     }
@@ -49545,6 +50183,10 @@
                                                                         } else if ($filetype == 3) {
                                                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                                             $file_extension = 'fa-google';
+                                                                        } else if ($filetype == 4) {
+                                                                            $files = preg_replace('#[^/]*$#', '', $files);
+                                                                            $file_extension = 'fa-strikethrough';
+                                                                            $target = '_blank';
                                                                         }
                                                                         $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                                                                     }
@@ -51902,7 +52544,7 @@
             <div class="col-md-8">
                 <input type="hidden" name="reviewer_tmp" value="'.$row["reviewer"].'" />
                 <select class="form-control mt-multiselect" name="reviewer">
-                    <option value="">Select</option>';
+                    <option value="0">Select</option>';
                     $selectEmployeee = mysqli_query( $conn,"SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
@@ -51938,7 +52580,7 @@
             <div class="col-md-8">
                 <input type="hidden" name="approver_tmp" value="'.$row["approver"].'" />
                 <select class="form-control mt-multiselect" name="approver">
-                    <option value="">Select</option>';
+                    <option value="0">Select</option>';
                     $selectEmployeee = mysqli_query( $conn,"SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
@@ -52006,7 +52648,7 @@
             <label class="col-md-3 control-label">Reviewer</label>
             <div class="col-md-8">
                 <select class="form-control mt-multiselect" name="reviewer">
-                    <option value="">Select</option>';
+                    <option value="0">Select</option>';
                     $selectEmployeee = mysqli_query( $conn,"SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
@@ -52041,7 +52683,7 @@
             <label class="col-md-3 control-label">Approver</label>
             <div class="col-md-8">
                 <select class="form-control mt-multiselect" name="approver">
-                    <option value="">Select</option>';
+                    <option value="0">Select</option>';
                     $selectEmployeee = mysqli_query( $conn,"SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
@@ -52136,7 +52778,7 @@
             <div class="col-md-8">
                 <input type="hidden" name="reviewer_tmp" value="'.$row["reviewer"].'" />
                 <select class="form-control mt-multiselect" name="reviewer">
-                    <option value="">Select</option>';
+                    <option value="0">Select</option>';
                     $selectEmployeee = mysqli_query( $conn,"SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
@@ -52172,7 +52814,7 @@
             <div class="col-md-8">
                 <input type="hidden" name="approver_tmp" value="'.$row["approver"].'" />
                 <select class="form-control mt-multiselect" name="approver">
-                    <option value="">Select</option>';
+                    <option value="0">Select</option>';
                     $selectEmployeee = mysqli_query( $conn,"SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
@@ -53307,7 +53949,7 @@
                                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                 $file_extension = 'fa-google';
                             } else if ($str_filetype == 4) {
-                                $files = preg_replace('#[^/]*$#', '', $str_filename);
+                                $files = preg_replace('#[^/]*$#', '', $files);
                                 $file_extension = 'fa-strikethrough';
                                 $target = '_blank';
                             }
@@ -53451,7 +54093,7 @@
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
                         } else if ($str_filetype == 4) {
-                            $files = preg_replace('#[^/]*$#', '', $str_filename);
+                            $files = preg_replace('#[^/]*$#', '', $files);
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
                         }
@@ -53864,6 +54506,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -53898,6 +54541,10 @@
                     $files = $src.$url.rawurlencode($files).$embed;
                 } else if ($filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                } else if ($filetype == 4) {
+                    $files = preg_replace('#[^/]*$#', '', $files);
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
                 }
             }
         }
@@ -53979,6 +54626,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -54016,6 +54664,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -54055,6 +54704,10 @@
                     $files = $src.$url.rawurlencode($files).$embed;
                 } else if ($filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                } else if ($filetype == 4) {
+                    $files = preg_replace('#[^/]*$#', '', $files);
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
                 }
             }
         }
@@ -54078,6 +54731,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -54418,6 +55072,10 @@
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
+                        } else if ($filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                         $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                     }
@@ -54614,6 +55272,10 @@
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
+                    } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                     $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                 }
@@ -54785,6 +55447,10 @@
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
+                        } else if ($filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                         $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                     }
@@ -54940,6 +55606,10 @@
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
+                    } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                     $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                 }
@@ -55066,6 +55736,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -55142,6 +55813,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -55195,6 +55867,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -55279,6 +55952,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -55338,6 +56012,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -55427,6 +56102,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -55601,6 +56277,10 @@
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
+                        } else if ($filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                         $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                     }
@@ -55702,6 +56382,10 @@
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
+                    } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                     $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                 }
@@ -55883,6 +56567,10 @@
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
+                        } else if ($filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                         $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                     }
@@ -56014,6 +56702,10 @@
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
+                    } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                     $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                 }
@@ -56157,6 +56849,10 @@
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
+                        } else if ($filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                         $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                     }
@@ -56298,6 +56994,10 @@
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
+                    } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                     $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
                 }
@@ -56337,6 +57037,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -56397,6 +57098,7 @@
                     <option value="0">Select option</option>
                     <option value="1">Manual Upload</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -56551,6 +57253,10 @@
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
+                        } else if ($filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                     }
 
@@ -56680,6 +57386,10 @@
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
+                    } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                 }
 
@@ -56735,6 +57445,7 @@
                     <option value="1">Manual Upload</option>
                     <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -56796,6 +57507,7 @@
                     <option value="1">Manual Upload</option>
                     <option value="2">Youtube URL</option>
                     <option value="3">Google Drive URL</option>
+                    <option value="4">Sharepoint URL</option>
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -56952,6 +57664,10 @@
                         } else if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             $file_extension = 'fa-google';
+                        } else if ($filetype == 4) {
+                            $files = preg_replace('#[^/]*$#', '', $files);
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
                         }
                     }
 
@@ -57081,6 +57797,10 @@
                     } else if ($filetype == 3) {
                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                         $file_extension = 'fa-google';
+                    } else if ($filetype == 4) {
+                        $files = preg_replace('#[^/]*$#', '', $files);
+                        $file_extension = 'fa-strikethrough';
+                        $target = '_blank';
                     }
                 }
 
@@ -58259,7 +58979,7 @@
 
         $current_userEmployerID = employerID($_COOKIE['ID']);
         $current_client = 0;
-        if (!empty($_COOKIE['client'])) { $current_client = 1; }
+        if (!empty($_COOKIE['client']) AND $_COOKIE['client'] == 1) { $current_client = 1; }
 
         echo '<input class="form-control" type="hidden" name="ID" value="'. $id .'" />
         <div class="form-group">
@@ -58268,7 +58988,7 @@
                 <select class="form-control mt-multiselect btn btn-default" name="user" required>
                     <option value="">Select</option>';
 
-                    if ($portal_user == 1 OR $portal_user == 2 OR $portal_user == 19 OR $portal_user == 163 OR $current_userEmployerID == 27 OR $user_id == 464 OR $portal_user == 481) {
+                    if ($portal_user == 1 OR $portal_user == 2 OR $portal_user == 19 OR $portal_user == 163 OR $current_userEmployerID == 27 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1486) {
                         $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = 0 AND is_verified = 1 AND is_active = 1" );
                         if ($current_client == 1) { $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = 0 AND is_verified = 1 AND is_active = 1 AND client = 1" ); }
 
@@ -58757,6 +59477,8 @@
                                 $files = '<a data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'">'.$files_name.'</a>';
                             } else if ($filetype == 3) {
                                 $files = '<a data-src="'.preg_replace('#[^/]*$#', '', $files).'preview" data-fancybox data-type="'.$type.'">'.$files_name.'</a>';
+                            } else if ($filetype == 4) {
+                                $files = '<a data-src="'.preg_replace('#[^/]*$#', '', $files).'" data-fancybox data-type="'.$type.'">'.$files_name.'</a>';
                             }
 
                             $t_files = $rowItem["t_files"];

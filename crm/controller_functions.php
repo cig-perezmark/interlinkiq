@@ -539,7 +539,7 @@
                 ) AS chd
                 ON chd.contact_id = cr.crm_id
             WHERE 
-                cr.account_name LIKE '%".$searchValue."%' AND LENGTH(cr.account_name) > 0
+                cr.account_name LIKE '%".$searchValue."%'
                 AND cr.enterprise_id = $user_id";
 
         $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
@@ -626,7 +626,7 @@
                 ) AS chd
                 ON chd.contact_id = cr.crm_id
             WHERE 
-                cr.parent_account LIKE '%".$searchValue."%' AND LENGTH(cr.account_name) > 0
+                cr.parent_account LIKE '%".$searchValue."%'
                 AND cr.enterprise_id = $user_id";
 
         $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
@@ -713,7 +713,7 @@
                 ) AS chd
                 ON chd.contact_id = cr.crm_id
             WHERE 
-                cr.account_phone LIKE '%".$searchValue."%' AND LENGTH(cr.account_name) > 0
+                cr.account_phone LIKE '%".$searchValue."%'
                 AND cr.enterprise_id = $user_id";
 
         $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
@@ -800,8 +800,7 @@
                 ) AS chd
                 ON chd.contact_id = cr.crm_id
             WHERE 
-                cr.account_email LIKE '%".$searchValue."%' AND LENGTH(cr.account_name) > 0
-                AND cr.enterprise_id = $user_id";
+                cr.account_email LIKE '%".$searchValue."%' AND cr.enterprise_id = $user_id";
 
         $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
         $totalData = mysqli_fetch_assoc($totalDataQuery)['total'];
@@ -887,7 +886,7 @@
                 ) AS chd
                 ON chd.contact_id = cr.crm_id
             WHERE 
-                cr.Account_Source LIKE '%".$searchValue."%' AND LENGTH(cr.account_name) > 0
+                cr.Account_Source LIKE '%".$searchValue."%'
                 AND cr.enterprise_id = $user_id";
     
         $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");

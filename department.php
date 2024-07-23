@@ -356,6 +356,7 @@
                                                         <option value="1">Manual Upload</option>
                                                         <option value="2">Youtube URL</option>
                                                         <option value="3">Google Drive URL</option>
+                                                        <option value="4">Sharepoint URL</option>
                                                     </select>
                                                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                                                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
@@ -599,7 +600,7 @@
                 if($(e).val() == 1) {
                     $(e).parent().find('.fileUpload').show();
                     $(e).parent().find('.fileUpload').prop('required',true);
-                } else if($(e).val() == 2 || $(e).val() == 3) {
+                } else if($(e).val() == 2 || $(e).val() == 3 || $(e).val() == 4) {
                     $(e).parent().find('.fileURL').show();
                     $(e).parent().find('.fileURL').prop('required',true);
                 }

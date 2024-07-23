@@ -1,649 +1,387 @@
 <?php include_once 'database_iiq.php'; ?>
 <?php
-    // echo '<script>alert(document.referrer);</script>';
-    if(isset($_COOKIE['ID'])) {
-        // $url='profile';
-        // $url=$_SERVER['HTTP_REFERER'];
-        // // echo '<META HTTP-EQUIV=REFRESH CONTENT="0; '.$url.'">';
-        // // header('Location: profile');
-        
-        echo '<script>
-            prev_link = document.referrer;
-            if (prev_link == "") {
-                window.location.href = "profile";
-            } else if (prev_link.indexOf("management_services") > -1) {
-                window.location.href = "profile";
-            } else if (prev_link.indexOf("directory") > -1) {
-                window.location.href = "profile";
-            } else if (prev_link.indexOf("blog_posts_table") > -1) {
-                window.location.href = "profile";
-            } else if (prev_link.indexOf("forum") > -1) {
-                window.location.href = "profile";
-            } else if (prev_link == "https://interlinkiq.com/") {
-                window.location.href = "profile";
-            } else if (prev_link == "https://www.interlinkiq.com/") {
-                window.location.href = "profile";
-            } else {
-                // window.history.back();
-                window.location.href = "profile";
-            }
-        </script>';
-    }
+  if(isset($_COOKIE['ID'])) {
+    // $url='profile';
+    // $url=$_SERVER['HTTP_REFERER'];
+    // // echo '<META HTTP-EQUIV=REFRESH CONTENT="0; '.$url.'">';
+    // // header('Location: profile');
+    
+    echo '<script>
+      if (document.referrer == "") {
+        window.history.back();
+      } else {
+        window.location.href = "profile";
+      }
+    </script>';
+  }
 ?>
 
-<!DOCTYPE html>
-<!-- 
-Template Name: Metronic - Responsive Admin Dashboard Template build with Twitter Bootstrap 3.3.7
-Version: 4.7.1
-Author: KeenThemes
-Website: http://www.keenthemes.com/
-Contact: support@keenthemes.com
-Follow: www.twitter.com/keenthemes
-Dribbble: www.dribbble.com/keenthemes
-Like: www.facebook.com/keenthemes
-Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes
-Renew Support: http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes
-License: You must have a valid license purchased only from themeforest(the above link) in order to legally use the theme for your project.
--->
-<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
-<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
-<!--[if !IE]><!-->
-<html lang="en">
-    <!--<![endif]-->
-    <!-- BEGIN HEAD -->
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.122.0">
+    <title>InterlinkIQ - Login</title>
 
-    <head>
-        <base href="">
-        <meta charset="utf-8" />
-        <title>Interlink IQ Login Page</title>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta content="width=device-width, initial-scale=1" name="viewport" />
-        <meta content="Preview page of Metronic Admin Theme #2 for " name="description" />
-        <meta content="" name="author" />
-        <!-- BEGIN GLOBAL MANDATORY STYLES -->
-        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css" />
-        <link href="assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-        <link href="assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css" />
-        <link href="assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-        <link href="assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
-        <!-- END GLOBAL MANDATORY STYLES -->
-        <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <link href="assets/global/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
-        <link href="assets/global/plugins/select2/css/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link rel="canonical" href="//getbootstrap.com/docs/5.3/examples/sign-in/">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@docsearch/css@3">
+    <link href="../assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 
-        <link href="assets/global/plugins/ladda/ladda-themeless.min.css" rel="stylesheet" type="text/css" />
-        <!-- END PAGE LEVEL PLUGINS -->
-        <!-- BEGIN THEME GLOBAL STYLES -->
-        <link href="assets/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
-        <link href="assets/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
-        <!-- END THEME GLOBAL STYLES -->
-        <!-- BEGIN PAGE LEVEL STYLES -->
-        <link href="assets/pages/css/login.min.css" rel="stylesheet" type="text/css" />
-        <!-- END PAGE LEVEL STYLES -->
-        <!-- BEGIN THEME LAYOUT STYLES -->
-        <!-- END THEME LAYOUT STYLES -->
-        <link rel="shortcut icon" href="assets/img/interlink icon.png" />
-        <link href="custom.css" rel="stylesheet" type="text/css" />
-    </head>
-    <!-- END HEAD -->
+    <!-- <link href="/docs/5.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous"> -->
+    <link href="//cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
-    <body class=" login">
-        <!-- BEGIN LOGO -->
-        <div class="logo">
-            <a href="/"><img src="assets/img/interlinkiq%20v3.png" alt="" style="height: 70px; filter: brightness(0) invert(1);" /></a>
+    <!-- Favicons -->
+    <link rel="icon" href="uploads/login/icon/interlinkIQ.png">
+
+    <style>
+      label.error {
+        border: 0 !important;
+        color: #fff !important;
+      }
+
+      .bg-body {
+        height: 100vh;
+        background: #07193A;
+        background-image: linear-gradient(#07193A, #07284F);
+        /*background: url(uploads/login/bg/iiq_wave.png);
+        background-position: bottom left;
+        background-repeat: no-repeat;*/
+      }.bg-body:after {
+        content: '';
+        background: url(uploads/login/bg/iiiq_wave.png);
+        background-size: cover;
+        position: absolute;
+        width: 100%;
+        height: 20%;
+        bottom: 0;
+        z-index: -1;
+      }
+      .container-form {
+        height: 100vh;
+        border-radius: 50px 0 0 50px;
+      }
+      .text-blue {
+        color: #07418B;
+      }
+      .text-light-blue {
+        color: #0BA6CC;
+      }
+      .btn-light-blue {
+        background: #0BA6CC;
+        border-color: #0BA6CC;
+        border-radius: 50px;
+      }
+      input {
+        border-width: 1px !important;
+        border-color: #0BA6CC !important;
+      }
+      input::-ms-reveal,
+      input::-ms-clear {
+        display: none;
+      }
+      .sec-float {
+        position: absolute;
+        width: 100%;
+      }
+      .sec-form {
+        height: 100vh;
+        box-shadow: 0 0 10rem #000;
+        border-radius: 50px 0 0 50px;
+      }
+
+      @media only screen and (max-width: 992px) {
+        .sec-float {
+          position: unset;
+        }
+        .sec-form {
+          height: auto;
+          border-radius: 15px;
+          margin: 15px;
+        }
+      }
+    </style>
+
+    <!-- Custom styles for this template -->
+    <link href="custom.css" rel="stylesheet">
+  </head>
+  <body class="d-flexx flex-columnx justify-content-centerx align-items-centerx row-direction-column bg-body">
+
+    <?php
+      $confirm = false;
+      $predefine = false;
+      $ID = '';
+
+      // Registration
+      if ( !empty( $_GET['i'] ) AND !empty( $_GET['r'] ) AND $_GET['r'] == 1 ) {
+        $ID = $_GET['i'];
+        $invited_id = '';
+        $selectEmployee = mysqli_query( $conn,"SELECT ID, email, first_name, last_name FROM tbl_hr_employee WHERE verified = 0 AND ID = $ID" );
+        if ( mysqli_num_rows($selectEmployee) > 0 ) {
+          $rowEmployee = mysqli_fetch_array($selectEmployee);
+          $predefine = true;
+          $invited_id = $rowEmployee['ID'];
+          $data_email = $rowEmployee['email'];
+          $data_first_name = $rowEmployee['first_name'];
+          $data_last_name = $rowEmployee['last_name'];
+          $data_last_name = $rowEmployee['last_name'];
+        }
+      }
+
+      // Confirm
+      if ( !empty( $_GET['i'] ) AND !empty( $_GET['c'] ) AND $_GET['c'] == 1 ) {
+        $ID = $_GET['i'];
+        $selectUser = mysqli_query( $conn,"SELECT employee_id FROM tbl_user WHERE is_verified = 0 AND is_active = 1 AND ID = $ID" );
+        if ( mysqli_num_rows($selectUser) > 0 ) {
+          $rowUser = mysqli_fetch_array($selectUser);
+          $data_employee_id = $rowUser['employee_id'];
+
+          if ( !empty($data_employee_id) ) {
+            mysqli_query( $conn,"UPDATE tbl_hr_employee set status = 1 WHERE ID = $data_employee_id" );
+          }
+
+          mysqli_query( $conn,"UPDATE tbl_user set is_verified = 1 WHERE ID = $ID" );
+          $confirm = true;
+        }
+      }
+
+      // Reset
+      if ( !empty( $_GET['i'] ) AND !empty( $_GET['p'] ) AND $_GET['p'] == 1 ) {
+        $ID = $_GET['i'];
+      }
+
+      // Locked
+      if ( !empty( $_GET['i'] ) AND !empty( $_GET['l'] ) AND $_GET['l'] == 1 ) {
+        $ID = $_GET['i'];
+      }
+    ?>
+
+    <div class="container-fluid">
+      <!-- Header -->
+      <div class="row sec-float">
+        <div class="offset-lg-1 col-lg-4">
+          <img src="uploads/login/icon/interlinkIQ.png" style="width: 100px; height: 100px;" />
+          <p class="text-center text-white lead">Your Private Portal Partner in Streamlined Compliance and Operational Excellence</p>
         </div>
-        <!-- END LOGO -->
-        <!-- BEGIN LOGIN -->
-        <div class="content" style="margin-top: 0;">
-            <?php
-                $confirm = false;
-                $predefine = false;
-                $ID = '';
+      </div>
 
-                // Registration
-                if ( !empty( $_GET['i'] ) AND !empty( $_GET['r'] ) AND $_GET['r'] == 1 ) {
-                    $ID = $_GET['i'];
-                    $invited_id = '';
-                    $selectEmployee = mysqli_query( $conn,"SELECT ID, email, first_name, last_name FROM tbl_hr_employee WHERE verified = 0 AND ID = $ID" );
-                    if ( mysqli_num_rows($selectEmployee) > 0 ) {
-                        $rowEmployee = mysqli_fetch_array($selectEmployee);
-                        $predefine = true;
-                        $invited_id = htmlentities($rowEmployee['ID'] ?? '');
-                        $data_email = htmlentities($rowEmployee['email'] ?? '');
-                        $data_first_name = htmlentities($rowEmployee['first_name'] ?? '');
-                        $data_last_name = htmlentities($rowEmployee['last_name'] ?? '');
-                    }
-                }
-
-                // Confirm
-                if ( !empty( $_GET['i'] ) AND !empty( $_GET['c'] ) AND $_GET['c'] == 1 ) {
-                    $ID = $_GET['i'];
-                    $selectUser = mysqli_query( $conn,"SELECT employee_id FROM tbl_user WHERE is_verified = 0 AND is_active = 1 AND ID = $ID" );
-                    if ( mysqli_num_rows($selectUser) > 0 ) {
-                      $rowUser = mysqli_fetch_array($selectUser);
-                      $data_employee_id = htmlentities($rowUser['employee_id'] ?? '');
-
-                      if ( !empty($data_employee_id) ) {
-                        mysqli_query( $conn,"UPDATE tbl_hr_employee set status = 1 WHERE ID = $data_employee_id" );
-                      }
-
-                      mysqli_query( $conn,"UPDATE tbl_user set is_verified = 1 WHERE ID = $ID" );
-                      $confirm = true;
-                    }
-                }
-
-                // Reset
-                if ( !empty( $_GET['i'] ) AND !empty( $_GET['p'] ) AND $_GET['p'] == 1 ) {
-                    $ID = $_GET['i'];
-                } 
-            ?>
-
-            <!-- Login Section -->
-            <form method="post" class="login-formx formSignIn">
-                <h3 class="form-title font-green">Sign In</h3>
-                <div class="alert_msg"><?php echo $confirm === true ? '<div class="alert alert-success display-hide" style="display: block; margin-top: 0;"><button class="close" data-close="alert"></button>Account confirmed! Please enter your login details</div>' : ''; ?></div>
-                <div class="alert alert-danger display-hide">
-                    <button class="close" data-close="alert"></button>
-                    <span> Enter any username and password. </span>
-                </div>
-                <input class="form-control" type="hidden" name="client" value="0" />
-                <div class="form-group">
-                    <label class="control-label">Email Address</label>
-                    <input class="form-control form-control-solid placeholder-no-fix" type="email" autocomplete="off" name="email" required />
-                </div>
-                <div class="form-group">
-                    <label class="control-label">Password</label>
-                    <div class="input-icon right">
-                        <i class="fa fa-eye font-green viewPW"></i>
-                        <input type="password" class="form-control form-control-solid placeholder-no-fix" name="password" autocomplete="off" required />
-                    </div>
-                </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-success ladda-button" id="btnSignIn" data-style="zoom-out"><span class="ladda-label">Login</span></button>
-                    <a href="javascript:;" id="btnForget" class="forget-password">Forgot Password?</a>
-                </div>
-                <div class="create-account" style="background-color:#1C3879;color:#fff; border-radius: 5px !important; margin: unset;">
-                    <p>
-                        <a href="javascript:;" id="btnJoin" class="uppercase ">Create A Free Account</a>
-                    </p>
-                </div>
-            </form>
-            
-            <!-- Registration Section -->
-            <form method="post" class="register-form formSignUp display-hide">
-                <h3 class="font-green">FREE ACCOUNT SIGNUP</h3>
-                <p class="hint"> Enter your personal details below: </p>
-                <div class="alert_msg"></div>
-                <input class="form-control" type="hidden" name="ID" value="<?php echo !empty($invited_id) ? $invited_id : ''; ?>" />
-                <input class="form-control" type="hidden" name="client" value="0" />
-                <div class="form-group">
-                    <label class="control-label">First Name</label>
-                    <input class="form-control placeholder-no-fix" type="text" name="first_name" value="<?php echo $predefine === true ? $data_first_name : ''; ?>" <?php echo $predefine === true ? 'readonly' : ''; ?> required />
-                </div>
-                <div class="form-group">
-                    <label class="control-label">Last Name</label>
-                    <input class="form-control placeholder-no-fix" type="text" name="last_name" value="<?php echo $predefine === true ? $data_last_name : ''; ?>" <?php echo $predefine === true ? 'readonly' : ''; ?> required />
-                </div>
-                <div class="form-group">
-                    <label class="control-label">Email</label>
-                    <input class="form-control placeholder-no-fix" type="email" name="email" value="<?php echo $predefine === true ? $data_email : ''; ?>" <?php echo $predefine === true ? 'readonly' : ''; ?> required />
-                </div>
-                <div class="form-group">
-                    <label class="control-label">Phone</label>
-                    <input class="form-control placeholder-no-fix" type="text" name="phone" value="" required />
-                </div>
-                <div class="form-group">
-                    <label class="control-label">Password</label>
-                    <div class="input-icon right">
-                        <i class="fa fa-eye font-green viewPW"></i>
-                        <input class="form-control placeholder-no-fix" type="password" autocomplete="off" id="password" name="password" required />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label">Re-type Your Password</label>
-                    <div class="input-icon right">
-                        <i class="fa fa-eye font-green viewPW"></i>
-                        <input class="form-control placeholder-no-fix" type="password" autocomplete="off" name="rpassword" required /> 
-                    </div>
-                </div>
-                <div class="form-group hide" id="secPurpose">
-                    <label>Purpose</label>
-                    <div class="mt-radio-list">
-                        <label class="mt-radio mt-radio-outline"> Are you an organization?
-                            <input type="radio" value="0" name="purpose" checked="checked">
-                            <span></span>
-                        </label>
-                        <label class="mt-radio mt-radio-outline"> Are you a specialist/consultant?
-                            <input type="radio" value="1" name="purpose">
-                            <span></span>
-                        </label>
-                        <label class="mt-radio mt-radio-outline"> Are you a job seeker?
-                            <input type="radio" value="2" name="purpose">
-                            <span></span>
-                        </label>
-                    </div>
-                </div>
-                <div class="form-group margin-top-20 margin-bottom-20 hide">
-                    <label class="mt-checkbox mt-checkbox-outline">
-                        <input type="checkbox" name="tnc" /> I agree to the
-                        <a href="javascript:;">Terms of Service </a> &
-                        <a href="javascript:;">Privacy Policy </a>
-                        <span></span>
-                    </label>
-                    <div id="register_tnc_error"> </div>
-                </div>
-                <div class="form-actions">
-                    <button type="button" id="register-back-btn" class="btn green btn-outline btnBack">Back</button>
-                    <button type="submit" class="btn btn-success pull-right ladda-button" id="btnSignUp" data-style="zoom-out"><span class="ladda-label">Submit</span></button>
-                </div>
-            </form>
-
-            <!-- Forgot Password Section -->
-            <form method="post" class="forget-form formReset display-hide">
-                <h3 class="font-green">Forget Password ?</h3>
-                <p> Enter your e-mail address below to reset your password. </p>
-                <div class="alert_msg"></div>
-                <div class="form-group">
-                    <input class="form-control placeholder-no-fix" type="email" autocomplete="off" placeholder="Email" name="email" required />
-                </div>
-                <div class="form-actions">
-                    <button type="button" id="back-btn" class="btn green btn-outline btnBack">Back</button>
-                    <button type="button" class="btn btn-success pull-right pull-right ladda-button" id="btnReset" data-style="zoom-out"><span class="ladda-label">SUBMIT</span></button>
-                </div>
-            </form>
-            
-            <!-- Reset Password Section -->
-            <form method="post" class="forget-form formResetPassword display-hide">
-                <h3 class="font-green">Update Password</h3>
-                <p>Please check you email and enter the details below.</p>
-                <div class="alert_msg"></div>
-                <input class="form-control" type="hidden" name="ID" value="<?php echo $ID; ?>" />
-                <div class="form-group">
-                    <label class="control-label">Verification Code</label>
-                    <input class="form-control form-control-solid placeholder-no-fix" type="number" autocomplete="off" name="code" value="" required />
-                </div>
-                <div class="form-group">
-                    <label class="control-label">New Password</label>
-                    <div class="input-icon right">
-                        <i class="fa fa-eye font-green viewPW"></i>
-                        <input type="password" class="form-control form-control-solid placeholder-no-fix" id="npassword" name="npassword" autocomplete="off" value="" required />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label">Confirm New Password</label>
-                    <div class="input-icon right">
-                        <i class="fa fa-eye font-green viewPW"></i>
-                        <input type="password" class="form-control form-control-solid placeholder-no-fix" name="cnpassword" autocomplete="off" value="" required />
-                    </div>
-                </div>
-                <div class="form-actions">
-                    <button type="button" id="back-btn" class="btn green btn-outline btnBack">Back</button>
-                    <button type="button" class="btn btn-success pull-right pull-right ladda-button" id="btnResetPassword" data-style="zoom-out"><span class="ladda-label">SUBMIT</span></button>
-                </div>
-            </form>
-
-            <!-- Service Modal Section -->
-            <div class="modal fade" id="modalService" tabindex="-1" role="basic" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalService">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                <h4 class="modal-title">Service Request</h4>
-                            </div>
-                            <div class="modal-body">
-                                <input class="form-control" type="hidden" name="ID" value="0" />
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Category</label>
-                                    <div class="col-md-8">
-                                        <select class="form-control" name="category" required>
-                                            <option value=""></option>
-                                            <option value="1">IT Services</option>
-                                            <option value="2">Techinical Services</option>
-                                            <option value="3">Sales</option>
-                                            <option value="4">Request Demo</option>
-                                            <option value="5">Suggestion</option>
-                                            <option value="6">Problem</option>
-                                            <option value="7">Praise</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Request Title</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" type="text" name="title" placeholder="Example: Website, SOP, etc" required />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Description</label>
-                                    <div class="col-md-8">
-                                        <textarea class="form-control" name="description" placeholder="Describe your service request here" required></textarea>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Contact Number</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" type="text" name="contact" required />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Email</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" type="email" name="email" required />
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label">Attached Reference File</label>
-                                    <div class="col-md-8">
-                                        <input class="form-control" type="file" name="file" />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="modal-footer">
-                                <button type="submit" class="btn btn-success ladda-button" id="btnSave_Services" data-style="zoom-out"><span class="ladda-label">Submit</span></button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+      <!-- Body -->
+      <div class="row">
+        <div class="offset-lg-5 col-lg-7 text-center">
+          <div class="row align-items-center bg-white sec-form">
+            <div class="col-1" style="position: relative;">
+              <img class="my-auto" src="uploads/login/bg/iiq_globe.png" style="width: 25rem; position: absolute; right: 3rem; top: 0; bottom: 0;"/>
             </div>
+            <div class="col-lg-6">
+
+              <!-- Login -->
+              <form method="POST" class="form formSignIn">
+                <h2 class="text-blue mt-5 mb-5" style="font-weight: 800;">Welcome Back</h1>
+
+                <div class="alert_msg text-white"></div>
+                <div class="form-floating mb-3">
+                  <input type="email" class="form-control" id="email2" name="email" placeholder="Email Address" required />
+                  <label for="email2">Email Address</label>
+                </div>
+
+                <div class="input-group mb-3">
+                  <div class="form-floating">
+                    <input type="password" class="form-control" id="password2" name="password" placeholder="Password" required />
+                    <label for="password2">Password</label>
+                  </div>
+                  <button class="btn btn-outline-secondary viewPW" type="button"><i class="fa fa-eye text-light-blue"></i></button>
+                </div>
+
+                <div class="d-grid gap-2 my-5">
+                  <button class="btn btn-primary btn-light-blue btn-lg" type="submit">Login</button>
+                </div>
+
+                <p class=" my-5">
+                  Dont have account yet? 
+                  <a href="javascript:;" class="text-dark" onclick="btnCreate()">Create here</a>
+                </p>
+              </form>
+
+              <!-- Register -->
+              <form method="POST" class="form formSignUp" style="display: none;">
+                <h2 class="text-blue mt-5" style="font-weight: 800;">Create Account</h1>
+                <p class="text-light-blue mb-5">Get Your FREE Access Now!</p>
+
+                <div class="alert_msg text-white"></div>
+                <input class="form-control" type="hidden" name="ID" value="<?php echo !empty($invited_id) ? $invited_id : ''; ?>" />
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="first_name" name="first_name" placeholder="First Name" value="<?php echo $predefine === true ? $data_first_name : ''; ?>" <?php echo $predefine === true ? 'readonly' : ''; ?> required />
+                  <label for="first_name">First Name</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Last Name" value="<?php echo $predefine === true ? $data_last_name : ''; ?>" <?php echo $predefine === true ? 'readonly' : ''; ?> required />
+                  <label for="last_name">Last Name</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="email" name="email" value="<?php echo $predefine === true ? $data_email : ''; ?>" <?php echo $predefine === true ? 'readonly' : ''; ?> placeholder="Email" required />
+                  <label for="email">Email</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="phone" name="phone" placeholder="phone" required />
+                  <label for="phone">Phone Number</label>
+                </div>
+
+                <div class="input-group mb-3">
+                  <div class="form-floating">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required />
+                    <label for="password">Password</label>
+                  </div>
+                  <button class="btn btn-outline-secondary viewPW" type="button"><i class="fa fa-eye text-light-blue"></i></button>
+                </div>
+
+                <div class="input-group mb-3">
+                  <div class="form-floating">
+                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm Password" required />
+                    <label for="confirm_password">Confirm Password</label>
+                  </div>
+                  <button class="btn btn-outline-secondary viewPW" type="button"><i class="fa fa-eye text-light-blue"></i></button>
+                </div>
+
+                <div class="d-grid gap-2 my-5">
+                  <button class="btn btn-primary btn-light-blue btn-lg" type="submit">Sign Up</button>
+                </div>
+
+                <p class=" my-5">
+                  Already have an account? 
+                  <a href="javascript:;" class="text-dark" onclick="btnBack()">Create here</a>
+                </p>
+              </form>
+              
+            </div>
+          </div>
         </div>
-        <div class="copyright"> 2022 © Interlink IQ</div>
-        <!--[if lt IE 9]>
-        <script src="assets/global/plugins/respond.min.js"></script>
-        <script src="assets/global/plugins/excanvas.min.js"></script> 
-        <script src="assets/global/plugins/ie8.fix.min.js"></script> 
-        <![endif]-->
-        <!-- BEGIN CORE PLUGINS -->
-        <script src="assets/global/plugins/jquery.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/js.cookie.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
-        <!-- END CORE PLUGINS -->
-        <!-- BEGIN PAGE LEVEL PLUGINS -->
-        <script src="assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/select2/js/select2.full.min.js" type="text/javascript"></script>
+      </div>
 
-        <script src="assets/global/plugins/bootstrap-growl/jquery.bootstrap-growl.min.js" type="text/javascript"></script>
+      <!-- Footer -->
+      <div class="row sec-float align-items-center text-center" style="bottom: 0;">
+        <div class="offset-lg-2 col-lg-3">
+          <h5 style="color: yellow;">
+            <svg xmlns="//www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightning-fill" viewBox="0 0 16 16">
+              <path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641z"></path>
+            </svg>
+            <span class="text-white">Powered by:</span>
+          </h5>
+        </div>
+        <div class="col-lg-5">
+          <img src="uploads/login/icon/interlinkiq.com - logo.png" style="width: 100%; max-width: 250px;" />
+        </div>
+      </div>
+    </div>
 
-        <script src="assets/global/plugins/ladda/spin.min.js" type="text/javascript"></script>
-        <script src="assets/global/plugins/ladda/ladda.min.js" type="text/javascript"></script>
-        <!-- END PAGE LEVEL PLUGINS -->
-        <!-- BEGIN THEME GLOBAL SCRIPTS -->
-        <script src="assets/global/scripts/app.min.js" type="text/javascript"></script>
-        <!-- END THEME GLOBAL SCRIPTS -->
-        <!-- BEGIN PAGE LEVEL SCRIPTS -->
-        <!-- <script src="assets/pages/scripts/login.min.js" type="text/javascript"></script> -->
-        <!-- END PAGE LEVEL SCRIPTS -->
-        <!-- BEGIN THEME LAYOUT SCRIPTS -->
-        <!-- END THEME LAYOUT SCRIPTS -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="../assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
+    <script src="../assets/global/plugins/jquery-validation/js/additional-methods.min.js" type="text/javascript"></script>
 
-        <script type="text/javascript">
-            $(document).ready(function(){
-                $(".modalService").validate();
- 
-                <?php if ($predefine == true) { ?> Reg(); <?php } ?>
-                
-                <?php if ( !empty( $_GET['i'] ) AND !empty( $_GET['p'] ) AND $_GET['p'] == 1 ) { ?> ResetPassword(); <?php } ?>
-                function ResetPassword() {
-                    $(".formSignIn").hide();
-                    $(".formReset").hide();
-                    $(".formSignUp").hide();
-                    $(".formResetPassword").show();
-                }
-                
-                $("#btnJoin").click(function(){ Reg(); });
-                function Reg() { $(".formSignIn").hide(),$(".formSignUp").show(); }
+    <script>
+      var $ = jQuery;
+      $(document).ready(function(){
+        $(".form").validate();
+      });
 
-                $("#btnForget").click(function(){ Forgot(); });
-                function Forgot() { $(".formSignIn").hide(),$(".formReset").show(); }
+      $('.viewPW').click(function(){
+          var x = $(this).prev().find('input').attr('type');
+          if (x === "password") {
+              $(this).prev().find('input').prop("type", "text");
+              $(this).find('i').addClass('fa-eye-slash');
+          } else {
+              $(this).prev().find('input').prop("type", "password");
+              $(this).find('i').removeClass('fa-eye-slash');
+          }
+      });
 
-                $(".btnBack").click(function(){
-                   $(this).parent().parent().hide(),$(".formSignIn").show();
-                });
+      function btnCreate() {
+        $(".formSignIn").hide(),$(".formSignUp").show();
+      }
 
-                $('.formSignUp').validate({ // initialize the plugin
-                    rules : {
-                        password : {
-                            minlength : 5
-                        },
-                        rpassword : {
-                            minlength : 5,
-                            equalTo : "#password"
-                        }
-                    }
-                });
-                $('.formResetPassword').validate({ // initialize the plugin
-                    rules : {
-                        npassword : {
-                            minlength : 5
-                        },
-                        cnpassword : {
-                            minlength : 5,
-                            equalTo : "#npassword"
-                        }
-                    }
-                });
+      function btnBack() {
+        $(".formSignIn").show(),$(".formSignUp").hide();
+      }
 
-                $('.viewPW').click(function(){
-                    var x = $(this).next().attr('type');
-                    if (x === "password") {
-                        $(this).next().prop("type", "text");
-                        $(this).addClass('fa-eye-slash');
-                    } else {
-                        $(this).next().prop("type", "password");
-                        $(this).removeClass('fa-eye-slash');
-                    }
-                });
+      $(".formSignIn").on('submit',(function(e) {
+        e.preventDefault();
 
-                prev_link = document.referrer;
-                if (prev_link.indexOf('special') > -1) { $('#secPurpose').removeClass('hide'); }
-            });
+        formObj = $(this);
+        if (!formObj.validate().form()) return false;
 
-            $('#btnSignIn').click(function(e){
-                e.preventDefault();
+        var formData = new FormData(this);
+        formData.append('btnSignIn',true);
+        formData.append('client',0);
 
-                formObj = $(this).parents().parents();
-                if (!formObj.validate().form()) return false;
+        $.ajax({
+          url: "function.php",
+          type: "POST",
+          data: formData,
+          contentType: false,
+          processData:false,
+          cache: false,
+          success: function(response) {
+            var obj = jQuery.parseJSON(response);
+            if (obj.exist == true) {
+              var data = '<div class="alert alert-success">';
+              data += obj.message;
+              data += '</div>';
 
-                var data = $('.formSignIn').serialize()+'&btnSignIn=btnSignIn';
+              localStorage.setItem('islogin','yes');
 
-                var l = Ladda.create(this);
-                l.start();
+              prev_link = document.referrer;
+              if (prev_link.indexOf('forum/index.php') > -1) { window.location.href = prev_link; }
+              else { window.location.href = 'profile'; }
+            } else {
+              var data = '<div class="alert alert-danger">';
+              data += obj.message;
+              data += '</div>';
+            }
+            $('.formSignIn .alert_msg').html(data);
+          }        
+        });
+      }));
+      $(".formSignUp").on('submit',(function(e) {
+        e.preventDefault();
 
-                $.ajax({
-                    url:'function.php',
-                    type:'post',
-                    dataType:'JSON',
-                    data:data,
-                    success:function(response) {
-                        if (response.exist == true) {
-                            var data = '<div class="alert alert-success display-hide" style="display: block; margin-top: 0;">';
-                            data += '<button class="close" data-close="alert"></button>';
-                            data += response.message;
-                            data += '</div>';
+        formObj = $(this);
+        if (!formObj.validate().form()) return false;
+          
+        var formData = new FormData(this);
+        formData.append('btn_SignUp',true);
+        formData.append('client',0);
 
-                            // window.location.href = 'profile';
-                            // localStorage.setItem('islogin','yes');
+        $.ajax({
+          url: "function.php",
+          type: "POST",
+          data: formData,
+          contentType: false,
+          processData:false,
+          cache: false,
+          success:function(response) {
+            var obj = jQuery.parseJSON(response);
+            if (obj.exist == false) {
+              var data = '<div class="alert alert-success">';
+              data += obj.message;
+              data += '</div>';
 
-                            localStorage.setItem('islogin','yes');
-
-                            prev_link = document.referrer;
-                            if (prev_link.indexOf('forum/index.php') > -1) { window.location.href = prev_link; }
-                            else if (prev_link.indexOf('special') > -1) { window.location.href = prev_link; }
-                            else if (prev_link.indexOf('marketplace-view') > -1) { window.location.href = prev_link; }
-                            else { window.location.href = 'profile'; }
-                        } else {
-                            var data = '<div class="alert alert-danger display-hide" style="display: block; margin-top: 0;">';
-                            data += '<button class="close" data-close="alert"></button>';
-                            data += response.message;
-                            data += '</div>';
-                        }
-                        $('.formSignIn .alert_msg').html(data);
-                        l.stop();
-                    }
-                });
-            });
-            $('#btnSignUp').click(function(e){
-                e.preventDefault();
-
-                formObj = $(this).parents().parents();
-                if (!formObj.validate().form()) return false;
-
-                var data = $('.formSignUp').serialize()+'&btnSignUp=btnSignUp';
-
-                var l = Ladda.create(this);
-                l.start();
-
-                $.ajax({
-                    url:'function.php',
-                    type:'post',
-                    dataType:'JSON',
-                    data:data,
-                    success:function(response) {
-                        if (response.exist == false) {
-                            var data = '<div class="alert alert-success display-hide" style="display: block; margin-top: 0;">';
-                            data += '<button class="close" data-close="alert"></button>';
-                            data += response.message;
-                            data += '</div>';
-
-                            $(".formSignUp").hide();
-                            $(".formSignIn").show();
-
-                            $('.formSignIn .alert_msg').html(data);
-                        } else {
-                            var data = '<div class="alert alert-danger display-hide" style="display: block; margin-top: 0;">';
-                            data += '<button class="close" data-close="alert"></button>';
-                            data += response.message;
-                            data += '</div>';
-                            
-                            $('.formSignUp .alert_msg').html(data);
-                        }
-                        l.stop();
-                    }
-                });
-            });
-            $('#btnReset').click(function(e){
-                e.preventDefault();
-
-                formObj = $(this).parents().parents();
-                if (!formObj.validate().form()) return false;
-
-                var data = $('.formReset').serialize()+'&btnReset=btnReset';
-
-                var l = Ladda.create(this);
-                l.start();
-
-                $.ajax({
-                    url:'function.php',
-                    type:'post',
-                    dataType:'JSON',
-                    data:data,
-                    success:function(response) {
-                        console.log(response);
-                        if (response.exist == true) {
-                            var data = '<div class="alert alert-success">';
-                            data += '<button class="close" data-close="alert"></button>';
-                            data += response.message;
-                            data += '</div>';
-                        } else {
-                            var data = '<div class="alert alert-danger">';
-                            data += '<button class="close" data-close="alert"></button>';
-                            data += response.message;
-                            data += '</div>';
-                        }
-                        $('.formReset .alert_msg').html(data);
-                        l.stop();
-                    }
-                });
-            });
-            $('#btnResetPassword').click(function(e){
-                e.preventDefault();
-
-                formObj = $(this).parents().parents();
-                if (!formObj.validate().form()) return false;
-
-                var data = $('.formResetPassword').serialize()+'&btnResetPassword=btnResetPassword';
-
-                var l = Ladda.create(this);
-                l.start();
-
-                $.ajax({
-                    url:'function.php',
-                    type:'post',
-                    dataType:'JSON',
-                    data:data,
-                    success:function(response) {
-                        if (response.exist == true) {
-                            var data = '<div class="alert alert-success">';
-                            data += '<button class="close" data-close="alert"></button>';
-                            data += response.message;
-                            data += '</div>';
-
-                            $(".formResetPassword").hide();
-                            $(".formSignIn").show();
-                            
-                            $('.formSignIn .alert_msg').html(data);
-                        } else {
-                            var data = '<div class="alert alert-danger">';
-                            data += '<button class="close" data-close="alert"></button>';
-                            data += response.message;
-                            data += '</div>';
-                            
-                            $('.formResetPassword .alert_msg').html(data);
-                        }
-                        l.stop();
-                    }
-                });
-            });
-
-
-            $(".modalService").on('submit',(function(e) {
-                e.preventDefault();
-
-                formObj = $(this);
-                if (!formObj.validate().form()) return false;
-
-                var formData = new FormData(this);
-                formData.append('btnSave_Services',true);
-
-                var l = Ladda.create(document.querySelector('#btnSave_Services'));
-                l.start();
-
-                $.ajax({
-                    url: "function.php",
-                    type: "POST",
-                    data: formData,
-                    contentType: false,
-                    processData:false,
-                    cache: false,
-                    success: function(response) {
-                        if ($.trim(response)) {
-                            msg = "Service Request has been sent!";
-                        } else {
-                            msg = "Error!"
-                        }
-                        l.stop();
-
-                        $.bootstrapGrowl(msg,{
-                            ele:"body",
-                            type:"success",
-                            offset:{
-                                from:"top",
-                                amount:100
-                            },
-                            align:"right",
-                            width:250,
-                            delay:5000,
-                            allow_dismiss:1,
-                            stackup_spacing:10
-                        })
-                    }        
-                });
-            }));
-        </script>
-    </body>
+              $('#container').removeClass('right-panel-active');
+              $('.formSignIn .alert_msg').html(data);
+              btnBack();
+            } else {
+              var data = '<div class="alert alert-danger">';
+              data += obj.message;
+              data += '</div>';
+              
+              $('.formSignUp .alert_msg').html(data);
+            }
+          }
+        });
+      }));
+    </script>
+  </body>
 </html>

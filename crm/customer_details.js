@@ -392,7 +392,15 @@ $(document).ready(function() {
         }
 
         // Validate file type
-        var allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'text/csv', 'application/msword', 'application/vnd.ms-excel'];
+        var allowedTypes = [
+            'image/jpeg',
+            'image/png',
+            'application/pdf',
+            'text/csv',
+            'application/msword',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        ];
         if (allowedTypes.indexOf(file.type) === -1) {
             alert("Invalid file type. Please upload an image, PDF, CSV, Word document, or Excel spreadsheet.");
             return;

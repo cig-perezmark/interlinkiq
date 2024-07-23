@@ -50,10 +50,10 @@
                 },
                 bStateSave: false,
                 lengthMenu: [
-                    [10, 15, 50, -1],
-                    [10, 15, 50, "All"],
+                    [25, 50, 100, -1],
+                    [25, 50, 100, "All"],
                 ],
-                pageLength: 15,
+                pageLength: 25,
                 pagingType: "bootstrap_full_number",
                 columnDefs: [{
                         orderable: false,

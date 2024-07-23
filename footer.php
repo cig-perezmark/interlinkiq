@@ -172,10 +172,9 @@
                                                             <div class="mt-action-img"><img src="'.$base_url.'companyDetailsFolder/'.$switch_logo.'" style="width: 39px; height: 39px; object-fit: contain; object-position: center; border: 1px solid #ccc;"></div>
                                                             <div class="mt-action-body">
                                                                 <div class="mt-action-row">
-                                                                    <div class="mt-action-info ">
+                                                                    <div class="mt-action-info" style="vertical-align: middle;">
                                                                         <div class="mt-action-details ">
-                                                                            <span class="mt-action-author">'.$switch_name.'</span><br>
-                                                                            <span class="text-muted">'.$user_email.'</span>
+                                                                            <span class="mt-action-author">'.$switch_name.'</span>
                                                                         </div>
                                                                     </div>
                                                                     <div class="text-right">
@@ -251,10 +250,9 @@
                                                             <div class="mt-action-img"><img src="'.$base_url.'companyDetailsFolder/'.$switch_logo.'" style="width: 39px; height: 39px; object-fit: contain; object-position: center;"></div>
                                                             <div class="mt-action-body">
                                                                 <div class="mt-action-row">
-                                                                    <div class="mt-action-info ">
+                                                                    <div class="mt-action-info" style="vertical-align: middle;">
                                                                         <div class="mt-action-details ">
-                                                                            <span class="mt-action-author">'.$switch_name.'</span><br>
-                                                                            <span class="text-muted">'.$switch_email.'</span>
+                                                                            <span class="mt-action-author">'.$switch_name.'</span>
                                                                         </div>
                                                                     </div>
                                                                     <div class="text-right">
@@ -304,6 +302,26 @@
                                     <div class="modal-footer">
                                         <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
                                         <button type="submit" class="btn green ladda-button" name="btnUpdate_Instruction" id="btnUpdate_Instruction" data-style="zoom-out"><span class="ladda-label">Submit</span></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+
+					<!-- Pictogram -->
+                    <div class="modal fade" id="modalPictogram" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalPictogram">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title">Pictogram</h4>
+                                    </div>
+                                    <div class="modal-body"></div>
+                                    <div class="modal-footer">
+                                        <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
+                                        <button type="submit" class="btn green ladda-button" name="btnSave_Pictogram" id="btnSave_Pictogram" data-style="zoom-out"><span class="ladda-label">Save</span></button>
                                     </div>
                                 </form>
                             </div>
@@ -397,6 +415,7 @@
                             </div>
                         </div>
                     </div>
+
 
                     <!-- Speakup -->
                     <div class="modal fade" id="modalSpeakUp" tabindex="-1" role="dialog" aria-hidden="true">
@@ -576,6 +595,7 @@
                             </div>
                         </div>
                     </div>
+
 
                     <!-- BEGIN QUICK SIDEBAR -->
                     <a href="javascript:;" class="page-quick-sidebar-toggler">
@@ -1683,6 +1703,51 @@ function uploadNew(e) {
     $(e).parent().hide();
     $(e).parent().parent().find('select').removeClass('hide');
 }
+
+
+// Pictogram
+function btnPictogram(code) {
+    $.ajax({
+        type: "GET",
+        url: "function.php?modalPictogram="+code,
+        dataType: "html",
+        success: function(data){
+            $("#modalPictogram .modal-body").html(data);
+        }
+    });
+}
+$(".modalPictogram").on('submit',(function(e) {
+    e.preventDefault();
+
+    formObj = $(this);
+    if (!formObj.validate().form()) return false;
+
+    var formData = new FormData(this);
+    formData.append('btnSave_Pictogram',true);
+
+    var l = Ladda.create(document.querySelector('#btnSave_Pictogram'));
+    l.start();
+
+    $.ajax({
+        url: "function.php",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        processData:false,
+        cache: false,
+        success: function(response) {
+            if ($.trim(response)) {
+                msg = "Sucessfully Save!";
+                $('#modalPictogram').modal('hide');
+            } else {
+                msg = "Error!"
+            }
+            l.stop();
+
+            bootstrapGrowl(msg);
+        }        
+    });
+}));
 
 // Speakup Section
 function btnSpeakup(id) {

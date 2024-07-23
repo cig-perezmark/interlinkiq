@@ -83,6 +83,15 @@
     .mt-repeater > div > .mt-repeater-item-hide:first-child {
         display: none;
     }
+
+    .signature,
+    .signature_img {
+        width: 300px;
+        height: 150px;
+        border: 1px solid #ccc;
+        margin: auto;
+        margin-bottom: 15px;
+    }
 </style>
 
 
@@ -171,14 +180,14 @@
                                                         if ( mysqli_num_rows($selectCamOpen) > 0 ) {
                                                             while ($rowOpen= mysqli_fetch_array($selectCamOpen)) {
                                                                 $cam_ID = $rowOpen['ID'];
-                                                                $cam_reference = $rowOpen['reference'];
+                                                                $cam_reference = htmlentities($rowOpen['reference'] ?? '');
                                                                 $cam_date = $rowOpen['date'];
-                                                                $cam_observed_by = $rowOpen['observed_by'];
-                                                                $cam_reported_by = $rowOpen['reported_by'];
-                                                                $cam_description = $rowOpen['description'];
+                                                                $cam_observed_by = htmlentities($rowOpen['observed_by'] ?? '');
+                                                                $cam_reported_by = htmlentities($rowOpen['reported_by'] ?? '');
+                                                                $cam_description = htmlentities($rowOpen['description'] ?? '');
 
                                                                 $cam_department_id = $rowOpen['department_id'];
-                                                                $cam_department_other = $rowOpen['department_other'];
+                                                                $cam_department_other = htmlentities($rowOpen['department_other'] ?? '');
                                                                 $data_department_id = array();
                                                                 if (!empty($cam_department_id)) {
                                                                     $array_department_id = explode(", ", $cam_department_id);
@@ -191,11 +200,11 @@
                                                                     //     }
                                                                     // }
 
-                                                                    $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $switch_user_id ORDER BY title" );
+                                                                    $selectDepartment = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_department WHERE status = 1 AND user_id = $switch_user_id ORDER BY title" );
                                                                     if ( mysqli_num_rows($selectDepartment) > 0 ) {
                                                                         while ($rowDept = mysqli_fetch_array($selectDepartment)) {
                                                                             if (in_array($rowDept["ID"], $array_department_id)) {
-                                                                                array_push($data_department_id, $rowDept["title"]);
+                                                                                array_push($data_department_id, htmlentities($rowDept["title"] ??''));
                                                                             }
                                                                         }
                                                                     }
@@ -210,11 +219,11 @@
                                                                 $data_employee_id = array();
                                                                 if (!empty($cam_employee_id)) {
                                                                     $array_employee_id = explode(", ", $cam_employee_id);
-                                                                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $switch_user_id ORDER BY first_name" );
+                                                                    $selectEmployee = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $switch_user_id ORDER BY first_name" );
                                                                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                                         while ($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                                             if (in_array($rowEmployee["ID"], $array_employee_id)) {
-                                                                                array_push($data_employee_id, $rowEmployee["first_name"].' '.$rowEmployee["last_name"]);
+                                                                                array_push($data_employee_id, htmlentities($rowEmployee["first_name"] ?? '').' '.htmlentities($rowEmployee["last_name"] ?? ''));
                                                                             }
                                                                         }
                                                                     }
@@ -248,14 +257,14 @@
                                                         $selectComplaintOpen = mysqli_query( $conn,"SELECT * FROM tbl_complaint_records WHERE deleted = 0 AND capam = 1 AND status = 0 AND care_ownedby = $switch_user_id ORDER BY care_id DESC" );
                                                         if ( mysqli_num_rows($selectComplaintOpen) > 0 ) {
                                                             while ($rowOpen= mysqli_fetch_array($selectComplaintOpen)) {
-                                                                $cam_ID = $rowOpen['care_id'];
-                                                                $cam_reference = $rowOpen['reference'];
-                                                                $cam_observed_by = $rowOpen['observed_by'];
-                                                                $cam_reported_by = $rowOpen['reported_by'];
-                                                                $cam_description = $rowOpen['nature_complaint'];
+                                                                $cam_ID = htmlentities($rowOpen['care_id'] ?? '');
+                                                                $cam_reference = htmlentities($rowOpen['reference'] ?? '');
+                                                                $cam_observed_by = htmlentities($rowOpen['observed_by'] ?? '');
+                                                                $cam_reported_by = htmlentities($rowOpen['reported_by'] ?? '');
+                                                                $cam_description = htmlentities($rowOpen['nature_complaint'] ?? '');
                                                                 
                                                                 $data_department_id = array();
-                                                                $cam_person_handlingn = $rowOpen['person_handling'];
+                                                                $cam_person_handlingn = htmlentities($rowOpen['person_handling'] ?? '');
                                                                 if ($cam_person_handlingn > 0) {
                                                                     $selectEmp = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $cam_person_handlingn" );
                                                                     if ( mysqli_num_rows($selectEmp) > 0 ) {
@@ -263,11 +272,11 @@
                                                                         $cam_department_id = $rowEmp['department_id'];
                                                                         
                                                                         $array_department_id = explode(", ", $cam_department_id);
-                                                                        $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $switch_user_id ORDER BY title" );
+                                                                        $selectDepartment = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_department WHERE status = 1 AND user_id = $switch_user_id ORDER BY title" );
                                                                         if ( mysqli_num_rows($selectDepartment) > 0 ) {
                                                                             while ($rowDept = mysqli_fetch_array($selectDepartment)) {
                                                                                 if (in_array($rowDept["ID"], $array_department_id)) {
-                                                                                    array_push($data_department_id, $rowDept["title"]);
+                                                                                    array_push($data_department_id, htmlentities($rowDept["title"] ?? ''));
                                                                                 }
                                                                             }
                                                                         }
@@ -287,11 +296,11 @@
                                                                 $data_employee_id = array();
                                                                 if (!empty($cam_employee_id)) {
                                                                     $array_employee_id = explode(", ", $cam_employee_id);
-                                                                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $switch_user_id ORDER BY first_name" );
+                                                                    $selectEmployee = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $switch_user_id ORDER BY first_name" );
                                                                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                                         while ($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                                             if (in_array($rowEmployee["ID"], $array_employee_id)) {
-                                                                                array_push($data_employee_id, $rowEmployee["first_name"].' '.$rowEmployee["last_name"]);
+                                                                                array_push($data_employee_id, htmlentities($rowEmployee["first_name"] ?? '').' '.htmlentities($rowEmployee["last_name"] ?? ''));
                                                                             }
                                                                         }
                                                                     }
@@ -354,14 +363,14 @@
                                                         if ( mysqli_num_rows($selectCamOpen) > 0 ) {
                                                             while ($rowOpen= mysqli_fetch_array($selectCamOpen)) {
                                                                 $cam_ID = $rowOpen['ID'];
-                                                                $cam_reference = $rowOpen['reference'];
+                                                                $cam_reference = htmlentities($rowOpen['reference'] ?? '');
                                                                 $cam_date = $rowOpen['date'];
-                                                                $cam_observed_by = $rowOpen['observed_by'];
-                                                                $cam_reported_by = $rowOpen['reported_by'];
-                                                                $cam_description = $rowOpen['description'];
+                                                                $cam_observed_by = htmlentities($rowOpen['observed_by'] ?? '');
+                                                                $cam_reported_by = htmlentities($rowOpen['reported_by'] ?? '');
+                                                                $cam_description = htmlentities($rowOpen['description'] ?? '');
 
                                                                 $cam_department_id = $rowOpen['department_id'];
-                                                                $cam_department_other = $rowOpen['department_other'];
+                                                                $cam_department_other = htmlentities($rowOpen['department_other'] ?? '');
                                                                 $data_department_id = array();
                                                                 if (!empty($cam_department_id)) {
                                                                     $array_department_id = explode(", ", $cam_department_id);
@@ -374,11 +383,11 @@
                                                                     //     }
                                                                     // }
 
-                                                                    $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $switch_user_id ORDER BY title" );
+                                                                    $selectDepartment = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_department WHERE status = 1 AND user_id = $switch_user_id ORDER BY title" );
                                                                     if ( mysqli_num_rows($selectDepartment) > 0 ) {
                                                                         while ($rowDept = mysqli_fetch_array($selectDepartment)) {
                                                                             if (in_array($rowDept["ID"], $array_department_id)) {
-                                                                                array_push($data_department_id, $rowDept["title"]);
+                                                                                array_push($data_department_id, htmlentities($rowDept["title"] ?? ''));
                                                                             }
                                                                         }
                                                                     }
@@ -393,11 +402,11 @@
                                                                 $data_employee_id = array();
                                                                 if (!empty($cam_employee_id)) {
                                                                     $array_employee_id = explode(", ", $cam_employee_id);
-                                                                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $switch_user_id ORDER BY first_name" );
+                                                                    $selectEmployee = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $switch_user_id ORDER BY first_name" );
                                                                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                                         while ($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                                             if (in_array($rowEmployee["ID"], $array_employee_id)) {
-                                                                                array_push($data_employee_id, $rowEmployee["first_name"].' '.$rowEmployee["last_name"]);
+                                                                                array_push($data_employee_id, htmlentities($rowEmployee["first_name"] ?? '').' '.htmlentities($rowEmployee["last_name"] ?? ''));
                                                                             }
                                                                         }
                                                                     }
@@ -432,10 +441,10 @@
                                                         if ( mysqli_num_rows($selectComplaintOpen) > 0 ) {
                                                             while ($rowOpen= mysqli_fetch_array($selectComplaintOpen)) {
                                                                 $cam_ID = $rowOpen['care_id'];
-                                                                $cam_reference = $rowOpen['reference'];
-                                                                $cam_observed_by = $rowOpen['observed_by'];
-                                                                $cam_reported_by = $rowOpen['reported_by'];
-                                                                $cam_description = $rowOpen['nature_complaint'];
+                                                                $cam_reference = htmlentities($rowOpen['reference'] ?? '');
+                                                                $cam_observed_by = htmlentities($rowOpen['observed_by'] ?? '');
+                                                                $cam_reported_by = htmlentities($rowOpen['reported_by'] ?? '');
+                                                                $cam_description = htmlentities($rowOpen['nature_complaint'] ?? '');
                                                                 
                                                                 $cam_date = $rowOpen['care_date'];
                                                                 $cam_date = new DateTime($cam_date);
@@ -445,11 +454,11 @@
                                                                 $data_employee_id = array();
                                                                 if (!empty($cam_employee_id)) {
                                                                     $array_employee_id = explode(", ", $cam_employee_id);
-                                                                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $switch_user_id ORDER BY first_name" );
+                                                                    $selectEmployee = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $switch_user_id ORDER BY first_name" );
                                                                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                                         while ($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                                             if (in_array($rowEmployee["ID"], $array_employee_id)) {
-                                                                                array_push($data_employee_id, $rowEmployee["first_name"].' '.$rowEmployee["last_name"]);
+                                                                                array_push($data_employee_id, htmlentities($rowEmployee["first_name"] ?? '').' '.htmlentities($rowEmployee["last_name"] ?? ''));
                                                                             }
                                                                         }
                                                                     }
@@ -540,7 +549,7 @@
                                                                 if ( mysqli_num_rows($selectProgram) > 0 ) {
                                                                     while ($rowProgram = mysqli_fetch_array($selectProgram)) {
                                                                         $program_ID = $rowProgram['ID'];
-                                                                        $program_name = $rowProgram['name'];
+                                                                        $program_name = htmlentities($rowProgram['name'] ?? '');
 
                                                                         echo '<label class="mt-checkbox mt-checkbox-outline">
                                                                             <input type="checkbox" name="program_id[]" value="'.$program_ID.'"> '.htmlentities($program_name).'
@@ -566,7 +575,7 @@
                                                             if ( mysqli_num_rows($selectComplaint) > 0 ) {
                                                                 while ($rowComp = mysqli_fetch_array($selectComplaint)) {
                                                                     $comp_ID = $rowComp['ID'];
-                                                                    $comp_name = $rowComp['name'];
+                                                                    $comp_name = htmlentities($rowComp['name'] ?? '');
 
                                                                     echo '<label class="mt-checkbox mt-checkbox-outline">
                                                                         <input type="checkbox" name="complaint_id[]" value="'.$comp_ID.'"> '.$comp_name.'
@@ -597,7 +606,7 @@
                                                                 if ( mysqli_num_rows($selectCategory) > 0 ) {
                                                                     while ($rowCat = mysqli_fetch_array($selectCategory)) {
                                                                         $cat_ID = $rowCat['ID'];
-                                                                        $cat_name = $rowCat['name'];
+                                                                        $cat_name = htmlentities($rowCat['name'] ?? '');
 
                                                                         echo '<label class="mt-checkbox mt-checkbox-outline">
                                                                             <input type="checkbox" name="category_id[]" value="'.$cat_ID.'"> '.$cat_name.'
@@ -630,7 +639,7 @@
                                                         if ( mysqli_num_rows($selectDepartment) > 0 ) {
                                                             while ($rowDept = mysqli_fetch_array($selectDepartment)) {
                                                                 $dept_ID = $rowDept['ID'];
-                                                                $dept_title = $rowDept['title'];
+                                                                $dept_title = htmlentities($rowDept['title'] ?? '');
 
                                                                 echo '<label class="mt-checkbox mt-checkbox-outline">
                                                                     <input type="checkbox" class="department_id_1" name="department_id[]" value="'.$dept_ID.'" onclick="changeDepartment(1, '.$dept_ID.')" /> '.$dept_title.'
@@ -999,45 +1008,71 @@
                                         <div class="portlet light">
                                             <div class="portlet-body">
                                                 <div class="row">
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-4">
+                                                        <div class="signatureContainer">
+                                                            <div class="form-group">
+                                                                <label class="col-md-3 control-label">Signature</label>
+                                                                <div class="col-md-5">
+                                                                    <select class="form-control margin-bottom-15" onchange="selectType(this)" name="investigated_type">
+                                                                        <option value="0">Select</option>
+                                                                        <option value="1">Sign</option>
+                                                                        <option value="2">Upload</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <input type="file" class="form-control margin-bottom-15 hide sign signature_upload" name="investigated_file" />
+                                                            <div class="hide sign signature_sign">
+                                                                <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
+                                                                <div class="signature investigated_sign"></div>
+                                                            </div>
+                                                        </div>
                                                         <input type="text" class="form-control margin-bottom-15" name="investigated_by" placeholder="Investigated By" />
-                                                    </div>
-                                                    <div class="col-md-3">
                                                         <input type="text" class="form-control margin-bottom-15" name="investigated_title" placeholder="Title" />
+                                                        <input type="datetime-local" class="form-control margin-bottom-15" name="investigated_datetime"/>
                                                     </div>
-                                                    <div class="col-md-3">
-                                                        <input type="date" class="form-control margin-bottom-15" name="investigated_date" placeholder="text" />
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <input type="time" class="form-control margin-bottom-15" name="investigated_time" placeholder="text" />
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-4">
+                                                        <div class="signatureContainer">
+                                                            <div class="form-group">
+                                                                <label class="col-md-3 control-label">Signature</label>
+                                                                <div class="col-md-5">
+                                                                    <select class="form-control margin-bottom-15" onchange="selectType(this)" name="verified_type">
+                                                                        <option value="0">Select</option>
+                                                                        <option value="1">Sign</option>
+                                                                        <option value="2">Upload</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <input type="file" class="form-control margin-bottom-15 hide sign signature_upload" name="verified_file" />
+                                                            <div class="hide sign signature_sign">
+                                                                <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
+                                                                <div class="signature verified_sign"></div>
+                                                            </div>
+                                                        </div>
                                                         <input type="text" class="form-control margin-bottom-15" name="verified_by" placeholder="CAPA Verified By" />
-                                                    </div>
-                                                    <div class="col-md-3">
                                                         <input type="text" class="form-control margin-bottom-15" name="verified_title" placeholder="Title" />
+                                                        <input type="datetime-local" class="form-control margin-bottom-15" name="verified_datetime"/>
                                                     </div>
-                                                    <div class="col-md-3">
-                                                        <input type="date" class="form-control margin-bottom-15" name="verified_date" placeholder="text" />
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <input type="time" class="form-control margin-bottom-15" name="verified_time" placeholder="text" />
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-4">
+                                                        <div class="signatureContainer">
+                                                            <div class="form-group">
+                                                                <label class="col-md-3 control-label">Signature</label>
+                                                                <div class="col-md-5">
+                                                                    <select class="form-control margin-bottom-15" onchange="selectType(this)" name="completed_type">
+                                                                        <option value="0">Select</option>
+                                                                        <option value="1">Sign</option>
+                                                                        <option value="2">Upload</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <input type="file" class="form-control margin-bottom-15 hide sign signature_upload" name="completed_file" />
+                                                            <div class="hide sign signature_sign">
+                                                                <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
+                                                                <div class="signature completed_sign"></div>
+                                                            </div>
+                                                        </div>
                                                         <input type="text" class="form-control margin-bottom-15" name="completed_by" placeholder="CAPA Completed By" />
-                                                    </div>
-                                                    <div class="col-md-3">
                                                         <input type="text" class="form-control margin-bottom-15" name="completed_title" placeholder="Title" />
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <input type="date" class="form-control margin-bottom-15" name="completed_date" placeholder="text" />
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <input type="time" class="form-control margin-bottom-15" name="completed_time" placeholder="text" />
+                                                        <input type="datetime-local" class="form-control margin-bottom-15" name="completed_datetime"/>
                                                     </div>
                                                 </div>
 
@@ -1082,7 +1117,7 @@
                                                                 if ( mysqli_num_rows($selectComplaint) > 0 ) {
                                                                     while ($rowComp = mysqli_fetch_array($selectComplaint)) {
                                                                         $comp_ID = $rowComp['ID'];
-                                                                        $comp_name = $rowComp['name'];
+                                                                        $comp_name = htmlentities($rowComp['name'] ?? '');
 
                                                                         echo '<label class="mt-checkbox mt-checkbox-outline">
                                                                             <input type="checkbox" class="complaint" name="complaint" value="'.$comp_ID.'" onclick="highchart_complaint(1)"> '.$comp_name.'
@@ -1105,7 +1140,7 @@
                                                                 if ( mysqli_num_rows($selectDepartment) > 0 ) {
                                                                     while ($rowDept = mysqli_fetch_array($selectDepartment)) {
                                                                         $dept_ID = $rowDept['ID'];
-                                                                        $dept_title = $rowDept['title'];
+                                                                        $dept_title = htmlentities($rowDept['title'] ?? '');
 
                                                                         echo '<label class="mt-checkbox mt-checkbox-outline checkboxx">
                                                                             <input type="checkbox" class="department" name="department" value="'.$dept_ID.'" onclick="highchart_department(1)"> '.$dept_title.'
@@ -1283,6 +1318,7 @@
         <script src="//code.highcharts.com/modules/exporting.js"></script>
         <script src="//code.highcharts.com/modules/export-data.js"></script>
         <script src="//code.highcharts.com/modules/accessibility.js"></script>
+        <script src="assets/jSignature/jSignature.min.js"></script>
         
         <script type="text/javascript">
             $(document).ready(function(){
@@ -1291,6 +1327,7 @@
                 widget_counterup();
                 highchart_refresh();
                 widget_multiselect();
+                widget_signature();
 
                 $('#tableDataOpen, #tableDataClose').DataTable({
                     dom: 'Bfrtip',
@@ -1333,12 +1370,46 @@
                 $(this).addClass('active');
             })
 
+            function selectType(e) {
+                if (e.value == 1) {
+                    $(e).parent().parent().parent().find('.sign').addClass('hide');
+                    $(e).parent().parent().parent().find('.signature_sign').removeClass('hide');
+                } else if (e.value == 2) {
+                    $(e).parent().parent().parent().find('.sign').addClass('hide');
+                    $(e).parent().parent().parent().find('.signature_upload').removeClass('hide');
+                } else {
+                    $(e).parent().parent().parent().find('.sign').addClass('hide');
+                    $(e).parent().parent().parent().find('.signature_default').removeClass('hide');
+                }
+            }
+            function editSignature(e) {
+                $(e).parent().hide();
+                $(e).parent().prev('.signatureContainer').removeClass('hide');
+            }
             function uploadNew(e) {
                 $(e).parent().hide();
                 $(e).parent().prev('.form-control').removeClass('hide');
             }
             function btnCategory(e) {
                 $(e).parent().next('.form-control').toggleClass('hide');
+            }
+            function btnClear(e) {
+                if (e) {
+                    $(e).next('.signature').jSignature("clear");
+                } else {
+                    $('.signature').jSignature("clear");
+                }
+            }
+            function widget_signature() {
+                $(".signature").jSignature({
+                    'background-color': 'transparent',
+                    'decor-color': 'transparent',
+                });
+                $("canvas").attr('width','300');
+                $("canvas").attr('height','150');
+                $("canvas").width(300);
+                $("canvas").height(150);
+                btnClear();
             }
             function widget_repeaterForm() {
                 var FormRepeater=function(){
@@ -1519,6 +1590,7 @@
                         $("#modalEdit .modal-body").html(data);
                         widget_repeaterForm();
                         widget_multiselect();
+                        widget_signature();
                         // changeDepartment(2, id);
                     }
                 });
@@ -1652,11 +1724,18 @@
             $(".modalEdit").on('submit',(function(e) {
                 e.preventDefault();
 
+                var investigated_sigData = $('#modalEdit .investigated_sign').jSignature('getData');
+                var verified_sigData = $('#modalEdit .verified_sign').jSignature('getData');
+                var completed_sigData = $('#modalEdit .completed_sign').jSignature('getData');
+
                 formObj = $(this);
                 if (!formObj.validate().form()) return false;
 
                 var formData = new FormData(this);
                 formData.append('btnUpdate_CAM',true);
+                formData.append('investigated_sigData', investigated_sigData);
+                formData.append('verified_sigData', verified_sigData);
+                formData.append('completed_sigData', completed_sigData);
 
                 var l = Ladda.create(document.querySelector('#btnUpdate_CAM'));
                 l.start();

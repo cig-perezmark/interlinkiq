@@ -75,8 +75,18 @@
         //     header("Location: " . $_SERVER["HTTP_REFERER"]);
         // }
         
+        $location = 'login';
+        if (isset($_GET['c'])) {
+            $client_ID = $_GET['c'];
+            $selectClient = mysqli_query( $conn,"SELECT * FROM tbl_user_client WHERE ID = $client_ID" );
+            if ( mysqli_num_rows($selectClient) > 0 ) {
+                $rowClient = mysqli_fetch_array($selectClient);
+                $location = $rowClient["url"];
+            }
+        }
+        
         echo '<script>
-            window.location.href = "login";
+            window.location.href = "'.$location.'";
             // if (document.referrer == "") {
             //     window.location.href = "login";
             // } else {
@@ -767,6 +777,24 @@ License: You must have a valid license purchased only from themeforest(the above
         width: 100%;
         border-radius: 50% !important;
     }
+
+    .pictogram {
+        background-image: url(uploads/pictogram/interlinkIQ.png);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        width: 60px;
+        height: 60px;
+    }
+
+    .pictogram-align {
+        display: flex;
+        align-items: center;
+    }
+
+    body.is-loading * {
+        cursor: progress !important;
+    }
     </style>
 </head>
 <!-- END HEAD -->
@@ -940,6 +968,17 @@ License: You must have a valid license purchased only from themeforest(the above
                                     }
                                 } else {
                                     echo '<a href="dashboard"><img src="companyDetailsFolder/852876 - New Focuss Logo.png" height="60px" alt="logo" /></a>';
+                                }
+                                
+                            } else if ($current_client == 11) {
+                                if ($switch_user_id == 1486) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/449248 - marukan logo.png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/449248 - marukan logo.png" height="60px" alt="logo" /></a>';
                                 }
                                 
                             } else {
@@ -1268,6 +1307,12 @@ License: You must have a valid license purchased only from themeforest(the above
                             //     </li>';
                             // }
                             if ($switch_user_id == 1 OR $switch_user_id == 34 OR $switch_user_id == 163) {
+                                // echo '<li class="dropdown dropdown-extended">
+                                //     <a href="javascript:;" class="dropdown-toggle">
+                                //         <i class="icon-clock"></i>
+                                //     </a>
+                                //     <ul class="dropdown-menu hide"></ul>
+                                // </li>';
                                 echo '<li class="dropdown dropdown-extended">
                                     <a href="javascript:;" class="dropdown-toggle" onclick="offCanvas(1)">
                                         <i class="icon-envelope"></i>
@@ -2594,7 +2639,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             </li>';
                         }
                     ?>
-                    <?php if($_COOKIE['ID'] == 48100 OR $switch_user_id == 163 OR $_COOKIE['ID'] == 1167 OR $_COOKIE['ID'] == 117 OR $switch_user_id == 464 ): ?>
+                    <?php if($_COOKIE['ID'] == 48100 OR $switch_user_id == 163 OR $_COOKIE['ID'] == 1167 OR $_COOKIE['ID'] == 117 OR $switch_user_id == 464 OR $switch_user_id == 1563 ): ?>
                     <li class="nav-item">
                         <a href="glp_dashboard" class="nav-link" disabled>
                             <i class="icon-graph"></i>
@@ -3350,7 +3395,54 @@ License: You must have a valid license purchased only from themeforest(the above
                 </div>
                 <!-- END THEME PANEL -->
 
-                <h1 class="page-title"><?php echo $title; ?></h1>
+                <div class="margin-bottom-15" style="display: flex; align-items: center;">
+                    <h1 class="page-title" style="margin: 0;"><?php echo $title; ?></h1>
+                    <?php
+                        $pictogram = 'title_cd_'.$site;
+                        if ($switch_user_id == 163) {
+                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                        } else {
+                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                $row = mysqli_fetch_array($selectPictogram);
+
+                                $files = '';
+                                $type = 'iframe';
+                                if (!empty($row["files"])) {
+                                    $arr_filename = explode(' | ', $row["files"]);
+                                    $arr_filetype = explode(' | ', $row["filetype"]);
+                                    $str_filename = '';
+
+                                    foreach($arr_filename as $val_filename) {
+                                        $str_filename = $val_filename;
+                                    }
+                                    foreach($arr_filetype as $val_filetype) {
+                                        $str_filetype = $val_filetype;
+                                    }
+
+                                    $files = $row["files"];
+                                    if ($row["filetype"] == 1) {
+                                        $fileExtension = fileExtension($files);
+                                        $src = $fileExtension['src'];
+                                        $embed = $fileExtension['embed'];
+                                        $type = $fileExtension['type'];
+                                        $file_extension = $fileExtension['file_extension'];
+                                        $url = $base_url.'uploads/pictogram/';
+
+                                        $files = $src.$url.rawurlencode($files).$embed;
+                                    } else if ($row["filetype"] == 3) {
+                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                    }
+                                }
+
+                                if (!empty($files)) {
+                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                }
+                            }
+                        }
+                    ?>
+                </div>
+
                 <!--<input type='text' id='secondsRemaining' value='' readonly>-->
                 <!--<a href='#' class='60Left btn btn-default'>60 Secs Left</a>-->
                 <!--<a href='#' class='0Left btn btn-default'>Timed Out</a>-->

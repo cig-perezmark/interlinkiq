@@ -5,12 +5,8 @@
     $sub_breadcrumbs = '';
     
     if(isset($_GET['fetchProducts'])) {
-        
         include_once __DIR__ .'/database_iiq.php';
         include_once __DIR__ . '/alt-setup/setup.php';
-        
-        error_reporting(E_ALL);
-        $switch_user_id = $user_id;
         
         // $result = mysqli_query( $conn,"SELECT ID, image, name, category, category_other, description, last_modified FROM tbl_products WHERE deleted = 0 AND user_id = $user_id" );
         // $result = mysqli_query( $conn,"SELECT
@@ -80,8 +76,6 @@
         //     }
         // }
         
-        $data = [];
-        $sql_custom = '';
         
         if ($switch_user_id == 1211) {
             $sql_custom = ' UNION ALL
@@ -114,7 +108,6 @@
 
                 WHERE m.user_id = '.$switch_user_id;
         }
-        
         $result = mysqli_query( $conn,"
             SELECT
             *
@@ -142,15 +135,12 @@
              ) r
             ORDER BY r.p_name
         " );
-        
-        if ( $result && mysqli_num_rows($result) > 0 ) {
+        if ( mysqli_num_rows($result) > 0 ) {
             while($row = mysqli_fetch_array($result)) {
                 $files = '';
                 if (!empty($row['p_image'])) {
                     $data_image_array = explode(", ", $row['p_image']);
                     if (!empty($data_image_array[0])) {
-                        $base_url = "//interlinkiq.com/uploads/products/";
-
                         $files = $base_url.$data_image_array[0];
                     }
                 }
@@ -194,7 +184,7 @@
             }
         }
         
-        exit(json_encode($data)) ;
+        exit(json_encode($data));
     }
 
     if ($sub_breadcrumbs) {

@@ -236,6 +236,12 @@
                                                 </thead>
                                                 <tbody>
                                                     <?php
+                                                        $sql_s1 = '';
+                                                        $sql_s2 = '';
+                                                        if ($current_userEmployerID != 34) {
+                                                            $sql_s1 = ' AND s1.facility = 0 ';
+                                                            $sql_s2 = ' AND s2.facility = 0 ';
+                                                        }
                                                         $result = mysqli_query( $conn,"WITH RECURSIVE cte (s_ID, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
                                                             (
                                                                 SELECT
@@ -285,6 +291,7 @@
                                                                 WHERE s1.page = 2
                                                                 AND s1.is_deleted = 0 
                                                                 AND s1.user_id = $switch_user_id
+                                                                $sql_s1
                                                                 
                                                                 UNION ALL
                                                                 
@@ -335,6 +342,7 @@
                                                                 WHERE s2.page = 2
                                                                 AND s2.is_deleted = 0 
                                                                 AND s2.user_id = $switch_user_id
+                                                                $sql_s2
                                                             )
                                                             SELECT
                                                             s_ID,
@@ -596,6 +604,7 @@
 															    WHERE s1.page = 1
 															    AND s1.is_deleted = 0 
 															    AND s1.email = '".$current_userEmail."'
+															    $sql_s1
 															    
 															    UNION ALL
 															    
@@ -648,6 +657,7 @@
 															    WHERE s2.page = 1
 															    AND s2.is_deleted = 0 
 															    AND s2.email = '".$current_userEmail."'
+															    $sql_s2
 															)
 															SELECT
 															s_ID,
@@ -1083,6 +1093,15 @@
 																		<option value="7">Once Per Three Months (Quarterly)</option>
 																		<option value="8">Once Per Six Months (Bi-Annual)</option>
                                                                         <option value="5">Once Per Year</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-3 <?php echo $current_userEmployerID == 34 ? '':'hide'; ?>">
+                                                                <div class="form-group">
+                                                                    <label class="control-label">Facility User</label>
+                                                                    <select class="form-control" name="facility">
+                                                                        <option value="0">No</option>
+                                                                        <option value="1">Yes</option>
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -1913,7 +1932,7 @@
                 if($(e).val() == 1) {
                     $(e).parent().find('.fileUpload').show();
                     $(e).parent().find('.fileUpload').prop('required',true);
-                } else if($(e).val() == 2 || $(e).val() == 3) {
+                } else if($(e).val() == 2 || $(e).val() == 3 || $(e).val() == 4) {
                     $(e).parent().find('.fileURL').show();
                     $(e).parent().find('.fileURL').prop('required',true);
                 }
@@ -2492,6 +2511,7 @@
                                 data += '<option value="1">Manual Upload</option>';
                                 data += '<option value="2">Youtube URL</option>';
                                 data += '<option value="3">Google Drive URL</option>';
+                                data += '<option value="4">Sharepoint URL</option>';
                             data += '</select>';
                             data += '<input class="form-control margin-top-15 fileUpload" type="file" name="document_other_file[]" onchange="changeFile(this, this.value)" style="display: none;" />';
                             data += '<input class="form-control margin-top-15 fileURL" type="url" name="document_other_fileurl[]" style="display: none;" placeholder="https://" />';
@@ -2583,6 +2603,7 @@
                                 data += '<option value="1">Manual Upload</option>';
                                 data += '<option value="2">Youtube URL</option>';
                                 data += '<option value="3">Google Drive URL</option>';
+                                data += '<option value="4">Sharepoint URL</option>';
                             data += '</select>';
                             data += '<input class="form-control margin-top-15 fileUpload" type="file" name="document_other_file[]" onchange="changeFile(this, this.value)" style="display: none;" />';
                             data += '<input class="form-control margin-top-15 fileURL" type="url" name="document_other_fileurl[]" style="display: none;" placeholder="https://" />';

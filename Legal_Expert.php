@@ -74,12 +74,12 @@
                                                 while($rowcrm = mysqli_fetch_array($resultQuery)){ ?>
                                                 <tr>
                                                     <td><?php echo $i++;  ?></td>
-                                                    <td><?php echo $rowcrm['Area_name'];  ?></td>
-                                                    <td><?php echo $rowcrm['Agency_name'];  ?></td>
-                                                    <td><?php echo $rowcrm['Contact_Person'];  ?></td>
-                                                    <td><?php echo $rowcrm['Phone_1'];  ?></td>
-                                                    <td><?php echo $rowcrm['Phone_2'];  ?></td>
-                                                    <td><?php echo $rowcrm['legal_email'];  ?></td>
+                                                    <td><?php echo htmlentities($rowcrm['Area_name'] ?? '');  ?></td>
+                                                    <td><?php echo htmlentities($rowcrm['Agency_name'] ?? '');  ?></td>
+                                                    <td><?php echo htmlentities($rowcrm['Contact_Person'] ?? '');  ?></td>
+                                                    <td><?php echo htmlentities($rowcrm['Phone_1'] ?? '');  ?></td>
+                                                    <td><?php echo htmlentities($rowcrm['Phone_2'] ?? '');  ?></td>
+                                                    <td><?php echo htmlentities($rowcrm['legal_email'] ?? '');  ?></td>
                                                     <td></td>
                                                 </tr>
                                                 <?php } ?>

@@ -51,7 +51,7 @@ function yesNoRadio() {
             <th>Food Quality Auditing</th>
             <th>HACCP Training</th>
             <th>Food Safety Training Certificate</th>
-            <th>GFSI Certificate</th>
+            <th>FSVPQI Certificate</th>
             <!-- <th data-nosort="true">Actions</th> -->
         </tr>
     </thead>

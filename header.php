@@ -791,6 +791,11 @@ License: You must have a valid license purchased only from themeforest(the above
         display: flex;
         align-items: center;
     }
+    .pictogram-align-between {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 
     body.is-loading * {
         cursor: progress !important;

@@ -61,10 +61,10 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>
     				                              	<tr>
     				                              		<td>
-    				                              		    <?php echo $row['management_plan_area_filled']; ?>
+    				                              		    <?php echo htmlentities($row['management_plan_area_filled'] ?? ''); ?>
     				                              		</td>
     				                              		<td width="50%">
-    				                              			<?php echo $row['management_plan_area_answer']; ?>
+    				                              			<?php echo htmlentities($row['management_plan_area_answer'] ?? ''); ?>
     				                              		</td>
     				                              	</tr>
 					                              	<?php } ?>
@@ -85,10 +85,10 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>
     				                              	<tr>
     				                              		<td>
-    				                              		    <?php echo $row['management_plan_area_filled']; ?>
+    				                              		    <?php echo htmlentities($row['management_plan_area_filled'] ?? ''); ?>
     				                              		</td>
     				                              		<td width="50%">
-    				                              			<?php echo $row['management_plan_area_answer']; ?>
+    				                              			<?php echo htmlentities($row['management_plan_area_answer'] ?? ''); ?>
     				                              		</td>
     				                              	</tr>
 					                              	<?php } ?>
@@ -109,10 +109,10 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>
     				                              	<tr>
     				                              		<td>
-    				                              		    <?php echo $row['management_plan_area_filled']; ?>
+    				                              		    <?php echo htmlentities($row['management_plan_area_filled'] ?? ''); ?>
     				                              		</td>
     				                              		<td width="50%">
-    				                              			<?php echo $row['management_plan_area_answer']; ?>
+    				                              			<?php echo htmlentities($row['management_plan_area_answer'] ?? ''); ?>
     				                              		</td>
     				                              	</tr>
 					                              	<?php } ?>
@@ -133,10 +133,10 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>
     				                              	<tr>
     				                              		<td>
-    				                              		    <?php echo $row['management_plan_area_filled']; ?>
+    				                              		    <?php echo htmlentities($row['management_plan_area_filled'] ?? ''); ?>
     				                              		</td>
     				                              		<td width="50%">
-    				                              			<?php echo $row['management_plan_area_answer']; ?>
+    				                              			<?php echo htmlentities($row['management_plan_area_answer'] ?? ''); ?>
     				                              		</td>
     				                              	</tr>
 					                              	<?php } ?>
@@ -157,10 +157,10 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>
     				                              	<tr>
     				                              		<td>
-    				                              		    <?php echo $row['management_plan_area_filled']; ?>
+    				                              		    <?php echo htmlentities($row['management_plan_area_filled'] ?? ''); ?>
     				                              		</td>
     				                              		<td width="50%">
-    				                              			<?php echo $row['management_plan_area_answer']; ?>
+    				                              			<?php echo htmlentities($row['management_plan_area_answer'] ?? ''); ?>
     				                              		</td>
     				                              	</tr>
 					                              	<?php } ?>
@@ -181,10 +181,10 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>
     				                              	<tr>
     				                              		<td>
-    				                              		    <?php echo $row['management_plan_area_filled']; ?>
+    				                              		    <?php echo htmlentities($row['management_plan_area_filled'] ?? ''); ?>
     				                              		</td>
     				                              		<td width="50%">
-    				                              			<?php echo $row['management_plan_area_answer']; ?>
+    				                              			<?php echo htmlentities($row['management_plan_area_answer'] ?? ''); ?>
     				                              		</td>
     				                              	</tr>
 					                              	<?php } ?>
@@ -205,10 +205,10 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>
     				                              	<tr>
     				                              		<td>
-    				                              		    <?php echo $row['management_plan_area_filled']; ?>
+    				                              		    <?php echo htmlentities($row['management_plan_area_filled'] ?? ''); ?>
     				                              		</td>
     				                              		<td width="50%">
-    				                              			<?php echo $row['management_plan_area_answer']; ?>
+    				                              			<?php echo htmlentities($row['management_plan_area_answer'] ?? ''); ?>
     				                              		</td>
     				                              	</tr>
 					                              	<?php } ?>
@@ -229,10 +229,10 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>
     				                              	<tr>
     				                              		<td>
-    				                              		    <?php echo $row['management_plan_area_filled']; ?>
+    				                              		    <?php echo htmlentities($row['management_plan_area_filled'] ?? ''); ?>
     				                              		</td>
     				                              		<td width="50%">
-    				                              			<?php echo $row['management_plan_area_answer']; ?>
+    				                              			<?php echo htmlentities($row['management_plan_area_answer'] ?? ''); ?>
     				                              		</td>
     				                              	</tr>
 					                              	<?php } ?>
@@ -253,10 +253,10 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>
     				                              	<tr>
     				                              		<td>
-    				                              		    <?php echo $row['management_plan_area_filled']; ?>
+    				                              		    <?php echo htmlentities($row['management_plan_area_filled'] ?? ''); ?>
     				                              		</td>
     				                              		<td width="50%">
-    				                              			<?php echo $row['management_plan_area_answer']; ?>
+    				                              			<?php echo htmlentities($row['management_plan_area_answer'] ?? ''); ?>
     				                              		</td>
     				                              	</tr>
 					                              	<?php } ?>
@@ -277,10 +277,10 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>
     				                              	<tr>
     				                              		<td>
-    				                              		    <?php echo $row['management_plan_area_filled']; ?>
+    				                              		    <?php echo htmlentities($row['management_plan_area_filled'] ?? ''); ?>
     				                              		</td>
     				                              		<td width="50%">
-    				                              			<?php echo $row['management_plan_area_answer']; ?>
+    				                              			<?php echo htmlentities($row['management_plan_area_answer'] ?? ''); ?>
     				                              		</td>
     				                              	</tr>
 					                              	<?php } ?>
@@ -301,10 +301,10 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>
     				                              	<tr>
     				                              		<td>
-    				                              		    <?php echo $row['management_plan_area_filled']; ?>
+    				                              		    <?php echo htmlentities($row['management_plan_area_filled'] ?? ''); ?>
     				                              		</td>
     				                              		<td width="50%">
-    				                              			<?php echo $row['management_plan_area_answer']; ?>
+    				                              			<?php echo htmlentities($row['management_plan_area_answer'] ?? ''); ?>
     				                              		</td>
     				                              	</tr>
 					                              	<?php } ?>
@@ -319,8 +319,8 @@
                                                     $resultQuery = mysqli_query($conn, $queries);
                                                      
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>
-				                          <h4 style="padding: 5px;border: solid #ccc 1px;margin-top:-20px;">Notes:<textarea class="form-control" name="Plan_Notes" readonly><?php echo $row['Plan_Notes']; ?></textarea> </h4>
-				                          <center><h4 style="padding: 5px;border: solid #ccc 1px;margin-top:-10px;">Action Items:<textarea class="form-control" name="Plan_Action_Items" readonly><?php echo $row['Plan_Action_Items']; ?></textarea> </h4></center>
+				                          <h4 style="padding: 5px;border: solid #ccc 1px;margin-top:-20px;">Notes:<textarea class="form-control" name="Plan_Notes" readonly><?php echo htmlentities($row['Plan_Notes'] ?? ''); ?></textarea> </h4>
+				                          <center><h4 style="padding: 5px;border: solid #ccc 1px;margin-top:-10px;">Action Items:<textarea class="form-control" name="Plan_Action_Items" readonly><?php echo htmlentities($row['Plan_Action_Items'] ?? ''); ?></textarea> </h4></center>
 				                          	<?php } ?>
                                         
                                     </div>
@@ -342,11 +342,11 @@
 				                            		<tr>
 				                            			<td>Verified by:</td>
 				                            			<td width="30%" >
-				                            				<?php echo $row['Verified_by']; ?>
+				                            				<?php echo htmlentities($row['Verified_by'] ?? ''); ?>
 				                            			</td>
 				                            			<td>Approved by:</td>
 				                            			<td width="30%" >
-				                            				<?php echo $row['Approved_by']; ?>
+				                            				<?php echo htmlentities($row['Approved_by'] ?? ''); ?>
 				                            			</td>
 				                            		</tr>
 				                            		<tr>

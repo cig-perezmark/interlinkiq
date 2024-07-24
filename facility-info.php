@@ -167,16 +167,16 @@ error_reporting(0);
                                                                 <tbody>
                                                                     <tr>
                                                                         <td>
-                                                                            <input class=" form-control" name="Bldg" value="<?php echo $row['Bldg']; ?>" >
+                                                                            <input class=" form-control" name="Bldg" value="<?php echo htmlentities($row['Bldg'] ?? ''); ?>" >
                                                                         </td>  
                                                                         <td>
-                                                                            <input class="form-control" name="city" value="<?php echo $row['city']; ?>" >
+                                                                            <input class="form-control" name="city" value="<?php echo htmlentities($row['city'] ?? ''); ?>" >
                                                                         </td>
                                                                         <td>
-                                                                            <input class="form-control" name="States" value="<?php echo $row['States']; ?>">
+                                                                            <input class="form-control" name="States" value="<?php echo htmlentities($row['States'] ?? ''); ?>">
                                                                         </td>
                                                                         <td>
-                                                                            <input class=" form-control" name="ZipCode" value="<?php echo $row['ZipCode']; ?>" >
+                                                                            <input class=" form-control" name="ZipCode" value="<?php echo htmlentities($row['ZipCode'] ?? ''); ?>" >
                                                                         </td>
                                                                     </tr>
                                                                 </tbody>
@@ -195,10 +195,10 @@ error_reporting(0);
                                                                 </thead>
                                                                 <tbody>
                                                                     <tr>
-                                                                        <td><input type="text" min="6" class=" form-control" name="facility_phone" value="<?php echo $row['facility_phone']; ?>"></td>
-                                                                        <td><input type="text" class=" form-control" name="facility_fax" value="<?php echo $row['facility_fax']; ?>" ></td>
-                                                                        <td><input type="email" class=" form-control" name="facility_Address" value="<?php echo $row['facility_Address']; ?>"></td>
-                                                                        <td><input type="" class=" form-control" name="facility_website" value="<?php echo $row['facility_website']; ?>"></td>
+                                                                        <td><input type="text" min="6" class=" form-control" name="facility_phone" value="<?php echo htmlentities($row['facility_phone'] ?? ''); ?>"></td>
+                                                                        <td><input type="text" class=" form-control" name="facility_fax" value="<?php echo htmlentities($row['facility_fax'] ?? ''); ?>" ></td>
+                                                                        <td><input type="email" class=" form-control" name="facility_Address" value="<?php echo htmlentities($row['facility_Address'] ?? ''); ?>"></td>
+                                                                        <td><input type="" class=" form-control" name="facility_website" value="<?php echo htmlentities($row['facility_website'] ?? ''); ?>"></td>
                                                                     </tr>
                                                                 </tbody>
                                                             </table>
@@ -236,14 +236,14 @@ error_reporting(0);
                                                                         <tbody>
                                                                             <tr>
                                                                                 <td> 
-                                                                                    <?php echo htmlentities($rowc['contactpersonname']); ?>
+                                                                                    <?php echo htmlentities($rowc['contactpersonname'] ?? ''); ?>
                                                                                 </td>
-                                                                                <td>  <?php echo htmlentities($rowc['contactpersonlastname']); ?></td>
-                                                                                <td> <?php echo htmlentities($rowc['titles']); ?></td>
-                                                                                <td>  <?php echo htmlentities($rowc['contactpersoncellno']); ?></td>
-                                                                                <td> <?php echo htmlentities($rowc['contactpersonphone']); ?></td>
-                                                                                <td>  <?php echo htmlentities($rowc['contactpersonfax']); ?></td>
-                                                                                <td> <?php echo htmlentities($rowc['contactpersonemailAddress']); ?></td>
+                                                                                <td>  <?php echo htmlentities($rowc['contactpersonlastname'] ?? ''); ?></td>
+                                                                                <td> <?php echo htmlentities($rowc['titles'] ?? ''); ?></td>
+                                                                                <td>  <?php echo htmlentities($rowc['contactpersoncellno'] ?? ''); ?></td>
+                                                                                <td> <?php echo htmlentities($rowc['contactpersonphone'] ?? ''); ?></td>
+                                                                                <td>  <?php echo htmlentities($rowc['contactpersonfax'] ?? ''); ?></td>
+                                                                                <td> <?php echo htmlentities($rowc['contactpersonemailAddress'] ?? ''); ?></td>
                                                                                 <td style="text-align: right;">
                                                                                     <a class="btn blue btn-outline btnViewCon " data-toggle="modal" href="#modalGetContact" data-id="<?php echo $rowc["con_id"]; ?>">VIEW</a>
                                                                                     <a class="btn btn-outline red" onclick="btnDelete_F_Contact(<?php echo $rowc["con_id"]; ?>, this)">Delete</a>
@@ -282,13 +282,13 @@ error_reporting(0);
                                                                     while($rowq = mysqli_fetch_array($resultQuery)){ ?>
                                                                         <tbody>
                                                                             <tr>
-                                                                                <td> <?php echo htmlentities($rowq['emergencyname']); ?></td>
-                                                                                <td> <?php echo htmlentities($rowq['emergencycontact_last_name']); ?></td>
-                                                                                <td> <?php echo htmlentities($rowq['emergency_contact_title']); ?></td>
-                                                                                <td> <?php echo htmlentities($rowq['emergencycellno']); ?></td>
-                                                                                <td> <?php echo htmlentities($rowq['emergencyphone']); ?></td>
-                                                                                <td>  <?php echo htmlentities($rowq['emergencyfax']); ?></td>
-                                                                                <td>  <?php echo htmlentities($rowq['emergencyemailAddress']); ?></td>
+                                                                                <td> <?php echo htmlentities($rowq['emergencyname'] ?? ''); ?></td>
+                                                                                <td> <?php echo htmlentities($rowq['emergencycontact_last_name'] ?? ''); ?></td>
+                                                                                <td> <?php echo htmlentities($rowq['emergency_contact_title'] ?? ''); ?></td>
+                                                                                <td> <?php echo htmlentities($rowq['emergencycellno'] ?? ''); ?></td>
+                                                                                <td> <?php echo htmlentities($rowq['emergencyphone'] ?? ''); ?></td>
+                                                                                <td>  <?php echo htmlentities($rowq['emergencyfax'] ?? ''); ?></td>
+                                                                                <td>  <?php echo htmlentities($rowq['emergencyemailAddress'] ?? ''); ?></td>
                                                                                 <td style="text-align: right;">
                                                                                     <a class="btn blue btn-outline btnView " data-toggle="modal" href="#modalGetEmergencyContact" data-id="<?php echo $rowq["emerg_id"]; ?>">VIEW</a>
                                                                                     <a class="btn btn-outline red" onclick="btnDelete_F_Emergency(<?php echo $rowq["emerg_id"]; ?>, this)">Delete</a>
@@ -325,7 +325,7 @@ error_reporting(0);
                                                                             $query_reg = mysqli_query($conn, "SELECT * FROM tblFacilityDetails_registration where ownedby = $switch_user_id and table_entities = 2 and facility_id = $facility_id");
                                                                             foreach($query_reg as $row_reg){ ?>
                                                                                 <tr id="row_registration<?= $row_reg['reg_id']; ?>">
-                                                                                    <td><?= htmlentities($row_reg['registration_name']); ?></td>
+                                                                                    <td><?= htmlentities($row_reg['registration_name'] ?? ''); ?></td>
                                                                                     <td><a href="facility_files_Folder/<?= $row_reg['supporting_file']; ?>" target="_blank"><?= $row_reg['supporting_file']; ?></a></td>
                                                                                     <td><?= date('Y-m-d', strtotime($row_reg['registration_date'])); ?></td>
                                                                                     <td><?= date('Y-m-d', strtotime($row_reg['expiry_date'])); ?></td>
@@ -368,10 +368,10 @@ error_reporting(0);
                                                                                 $resultQuery = mysqli_query($conn, $queries);
                                                                                 while($rowr = mysqli_fetch_array($resultQuery)){ ?>
                                                                                     <tr>
-                                                                                        <td><?php echo htmlentities($rowr['Organization_name']); ?>&nbsp;<?php echo $rowr['Organization_last_name']; ?></td>
-                                                                                        <td><?php echo htmlentities($rowr['Organization_title']); ?></td>
-                                                                                        <td><?php echo htmlentities($rowr['Organization_cellno']); ?></td>
-                                                                                        <td><?php echo htmlentities($rowr['Organization_phone']); ?></td>
+                                                                                        <td><?php echo htmlentities($rowr['Organization_name'] ?? ''); ?>&nbsp;<?php echo htmlentities($rowr['Organization_last_name'] ?? ''); ?></td>
+                                                                                        <td><?php echo htmlentities($rowr['Organization_title'] ?? ''); ?></td>
+                                                                                        <td><?php echo htmlentities($rowr['Organization_cellno'] ?? ''); ?></td>
+                                                                                        <td><?php echo htmlentities($rowr['Organization_phone'] ?? ''); ?></td>
                                                                                         <td><?php echo htmlentities($rowr['Organization_emailAddress']); ?></td>
                                                                                         <td>
                                                                                             <a class="btn blue btn-outline btnViewOrganization " data-toggle="modal" href="#modalGeFacilitytOrganization" data-id="<?php echo $rowr["Org_id"]; ?>" style="float:right;margin-right:20px;">VIEW</a>
@@ -414,24 +414,24 @@ error_reporting(0);
                                                                             $resultQuery = mysqli_query($conn, $queriesPri);
                                                                              
                                                                             while($rowPri = mysqli_fetch_array($resultQuery)){ 
-                                                                                $alt = $rowPri['addAlternateNameField'];
-                                                                                $altEmail = $rowPri['email'];
+                                                                                $alt = htmlentities($rowPri['addAlternateNameField'] ?? '');
+                                                                                $altEmail = htmlentities($rowPri['email'] ?? '');
                                                                                 
                                                                                 $queriesAlt = "SELECT * FROM tbl_hr_employee where ID = $alt";
                                                                                 $resultQueryAlt = mysqli_query($conn, $queriesAlt);
                                                                             ?>
                                                                                 <tr>
                                                                                     <td><?php echo $i++;  ?></td>
-                                                                                    <td><?php echo $rowPri['first_name'];  ?> <?php echo $rowPri['last_name'];  ?></td>
+                                                                                    <td><?php echo htmlentities($rowPri['first_name'] ?? '');  ?> <?php echo htmlentities($rowPri['last_name'] ?? '');  ?></td>
                                                                                     <td></td>
-                                                                                    <td><?php echo $rowPri['email'];  ?></td>
+                                                                                    <td><?php echo htmlentities($rowPri['email'] ?? '');  ?></td>
                                                                                      <?php while($rowAlt = mysqli_fetch_array($resultQueryAlt)){ ?>
                                                                                     <td>
-                                                                                        <?php echo $rowAlt['first_name'];  ?> <?php echo $rowAlt['last_name'];  ?>
+                                                                                        <?php echo htmlentities($rowAlt['first_name'] ?? '');  ?> <?php echo htmlentities($rowAlt['last_name'] ?? '');  ?>
                                                                                     </td>
                                                                                     <td></td>
                                                                                     <td> 
-                                                                                        <?php echo $rowAlt['email'];  ?> 
+                                                                                        <?php echo htmlentities($rowAlt['email'] ?? '');  ?> 
                                                                                     </td>
                                                                                      <?php } ?>
                                                                                     <td></td>
@@ -465,11 +465,11 @@ error_reporting(0);
                                                                             $resultQuery = mysqli_query($conn, $queries);
                                                                             while($rowr = mysqli_fetch_array($resultQuery)){ ?>
                                                                                 <tr>
-                                                                                    <td><?php echo $rowr['Service_Team_name']; ?>&nbsp;<?php echo $rowr['Service_Team_last_name']; ?></td>
-                                                                                    <td><?php echo $rowr['Service_Team_title']; ?></td>
-                                                                                    <td><?php echo $rowr['Service_Team_cellno']; ?></td>
-                                                                                    <td><?php echo $rowr['Service_Team_phone']; ?></td>
-                                                                                    <td><?php echo $rowr['Service_Team_emailAddress']; ?></td>
+                                                                                    <td><?php echo htmlentities($rowr['Service_Team_name'] ?? ''); ?>&nbsp;<?php echo htmlentities($rowr['Service_Team_last_name'] ?? ''); ?></td>
+                                                                                    <td><?php echo htmlentities($rowr['Service_Team_title'] ?? ''); ?></td>
+                                                                                    <td><?php echo htmlentities($rowr['Service_Team_cellno'] ?? ''); ?></td>
+                                                                                    <td><?php echo htmlentities($rowr['Service_Team_phone'] ?? ''); ?></td>
+                                                                                    <td><?php echo htmlentities($rowr['Service_Team_emailAddress'] ?? ''); ?></td>
                                                                                     <td>
                                                                                         <a class="btn blue btn-outline btnViewService_Team" data-toggle="modal" href="#modalGetService_Team" data-id="<?php echo $rowr["Service_Team_id"]; ?>" style="float:right;margin-right:20px;">
                                                                                             VIEW
@@ -503,8 +503,8 @@ error_reporting(0);
                                                                                     $query_cst = mysqli_query($conn, "select * from tblFacilityDetails_community where enterprise_pk = $switch_user_id and facility_entities = $facility_id");
                                                                                     foreach($query_cst as $row_cst){?>
                                                                                         <tr id="row_cst<?= $row_cst['cst_pk']; ?>">
-                                                                                            <td><?=$row_cst['cst_title']; ?></td>
-                                                                                            <td><a href="facility_files_Folder/<?= $row_cst['cst_files']; ?>" target="_blank"><?= $row_cst['cst_files']; ?></a></td>
+                                                                                            <td><?=htmlentities($row_cst['cst_title'] ?? ''); ?></td>
+                                                                                            <td><a href="facility_files_Folder/<?= $row_cst['cst_files']; ?>" target="_blank"><?= htmlentities($row_cst['cst_files'] ?? ''); ?></a></td>
                                                                                             <td><?= date('Y-m-d', strtotime($row_cst['expiry_date'])); ?></td>
                                                                                             <td width="150px">
                                                                                                 <div class="btn-group btn-group-circle">
@@ -553,9 +553,9 @@ error_reporting(0);
 
                                                                             <tr>
                                                                                 <td><?php echo $i++; ?></td>
-                                                                                <td><a href="facility_files_Folder/<?php echo $rowAcc['Accreditation']; ?>" target="_blank"><?php echo $rowAcc['Accreditation']; ?></a></td>
-                                                                                <td><?php echo $rowAcc['Type_Accreditation']; ?></td>
-                                                                                <td><?php echo $rowAcc['Descriptions_Accreditation']; ?></td>
+                                                                                <td><a href="facility_files_Folder/<?php echo $rowAcc['Accreditation']; ?>" target="_blank"><?php echo htmlentities($rowAcc['Accreditation'] ?? ''); ?></a></td>
+                                                                                <td><?php echo htmlentities($rowAcc['Type_Accreditation'] ?? ''); ?></td>
+                                                                                <td><?php echo htmlentities($rowAcc['Descriptions_Accreditation'] ?? ''); ?></td>
                                                                                 <td><?php echo date_format($idate,"Y/m/d"); ?></td>
                                                                                 <td><?php echo date_format($edate,"Y/m/d"); ?></td>
                                                                             </tr>
@@ -620,9 +620,9 @@ error_reporting(0);
                                                                         ?>
                                                                             <tr>
                                                                                 <td><?php echo $i++; ?></td>
-                                                                                <td><a href="facility_files_Folder/<?php echo $rowAcc['Certification']; ?>" target="_blank"><?php echo $rowAcc['Certification']; ?></a></td>
-                                                                                <td><?php echo $rowAcc['Type_Certification']; ?></td>
-                                                                                <td><?php echo $rowAcc['Descriptions_Certification']; ?></td>
+                                                                                <td><a href="facility_files_Folder/<?php echo $rowAcc['Certification']; ?>" target="_blank"><?php echo htmlentities($rowAcc['Certification'] ?? ''); ?></a></td>
+                                                                                <td><?php echo htmlentities($rowAcc['Type_Certification'] ?? ''); ?></td>
+                                                                                <td><?php echo htmlentities($rowAcc['Descriptions_Certification'] ?? ''); ?></td>
                                                                                 <td><?php echo date_format($idate,"Y/m/d"); ?></td>
                                                                                 <td><?php echo date_format($edate,"Y/m/d"); ?></td>
                                                                             </tr>
@@ -792,11 +792,11 @@ error_reporting(0);
                                                                             $resultQuery = mysqli_query($conn, $queries);
                                                                             while($rowq = mysqli_fetch_array($resultQuery)){ ?>
                                                                                 <tr>
-                                                                                    <td><a href="facility-function/facility-download-functions.php?pathPermits=<?php echo $rowq['Permits_id']; ?>"><?php echo $rowq['Permits']; ?></a></td>
-                                                                                    <td><?php echo $rowq['Type_s']; ?></td>
-                                                                                    <td><?php echo $rowq['Descriptions']; ?></td>
-                                                                                    <td><?php echo $rowq['Issue_Date']; ?></td>
-                                                                                    <td><?php echo $rowq['Expiration_Date']; ?></td>
+                                                                                    <td><a href="facility-function/facility-download-functions.php?pathPermits=<?php echo $rowq['Permits_id']; ?>"><?php echo htmlentities($rowq['Permits'] ?? ''); ?></a></td>
+                                                                                    <td><?php echo htmlentities($rowq['Type_s'] ?? ''); ?></td>
+                                                                                    <td><?php echo htmlentities($rowq['Descriptions'] ?? ''); ?></td>
+                                                                                    <td><?php echo htmlentities($rowq['Issue_Date'] ?? ''); ?></td>
+                                                                                    <td><?php echo htmlentities($rowq['Expiration_Date'] ?? ''); ?></td>
                                                                                     <td>
                                                                                         <a class="btn blue btn-outline btnViewPermits" data-toggle="modal" href="#modalGetPermits" data-id="<?php echo $rowq["Permits_id"]; ?>" style="float:right;margin-right:20px;">
                                                                                             Edit
@@ -935,9 +935,9 @@ error_reporting(0);
                                                                                 if(mysqli_fetch_row($query_pm)){
                                                                                 foreach($query_pm as $row_pm){?>
                                                                                     <tr id="row_diagram<?=$row_pm['diagram_pk']; ?>">
-                                                                                        <td><?=$row_pm['diagram_title']; ?></td>
-                                                                                        <td><a href="facility_files_Folder/<?= $row_pm['diagram_files']; ?>" target="_blank"><?= $row_pm['diagram_files']; ?></a></td>
-                                                                                        <td><?= $row_pm['expiry_date']; ?></td>
+                                                                                        <td><?=htmlentities($row_pm['diagram_title'] ?? ''); ?></td>
+                                                                                        <td><a href="facility_files_Folder/<?= $row_pm['diagram_files']; ?>" target="_blank"><?= htmlentities($row_pm['diagram_files'] ?? ''); ?></a></td>
+                                                                                        <td><?= htmlentities($row_pm['expiry_date'] ?? ''); ?></td>
                                                                                         <td width="150px">
                                                                                             <div class="btn-group btn-group-circle">
                                                                                                 <a  href="#modal_update_diagram" data-toggle="modal" type="button" id="update_diagram" data-id="<?=$row_pm['diagram_pk']; ?>" class="btn btn-outline dark btn-sm">Edit</a>
@@ -971,9 +971,9 @@ error_reporting(0);
                                                                                 if(mysqli_fetch_row($query_plan)){
                                                                                     foreach($query_plan as $row_plan){?>
                                                                                         <tr id="row_plan<?=$row_plan['plan_pk']; ?>">
-                                                                                            <td><?=$row_plan['plan_title']; ?></td>
-                                                                                            <td><a href="facility_files_Folder/<?= $row_plan['plan_files']; ?>" target="_blank"><?= $row_plan['plan_files']; ?></a></td>
-                                                                                            <td><?= $row_plan['expiry_date']; ?></td>
+                                                                                            <td><?=htmlentities($row_plan['plan_title'] ?? ''); ?></td>
+                                                                                            <td><a href="facility_files_Folder/<?= $row_plan['plan_files']; ?>" target="_blank"><?= htmlentities($row_plan['plan_files'] ?? ''); ?></a></td>
+                                                                                            <td><?= htmlentities($row_plan['expiry_date'] ?? ''); ?></td>
                                                                                             <td width="150px">
                                                                                                 <div class="btn-group btn-group-circle">
                                                                                                     <a  href="#modal_update_plan" data-toggle="modal" type="button" id="update_plan" data-id="<?= $row_plan['plan_pk']; ?>" class="btn btn-outline dark btn-sm">Edit</a>
@@ -1128,17 +1128,17 @@ error_reporting(0);
                                                                                 if(mysqli_fetch_row($query_ib)){
                                                                                     foreach($query_ib as $row_ib){?>
                                                                                         <tr id="row_bond<?=$row_ib['bond_pk']; ?>">
-                                                                                            <td><?=  $row_ib['ib_title']; ?></td>
-                                                                                            <td><?= $row_ib['policy_number']; ?></td>
+                                                                                            <td><?=  htmlentities($row_ib['ib_title'] ?? ''); ?></td>
+                                                                                            <td><?= htmlentities($row_ib['policy_number'] ?? ''); ?></td>
                                                                                             <td><?= date('Y-m-d', strtotime($row_ib['effective_date'])); ?></td>
                                                                                             <td><?= date('Y-m-d', strtotime($row_ib['expiry_date'])); ?></td>
-                                                                                            <td><?= $row_ib['policy_type']; ?></td>
+                                                                                            <td><?= htmlentities($row_ib['policy_type'] ?? ''); ?></td>
                                                                                             <td>
                                                                                                 <?php 
                                                                                                     if($row_ib['in_status'] == 1){ echo 'Active';}else{ echo 'Inactive'; }
                                                                                                 ?>
                                                                                             </td>
-                                                                                            <td><a href="facility_files_Folder/<?= $row_ib['ib_files']; ?>" target="_blank"><?= $row_ib['ib_files']; ?></a></td>
+                                                                                            <td><a href="facility_files_Folder/<?= $row_ib['ib_files']; ?>" target="_blank"><?= htmlentities($row_ib['ib_files'] ?? ''); ?></a></td>
                                                                                             <td width="150px">
                                                                                                 <div class="btn-group btn-group-circle">
                                                                                                     <a  href="#modal_update_bond1" data-toggle="modal" type="button" id="update_bond1" data-id="<?=$row_ib['bond_pk']; ?>" class="btn btn-outline dark btn-sm">Edit</a>
@@ -1177,12 +1177,12 @@ error_reporting(0);
                                                                                 if(mysqli_fetch_row($query_ib)){
                                                                                     foreach($query_ib as $row_ib){?>
                                                                                         <tr id="row_bond<?=$row_ib['bond_pk']; ?>">
-                                                                                            <td><?=  $row_ib['ib_title']; ?></td>
-                                                                                            <td><?= $row_ib['policy_number']; ?></td>
+                                                                                            <td><?=  htmlentities($row_ib['ib_title'] ?? ''); ?></td>
+                                                                                            <td><?= htmlentities($row_ib['policy_number'] ?? ''); ?></td>
                                                                                             <td><?= date('Y-m-d', strtotime($row_ib['effective_date'])); ?></td>
                                                                                             <td><?= date('Y-m-d', strtotime($row_ib['expiry_date'])); ?></td>
-                                                                                            <td><?= $row_ib['policy_type']; ?></td>
-                                                                                            <td><a href="facility_files_Folder/<?= $row_ib['ib_files']; ?>" target="_blank"><?= $row_ib['ib_files']; ?></a></td>
+                                                                                            <td><?= htmlentities($row_ib['policy_type'] ?? ''); ?></td>
+                                                                                            <td><a href="facility_files_Folder/<?= $row_ib['ib_files']; ?>" target="_blank"><?= htmlentities($row_ib['ib_files'] ?? ''); ?></a></td>
                                                                                             <td width="150px">
                                                                                                 <div class="btn-group btn-group-circle">
                                                                                                     <a  href="#modal_update_bond" data-toggle="modal" type="button" id="update_bond" data-id="<?=$row_ib['bond_pk']; ?>" class="btn btn-outline dark btn-sm">Edit</a>
@@ -1232,22 +1232,22 @@ error_reporting(0);
                                                                                                     $drivers_id = $row_vehicle['driver_name']; 
                                                                                                     $drivers = mysqli_query($conn, "select * from tbl_hr_employee where ID = '$drivers_id'");
                                                                                                     foreach($drivers as $name_driver){
-                                                                                                        echo $name_driver['first_name'].' '.$name_driver['last_name'];
+                                                                                                        echo htmlentities($name_driver['first_name'] ?? '').' '.htmlentities($name_driver['last_name'] ?? '');
                                                                                                     }
                                                                                                 ?>
                                                                                             </td>
-                                                                                            <td><?=$row_vehicle['lisence_plate']; ?></td>
-                                                                                            <td><?=$row_vehicle['vehicle_yr']; ?></td>
-                                                                                            <td><?=$row_vehicle['vehicle_make']; ?></td>
-                                                                                            <td><?=$row_vehicle['vehicle_model']; ?></td>
-                                                                                            <td><?=$row_vehicle['vin_number']; ?></td>
-                                                                                            <td><?=$row_vehicle['vehicle_color']; ?></td>
+                                                                                            <td><?=htmlentities($row_vehicle['lisence_plate'] ?? ''); ?></td>
+                                                                                            <td><?=htmlentities($row_vehicle['vehicle_yr'] ?? ''); ?></td>
+                                                                                            <td><?=htmlentities($row_vehicle['vehicle_make'] ?? ''); ?></td>
+                                                                                            <td><?=htmlentities($row_vehicle['vehicle_model'] ?? ''); ?></td>
+                                                                                            <td><?=htmlentities($row_vehicle['vin_number'] ?? ''); ?></td>
+                                                                                            <td><?=htmlentities($row_vehicle['vehicle_color'] ?? ''); ?></td>
                                                                                             <td>
                                                                                                 <?php 
                                                                                                     if($row_vehicle['vehicle_status']== 1){ echo 'Active'; }else{ echo'Inactive'; } 
                                                                                                 ?>
                                                                                             </td>
-                                                                                            <td><a href="facility_files_Folder/<?= $row_vehicle['vehicle_files']; ?>" target="_blank"><?= $row_vehicle['vehicle_files']; ?></a></td>
+                                                                                            <td><a href="facility_files_Folder/<?= $row_vehicle['vehicle_files']; ?>" target="_blank"><?= htmlentities($row_vehicle['vehicle_files'] ?? ''); ?></a></td>
                                                                                             <td width="150px">
                                                                                                 <div class="btn-group btn-group-circle">
                                                                                                     <a  href="#modal_update_vehicle" data-toggle="modal" type="button" id="update_vehicle" data-id="<?=$row_vehicle['vehicle_pk']; ?>" class="btn btn-outline dark btn-sm">Edit</a>
@@ -1286,11 +1286,11 @@ error_reporting(0);
                                                                                 if(mysqli_fetch_row($query_deficiency)){
                                                                                     foreach($query_deficiency as $row_deficiency){?>
                                                                                         <tr id="row_deficiency<?=$row_deficiency['deficiency_pk']; ?>">
-                                                                                            <td><?=$row_deficiency['regulatory_agency']; ?></td>
+                                                                                            <td><?=htmlentities($row_deficiency['regulatory_agency'] ?? ''); ?></td>
                                                                                             <td><?= date('Y-m-d', strtotime($row_deficiency['date_issuance'])); ?></td>
                                                                                             <td><?= date('Y-m-d', strtotime($row_deficiency['date_due'])); ?></td>
-                                                                                            <td><?= $row_deficiency['number_violations']; ?></td>
-                                                                                            <td><a href="facility_files_Folder/<?= $row_deficiency['deficiency_files']; ?>" target="_blank"><?= $row_deficiency['deficiency_files']; ?></a></td>
+                                                                                            <td><?= htmlentities($row_deficiency['number_violations'] ?? ''); ?></td>
+                                                                                            <td><a href="facility_files_Folder/<?= $row_deficiency['deficiency_files']; ?>" target="_blank"><?= htmlentities($row_deficiency['deficiency_files'] ?? ''); ?></a></td>
                                                                                             <td width="150px">
                                                                                                 <div class="btn-group btn-group-circle">
                                                                                                     <a  href="#modal_update_deficiency" data-toggle="modal" type="button" id="update_deficiency" data-id="<?=$row_deficiency['deficiency_pk']; ?>" class="btn btn-outline dark btn-sm">Edit</a>
@@ -1540,7 +1540,7 @@ error_reporting(0);
                                                         $queries = "SELECT * FROM tbl_hr_employee where user_id = $current_userEmployerID";
                                                         $resultQuery = mysqli_query($conn, $queries);
                                                         while($rowcrm = mysqli_fetch_array($resultQuery)){ ?>
-                                                            <option value="<?php echo $rowcrm['ID']; ?>"><?php echo $rowcrm['first_name']; ?> <?php echo $rowcrm['last_name']; ?></option>
+                                                            <option value="<?php echo $rowcrm['ID']; ?>"><?php echo htmlentities($rowcrm['first_name'] ?? ''); ?> <?php echo htmlentities($rowcrm['last_name'] ?? ''); ?></option>
                                                         <?php }
                                                     ?>
                                                 </select>
@@ -1562,7 +1562,7 @@ error_reporting(0);
                                                         $queries = "SELECT * FROM tbl_hr_employee where user_id = $current_userEmployerID";
                                                         $resultQuery = mysqli_query($conn, $queries);
                                                         while($rowcrm = mysqli_fetch_array($resultQuery)){ ?>
-                                                            <option value="<?php echo $rowcrm['ID']; ?>"><?php echo $rowcrm['first_name']; ?> <?php echo $rowcrm['last_name']; ?></option>
+                                                            <option value="<?php echo $rowcrm['ID']; ?>"><?php echo htmlentities($rowcrm['first_name'] ?? ''); ?> <?php echo htmlentities($rowcrm['last_name'] ?? ''); ?></option>
                                                         <?php }
                                                     ?>
                                                 </select>
@@ -2072,7 +2072,7 @@ error_reporting(0);
                                                         $resultAssignto = mysqli_query($conn, $queryAssignto);
                                                         while($rowAssignto = mysqli_fetch_array($resultAssignto))
                                                         { 
-                                                           echo '<option value="'.$rowAssignto['ID'].'" '; echo $_COOKIE['employee_id'] == $rowAssignto['ID'] ? 'selected' : ''; echo'>'.$rowAssignto['first_name'].' '.$rowAssignto['last_name'].'</option>'; 
+                                                           echo '<option value="'.$rowAssignto['ID'].'" '; echo $_COOKIE['employee_id'] == $rowAssignto['ID'] ? 'selected' : ''; echo'>'.htmlentities($rowAssignto['first_name'] ?? '').' '.htmlentities($rowAssignto['last_name'] ?? '').'</option>'; 
                                                         }
                                                        
                                                     ?>

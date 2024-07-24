@@ -530,19 +530,20 @@
         $mime_array = array(
             'text/x-php',
             'text/plain', 
+            'text/plain', 
             'text/css', 
             'text/html', 
-            'text/xml', 
             'text/javascript', 
-            'font/ttf', 
-            'font/woff', 
-            'font/woff2', 
             'application/json', 
             'application/x-httpd-php', 
             'application/rtf', 
             'application/x-sh', 
+            'font/ttf', 
+            'font/woff', 
+            'font/woff2', 
             'application/xhtml+xml', 
             'application/xml', 
+            'text/xml', 
             'application/atom+xml', 
             'application/vnd.mozilla.xul+xml', 
             'application/x-msdownload'
@@ -3173,9 +3174,9 @@
                 
                 array_push($data_chart, $data_arr);
             }
-
-            echo json_encode($data_chart);
         }
+
+        echo json_encode($data_chart);
     }
     if( isset($_GET['training']) ) {
         $trainings_id = $_GET['training'];
@@ -12778,9 +12779,9 @@
 
             $document_other = htmlentities($row["document_other"] ?? '');
             $document_other_arr = explode(" | ", $document_other);
-            // if (count($document_other_arr) <= 1 ) {
-            //     $document_other_arr = explode(", ", $document_other);
-            // }
+            if (count($document_other_arr) <= 1 ) {
+                $document_other_arr = explode(", ", $document_other);
+            }
 
             $contact = htmlentities($row["contact"] ?? '');
             $material = htmlentities($row["material"] ?? '');
@@ -19270,9 +19271,9 @@
             if (!empty($row["document_other"])) {
                 $document_other = $row["document_other"];
                 $document_other_arr = explode(" | ", $document_other);
-                // if (count($document_other_arr) <= 1 ) {
-                //     $document_other_arr = explode(", ", $document_other);
-                // }
+                if (count($document_other_arr) <= 1 ) {
+                    $document_other_arr = explode(", ", $document_other);
+                }
             }
 
             $regulatory = htmlentities($row["regulatory"] ?? '');
@@ -19427,17 +19428,17 @@
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label class="control-label">Vendor Code</label>
-                                <input class="form-control" type="text" name="vendor_code" value="'.$row["vendor_code"].'" />';
+                                <label class="control-label">Vendor Name</label>
+                                <input class="form-control '; echo $page == 2 ? 'hide':''; echo '" type="text" name="supplier_name" value="'.$row["name"].'" required />';
+
+                                if ($page == 2) { echo '<input class="form-control" type="text" value="'.$enterprise_name.'" readonly disabled />'; }
                                 
                             echo '</div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label class="control-label">Vendor Name</label>
-                                <input class="form-control '; echo $page == 2 ? 'hide':''; echo '" type="text" name="supplier_name" value="'.$row["name"].'" required />';
-
-                                if ($page == 2) { echo '<input class="form-control" type="text" value="'.$enterprise_name.'" readonly disabled />'; }
+                                <label class="control-label">Vendor Code</label>
+                                <input class="form-control" type="text" name="vendor_code" value="'.$row["vendor_code"].'" />';
                                 
                             echo '</div>
                         </div>
@@ -19462,6 +19463,25 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
+                                <label class="control-label">Country</label>
+                                <select class="form-control '; echo $page == 2 ? 'hide':''; echo '" name="supplier_countries" onchange="changeCountry(2, '.$id.')" required>
+                                    <option value="US" '; echo  $address_arr[0] == "US" ? 'SELECTED':''; echo '>United States of America</option>';
+                                    
+                                    $selectCountry = mysqli_query( $conn,"SELECT * FROM countries WHERE iso2 <> 'US'" );
+                                    while($rowCountry = mysqli_fetch_array($selectCountry)) {
+                                        echo '<option value="'.$rowCountry["iso2"].'" '; echo  $address_arr[0] == $rowCountry["iso2"] ? 'SELECTED':''; echo '>'.$rowCountry["name"].'</option>';
+                                    }
+
+                                echo '</select>';
+
+                                if ($page == 2) { echo '<input class="form-control" type="text" value="'.$enterprise_country.'" readonly />'; }
+
+                            echo '</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
                                 <label class="control-label">Industry</label>
                                 <select class="form-control '; echo $page == 2 ? 'hide':''; echo '" name="supplier_industry" onchange="changeIndustry(this.value, 2, '.$id.')">
                                     <option value="">Select</option>';
@@ -19476,23 +19496,6 @@
                                 echo '</select>';
 
                                 if ($page == 2) { echo '<input class="form-control" type="text" value="'.$enterprise_industry.'" readonly />'; }
-
-                            echo '</div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Country</label>
-                                <select class="form-control '; echo $page == 2 ? 'hide':''; echo '" name="supplier_countries" onchange="changeCountry(2, '.$id.')" required>
-                                    <option value="US" '; echo  $address_arr[0] == "US" ? 'SELECTED':''; echo '>United States of America</option>';
-                                    
-                                    $selectCountry = mysqli_query( $conn,"SELECT * FROM countries WHERE iso2 <> 'US'" );
-                                    while($rowCountry = mysqli_fetch_array($selectCountry)) {
-                                        echo '<option value="'.$rowCountry["iso2"].'" '; echo  $address_arr[0] == $rowCountry["iso2"] ? 'SELECTED':''; echo '>'.$rowCountry["name"].'</option>';
-                                    }
-
-                                echo '</select>';
-
-                                if ($page == 2) { echo '<input class="form-control" type="text" value="'.$enterprise_country.'" readonly />'; }
 
                             echo '</div>
                         </div>
@@ -19523,6 +19526,8 @@
                                 
                             echo '</div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="control-label">Zip Code</label>
@@ -19538,7 +19543,7 @@
                                 <div class="input-group '; echo $page == 2 ? 'hide':''; echo '">
                                     <input class="form-control" type="email" name="supplier_email" value="'.$row["email"].'" required />
                                     <span class="input-group-btn">
-                                        <button class="btn purple-seance" type="button" onclick="btnSendInvite('.$id.')" style="border: 0;">Send Invite</button>
+                                        <button class="btn purple-seance" type="button" onclick="btnSendInvite('.$id.')">Send Invite</button>
                                     </span>
                                 </div>';
 
@@ -19564,6 +19569,8 @@
                                 
                             echo '</div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="control-label">Website</label>
@@ -19589,44 +19596,10 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label class="control-label">Status Date</label>
-                                <input class="form-control" type="date" name="date" value="'.$row["date"].'" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Organic Supplier?</label>
-                                <select class="form-control" name="organic" onchange="changeCountry(2, '.$id.')" '; echo $page == 1 ? '':'readonly'; echo '>
-                                    <option value="0" '; echo $row["organic"] == 0 ? 'SELECTED':''; echo '>No</option>
-                                    <option value="1" '; echo $row["organic"] == 1 ? 'SELECTED':''; echo '>Yes</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
                                 <label class="control-label">Receive Notification?</label>
                                 <select class="form-control" name="supplier_notification" '; echo $page == 1 ? '':'readonly'; echo '>
                                     <option value="0" '; echo $row["notification"] == 0 ? 'SELECTED':''; echo '>No</option>
                                     <option value="1" '; echo $row["notification"] == 1 ? 'SELECTED':''; echo '>Yes</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3 '; echo $user_id == 1211 ? '':'hide'; echo '">
-                            <div class="form-group">
-                                <label class="control-label">With NDA?</label>
-                                <select class="form-control" name="nda" '; echo $page == 1 ? '':''; echo '>
-                                    <option value="0" '; echo $row["nda"] == 0 ? 'SELECTED':''; echo '>No</option>
-                                    <option value="1" '; echo $row["nda"] == 1 ? 'SELECTED':''; echo '>Yes</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Risk Level</label>
-                                <select class="form-control" name="risk_level">
-                                    <option value="0" '; echo $row["risk_level"] == 0 ? 'SELECTED':''; echo '>Low</option>
-                                    <option value="1" '; echo $row["risk_level"] == 1 ? 'SELECTED':''; echo '>Medium</option>
-                                    <option value="3" '; echo $row["risk_level"] == 2 ? 'SELECTED':''; echo '>High</option>
                                 </select>
                             </div>
                         </div>
@@ -19642,6 +19615,26 @@
                                     <option value="7" '; echo $frequency == 7 ? 'SELECTED':''; echo '>Once Per Three Months (Quarterly)</option>
                                     <option value="8" '; echo $frequency == 8 ? 'SELECTED':''; echo '>Once Per Six Months (Bi-Annual)</option>
                                     <option value="5" '; echo $frequency == 5 ? 'SELECTED':''; echo '>Once Per Year</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label">Organic Supplier?</label>
+                                <select class="form-control" name="organic" onchange="changeCountry(2, '.$id.')" '; echo $page == 1 ? '':'readonly'; echo '>
+                                    <option value="0" '; echo $row["organic"] == 0 ? 'SELECTED':''; echo '>No</option>
+                                    <option value="1" '; echo $row["organic"] == 1 ? 'SELECTED':''; echo '>Yes</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 '; echo $user_id == 1211 ? '':'hide'; echo '">
+                            <div class="form-group">
+                                <label class="control-label">With NDA?</label>
+                                <select class="form-control" name="nda" '; echo $page == 1 ? '':''; echo '>
+                                    <option value="0" '; echo $row["nda"] == 0 ? 'SELECTED':''; echo '>No</option>
+                                    <option value="1" '; echo $row["nda"] == 1 ? 'SELECTED':''; echo '>Yes</option>
                                 </select>
                             </div>
                         </div>
@@ -19725,6 +19718,8 @@
                                 </select>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
                         <div class="col-md-3 bg-default '; echo $frequency == 0 ? '':'hide'; echo '">
                             <div class="form-group">
                                 <label class="control-label">Month</label>
@@ -19827,11 +19822,11 @@
                                             }
 
                                             echo '<tr id="tr_'.$regulatory_id.'">
-                                                <td>'.htmlentities($rowRegulatory["name"] ?? '').'</td>
-                                                <td>'.htmlentities($rowRegulatory["number"] ?? '').'</td>
+                                                <td>'.$rowRegulatory["name"].'</td>
+                                                <td>'.$rowRegulatory["number"].'</td>
                                                 <td class="text-center">'.$files.'</td>
-                                                <td class="text-center">'.htmlentities($rowRegulatory["registration_date"] ?? '').'</td>
-                                                <td class="text-center">'.htmlentities($rowRegulatory["expiration_date"] ?? '').'</td>
+                                                <td class="text-center">'.$rowRegulatory["registration_date"].'</td>
+                                                <td class="text-center">'.$rowRegulatory["expiration_date"].'</td>
                                                 <td class="text-center">
                                                     <input type="hidden" value="'.$regulatory_id.'" name="regulatory[]" />
                                                     <div class="btn-group btn-group-circle">
@@ -19919,7 +19914,7 @@
                         $selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE organic = 0 ORDER BY name" );
                         if ( mysqli_num_rows($selectRequirement2) > 0 ) {
                             while($rowReq = mysqli_fetch_array($selectRequirement2)) {
-                                echo '<label class="mt-checkbox mt-checkbox-outline"> '.htmlentities($rowReq["name"] ?? '').'
+                                echo '<label class="mt-checkbox mt-checkbox-outline"> '.$rowReq["name"].'
                                     <input type="checkbox" value="'.$rowReq["ID"].'" name="document[]"  onchange="checked_Requirement(this, 2, '.$id.', '; echo in_array($rowReq["ID"], $document_arr) ? '1' : '0'; echo ')" '; echo in_array($rowReq["ID"], $document_arr) ? 'checked' : ''; echo ' />
                                     <span></span>
                                 </label>';
@@ -19983,11 +19978,11 @@
                                                     $doc_id = $rowDocument["ID"];
                                                     $doc_file = $rowDocument["file"];
                                                     $doc_filetype = $rowDocument["filetype"];
-                                                    $doc_filename = htmlentities($rowDocument["filename"] ?? '');
-                                                    $doc_file_template = htmlentities($rowDocument["template"] ?? '');
-                                                    $doc_file_comment = htmlentities($rowDocument["comment"] ?? '');
-                                                    $doc_file_reviewed = htmlentities($rowDocument["reviewed_by"] ?? '');
-                                                    $doc_file_approved = htmlentities($rowDocument["approved_by"] ?? '');
+                                                    $doc_filename = $rowDocument["filename"];
+                                                    $doc_file_template = $rowDocument["template"];
+                                                    $doc_file_comment = $rowDocument["comment"];
+                                                    $doc_file_reviewed = $rowDocument["reviewed_by"];
+                                                    $doc_file_approved = $rowDocument["approved_by"];
 
                                                     $doc_file_date = $rowDocument["file_date"];
                                                     if (!empty($doc_file_date)) {
@@ -20138,12 +20133,12 @@
                                                             if ( mysqli_num_rows($selectComment) > 0 ) {
                                                                 echo '<ul>';
                                                                     while($rowComment = mysqli_fetch_array($selectComment)) {
-                                                                        $comment_text = htmlentities($rowComment["comment"] ?? '');
+                                                                        $comment_text = $rowComment["comment"];
 
                                                                         $comment_user = $rowComment["portal_user"];
-                                                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $comment_user" );
+                                                                        $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $comment_user" );
                                                                         $rowUser = mysqli_fetch_array($selectUser);
-                                                                        $comment_user_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                                                        $comment_user_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
                                                                         if (employerID($comment_user) == 34 AND $user_id != 34) {
                                                                             $comment_user_name = 'Compliance';
                                                                         }
@@ -20169,10 +20164,10 @@
                                                                                 <label class="control-label">Reviewed By</label>';
 
                                                                                 if ($doc_file_reviewed  > 0) {
-                                                                                    $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $doc_file_reviewed" );
+                                                                                    $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $doc_file_reviewed" );
                                                                                     if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                                         $rowUser = mysqli_fetch_array($selectUser);
-                                                                                        $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                                                                        $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
                                                                                         if (employerID($doc_file_reviewed) == 34 AND $user_id != 34) {
                                                                                             $rowUserName = 'Compliance';
                                                                                         }
@@ -20181,12 +20176,12 @@
                                                                                         <p style="margin: 0; font-weight: 700;">'.$rowUserName.'</p>';
                                                                                     }
                                                                                 } else {
-                                                                                    $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $current_userID" );
+                                                                                    $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $current_userID" );
                                                                                     if ( mysqli_num_rows($selectUser) > 0 ) {
 
                                                                                         $rowUser = mysqli_fetch_array($selectUser);
                                                                                         $rowUserID = $rowUser["ID"];
-                                                                                        $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                                                                        $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
                                                                                         if (employerID($current_userID) == 34 AND $user_id != 34) {
                                                                                             $rowUserName = 'Compliance';
                                                                                         }
@@ -20205,10 +20200,10 @@
                                                                                 <label class="control-label">Approved By</label>';
 
                                                                                 if ($doc_file_approved  > 0) {
-                                                                                    $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $doc_file_approved" );
+                                                                                    $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $doc_file_approved" );
                                                                                     if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                                         $rowUser = mysqli_fetch_array($selectUser);
-                                                                                        $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                                                                        $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
                                                                                         if (employerID($doc_file_approved) == 34 AND $user_id != 34) {
                                                                                             $rowUserName = 'Compliance';
                                                                                         }
@@ -20217,12 +20212,12 @@
                                                                                         <p style="margin: 0; font-weight: 700;">'.$rowUserName.'</p>';
                                                                                     }
                                                                                 } else {
-                                                                                    $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $current_userID" );
+                                                                                    $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $current_userID" );
                                                                                     if ( mysqli_num_rows($selectUser) > 0 ) {
 
                                                                                         $rowUser = mysqli_fetch_array($selectUser);
                                                                                         $rowUserID = $rowUser["ID"];
-                                                                                        $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                                                                        $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
                                                                                         if (employerID($current_userID) == 34 AND $user_id != 34) {
                                                                                             $rowUserName = 'Compliance';
                                                                                         }
@@ -20257,11 +20252,11 @@
                                             $doc_id = $rowDocument["ID"];
                                             $doc_file = $rowDocument["file"];
                                             $doc_filetype = $rowDocument["filetype"];
-                                            $doc_filename = htmlentities($rowDocument["filename"] ?? '');
-                                            $doc_file_template = htmlentities($rowDocument["template"] ?? '');
-                                            $doc_file_comment = htmlentities($rowDocument["comment"] ?? '');
-                                            $doc_file_reviewed = htmlentities($rowDocument["reviewed_by"] ?? '');
-                                            $doc_file_approved = htmlentities($rowDocument["approved_by"] ?? '');
+                                            $doc_filename = $rowDocument["filename"];
+                                            $doc_file_template = $rowDocument["template"];
+                                            $doc_file_comment = $rowDocument["comment"];
+                                            $doc_file_reviewed = $rowDocument["reviewed_by"];
+                                            $doc_file_approved = $rowDocument["approved_by"];
 
                                             $doc_file_date = $rowDocument["file_date"];
                                             if (!empty($doc_file_date)) {
@@ -20439,9 +20434,9 @@
                                                                 $comment_text = $rowComment["comment"];
 
                                                                 $comment_user = $rowComment["portal_user"];
-                                                                $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $comment_user" );
+                                                                $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $comment_user" );
                                                                 $rowUser = mysqli_fetch_array($selectUser);
-                                                                $comment_user_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                                                $comment_user_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
                                                                 if (employerID($comment_user) == 34 AND $user_id != 34) {
                                                                     $comment_user_name = 'Compliance';
                                                                 }
@@ -20467,10 +20462,10 @@
                                                                         <label class="control-label">Reviewed By</label>';
 
                                                                         if ($doc_file_reviewed  > 0) {
-                                                                            $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $doc_file_reviewed" );
+                                                                            $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $doc_file_reviewed" );
                                                                             if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                                 $rowUser = mysqli_fetch_array($selectUser);
-                                                                                $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                                                                $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
                                                                                 if (employerID($doc_file_reviewed) == 34 AND $user_id != 34) {
                                                                                     $rowUserName = 'Compliance';
                                                                                 }
@@ -20479,12 +20474,12 @@
                                                                                 <p style="margin: 0; font-weight: 700;">'.$rowUserName.'</p>';
                                                                             }
                                                                         } else {
-                                                                            $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $current_userID" );
+                                                                            $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $current_userID" );
                                                                             if ( mysqli_num_rows($selectUser) > 0 ) {
 
                                                                                 $rowUser = mysqli_fetch_array($selectUser);
                                                                                 $rowUserID = $rowUser["ID"];
-                                                                                $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                                                                $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
                                                                                 if (employerID($current_userID) == 34 AND $user_id != 34) {
                                                                                     $rowUserName = 'Compliance';
                                                                                 }
@@ -20503,10 +20498,10 @@
                                                                         <label class="control-label">Approved By</label>';
 
                                                                         if ($doc_file_approved  > 0) {
-                                                                            $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $doc_file_approved" );
+                                                                            $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $doc_file_approved" );
                                                                             if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                                 $rowUser = mysqli_fetch_array($selectUser);
-                                                                                $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                                                                $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
                                                                                 if (employerID($doc_file_approved) == 34 AND $user_id != 34) {
                                                                                     $rowUserName = 'Compliance';
                                                                                 }
@@ -20515,12 +20510,12 @@
                                                                                 <p style="margin: 0; font-weight: 700;">'.$rowUserName.'</p>';
                                                                             }
                                                                         } else {
-                                                                            $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $current_userID" );
+                                                                            $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $current_userID" );
                                                                             if ( mysqli_num_rows($selectUser) > 0 ) {
 
                                                                                 $rowUser = mysqli_fetch_array($selectUser);
                                                                                 $rowUserID = $rowUser["ID"];
-                                                                                $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                                                                $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
                                                                                 if (employerID($current_userID) == 34 AND $user_id != 34) {
                                                                                     $rowUserName = 'Compliance';
                                                                                 }
@@ -20675,9 +20670,9 @@
                                         if ( mysqli_num_rows($selectService) > 0 ) {
                                             while($rowService = mysqli_fetch_array($selectService)) {
                                                 $service_mid = $rowService["ID"];
-                                                $service_name = htmlentities($rowService["service_name"] ?? '');
-                                                $service_id = htmlentities($rowService["service_id"] ?? '');
-                                                $service_description = htmlentities($rowService["description"] ?? '');
+                                                $service_name = $rowService["service_name"];
+                                                $service_id = $rowService["service_id"];
+                                                $service_description = $rowService["description"];
 
                                                 if ($page == 2) {
                                                     $selectDataCategory = mysqli_query( $conn,"SELECT * FROM tbl_service_category WHERE id=$service_name" );
@@ -20970,9 +20965,9 @@
 
             $document_other = $row["document_other"];
             $document_other_arr = explode(" | ", $document_other);
-            // if (count($document_other_arr) <= 1 ) {
-            //     $document_other_arr = explode(", ", $document_other);
-            // }
+            if (count($document_other_arr) <= 1 ) {
+                $document_other_arr = explode(", ", $document_other);
+            }
 
             $contact = $row["contact"];
             $material = $row["material"];
@@ -20999,15 +20994,15 @@
             if ($page == 2) {
                 $selectUser = mysqli_query( $conn,'SELECT * FROM tbl_user WHERE ID="'. $user_account_id .'" ORDER BY ID LIMIT 1' );
                 $rowUser = mysqli_fetch_array($selectUser);
-                $name = htmlentities($rowUser['first_name'] ?? '') .' '. htmlentities($rowUser['last_name'] ?? '');
+                $name = $rowUser['first_name'] .' '. $rowUser['last_name'];
 
                 $selectCategory = mysqli_query( $conn,"SELECT * FROM tbl_supplier_category WHERE ID = $category" );
                 $rowCategory = mysqli_fetch_array($selectCategory);
-                $enterprise_category = htmlentities($rowCategory["name"] ?? '');
+                $enterprise_category = $rowCategory["name"];
 
                 $selectIndustry = mysqli_query( $conn,"SELECT * FROM tbl_supplier_industry WHERE ID = $industry" );
                 $rowIndustry = mysqli_fetch_array($selectIndustry);
-                $enterprise_industry = htmlentities($rowIndustry["name"] ?? '');
+                $enterprise_industry = $rowIndustry["name"];
 
                 $enterprise_name = "";
                 $enterprise_bldg = "";
@@ -21048,7 +21043,7 @@
             $selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
             if ( mysqli_num_rows($selectRequirement2) > 0 ) {
                 while($rowReq = mysqli_fetch_array($selectRequirement2)) {
-                    echo '<label class="mt-checkbox mt-checkbox-outline '; echo $current_client == 0 ? '':'hide'; echo '"> '.htmlentities($rowReq["name"] ?? '').'
+                    echo '<label class="mt-checkbox mt-checkbox-outline '; echo $current_client == 0 ? '':'hide'; echo '"> '.$rowReq["name"].'
                         <input type="checkbox" value="'.$rowReq["ID"].'" name="document[]"  onchange="checked_Requirement(this, 2, '.$id.', '; echo in_array($rowReq["ID"], $document_arr) ? '1' : '0'; echo ')" '; echo in_array($rowReq["ID"], $document_arr) ? 'checked' : ''; echo ' />
                         <span></span>
                     </label>';
@@ -21096,7 +21091,7 @@
                         $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
                         while($rowRequirement = mysqli_fetch_array($selectRequirement)) {
                             $req_id = $rowRequirement["ID"];
-                            $req_name = htmlentities($rowRequirement["name"] ?? '');
+                            $req_name = $rowRequirement["name"];
 
                             foreach ($document_arr as $value) {
                                 if ( $value == $req_id ) {
@@ -21106,11 +21101,11 @@
                                         $doc_id = $rowDocument["ID"];
                                         $doc_file = $rowDocument["file"];
                                         $doc_filetype = $rowDocument["filetype"];
-                                        $doc_filename = htmlentities($rowDocument["filename"] ?? '');
-                                        $doc_file_template = htmlentities($rowDocument["template"] ?? '');
-                                        $doc_file_comment = htmlentities($rowDocument["comment"] ?? '');
-                                        $doc_file_reviewed = htmlentities($rowDocument["reviewed_by"] ?? '');
-                                        $doc_file_approved = htmlentities($rowDocument["approved_by"] ?? '');
+                                        $doc_filename = $rowDocument["filename"];
+                                        $doc_file_template = $rowDocument["template"];
+                                        $doc_file_comment = $rowDocument["comment"];
+                                        $doc_file_reviewed = $rowDocument["reviewed_by"];
+                                        $doc_file_approved = $rowDocument["approved_by"];
 
                                         $doc_file_date = $rowDocument["file_date"];
                                         if (!empty($doc_file_date)) {
@@ -21276,12 +21271,12 @@
                                                 if ( mysqli_num_rows($selectComment) > 0 ) {
                                                     echo '<ul>';
                                                         while($rowComment = mysqli_fetch_array($selectComment)) {
-                                                            $comment_text = htmlentities($rowComment["comment"] ?? '');
+                                                            $comment_text = $rowComment["comment"];
 
                                                             $comment_user = $rowComment["portal_user"];
                                                             $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $comment_user" );
                                                             $rowUser = mysqli_fetch_array($selectUser);
-                                                            $comment_user_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                                            $comment_user_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
                                                             
                                                             $comment_last_modified = $rowComment["last_modified"];
                                                             $comment_last_modified = new DateTime($comment_last_modified);
@@ -21304,21 +21299,21 @@
                                                                     <label class="control-label">Reviewed By</label>';
 
                                                                     if ($doc_file_reviewed  > 0) {
-                                                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $doc_file_reviewed" );
+                                                                        $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $doc_file_reviewed" );
                                                                         if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                             $rowUser = mysqli_fetch_array($selectUser);
-                                                                            $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                                                            $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
 
                                                                             echo '<input type="hidden" class="form-control" name="document_reviewed[]" value="'.$doc_file_reviewed.'"/>
                                                                             <p style="margin: 0; font-weight: 700;">'.$rowUserName.'</p>';
                                                                         }
                                                                     } else {
-                                                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $current_userID" );
+                                                                        $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $current_userID" );
                                                                         if ( mysqli_num_rows($selectUser) > 0 ) {
 
                                                                             $rowUser = mysqli_fetch_array($selectUser);
                                                                             $rowUserID = $rowUser["ID"];
-                                                                            $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                                                            $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
 
                                                                             echo '<select class="form-control " name="document_reviewed[]">
                                                                                 <option value="0">Select</option>
@@ -21334,21 +21329,21 @@
                                                                     <label class="control-label">Approved By</label>';
 
                                                                     if ($doc_file_approved  > 0) {
-                                                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $doc_file_approved" );
+                                                                        $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $doc_file_approved" );
                                                                         if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                             $rowUser = mysqli_fetch_array($selectUser);
-                                                                            $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                                                            $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
 
                                                                             echo '<input type="hidden" class="form-control" name="document_approved[]" value="'.$doc_file_approved.'"/>
                                                                             <p style="margin: 0; font-weight: 700;">'.$rowUserName.'</p>';
                                                                         }
                                                                     } else {
-                                                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $current_userID" );
+                                                                        $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $current_userID" );
                                                                         if ( mysqli_num_rows($selectUser) > 0 ) {
 
                                                                             $rowUser = mysqli_fetch_array($selectUser);
                                                                             $rowUserID = $rowUser["ID"];
-                                                                            $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                                                            $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
 
                                                                             echo '<select class="form-control " name="document_approved[]">
                                                                                 <option value="0">Select</option>
@@ -21380,11 +21375,11 @@
                                 $doc_id = $rowDocument["ID"];
                                 $doc_file = $rowDocument["file"];
                                 $doc_filetype = $rowDocument["filetype"];
-                                $doc_filename = htmlentities($rowDocument["filename"] ?? '');
-                                $doc_file_template = htmlentities($rowDocument["template"] ?? '');
-                                $doc_file_comment = htmlentities($rowDocument["comment"] ?? '');
-                                $doc_file_reviewed = htmlentities($rowDocument["reviewed_by"] ?? '');
-                                $doc_file_approved = htmlentities($rowDocument["approved_by"] ?? '');
+                                $doc_filename = $rowDocument["filename"];
+                                $doc_file_template = $rowDocument["template"];
+                                $doc_file_comment = $rowDocument["comment"];
+                                $doc_file_reviewed = $rowDocument["reviewed_by"];
+                                $doc_file_approved = $rowDocument["approved_by"];
 
                                 $doc_file_date = $rowDocument["file_date"];
                                 if (!empty($doc_file_date)) {
@@ -21530,12 +21525,12 @@
                                         if ( mysqli_num_rows($selectComment) > 0 ) {
                                             echo '<ul>';
                                                 while($rowComment = mysqli_fetch_array($selectComment)) {
-                                                    $comment_text = htmlentities($rowComment["comment"] ?? '');
+                                                    $comment_text = $rowComment["comment"];
 
                                                     $comment_user = $rowComment["portal_user"];
                                                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $comment_user" );
                                                     $rowUser = mysqli_fetch_array($selectUser);
-                                                    $comment_user_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                                    $comment_user_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
                                                     
                                                     $comment_last_modified = $rowComment["last_modified"];
                                                     $comment_last_modified = new DateTime($comment_last_modified);
@@ -21558,21 +21553,21 @@
                                                             <label class="control-label">Reviewed By</label>';
 
                                                             if ($doc_file_reviewed  > 0) {
-                                                                $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $doc_file_reviewed" );
+                                                                $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $doc_file_reviewed" );
                                                                 if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                     $rowUser = mysqli_fetch_array($selectUser);
-                                                                    $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                                                    $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
 
                                                                     echo '<input type="hidden" class="form-control" name="document_other_reviewed[]" value="'.$doc_file_reviewed.'"/>
                                                                     <p style="margin: 0; font-weight: 700;">'.$rowUserName.'</p>';
                                                                 }
                                                             } else {
-                                                                $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $current_userID" );
+                                                                $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $current_userID" );
                                                                 if ( mysqli_num_rows($selectUser) > 0 ) {
 
                                                                     $rowUser = mysqli_fetch_array($selectUser);
                                                                     $rowUserID = $rowUser["ID"];
-                                                                    $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                                                    $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
 
                                                                     echo '<select class="form-control " name="document_other_reviewed[]">
                                                                         <option value="0">Select</option>
@@ -21588,21 +21583,21 @@
                                                             <label class="control-label">Approved By</label>';
 
                                                             if ($doc_file_approved  > 0) {
-                                                                $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $doc_file_approved" );
+                                                                $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $doc_file_approved" );
                                                                 if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                     $rowUser = mysqli_fetch_array($selectUser);
-                                                                    $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                                                    $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
 
                                                                     echo '<input type="hidden" class="form-control" name="document_other_approved[]" value="'.$doc_file_approved.'"/>
                                                                     <p style="margin: 0; font-weight: 700;">'.$rowUserName.'</p>';
                                                                 }
                                                             } else {
-                                                                $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $current_userID" );
+                                                                $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $current_userID" );
                                                                 if ( mysqli_num_rows($selectUser) > 0 ) {
 
                                                                     $rowUser = mysqli_fetch_array($selectUser);
                                                                     $rowUserID = $rowUser["ID"];
-                                                                    $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                                                    $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
 
                                                                     echo '<select class="form-control " name="document_other_approved[]">
                                                                         <option value="0">Select</option>
@@ -21681,9 +21676,9 @@
 
             $document_other = $row["document_other"];
             $document_other_arr = explode(" | ", $document_other);
-            // if (count($document_other_arr) <= 1 ) {
-            //     $document_other_arr = explode(", ", $document_other);
-            // }
+            if (count($document_other_arr) <= 1 ) {
+                $document_other_arr = explode(", ", $document_other);
+            }
 
             $contact = $row["contact"];
             $material = $row["material"];
@@ -21710,7 +21705,7 @@
             if ($page == 2) {
                 $selectUser = mysqli_query( $conn,'SELECT * FROM tbl_user WHERE ID="'. $user_account_id .'" ORDER BY ID LIMIT 1' );
                 $rowUser = mysqli_fetch_array($selectUser);
-                $name = htmlentities($rowUser['first_name'] ?? '') .' '. htmlentities($rowUser['last_name'] ?? '');
+                $name = $rowUser['first_name'] .' '. $rowUser['last_name'];
 
                 $selectCategory = mysqli_query( $conn,"SELECT * FROM tbl_supplier_category WHERE ID = $category" );
                 $rowCategory = mysqli_fetch_array($selectCategory);
@@ -21771,7 +21766,7 @@
                         $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
                         while($rowRequirement = mysqli_fetch_array($selectRequirement)) {
                             $req_id = $rowRequirement["ID"];
-                            $req_name = htmlentities($rowRequirement["name"] ?? '');
+                            $req_name = $rowRequirement["name"];
 
                             foreach ($document_arr as $value) {
                                 if ( $value == $req_id ) {
@@ -21781,11 +21776,11 @@
                                         $doc_id = $rowDocument["ID"];
                                         $doc_file = $rowDocument["file"];
                                         $doc_filetype = $rowDocument["filetype"];
-                                        $doc_filename = htmlentities($rowDocument["filename"] ?? '');
-                                        $doc_file_template = htmlentities($rowDocument["template"] ?? '');
-                                        $doc_file_comment = htmlentities($rowDocument["comment"] ?? '');
-                                        $doc_file_reviewed = htmlentities($rowDocument["reviewed_by"] ?? '');
-                                        $doc_file_approved = htmlentities($rowDocument["approved_by"] ?? '');
+                                        $doc_filename = $rowDocument["filename"];
+                                        $doc_file_template = $rowDocument["template"];
+                                        $doc_file_comment = $rowDocument["comment"];
+                                        $doc_file_reviewed = $rowDocument["reviewed_by"];
+                                        $doc_file_approved = $rowDocument["approved_by"];
 
                                         $doc_file_date = $rowDocument["file_date"];
                                         if (!empty($doc_file_date)) {
@@ -21854,11 +21849,11 @@
                                 $doc_id = $rowDocument["ID"];
                                 $doc_file = $rowDocument["file"];
                                 $doc_filetype = $rowDocument["filetype"];
-                                $doc_filename = htmlentities($rowDocument["filename"] ?? '');
-                                $doc_file_template = htmlentities($rowDocument["template"] ?? '');
-                                $doc_file_comment = htmlentities($rowDocument["comment"] ?? '');
-                                $doc_file_reviewed = htmlentities($rowDocument["reviewed_by"] ?? '');
-                                $doc_file_approved = htmlentities($rowDocument["approved_by"] ?? '');
+                                $doc_filename = $rowDocument["filename"];
+                                $doc_file_template = $rowDocument["template"];
+                                $doc_file_comment = $rowDocument["comment"];
+                                $doc_file_reviewed = $rowDocument["reviewed_by"];
+                                $doc_file_approved = $rowDocument["approved_by"];
 
                                 $doc_file_date = $rowDocument["file_date"];
                                 if (!empty($doc_file_date)) {
@@ -21953,19 +21948,19 @@
 
                 if ($c != "US") {
                     if (in_array($id, $country)) {
-                        echo '<label class="mt-checkbox mt-checkbox-outline"> '.htmlentities($row["name"] ?? '').'
+                        echo '<label class="mt-checkbox mt-checkbox-outline"> '.$row["name"].'
                             <input type="checkbox" value="'.$row["ID"].'" name="document[]" name="document[]" onchange="checked_Requirement(this, '.$m.', '.$s.', 0)" />
                             <span></span>
                         </label>';
                     }
                 }
                 if (in_array($id, $industry)) {
-                    echo '<label class="mt-checkbox mt-checkbox-outline"> '.htmlentities($row["name"] ?? '').'
+                    echo '<label class="mt-checkbox mt-checkbox-outline"> '.$row["name"].'
                         <input type="checkbox" value="'.$row["ID"].'" name="document[]" name="document[]" onchange="checked_Requirement(this, '.$m.', '.$s.', 0)" />
                         <span></span>
                     </label>';
                 } else if ($id == 0) {
-                    echo '<label class="mt-checkbox mt-checkbox-outline"> '.htmlentities($row["name"] ?? '').'
+                    echo '<label class="mt-checkbox mt-checkbox-outline"> '.$row["name"].'
                         <input type="checkbox" value="'.$row["ID"].'" name="document[]" name="document[]" onchange="checked_Requirement(this, '.$m.', '.$s.', 0)" />
                         <span></span>
                     </label>';
@@ -22040,7 +22035,7 @@
 
                 WHERE FIND_IN_SET(r.ID, REPLACE(REPLACE('".$s_document."', ' ', ''), '|',','  )  ) > 0" );
             while($rowRequirement = mysqli_fetch_array($selectRequirement)) {
-                array_push($requirement, htmlentities($rowRequirement["r_name"] ?? ''));
+                array_push($requirement, $rowRequirement["r_name"]);
             }
             if (!empty($s_document_other)) {
                 $document_other_arr = explode(" | ", $s_document_other);
@@ -22055,14 +22050,14 @@
 
 
             // Email Compose
-            $user = htmlentities($rowData['s_name'] ?? '');
-            $to = htmlentities($rowData['s_email'] ?? '');
+            $user = $rowData['s_name'];
+            $to = $rowData['s_email'];
 
-            $data_company = htmlentities($rowData['u_first_name'] ?? '').' '.htmlentities($rowData['u_last_name'] ?? '');
-            if (!empty($rowData['e_name'])) { $data_company = htmlentities($rowData['e_name'] ?? ''); }
+            $data_company = $rowData['u_first_name'].' '.$rowData['u_last_name'];
+            if (!empty($rowData['e_name'])) { $data_company = $rowData['e_name']; }
 
             $data_email = $rowData['u_email'];
-            if (!empty($rowData['e_email'])) { $data_email = htmlentities($rowData['e_email'] ?? ''); }
+            if (!empty($rowData['e_email'])) { $data_email = $rowData['e_email']; }
 
             if ($rowData['u_client'] == 1) {
                 $subject = 'Welcome to Cann OS!';
@@ -22154,8 +22149,8 @@
                     $selectContact = mysqli_query( $conn,"SELECT * FROM tbl_supplier_contact WHERE ID=$value" );
                     if ( mysqli_num_rows($selectContact) > 0 ) {
                         while($rowContact = mysqli_fetch_array($selectContact)) {
-                            $to = htmlentities($rowContact["email"] ?? '');
-                            $user = htmlentities($rowContact["name"] ?? '');
+                            $to = $rowContact["email"];
+                            $user = $rowContact["name"];
 
                             $body2_extra = 'Hi '.$user.',<br><br>';
                             if ($rowData['u_client'] == 1) { $body2_extra = ''; }
@@ -22215,8 +22210,6 @@
         $supplier_website = addslashes($_POST['supplier_website']);
         $supplier_status = $_POST['supplier_status'];
         // $supplier_notification = $_POST['supplier_notification'];
-        $date = $_POST['date'];
-        $risk_level = $_POST['risk_level'];
         $nda = $_POST['nda'];
         $organic = $_POST['organic'];
         $supplier_notification = 0;
@@ -22356,8 +22349,8 @@
         $audit_score = $_POST['audit_score'];
 
         if ($process == true) {
-            $sql = "INSERT INTO tbl_supplier (user_id, portal_user, page, name, vendor_code, address, phone, fax, email, website, category, industry, regulatory, contact, document, document_other, material, service, audit, audit_report, audit_certificate, audit_action, audit_filesize, audit_file_history, audit_score, reviewed_by, reviewed_date, reviewed_due, status, notification, date, risk_level, nda, organic, frequency, frequency_custom, last_modified)
-            VALUES ('$user_id', '$portal_user', '1', '$supplier_name',  '$vendor_code','$supplier_address', '$supplier_phone', '$supplier_fax', '$supplier_email', '$supplier_website', '$supplier_category', '$supplier_industry', '$regulatory', '$contact', '$document_name', '$document_other_name', '$material', '$service', '$audit', '$audit_report', '$audit_certificate', '$audit_action', '$audit_filesize', '$audit_file_history', '$audit_score', '$reviewed_by', '$reviewed_date', '$reviewed_due', '$supplier_status', '$supplier_notification', '$date', '$risk_level', '$nda', '$organic', '$supplier_frequency', '$supplier_frequency_custom', '$supplier_date')";
+            $sql = "INSERT INTO tbl_supplier (user_id, portal_user, page, name, vendor_code, address, phone, fax, email, website, category, industry, regulatory, contact, document, document_other, material, service, audit, audit_report, audit_certificate, audit_action, audit_filesize, audit_file_history, audit_score, reviewed_by, reviewed_date, reviewed_due, status, notification, nda, organic, frequency, frequency_custom, last_modified)
+            VALUES ('$user_id', '$portal_user', '1', '$supplier_name',  '$vendor_code','$supplier_address', '$supplier_phone', '$supplier_fax', '$supplier_email', '$supplier_website', '$supplier_category', '$supplier_industry', '$regulatory', '$contact', '$document_name', '$document_other_name', '$material', '$service', '$audit', '$audit_report', '$audit_certificate', '$audit_action', '$audit_filesize', '$audit_file_history', '$audit_score', '$reviewed_by', '$reviewed_date', '$reviewed_due', '$supplier_status', '$supplier_notification', '$nda', '$organic', '$supplier_frequency', '$supplier_frequency_custom', '$supplier_date')";
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
 
@@ -22367,7 +22360,7 @@
                     $data_ID = $rowData['ID'];
                     $data_page = $rowData['page'];
                     $data_user_id = $rowData["user_id"];
-                    $data_name = htmlentities($rowData['name'] ?? '');
+                    $data_name = $rowData['name'];
                     $data_document_other = $rowData['document_other'];
                     $data_reviewed_due = $rowData['reviewed_due'];
                     $data_status = $rowData["status"];
@@ -22390,12 +22383,12 @@
                             $selectContact = mysqli_query( $conn,"SELECT * FROM tbl_supplier_contact WHERE ID=$value" );
                             if ( mysqli_num_rows($selectContact) > 0 ) {
                                 $rowContact = mysqli_fetch_array($selectContact);
-                                $contact_name = htmlentities($rowContact["name"] ?? '');
-                                $contact_address = htmlentities($rowContact["address"] ?? '');
-                                $contact_email = htmlentities($rowContact["email"] ?? '');
-                                $contact_phone = htmlentities($rowContact["phone"] ?? '');
-                                $contact_cell = htmlentities($rowContact["cell"] ?? '');
-                                $contact_fax = htmlentities($rowContact["fax"] ?? '');
+                                $contact_name = $rowContact["name"];
+                                $contact_address = $rowContact["address"];
+                                $contact_email = $rowContact["email"];
+                                $contact_phone = $rowContact["phone"];
+                                $contact_cell = $rowContact["cell"];
+                                $contact_fax = $rowContact["fax"];
 
                                 $contact_info = '<ul class="list-inline">';
                                     if ($contact_email != "") { $contact_info .= '<li><a href="mailto:'.$contact_email.'" target="_blank" title="Email"><i class="fa fa-envelope"></i></a></li>'; }
@@ -22473,14 +22466,10 @@
                                     $tmp_docs = $_FILES['document_template']['tmp_name'][$i];
                                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                     $ext = strtolower(pathinfo($files_template, PATHINFO_EXTENSION));
-
-                                    $mime = mime_content_type($tmp_docs);
-                                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                                    
                                     $file_docs_template = $random.' - '.$files_template;
                                     $path_docs = $path.$file_docs;
 
-                                    if(!in_array($mime, $mime_array)) {
+                                    if(!in_array($ext, $invalid_extensions)) {
                                         move_uploaded_file($tmp_docs,$path_docs);
 
                                         $output = array (
@@ -22493,6 +22482,7 @@
                                     } else {
                                         $process = false;
                                     }
+
                                 }
                                 $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
@@ -22573,14 +22563,10 @@
                                     $tmp_docs = $_FILES['document_other_template']['tmp_name'][$i];
                                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                     $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
-                                    
-                                    $mime = mime_content_type($tmp_docs);
-                                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                                    
                                     $file_docs_template = $random.' - '.$files_template;
                                     $path_docs = $path.$file_docs_template;
 
-                                    if(!in_array($mime, $mime_array)) {
+                                    if(!in_array($ext, $invalid_extensions)) {
                                         move_uploaded_file($tmp_docs,$path_docs);
 
                                         $output = array (
@@ -22691,7 +22677,7 @@
                             $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
                             while($rowRequirement = mysqli_fetch_array($selectRequirement)) {
                                 $req_id = $rowRequirement["ID"];
-                                $req_name = htmlentities($rowRequirement["name"] ?? '');
+                                $req_name = $rowRequirement["name"];
 
                                 $document_arr = implode(" | ", $_POST["document"]);
                                 $document_arr = explode(" | ", $document_arr);
@@ -22767,7 +22753,7 @@
                         $data_category_id = $rowData['category'];
                         $selectCategory = mysqli_query( $conn,'SELECT * FROM tbl_supplier_category WHERE ID="'. $data_category_id .'" ORDER BY ID LIMIT 1' );
                         $rowCategory = mysqli_fetch_array($selectCategory);
-                        $data_category = htmlentities($rowCategory['name'] ?? '');
+                        $data_category = $rowCategory['name'];
 
                         if ($data_category_id == "3") {
 
@@ -22841,8 +22827,8 @@
                             $selectEnterprise = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE users_entities = $user_id" );
                             if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                                 $rowEnterprise = mysqli_fetch_array($selectEnterprise);
-                                $data_company = htmlentities($rowEnterprise["businessname"] ?? '');
-                                $data_email = htmlentities($rowEnterprise["businessemailAddress"] ?? '');
+                                $data_company = $rowEnterprise["businessname"];
+                                $data_email = $rowEnterprise["businessemailAddress"];
                             }
 
                             $to = $supplier_email;
@@ -22939,8 +22925,8 @@
                                     $selectContact = mysqli_query( $conn,"SELECT * FROM tbl_supplier_contact WHERE notification = 1 AND ID = $value" );
                                     if ( mysqli_num_rows($selectContact) > 0 ) {
                                         while($rowContact = mysqli_fetch_array($selectContact)) {
-                                            $contact_name = htmlentities($rowContact["name"] ?? '');
-                                            $contact_email = htmlentities($rowContact["email"] ?? '');
+                                            $contact_name = $rowContact["name"];
+                                            $contact_email = $rowContact["email"];
                             
                                             $to = $contact_email;
                                             $user = $contact_name;
@@ -23094,8 +23080,6 @@
         $supplier_website = addslashes($_POST['supplier_website']);
         $supplier_status = $_POST['supplier_status'];
         $supplier_notification = $_POST['supplier_notification'];
-        $date = $_POST['date'];
-        $risk_level = $_POST['risk_level'];
         $nda = $_POST['nda'];
         $organic = $_POST['organic'];
         $date = date('Y-m-d');
@@ -23257,13 +23241,13 @@
                 $docs_data = array (
                     'doc_ID'            =>  $rowDataTemp_Docs['ID'],
                     'doc_type'          =>  $rowDataTemp_Docs['type'],
-                    'doc_name'          =>  htmlentities($rowDataTemp_Docs['name'] ?? ''),
-                    'doc_file'          =>  htmlentities($rowDataTemp_Docs['file'] ?? ''),
-                    'doc_filename'      =>  htmlentities($rowDataTemp_Docs['filename'] ?? ''),
+                    'doc_name'          =>  $rowDataTemp_Docs['name'],
+                    'doc_file'          =>  $rowDataTemp_Docs['file'],
+                    'doc_filename'      =>  $rowDataTemp_Docs['filename'],
                     'doc_filedate'      =>  $rowDataTemp_Docs['file_date'],
                     'doc_filedue'       =>  $rowDataTemp_Docs['file_due'],
-                    'doc_reviewedby'    =>  htmlentities($rowDataTemp_Docs['reviewed_by'] ?? ''),
-                    'doc_approvedby'    =>  htmlentities($rowDataTemp_Docs['approved_by'] ?? '')
+                    'doc_reviewedby'    =>  $rowDataTemp_Docs['reviewed_by'],
+                    'doc_approvedby'    =>  $rowDataTemp_Docs['approved_by']
                 );
 
                 array_push($temp_docs, $docs_data);
@@ -23271,7 +23255,7 @@
         }
         $temp_document = json_encode($temp_docs);
 
-        mysqli_query( $conn,"UPDATE tbl_supplier set name='". $supplier_name ."', vendor_code='".$vendor_code."', address='". $supplier_address ."', phone='". $supplier_phone ."', fax='". $supplier_fax ."', email='". $supplier_email ."', website='". $supplier_website ."', category='". $supplier_category ."', industry='". $supplier_industry ."', regulatory='". $regulatory ."', contact='". $contact ."', document='". $document_name ."', document_other='". $document_other_name ."', material='". $material ."', service='". $service ."', audit='". $audit ."', audit_report='". $audit_report ."', audit_certificate='". $audit_certificate ."', audit_action='". $audit_action ."', audit_filesize='". $audit_filesize ."', audit_file_history='". $audit_file_history ."', audit_score='". $audit_score ."', reviewed_by='". $reviewed_by ."', reviewed_date='". $reviewed_date ."', reviewed_due='". $reviewed_due ."', status='". $supplier_status ."', notification='". $supplier_notification ."', date='". $date ."', risk_level='". $risk_level ."', nda='". $nda ."', organic='". $organic ."', frequency='". $supplier_frequency ."', frequency_custom='". $supplier_frequency_custom ."' WHERE ID='". $ID ."'" );
+        mysqli_query( $conn,"UPDATE tbl_supplier set name='". $supplier_name ."', vendor_code='".$vendor_code."', address='". $supplier_address ."', phone='". $supplier_phone ."', fax='". $supplier_fax ."', email='". $supplier_email ."', website='". $supplier_website ."', category='". $supplier_category ."', industry='". $supplier_industry ."', regulatory='". $regulatory ."', contact='". $contact ."', document='". $document_name ."', document_other='". $document_other_name ."', material='". $material ."', service='". $service ."', audit='". $audit ."', audit_report='". $audit_report ."', audit_certificate='". $audit_certificate ."', audit_action='". $audit_action ."', audit_filesize='". $audit_filesize ."', audit_file_history='". $audit_file_history ."', audit_score='". $audit_score ."', reviewed_by='". $reviewed_by ."', reviewed_date='". $reviewed_date ."', reviewed_due='". $reviewed_due ."', status='". $supplier_status ."', notification='". $supplier_notification ."', nda='". $nda ."', organic='". $organic ."', frequency='". $supplier_frequency ."', frequency_custom='". $supplier_frequency_custom ."' WHERE ID='". $ID ."'" );
         
         if (!mysqli_error($conn)) {
             $selectData = mysqli_query( $conn,'SELECT * FROM tbl_supplier WHERE ID="'. $ID .'" ORDER BY ID LIMIT 1' );
@@ -23280,7 +23264,7 @@
                 $data_ID = $rowData['ID'];
                 $data_page = $rowData['page'];
                 $data_user_id = $rowData["user_id"];
-                $data_name = htmlentities($rowData['name'] ?? '');
+                $data_name = $rowData['name'];
                 $data_document_other = $rowData['document_other'];
                 $data_reviewed_due = $rowData['reviewed_due'];
                 $data_status = $rowData["status"];
@@ -23303,12 +23287,12 @@
                         $selectContact = mysqli_query( $conn,"SELECT * FROM tbl_supplier_contact WHERE ID=$value" );
                         if ( mysqli_num_rows($selectContact) > 0 ) {
                             $rowContact = mysqli_fetch_array($selectContact);
-                            $contact_name = htmlentities($rowContact["name"] ?? '');
-                            $contact_address = htmlentities($rowContact["address"] ?? '');
-                            $contact_email = htmlentities($rowContact["email"] ?? '');
-                            $contact_phone = htmlentities($rowContact["phone"] ?? '');
-                            $contact_cell = htmlentities($rowContact["cell"] ?? '');
-                            $contact_fax = htmlentities($rowContact["fax"] ?? '');
+                            $contact_name = $rowContact["name"];
+                            $contact_address = $rowContact["address"];
+                            $contact_email = $rowContact["email"];
+                            $contact_phone = $rowContact["phone"];
+                            $contact_cell = $rowContact["cell"];
+                            $contact_fax = $rowContact["fax"];
 
                             $contact_info = '<ul class="list-inline">';
                                 if ($contact_email != "") { $contact_info .= '<li><a href="mailto:'.$contact_email.'" target="_blank" title="Email"><i class="fa fa-envelope"></i></a></li>'; }
@@ -23394,14 +23378,10 @@
                                 $tmp_docs = $_FILES['document_template']['tmp_name'][$i];
                                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                 $ext = strtolower(pathinfo($files_template, PATHINFO_EXTENSION));
-
-                                $mime = mime_content_type($tmp_docs);
-                                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                                
                                 $file_docs_template = $random.' - '.$files_template;
                                 $path_docs = $path.$file_docs_template;
 
-                                if(!in_array($mime, $mime_array)) {
+                                if(!in_array($ext, $invalid_extensions)) {
                                     move_uploaded_file($tmp_docs,$path_docs);
 
                                     $output = array (
@@ -23653,7 +23633,7 @@
                     $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
                     while($rowRequirement = mysqli_fetch_array($selectRequirement)) {
                         $req_id = $rowRequirement["ID"];
-                        $req_name = htmlentities($rowRequirement["name"] ?? '');
+                        $req_name = $rowRequirement["name"];
 
                         $document_arr = implode(" | ", $_POST["document"]);
                         $document_arr = explode(" | ", $document_arr);
@@ -23729,7 +23709,7 @@
                 $data_category_id = $rowData['category'];
                 $selectCategory = mysqli_query( $conn,'SELECT * FROM tbl_supplier_category WHERE ID="'. $data_category_id .'" ORDER BY ID LIMIT 1' );
                 $rowCategory = mysqli_fetch_array($selectCategory);
-                $data_category = htmlentities($rowCategory['name'] ?? '');
+                $data_category = $rowCategory['name'];
 
                 if ($data_page == 1) {
                     if ($data_category_id == "3") {
@@ -23834,14 +23814,14 @@
                     $selectEnterprise = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE users_entities = $user_id" );
                     if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                         $rowEnterprise = mysqli_fetch_array($selectEnterprise);
-                        $data_company = htmlentities($rowEnterprise["businessname"] ?? '');
-                        $data_email = htmlentities($rowEnterprise["businessemailAddress"] ?? '');
+                        $data_company = $rowEnterprise["businessname"];
+                        $data_email = $rowEnterprise["businessemailAddress"];
                     }
 
                     $selectDataTemp_Docs_Portal_User = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $portal_user" );
                     if ( mysqli_num_rows($selectDataTemp_Docs_Portal_User) > 0 ) {
                         $rowDataTemp_Docs_Portal_User = mysqli_fetch_array($selectDataTemp_Docs_Portal_User);
-                        $portal_user_name = htmlentities($rowDataTemp_Docs_Portal_User['first_name'] ?? '') .' '. htmlentities($rowDataTemp_Docs_Portal_User['last_name'] ?? '');
+                        $portal_user_name = $rowDataTemp_Docs_Portal_User['first_name'] .' '. $rowDataTemp_Docs_Portal_User['last_name'];
                     }
 
                     $to = $supplier_email;
@@ -23869,14 +23849,14 @@
                                 $selectDataTemp_DocsReqName = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE ID = $user_change_name" );
                                 if ( mysqli_num_rows($selectDataTemp_DocsReqName) > 0 ) {
                                     $rowDataTemp_DocsReqName = mysqli_fetch_array($selectDataTemp_DocsReqName);
-                                    $user_change_name = htmlentities($rowDataTemp_DocsReqName['name'] ?? '');
+                                    $user_change_name = $rowDataTemp_DocsReqName['name'];
                                 }
                             }
 
                             $user_change_file = $rowDataTemp_Docs['file'];
-                            $user_change_filename = htmlentities($rowDataTemp_Docs['filename'] ?? '');
-                            $user_change_reviewed_by = htmlentities($rowDataTemp_Docs['reviewed_by'] ?? '');
-                            $user_change_approved_by = htmlentities($rowDataTemp_Docs['approved_by'] ?? '');
+                            $user_change_filename = $rowDataTemp_Docs['filename'];
+                            $user_change_reviewed_by = $rowDataTemp_Docs['reviewed_by'];
+                            $user_change_approved_by = $rowDataTemp_Docs['approved_by'];
 
                             if (!empty($user_change_file) AND $user_change_file != $doc_file) {
                                 $body .= '<li>'.$user_change_name.' was Complied by '.$portal_user_name.'</li>';
@@ -23997,8 +23977,8 @@
                             $selectContact = mysqli_query( $conn,"SELECT * FROM tbl_supplier_contact WHERE notification = 1 AND ID = $value" );
                             if ( mysqli_num_rows($selectContact) > 0 ) {
                                 while($rowContact = mysqli_fetch_array($selectContact)) {
-                                    $contact_name = htmlentities($rowContact["name"] ?? '');
-                                    $contact_email = htmlentities($rowContact["email"] ?? '');
+                                    $contact_name = $rowContact["name"];
+                                    $contact_email = $rowContact["email"];
 
                                     $to = $contact_email;
                                     $user = $contact_name;
@@ -24024,7 +24004,7 @@
                                                 $selectDataTemp_DocsReqName = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE ID = $user_change_name" );
                                                 if ( mysqli_num_rows($selectDataTemp_DocsReqName) > 0 ) {
                                                     $rowDataTemp_DocsReqName = mysqli_fetch_array($selectDataTemp_DocsReqName);
-                                                    $user_change_name = htmlentities($rowDataTemp_DocsReqName['name'] ?? '');
+                                                    $user_change_name = $rowDataTemp_DocsReqName['name'];
                                                 }
                                             }
 
@@ -24932,6 +24912,7 @@
                 }
             }
         }
+
     }
     if( isset($_POST['btnSave_ImportDL']) ) {
         if (!empty($_COOKIE['switchAccount'])) {
@@ -26098,7 +26079,7 @@
                                             <option value="'.$portal_user.'" '; echo $val_reviewer == $portal_user ? 'SELECTED':''; echo '>'.$name.'</option>
                                         </select>';
                                     } else {
-                                        $reviewer = $val_reviewer;
+                                        $reviewer = $reviewer;
                                         $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $reviewer" );
                                         $rowUser = mysqli_fetch_array($selectUser);
                                         $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
@@ -48345,241 +48326,16 @@
                                     <ul class="dropdown-menu pull-right">';
                                         
                                         if ($library_parent_id > 0) {
-                                            echo '<li class="pictogram-align-between">
-                                                <a href="#modalEdit_SubItem" class="btnEdit_SubItem" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnEdit_SubItem('. $library_ID .')">Edit</a>';
-
-                                                $pictogram = 'cd_action_item_sub';
-                                                if ($user_id == 163) {
-                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                                                } else {
-                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                        $row = mysqli_fetch_array($selectPictogram);
-
-                                                        $files = '';
-                                                        $type = 'iframe';
-                                                        if (!empty($row["files"])) {
-                                                            $arr_filename = explode(' | ', $row["files"]);
-                                                            $arr_filetype = explode(' | ', $row["filetype"]);
-                                                            $str_filename = '';
-
-                                                            foreach($arr_filename as $val_filename) {
-                                                                $str_filename = $val_filename;
-                                                            }
-                                                            foreach($arr_filetype as $val_filetype) {
-                                                                $str_filetype = $val_filetype;
-                                                            }
-
-                                                            $files = $row["files"];
-                                                            if ($row["filetype"] == 1) {
-                                                                $fileExtension = fileExtension($files);
-                                                                $src = $fileExtension['src'];
-                                                                $embed = $fileExtension['embed'];
-                                                                $type = $fileExtension['type'];
-                                                                $file_extension = $fileExtension['file_extension'];
-                                                                $url = $base_url.'uploads/pictogram/';
-
-                                                                $files = $src.$url.rawurlencode($files).$embed;
-                                                            } else if ($row["filetype"] == 3) {
-                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                                            }
-                                                        }
-
-                                                        if (!empty($files)) {
-                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                                        }
-                                                    }
-                                                }
-                                            echo '</li>';
+                                            echo '<li><a href="#modalEdit_SubItem" class="btnEdit_SubItem" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnEdit_SubItem('. $library_ID .')">Edit</a></li>';
                                         } else {
-                                            echo '<li class="pictogram-align-between">
-                                                <a href="#modalEdit" class="btnEdit" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnEdit('. $library_ID .')">Edit</a>';
-
-                                                $pictogram = 'cd_action_item';
-                                                if ($user_id == 163) {
-                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                                                } else {
-                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                        $row = mysqli_fetch_array($selectPictogram);
-
-                                                        $files = '';
-                                                        $type = 'iframe';
-                                                        if (!empty($row["files"])) {
-                                                            $arr_filename = explode(' | ', $row["files"]);
-                                                            $arr_filetype = explode(' | ', $row["filetype"]);
-                                                            $str_filename = '';
-
-                                                            foreach($arr_filename as $val_filename) {
-                                                                $str_filename = $val_filename;
-                                                            }
-                                                            foreach($arr_filetype as $val_filetype) {
-                                                                $str_filetype = $val_filetype;
-                                                            }
-
-                                                            $files = $row["files"];
-                                                            if ($row["filetype"] == 1) {
-                                                                $fileExtension = fileExtension($files);
-                                                                $src = $fileExtension['src'];
-                                                                $embed = $fileExtension['embed'];
-                                                                $type = $fileExtension['type'];
-                                                                $file_extension = $fileExtension['file_extension'];
-                                                                $url = $base_url.'uploads/pictogram/';
-
-                                                                $files = $src.$url.rawurlencode($files).$embed;
-                                                            } else if ($row["filetype"] == 3) {
-                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                                            }
-                                                        }
-
-                                                        if (!empty($files)) {
-                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                                        }
-                                                    }
-                                                }
-                                            echo '</li>';
+                                            echo '<li><a href="#modalEdit" class="btnEdit" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnEdit('. $library_ID .')">Edit</a></li>';
                                         }
                                         
-                                        echo '<li class="pictogram-align-between">
-                                            <a href="javascript:;" class="btnDelete" data-id="'. $library_ID .'" onclick="btnDelete('. $library_ID .')">Delete</a>';
-
-                                            $pictogram = 'cd_action_delete';
-                                            if ($user_id == 163) {
-                                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                                            } else {
-                                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                    $row = mysqli_fetch_array($selectPictogram);
-
-                                                    $files = '';
-                                                    $type = 'iframe';
-                                                    if (!empty($row["files"])) {
-                                                        $arr_filename = explode(' | ', $row["files"]);
-                                                        $arr_filetype = explode(' | ', $row["filetype"]);
-                                                        $str_filename = '';
-
-                                                        foreach($arr_filename as $val_filename) {
-                                                            $str_filename = $val_filename;
-                                                        }
-                                                        foreach($arr_filetype as $val_filetype) {
-                                                            $str_filetype = $val_filetype;
-                                                        }
-
-                                                        $files = $row["files"];
-                                                        if ($row["filetype"] == 1) {
-                                                            $fileExtension = fileExtension($files);
-                                                            $src = $fileExtension['src'];
-                                                            $embed = $fileExtension['embed'];
-                                                            $type = $fileExtension['type'];
-                                                            $file_extension = $fileExtension['file_extension'];
-                                                            $url = $base_url.'uploads/pictogram/';
-
-                                                            $files = $src.$url.rawurlencode($files).$embed;
-                                                        } else if ($row["filetype"] == 3) {
-                                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                                        }
-                                                    }
-
-                                                    if (!empty($files)) {
-                                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                                    }
-                                                }
-                                            }
-                                        echo '</li>
-                                        <li class="pictogram-align-between">
-                                            <a href="#modalReport" class="btnReport" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnReport('. $library_ID .')">Report</a>';
-
-                                            $pictogram = 'cd_action_report';
-                                            if ($user_id == 163) {
-                                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                                            } else {
-                                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                    $row = mysqli_fetch_array($selectPictogram);
-
-                                                    $files = '';
-                                                    $type = 'iframe';
-                                                    if (!empty($row["files"])) {
-                                                        $arr_filename = explode(' | ', $row["files"]);
-                                                        $arr_filetype = explode(' | ', $row["filetype"]);
-                                                        $str_filename = '';
-
-                                                        foreach($arr_filename as $val_filename) {
-                                                            $str_filename = $val_filename;
-                                                        }
-                                                        foreach($arr_filetype as $val_filetype) {
-                                                            $str_filetype = $val_filetype;
-                                                        }
-
-                                                        $files = $row["files"];
-                                                        if ($row["filetype"] == 1) {
-                                                            $fileExtension = fileExtension($files);
-                                                            $src = $fileExtension['src'];
-                                                            $embed = $fileExtension['embed'];
-                                                            $type = $fileExtension['type'];
-                                                            $file_extension = $fileExtension['file_extension'];
-                                                            $url = $base_url.'uploads/pictogram/';
-
-                                                            $files = $src.$url.rawurlencode($files).$embed;
-                                                        } else if ($row["filetype"] == 3) {
-                                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                                        }
-                                                    }
-
-                                                    if (!empty($files)) {
-                                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                                    }
-                                                }
-                                            }
-                                        echo '</li>';
+                                        echo '<li><a href="javascript:;" class="btnDelete" data-id="'. $library_ID .'" onclick="btnDelete('. $library_ID .')">Delete</a></li>
+                                        <li><a href="#modalReport" class="btnReport" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnReport('. $library_ID .')">Report</a></li>';
                                         
                                         if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477 OR $portal_user == 1486) {
-                                            echo '<li class="pictogram-align-between">
-                                                <a href="#modalClone" data-toggle="modal" onclick="btnClone('. $library_ID .')">Clone</a>';
-
-                                                $pictogram = 'cd_action_clone';
-                                                if ($user_id == 163) {
-                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                                                } else {
-                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                        $row = mysqli_fetch_array($selectPictogram);
-
-                                                        $files = '';
-                                                        $type = 'iframe';
-                                                        if (!empty($row["files"])) {
-                                                            $arr_filename = explode(' | ', $row["files"]);
-                                                            $arr_filetype = explode(' | ', $row["filetype"]);
-                                                            $str_filename = '';
-
-                                                            foreach($arr_filename as $val_filename) {
-                                                                $str_filename = $val_filename;
-                                                            }
-                                                            foreach($arr_filetype as $val_filetype) {
-                                                                $str_filetype = $val_filetype;
-                                                            }
-
-                                                            $files = $row["files"];
-                                                            if ($row["filetype"] == 1) {
-                                                                $fileExtension = fileExtension($files);
-                                                                $src = $fileExtension['src'];
-                                                                $embed = $fileExtension['embed'];
-                                                                $type = $fileExtension['type'];
-                                                                $file_extension = $fileExtension['file_extension'];
-                                                                $url = $base_url.'uploads/pictogram/';
-
-                                                                $files = $src.$url.rawurlencode($files).$embed;
-                                                            } else if ($row["filetype"] == 3) {
-                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                                            }
-                                                        }
-
-                                                        if (!empty($files)) {
-                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                                        }
-                                                    }
-                                                }
-                                            echo '</li>';
+                                            echo '<li><a href="#modalClone" data-toggle="modal" onclick="btnClone('. $library_ID .')">Clone</a></li>';
                                         }
                                         
                                         if ($current_userID == 1 OR $current_userEmployerID == 34) {
@@ -48589,425 +48345,20 @@
                                         echo '<li class="divider"> </li>';
 
                                         if ($current_client == 0) {
-                                            echo '<li class="pictogram-align-between">
-                                                <a href="#modalAttached" class="btnAttached" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnAttached('. $library_ID .')">Attach File</a>';
-
-                                                $pictogram = 'cd_action_file';
-                                                if ($user_id == 163) {
-                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                                                } else {
-                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                        $row = mysqli_fetch_array($selectPictogram);
-
-                                                        $files = '';
-                                                        $type = 'iframe';
-                                                        if (!empty($row["files"])) {
-                                                            $arr_filename = explode(' | ', $row["files"]);
-                                                            $arr_filetype = explode(' | ', $row["filetype"]);
-                                                            $str_filename = '';
-
-                                                            foreach($arr_filename as $val_filename) {
-                                                                $str_filename = $val_filename;
-                                                            }
-                                                            foreach($arr_filetype as $val_filetype) {
-                                                                $str_filetype = $val_filetype;
-                                                            }
-
-                                                            $files = $row["files"];
-                                                            if ($row["filetype"] == 1) {
-                                                                $fileExtension = fileExtension($files);
-                                                                $src = $fileExtension['src'];
-                                                                $embed = $fileExtension['embed'];
-                                                                $type = $fileExtension['type'];
-                                                                $file_extension = $fileExtension['file_extension'];
-                                                                $url = $base_url.'uploads/pictogram/';
-
-                                                                $files = $src.$url.rawurlencode($files).$embed;
-                                                            } else if ($row["filetype"] == 3) {
-                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                                            }
-                                                        }
-
-                                                        if (!empty($files)) {
-                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                                        }
-                                                    }
-                                                }
-                                            echo '</li>';
+                                            echo '<li><a href="#modalAttached" class="btnAttached" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnAttached('. $library_ID .')">Attach File</a></li>';
                                         }
                                         
-                                        echo '<li class="pictogram-align-between">
-                                            <a href="#modalCompliance" class="btnCompliance" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnCompliance('. $library_ID .')">Add Compliance</a>';
-
-                                            $pictogram = 'cd_action_compliance';
-                                            if ($user_id == 163) {
-                                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                                            } else {
-                                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                    $row = mysqli_fetch_array($selectPictogram);
-
-                                                    $files = '';
-                                                    $type = 'iframe';
-                                                    if (!empty($row["files"])) {
-                                                        $arr_filename = explode(' | ', $row["files"]);
-                                                        $arr_filetype = explode(' | ', $row["filetype"]);
-                                                        $str_filename = '';
-
-                                                        foreach($arr_filename as $val_filename) {
-                                                            $str_filename = $val_filename;
-                                                        }
-                                                        foreach($arr_filetype as $val_filetype) {
-                                                            $str_filetype = $val_filetype;
-                                                        }
-
-                                                        $files = $row["files"];
-                                                        if ($row["filetype"] == 1) {
-                                                            $fileExtension = fileExtension($files);
-                                                            $src = $fileExtension['src'];
-                                                            $embed = $fileExtension['embed'];
-                                                            $type = $fileExtension['type'];
-                                                            $file_extension = $fileExtension['file_extension'];
-                                                            $url = $base_url.'uploads/pictogram/';
-
-                                                            $files = $src.$url.rawurlencode($files).$embed;
-                                                        } else if ($row["filetype"] == 3) {
-                                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                                        }
-                                                    }
-
-                                                    if (!empty($files)) {
-                                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                                    }
-                                                }
-                                            }
-                                        echo '</li>
-                                        <li class="pictogram-align-between">
-                                            <a href="#modalComment" class="btnComment" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnComment('. $library_ID .')">Add Comment</a>';
-
-                                            $pictogram = 'cd_action_comment';
-                                            if ($user_id == 163) {
-                                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                                            } else {
-                                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                    $row = mysqli_fetch_array($selectPictogram);
-
-                                                    $files = '';
-                                                    $type = 'iframe';
-                                                    if (!empty($row["files"])) {
-                                                        $arr_filename = explode(' | ', $row["files"]);
-                                                        $arr_filetype = explode(' | ', $row["filetype"]);
-                                                        $str_filename = '';
-
-                                                        foreach($arr_filename as $val_filename) {
-                                                            $str_filename = $val_filename;
-                                                        }
-                                                        foreach($arr_filetype as $val_filetype) {
-                                                            $str_filetype = $val_filetype;
-                                                        }
-
-                                                        $files = $row["files"];
-                                                        if ($row["filetype"] == 1) {
-                                                            $fileExtension = fileExtension($files);
-                                                            $src = $fileExtension['src'];
-                                                            $embed = $fileExtension['embed'];
-                                                            $type = $fileExtension['type'];
-                                                            $file_extension = $fileExtension['file_extension'];
-                                                            $url = $base_url.'uploads/pictogram/';
-
-                                                            $files = $src.$url.rawurlencode($files).$embed;
-                                                        } else if ($row["filetype"] == 3) {
-                                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                                        }
-                                                    }
-
-                                                    if (!empty($files)) {
-                                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                                    }
-                                                }
-                                            }
-                                        echo '</li>
-                                        <li class="pictogram-align-between">
-                                            <a href="javascript:;" onclick="btnAnnualReviewTemplate('. $library_ID .')">Add Annual Review Template</a>';
-
-                                            $pictogram = 'cd_action_annual';
-                                            if ($user_id == 163) {
-                                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                                            } else {
-                                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                    $row = mysqli_fetch_array($selectPictogram);
-
-                                                    $files = '';
-                                                    $type = 'iframe';
-                                                    if (!empty($row["files"])) {
-                                                        $arr_filename = explode(' | ', $row["files"]);
-                                                        $arr_filetype = explode(' | ', $row["filetype"]);
-                                                        $str_filename = '';
-
-                                                        foreach($arr_filename as $val_filename) {
-                                                            $str_filename = $val_filename;
-                                                        }
-                                                        foreach($arr_filetype as $val_filetype) {
-                                                            $str_filetype = $val_filetype;
-                                                        }
-
-                                                        $files = $row["files"];
-                                                        if ($row["filetype"] == 1) {
-                                                            $fileExtension = fileExtension($files);
-                                                            $src = $fileExtension['src'];
-                                                            $embed = $fileExtension['embed'];
-                                                            $type = $fileExtension['type'];
-                                                            $file_extension = $fileExtension['file_extension'];
-                                                            $url = $base_url.'uploads/pictogram/';
-
-                                                            $files = $src.$url.rawurlencode($files).$embed;
-                                                        } else if ($row["filetype"] == 3) {
-                                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                                        }
-                                                    }
-
-                                                    if (!empty($files)) {
-                                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                                    }
-                                                }
-                                            }
-                                        echo '</li>
+                                        echo '<li><a href="#modalCompliance" class="btnCompliance" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnCompliance('. $library_ID .')">Add Compliance</a></li>
+                                        <li><a href="#modalComment" class="btnComment" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnComment('. $library_ID .')">Add Comment</a></li>
+                                        <li><a href="javascript:;" onclick="btnAnnualReviewTemplate('. $library_ID .')">Add Annual Review Template</a></li>
 
                                         <li class="divider"> </li>
                                         
-                                        <li class="pictogram-align-between">
-                                            <a href="#modalSubItem" class="btnSubItem" data-id="'. $library_ID .'" data-type="1" data-toggle="modal" onclick="btnSubItem('. $library_ID .', 1)">Add Programs</a>';
-
-                                            $pictogram = 'cd_action_programs';
-                                            if ($user_id == 163) {
-                                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                                            } else {
-                                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                    $row = mysqli_fetch_array($selectPictogram);
-
-                                                    $files = '';
-                                                    $type = 'iframe';
-                                                    if (!empty($row["files"])) {
-                                                        $arr_filename = explode(' | ', $row["files"]);
-                                                        $arr_filetype = explode(' | ', $row["filetype"]);
-                                                        $str_filename = '';
-
-                                                        foreach($arr_filename as $val_filename) {
-                                                            $str_filename = $val_filename;
-                                                        }
-                                                        foreach($arr_filetype as $val_filetype) {
-                                                            $str_filetype = $val_filetype;
-                                                        }
-
-                                                        $files = $row["files"];
-                                                        if ($row["filetype"] == 1) {
-                                                            $fileExtension = fileExtension($files);
-                                                            $src = $fileExtension['src'];
-                                                            $embed = $fileExtension['embed'];
-                                                            $type = $fileExtension['type'];
-                                                            $file_extension = $fileExtension['file_extension'];
-                                                            $url = $base_url.'uploads/pictogram/';
-
-                                                            $files = $src.$url.rawurlencode($files).$embed;
-                                                        } else if ($row["filetype"] == 3) {
-                                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                                        }
-                                                    }
-
-                                                    if (!empty($files)) {
-                                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                                    }
-                                                }
-                                            }
-                                        echo '</li>
-                                        <li class="pictogram-align-between">
-                                            <a href="#modalSubItem" class="btnSubItem" data-id="'. $library_ID .'" data-type="2" data-toggle="modal" onclick="btnSubItem('. $library_ID .', 2)">Add Policy</a>';
-
-                                            $pictogram = 'cd_action_policy';
-                                            if ($user_id == 163) {
-                                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                                            } else {
-                                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                    $row = mysqli_fetch_array($selectPictogram);
-
-                                                    $files = '';
-                                                    $type = 'iframe';
-                                                    if (!empty($row["files"])) {
-                                                        $arr_filename = explode(' | ', $row["files"]);
-                                                        $arr_filetype = explode(' | ', $row["filetype"]);
-                                                        $str_filename = '';
-
-                                                        foreach($arr_filename as $val_filename) {
-                                                            $str_filename = $val_filename;
-                                                        }
-                                                        foreach($arr_filetype as $val_filetype) {
-                                                            $str_filetype = $val_filetype;
-                                                        }
-
-                                                        $files = $row["files"];
-                                                        if ($row["filetype"] == 1) {
-                                                            $fileExtension = fileExtension($files);
-                                                            $src = $fileExtension['src'];
-                                                            $embed = $fileExtension['embed'];
-                                                            $type = $fileExtension['type'];
-                                                            $file_extension = $fileExtension['file_extension'];
-                                                            $url = $base_url.'uploads/pictogram/';
-
-                                                            $files = $src.$url.rawurlencode($files).$embed;
-                                                        } else if ($row["filetype"] == 3) {
-                                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                                        }
-                                                    }
-
-                                                    if (!empty($files)) {
-                                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                                    }
-                                                }
-                                            }
-                                        echo '</li>
-                                        <li class="pictogram-align-between">
-                                            <a href="#modalSubItem" class="btnSubItem" data-id="'. $library_ID .'" data-type="3" data-toggle="modal" onclick="btnSubItem('. $library_ID .', 3)">Add Procedure</a>';
-
-                                            $pictogram = 'cd_action_procedure';
-                                            if ($user_id == 163) {
-                                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                                            } else {
-                                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                    $row = mysqli_fetch_array($selectPictogram);
-
-                                                    $files = '';
-                                                    $type = 'iframe';
-                                                    if (!empty($row["files"])) {
-                                                        $arr_filename = explode(' | ', $row["files"]);
-                                                        $arr_filetype = explode(' | ', $row["filetype"]);
-                                                        $str_filename = '';
-
-                                                        foreach($arr_filename as $val_filename) {
-                                                            $str_filename = $val_filename;
-                                                        }
-                                                        foreach($arr_filetype as $val_filetype) {
-                                                            $str_filetype = $val_filetype;
-                                                        }
-
-                                                        $files = $row["files"];
-                                                        if ($row["filetype"] == 1) {
-                                                            $fileExtension = fileExtension($files);
-                                                            $src = $fileExtension['src'];
-                                                            $embed = $fileExtension['embed'];
-                                                            $type = $fileExtension['type'];
-                                                            $file_extension = $fileExtension['file_extension'];
-                                                            $url = $base_url.'uploads/pictogram/';
-
-                                                            $files = $src.$url.rawurlencode($files).$embed;
-                                                        } else if ($row["filetype"] == 3) {
-                                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                                        }
-                                                    }
-
-                                                    if (!empty($files)) {
-                                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                                    }
-                                                }
-                                            }
-                                        echo '</li>
-                                        <li class="pictogram-align-between">
-                                            <a href="#modalSubItem" class="btnSubItem" data-id="'. $library_ID .'" data-type="5" data-toggle="modal" onclick="btnSubItem('. $library_ID .', 5)">Add Form</a>';
-
-                                            $pictogram = 'cd_action_form';
-                                            if ($user_id == 163) {
-                                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                                            } else {
-                                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                    $row = mysqli_fetch_array($selectPictogram);
-
-                                                    $files = '';
-                                                    $type = 'iframe';
-                                                    if (!empty($row["files"])) {
-                                                        $arr_filename = explode(' | ', $row["files"]);
-                                                        $arr_filetype = explode(' | ', $row["filetype"]);
-                                                        $str_filename = '';
-
-                                                        foreach($arr_filename as $val_filename) {
-                                                            $str_filename = $val_filename;
-                                                        }
-                                                        foreach($arr_filetype as $val_filetype) {
-                                                            $str_filetype = $val_filetype;
-                                                        }
-
-                                                        $files = $row["files"];
-                                                        if ($row["filetype"] == 1) {
-                                                            $fileExtension = fileExtension($files);
-                                                            $src = $fileExtension['src'];
-                                                            $embed = $fileExtension['embed'];
-                                                            $type = $fileExtension['type'];
-                                                            $file_extension = $fileExtension['file_extension'];
-                                                            $url = $base_url.'uploads/pictogram/';
-
-                                                            $files = $src.$url.rawurlencode($files).$embed;
-                                                        } else if ($row["filetype"] == 3) {
-                                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                                        }
-                                                    }
-
-                                                    if (!empty($files)) {
-                                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                                    }
-                                                }
-                                            }
-                                        echo '</li>
-                                        <li class="pictogram-align-between">
-                                            <a href="#modalSubItem" class="btnSubItem" data-id="'. $library_ID .'" data-type="4" data-toggle="modal" onclick="btnSubItem('. $library_ID .', 4)">Add Training</a>';
-
-                                            $pictogram = 'cd_action_training';
-                                            if ($user_id == 163) {
-                                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                                            } else {
-                                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                    $row = mysqli_fetch_array($selectPictogram);
-
-                                                    $files = '';
-                                                    $type = 'iframe';
-                                                    if (!empty($row["files"])) {
-                                                        $arr_filename = explode(' | ', $row["files"]);
-                                                        $arr_filetype = explode(' | ', $row["filetype"]);
-                                                        $str_filename = '';
-
-                                                        foreach($arr_filename as $val_filename) {
-                                                            $str_filename = $val_filename;
-                                                        }
-                                                        foreach($arr_filetype as $val_filetype) {
-                                                            $str_filetype = $val_filetype;
-                                                        }
-
-                                                        $files = $row["files"];
-                                                        if ($row["filetype"] == 1) {
-                                                            $fileExtension = fileExtension($files);
-                                                            $src = $fileExtension['src'];
-                                                            $embed = $fileExtension['embed'];
-                                                            $type = $fileExtension['type'];
-                                                            $file_extension = $fileExtension['file_extension'];
-                                                            $url = $base_url.'uploads/pictogram/';
-
-                                                            $files = $src.$url.rawurlencode($files).$embed;
-                                                        } else if ($row["filetype"] == 3) {
-                                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                                        }
-                                                    }
-
-                                                    if (!empty($files)) {
-                                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                                    }
-                                                }
-                                            }
-                                        echo '</li>
+                                        <li><a href="#modalSubItem" class="btnSubItem" data-id="'. $library_ID .'" data-type="1" data-toggle="modal" onclick="btnSubItem('. $library_ID .', 1)">Add Programs</a></li>
+                                        <li><a href="#modalSubItem" class="btnSubItem" data-id="'. $library_ID .'" data-type="2" data-toggle="modal" onclick="btnSubItem('. $library_ID .', 2)">Add Policy</a></li>
+                                        <li><a href="#modalSubItem" class="btnSubItem" data-id="'. $library_ID .'" data-type="3" data-toggle="modal" onclick="btnSubItem('. $library_ID .', 3)">Add Procedure</a></li>
+                                        <li><a href="#modalSubItem" class="btnSubItem" data-id="'. $library_ID .'" data-type="5" data-toggle="modal" onclick="btnSubItem('. $library_ID .', 5)">Add Form</a></li>
+                                        <li><a href="#modalSubItem" class="btnSubItem" data-id="'. $library_ID .'" data-type="4" data-toggle="modal" onclick="btnSubItem('. $library_ID .', 4)">Add Training</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -55155,24 +54506,6 @@
     if( isset($_GET['modalComment']) ) {
         $id = $_GET['modalComment'];
 
-        if (!empty($_COOKIE['switchAccount'])) {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = $_COOKIE['switchAccount'];
-        }
-        else {
-            $portal_user = $_COOKIE['ID'];
-            $user_id = employerID($portal_user);
-        }
-
-        $client_team = 'In-house';
-        if ($user_id != 34) {
-            $selectData = mysqli_query( $conn,"SELECT businessname FROM tblEnterpiseDetails WHERE users_entities = $user_id" );
-            if ( mysqli_num_rows($selectData) > 0 ) {
-                $rowData = mysqli_fetch_array($selectData);
-                $client_team = htmlentities($rowData["businessname"] ?? '');
-            }
-        }
-
         echo '<input class="form-control" type="hidden" name="parent_id" value="'. $id .'" />
         <div class="form-group">
             <label class="col-md-3 control-label">Title</label>
@@ -55191,8 +54524,8 @@
             <div class="col-md-8">
                 <select class="form-control" name="team" required>
                     <option value="">Select Team</option>
-                    <option value="1">'.$client_team.' Team</option>
-                    <option value="2">Consultare Inc Group Compliance Team</option>
+                    <option value="1">In-house Team</option>
+                    <option value="2">Consultare Team</option>
                 </select>
             </div>
         </div>';

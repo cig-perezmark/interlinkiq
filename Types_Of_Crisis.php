@@ -71,9 +71,9 @@
                                                 while($row = mysqli_fetch_array($resultQuery)){ ?>
                                                 <tr>
                                                     <td><?php echo $i++; ?></td>
-                                                    <td><?php echo $row['Types_Of_Crisis']; ?></td>
-                                                    <td><?php echo $row['disaster_name']; ?></td>
-                                                    <td><a href="Crisis_Managements_Folder/download_disaster_files.php?inc_id=<?php echo $row['crisis_incidents_id']; ?>"><?php echo $row['disaster_Supporting_files']; ?></a></td>
+                                                    <td><?php echo htmlentities($row['Types_Of_Crisis'] ?? ''); ?></td>
+                                                    <td><?php echo htmlentities($row['disaster_name'] ?? ''); ?></td>
+                                                    <td><a href="Crisis_Managements_Folder/download_disaster_files.php?inc_id=<?php echo $row['crisis_incidents_id']; ?>"><?php echo htmlentities($row['disaster_Supporting_files'] ?? ''); ?></a></td>
                                                 </tr>
                                                 <?php } ?>
                                             </tbody>

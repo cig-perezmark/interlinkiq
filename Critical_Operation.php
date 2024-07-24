@@ -81,16 +81,16 @@
                                                             
                                                             echo '<tr>
                                                                 <td>'.$i++.'</td>
-                                                                <td>'.$rowPri['facility_category'].'</td>
-                                                                <td>'.$rowPri['addOperationField'].'</td>
-                                                                <td>'.$rowPri['first_name'] .' '. $rowPri['last_name'].'</td>
+                                                                <td>'.htmlentities($rowPri['facility_category'] ?? '').'</td>
+                                                                <td>'.htmlentities($rowPri['addOperationField'] ?? '').'</td>
+                                                                <td>'.htmlentities($rowPri['first_name'] ?? '') .' '. $rowPri['last_name'].'</td>
                                                                 <td></td>
-                                                                <td>'.$rowPri['email'].'</td>';
+                                                                <td>'.htmlentities($rowPri['email'] ?? '').'</td>';
                                                                 
                                                                 while($rowAlt = mysqli_fetch_array($resultQueryAlt)) {
-                                                                    echo '<td>'.$rowAlt['first_name'].' '.$rowAlt['last_name'].'</td>
+                                                                    echo '<td>'.htmlentities($rowAlt['first_name'] ?? '').' '.htmlentities($rowAlt['last_name'] ?? '').'</td>
                                                                     <td></td>
-                                                                    <td>'.$rowAlt['email'].'</td>';
+                                                                    <td>'.htmlentities($rowAlt['email'] ?? '').'</td>';
                                                                 }
                                                                 
                                                                 echo '<td></td>
@@ -129,7 +129,7 @@
                                                 $queries = "SELECT * FROM tblFacilityDetails where users_entities = $usersQuery";
                                                 $resultQuery = mysqli_query($conn, $queries);
                                                 while($rowcrma = mysqli_fetch_array($resultQuery)){ ?>
-                                                    <option value="<?php echo $rowcrma['facility_id']; ?>"><?php echo $rowcrma['facility_category']; ?></option>
+                                                    <option value="<?php echo $rowcrma['facility_id']; ?>"><?php echo htmlentities($rowcrma['facility_category'] ?? ''); ?></option>
                                                 <?php } ?>
                                                 </select>
                                               </div>
@@ -146,20 +146,19 @@
                                               <label for="addPrimaryNameField" class="col-md-3 form-label">Primary Name</label>
                                               <div class="col-md-9">
                                                 <!-- <input type="text" class="form-control" id="addPrimaryNameField" name="addPrimaryNameField"> -->
-                                               
+                                                
                                                 <select class="form-control" name="addPrimaryNameField" id="addPrimaryNameField" required>
-                                                  <option value="">Select</option>
-                                                  <?php
-                                             
-                                                $u = 1;
-                                                $usersQuery = $_COOKIE['ID'];
-                                                //  where user_cookies = $usersQuery
-                                                $queries = "SELECT * FROM tbl_hr_employee where user_id = $current_userEmployerID";
-                                                $resultQuery = mysqli_query($conn, $queries);
-                                                while($rowcrm = mysqli_fetch_array($resultQuery)){ ?>
-                                                    <option value="<?php echo $rowcrm['ID']; ?>"><?php echo $rowcrm['first_name']; ?> <?php echo $rowcrm['last_name']; ?></option>
-                                                <?php } ?>
-                                              
+                                                    <option value="">Select</option>
+                                                    <?php
+                                                        $u = 1;
+                                                        $usersQuery = $_COOKIE['ID'];
+                                                        //  where user_cookies = $usersQuery
+                                                        $queries = "SELECT * FROM tbl_hr_employee where user_id = $switch_user_id";
+                                                        $resultQuery = mysqli_query($conn, $queries);
+                                                        while($rowcrm = mysqli_fetch_array($resultQuery)) { 
+                                                            echo '<option value="'.$rowcrm['ID'].'">'.htmlentities($rowcrm['first_name'] ?? '') .' '. htmlentities($rowcrm['last_name'] ?? '').'</option>';
+                                                        }
+                                                    ?>
                                                 </select>
                                               </div>
                                             </div>
@@ -169,17 +168,17 @@
                                               <div class="col-md-9">
                                                 
                                                 <select class="form-control" name="addAlternateNameField" id="addAlternateNameField" required>
-                                                  <option value="">Select</option>
-                                               <?php
-                                             
-                                                $u = 1;
-                                                $usersQuery = $_COOKIE['ID'];
-                                                //  where user_cookies = $usersQuery
-                                                $queries = "SELECT * FROM tbl_hr_employee where user_id = $current_userEmployerID ";
-                                                $resultQuery = mysqli_query($conn, $queries);
-                                                while($rowcrm = mysqli_fetch_array($resultQuery)){ ?>
-                                                    <option value="<?php echo $rowcrm['ID']; ?>"><?php echo $rowcrm['first_name']; ?> <?php echo $rowcrm['last_name']; ?></option>
-                                                <?php } ?>
+                                                    <option value="">Select</option>
+                                                    <?php
+                                                        $u = 1;
+                                                        $usersQuery = $_COOKIE['ID'];
+                                                        //  where user_cookies = $usersQuery
+                                                        $queries = "SELECT * FROM tbl_hr_employee where user_id = $switch_user_id";
+                                                        $resultQuery = mysqli_query($conn, $queries);
+                                                        while($rowcrm = mysqli_fetch_array($resultQuery)) { 
+                                                            echo '<option value="'.$rowcrm['ID'].'">'.htmlentities($rowcrm['first_name'] ?? '') .' '. htmlentities($rowcrm['last_name'] ?? '').'</option>';
+                                                        }
+                                                    ?>
                                                 </select>
                                               </div>
                                             </div>

@@ -261,6 +261,7 @@
                                             <table class="table table-bordered table-hover" id="tableData_1">
                                                 <thead>
                                                     <tr>
+                                                        <th rowspan="2">Vendor Code</th>
                                                         <th rowspan="2">Vendor Name</th>
                                                         <th rowspan="2">Category</th>
                                                         <th rowspan="2">Materials/Services</th>
@@ -279,175 +280,12 @@
                                                 </thead>
                                                 <tbody>
                                                     <?php
-												// 		$result = mysqli_query( $conn,"WITH RECURSIVE cte (s_ID, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
-												// 			(
-												// 			    SELECT
-												// 			    s1.ID AS s_ID,
-												// 			    s1.name AS s_name,
-												// 			    s1.reviewed_due AS s_reviewed_due,
-												// 			    s1.status AS s_status,
-												// 			    s1.material AS s_material,
-												// 			    s1.service AS s_service,
-												// 			    s1.address AS s_address,
-												// 			    s1.category AS s_category,
-												// 			    s1.contact AS s_contact,
-												// 			    s1.document AS s_document,
-												// 			    d1.ID AS d_ID,
-												// 			    d1.type AS d_type,
-												// 			    d1.name AS d_name,
-												// 			    d1.file AS d_file,
-												// 			    d1.file_due AS d_file_due,
-												// 			    CASE 
-												// 			        WHEN 
-												// 			            LENGTH(d1.file) > 0 
-												// 			            AND (STR_TO_DATE(d1.file_due, '%m/%d/%Y') > CURDATE() OR DATE(d1.file_due) > CURDATE())
-												// 			            AND d1.reviewed_by > 0
-												// 			            AND d1.approved_by > 0
-												// 			        THEN 1 
-												// 			        ELSE 0 
-												// 			    END AS d_status,
-												// 			    CASE WHEN d1.ID > 0 THEN 1 ELSE 0 END AS d_count
-
-												// 			    FROM tbl_supplier AS s1
-
-												// 			    LEFT JOIN (
-												// 			        SELECT
-												// 			        * 
-												// 			        FROM tbl_supplier_document 
-												// 			        WHERE type = 0
-												// 			        AND ID IN (
-												// 			            SELECT
-												// 			            MAX(ID)
-												// 			            FROM tbl_supplier_document
-												// 			            WHERE type = 0
-												// 			            GROUP BY name, supplier_id
-												// 			        )
-												// 			    ) AS d1
-												// 			    ON s1.ID = d1.supplier_ID
-												// 			    AND FIND_IN_SET(d1.name, REPLACE(REPLACE(s1.document, ' ', ''), '|',','  )  ) > 0
-												// 			    WHERE s1.page = 1 
-												// 			    AND s1.is_deleted = 0 
-												// 			    AND s1.user_id = $switch_user_id
-															    
-												// 			    UNION ALL
-															    
-															    
-												// 			    SELECT
-												// 			    s2.ID AS s_ID,
-												// 			    s2.name AS s_name,
-												// 			    s2.reviewed_due AS s_reviewed_due,
-												// 			    s2.status AS s_status,
-												// 			    s2.material AS s_material,
-												// 			    s2.service AS s_service,
-												// 			    s2.address AS s_address,
-												// 			    s2.category AS s_category,
-												// 			    s2.contact AS s_contact,
-												// 			    s2.document_other AS s_document,
-												// 			    d2.ID AS d_ID,
-												// 			    d2.type AS d_type,
-												// 			    d2.name AS d_name,
-												// 			    d2.file AS d_file,
-												// 			    d2.file_due AS d_file_due,
-												// 			    CASE 
-												// 			        WHEN 
-												// 			            LENGTH(d2.file) > 0 
-												// 			            AND (STR_TO_DATE(d2.file_due, '%m/%d/%Y') > CURDATE() OR DATE(d2.file_due) > CURDATE())
-												// 			            AND d2.reviewed_by > 0
-												// 			            AND d2.approved_by > 0
-												// 			        THEN 1 
-												// 			        ELSE 0 
-												// 			    END AS d_status,
-												// 			    CASE WHEN d2.ID > 0 THEN 1 ELSE 0 END AS d_count
-
-												// 			    FROM tbl_supplier AS s2
-
-												// 			    LEFT JOIN (
-												// 			        SELECT
-												// 			        * 
-												// 			        FROM tbl_supplier_document 
-												// 			        WHERE type = 1
-												// 			        AND ID IN (
-												// 			            SELECT
-												// 			            MAX(ID)
-												// 			            FROM tbl_supplier_document
-												// 			            WHERE type = 1
-												// 			            GROUP BY name, supplier_id
-												// 			        )
-												// 			    ) AS d2
-												// 			    ON s2.ID = d2.supplier_ID
-												// 			    AND FIND_IN_SET(d2.name, REPLACE(s2.document_other, ' | ', ',')  )   > 0
-												// 			    WHERE s2.page = 1 
-												// 			    AND s2.is_deleted = 0 
-												// 			    AND s2.user_id = $switch_user_id
-												// 			)
-												// 			SELECT
-												// 			s_ID,
-												// 			s_name,
-												// 			s_reviewed_due,
-												// 			s_status,
-												// 			s_material,
-												// 			s_service, 
-												// 			s_address, 
-												// 			s_category,
-												// 			c_name,
-												// 			d_compliance,
-												// 			d_counting,
-												// 			cn.name AS cn_name,
-												// 			cn.address AS cn_address,
-												// 			cn.email AS cn_email,
-												// 			cn.phone AS cn_phone,
-												// 			cn.cell AS cn_cell,
-												// 			cn.fax AS cn_fax
-												// 			FROM (
-												// 			    SELECT 
-												// 			    s_ID, 
-												// 			    s_name, 
-												// 			    s_reviewed_due, 
-												// 			    s_status, 
-												// 				s_material,
-												// 				s_service, 
-												// 				s_address, 
-												// 			    s_contact,
-												// 			    s_category,
-												// 			    c.name AS c_name,
-												// 			    -- s_document, 
-												// 			    -- d_ID, 
-												// 			    -- d_type, 
-												// 			    -- d_name, 
-												// 			    -- d_file, 
-												// 			    -- d_file_due, 
-												// 			    -- d_status,
-												// 			    -- d_count,
-												// 			    SUM(d_status) AS d_compliance,
-												// 			    SUM(d_count) AS d_counting
-												// 			    FROM cte
-
-												// 			    LEFT JOIN (
-												// 			        SELECT
-												// 			        *
-												// 			        FROM tbl_supplier_category
-												// 			        WHERE deleted = 0
-												// 			    ) AS c
-												// 			    ON s_category = c.ID
-
-												// 			    GROUP BY s_ID
-												// 			) AS r
-
-												// 			LEFT JOIN (
-												// 			    SELECT
-												// 			    *
-												// 			    FROM tbl_supplier_contact
-												// 			) AS cn
-												// 			ON FIND_IN_SET(cn.ID, REPLACE(s_contact, ' ', '')) > 0
-
-												// 			GROUP BY s_ID
-
-												// 			ORDER BY s_name" );
-														
-														$result = mysqli_query( $conn,"WITH RECURSIVE cte (s_ID, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
+														$result = mysqli_query( $conn,"
+														    WITH RECURSIVE cte (s_ID, s_vendor_code, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
 															(
 															    SELECT
 															    s1.ID AS s_ID,
+															    s1.vendor_code AS s_vendor_code,
 															    s1.name AS s_name,
 															    s1.reviewed_due AS s_reviewed_due,
 															    s1.status AS s_status,
@@ -498,6 +336,7 @@
 															    
 															    SELECT
 															    s2.ID AS s_ID,
+															    s2.vendor_code AS s_vendor_code,
 															    s2.name AS s_name,
 															    s2.reviewed_due AS s_reviewed_due,
 															    s2.status AS s_status,
@@ -549,6 +388,7 @@
 															m.material_name AS m_material_name,
 															m.spec_file AS m_spec_file,
 															s_ID,
+															s_vendor_code,
 															s_name,
 															s_reviewed_due,
 															s_status,
@@ -568,6 +408,7 @@
 															FROM (
 																SELECT
 																s_ID,
+																s_vendor_code,
 																s_name,
 																s_reviewed_due,
 																s_status,
@@ -587,6 +428,7 @@
 																FROM (
 																    SELECT 
 																    s_ID, 
+																    s_vendor_code,
 																    s_name, 
 																    s_reviewed_due, 
 																    s_status, 
@@ -630,23 +472,27 @@
 																WHERE user_id = $switch_user_id
 															) AS m
 
-															ON FIND_IN_SET(m.ID, REPLACE(r2.s_material, ' ', '')) > 0" );
+															ON FIND_IN_SET(m.ID, REPLACE(r2.s_material, ' ', '')) > 0
+														" );
                                                         if ( mysqli_num_rows($result) > 0 ) {
                                                             $table_counter = 1;
                                                             while($row = mysqli_fetch_array($result)) {
 																$s_ID = $row["s_ID"];
-																$s_name = $row["s_name"];
-																$s_reviewed_due = $row["s_reviewed_due"];
+																$s_vendor_code = htmlentities($row["s_vendor_code"] ?? '');
+																$s_name = htmlentities($row["s_name"] ?? '');
+																$s_reviewed_due = htmlentities($row["s_reviewed_due"] ?? '');
 
-																$s_category = $row["s_category"];
-																$c_name = $row["c_name"];
+																$s_category = htmlentities($row["s_category"] ?? '');
+																$c_name = htmlentities($row["c_name"] ?? '');
 
-																$cn_name = $row["cn_name"];
-																$cn_address = $row["cn_address"];
-																$cn_email = $row["cn_email"];
-																$cn_phone = $row["cn_phone"];
-																$cn_cell = $row["cn_cell"];
-																$cn_fax = $row["cn_fax"];
+																$cn_name = htmlentities($row["cn_name"] ?? '');
+																$cn_address = htmlentities($row["cn_address"] ?? '');
+																$cn_email = htmlentities($row["cn_email"] ?? '');
+																$cn_phone = htmlentities($row["cn_phone"] ?? '');
+																$cn_cell = htmlentities($row["cn_cell"] ?? '');
+																$cn_fax = htmlentities($row["cn_fax"] ?? '');
+																$material = '';
+																$material_spec = '';
 
 																$compliance = 0;
 																$d_compliance = $row["d_compliance"];
@@ -667,35 +513,14 @@
 																if ($s_category == "3") {
 																	$material = $row["s_service"];
 																	
-                                                                    // if (!empty($material)) {
-                                                                    // 	$material_result = array();
-                                                                    // 	$material_arr = explode(", ", $material);
-                                                                    // 	foreach ($material_arr as $value) {
-                                                                    // 		$selectMaterial = mysqli_query( $conn,"SELECT
-                                                                    // 			c.service_category AS c_service_category
-                                                                    // 			FROM tbl_supplier_service AS s
-                                                                    
-                                                                    // 			LEFT JOIN (
-                                                                    // 				SELECT
-                                                                    // 			    *
-                                                                    // 			    FROM tbl_service_category
-                                                                    // 			) AS c
-                                                                    // 			ON s.service_name = c.id
-                                                                    // 			WHERE s.ID = $value" );
-                                                                    // 		$rowMaterial = mysqli_fetch_array($selectMaterial);
-                                                                    // 		array_push($material_result, $rowMaterial['c_service_category']);
-                                                                    // 	}
-                                                                    // 	$material = implode(', ', $material_result);
-                                                                    // }
-																	
 																	if (!empty($material)) {
 																		$material_result = array();
 																		$material_arr = explode(", ", $material);
 																		foreach ($material_arr as $value) {
-																			$selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_supplier_service WHERE ID=$value" );
+																			$selectMaterial = mysqli_query( $conn,"SELECT service_name FROM tbl_supplier_service WHERE ID=$value" );
                                                                         	if ( mysqli_num_rows($selectMaterial) > 0 ) {
 																				$rowMaterial = mysqli_fetch_array($selectMaterial);
-																				array_push($material_result, $rowMaterial['service_name']);
+																				array_push($material_result, htmlentities($rowMaterial['service_name'] ?? ''));
 																			}
 																		}
 																		$material = implode(', ', $material_result);
@@ -703,47 +528,10 @@
 																} else {
 																	$material = $row["s_material"];
 																	
-                                                                    // if (!empty($material)) {
-                                                                    // 	$material_result = array();
-                                                                    // 	$material_arr = explode(", ", $material);
-                                                                    // 	foreach ($material_arr as $value) {
-                                                                    // 		$selectMaterial = mysqli_query( $conn,"SELECT
-                                                                    // 			p.name AS p_name
-                                                                    // 			FROM tbl_supplier_material  AS m
-                                                                    
-                                                                    // 			LEFT JOIN (
-                                                                    // 				SELECT 
-                                                                    // 			    * 
-                                                                    // 			    FROM tbl_products
-                                                                    // 			) AS p
-                                                                    // 			ON m.material_name = p.ID
-                                                                    // 			WHERE m.ID = $value" );
-                                                                    // 		$rowMaterial = mysqli_fetch_array($selectMaterial);
-                                                                    // 		array_push($material_result, $rowMaterial['p_name']);
-                                                                    // 	}
-                                                                    // 	$material = implode(', ', $material_result);
-                                                                    // }
-                                                                    
-                                                                    
-																// 	if (!empty($material)) {
-																// 		$material_result = array();
-																// 		$material_arr = explode(", ", $material);
-																// 		foreach ($material_arr as $value) {
-																// 			$selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_supplier_material WHERE ID=$value" );
-                //                                                         	if ( mysqli_num_rows($selectMaterial) > 0 ) {
-																// 				$rowMaterial = mysqli_fetch_array($selectMaterial);
-																// 				array_push($material_result, $rowMaterial['material_name']);
-																// 			}
-																// 		}
-																// 		$material = implode(', ', $material_result);
-																// 	}
-
-																	$material = '';
 																	if (!empty($row["m_material_name"])) {
-																		$material = '<a href="#modalEditMaterial" data-toggle="modal" class="btnEdit_Material" onclick="btnEdit_Material('.$row["m_ID"].', 2, \'modalEditMaterial\')">'.$row["m_material_name"].'</a>';
+																		$material = '<a href="#modalEditMaterial" data-toggle="modal" class="btnEdit_Material" onclick="btnEdit_Material('.$row["m_ID"].', 2, \'modalEditMaterial\')">'.htmlentities($row["m_material_name"] ?? '').'</a>';
 																	}
 
-																	$material_spec = '';
 																	if (!empty($row["m_spec_file"])) {
 																        $spec_file = $row['m_spec_file'];
 																        $fileExtension = fileExtension($spec_file);
@@ -758,7 +546,7 @@
 																}
 																
 																$address_array = array();
-																$address = $row["s_address"];
+																$address = htmlentities($row["s_address"] ?? '');
 													            $address_arr = explode(" | ", $address);
 													            if (COUNT($address_arr) < 5) {
 													                $address_arr = explode(", ", $address);
@@ -772,6 +560,7 @@
 													            $address_arr = implode(", ", $address_array);
 
 																echo '<tr id="tr_'.$s_ID.'">
+																	<td>'.htmlentities($s_vendor_code ?? '').'</td>
 																	<td>'.htmlentities($s_name ?? '').'</td>
 																	<td>'.htmlentities($c_name ?? '').'</td>
 																	<td>'.$material.'</td>
@@ -831,183 +620,6 @@
                                                 </thead>
                                                 <tbody>
                                                     <?php
-												// 		$result = mysqli_query( $conn,"WITH RECURSIVE cte (s_ID, s_user_id, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
-												// 			(
-												// 			    SELECT
-												// 			    s1.ID AS s_ID,
-												// 			    s1.user_id AS s_user_id,
-												// 			    s1.name AS s_name,
-												// 			    s1.reviewed_due AS s_reviewed_due,
-												// 			    s1.status AS s_status,
-												// 			    s1.material AS s_material,
-												// 			    s1.service AS s_service,
-            //                                                     s1.address AS s_address,
-												// 			    s1.category AS s_category,
-												// 			    s1.contact AS s_contact,
-												// 			    s1.document AS s_document,
-												// 			    d1.ID AS d_ID,
-												// 			    d1.type AS d_type,
-												// 			    d1.name AS d_name,
-												// 			    d1.file AS d_file,
-												// 			    d1.file_due AS d_file_due,
-												// 			    CASE 
-												// 			        WHEN 
-												// 			            LENGTH(d1.file) > 0 
-												// 			            AND (STR_TO_DATE(d1.file_due, '%m/%d/%Y') > CURDATE() OR DATE(d1.file_due) > CURDATE())
-												// 			            AND d1.reviewed_by > 0
-												// 			            AND d1.approved_by > 0
-												// 			        THEN 1 
-												// 			        ELSE 0 
-												// 			    END AS d_status,
-												// 			    CASE WHEN d1.ID > 0 THEN 1 ELSE 0 END AS d_count
-
-												// 			    FROM tbl_supplier AS s1
-
-												// 			    LEFT JOIN (
-												// 			        SELECT
-												// 			        * 
-												// 			        FROM tbl_supplier_document 
-												// 			        WHERE type = 0
-												// 			        AND ID IN (
-												// 			            SELECT
-												// 			            MAX(ID)
-												// 			            FROM tbl_supplier_document
-												// 			            WHERE type = 0
-												// 			            GROUP BY name, supplier_id
-												// 			        )
-												// 			    ) AS d1
-												// 			    ON s1.ID = d1.supplier_ID
-												// 			    AND FIND_IN_SET(d1.name, REPLACE(REPLACE(s1.document, ' ', ''), '|',','  )  ) > 0
-												// 			    WHERE s1.page = 2
-												// 			    AND s1.is_deleted = 0 
-												// 			    AND s1.email = '".$current_userEmail."'
-															    
-												// 			    UNION ALL
-															    
-															    
-												// 			    SELECT
-												// 			    s2.ID AS s_ID,
-												// 			    s2.user_id AS s_user_id,
-												// 			    s2.name AS s_name,
-												// 			    s2.reviewed_due AS s_reviewed_due,
-												// 			    s2.status AS s_status,
-												// 			    s2.material AS s_material,
-												// 			    s2.service AS s_service,
-            //                                                     s2.address AS s_address,
-												// 			    s2.category AS s_category,
-												// 			    s2.contact AS s_contact,
-												// 			    s2.document_other AS s_document,
-												// 			    d2.ID AS d_ID,
-												// 			    d2.type AS d_type,
-												// 			    d2.name AS d_name,
-												// 			    d2.file AS d_file,
-												// 			    d2.file_due AS d_file_due,
-												// 			    CASE 
-												// 			        WHEN 
-												// 			            LENGTH(d2.file) > 0 
-												// 			            AND (STR_TO_DATE(d2.file_due, '%m/%d/%Y') > CURDATE() OR DATE(d2.file_due) > CURDATE())
-												// 			            AND d2.reviewed_by > 0
-												// 			            AND d2.approved_by > 0
-												// 			        THEN 1 
-												// 			        ELSE 0 
-												// 			    END AS d_status,
-												// 			    CASE WHEN d2.ID > 0 THEN 1 ELSE 0 END AS d_count
-
-												// 			    FROM tbl_supplier AS s2
-
-												// 			    LEFT JOIN (
-												// 			        SELECT
-												// 			        * 
-												// 			        FROM tbl_supplier_document 
-												// 			        WHERE type = 1
-												// 			        AND ID IN (
-												// 			            SELECT
-												// 			            MAX(ID)
-												// 			            FROM tbl_supplier_document
-												// 			            WHERE type = 1
-												// 			            GROUP BY name, supplier_id
-												// 			        )
-												// 			    ) AS d2
-												// 			    ON s2.ID = d2.supplier_ID
-												// 			    AND FIND_IN_SET(d2.name, REPLACE(s2.document_other, ' | ', ',')  )   > 0
-												// 			    WHERE s2.page = 2
-												// 			    AND s2.is_deleted = 0 
-												// 			    AND s2.email = '".$current_userEmail."'
-												// 			)
-												// 			SELECT
-												// 			s_ID,
-												// 			s_e_name,
-												// 			s_name,
-												// 			s_reviewed_due,
-												// 			s_status,
-												// 			s_material,
-												// 			s_service, 
-												// 			s_address, 
-												// 			s_category,
-												// 			c_name,
-												// 			d_compliance,
-												// 			d_counting,
-												// 			cn.name AS cn_name,
-												// 			cn.address AS cn_address,
-												// 			cn.email AS cn_email,
-												// 			cn.phone AS cn_phone,
-												// 			cn.cell AS cn_cell,
-												// 			cn.fax AS cn_fax
-												// 			FROM (
-												// 			    SELECT 
-												// 			    s_ID,
-												// 			    s_user_id,
-												// 			    e.businessname AS s_e_name,
-												// 			    s_name, 
-												// 			    s_reviewed_due, 
-												// 			    s_status, 
-												// 				s_material,
-												// 				s_service, 
-												// 				s_address, 
-												// 			    s_contact,
-												// 			    s_category,
-												// 			    c.name AS c_name,
-												// 			    -- s_document, 
-												// 			    -- d_ID, 
-												// 			    -- d_type, 
-												// 			    -- d_name, 
-												// 			    -- d_file, 
-												// 			    -- d_file_due, 
-												// 			    -- d_status,
-												// 			    -- d_count,
-												// 			    SUM(d_status) AS d_compliance,
-												// 			    SUM(d_count) AS d_counting
-												// 			    FROM cte
-
-												// 			    LEFT JOIN (
-												// 			        SELECT
-												// 			        *
-												// 			        FROM tbl_supplier_category
-												// 			        WHERE deleted = 0
-												// 			    ) AS c
-												// 			    ON s_category = c.ID
-															    
-												// 			    LEFT JOIN (
-												// 			        SELECT
-												// 			        *
-												// 			        FROM tblEnterpiseDetails
-												// 			    ) AS e
-												// 			    ON s_user_id = e.users_entities
-															    
-												// 			    GROUP BY s_ID
-												// 			) AS r
-
-												// 			LEFT JOIN (
-												// 			    SELECT
-												// 			    *
-												// 			    FROM tbl_supplier_contact
-												// 			) AS cn
-												// 			ON FIND_IN_SET(cn.ID, REPLACE(s_contact, ' ', '')) > 0
-
-												// 			GROUP BY s_ID
-
-												// 			ORDER BY s_name" );
-															
 														$result = mysqli_query( $conn,"WITH RECURSIVE cte (s_ID, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
 															(
 															    SELECT
@@ -1197,19 +809,21 @@
                                                         if ( mysqli_num_rows($result) > 0 ) {
                                                             $table_counter = 1;
                                                             while($row = mysqli_fetch_array($result)) {
-																$s_ID = $row["s_ID"];
-																$s_name = $row["s_name"];
-																$s_reviewed_due = $row["s_reviewed_due"];
+																$s_ID = htmlentities($row["s_ID"] ?? '');
+																$s_name = htmlentities($row["s_name"] ?? '');
+																$s_reviewed_due = htmlentities($row["s_reviewed_due"] ?? '');
 
-																$s_category = $row["s_category"];
-																$c_name = $row["c_name"];
+																$s_category = htmlentities($row["s_category"] ?? '');
+																$c_name = htmlentities($row["c_name"] ?? '');
 
-																$cn_name = $row["cn_name"];
-																$cn_address = $row["cn_address"];
-																$cn_email = $row["cn_email"];
-																$cn_phone = $row["cn_phone"];
-																$cn_cell = $row["cn_cell"];
-																$cn_fax = $row["cn_fax"];
+																$cn_name = htmlentities($row["cn_name"] ?? '');
+																$cn_address = htmlentities($row["cn_address"] ?? '');
+																$cn_email = htmlentities($row["cn_email"] ?? '');
+																$cn_phone = htmlentities($row["cn_phone"] ?? '');
+																$cn_cell = htmlentities($row["cn_cell"] ?? '');
+																$cn_fax = htmlentities($row["cn_fax"] ?? '');
+																$material = '';
+																$material_spec = '';
 
 																$compliance = 0;
 																$d_compliance = $row["d_compliance"];
@@ -1230,19 +844,6 @@
 																if ($s_category == "3") {
 																	$material = $row["s_service"];
 																	
-                                                                    // if (!empty($material)) {
-                                                                    // 	$material_result = array();
-                                                                    // 	$material_arr = explode(", ", $material);
-                                                                    // 	foreach ($material_arr as $value) {
-                                                                    // 		$selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_supplier_service WHERE ID=$value" );
-                                                                    //     	if ( mysqli_num_rows($selectMaterial) > 0 ) {
-                                                                    // 			$rowMaterial = mysqli_fetch_array($selectMaterial);
-                                                                    // 			array_push($material_result, $rowMaterial['service_name']);
-                                                                    // 		}
-                                                                    // 	}
-                                                                    // 	$material = implode(', ', $material_result);
-                                                                    // }
-																	
 																	if (!empty($material)) {
 																		$material_result = array();
 																		$material_arr = explode(", ", $material);
@@ -1259,53 +860,17 @@
 																				ON s.service_name = c.id
 																				WHERE s.ID = $value" );
 																			$rowMaterial = mysqli_fetch_array($selectMaterial);
-																			array_push($material_result, $rowMaterial['c_service_category']);
+																			array_push($material_result, htmlentities($rowMaterial['c_service_category'] ?? ''));
 																		}
 																		$material = implode(', ', $material_result);
 																	}
 																} else {
 																	$material = $row["s_material"];
-                                                                    // if (!empty($material)) {
-                                                                    // 	$material_result = array();
-                                                                    // 	$material_arr = explode(", ", $material);
-                                                                    // 	foreach ($material_arr as $value) {
-                                                                    // 		$selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_supplier_material WHERE ID=$value" );
-                                                                    //     	if ( mysqli_num_rows($selectMaterial) > 0 ) {
-                                                                    // 			$rowMaterial = mysqli_fetch_array($selectMaterial);
-                                                                    // 			array_push($material_result, $rowMaterial['material_name']);
-                                                                    // 		}
-                                                                    // 	}
-                                                                    // 	$material = implode(', ', $material_result);
-                                                                    // }
-                                                                    
-                //                                                     if (!empty($material)) {
-																// 		$material_result = array();
-																// 		$material_arr = explode(", ", $material);
-																// 		foreach ($material_arr as $value) {
-																// 			// $selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_supplier_material WHERE ID=$value" );
-																// 			$selectMaterial = mysqli_query( $conn,"SELECT
-																// 				p.name AS p_name
-																// 				FROM tbl_supplier_material  AS m
-
-																// 				LEFT JOIN (
-																// 					SELECT 
-																// 				    * 
-																// 				    FROM tbl_products
-																// 				) AS p
-																// 				ON m.material_name = p.ID
-																// 				WHERE m.ID = $value" );
-																// 			$rowMaterial = mysqli_fetch_array($selectMaterial);
-																// 			array_push($material_result, $rowMaterial['p_name']);
-																// 		}
-																// 		$material = implode(', ', $material_result);
-																// 	}
-
-																	$material = '';
+																	
 																	if (!empty($row["m_material_name"])) {
-																		$material = '<a href="#modalEditMaterial" data-toggle="modal" class="btnEdit_Material" onclick="btnEdit_Material('.$row["m_ID"].', 2, \'modalEditMaterial\')">'.$row["m_material_name"].'</a>';
+																		$material = '<a href="#modalEditMaterial" data-toggle="modal" class="btnEdit_Material" onclick="btnEdit_Material('.$row["m_ID"].', 2, \'modalEditMaterial\')">'.htmlentities($row["m_material_name"] ?? '').'</a>';
 																	}
 
-																	$material_spec = '';
 																	if (!empty($row["m_spec_file"])) {
 																        $spec_file = $row['m_spec_file'];
 																        $fileExtension = fileExtension($spec_file);
@@ -1365,7 +930,6 @@
 											<select class="form-control margin-bottom-15" id="filterCategory">
 												<option value="">Select</option>
 												<?php
-													// $selectCategory = mysqli_query( $conn,"SELECT * FROM tbl_supplier_category WHERE deleted = 0 AND FIND_IN_SET($current_client, REPLACE(client, ' ', '')) ORDER BY name" );
 													$selectCategory = mysqli_query( $conn,"
 													    SELECT
 														c.ID AS c_ID,
@@ -1427,7 +991,7 @@
 													
 													if ( mysqli_num_rows($selectCategory) > 0 ) {
 														while($row = mysqli_fetch_array($selectCategory)) {
-															echo '<option value="'.$row["c_ID"].'">'.$row["c_name"].'</option>';
+															echo '<option value="'.$row["c_ID"].'">'.htmlentities($row["c_name"] ?? '').'</option>';
 														}
 													}
 												?>
@@ -1520,10 +1084,10 @@
 															$table_counter = 1;
 															while($row = mysqli_fetch_array($result)) {
 																$m_ID = $row["m_ID"];
-																$m_material_name = $row["m_material_name"];
-																$s_name = $row["s_name"];
-																$c_ID = $row["c_ID"];
-																$c_name = $row["c_name"];
+																$m_material_name = htmlentities($row["m_material_name"] ?? '');
+																$s_name = htmlentities($row["s_name"] ?? '');
+																$c_ID = htmlentities($row["c_ID"] ?? '');
+																$c_name = htmlentities($row["c_name"] ?? '');
 
                                                                 $allergen_arr = array(
                                                                     1 => 'Milk',
@@ -1762,12 +1326,12 @@
 														if ( mysqli_num_rows($result) > 0 ) {
 															$table_counter = 1;
 															while($row = mysqli_fetch_array($result)) {
-																$s_ID = $row["s_ID"];
-																$s_name = $row["s_name"];
-																$s_reviewed_due = $row["s_reviewed_due"];
+																$s_ID = htmlentities($row["s_ID"] ?? '');
+																$s_name = htmlentities($row["s_name"] ?? '');
+																$s_reviewed_due = htmlentities($row["s_reviewed_due"] ?? '');
 
-																$s_category = $row["s_category"];
-																$c_name = $row["c_name"];
+																$s_category = htmlentities($row["s_category"] ?? '');
+																$c_name = htmlentities($row["c_name"] ?? '');
 
 																$compliance = 0;
 																$d_compliance = $row["d_compliance"];
@@ -1803,48 +1367,18 @@
                                                             $result = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 while($row = mysqli_fetch_array($result)) {
-                                                                    $ID = $row["ID"];
-                                                                    $name = $row["name"];
+                                                                    $ID = htmlentities($row["ID"] ?? '');
+                                                                    $name = htmlentities($row["name"] ?? '');
     
                                                                     echo '<tr id="tr_'.$ID.'">
                                                                         <td>'.$name.'</td>
                                                                         <td class="text-center">';
     
-                        //                                                     $selectTemplate = mysqli_query( $conn,"SELECT * FROM tbl_supplier_template WHERE user_id = $switch_user_id AND LENGTH(file) > 0 AND requirement_id = $ID" );
-                        //                                                     if ( mysqli_num_rows($selectTemplate) > 0 ) {
-                        //                                                         $rowTemplate = mysqli_fetch_array($selectTemplate);
-                        //                                                         $temp_ID = $rowTemplate["ID"];
-                        //                                                         $temp_file = $rowTemplate["file"];
-    
-                        //                                                         $type = 'iframe';
-                        //                                                         $filetype = $rowTemplate["filetype"];
-                        //                                                         if ($filetype == 1) {
-    																				// $fileExtension = fileExtension($temp_file);
-    																				// $src = $fileExtension['src'];
-    																				// $embed = $fileExtension['embed'];
-    																				// $type = $fileExtension['type'];
-    																				// $file_extension = $fileExtension['file_extension'];
-    																				// $url = $base_url.'uploads/supplier/';
-    
-                        //                                                             $temp_file = $src.$url.rawurlencode($temp_file).$embed;
-                        //                                                         } else {
-                        //                                                             $temp_file = preg_replace('#[^/]*$#', '', $temp_file).'preview';
-                        //                                                         }
-    
-                        //                                                         echo '<p style="margin: 0;">
-                        //                                                             <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> |
-                        //                                                             <a href="#modalTemplate" class="btn btn-link" data-toggle="modal" onclick="btnTemplate('.$ID.', '.$temp_ID.')">Upload</a>
-                        //                                                         </p>';
-                        //                                                     } else {
-                        //                                                         echo '<a href="#modalTemplate" class="btn btn-link" data-toggle="modal" onclick="btnTemplate('.$ID.', 0)">Upload</a>';
-                        //                                                     }
-                                                                            
-                                                                            
 																			$selectTemplate = mysqli_query( $conn,"SELECT * FROM tbl_supplier_template WHERE user_id = $switch_user_id AND LENGTH(file) > 0 AND requirement_id = $ID" );
 																			if ( mysqli_num_rows($selectTemplate) > 0 ) {
 																				$rowTemplate = mysqli_fetch_array($selectTemplate);
 																				$temp_ID = $rowTemplate["ID"];
-																				$temp_file = $rowTemplate["file"];
+																				$temp_file = htmlentities($rowTemplate["file"] ?? '');
 
 	                                                                            $type = 'iframe';
 	                                                                            $filetype = $rowTemplate["filetype"];
@@ -1933,14 +1467,14 @@
                                                         <div class="row">
                                                             <div class="col-md-3">
                                                                 <div class="form-group">
-                                                                    <label class="control-label">Vendor Name</label>
-                                                                    <input class="form-control" type="text" name="supplier_name" required />
+                                                                    <label class="control-label">Vendor Code</label>
+                                                                    <input class="form-control" type="text" name="vendor_code" />
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-3">
                                                                 <div class="form-group">
-                                                                    <label class="control-label">Vendor Code</label>
-                                                                    <input class="form-control" type="text" name="vendor_code" />
+                                                                    <label class="control-label">Vendor Name</label>
+                                                                    <input class="form-control" type="text" name="supplier_name" required />
                                                                 </div>
                                                             </div>
                                                             <div class="col-md-3">
@@ -1949,10 +1483,10 @@
                                                                     <select class="form-control" name="supplier_category" onchange="changedCategory(this)" required>
                                                                         <option value="">Select</option>
                                                                         <?php
-                                                                            $selectCategory = mysqli_query( $conn,"SELECT * FROM tbl_supplier_category WHERE deleted = 0 AND FIND_IN_SET($current_client, REPLACE(client, ' ', '')) ORDER BY name" );
+                                                                            $selectCategory = mysqli_query( $conn,"SELECT ID, name FROM tbl_supplier_category WHERE deleted = 0 AND FIND_IN_SET($current_client, REPLACE(client, ' ', '')) ORDER BY name" );
                                                                             if ( mysqli_num_rows($selectCategory) > 0 ) {
                                                                                 while($row = mysqli_fetch_array($selectCategory)) {
-                                                                                    echo '<option value="'.$row["ID"].'">'.$row["name"].'</option>';
+                                                                                    echo '<option value="'.$row["ID"].'">'.htmlentities($row["name"] ?? '').'</option>';
                                                                                 }
                                                                             }
                                                                         ?>
@@ -1965,18 +1499,16 @@
                                                                     <select class="form-control" name="supplier_industry" onchange="changeIndustry(this.value, 1)" required>
                                                                         <option value="">Select</option>
                                                                         <?php
-                                                                            $selectIndustry = mysqli_query( $conn,"SELECT * FROM tbl_supplier_industry WHERE deleted = 0 AND FIND_IN_SET($current_client, REPLACE(client, ' ', '')) ORDER BY name" );
+                                                                            $selectIndustry = mysqli_query( $conn,"SELECT ID, name FROM tbl_supplier_industry WHERE deleted = 0 AND FIND_IN_SET($current_client, REPLACE(client, ' ', '')) ORDER BY name" );
                                                                             if ( mysqli_num_rows($selectIndustry) > 0 ) {
                                                                                 while($row = mysqli_fetch_array($selectIndustry)) {
-                                                                                    echo '<option value="'.$row["ID"].'">'.$row["name"].'</option>';
+                                                                                    echo '<option value="'.$row["ID"].'">'.htmlentities($row["name"] ?? '').'</option>';
                                                                                 }
                                                                             }
                                                                         ?>
                                                                     </select>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="row">
                                                             <div class="col-md-3">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Country</label>
@@ -2010,8 +1542,6 @@
                                                                     <input class="form-control" type="text" name="supplier_address_state" required />
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="row">
                                                             <div class="col-md-3">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Zip Code</label>
@@ -2036,8 +1566,6 @@
                                                                     <input class="form-control" type="text" name="supplier_fax" />
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="row">
                                                             <div class="col-md-3">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Website</label>
@@ -2058,6 +1586,21 @@
                                                                     </select>
                                                                 </div>
                                                             </div>
+															<div class="col-md-3">
+																<div class="form-group">
+																	<label class="control-label">Status Date</label>
+																	<input class="form-control" type="date" name="date" />
+																</div>
+															</div>
+															<div class="col-md-3">
+																<div class="form-group">
+																	<label class="control-label">Organic Supplier?</label>
+																	<select class="form-control" name="organic" onchange="changeCountry(1)">
+																		<option value="0">No</option>
+																		<option value="1">Yes</option>
+																	</select>
+																</div>
+															</div>
                                                             <div class="col-md-3 hide">
                                                                 <div class="form-group">
                                                                     <label class="control-label">Receive Notification?</label>
@@ -2076,8 +1619,16 @@
 																	</select>
 																</div>
 															</div>
-                                                        </div>
-														<div class="row">
+															<div class="col-md-3">
+																<div class="form-group">
+																	<label class="control-label">Risk Level</label>
+																	<select class="form-control" name="risk_level">
+																		<option value="0">Low</option>
+																		<option value="1">Medium</option>
+																		<option value="3">High</option>
+																	</select>
+																</div>
+															</div>
 															<div class="col-md-3 hide">
 																<div class="form-group">
 																	<label class="control-label">Frequency</label>
@@ -2091,15 +1642,6 @@
 																		<option value="7">Once Per Three Months (Quarterly)</option>
 																		<option value="8">Once Per Six Months (Bi-Annual)</option>
 																		<option value="5">Once Per Year</option>
-																	</select>
-																</div>
-															</div>
-															<div class="col-md-3">
-																<div class="form-group">
-																	<label class="control-label">Organic Supplier?</label>
-																	<select class="form-control" name="organic" onchange="changeCountry(1)">
-																		<option value="0">No</option>
-																		<option value="1">Yes</option>
 																	</select>
 																</div>
 															</div>
@@ -2153,8 +1695,6 @@
 																	</select>
 																</div>
 															</div>
-														</div>
-														<div class="row">
 															<div class="col-md-3 bg-default hide">
 																<div class="form-group">
 																	<label class="control-label">Day</label>

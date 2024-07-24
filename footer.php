@@ -1182,6 +1182,108 @@
                     <!-- END FOOTER -->
                     </div>
                     </div>
+
+
+                    <!-- Service Logs Modal (add task) -->
+                    <div class="modal fade in" id="addServiceLogModal" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form class="modal-content" role="form" id="addServiceLogModalForm">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                    <h4 class="modal-title">New Task</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-horizontal">
+                                        <div class="form-body">
+                                            <div class="alert alert-danger display-hide" data-service-log-alert="error">
+                                                <button class="close" data-close="alert"></button>
+                                                <span data-message></span>
+                                            </div>
+                                            <div class="alert alert-success display-hide" data-service-log-alert="success">
+                                                <button class="close" data-close="alert"></button>
+                                                <span data-message></span>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-md-3 control-label">Task Owner</label>
+                                                <div class="col-md-8">
+                                                    <p class="form-control-static" style="font-weight: 600;">
+                                                        <?= $conn->execute("SELECT TRIM(CONCAT(first_name, ' ', last_name)) AS name FROM tbl_user WHERE ID = ?", $portal_user)->fetchAssoc()['name'] ?? '' ?>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="task_description" class="col-md-3 control-label">Description</label>
+                                                <div class="col-md-8">
+                                                    <textarea style="resize: vertical !important;" class="form-control" name="description" id="task_description" rows="3" placeholder="Describe your task"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="task_action" class="col-md-3 control-label">Action</label>
+                                                <div class="col-md-8">
+                                                    <select class="form-control mt-multiselect" name="action" id="task_action">
+                                                        <option value="" selected disabled>Select action</option>
+                                                        <?php
+                                        $actions = $con->execute("SELECT id, name FROM tbl_service_logs_actions ORDER BY name ASC")->fetchAll() ?? [];
+                                        foreach($actions as $action) {
+                                            $actionName = $action['name'];
+                                            echo "<option value='{$actionName}'>{$actionName}</option>";
+                                        }
+                                        
+                                        if(!count($actions)) {
+                                            echo "<option><i>No items available.</i></option>";
+                                        }
+                                    ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="task_comment" class="col-md-3 control-label">Comment</label>
+                                                <div class="col-md-8">
+                                                    <textarea class="form-control" name="comment" id="task_comment" placeholder="Add comment" rows="3"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="task_account" class="col-md-3 control-label">Account</label>
+                                                <div class="col-md-8">
+                                                    <select style="resize: vertical !important;" class="form-control mt-multiselect" name="account" id="task_account">
+                                                        <?php
+                                        $accounts = $con->execute("SELECT id, name FROM tbl_service_logs_accounts ORDER BY name ASC")->fetchAll() ?? [];
+                                        foreach($accounts as $account) {
+                                            $accountName = $account['name'];
+                                            echo "<option value='{$accountName}' " .($accountName == 'CONSULTAREINC' ? 'selected' : ''). ">{$accountName}</option>";
+                                        }
+                                        
+                                        if(!count($accounts)) {
+                                            echo "<option><i>No items available.</i></option>";
+                                        }
+                                    ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="taskdate" class="col-md-3 control-label">Task Date</label>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" type="date" name="task_date" id="taskdate">
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="task_minute" class="col-md-3 control-label">Minutes</label>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" name="minute" id="task_minute" placeholder="Enter minutes" type="number" min="0.01" step="0.01">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn green">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- end of Service Logs Modal  -->
+
                     <!--[if lt IE 9]>
                     <script src="../assets/global/plugins/respond.min.js"></script>
                     <script src="../assets/global/plugins/excanvas.min.js"></script> 

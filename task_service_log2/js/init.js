@@ -69,6 +69,9 @@ function initServiceLogs() {
                 d.task_date,
                 d.minute
             ]).draw();
+
+            // Reorder the table to place the new row at the top
+            dt.order([0, 'desc']).draw();   
         }
     }
 

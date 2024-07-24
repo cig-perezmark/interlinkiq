@@ -45,7 +45,8 @@ if(isset($_GET['add_log'])) {
                 'comment' => $comment,
                 'minute' => $minute,
                 'task_date' => $task_date,
-            ]
+            ],
+            'message' => 'Successfully saved.'
         ]);
     } catch(Exception $e) {
         $conn->rollback();

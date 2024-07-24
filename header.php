@@ -1286,7 +1286,13 @@ License: You must have a valid license purchased only from themeforest(the above
                             //     </li>';
                             // }
                             if ($switch_user_id == 1 OR $switch_user_id == 34 OR $switch_user_id == 163) {
-                                echo '<li class="dropdown dropdown-extended">
+                                echo '
+                                <li class="dropdown dropdown-extended">
+                                    <a href="#addServiceLogModal" class="dropdown-toggle" data-toggle="modal">
+                                        <i class="icon-clock"></i>
+                                    </a>
+                                </li>
+                                <li class="dropdown dropdown-extended">
                                     <a href="javascript:;" class="dropdown-toggle" onclick="offCanvas(1)">
                                         <i class="icon-envelope"></i>
                                         <span class="hide badge badge-success" id="countNotif"></span>

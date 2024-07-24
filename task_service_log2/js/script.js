@@ -1,7 +1,8 @@
 Init.baseUrl = 'task_service_log/services/index.php?';
+const ServiceLogsInstance = {};
 
 jQuery(function () {
-    const serviceLogs = initServiceLogs();
+    ServiceLogsInstance.logs = initServiceLogs();
     const overtimeForApprovalLogs = initForApprovalLogs();
     
     $('#refreshServiceLogsTableBtn').on('click', function() {
@@ -15,7 +16,7 @@ jQuery(function () {
         btn.addClass('disabled-by-action');
         document.body.classList.add('is-loading');
 
-        serviceLogs.fetch(function() {
+        ServiceLogsInstance.logs.fetch(function() {
             btn.removeClass('disabled-by-action');
             document.body.classList.remove('is-loading');
         });

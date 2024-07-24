@@ -309,7 +309,7 @@
                     </div>
 
 
-					<!-- Pictogram -->
+                    <!-- Pictogram -->
                     <div class="modal fade" id="modalPictogram" tabindex="-1" role="dialog" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -1709,21 +1709,21 @@ function uploadNew(e) {
 function btnPictogram(code) {
     $.ajax({
         type: "GET",
-        url: "function.php?modalPictogram="+code,
+        url: "function.php?modalPictogram=" + code,
         dataType: "html",
-        success: function(data){
+        success: function(data) {
             $("#modalPictogram .modal-body").html(data);
         }
     });
 }
-$(".modalPictogram").on('submit',(function(e) {
+$(".modalPictogram").on('submit', (function(e) {
     e.preventDefault();
 
     formObj = $(this);
     if (!formObj.validate().form()) return false;
 
     var formData = new FormData(this);
-    formData.append('btnSave_Pictogram',true);
+    formData.append('btnSave_Pictogram', true);
 
     var l = Ladda.create(document.querySelector('#btnSave_Pictogram'));
     l.start();
@@ -1733,7 +1733,7 @@ $(".modalPictogram").on('submit',(function(e) {
         type: "POST",
         data: formData,
         contentType: false,
-        processData:false,
+        processData: false,
         cache: false,
         success: function(response) {
             if ($.trim(response)) {
@@ -1745,7 +1745,7 @@ $(".modalPictogram").on('submit',(function(e) {
             l.stop();
 
             bootstrapGrowl(msg);
-        }        
+        }
     });
 }));
 
@@ -2040,4 +2040,6 @@ $(function() {
 });
                     </script>
 
-                    <?php closeDBConnection(); ?>
+                    <?php if(function_exists('closeDBConnection')) {
+                        closeDBConnection();
+                    } ?>

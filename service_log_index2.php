@@ -19,10 +19,6 @@
 <style>
 #service_logs_table * {
     box-sizing: border-box;
-    /* --width: 7rem; */
-    /* max-width: var(--width, 100px) !important;
-    min-width: var(--width, 100px) !important; */
-    /* width: var(--width) !important; */
 }
 </style>
 </style>
@@ -257,7 +253,7 @@
                                                         <tr role="row">
                                                             <th class="text-bold text-center bg-light" aria-controls="timein_summary_table" width="10%">Name</th>
                                                             <?php
-                                                            $query = "SELECT DISTINCT DATE(tbl_timein.time_in_datetime) AS date 
+                                                            $query = "SELECT DISTINCT DATE(tbl_timein.time_in_datetime) AS date
                                                                         FROM tbl_timein 
                                                                         LEFT JOIN tbl_hr_employee 
                                                                         ON tbl_hr_employee.ID = tbl_timein.user_id 
@@ -1001,21 +997,21 @@
 <!-- new task modal -->
 <div class="modal fade in" id="addServiceLogModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <form class="modal-content" role="form" id="addServiceLogModalForm">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                 <h4 class="modal-title">New Task</h4>
             </div>
             <div class="modal-body">
-                <form class="form-horizontal" role="form" id="task_form">
+                <div class="form-horizontal">
                     <div class="form-body">
-                        <div class="alert alert-danger display-hidex">
+                        <div class="alert alert-danger display-hide" data-service-log-alert="error">
                             <button class="close" data-close="alert"></button>
-                            Please provide the complete information of the task.
+                            <span data-message></span>
                         </div>
-                        <div class="alert alert-success display-hidex">
+                        <div class="alert alert-success display-hide" data-service-log-alert="success">
                             <button class="close" data-close="alert"></button>
-                            Data submitted successfuly!
+                            <span data-message></span>
                         </div>
                         <div class="form-group">
                             <label class="col-md-3 control-label">Task Owner</label>
@@ -1028,13 +1024,14 @@
                         <div class="form-group">
                             <label for="task_description" class="col-md-3 control-label">Description</label>
                             <div class="col-md-8">
-                                <textarea class="form-control" name="description" id="task_description" rows="3" placeholder="Describe your task"></textarea>
+                                <textarea style="resize: vertical !important;" class="form-control" name="description" id="task_description" rows="3" placeholder="Describe your task"></textarea>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="task_action" class="col-md-3 control-label">Action</label>
                             <div class="col-md-8">
-                                <select class="form-control  mt-multiselect" name="action" id="task_action">
+                                <select class="form-control mt-multiselect" name="action" id="task_action">
+                                    <option value="" selected disabled>Select action</option>
                                     <?php
                                         $actions = $con->execute("SELECT id, name FROM tbl_service_logs_actions ORDER BY name ASC")->fetchAll() ?? [];
                                         foreach($actions as $action) {
@@ -1058,7 +1055,7 @@
                         <div class="form-group">
                             <label for="task_account" class="col-md-3 control-label">Account</label>
                             <div class="col-md-8">
-                                <select class="form-control mt-multiselect" name="account" id="task_account">
+                                <select style="resize: vertical !important;" class="form-control mt-multiselect" name="account" id="task_account">
                                     <?php
                                         $accounts = $con->execute("SELECT id, name FROM tbl_service_logs_accounts ORDER BY name ASC")->fetchAll() ?? [];
                                         foreach($accounts as $account) {
@@ -1085,22 +1082,14 @@
                                 <input class="form-control" name="minute" id="task_minute" placeholder="Enter minutes" type="number" min="0.01" step="0.01">
                             </div>
                         </div>
-                        <button type="submit" id="task_submit_btn" style="display: none;"></button>
                     </div>
-                </form>
+                </div>
             </div>
             <div class="modal-footer">
-
-                <?php if(!empty($_COOKIE['ID'])){ ?>
                 <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                <button type="button" onclick="$('#task_submit_btn').trigger('click')" class="btn green">Save
-                    Task</button>
-                <?php }else{ ?>
-                <i>Your Cookies has expired please relogin. Thank you</i>
-                <?php } ?>
+                <button type="submit" class="btn green">Submit</button>
             </div>
-        </div>
-        <!-- /.modal-content -->
+        </form> <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
 </div>

@@ -21,4 +21,9 @@ jQuery(function () {
             document.body.classList.remove('is-loading');
         });
     })
+
+    $('[data-service-log-tab]').on('click', function() {
+        const tabTitle = this.dataset.serviceLogTab || 'Service Logs';
+        $('#serviceLogsCardTitle').text(tabTitle);
+    });
 });

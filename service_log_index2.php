@@ -1,6 +1,6 @@
 <?php 
-    $title = "Service Log";
-    $site = "service_log";
+    $title = "Service Logs";
+    $site = "service_logs";
     $breadcrumbs = '';
     $sub_breadcrumbs = '';
 
@@ -9,7 +9,7 @@
     }
     $breadcrumbs .= '<li><span>'. $title .'</span></li>';
 
-    include_once 'alt-setup/setup.php';
+    // include_once 'alt-setup/setup.php';
     include_once ('header.php'); 
     // include_once ('task_service_log2/private/connection.php');
 
@@ -29,7 +29,7 @@
             <div class="portlet-title tabbable-line">
                 <div class="caption caption-md">
                     <i class="icon-globe theme-font hide"></i>
-                    <span class="caption-subject font-blue-madison bold uppercase">Service Time Logs</span>
+                    <span class="caption-subject font-blue-madison bold uppercase" id="serviceLogsCardTitle">My Services</span>
                 </div>
                 <ul class="nav nav-tabs">
                     <li class="activex hide">
@@ -41,23 +41,26 @@
                             <i class="fa fa-angle-down"></i>
                         </a>
                         <ul class="dropdown-menu pull-right" style="min-width: auto;">
-
                             <li>
                                 <a data-toggle="modal" href="#addServiceLogModal">
-                                    <i class="icon-plus"></i> Add new </a>
+                                    <i class="icon-plus"></i> Add new
+                                </a>
                             </li>
                             <li class="divider"></li>
                             <li title="Service logs from the last 30 days" class="active">
-                                <a href="#SERVICES" data-toggle="tab">
-                                    <i class="icon-clock"></i> My Services </a>
+                                <a href="#SERVICES" data-toggle="tab" data-service-log-tab="My Services">
+                                    <i class="icon-clock"></i> My Services
+                                </a>
                             </li>
                             <li title="Overtime logs pending for manager's approval">
-                                <a href="javascript:;" data-target="#pending_logs_tab" data-toggle="tab">
-                                    <i class="icon-question"></i> Pending </a>
+                                <a href="javascript:;" data-target="#pending_logs_tab" data-toggle="tab" data-service-log-tab="Pending Logs">
+                                    <i class="icon-question"></i> Pending
+                                </a>
                             </li>
                             <li title="Disapproved Logs">
-                                <a href="javascript:;" data-target="#invalid_logs_tab" data-toggle="tab">
-                                    <i class="icon-dislike"></i> Invalid </a>
+                                <a href="javascript:;" data-target="#invalid_logs_tab" data-toggle="tab" data-service-log-tab="Invalid Logs">
+                                    <i class="icon-dislike"></i> Invalid
+                                </a>
                             </li>
                         </ul>
                     </li>
@@ -85,7 +88,7 @@
                     <?php endif; ?>
 
                     <li>
-                        <a href="#VA_SUMMARY" data-toggle="tab">VA Summary</a>
+                        <a href="#VA_SUMMARY" data-toggle="tab" data-service-log-tab="VA Summary">VA Summary</a>
                     </li>
 
                     <li title="Overtime service logs from the department members">
@@ -103,7 +106,10 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="SERVICES">
                         <div style="margin-bottom: 2rem;">
-                            <h3> Records from the last 30 days </h3>
+                            <div>
+                                <h3>My Service Logs</h3>
+                                <p> Records from the last 30 days </p>
+                            </div>
                             <div class="alert alert-success alert-dismissable" id="advSearchAlert" style="display: none; margin-top:1rem;">
                                 <button type="button" class="close" aria-hidden="true"></button>
                                 <strong>
@@ -142,27 +148,56 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="tabbable tabbable-tabdrop hide">
-                            <ul class="nav nav-tabs">
-                                <li class="active">
-                                    <a href="#tab_service_log" data-toggle="tab">Service Logs</a>
-                                </li>
-                                <li>
-                                    <a href="#tab_log_approval" data-toggle="tab">For Approval Logs</a>
-                                </li>
-                                <li>
-                                    <a href="#tab_disapprove" data-toggle="tab">Disapproved Logs</a>
-                                </li>
-                            </ul>
-                            <div class="tab-content margin-top-20">
-                                <div class="tab-pane active" id="tab_service_log">
-
+                    </div>
+                    <div class="tab-pane" id="VA_SUMMARY">
+                        <div class="portlet light" style="padding-left:0; padding-right: 0;">
+                            <div class="portlet-title" style="border: none; margin-bottom: 0;">
+                                <div class="btn-group">
+                                    <a class="btn grey-cascade" href="javascript:;" data-toggle="dropdown">
+                                        <span class="hidden-xs"> Export </span>
+                                        <i class="fa fa-angle-down"></i>
+                                    </a>
+                                    <ul class="dropdown-menu" id="vasummary_table_actions">
+                                        <li>
+                                            <a href="javascript:;" data-action="0" class="tool-action">
+                                                <i class="icon-cloud-upload"></i> CSV</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:;" data-action="1" class="tool-action">
+                                                <i class="icon-paper-clip"></i> Excel</a>
+                                        </li>
+                                    </ul>
                                 </div>
-
+                                <div class="actions hide" style="padding-bottom: 0;">
+                                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;"> </a>
+                                </div>
+                            </div>
+                            <div class="portlet-body">
+                                <table id="va_summary_tablex" class="table table-bordered table-hover order-column dataTable no-footer">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Total Hour(s) Rendered</th>
+                                            <th>Overtime</th>
+                                            <th>Tasks</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>2024-07-23</td>
+                                            <td>7</td>
+                                            <td>0</td>
+                                            <td>13</td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-
                     </div>
+
+
                     <div class="tab-pane" id="Weekly">
                         <div class="row">
                             <div class="col-md-9">
@@ -669,41 +704,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane" id="VA_SUMMARY">
-                        <div class="">
-                            <h3 style="margin: 0 0 1rem 0;"> Employee List</h3>
-                            <p class="default">
-                                Service logs summary of your employees.
-                            </p>
-                        </div>
-                        <div class="portlet light" style="padding-left:0; padding-right: 0;">
-                            <div class="portlet-title" style="border: none; margin-bottom: 0;">
-                                <div class="btn-group">
-                                    <a class="btn grey-cascade" href="javascript:;" data-toggle="dropdown">
-                                        <span class="hidden-xs"> Export </span>
-                                        <i class="fa fa-angle-down"></i>
-                                    </a>
-                                    <ul class="dropdown-menu" id="vasummary_table_actions">
-                                        <li>
-                                            <a href="javascript:;" data-action="0" class="tool-action">
-                                                <i class="icon-cloud-upload"></i> CSV</a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:;" data-action="1" class="tool-action">
-                                                <i class="icon-paper-clip"></i> Excel</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="actions" style="padding-bottom: 0;">
-                                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;"> </a>
-                                </div>
-                            </div>
-                            <div class="portlet-body">
-                                <table id="va_summary_table" class="table table-bordered table-hover order-column dataTable no-footer">
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+
 
                     <div class="tab-pane" id="pending_logs_tab">
                         <div class="row">

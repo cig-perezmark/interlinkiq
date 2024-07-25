@@ -1,6 +1,8 @@
-<?php include_once 'database_iiq.php'; ?>
+<?php 
+    include_once 'database_iiq.php';
+    include_once 'alt-setup/setup.php';
 
-<?php
+    $con = $conn;
 //     $servername='localhost';
 // 	$username='brandons_interlinkiq';
 // 	$password='L1873@2019new';

@@ -3018,7 +3018,7 @@
 															</div> 
 														</div>  
 																				
-														<!-- <div class="col-md-12"> 
+												<div class="col-md-12"> 
 													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-10">                                         
 														 <h3 class="d-flex justify-content-center">Audit & Review</h3>
 																<div class="widget-thumb-wrap">
@@ -3026,8 +3026,7 @@
 																	</div>
 																</div>                                 
 															</div> 
-														</div> -->
-
+														</div>
 													</div>													
 												</div>
 										  	<div class="modal-footer">

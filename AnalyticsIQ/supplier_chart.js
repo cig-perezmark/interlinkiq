@@ -330,7 +330,7 @@ $('#modalChart').on('shown.bs.modal', function (e) {
         return response.json();
     })
     .then(data => {
-        console.log(data);  // Log data for debugging
+        // console.log(data);  // Log data for debugging
         displayChart(data);
     })
     .catch(error => {

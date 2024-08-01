@@ -580,10 +580,6 @@
                 $('#tableData, #tableDataOpen, #tableDataClose, #tableDataHistory').DataTable();
             });
 
-            function uploadNew(e) {
-                $(e).parent().hide();
-                $(e).parent().prev('.form-control').removeClass('hide');
-            }
             function selectType(e) {
                 if (e.value == 1 || e.value == 3 || e.value == 4) {
                     $(e).parent().next().html('<input type="hidden" name="formatID[]" value="0" /><input type="text" class="form-control" name="label[]" placeholder="Label" required />');

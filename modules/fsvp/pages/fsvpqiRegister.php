@@ -220,7 +220,7 @@ function yesNoRadio() {
 
                     <div class="col-md-12 frfUplDoc">
                         <label class="mt-checkbox mt-checkbox-outline">
-                            <input type="checkbox" value="true" name="c_gfsi_certificate"> GFSI Certificate
+                            <input type="checkbox" value="true" name="c_gfsi_certificate"> FSVPQI Certificate
                             <span></span>
                         </label>
                         <div class="row">

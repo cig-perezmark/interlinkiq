@@ -2120,20 +2120,9 @@
 
             });
 
-            function uploadNew(e) {
-
-                $(e).parent().hide();
-
-                $(e).parent().prev('.form-control').removeClass('hide');
-
-            }
-
             function editSignature(e) {
-
                 $(e).parent().hide();
-
                 $(e).parent().prev('.signatureContainer').removeClass('hide');
-
             }
 
             function inputInvalid(modal) {

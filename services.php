@@ -400,10 +400,6 @@
                 } 
             }
 
-            function uploadNew(e) {
-                $(e).parent().hide();
-                $(e).parent().prev('.form-control').removeClass('hide');
-            }
             function btnEdit(id) {
                 $.ajax({
                     type: "GET",

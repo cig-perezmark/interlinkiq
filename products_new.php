@@ -1691,11 +1691,6 @@
                 $('#'+view+' form table tbody').html('');
                 $('#'+view+' form #image_preview').html('');
             }
-            
-            function uploadNew(e) {
-                $(e).parent().hide();
-                $(e).parent().prev('.form-control').removeClass('hide');
-            }
 
             function inputInvalid(modal) {
                 var error = 0;

@@ -6020,212 +6020,317 @@
     }
     if( isset($_GET['modalView_HR_Employee_TP']) ) {
         $id = $_GET['modalView_HR_Employee_TP'];
-        $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $id" );
+
+        $selectData = mysqli_query( $conn,"SELECT ID, user_id FROM tbl_hr_employee WHERE ID = $id" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
             $user_id = $row['user_id'];
-        }
 
-        echo '<input class="form-control" type="hidden" name="ID" value="'. $row['ID'] .'" />
-        <div class="tabbable tabbable-tabdrop">
-            <div class="table-scrollable">
-                <table class="table table-bordered table-hover" id="tableData_training">
-                    <thead>
-                        <tr>
-                            <th>Description</th>
-                            <th class="text-center">Date Completed</th>
-                            <th class="text-center">Due Date</th>
-                            <th class="text-center">Status</th>
-                            <th class="text-center">Record</th>
-                        </tr>
-                    </thead>
-                    <tbody>';
-                        $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = $id" );
-                        if ( mysqli_num_rows($selectUser) > 0 ) {
-                            $rowUser = mysqli_fetch_array($selectUser);
-                            $current_userID = $rowUser['ID'];
-                            $current_userEmployeeID = employeeID($current_userID);
-                            $current_userEmployerID = employerID($current_userID);
+            echo '<input class="form-control" type="hidden" name="ID" value="'. $row['ID'] .'" />
+            <div class="tabbable tabbable-tabdrop">
+                <div class="table-scrollable">
+                    <table class="table table-bordered table-hover" id="tableData_training">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th class="text-center">Date Completed</th>
+                                <th class="text-center">Due Date</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Record</th>
+                            </tr>
+                        </thead>
+                        <tbody>';
 
-                            $selectTrainings = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE deleted = 0 AND user_id = $current_userEmployerID ORDER BY title" );
-                            if ( mysqli_num_rows($selectTrainings) > 0 ) {
-                                while($rowTraining = mysqli_fetch_array($selectTrainings)) {
-                                    $training_ID = htmlentities($rowTraining['ID'] ?? '');
-                                    $title = htmlentities($rowTraining['title'] ?? '');
+                            $selectUser = mysqli_query( $conn,"
+                                SELECT
+                                u_ID,
+                                e_ID,
+                                e_user_id,
+                                e_first_name,
+                                e_last_name,
+                                e_email,
+                                e_job_description_id,
+                                j_title,
+                                t.ID AS t_ID,
+                                t.title AS t_title,
+                                t.job_description_id AS t_job_description_id,
+                                t.quiz_id AS t_quiz_id,
+                                q.quiz_id AS q_quiz_id,
+                                q.max_ID AS q_max_ID,
+                                q.result AS q_result,
+                                q.last_modified AS q_last_modified
+
+                                FROM (
+                                    SELECT
+                                    u.ID AS u_ID,
+                                    e.ID AS e_ID,
+                                    e.user_id AS e_user_id,
+                                    e.first_name AS e_first_name,
+                                    e.last_name AS e_last_name,
+                                    e.email AS e_email,
+                                    e.job_description_id AS e_job_description_id,
+                                    GROUP_CONCAT(j.title SEPARATOR ', ') AS j_title
+
+                                    FROM tbl_hr_employee AS e
+
+                                    LEFT JOIN (
+                                        SELECT
+                                        *
+                                        FROM tbl_hr_job_description
+                                        WHERE user_id = $user_id
+                                        AND status = 1
+                                    ) AS j
+                                    ON FIND_IN_SET(j.ID, REPLACE(e.job_description_id, ' ', '')) > 0
+
+                                    RIGHT JOIN (
+                                        SELECT
+                                        *
+                                        FROM tbl_user
+                                        WHERE is_verified = 1
+                                        AND is_active = 1
+                                    ) AS u
+                                    ON u.employee_id = e.ID
+
+                                    WHERE e.user_id = $user_id
+                                    AND e.suspended = 0 
+                                    AND e.status = 1 
+
+                                    GROUP BY e.ID
+                                ) r
+
+                                LEFT JOIN (
+                                    SELECT 
+                                    ID, 
+                                    user_id,
+                                    title, 
+                                    job_description_id, 
+                                    quiz_id 
+                                    FROM tbl_hr_trainings 
+                                    WHERE status = 1 
+                                    AND deleted = 0 
+                                ) AS t
+                                ON t.user_id = r.e_user_id
+
+                                LEFT JOIN (
+                                    SELECT MAX(ID) AS max_ID, user_id, quiz_id, result, start_time, end_time, signature, last_modified
+                                    FROM tbl_hr_quiz_result
+                                    WHERE result = 100
+                                    GROUP BY quiz_id, user_id
+                                ) AS q
+                                ON r.u_ID = q.user_id
+                                AND t.quiz_id = q.quiz_id
+
+                                WHERE e_ID = $id
+
+                                ORDER BY e_last_name, t_title
+                            " );
+                            if ( mysqli_num_rows($selectUser) > 0 ) {
+                                while($rowUser = mysqli_fetch_array($selectUser)) {
+                                    $t_ID = $rowUser['t_ID'];
+                                    $t_title = htmlentities($rowUser['t_title'] ?? '');
+                                    $q_result = $rowUser['q_result'];
+
+                                    $completed_date = $rowUser['q_last_modified'];
+                                    $completed_date = new DateTime($completed_date);
+                                    $completed_date_o = $completed_date->format('Y/m/d');
+                                    $completed_date = $completed_date->format('M d, Y');
                                     
-                                    $data_last_modified = $rowTraining['last_modified'];
-                                    $data_last_modified = new DateTime($data_last_modified);
-                                    $data_last_modified = $data_last_modified->format('M d, Y');
+                                    $due_date = date('Y-m-d', strtotime('+1 year', strtotime($completed_date)) );
+                                    $due_date = new DateTime($due_date);
+                                    $due_date_o = $due_date->format('Y/m/d');
+                                    $due_date = $due_date->format('M d, Y');
 
-                                    $found = null;
-                                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $current_userEmployeeID" );
-                                    if ( mysqli_num_rows($selectEmployee) > 0 ) {
-                                        $rowEmployee = mysqli_fetch_array($selectEmployee);
-                                        $array_row = explode(", ", $rowEmployee["job_description_id"]);
-                                        $array_rowTraining = explode(", ", $rowTraining["job_description_id"]);
-                                        foreach($array_row as $emp_JD) {
-                                            if (in_array($emp_JD,$array_rowTraining)) {
-                                                $found = true;
-                                            }
+                                    $current_date = date('M d, Y');
+                                    $current_date = new DateTime($current_date);
+                                    $current_date_o = $current_date->format('Y/m/d');
+                                    $current_date = $current_date->format('M d, Y');
+
+                                    if (!empty($rowUser['e_job_description_id']) AND !empty($rowUser['t_job_description_id'])) {
+                                        
+                                        $e_job_description_id = $rowUser['e_job_description_id'];
+                                        $t_job_description_id = $rowUser['t_job_description_id'];
+                                        $arr_jd_id_emp = explode(", ", $e_job_description_id);
+                                        $arr_jd_id_training = explode(", ", $t_job_description_id);
+                                        if (array_intersect($arr_jd_id_emp, $arr_jd_id_training)) {
+
+                                            echo '<tr id="tr_'.$t_ID.'">
+                                                <td >'. $t_title .'</td>
+                                                <td class="text-center">'; echo $q_result == 100 ? $completed_date:''; echo '</td>
+                                                <td class="text-center">'; echo $q_result == 100 ? $due_date:''; echo '</td>
+                                                <td class="text-center">'; 
+                                                    if ($q_result == 100) {
+                                                        if ($current_date_o >= $due_date_o) {
+                                                            echo '<span class="text-danger">Pass Due</span>';
+                                                        } else {
+                                                            echo '<span class="text-success">Completed</span>';
+                                                        }
+                                                    } else {
+                                                        echo 'Not Yet Started';
+                                                    }
+                                                echo '</td>
+                                                <td class="text-center">'; echo $q_result == 100 ? '<a href="pdf?id='.$t_ID.'" target="_blank" class="btn btn-circle btn-sm btn-success">View</a>':''; echo '</td>
+                                            </tr>';
                                         }
                                     }
 
-                                    $trainingStatus = "Not Yet Started";
-                                    $trainingResult = 0;
-                                    $completed_date = '';
-                                    $due_date = '';
-                                    $pdf_quiz = '';
-                                    $selectQuizResult = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_result WHERE user_id = $current_userID " );
-                                    if ( mysqli_num_rows($selectQuizResult) > 0 ) {
-                                        while($rowQuizResult = mysqli_fetch_array($selectQuizResult)) {
-                                            $trainingResultID = $rowQuizResult['ID'];
-                                            $trainingQuizID = $rowQuizResult['quiz_id'];
-
-                                            if (!empty($rowTraining['quiz_id'])) {
-                                                $array_quiz_id = explode(', ', $rowTraining['quiz_id']);
-                                                if (in_array($trainingQuizID, $array_quiz_id)) {
-                                                    $trainingResult = $rowQuizResult['result'];
-                                                    $pdf_quiz = $trainingResultID;
-
-                                                    if ($trainingResult == 100) { $trainingStatus = "Completed"; }
-                                                    else { $trainingStatus = "Not Yet Started"; }
-                                    
-                                                    $completed_date = $rowQuizResult['last_modified'];
-                                                    $completed_date = new DateTime($completed_date);
-                                                    $completed_date = $completed_date->format('M d, Y');
-                                                    
-                                                    $due_date = date('Y-m-d', strtotime('+1 year', strtotime($completed_date)) );
-                                                    $due_date = new DateTime($due_date);
-                                                    $due_date = $due_date->format('M d, Y');
-                                                }
-                                            }
-
-                                        }
-                                    }
-
-                                    if ( $found == true ) {
-                                        echo '<tr id="tr_'.$training_ID.'">
-                                            <td >'. $title .'</td>
-                                            <td class="text-center">'; echo $trainingResult == 100 ? $completed_date:''; echo '</td>
-                                            <td class="text-center">'; echo $trainingResult == 100 ? $due_date:''; echo '</td>
-                                            <td class="text-center">'.$trainingStatus.'</td>
-                                            <td class="text-center">'; echo $trainingResult == 100 ? '<a href="pdf?id='.$pdf_quiz.'" target="_blank" class="btn btn-circle btn-sm btn-success">View</a>':''; echo '</td>
-                                        </tr>';
-                                    }
                                 }
+                            } else {
+                                echo '<tr>
+                                    <td class="text-center" colspan="5">No Records</td>
+                                </tr>';
                             }
-                        }
 
-                    echo '</tbody>
-                </table>
-            </div>
-        </div>';
+                        echo '</tbody>
+                    </table>
+                </div>
+            </div>';
 
-        mysqli_close($conn);
+            mysqli_close($conn);
+        }
     }
     if( isset($_GET['modalView_HR_Trainings_TP']) ) {
         $id = $_GET['modalView_HR_Trainings_TP'];
 
-        $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE ID = $id" );
+        $selectData = mysqli_query( $conn,"SELECT ID, user_id FROM tbl_hr_trainings WHERE ID = $id" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
-            $user_id = htmlentities($row['user_id'] ?? '');
-            $type = htmlentities($row['type'] ?? '');
+            $row_ID = $row['ID'];
+            $user_id = $row['user_id'];
 
-            $files = $row['files'];
-            if (!empty($files)) {
-                $output_file = json_decode($files,true);
-            }
-        }
+            echo '<input class="form-control" type="hidden" name="ID" value="'. $row_ID .'" />
+            <div class="table-scrollable">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Last Name</th>
+                            <th>First Name</th>
+                            <th>Email</th>
+                            <th>Completed(Y/N)</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
 
-        echo '<input class="form-control" type="hidden" name="ID" value="'. $row['ID'] .'" />
-        <div class="table-scrollable">
-            <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>Last Name</th>
-                        <th>First Name</th>
-                        <th>Email</th>
-                        <th>Completed(Y/N)</th>
-                    </tr>
-                </thead>
-                <tbody>';
+                        $selectData = mysqli_query( $conn,"
+                            SELECT
+                            u_ID,
+                            e_ID,
+                            e_user_id,
+                            e_first_name,
+                            e_last_name,
+                            e_email,
+                            e_job_description_id,
+                            j_title,
+                            t.ID AS t_ID,
+                            t.title AS t_title,
+                            t.job_description_id AS t_job_description_id,
+                            t.quiz_id AS t_quiz_id,
+                            q.quiz_id AS q_quiz_id,
+                            q.max_ID AS q_max_ID,
+                            q.result AS q_result,
+                            q.last_modified AS q_last_modified
 
-                    $countTraining = 0;
-                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id = $user_id ORDER BY last_name" );
-                    if ( mysqli_num_rows($selectEmployee) > 0 ) {
-                        while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
-                            $found = null;
-                            $array_rowEmployee = explode(", ", $rowEmployee["job_description_id"]);
-                            $array_rowTraining = explode(", ", $row["job_description_id"]);
-                            foreach($array_rowEmployee as $emp_JD) {
-                                if (in_array($emp_JD,$array_rowTraining)) {
-                                    $found = true;
-                                }
-                            }
+                            FROM (
+                                SELECT
+                                u.ID AS u_ID,
+                                e.ID AS e_ID,
+                                e.user_id AS e_user_id,
+                                e.first_name AS e_first_name,
+                                e.last_name AS e_last_name,
+                                e.email AS e_email,
+                                e.job_description_id AS e_job_description_id,
+                                GROUP_CONCAT(j.title SEPARATOR ', ') AS j_title
 
-                            if ( $found == true ) {
-                                $employee_id = $rowEmployee["ID"];
+                                FROM tbl_hr_employee AS e
 
-                                $trainingStatus = "Not Yet Started";
-                                $trainingResult = 0;
-                                $completed_date = '';
-                                $due_date = '';
+                                LEFT JOIN (
+                                    SELECT
+                                    *
+                                    FROM tbl_hr_job_description
+                                    WHERE user_id = $user_id
+                                    AND status = 1
+                                ) AS j
+                                ON FIND_IN_SET(j.ID, REPLACE(e.job_description_id, ' ', '')) > 0
 
-                                $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = $employee_id" );
-                                if ( mysqli_num_rows($selectUser) > 0 ) {
-                                    $rowUser = mysqli_fetch_array($selectUser);
-                                    $employee_user_ID = $rowUser['ID'];
+                                RIGHT JOIN (
+                                    SELECT
+                                    *
+                                    FROM tbl_user
+                                    WHERE is_verified = 1
+                                    AND is_active = 1
+                                ) AS u
+                                ON u.employee_id = e.ID
 
-                                    $selectQuizResult = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_result WHERE user_id = $employee_user_ID " );
-                                    if ( mysqli_num_rows($selectQuizResult) > 0 ) {
-                                        while($rowQuizResult = mysqli_fetch_array($selectQuizResult)) {
-                                            $trainingResultID = $rowQuizResult['ID'];
-                                            $trainingQuizID = $rowQuizResult['quiz_id'];
+                                WHERE e.user_id = $user_id
+                                AND e.suspended = 0 
+                                AND e.status = 1 
 
-                                            if (!empty($row['quiz_id'])) {
-                                                $array_quiz_id = explode(', ', $row['quiz_id']);
-                                                if (in_array($trainingQuizID, $array_quiz_id)) {
-                                                    $trainingResult = $rowQuizResult['result'];
+                                GROUP BY e.ID
+                            ) r
 
-                                                    if ($trainingResult == 100) { $trainingStatus = "Completed"; }
-                                                    else { $trainingStatus = "Not Yet Started"; }
-                                    
-                                                    $completed_date = $rowQuizResult['last_modified'];
-                                                    $completed_date = new DateTime($completed_date);
-                                                    $completed_date = $completed_date->format('M d, Y');
-                                                    
-                                                    $due_date = date('Y-m-d', strtotime('+1 year', strtotime($completed_date)) );
-                                                    $due_date = new DateTime($due_date);
-                                                    $due_date = $due_date->format('M d, Y');
-                                                }
-                                            }
+                            LEFT JOIN (
+                                SELECT 
+                                ID, 
+                                user_id,
+                                title, 
+                                job_description_id, 
+                                quiz_id 
+                                FROM tbl_hr_trainings 
+                                WHERE status = 1 
+                                AND deleted = 0 
+                            ) AS t
+                            ON t.user_id = r.e_user_id
+
+                            LEFT JOIN (
+                                SELECT MAX(ID) AS max_ID, user_id, quiz_id, result, start_time, end_time, signature, last_modified
+                                FROM tbl_hr_quiz_result
+                                WHERE result = 100
+                                GROUP BY quiz_id, user_id
+                            ) AS q
+                            ON r.u_ID = q.user_id
+                            AND t.quiz_id = q.quiz_id
+
+                            WHERE t.ID = $id
+
+                            ORDER BY e_last_name, t_title
+                        " );
+                        if ( mysqli_num_rows($selectData) > 0 ) {
+                            while($rowData = mysqli_fetch_array($selectData)) {
+                                $q_completed = '<span class="label label-sm label-danger">NO</span>';
+                                if (!empty($rowData['q_quiz_id']) AND !empty($rowData['e_job_description_id']) AND !empty($rowData['t_job_description_id'])) {
+
+                                    $e_job_description_id = $rowData['e_job_description_id'];
+                                    $t_job_description_id = $rowData['t_job_description_id'];
+                                    $arr_jd_id_emp = explode(", ", $e_job_description_id);
+                                    $arr_jd_id_training = explode(", ", $t_job_description_id);
+
+                                    if (array_intersect($arr_jd_id_emp, $arr_jd_id_training)) {
+
+                                        if ($rowData['q_result'] == 100) {
+                                            $q_completed = '<span class="label label-sm label-success">YES</span>';
                                         }
+
+                                        echo '<tr>
+                                            <td>'. htmlentities($rowData["e_last_name"] ?? '') .'</td>
+                                            <td>'. htmlentities($rowData["e_first_name"] ?? '') .'</td>
+                                            <td>'. htmlentities($rowData["e_email"] ?? '') .'</td>
+                                            <td class="text-center">'.$q_completed.'</td>
+                                        </tr>';
                                     }
                                 }
-                                echo '<tr>
-                                    <td>'. htmlentities($rowEmployee["last_name"] ?? '') .'</td>
-                                    <td>'. htmlentities($rowEmployee["first_name"] ?? '') .'</td>
-                                    <td>'. htmlentities($rowEmployee["email"] ?? '') .'</td>
-                                    <td class="text-center">'; echo $trainingResult == 100 ? '<span class="label label-sm label-success">YES</span>':'<span class="label label-sm label-danger">NO</span>'; echo '</td>
-                                </tr>';
 
-                                $countTraining++;
                             }
+                        } else {
+                            echo '<tr>
+                                <td class="text-center text-default" colspan="4">No Records</td>
+                            </tr>';
                         }
+                        
+                    echo '</tbody>
+                </table>
+            </div>';
 
-                        if ( $countTraining < 1 ) {
-                            echo '<tr class="text-center text-default"><td colspan="5">Empty Record</td></tr>';
-                        }
-                    } else {
-                        echo '<tr class="text-center text-default"><td colspan="5">Empty Record</td></tr>';
-                    }
-                    
-                echo '</tbody>
-            </table>
-        </div>';
-
-        mysqli_close($conn);
+            mysqli_close($conn);
+        }
     }
     if( isset($_GET['modalView_HR_Employee_TP2']) ) {
         $id = $_GET['modalView_HR_Employee_TP2'];
@@ -6234,111 +6339,112 @@
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $id" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
+            $row_ID = $row['ID'];
             $user_id = $row['user_id'];
-        }
 
-        echo '<input class="form-control" type="hidden" name="ID" value="'. $row['ID'] .'" />
-        <div class="tabbable tabbable-tabdrop">
-            <div class="table-scrollable">
-                <table class="table table-bordered table-hover" id="tableData_training">
-                    <thead>
-                        <tr>
-                            <th>Description</th>
-                            <th class="text-center">Date Completed</th>
-                            <th class="text-center">Due Date</th>
-                            <th class="text-center">Status</th>
-                            <th class="text-center">Record</th>
-                        </tr>
-                    </thead>
-                    <tbody>';
-                        $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = $id" );
-                        if ( mysqli_num_rows($selectUser) > 0 ) {
-                            $rowUser = mysqli_fetch_array($selectUser);
-                            $current_userID = $rowUser['ID'];
-                            $current_userEmployeeID = employeeID($current_userID);
-                            $current_userEmployerID = employerID($current_userID);
+            echo '<input class="form-control" type="hidden" name="ID" value="'. $row_ID .'" />
+            <div class="tabbable tabbable-tabdrop">
+                <div class="table-scrollable">
+                    <table class="table table-bordered table-hover" id="tableData_training">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th class="text-center">Date Completed</th>
+                                <th class="text-center">Due Date</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Record</th>
+                            </tr>
+                        </thead>
+                        <tbody>';
+                            $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = $id" );
+                            if ( mysqli_num_rows($selectUser) > 0 ) {
+                                $rowUser = mysqli_fetch_array($selectUser);
+                                $current_userID = $rowUser['ID'];
+                                $current_userEmployeeID = employeeID($current_userID);
+                                $current_userEmployerID = employerID($current_userID);
 
-                            $selectTrainings = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE deleted = 0 AND user_id = $current_userEmployerID ORDER BY title" );
-                            if ( mysqli_num_rows($selectTrainings) > 0 ) {
-                                while($rowTraining = mysqli_fetch_array($selectTrainings)) {
-                                    $training_ID = htmlentities($rowTraining['ID'] ?? '');
-                                    $title = htmlentities($rowTraining['title'] ?? '');
-                                    
-                                    $data_last_modified = $rowTraining['last_modified'];
-                                    $data_last_modified = new DateTime($data_last_modified);
-                                    $data_last_modified = $data_last_modified->format('M d, Y');
+                                $selectTrainings = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE deleted = 0 AND user_id = $current_userEmployerID ORDER BY title" );
+                                if ( mysqli_num_rows($selectTrainings) > 0 ) {
+                                    while($rowTraining = mysqli_fetch_array($selectTrainings)) {
+                                        $training_ID = htmlentities($rowTraining['ID'] ?? '');
+                                        $title = htmlentities($rowTraining['title'] ?? '');
+                                        
+                                        $data_last_modified = $rowTraining['last_modified'];
+                                        $data_last_modified = new DateTime($data_last_modified);
+                                        $data_last_modified = $data_last_modified->format('M d, Y');
 
-                                    $found = null;
-                                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $current_userEmployeeID" );
-                                    if ( mysqli_num_rows($selectEmployee) > 0 ) {
-                                        $rowEmployee = mysqli_fetch_array($selectEmployee);
-                                        $array_row = explode(", ", $rowEmployee["job_description_id"]);
-                                        $array_rowTraining = explode(", ", $rowTraining["job_description_id"]);
-                                        foreach($array_row as $emp_JD) {
-                                            if (in_array($emp_JD,$array_rowTraining)) {
-                                                $found = true;
-                                            }
-                                        }
-                                    }
-
-                                    $trainingStatus = "Not Yet Started";
-                                    $trainingResult = 0;
-                                    $completed_date = '';
-                                    $due_date = '';
-                                    $pdf_quiz = '';
-                                    $selectQuizResult = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_result WHERE user_id = $current_userID " );
-                                    if ( mysqli_num_rows($selectQuizResult) > 0 ) {
-                                        while($rowQuizResult = mysqli_fetch_array($selectQuizResult)) {
-                                            $trainingResultID = $rowQuizResult['ID'];
-                                            $trainingQuizID = $rowQuizResult['quiz_id'];
-
-                                            if (!empty($rowTraining['quiz_id'])) {
-                                                $array_quiz_id = explode(', ', $rowTraining['quiz_id']);
-                                                if (in_array($trainingQuizID, $array_quiz_id)) {
-                                                    $trainingResult = $rowQuizResult['result'];
-                                                    $pdf_quiz = $trainingResultID;
-
-                                                    if ($trainingResult == 100) { $trainingStatus = "Completed"; }
-                                                    else { $trainingStatus = "Not Yet Started"; }
-                                    
-                                                    $completed_date = $rowQuizResult['last_modified'];
-                                                    $completed_date = new DateTime($completed_date);
-                                                    $completed_date = $completed_date->format('M d, Y');
-                                                    
-                                                    $due_date = date('Y-m-d', strtotime('+1 year', strtotime($completed_date)) );
-                                                    $due_date = new DateTime($due_date);
-                                                    $due_date = $due_date->format('M d, Y');
+                                        $found = null;
+                                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $current_userEmployeeID" );
+                                        if ( mysqli_num_rows($selectEmployee) > 0 ) {
+                                            $rowEmployee = mysqli_fetch_array($selectEmployee);
+                                            $array_row = explode(", ", $rowEmployee["job_description_id"]);
+                                            $array_rowTraining = explode(", ", $rowTraining["job_description_id"]);
+                                            foreach($array_row as $emp_JD) {
+                                                if (in_array($emp_JD,$array_rowTraining)) {
+                                                    $found = true;
                                                 }
                                             }
-
                                         }
-                                    }
 
-                                    if ($type == 1 AND $trainingResult == 100) { $found = true; }
-                                    else if ($type == 2 AND $trainingResult != 100) { $found = true; }
-                                    else if ($type == 3 AND $trainingResult == 100) { $found = true; }
-                                    else {
-                                        $found = false;
-                                    }
+                                        $trainingStatus = "Not Yet Started";
+                                        $trainingResult = 0;
+                                        $completed_date = '';
+                                        $due_date = '';
+                                        $pdf_quiz = '';
+                                        $selectQuizResult = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_result WHERE user_id = $current_userID " );
+                                        if ( mysqli_num_rows($selectQuizResult) > 0 ) {
+                                            while($rowQuizResult = mysqli_fetch_array($selectQuizResult)) {
+                                                $trainingResultID = $rowQuizResult['ID'];
+                                                $trainingQuizID = $rowQuizResult['quiz_id'];
 
-                                    if ( $found == true ) {
-                                        echo '<tr id="tr_'.$training_ID.'">
-                                            <td >'. $title .'</td>
-                                            <td class="text-center">'; echo $trainingResult == 100 ? $completed_date:''; echo '</td>
-                                            <td class="text-center">'; echo $trainingResult == 100 ? $due_date:''; echo '</td>
-                                            <td class="text-center">'.$trainingStatus.'</td>
-                                            <td class="text-center">'; echo $trainingResult == 100 ? '<a href="'.$base_url.'pdf?id='.$pdf_quiz.'" target="_blank" class="btn btn-circle btn-sm btn-success">View</a>':''; echo '</td>
-                                        </tr>';
+                                                if (!empty($rowTraining['quiz_id'])) {
+                                                    $array_quiz_id = explode(', ', $rowTraining['quiz_id']);
+                                                    if (in_array($trainingQuizID, $array_quiz_id)) {
+                                                        $trainingResult = $rowQuizResult['result'];
+                                                        $pdf_quiz = $trainingResultID;
+
+                                                        if ($trainingResult == 100) { $trainingStatus = "Completed"; }
+                                                        else { $trainingStatus = "Not Yet Started"; }
+                                        
+                                                        $completed_date = $rowQuizResult['last_modified'];
+                                                        $completed_date = new DateTime($completed_date);
+                                                        $completed_date = $completed_date->format('M d, Y');
+                                                        
+                                                        $due_date = date('Y-m-d', strtotime('+1 year', strtotime($completed_date)) );
+                                                        $due_date = new DateTime($due_date);
+                                                        $due_date = $due_date->format('M d, Y');
+                                                    }
+                                                }
+
+                                            }
+                                        }
+
+                                        if ($type == 1 AND $trainingResult == 100) { $found = true; }
+                                        else if ($type == 2 AND $trainingResult != 100) { $found = true; }
+                                        else if ($type == 3 AND $trainingResult == 100) { $found = true; }
+                                        else {
+                                            $found = false;
+                                        }
+
+                                        if ( $found == true ) {
+                                            echo '<tr id="tr_'.$training_ID.'">
+                                                <td >'. $title .'</td>
+                                                <td class="text-center">'; echo $trainingResult == 100 ? $completed_date:''; echo '</td>
+                                                <td class="text-center">'; echo $trainingResult == 100 ? $due_date:''; echo '</td>
+                                                <td class="text-center">'.$trainingStatus.'</td>
+                                                <td class="text-center">'; echo $trainingResult == 100 ? '<a href="'.$base_url.'pdf?id='.$pdf_quiz.'" target="_blank" class="btn btn-circle btn-sm btn-success">View</a>':''; echo '</td>
+                                            </tr>';
+                                        }
                                     }
                                 }
                             }
-                        }
-                    echo '</tbody>
-                </table>
-            </div>
-        </div>';
+                        echo '</tbody>
+                    </table>
+                </div>
+            </div>';
 
-        mysqli_close($conn);
+            mysqli_close($conn);
+        }
     }
 
     // Quiz Section
@@ -12912,8 +13018,52 @@
                 </li>
             </ul>
             <div class="tab-content margin-top-20">
-                <div class="tab-pane '; echo $page == 1 ? '':'active'; echo '" id="tabBasic_2">
-                    <div class="row">
+                <div class="tab-pane '; echo $page == 1 ? '':'active'; echo '" id="tabBasic_2">';
+
+                    $pictogram = 'cus_edit_basic';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $row = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($row["files"])) {
+                                $arr_filename = explode(' | ', $row["files"]);
+                                $arr_filetype = explode(' | ', $row["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $row["files"];
+                                if ($row["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($row["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
+
+                    echo '<div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="control-label">Customer Name</label>
@@ -13249,8 +13399,52 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane" id="tabContact_2">
-                    <a href="#modalNewContact" data-toggle="modal" class="btn green" onclick="btnNew_Contact('.$user_id.', 2, \'btnNew_Contact\')">Add New Contact</a>
+                <div class="tab-pane" id="tabContact_2">';
+
+                    $pictogram = 'cus_edit_contact';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $row = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($row["files"])) {
+                                $arr_filename = explode(' | ', $row["files"]);
+                                $arr_filetype = explode(' | ', $row["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $row["files"];
+                                if ($row["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($row["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
+
+                    echo '<a href="#modalNewContact" data-toggle="modal" class="btn green" onclick="btnNew_Contact('.$user_id.', 2, \'btnNew_Contact\')">Add New Contact</a>
                     <div class="table-scrollable">
                         <table class="table table-bordered table-hover" id="tableData_Contact_2">
                             <thead>
@@ -13315,6 +13509,50 @@
                     </div>
                 </div>
                 <div class="tab-pane '; echo $page == 1 ? 'active':''; echo '" id="tabDocuments_2">';
+
+                    $pictogram = 'cus_edit_docs';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $row = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($row["files"])) {
+                                $arr_filename = explode(' | ', $row["files"]);
+                                $arr_filetype = explode(' | ', $row["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $row["files"];
+                                if ($row["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($row["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
+
                     if ($page == 2) {
                         echo '<div class="mt-checkbox-list">';
                             
@@ -13958,6 +14196,49 @@
                 </div>
                 <div class="tab-pane" id="tabProduct_2">';
 
+                    $pictogram = 'cus_edit_product';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $row = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($row["files"])) {
+                                $arr_filename = explode(' | ', $row["files"]);
+                                $arr_filetype = explode(' | ', $row["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $row["files"];
+                                if ($row["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($row["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
+
                     if ($page == 2) { echo '<a href="#modalNewProduct" data-toggle="modal" class="btn green" onclick="btnNew_Product('.$user_id.', 2, \'modalNewProduct\')">Add New Product</a>'; }
                     
                     echo '<div class="table-scrollable">
@@ -14021,6 +14302,49 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tabService_2">';
+
+                    $pictogram = 'cus_edit_service';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $row = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($row["files"])) {
+                                $arr_filename = explode(' | ', $row["files"]);
+                                $arr_filetype = explode(' | ', $row["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $row["files"];
+                                if ($row["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($row["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
 
                     if ($page == 2) { echo '<a href="#modalNewService" data-toggle="modal" class="btn green" onclick="btnNew_Service('.$user_id.', 2, \'modalNewService\')">Add New Service</a>'; }
                     
@@ -14086,8 +14410,52 @@
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane" id="tabAuditReview_2">
-                    <h4><strong>Audit</strong></h4>
+                <div class="tab-pane" id="tabAuditReview_2">';
+
+                    $pictogram = 'cus_edit_review';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $row = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($row["files"])) {
+                                $arr_filename = explode(' | ', $row["files"]);
+                                $arr_filetype = explode(' | ', $row["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $row["files"];
+                                if ($row["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($row["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
+
+                    echo '<h4><strong>Audit</strong></h4>
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
@@ -19423,8 +19791,52 @@
 
             echo '</ul>
             <div class="tab-content margin-top-20">
-                <div class="tab-pane '; echo $page == 2 ? '':'active'; echo '" id="tabBasic_2">
-                    <div class="row">
+                <div class="tab-pane '; echo $page == 2 ? '':'active'; echo '" id="tabBasic_2">';
+
+                    $pictogram = 'sup_edit_basic';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $row = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($row["files"])) {
+                                $arr_filename = explode(' | ', $row["files"]);
+                                $arr_filetype = explode(' | ', $row["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $row["files"];
+                                if ($row["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($row["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
+
+                    echo '<div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="control-label">Vendor Code</label>
@@ -19848,8 +20260,52 @@
                         echo '</tbody>
                     </table>
                 </div>
-                <div class="tab-pane" id="tabContact_2">
-                    <a href="#modalNewContact" data-toggle="modal" class="btn green" onclick="btnNew_Contact('.$user_id.', 2, \'modalNewContact\')">Add New Contact</a>
+                <div class="tab-pane" id="tabContact_2">';
+
+                    $pictogram = 'sup_edit_contact';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $row = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($row["files"])) {
+                                $arr_filename = explode(' | ', $row["files"]);
+                                $arr_filetype = explode(' | ', $row["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $row["files"];
+                                if ($row["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($row["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
+
+                    echo '<a href="#modalNewContact" data-toggle="modal" class="btn green" onclick="btnNew_Contact('.$user_id.', 2, \'modalNewContact\')">Add New Contact</a>
                     <div class="table-scrollable">
                         <table class="table table-bordered table-hover" id="tableData_Contact_2">
                             <thead>
@@ -19913,8 +20369,52 @@
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane '; echo $page == 2 ? 'active':''; echo '" id="tabDocuments_2">
-                    <div class="mt-checkbox-list">';
+                <div class="tab-pane '; echo $page == 2 ? 'active':''; echo '" id="tabDocuments_2">';
+
+                    $pictogram = 'sup_edit_docs';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $row = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($row["files"])) {
+                                $arr_filename = explode(' | ', $row["files"]);
+                                $arr_filetype = explode(' | ', $row["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $row["files"];
+                                if ($row["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($row["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
+
+                    echo '<div class="mt-checkbox-list">';
                         
                         $selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE organic = 0 ORDER BY name" );
                         if ( mysqli_num_rows($selectRequirement2) > 0 ) {
@@ -20558,6 +21058,49 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tabMaterials_2">';
+
+                    $pictogram = 'sup_edit_material';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $row = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($row["files"])) {
+                                $arr_filename = explode(' | ', $row["files"]);
+                                $arr_filetype = explode(' | ', $row["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $row["files"];
+                                if ($row["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($row["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
                     
                     if ($page == 1) { echo '<a href="#modalNewMaterial" data-toggle="modal" class="btn green margin-bottom-15" onclick="btnNew_Material('.$user_id.', 2, \'modalNewMaterial\')">Add New Material</a>'; }
                     
@@ -20652,6 +21195,49 @@
                 </div>
                 <div class="tab-pane" id="tabService_2">';
 
+                    $pictogram = 'sup_edit_service';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $row = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($row["files"])) {
+                                $arr_filename = explode(' | ', $row["files"]);
+                                $arr_filetype = explode(' | ', $row["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $row["files"];
+                                if ($row["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($row["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
+
                     if ($page == 1) { echo '<a href="#modalNewService" data-toggle="modal" class="btn green" onclick="btnNew_Service('.$user_id.', 2, \'modalNewService\')">Add New Service</a>'; }
                     
                     echo '<div class="table-scrollable">
@@ -20715,8 +21301,52 @@
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane" id="tabAuditReview_2">
-                    <h4><strong>Audit</strong></h4>
+                <div class="tab-pane" id="tabAuditReview_2">';
+
+                    $pictogram = 'sup_edit_review';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $row = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($row["files"])) {
+                                $arr_filename = explode(' | ', $row["files"]);
+                                $arr_filetype = explode(' | ', $row["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $row["files"];
+                                if ($row["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($row["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
+
+                    echo '<h4><strong>Audit</strong></h4>
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
@@ -34013,6 +34643,15 @@
         $id = $_GET['modalView_Products'];
         $allergen = array();
 
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_products WHERE ID = $id" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
@@ -34066,7 +34705,53 @@
             </ul>
             <div class="tab-content margin-top-20">
                 <div class="tab-pane active" id="tabBasic2">
-                    <h4><strong>Basic Details</strong></h4>
+                    <h4>
+                        <strong>Basic Details</strong>';
+
+                        $pictogram = 'prod_basic';
+                        if ($user_id == 163) {
+                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                        } else {
+                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                $row = mysqli_fetch_array($selectPictogram);
+
+                                $files = '';
+                                $type = 'iframe';
+                                if (!empty($row["files"])) {
+                                    $arr_filename = explode(' | ', $row["files"]);
+                                    $arr_filetype = explode(' | ', $row["filetype"]);
+                                    $str_filename = '';
+
+                                    foreach($arr_filename as $val_filename) {
+                                        $str_filename = $val_filename;
+                                    }
+                                    foreach($arr_filetype as $val_filetype) {
+                                        $str_filetype = $val_filetype;
+                                    }
+
+                                    $files = $row["files"];
+                                    if ($row["filetype"] == 1) {
+                                        $fileExtension = fileExtension($files);
+                                        $src = $fileExtension['src'];
+                                        $embed = $fileExtension['embed'];
+                                        $type = $fileExtension['type'];
+                                        $file_extension = $fileExtension['file_extension'];
+                                        $url = $base_url.'uploads/pictogram/';
+
+                                        $files = $src.$url.rawurlencode($files).$embed;
+                                    } else if ($row["filetype"] == 3) {
+                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                    }
+                                }
+
+                                if (!empty($files)) {
+                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                }
+                            }
+                        }
+
+                    echo '</h4>
                     <div class="row margin-bottom-20">
                         <div class="col-md-6 productMain">
                             <p><strong>Main Product View</strong></p>
@@ -34408,7 +35093,53 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tabAllergens2">
-                    <h4><strong>Allergens</strong></h4>
+                    <h4>
+                        <strong>Allergens</strong>';
+
+                        $pictogram = 'prod_allergen';
+                        if ($user_id == 163) {
+                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                        } else {
+                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                $row = mysqli_fetch_array($selectPictogram);
+
+                                $files = '';
+                                $type = 'iframe';
+                                if (!empty($row["files"])) {
+                                    $arr_filename = explode(' | ', $row["files"]);
+                                    $arr_filetype = explode(' | ', $row["filetype"]);
+                                    $str_filename = '';
+
+                                    foreach($arr_filename as $val_filename) {
+                                        $str_filename = $val_filename;
+                                    }
+                                    foreach($arr_filetype as $val_filetype) {
+                                        $str_filetype = $val_filetype;
+                                    }
+
+                                    $files = $row["files"];
+                                    if ($row["filetype"] == 1) {
+                                        $fileExtension = fileExtension($files);
+                                        $src = $fileExtension['src'];
+                                        $embed = $fileExtension['embed'];
+                                        $type = $fileExtension['type'];
+                                        $file_extension = $fileExtension['file_extension'];
+                                        $url = $base_url.'uploads/pictogram/';
+
+                                        $files = $src.$url.rawurlencode($files).$embed;
+                                    } else if ($row["filetype"] == 3) {
+                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                    }
+                                }
+
+                                if (!empty($files)) {
+                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                }
+                            }
+                        }
+
+                    echo '</h4>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -34476,7 +35207,53 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tabDimensions2">
-                    <h4><strong>Dimensions</strong></h4>
+                    <h4>
+                        <strong>Dimensions</strong>';
+
+                        $pictogram = 'prod_dimension';
+                        if ($user_id == 163) {
+                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                        } else {
+                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                $row = mysqli_fetch_array($selectPictogram);
+
+                                $files = '';
+                                $type = 'iframe';
+                                if (!empty($row["files"])) {
+                                    $arr_filename = explode(' | ', $row["files"]);
+                                    $arr_filetype = explode(' | ', $row["filetype"]);
+                                    $str_filename = '';
+
+                                    foreach($arr_filename as $val_filename) {
+                                        $str_filename = $val_filename;
+                                    }
+                                    foreach($arr_filetype as $val_filetype) {
+                                        $str_filetype = $val_filetype;
+                                    }
+
+                                    $files = $row["files"];
+                                    if ($row["filetype"] == 1) {
+                                        $fileExtension = fileExtension($files);
+                                        $src = $fileExtension['src'];
+                                        $embed = $fileExtension['embed'];
+                                        $type = $fileExtension['type'];
+                                        $file_extension = $fileExtension['file_extension'];
+                                        $url = $base_url.'uploads/pictogram/';
+
+                                        $files = $src.$url.rawurlencode($files).$embed;
+                                    } else if ($row["filetype"] == 3) {
+                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                    }
+                                }
+
+                                if (!empty($files)) {
+                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                }
+                            }
+                        }
+
+                    echo '</h4>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -34521,7 +35298,53 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tabStorage2">
-                    <h4><strong>Storage</strong></h4>
+                    <h4>
+                        <strong>Storage</strong>';
+
+                        $pictogram = 'prod_storage';
+                        if ($user_id == 163) {
+                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                        } else {
+                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                $row = mysqli_fetch_array($selectPictogram);
+
+                                $files = '';
+                                $type = 'iframe';
+                                if (!empty($row["files"])) {
+                                    $arr_filename = explode(' | ', $row["files"]);
+                                    $arr_filetype = explode(' | ', $row["filetype"]);
+                                    $str_filename = '';
+
+                                    foreach($arr_filename as $val_filename) {
+                                        $str_filename = $val_filename;
+                                    }
+                                    foreach($arr_filetype as $val_filetype) {
+                                        $str_filetype = $val_filetype;
+                                    }
+
+                                    $files = $row["files"];
+                                    if ($row["filetype"] == 1) {
+                                        $fileExtension = fileExtension($files);
+                                        $src = $fileExtension['src'];
+                                        $embed = $fileExtension['embed'];
+                                        $type = $fileExtension['type'];
+                                        $file_extension = $fileExtension['file_extension'];
+                                        $url = $base_url.'uploads/pictogram/';
+
+                                        $files = $src.$url.rawurlencode($files).$embed;
+                                    } else if ($row["filetype"] == 3) {
+                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                    }
+                                }
+
+                                if (!empty($files)) {
+                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                }
+                            }
+                        }
+
+                    echo '</h4>
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
@@ -34593,7 +35416,53 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tabManufacturing2">
-                    <h4><strong>Manufacturing Details</strong></h4>
+                    <h4>
+                        <strong>Manufacturing Details</strong>';
+
+                        $pictogram = 'prod_manuf';
+                        if ($user_id == 163) {
+                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                        } else {
+                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                $row = mysqli_fetch_array($selectPictogram);
+
+                                $files = '';
+                                $type = 'iframe';
+                                if (!empty($row["files"])) {
+                                    $arr_filename = explode(' | ', $row["files"]);
+                                    $arr_filetype = explode(' | ', $row["filetype"]);
+                                    $str_filename = '';
+
+                                    foreach($arr_filename as $val_filename) {
+                                        $str_filename = $val_filename;
+                                    }
+                                    foreach($arr_filetype as $val_filetype) {
+                                        $str_filetype = $val_filetype;
+                                    }
+
+                                    $files = $row["files"];
+                                    if ($row["filetype"] == 1) {
+                                        $fileExtension = fileExtension($files);
+                                        $src = $fileExtension['src'];
+                                        $embed = $fileExtension['embed'];
+                                        $type = $fileExtension['type'];
+                                        $file_extension = $fileExtension['file_extension'];
+                                        $url = $base_url.'uploads/pictogram/';
+
+                                        $files = $src.$url.rawurlencode($files).$embed;
+                                    } else if ($row["filetype"] == 3) {
+                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                    }
+                                }
+
+                                if (!empty($files)) {
+                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                }
+                            }
+                        }
+
+                    echo '</h4>
                     <div class="row '.(!in_array($row['category'], [27,28,29,30]) ? '' : 'hide').'" data-manufacturing-details="default">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -34759,7 +35628,53 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tabProductDescription2">
-                    <h4><strong>Product Description, including Important Food Safety Characteristics</strong></h4>
+                    <h4>
+                        <strong>Product Description, including Important Food Safety Characteristics</strong>';
+
+                        $pictogram = 'prod_desc';
+                        if ($user_id == 163) {
+                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                        } else {
+                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                $row = mysqli_fetch_array($selectPictogram);
+
+                                $files = '';
+                                $type = 'iframe';
+                                if (!empty($row["files"])) {
+                                    $arr_filename = explode(' | ', $row["files"]);
+                                    $arr_filetype = explode(' | ', $row["filetype"]);
+                                    $str_filename = '';
+
+                                    foreach($arr_filename as $val_filename) {
+                                        $str_filename = $val_filename;
+                                    }
+                                    foreach($arr_filetype as $val_filetype) {
+                                        $str_filetype = $val_filetype;
+                                    }
+
+                                    $files = $row["files"];
+                                    if ($row["filetype"] == 1) {
+                                        $fileExtension = fileExtension($files);
+                                        $src = $fileExtension['src'];
+                                        $embed = $fileExtension['embed'];
+                                        $type = $fileExtension['type'];
+                                        $file_extension = $fileExtension['file_extension'];
+                                        $url = $base_url.'uploads/pictogram/';
+
+                                        $files = $src.$url.rawurlencode($files).$embed;
+                                    } else if ($row["filetype"] == 3) {
+                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                    }
+                                }
+
+                                if (!empty($files)) {
+                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                }
+                            }
+                        }
+
+                    echo '</h4>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -34830,7 +35745,53 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tabExercises2">
-                    <h4><strong>Exercises</strong></h4>
+                    <h4>
+                        <strong>Exercises</strong>';
+
+                        $pictogram = 'prod_exercise';
+                        if ($user_id == 163) {
+                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                        } else {
+                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                $row = mysqli_fetch_array($selectPictogram);
+
+                                $files = '';
+                                $type = 'iframe';
+                                if (!empty($row["files"])) {
+                                    $arr_filename = explode(' | ', $row["files"]);
+                                    $arr_filetype = explode(' | ', $row["filetype"]);
+                                    $str_filename = '';
+
+                                    foreach($arr_filename as $val_filename) {
+                                        $str_filename = $val_filename;
+                                    }
+                                    foreach($arr_filetype as $val_filetype) {
+                                        $str_filetype = $val_filetype;
+                                    }
+
+                                    $files = $row["files"];
+                                    if ($row["filetype"] == 1) {
+                                        $fileExtension = fileExtension($files);
+                                        $src = $fileExtension['src'];
+                                        $embed = $fileExtension['embed'];
+                                        $type = $fileExtension['type'];
+                                        $file_extension = $fileExtension['file_extension'];
+                                        $url = $base_url.'uploads/pictogram/';
+
+                                        $files = $src.$url.rawurlencode($files).$embed;
+                                    } else if ($row["filetype"] == 3) {
+                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                    }
+                                }
+
+                                if (!empty($files)) {
+                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                }
+                            }
+                        }
+
+                    echo '</h4>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -34847,7 +35808,53 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tabDocuments2">
-                    <h4><strong>Documents</strong></h4>';
+                    <h4>
+                        <strong>Documents</strong>';
+
+                        $pictogram = 'prod_docs';
+                        if ($user_id == 163) {
+                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                        } else {
+                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                $row = mysqli_fetch_array($selectPictogram);
+
+                                $files = '';
+                                $type = 'iframe';
+                                if (!empty($row["files"])) {
+                                    $arr_filename = explode(' | ', $row["files"]);
+                                    $arr_filetype = explode(' | ', $row["filetype"]);
+                                    $str_filename = '';
+
+                                    foreach($arr_filename as $val_filename) {
+                                        $str_filename = $val_filename;
+                                    }
+                                    foreach($arr_filetype as $val_filetype) {
+                                        $str_filetype = $val_filetype;
+                                    }
+
+                                    $files = $row["files"];
+                                    if ($row["filetype"] == 1) {
+                                        $fileExtension = fileExtension($files);
+                                        $src = $fileExtension['src'];
+                                        $embed = $fileExtension['embed'];
+                                        $type = $fileExtension['type'];
+                                        $file_extension = $fileExtension['file_extension'];
+                                        $url = $base_url.'uploads/pictogram/';
+
+                                        $files = $src.$url.rawurlencode($files).$embed;
+                                    } else if ($row["filetype"] == 3) {
+                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                    }
+                                }
+
+                                if (!empty($files)) {
+                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                }
+                            }
+                        }
+
+                    echo '</h4>';
                     
                     $url = $base_url.'uploads/products/';
 
@@ -60510,15 +61517,17 @@
                                     $url = $base_url.'uploads/library/';
 
                                     $t_files = $src.$url.rawurlencode($t_files).$embed;
+                                    $t_files = '<a href="'.$t_files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
                                 }
                             } else if ($t_filetype == 3) {
                                 $t_files = preg_replace('#[^/]*$#', '', $t_files).'preview';
+                                $t_files = '<a href="'.$t_files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
                             } else if ($t_filetype == 4) {
                                 $file_extension = 'fa-strikethrough';
                                 $target = '_blank';
                                 $datafancybox = '';
+                                $t_files = '<a href="'.$t_files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
                             }
-                            $t_files = '<a href="'.$t_files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
 
                             $name = $rowItem["parentName"];
                             $type_id = $rowItem["libType"];

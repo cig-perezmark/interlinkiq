@@ -788,11 +788,11 @@ License: You must have a valid license purchased only from themeforest(the above
     }
 
     .pictogram-align {
-        display: flex;
+        display: flex !important;
         align-items: center;
     }
     .pictogram-align-between {
-        display: flex;
+        display: flex !important;
         align-items: center;
         justify-content: space-between;
     }
@@ -1594,7 +1594,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             <?php endif; ?>
                         </li>
                         <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-                            <?php if($user_id == 2 || $user_id == 1 || $user_id == 19 || $user_id == 43 || $user_id == 35 || $user_id == 54 || $user_id == 40 || $user_id == 41 || $user_id == 42 || $user_id == 178 || $user_id == 55 || $user_id == 100 || $user_id == 693 || $user_id == 88 || $user_id == 1027 || $user_id == 1360 || $user_id == 1365 || $user_id == 1366 || $user_id == 1453): ?>
+                            <?php if($user_id == 2 || $user_id == 1 || $user_id == 19 || $user_id == 43 || $user_id == 35 || $user_id == 54 || $user_id == 40 || $user_id == 41 || $user_id == 42 || $user_id == 178 || $user_id == 55 || $user_id == 100 || $user_id == 693 || $user_id == 88 || $user_id == 1027 || $user_id == 1360 || $user_id == 1365 || $user_id == 1366 || $user_id == 1453 || $user_id == 1481): ?>
                             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
 
                                 <i class="icon-bell"></i>

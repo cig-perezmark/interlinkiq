@@ -535,6 +535,8 @@
                                                                     <td class="text-center">
                                                                         <div class="btn-group btn-group-circle">
                                                                             <a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView('. $s_ID .')">View</a>
+                                                                            <a href="#modalChart" class="btn btn-info btn-sm btnChart" data-toggle="modal" data-id="'. $s_ID .'">
+																			<i class="fas fa-chart-line"></i> </a>
                                                                             <a href="javascript:;" class="btn btn-danger btn-sm btnDelete" onclick="btnDelete('. $s_ID .')">Delete</a>
                                                                         </div>
                                                                     </td>
@@ -911,8 +913,8 @@
                                             </div>
                                         </div>
 
-<!-- Nelmar Customer Analytics -->
-<div class="tab-pane" id="tab_customer_analytics">                       
+									    <!-- Nelmar Customer Analytics -->
+                                        <div class="tab-pane" id="tab_customer_analytics">                       
 												<div class="row widget-row">   																																	
 													<div class="col-md-6">                                     
 														<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">   
@@ -932,14 +934,32 @@
 																</div>
 															</div>     
 														</div>  													
-												    </div>
-											    </div>
-										    </div>
-                                        </div>
-                                     </div>
+													<div class="col-md-6">                                     
+														<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">   
+															<h3 class="d-flex justify-content-center">Requirements</h3>   
+																<div class="widget-thumb-wrap">                                       
+																	<div id="requirementchartdiv1" style="width: 100%; height: 500px;">																		
+																	</div>                                        
+																</div>
+															</div>     
+														</div> 
+												    <div class="col-md-6"> 
+													    <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">                                         
+														    <h3 class="d-flex justify-content-center">Frequency</h3>
+															    <div class="widget-thumb-wrap">
+																    <div id="donutChart2" style="width: 90%; height: 400px;">
+																</div>                                 
+															</div> 
+														</div>                               
+													</div>	
+												</div>
+											</div>
+										</div>
+                                    </div>
                                 </div>
-                                <!-- END BORDERED TABLE PORTLET-->
                             </div>
+                            <!-- END BORDERED TABLE PORTLET-->
+                    </div>
 
                         <!-- MODAL AREA-->
                         <div class="modal fade" id="modalNew" tabindex="-1" role="basic" aria-hidden="true">
@@ -1825,29 +1845,18 @@
 																</div>
 															</div>     
 														</div> 
-												<div class="col-md-12">                                     
-													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-1">   
-														<h3 class="d-flex justify-content-center">Compliance</h3>   
+												     <div class="col-md-12">                                     
+													    <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-1">   
+														    <h3 class="d-flex justify-content-center">Compliance</h3>   
 																<div class="widget-thumb-wrap">                                       																
 																	<div id="complianceChartDiv" style="width: 100%; height: 500px;">																	
 																	</div>
 																</div>
 															</div>     
-														</div> 
-
-												<!-- <div class="col-md-12"> 
-													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-1">                                         
-														 <h3 class="d-flex justify-content-center">Materials</h3>
-																<div class="widget-thumb-wrap">
-																	<div id="materialsChartDiv" style="width: 100%; height: 500px;">																	
-																	</div>
-																</div>                                 
-															</div> 
-														</div>   -->														
-														
-														<div class="col-md-12"> 
-													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-1">                                         
-														 <h3 class="d-flex justify-content-center">Audit & Review</h3>
+														</div> 																											
+													<div class="col-md-12"> 
+													    <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-1">                                         
+														    <h3 class="d-flex justify-content-center">Audit & Review</h3>
 																<div class="widget-thumb-wrap">
 																	<div id="auditChartdiv" style="width: 100%; height: 500px;">																	
 																	</div>

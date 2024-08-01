@@ -53,7 +53,18 @@
     table.table-bordered.dataTable thead > tr:last-child th:last-child {
 		border-right-width: unset;
 	}
+
+
 </style>
+
+                <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+				<script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+				<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+				<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+				<script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+				<script src="https://cdn.amcharts.com/lib/5/plugins/legend.js"></script>
+  				<script src="https://cdn.amcharts.com/lib/5/radar.js"></script>
+
 
                     <div class="row hide">
                         <div class="col-md-3">
@@ -254,6 +265,9 @@
                                                 </li>';
                                             }
                                         ?>
+                                       <li>
+											<a href="#tab_customer_analytics" data-toggle="tab">Analytics</a>
+									   </li>
                                     </ul>
                                 </div>
                                 <div class="portlet-body">
@@ -985,11 +999,36 @@
                                                 </table>
                                             </div>
                                         </div>
-                                    </div>
+
+<!-- Nelmar Customer Analytics -->
+<div class="tab-pane" id="tab_customer_analytics">                       
+												<div class="row widget-row">   																																	
+													<div class="col-md-6">                                     
+														<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">   
+															<h3 class="d-flex justify-content-center">Send</h3>   
+																<div class="widget-thumb-wrap">                                       
+																	<div id="waterfallChart1" style="width: 100%; height: 500px;">																		
+																	</div>                                        
+																</div>
+															</div>     
+														</div>  
+													<div class="col-md-6">                                     
+														<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">   
+															<h3 class="d-flex justify-content-center">Received</h3>   
+																<div class="widget-thumb-wrap">                                       
+																	<div id="receivedchartdiv" style="width: 100%; height: 500px;">																		
+																	</div>                                        
+																</div>
+															</div>     
+														</div>  													
+												    </div>
+											    </div>
+										    </div>
+                                        </div>
+                                     </div>
                                 </div>
+                                <!-- END BORDERED TABLE PORTLET-->
                             </div>
-                            <!-- END BORDERED TABLE PORTLET-->
-                        </div>
 
                         <!-- MODAL AREA-->
                         <div class="modal fade" id="modalNew" tabindex="-1" role="basic" aria-hidden="true">
@@ -2119,16 +2158,76 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- / END MODAL AREA -->
-                                     
-                    </div><!-- END CONTENT BODY -->
+
+                <!--Nelmar Customer Analytics Modal -->
+                    <div id="modalChart" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+							<div class="modal-dialog modal-lg">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+										<h4 class="modal-title">Customer Chart</h4>
+									</div>
+									<div class="modal-body">																			
+										<div class="row ">   
+											<div class="col-md-12">   											                                  
+													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-1">   
+														<h3 class="d-flex justify-content-center">Requirements</h3>   
+																<div class="widget-thumb-wrap">                                       																
+																	<div id="requirementChartDiv" style="width: 100%; height: 500px;">																	
+																	</div>
+																</div>
+															</div>     
+														</div> 
+												<div class="col-md-12">                                     
+													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-1">   
+														<h3 class="d-flex justify-content-center">Compliance</h3>   
+																<div class="widget-thumb-wrap">                                       																
+																	<div id="complianceChartDiv" style="width: 100%; height: 500px;">																	
+																	</div>
+																</div>
+															</div>     
+														</div> 
+
+												<!-- <div class="col-md-12"> 
+													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-1">                                         
+														 <h3 class="d-flex justify-content-center">Materials</h3>
+																<div class="widget-thumb-wrap">
+																	<div id="materialsChartDiv" style="width: 100%; height: 500px;">																	
+																	</div>
+																</div>                                 
+															</div> 
+														</div>   -->														
+														
+														<div class="col-md-12"> 
+													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-1">                                         
+														 <h3 class="d-flex justify-content-center">Audit & Review</h3>
+																<div class="widget-thumb-wrap">
+																	<div id="auditChartdiv" style="width: 100%; height: 500px;">																	
+																	</div>
+																</div>                                 
+															</div> 
+														</div>
+													</div>													
+												</div>
+										  	<div class="modal-footer">
+										<button type="button" class="btn btn-outline dark" data-dismiss="modal">Close</button>
+									</div>
+								</div>
+							</div>
+						</div>
+                    <!-- / END MODAL AREA -->                                    
+                </div><!-- END CONTENT BODY -->
 
         <?php include_once ('footer.php'); ?>
         
         <script src="assets/global/plugins/bootstrap-tabdrop/js/bootstrap-tabdrop.js" type="text/javascript"></script>
         <script src="assets/global/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js" type="text/javascript"></script>
-
         <script src="assets/pages/scripts/jquery.table2excel.js" type="text/javascript"></script>
+
+        
+        <?php if($switch_user_id == 464) { ?>
+            <script src="AnalyticsIQ/customer_chart.js"></script>
+        <?php } ?>	
         
         <script>
             $(document).ready(function(){

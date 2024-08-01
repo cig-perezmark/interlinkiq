@@ -1,4 +1,4 @@
-//Requirements, Materials, Audit & Review for Modal Analytics
+//Supplier Requirements, Materials, Audit & Review for Modal Analytics
 
 let currentRoot = null;
 let complianceRoot = null;
@@ -10,7 +10,6 @@ function displayChart(data) {
     [currentRoot, complianceRoot, materialsRoot, auditRoot].forEach(root => {
         if (root) {
             root.dispose();
-            root = null;
         }
     });
 
@@ -102,7 +101,9 @@ function displayChart(data) {
 
     complianceRoot = am5.Root.new("complianceChartDiv");
     complianceRoot.setThemes([am5themes_Animated.new(complianceRoot)]);
-    var complianceChart = complianceRoot.container.children.push(am5percent.PieChart.new(complianceRoot, {}));
+    var complianceChart = complianceRoot.container.children.push(am5percent.PieChart.new(complianceRoot, {
+        radius: am5.percent(65)  // Adjust the size of the pie chart
+    }));
     var complianceSeries = complianceChart.series.push(am5percent.PieSeries.new(complianceRoot, {
         valueField: "value",
         categoryField: "category",
@@ -121,6 +122,7 @@ function displayChart(data) {
     materialsRoot = am5.Root.new("materialsChartDiv");
     materialsRoot.setThemes([am5themes_Animated.new(materialsRoot)]);
     var materialsChart = materialsRoot.container.children.push(am5percent.PieChart.new(materialsRoot, {
+        radius: am5.percent(65),  // Adjust the size of the donut chart
         innerRadius: am5.percent(50)
     }));
     var materialsSeries = materialsChart.series.push(am5percent.PieSeries.new(materialsRoot, {
@@ -137,45 +139,35 @@ function displayChart(data) {
     materialsSeries.slices.template.setAll({
         tooltipText: "{category}: {value}"
     });
-    materialsSeries.labels.template.set("text", "[bold]{category}[/]\n{value}");
+    materialsSeries.labels.template.set("text", "[regular]{category}[/]\n{value}");
 
     var totalLabel = materialsChart.seriesContainer.children.push(am5.Label.new(materialsRoot, {
-        text: `Total materials\n${data.material_count}`,
-        fontSize: 20,
+        text: `Materials\n${data.material_count}`,
+        fontSize: 18,  // Adjust the size of the total label
         centerX: am5.p50,
         centerY: am5.p50,
         populateText: true,
-        textAlign: "center"
+        textAlign: "center",
+        fontWeight: "bold",  // Make the font bold
+        fill: am5.color(0x0000FF)  // Set the font color to blue
     }));
 
     // Integrate original audit chart script if audit_data exists
-    if (data.audit_data && data.audit_data.length > 0) {
-        // Clean data to remove extra spaces and format correctly
-        const auditData = data.audit_data.map(item => {
-            const auditReportStart = new Date(item['Audit Report Date'].trim());
-            const auditReportEnd = new Date(item['Audit Report End Date'].trim());
-            const auditCertificateStart = new Date(item['Audit Certificate Date'].trim());
-            const auditCertificateEnd = new Date(item['Audit Certificate End Date'].trim());
-            const auditCorrectiveActionStart = new Date(item['Audit Corrective Action Date'].trim());
-            const auditCorrectiveActionEnd = new Date(item['Audit Corrective Action End Date'].trim());
-            const reviewedStart = new Date(item['Reviewed Date'].trim());
-            const reviewedEnd = new Date(item['Reviewed Due'].trim());
+    const auditData = [{
+        reviewed_by: data.reviewed_by,
+        annual_review_count: data.annual_review_count,
+        total_audits: data.total_audits,
+        audit_report_start: parseDate(data.audit_report_date.trim()),
+        audit_report_duration: calculateDuration(data.audit_report_date, data.audit_report_end_date),
+        audit_certificate_start: parseDate(data.audit_certificate_date.trim()),
+        audit_certificate_duration: calculateDuration(data.audit_certificate_date, data.audit_certificate_end_date),
+        audit_corrective_action_start: parseDate(data.audit_action_date.trim()),
+        audit_corrective_action_duration: calculateDuration(data.audit_action_date, data.audit_action_end_date),
+        reviewed_start: parseDate(data.reviewed_date.trim()),
+        reviewed_duration: calculateDuration(data.reviewed_date, data.reviewed_due)
+    }];
 
-            return {
-                reviewed_by: item.reviewed_by.trim(),
-                annual_review_count: parseInt(item.annual_review_count, 10),
-                total_audits: parseInt(item.total_audits, 10),
-                audit_report_start: auditReportStart,
-                audit_report_duration: (auditReportEnd - auditReportStart) / (1000 * 60 * 60 * 24),
-                audit_certificate_start: auditCertificateStart,
-                audit_certificate_duration: (auditCertificateEnd - auditCertificateStart) / (1000 * 60 * 60 * 24),
-                audit_corrective_action_start: auditCorrectiveActionStart,
-                audit_corrective_action_duration: (auditCorrectiveActionEnd - auditCorrectiveActionStart) / (1000 * 60 * 60 * 24),
-                reviewed_start: reviewedStart,
-                reviewed_duration: (reviewedEnd - reviewedStart) / (1000 * 60 * 60 * 24)
-            };
-        });
-
+    if (auditData.length > 0) {
         am5.ready(function() {
             try {
                 auditRoot = am5.Root.new("auditChartdiv");
@@ -189,7 +181,8 @@ function displayChart(data) {
                     panY: false,
                     wheelX: "none",
                     wheelY: "none",
-                    layout: auditRoot.verticalLayout
+                    layout: auditRoot.verticalLayout,
+                    marginTop: 20 
                 }));
 
                 // Add legend
@@ -206,105 +199,118 @@ function displayChart(data) {
                     categoryField: "reviewed_by",
                     renderer: am5xy.AxisRendererX.new(auditRoot, {
                         cellStartLocation: 0.1,
-                        cellEndLocation: 0.9,
-                        minGridDistance: 10
-                    }),
-                    tooltip: am5.Tooltip.new(auditRoot, {})
+                        cellEndLocation: 0.9
+                    })
                 }));
-
-                auditXAxis.get("renderer").labels.template.setAll({
-                    forceHidden: true
-                });
-                auditXAxis.get("renderer").grid.template.set("forceHidden", true);
                 auditXAxis.data.setAll(auditData);
+                auditXAxis.get("renderer").labels.template.adapters.add("text", function(text, target) {
+                    return "Reviewed by: " + text;
+                });
+                auditXAxis.get("renderer").labels.template.setAll({
+                    fontSize: 16 
+                });
 
                 var auditYAxis = auditChart.yAxes.push(am5xy.ValueAxis.new(auditRoot, {
                     renderer: am5xy.AxisRendererY.new(auditRoot, {})
                 }));
 
                 var auditYAxis2 = auditChart.yAxes.push(am5xy.ValueAxis.new(auditRoot, {
-                    renderer: am5xy.AxisRendererY.new(auditRoot, { opposite: true }),
-                    syncWithAxis: auditYAxis
+                    renderer: am5xy.AxisRendererY.new(auditRoot, { opposite: true })
                 }));
 
-                // Add series
-                function makeAuditSeries(name, fieldName, color, stacked, baseFieldName, isDuration, addToLegend, yAxis) {
+                function makeSeries(name, fieldName, color, isDuration, stacked, yAxis) {
                     var series = auditChart.series.push(am5xy.ColumnSeries.new(auditRoot, {
                         name: name,
                         xAxis: auditXAxis,
                         yAxis: yAxis,
-                        stacked: stacked,
                         valueYField: fieldName,
-                        openValueYField: baseFieldName,
                         categoryXField: "reviewed_by",
-                        stroke: color,
+                        stacked: stacked,
                         fill: color
                     }));
 
                     series.columns.template.setAll({
-                        tooltipText: "{name}: {valueY}",
-                        width: am5.percent(50),
-                        tooltipY: 0,
-                        strokeWidth: 0
+                        tooltipText: isDuration ? "{name}: {valueY} days" : "{name}: {valueY}",
+                        width: am5.percent(90),
+                        strokeOpacity: 0,
+                        fillOpacity: 10,
                     });
 
-                    series.columns.template.adapters.add("fill", (fill, target) => {
-                        if (isDuration) {
+                    if (isDuration) {
+                        series.columns.template.adapters.add("fill", (fill, target) => {
                             const duration = target.dataItem.get("valueY");
-                            if (duration <= 30) {
-                                return am5.color(0xFF0000);
-                            } else if (duration <= 60) {
-                                return am5.color(0xffb733);
-                            } else if (duration <= 90) {
-                                return am5.color(0xFFD700);
-                            } else {
-                                return am5.color(0x5bd75b);
-                            }
-                        }
-                        return fill;
-                    });
+                            if (duration <= 30) return am5.color(0xFF0000);
+                            if (duration <= 60) return am5.color(0xFFA500);
+                            if (duration <= 90) return am5.color(0xFFD700);
+                            return am5.color(0x32CD32);
+                        });
+                    }
 
                     series.data.setAll(auditData);
                     series.appear();
-                    if (addToLegend) {
+
+                    if (name !== "Audit Report Duration" && name !== "Audit Certificate Duration" && name !== "Audit Corrective Action Duration" && name !== "Reviewed Duration") {
                         legend.data.push(series);
                     }
+
+                    // Add label count on top of the bars
+                    series.bullets.push(function() {
+                        return am5.Bullet.new(auditRoot, {
+                            locationY: 0.5,
+                            sprite: am5.Label.new(auditRoot, {
+                                text: isDuration ? "Duration: {valueY} days \n" : "Start: {valueY} \n",
+                                fill: auditRoot.interfaceColors.get("alternativeText"),
+                                centerY: am5.p50,
+                                centerX: am5.p50,
+                                populateText: true,
+                                adapters: {
+                                    text: function(text, target) {
+                                        var value = target.dataItem.get("valueY");
+                                        return value != null ? text : "";
+                                    }
+                                }
+                            })
+                        });
+                    });
+
+                    return series;
                 }
 
-                // Individual series
-                makeAuditSeries("Annual Review", "annual_review_count", am5.color(0x0096FF), false, null, false, true, auditYAxis2);
-                makeAuditSeries("Audit", "total_audits", am5.color(0x87CEEB), false, null, false, true, auditYAxis2);
+                // Create series for each date pair with start series first and then duration series
+                makeSeries("Audit Report Start", "audit_report_start", am5.color(0x7c6ed3), false, false, auditYAxis);
+                makeSeries("Audit Report Duration", "audit_report_duration", am5.color(0xFFD700), true, true, auditYAxis);
 
-                // Create stacked series for each date pair
-                makeAuditSeries("Audit Report", "audit_report_start", am5.color(0x2c4e31), false, null, false, true, auditYAxis);
-                makeAuditSeries("Audit Report Duration", "audit_report_duration", am5.color(0xFFD700), true, "audit_report_start", true, false, auditYAxis);
+                makeSeries("Audit Certificate Start", "audit_certificate_start", am5.color(0x0096FF), false, false, auditYAxis);
+                makeSeries("Audit Certificate Duration", "audit_certificate_duration", am5.color(0x4A731C), true, true, auditYAxis);
 
-                makeAuditSeries("Audit Certificate", "audit_certificate_start", am5.color(0x3e6e45), false, null, false, true, auditYAxis);
-                makeAuditSeries("Audit Certificate Duration", "audit_certificate_duration", am5.color(0x4A731C), true, "audit_certificate_start", true, false, auditYAxis);
+                makeSeries("Audit Corrective Action Start", "audit_corrective_action_start", am5.color(0xd981cd), false, false, auditYAxis);
+                makeSeries("Audit Corrective Action Duration", "audit_corrective_action_duration", am5.color(0x883407), true, true, auditYAxis);
 
-                makeAuditSeries("Audit Corrective Action", "audit_corrective_action_start", am5.color(0x065449), false, null, false, true, auditYAxis);
-                makeAuditSeries("Audit Corrective Action Duration", "audit_corrective_action_duration", am5.color(0x883407), true, "audit_corrective_action_start", true, false, auditYAxis);
+                makeSeries("Reviewed Start", "reviewed_start", am5.color(0xFA8072), false, false, auditYAxis);
+                makeSeries("Reviewed Duration", "reviewed_duration", am5.color(0x32CD32), true, true, auditYAxis);
 
-                makeAuditSeries("Reviewed", "reviewed_start", am5.color(0x218678), false, null, false, true, auditYAxis);
-                makeAuditSeries("Reviewed Duration", "reviewed_duration", am5.color(0x32CD32), true, "reviewed_start", true, false, auditYAxis);
-
-                // Make stuff animate on load
                 auditChart.appear(1000, 100);
-
-                // Add "Reviewed by:" label within the chart
-                auditChart.children.push(am5.Label.new(auditRoot, {
-                    text: "Reviewed by: " + auditData[0].reviewed_by,
-                    fontSize: 20,
-                    centerX: am5.p50,
-                    x: am5.p50,
-                    marginTop: 20,
-                    dy: 10
-                }));
-            } catch (error) {
-                console.error('Error initializing audit chart:', error);
+            } catch (err) {
+                console.log(err);
             }
         });
     }
+
+    $('#modalChart').modal('show');
+}
+
+// Helper function to parse date strings
+function parseDate(dateString) {
+    const [month, day, year] = dateString.split('/').map(Number);
+    return new Date(year, month - 1, day);
+}
+
+// Helper function to calculate duration between two dates
+function calculateDuration(startDate, endDate) {
+    const start = parseDate(startDate.trim());
+    const end = parseDate(endDate.trim());
+    const duration = (end - start) / (1000 * 60 * 60 * 24);
+    return duration;
 }
 
 // Event listener for when the modal is shown
@@ -333,15 +339,10 @@ $('#modalChart').on('shown.bs.modal', function (e) {
     });
 });
 
-// Helper function to parse date strings
-function parseDate(dateString) {
-    const [month, day, year] = dateString.split('/').map(Number);
-    return new Date(year, month - 1, day);
-}
-
-        
 
 //Send Tab
+
+
 
 am5.ready(function() {
   // First Waterfall Chart
@@ -368,6 +369,12 @@ am5.ready(function() {
     renderer: xRenderer1,
     tooltip: am5.Tooltip.new(root1, {})
   }));
+
+  xRenderer1.labels.template.setAll({
+    rotation: -45,
+    centerY: am5.p50,
+    centerX: am5.p100
+  });
 
   xRenderer1.grid.template.setAll({
     location: 1
@@ -425,7 +432,7 @@ am5.ready(function() {
 
   var colorSet1 = am5.ColorSet.new(root1, {});
 
-  fetch('AnalyticsIQ/send_data.php')
+  fetch('AnalyticsIQ/supplier_send_data.php')
     .then(response => response.json())
     .then(data => {
       var data1 = [
@@ -447,9 +454,8 @@ am5.ready(function() {
 
 
 
-
-
 //FOR TOTAL RECEIVED Tab
+
 
 am5.ready(function() {
   var root = am5.Root.new("receivedchartdiv");
@@ -485,7 +491,7 @@ am5.ready(function() {
   );
 
   // Fetch data from PHP script using fetch API
-  fetch('AnalyticsIQ/received_data.php')
+  fetch('AnalyticsIQ/supplier_received_data.php')
       .then(function(response) {
           return response.json();
       })
@@ -533,6 +539,21 @@ am5.ready(function() {
           series.data.setAll(aggregatedData);
           yAxis.data.setAll(aggregatedData); // Set data for yAxis instead of xAxis for horizontal bar chart
 
+          // Add labels at the end of each bar
+          series.bullets.push(function() {
+              return am5.Bullet.new(root, {
+                  locationX: 1,
+                  sprite: am5.Label.new(root, {
+                      text: "{valueX}",
+                      fill: am5.color(0x000000), // Color of the label text
+                      centerX: am5.p0, // Align label to the right of the bar
+                      centerY: am5.p50,
+                      populateText: true,
+                      dx: 10 // Adjust distance from the end of the bar
+                  })
+              });
+          });
+
       })
       .catch(function(error) {
           console.error('Error fetching data:', error);
@@ -564,7 +585,7 @@ am5.ready(function() {
     })
   );
 
-  fetch('AnalyticsIQ/send_data.php')
+  fetch('AnalyticsIQ/supplier_send_data.php')
     .then(response => response.json())
     .then(data => {
       series2.data.setAll([
@@ -579,7 +600,6 @@ am5.ready(function() {
     })
     .catch(error => console.error('Error fetching data:', error));
 });
-
 
 
 
@@ -680,7 +700,7 @@ am5.ready(function() {
       chart.appear(1000, 100);
     }
   
-    fetch('AnalyticsIQ/materials_requiremnets_data.php')
+    fetch('AnalyticsIQ/supplier_materials_data.php')
       .then(response => response.json())
       .then(data => {
         var totalRequirements = data.total_requirements;

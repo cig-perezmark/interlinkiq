@@ -25,6 +25,17 @@
 <!-- END PAGE HEADER-->
 <div class="row">
     <div class="col-md-12">
+        <div class="note note-success">
+            <h4> Reminder: Log Your Tasks</h4>
+            <p style="font-size: 1em;">
+                Please log your tasks regularly. Accurate task logging is crucial for your compensation and for tracking the company's sales performance.
+            </p>
+        </div>
+
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
         <div class="portlet light">
             <div class="portlet-title tabbable-line">
                 <div class="caption caption-md">
@@ -78,7 +89,7 @@
                     <?php } ?>
 
                     <li>
-                        <a href="#PERFORMANCE" data-toggle="tab">Performance</a>
+                        <a href="#PERFORMANCE" data-toggle="tab" data-service-log-tab="Performance Summary">Performance</a>
                     </li>
 
                     <?php if($_COOKIE['ID'] == 38 || $_COOKIE['ID'] == 387 || $_COOKIE['ID'] == 32 || $_COOKIE['ID'] == 43): ?>
@@ -92,7 +103,7 @@
                     </li>
 
                     <li title="Overtime service logs from the department members">
-                        <a href="#Overtime_fa" data-toggle="tab">For Approvals</a>
+                        <a href="#Overtime_fa" data-toggle="tab" data-service-log-tab="Overtime Logs - For Approvals">For Approvals</a>
                     </li>
 
                     <?php if($_COOKIE['ID'] == 387 || $_COOKIE['ID'] == 456 || $_COOKIE['ID'] == 66  || $_COOKIE['ID'] == 100 || $_COOKIE['ID'] == 3 || $_COOKIE['ID'] == 43 || $_COOKIE['ID'] == 34 || $_COOKIE['ID'] == 54): ?>
@@ -150,7 +161,25 @@
                         </div>
                     </div>
                     <div class="tab-pane" id="VA_SUMMARY">
-                        <div class="portlet light" style="padding-left:0; padding-right: 0;">
+                        <a href="javascript:;" id="refreshVASummaryTableBtn" style="display: none;" title="Refresh">
+                            <i class="fa fa-refresh"></i>
+                        </a>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <table id="vasummary_table" class="table table-bordered table-hover table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Date(s)</th>
+                                            <th>Total Hour(s) Rendered</th>
+                                            <th>Overtime (From Logs)</th>
+                                            <th style="max-width: 4rem; box-sizing: border-box;">Total Task(s)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody> </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="portlet light hide" style="padding-left:0; padding-right: 0;">
                             <div class="portlet-title" style="border: none; margin-bottom: 0;">
                                 <div class="btn-group">
                                     <a class="btn grey-cascade" href="javascript:;" data-toggle="dropdown">
@@ -172,31 +201,9 @@
                                     <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;"> </a>
                                 </div>
                             </div>
-                            <div class="portlet-body">
-                                <table id="va_summary_tablex" class="table table-bordered table-hover order-column dataTable no-footer">
-                                    <thead>
-                                        <tr>
-                                            <th>Date</th>
-                                            <th>Total Hour(s) Rendered</th>
-                                            <th>Overtime</th>
-                                            <th>Tasks</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>2024-07-23</td>
-                                            <td>7</td>
-                                            <td>0</td>
-                                            <td>13</td>
-                                            <td></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <div class="portlet-body"></div>
                         </div>
                     </div>
-
 
                     <div class="tab-pane" id="Weekly">
                         <div class="row">
@@ -225,14 +232,10 @@
                         </div>
                     </div>
                     <div class="tab-pane" id="Overtime_fa">
+                        <a href="javascript:;" id="refreshForApprovalsTableBtn" style="display: none;" title="Refresh">
+                            <i class="fa fa-refresh"></i>
+                        </a>
                         <div class="row">
-                            <div class="col-md-12" style="margin-bottom: 2rem;">
-                                <h3 style="margin: 0 0 1rem 0;">Employees' Overtime Service Logs</h3>
-                                <h5 class="font-grey-cascade">
-                                    Waiting for your approval.
-                                    <a href="#">(refresh)</a>
-                                </h5>
-                            </div>
                             <div class="col-md-12">
                                 <div style="padding:15px" class="hide">
                                     <label><input type="checkbox" id="checkAll" onclick="checkAll()"> Check All</label>
@@ -240,7 +243,7 @@
                                 <table class="table table-bordered" id="for_approval_logs_table">
                                     <thead>
                                         <tr>
-                                            <th style="max-width: 3rem;" title="Select all item(s)">
+                                            <th style="max-width: 3rem; min-width:3rem; box-sizing: border-box;" title="Select all item(s)">
                                                 <input type="checkbox" id="checkAll" onclick="checkAll()">
                                             </th>
                                             <th>Task ID</th>
@@ -509,53 +512,6 @@
                         </div>
                     </div>
                     <div class="tab-pane" id="PERFORMANCE">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="">
-                                    <h3 style="margin: 0 0 1rem 0;">
-                                        Performance Summary
-                                    </h3>
-                                    <h5 class="font-grey-cascade">Last render date:
-                                        <span data-performance="current_date"></span>
-                                        <a href="#">(refresh)</a>
-                                    </h5>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="alert alert-info">
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                    <p>
-                                        <strong>Reminder!</strong>
-                                        Don't forget to log your tasks! It is important for your compensation and company's
-                                        sales.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row  hide">
-                            <div class="input-daterange">
-                                <div class="col-md-1">
-                                    <label>From:</label>
-                                </div>
-                                <div class="col-md-2">
-                                    <input type="text" name="start_date_filter1" id="start_date_filter1" class="form-control" />
-                                </div>
-                                <div class="col-md-1">
-                                    <label>To:</label>
-                                </div>
-                                <div class="col-md-2">
-                                    <input type="text" name="end_date_filter1" id="end_date_filter1" class="form-control" />
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <input type="button" name="search_date1" id="search_date1" value="Search" class="btn btn-info" />
-                            </div>
-                        </div>
-                        <br>
-                        <div id="filter_data_range">
-
-                        </div>
-
 
                         <div class="m-grid">
                             <div class="row">
@@ -566,12 +522,18 @@
                                         </div>
                                         <div class="details">
                                             <div class="number" data-performance="overall_time">0</div>
-                                            <div class="desc"> Overall Time Spent </div>
+                                            <div class="desc">
+                                                Overall Time Spent
+                                                <br>
+                                                <a href="#" class="small">
+                                                    <i class="fa fa-refresh"></i>
+                                                    Refresh
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="row widget-row">
                                         <div class="col-md-6">
-                                            <!-- BEGIN WIDGET THUMB -->
                                             <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
                                                 <h4 class="widget-thumb-heading">Completed Tasks</h4>
                                                 <div class="widget-thumb-wrap">
@@ -582,10 +544,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- END WIDGET THUMB -->
                                         </div>
                                         <div class="col-md-6">
-                                            <!-- BEGIN WIDGET THUMB -->
                                             <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
                                                 <h4 class="widget-thumb-heading">Days Worked</h4>
                                                 <div class="widget-thumb-wrap">
@@ -596,10 +556,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- END WIDGET THUMB -->
                                         </div>
                                         <div class="col-md-6">
-                                            <!-- BEGIN WIDGET THUMB -->
                                             <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
                                                 <h4 class="widget-thumb-heading">Average Hours/Day</h4>
                                                 <div class="widget-thumb-wrap">
@@ -611,10 +569,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- END WIDGET THUMB -->
                                         </div>
                                         <div class="col-md-6">
-                                            <!-- BEGIN WIDGET THUMB -->
                                             <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
                                                 <h4 class="widget-thumb-heading">Average hours/week</h4>
                                                 <div class="widget-thumb-wrap">
@@ -625,7 +581,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- END WIDGET THUMB -->
                                         </div>
                                     </div>
                                 </div>
@@ -1153,12 +1108,11 @@
 <script src="modules/js/init.js"></script>
 <script src="task_service_log2/js/init.js"></script>
 <script src="task_service_log2/js/script.js"></script>
-<script src="task_service_log2/js/service_logs_modal.js"></script>
 
-<?php include_once "service_log_index2_scripts.php"; ?>
+<?php // include_once "service_log_index2_scripts.php"; ?>
 
-<script src='task_service_log2/script.js'></script>
-<script src='task_service_log2/va_summ_script.js'></script>
+<!-- <script src='task_service_log2/script.js'></script>
+<script src='task_service_log2/va_summ_script.js'></script> -->
 
 </body>
 

@@ -106,3 +106,85 @@ function initForApprovalLogs() {
 
     return init;
 }
+
+function initVASummaryTable() {
+    const init = {
+        datatable: Init.dataTable('#vasummary_table', {
+            columnDefs: [
+                {
+                    targets: [0,1,2,3],
+                    className: 'text-center',
+                }, 
+                // {
+                //     className: 'text-center',
+                //     targets: [0,1,4,6,7,8]
+                // },
+                {
+                    sortable: false,
+                    targets: [0]
+                }
+            ],
+        }),
+        fetch(callback = null) {
+            const self = this;
+            $.ajax({
+                url: Init.baseUrl + "va_summary",
+                type: "GET",
+                contentType: false,
+                processData: false,
+                success: function({data}) {
+                    self.update(data);
+                },
+                error: function() {
+                    bootstrapGrowl('Error fetching data!');
+                },
+                complete: () => {
+                    callback && callback();
+                }
+            });
+        },
+        update(data) {
+            const {dt} = this.datatable;
+            dt.clear().draw();
+            data.forEach((d) => {
+                dt.row.add([
+                    d.date,
+                    // `<strong>${d.date}</strong>`,
+                    evaluateTotalRenderedHours(d.minutes),
+                    evaluateOvertimeHours(d.minutes, d.overtime),
+                    `<strong>${d.tasks}</strong>`,
+                ]);
+            });
+            dt.draw();
+        },
+    };
+
+    function evaluateTotalRenderedHours(minutes) {
+        let hours = Math.floor(minutes / 60);
+        let mins = minutes % 60;
+        
+        if (minutes < 0) {
+            return `<strong class="font-red">&lt;0</strong>`;
+        }
+        
+        return `<strong>${hours}:${mins.toString().padStart(2, '0')}</strong>`;
+    }
+
+    function evaluateOvertimeHours(total, overtime) {
+        if (overtime == 0 && total <= 480) {
+            return `<strong>0</strong>`;
+        }
+
+        let overtimeHours = Math.floor(overtime / 60);
+        let overtimeMinutes = overtime % 60;
+
+        if(overtime && total > 480) {
+            return `<strong class="font-red" title="Pending for approval">${overtimeHours}:${overtimeMinutes.toString().padStart(2, '0')}</strong>`;
+        }
+        
+        return `<strong class="font-red" title="Pending for approval">${overtimeHours}:${overtimeMinutes.toString().padStart(2, '0')}</strong>`;
+    }
+
+    init.fetch();
+    return init;
+}

@@ -1,9 +1,10 @@
-Init.baseUrl = 'task_service_log/services/index.php?';
+Init.baseUrl = 'task_service_log2/services/index.php?';
 const ServiceLogsInstance = {};
 
 jQuery(function () {
     ServiceLogsInstance.logs = initServiceLogs();
     const overtimeForApprovalLogs = initForApprovalLogs();
+    const vaSummaryTable = initVASummaryTable();
     
     $('#refreshServiceLogsTableBtn').on('click', function() {
         const btn = $(this);

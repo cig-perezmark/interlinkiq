@@ -1293,6 +1293,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <a href="#addServiceLogModal" class="dropdown-toggle" data-toggle="modal">
                                         <i class="icon-clock"></i>
                                     </a>
+                                    <ul class="dropdown-menu hide"></ul>
                                 </li>
                                 <li class="dropdown dropdown-extended">
                                     <a href="javascript:;" class="dropdown-toggle" onclick="offCanvas(1)">

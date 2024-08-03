@@ -83,3 +83,61 @@ if(isset($_GET['logs'])) {
         'data' => $serviceLogs,
     ]);
 }
+
+if(isset($_GET['va_summary'])) {
+    $results = [];
+    $currentDate = date("Y-m-d");
+    $last30Days = date('Y-m-d', strtotime('-120 days'));
+
+    $showAllClause = "";
+    if(
+        // $portal_user == 1105 || 
+        $portal_user == 54 || // ms tin
+        $portal_user == 387 || // ms girl
+        $portal_user == 34 // hr
+    ) {
+        //  ...
+    } else {
+        // fetch summary for individual account
+        $results = $conn->execute("SELECT 
+                    COUNT(task_id) AS tasks,
+                    SUM(minute) AS minutes,
+                    task_date AS date,
+                    user_id,
+                    IF(not_approved = ?, 1, 0) AS overtime
+                FROM tbl_service_logs 
+                LEFT JOIN tbl_user on ID = user_id
+                WHERE task_date >= ? 
+                    AND task_date <= ? 
+                    AND is_active = 1 
+                    AND user_id = ?
+                    AND (not_approved = ?  OR not_approved = ?)
+                GROUP BY task_date, not_approved
+                ORDER BY task_date DESC
+            ", 
+            SERVICE_LOG_NEEDS_APPROVAL, $last30Days, $currentDate, $portal_user, SERVICE_LOG_DIRECT_ADD, SERVICE_LOG_NEEDS_APPROVAL
+        )->fetchAll();
+
+        $tempData = [];
+        foreach($results as $row) {
+            unset($row['user_id']);
+            
+            if(!isset($tempData[$row['date']])) {
+                $tempData[$row['date']] = [];
+            }
+
+            if($row['overtime']) {
+                $tempData[$row['date']]['overtime'] = $row['minutes'];
+                $tempData[$row['date']]['minutes'] += $row['minutes'];
+            } else {
+                $tempData[$row['date']] = array_merge($tempData[$row['date']], $row);
+            }
+        }
+
+        $results = array_values($tempData);
+    }
+     
+    send_response([
+        'data' => $results
+    ]);
+}

@@ -1183,7 +1183,7 @@
                     </div>
                     </div>
 
-
+                    <?php if($current_userEmployerID == 34): ?>
                     <!-- Service Logs Modal (add task) -->
                     <div class="modal fade in" id="addServiceLogModal" tabindex="-1" role="dialog" aria-hidden="true">
                         <div class="modal-dialog">
@@ -1223,16 +1223,16 @@
                                                     <select class="form-control mt-multiselect" name="action" id="task_action">
                                                         <option value="" selected disabled>Select action</option>
                                                         <?php
-                                        $actions = $con->execute("SELECT id, name FROM tbl_service_logs_actions ORDER BY name ASC")->fetchAll() ?? [];
-                                        foreach($actions as $action) {
-                                            $actionName = $action['name'];
-                                            echo "<option value='{$actionName}'>{$actionName}</option>";
-                                        }
-                                        
-                                        if(!count($actions)) {
-                                            echo "<option><i>No items available.</i></option>";
-                                        }
-                                    ?>
+                                                            $actions = $con->execute("SELECT id, name FROM tbl_service_logs_actions ORDER BY name ASC")->fetchAll() ?? [];
+                                                            foreach($actions as $action) {
+                                                                $actionName = $action['name'];
+                                                                echo "<option value='{$actionName}'>{$actionName}</option>";
+                                                            }
+                                                            
+                                                            if(!count($actions)) {
+                                                                echo "<option><i>No items available.</i></option>";
+                                                            }
+                                                        ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -1247,23 +1247,23 @@
                                                 <div class="col-md-8">
                                                     <select style="resize: vertical !important;" class="form-control mt-multiselect" name="account" id="task_account">
                                                         <?php
-                                        $accounts = $con->execute("SELECT id, name FROM tbl_service_logs_accounts ORDER BY name ASC")->fetchAll() ?? [];
-                                        foreach($accounts as $account) {
-                                            $accountName = $account['name'];
-                                            echo "<option value='{$accountName}' " .($accountName == 'CONSULTAREINC' ? 'selected' : ''). ">{$accountName}</option>";
-                                        }
-                                        
-                                        if(!count($accounts)) {
-                                            echo "<option><i>No items available.</i></option>";
-                                        }
-                                    ?>
+                                                            $accounts = $con->execute("SELECT id, name FROM tbl_service_logs_accounts ORDER BY name ASC")->fetchAll() ?? [];
+                                                            foreach($accounts as $account) {
+                                                                $accountName = $account['name'];
+                                                                echo "<option value='{$accountName}' " .($accountName == 'CONSULTAREINC' ? 'selected' : ''). ">{$accountName}</option>";
+                                                            }
+                                                            
+                                                            if(!count($accounts)) {
+                                                                echo "<option><i>No items available.</i></option>";
+                                                            }
+                                                        ?>
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label for="taskdate" class="col-md-3 control-label">Task Date</label>
                                                 <div class="col-md-8">
-                                                    <input class="form-control" type="date" name="task_date" id="taskdate">
+                                                    <input class="form-control" type="date" name="task_date" id="taskdate" value="<?= date('Y-m-d') ?>">
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -1282,7 +1282,9 @@
                             </form>
                         </div>
                     </div>
+                    <script defer src="task_service_log2/js/service_logs_modal.js"></script>
                     <!-- end of Service Logs Modal  -->
+                    <?php endif; ?>
 
                     <!--[if lt IE 9]>
                     <script src="../assets/global/plugins/respond.min.js"></script>

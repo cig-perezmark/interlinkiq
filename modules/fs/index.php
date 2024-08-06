@@ -1,24 +1,22 @@
 <?php
-    include_once __DIR__ . '/../../header.php';
-    include_once __DIR__ . '/init.php';
+include_once __DIR__ . '/../../header.php';
+include_once __DIR__ . '/init.php';
 ?>
 <link href="assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
 <link href="assets/global/plugins/jquery-notific8/jquery.notific8.min.css" rel="stylesheet" type="text/css" />
 <link href="assets/apps/css/todo-2.min.css" rel="stylesheet" type="text/css" />
 <link rel="stylesheet" href="modules/haccp/style.css">
-
 <script>
-var planBuilder = {
-    processes: {},
-    products: []
-}
-window.setCCPToDiagram = null;
-window.ProcessSteps = {};
-window.CCPs = {};
-window.DataSet4HACCP = {};
-window.getJSFDiagram = null;
+    var planBuilder = {
+        processes: {},
+        products: []
+    }
+    window.setCCPToDiagram = null;
+    window.ProcessSteps = {};
+    window.CCPs = {};
+    window.DataSet4HACCP = {};
+    window.getJSFDiagram = null;
 </script>
-
 <div class="row">
     <div class="col-md-12">
         <div class="portlet light">
@@ -51,82 +49,85 @@ window.getJSFDiagram = null;
                                 </thead>
                                 <tbody>
                                     <?php
-                                    if(false)
-                                        foreach($haccps as $h) {
+                                    if (false)
+                                        foreach ($haccps as $h) {
                                             $res = $h->getResource();
                                             $logs = $h->getLogs($portal_user)[0] ?? [];
                                             $task = $h->getAllTasks();
                                             $task = $task[count($task) - 1] ?? [];
                                     ?>
-                                    <tr>
-                                        <td>
-                                            <div style="padding: .75rem 0;"><?= $res['description'] ?></div>
-                                            <div class="d-flex-center">
-                                                <div style="margin-right: 1rem;" class="mul-container">
-                                                    <?php 
-                                                        $pp = $res['products']; 
-                                                        if(count($pp)) { 
-                                                            $pIQs = '(' .implode(',', $pp). ')'; 
-                                                            $productImages = $conn->query("SELECT image FROM tbl_products WHERE ID in $pIQs"); 
-                                                            $piCount = 0; 
-                                                            while($pr = $productImages->fetch_assoc()) { 
-                                                                if(++$piCount <= 4) { 
-                                                                    $img = explode(',', $pr['image'])[0]; 
-                                                                    $img = empty($img) ? null : '//interlinkiq.com/uploads/products/' . $img; 
-                                                                    $img = !empty($img) ? $img : "https://via.placeholder.com/200x200/EFEFEF/AAAAAA.png?text=No+Image"; 
-                                                                    echo '<img class="img-circle user-pic mul-preview" src="'.$img.'">'; 
-                                                                } 
-                                                            } 
-                                                            if($piCount > 4) 
-                                                                echo '<div class="mul-preview end"><span>+'.($piCount - 4).'</span></div>'; 
-                                                        } 
-                                                    ?>
+                                        <tr>
+                                            <td>
+                                                <div style="padding: .75rem 0;"><?= $res['description'] ?></div>
+                                                <div class="d-flex-center">
+                                                    <div style="margin-right: 1rem;" class="mul-container">
+                                                        <?php
+                                                        $pp = $res['products'];
+                                                        if (count($pp)) {
+                                                            $pIQs = '(' . implode(',', $pp) . ')';
+                                                            $productImages = $conn->query("SELECT image FROM tbl_products WHERE ID in $pIQs");
+                                                            $piCount = 0;
+                                                            while ($pr = $productImages->fetch_assoc()) {
+                                                                if (++$piCount <= 4) {
+                                                                    $img = explode(',', $pr['image'])[0];
+                                                                    $img = empty($img) ? null : '//interlinkiq.com/uploads/products/' . $img;
+                                                                    $img = !empty($img) ? $img : "https://via.placeholder.com/200x200/EFEFEF/AAAAAA.png?text=No+Image";
+                                                                    echo '<img class="img-circle user-pic mul-preview" src="' . $img . '">';
+                                                                }
+                                                            }
+                                                            if ($piCount > 4)
+                                                                echo '<div class="mul-preview end"><span>+' . ($piCount - 4) . '</span></div>';
+                                                        }
+                                                        ?>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <?php
-                                                $color = match($res['status']) {
+                                            </td>
+                                            <td>
+                                                <?php
+                                                $color = match ($res['status']) {
                                                     'For Review' => 'warning',
                                                     'For Approval' => 'info',
                                                     'Approved by CIG' => 'primary',
                                                     'Approved by Client' => 'success',
                                                     default => 'danger',
                                                 };
-                                            ?>
-                                            <span class="label label-sm label-<?= $color ?>"> <?= $res['status'] ?> </span>
-                                        </td>
-                                        <td>
-                                            <div class="mt-list-item" title="<?= $logs['category'] ?>">
-                                                <div class="list-item-content" style="padding-left: 0; font-weight:600;"><?php $s = substr($logs['description'], 0, 32); echo $s . (strlen($logs['description']) > 32 ? '...' : ''); ?></div>
-                                                <div class="list-datetime uppercasex small text-muted" style="padding-left: 0;margin-top:.2rem;">
-                                                    <?= $logs['user'] ?> updated <span title="<?= $logs['datetime'] ?>"><?= $logs['time_elapsed'] ?></span>
+                                                ?>
+                                                <span class="label label-sm label-<?= $color ?>"> <?= $res['status'] ?> </span>
+                                            </td>
+                                            <td>
+                                                <div class="mt-list-item" title="<?= $logs['category'] ?>">
+                                                    <div class="list-item-content" style="padding-left: 0; font-weight:600;"><?php $s = substr($logs['description'], 0, 32);
+                                                                                                                                echo $s . (strlen($logs['description']) > 32 ? '...' : ''); ?></div>
+                                                    <div class="list-datetime uppercasex small text-muted" style="padding-left: 0;margin-top:.2rem;">
+                                                        <?= $logs['user'] ?> updated <span title="<?= $logs['datetime'] ?>"><?= $logs['time_elapsed'] ?></span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <?php if(count($task)): ?>
-                                            <div class="mt-list-item" title="<?= $logs['category'] ?>">
-                                                <div class="list-item-content" style="padding-left: 0; font-weight:600;"><?php $s = substr($task['title'], 0, 32); echo $s . (strlen($task['title']) > 32 ? '...' : ''); ?></div>
-                                                <div class="list-item-content small" style="padding-left: 0; font-weight:500;"><?php $s = substr($task['description'], 0, 32); echo $s . (strlen($task['description']) > 32 ? '...' : ''); ?></div>
-                                                <div class="list-datetime uppercasex small text-muted" style="padding-left: 0;margin-top:.2rem;">
-                                                    <?= $task['assignee_name'] ?? '(No assignee)' ?> | <span><?= $task['due_date'] ?? '(No due date)' ?></span>
-                                                </div>
-                                            </div>
-                                            <?php else: ?>
-                                            <span class="italic text-muted">No task has been added.</span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td>
-                                            <div class="btn-group btn-group-circle" style="position: initial; margin-top: 0;">
-                                                <a href="<?= $pageUrl . '?edit='. hash('md5', $res['id']) ?>" class="btn btn-outline dark btn-sm" title="Open in builder">Open</a>
-                                                <?php if($res['status'] == 'Approved by CIG'): ?>
-                                                <a href="javascript:void(0)" onclick="openClientSignatures(this, <?= $res['id'] ?>)" class="btn btn-outlinex green btn-sm" title="Update signatures">Sign</a>
+                                            </td>
+                                            <td>
+                                                <?php if (count($task)) : ?>
+                                                    <div class="mt-list-item" title="<?= $logs['category'] ?>">
+                                                        <div class="list-item-content" style="padding-left: 0; font-weight:600;"><?php $s = substr($task['title'], 0, 32);
+                                                                                                                                    echo $s . (strlen($task['title']) > 32 ? '...' : ''); ?></div>
+                                                        <div class="list-item-content small" style="padding-left: 0; font-weight:500;"><?php $s = substr($task['description'], 0, 32);
+                                                                                                                                        echo $s . (strlen($task['description']) > 32 ? '...' : ''); ?></div>
+                                                        <div class="list-datetime uppercasex small text-muted" style="padding-left: 0;margin-top:.2rem;">
+                                                            <?= $task['assignee_name'] ?? '(No assignee)' ?> | <span><?= $task['due_date'] ?? '(No due date)' ?></span>
+                                                        </div>
+                                                    </div>
+                                                <?php else : ?>
+                                                    <span class="italic text-muted">No task has been added.</span>
                                                 <?php endif; ?>
-                                                <a href="haccp?pdf=<?= hash('md5', $h->id) ?>" target="_blank" class="btn blue btn-sm">PDF</a>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-circle" style="position: initial; margin-top: 0;">
+                                                    <a href="<?= $pageUrl . '?edit=' . hash('md5', $res['id']) ?>" class="btn btn-outline dark btn-sm" title="Open in builder">Open</a>
+                                                    <?php if ($res['status'] == 'Approved by CIG') : ?>
+                                                        <a href="javascript:void(0)" onclick="openClientSignatures(this, <?= $res['id'] ?>)" class="btn btn-outlinex green btn-sm" title="Update signatures">Sign</a>
+                                                    <?php endif; ?>
+                                                    <a href="haccp?pdf=<?= hash('md5', $h->id) ?>" target="_blank" class="btn blue btn-sm">PDF</a>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     <?php
                                         }
                                     ?>
@@ -189,17 +190,14 @@ window.getJSFDiagram = null;
                         </section>
                     </div>
                 </div>
-
                 <!-- used for initializing diagram element -->
                 <div class="jsf-container" style="height: 700px; border-top: 1px solid #ccc; background-color: #f4f6f782;">
                     <svg id="jsfdiagram"></svg>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
-
 <!-- start of modals -->
 <div class="modal fade in" id="modal-haccpTeamModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
@@ -223,7 +221,9 @@ window.getJSFDiagram = null;
                                 <label><br></label>
                                 <select name="primary_member" id="haccp-team-primary_member" class="form-control haccp-multiselect haccp-team-select primary">
                                     <option value="" selected disabled>--Select--</option>
-                                    <?php foreach($employees as $e) { echo '<option value="'.$e['ID'].'">'.$e['name'].'</option>'; } ?>
+                                    <?php foreach ($employees as $e) {
+                                        echo '<option value="' . $e['ID'] . '">' . $e['name'] . '</option>';
+                                    } ?>
                                 </select>
                             </div>
                             <div class="col-md-2">
@@ -243,7 +243,9 @@ window.getJSFDiagram = null;
                                 <label><br></label>
                                 <select name="alternate_member" id="haccp-team-alternate_member" class="form-control haccp-multiselect haccp-team-select alternate">
                                     <option value="" selected disabled>--Select--</option>
-                                    <?php foreach($employees as $e) { echo '<option value="'.$e['ID'].'">'.$e['name'].'</option>'; } ?>
+                                    <?php foreach ($employees as $e) {
+                                        echo '<option value="' . $e['ID'] . '">' . $e['name'] . '</option>';
+                                    } ?>
                                 </select>
                             </div>
                             <div class="col-md-2">
@@ -296,7 +298,9 @@ window.getJSFDiagram = null;
                                         <div class="">
                                             <select name="reviewer_id" class="form-control haccp-multiselect upd-reviewer">
                                                 <option value="" selected disabled>Select reviewer</option>
-                                                <?php foreach($employees as $e) { echo '<option value="'.$e['ID'].'">'.$e['name'].'</option>'; } ?>
+                                                <?php foreach ($employees as $e) {
+                                                    echo '<option value="' . $e['ID'] . '">' . $e['name'] . '</option>';
+                                                } ?>
                                             </select>
                                         </div>
                                     </td>
@@ -311,7 +315,9 @@ window.getJSFDiagram = null;
                                         <div class="">
                                             <select name="approver_id" id="haccp-team-alternate_member" class="form-control haccp-multiselect upd-approver">
                                                 <option value="" selected disabled>Select approver</option>
-                                                <?php foreach($employees as $e) { echo '<option value="'.$e['ID'].'">'.$e['name'].'</option>'; } ?>
+                                                <?php foreach ($employees as $e) {
+                                                    echo '<option value="' . $e['ID'] . '">' . $e['name'] . '</option>';
+                                                } ?>
                                             </select>
                                         </div>
                                     </td>
@@ -334,5 +340,4 @@ window.getJSFDiagram = null;
     </div>
 </div>
 <!-- end of modals -->
-
 <?php include __DIR__ . '/footer.php'; ?>

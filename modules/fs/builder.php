@@ -1,35 +1,35 @@
 <style>
-.mt-timeline-2>.mt-container>.mt-item>.mt-timeline-content>.mt-content-container::before {
-    top: auto;
-    bottom: 28px;
-}
+    .mt-timeline-2>.mt-container>.mt-item>.mt-timeline-content>.mt-content-container::before {
+        top: auto;
+        bottom: 28px;
+    }
 
-.mt-timeline-2>.mt-container>.mt-item>.mt-timeline-icon {
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-}
+    .mt-timeline-2>.mt-container>.mt-item>.mt-timeline-icon {
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+    }
 
-.mt-timeline-2>.mt-container>.mt-item {
-    position: relative;
-    padding-bottom: 0;
-    padding-top: 60px;
-}
+    .mt-timeline-2>.mt-container>.mt-item {
+        position: relative;
+        padding-bottom: 0;
+        padding-top: 60px;
+    }
 
-body,
-html {
-    scroll-behavior: smooth;
-}
+    body,
+    html {
+        scroll-behavior: smooth;
+    }
 </style>
 
 <div style="padding: .5rem 1.5rem; margin-bottom: 20px; display:flex; justify-content:space-between;" class="bg-default">
     <h4><strong>**BASIC INFORMATION</strong></h4>
-    <?php if(isset($haccpResource)): ?>
-    <h5>
-        <strong>STATUS:<i><?= $haccpResource['status'] ?></i></strong>
-    </h5>
+    <?php if (isset($haccpResource)) : ?>
+        <h5>
+            <strong>STATUS:<i><?= $haccpResource['status'] ?></i></strong>
+        </h5>
     <?php endif; ?>
 </div>
 <section class="row margin-bottom-20">
@@ -37,15 +37,15 @@ html {
         <label for="haccp-builder-documentCode">Select Facility</label>
         <select class="form-control" name="facility" <?= count($facilities) == 1 ? 'disabled' : '' ?> onchange="updBuilderData(this, 'facility')">
             <option value="" disabled>--Select--</option>
-            <?php 
-                foreach($facilities as $f) {
-                    echo '<option value="'. $f['facility_id'] .'">'. $f['facility_category'] .'</option>';
-                }
+            <?php
+            foreach ($facilities as $f) {
+                echo '<option value="' . $f['facility_id'] . '">' . $f['facility_category'] . '</option>';
+            }
             ?>
         </select>
     </div>
     <div class="form-group col-md-9">
-        <label for="haccp-builder-description">HACCP Description/Title </label>
+        <label for="haccp-builder-description">Food Safety Plan Title </label>
         <textarea id="haccp-builder-description" rows="3" class="form-control" data-inputkey="description" placeholder="Add description..."><?= $resource('description') ?></textarea>
     </div>
     <div class="col-md-12"></div>
@@ -57,12 +57,12 @@ html {
         <label for="haccp-builder-issueDate">Issue Date </label>
         <input type="date" id="haccp-builder-issueDate" class="form-control" data-inputkey="issue_date" value="<?= $resource('issue_date') ?>">
     </div>
-    <?php if(!isset($haccpResource)): ?>
-    <div class="col-md-12">
-        <div style="display: flex; justify-content: start;">
-            <button type="button" id="haccpBuilderSaveBtn" class="btn btn-danger" onclick="saveNewHaccp(this)" disabled> Save as draft </button>
+    <?php if (!isset($haccpResource)) : ?>
+        <div class="col-md-12">
+            <div style="display: flex; justify-content: start;">
+                <button type="button" id="haccpBuilderSaveBtn" class="btn btn-danger" onclick="saveNewHaccp(this)" disabled> Save as draft </button>
+            </div>
         </div>
-    </div>
     <?php endif; ?>
 </section>
 <div style="padding: .5rem 1.5rem; margin-bottom: 20px; margin-top: 50px;" class="bg-default">
@@ -101,11 +101,11 @@ html {
                 <li><a href="#clm_and_ca" data-toggle="tab"> Critical Limits, Monitoring, and Corrective Actions </a></li>
                 <li><a href="#verification_and_record_keeping" data-toggle="tab"> Verification and Record Keeping</a></li>
                 <li><a href="#master_sheet" data-toggle="tab"> HACCP Master Sheet </a></li>
-                <?php if(isset($haccpResource)): ?>
-                <li><a href="#process_monitoring_forms" data-toggle="tab"> Process Monitoring Forms </a></li>
-                <li><a href="#haccptasks" data-toggle="tab"> Tasks <span class="badge badge-danger" data-tasksbadge="0">0</span> </a></li>
-                <li><a href="#history" data-toggle="tab"> History </a></li>
-                <?php endif;?>
+                <?php if (isset($haccpResource)) : ?>
+                    <li><a href="#process_monitoring_forms" data-toggle="tab"> Process Monitoring Forms </a></li>
+                    <li><a href="#haccptasks" data-toggle="tab"> Tasks <span class="badge badge-danger" data-tasksbadge="0">0</span> </a></li>
+                    <li><a href="#history" data-toggle="tab"> History </a></li>
+                <?php endif; ?>
             </ul>
         </li>
         <li class="active"><a href="#product_information" data-toggle="tab"> Product Description </a></li>
@@ -115,11 +115,11 @@ html {
         <li class="hbtabwide"><a href="#clm_and_ca" data-toggle="tab"> Critical Limits, Monitoring, and Corrective Actions </a></li>
         <li class="hbtabwide"><a href="#verification_and_record_keeping" data-toggle="tab"> Verification and Record Keeping</a></li>
         <li class="hbtabwide"><a href="#master_sheet" data-toggle="tab"> HACCP Master Sheet </a></li>
-        <?php if(isset($haccpResource)): ?>
-        <li class="hbtabwide"><a href="#process_monitoring_forms" data-toggle="tab"> Process Monitoring Forms </a></li>
-        <li class="hbtabwide"><a href="#haccptasks" data-toggle="tab"> Tasks <span class="badge badge-danger" data-tasksbadge="0">0</span> </a></li>
-        <li class="hbtabwide"><a href="#history" data-toggle="tab"> History </a></li>
-        <?php endif;?>
+        <?php if (isset($haccpResource)) : ?>
+            <li class="hbtabwide"><a href="#process_monitoring_forms" data-toggle="tab"> Process Monitoring Forms </a></li>
+            <li class="hbtabwide"><a href="#haccptasks" data-toggle="tab"> Tasks <span class="badge badge-danger" data-tasksbadge="0">0</span> </a></li>
+            <li class="hbtabwide"><a href="#history" data-toggle="tab"> History </a></li>
+        <?php endif; ?>
     </ul>
 </div>
 <h4 class="bold" id="builder-title">Product Description </h4>
@@ -147,34 +147,38 @@ html {
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <tbody id="addedProductsList">
-                            <?php 
-                                if(isset($haccpResource) && count($haccpResource['products'])) { 
-                                    $haccpProducts = '('.implode(',', $haccpResource['products']).')'; 
-                                    $products = $conn->query("SELECT p.ID as id,p.image,p.description,p.name,c.name as category FROM tbl_products p LEFT JOIN tbl_products_category c ON p.category = c.ID  WHERE p.ID in $haccpProducts"); 
-                                    if($products->num_rows) { 
-                                        while($row = $products->fetch_assoc()) { $img = explode(',',$row['image'])[0]; $img = empty($img) ? null : '//interlinkiq.com/uploads/products/' . $img; $img = !empty($img) ? $img : "https://via.placeholder.com/120x90/EFEFEF/AAAAAA.png?text=No+Image"; echo '<tr>
+                            <?php
+                            if (isset($haccpResource) && count($haccpResource['products'])) {
+                                $haccpProducts = '(' . implode(',', $haccpResource['products']) . ')';
+                                $products = $conn->query("SELECT p.ID as id,p.image,p.description,p.name,c.name as category FROM tbl_products p LEFT JOIN tbl_products_category c ON p.category = c.ID  WHERE p.ID in $haccpProducts");
+                                if ($products->num_rows) {
+                                    while ($row = $products->fetch_assoc()) {
+                                        $img = explode(',', $row['image'])[0];
+                                        $img = empty($img) ? null : '//interlinkiq.com/uploads/products/' . $img;
+                                        $img = !empty($img) ? $img : "https://via.placeholder.com/120x90/EFEFEF/AAAAAA.png?text=No+Image";
+                                        echo '<tr>
                                                 <td style="width: 88%">
                                                 <div class="d-flex-center">
-                                                    <img src="'.$img.'" alt="Product Image" style="width: 8rem; margin-right: 1rem">
+                                                    <img src="' . $img . '" alt="Product Image" style="width: 8rem; margin-right: 1rem">
                                                     <div>
-                                                    <span class="bold">'.$row['name'].'</span> <br>
-                                                    <span class="text-muted">Category: '.$row['category'].'</span>
+                                                    <span class="bold">' . $row['name'] . '</span> <br>
+                                                    <span class="text-muted">Category: ' . $row['category'] . '</span>
                                                     </div>
                                                 </div>
                                                 </td>
                                                 <td style="width: 12%">
                                                     <div class="d-flex-center">
-                                                        <a href="javascript:void(0)" class="btn btn-outlinex btn-circle red btn-sm" onclick="removeProductBtnClick(event, '.$row['id'].')">Remove</a>
+                                                        <a href="javascript:void(0)" class="btn btn-outlinex btn-circle red btn-sm" onclick="removeProductBtnClick(event, ' . $row['id'] . ')">Remove</a>
                                                     </div>
                                                 </td>
-                                            </tr>'; 
-                                        } 
-                                    } 
-                                } 
-                                
-                                if(isset($haccpResource) && count($haccpResource['products']) == 0) { 
-                                    echo '<tr class="no-products"><td>No product(s) added.</td></tr>'; 
-                                } 
+                                            </tr>';
+                                    }
+                                }
+                            }
+
+                            if (isset($haccpResource) && count($haccpResource['products']) == 0) {
+                                echo '<tr class="no-products"><td>No product(s) added.</td></tr>';
+                            }
                             ?>
                         </tbody>
                     </table>
@@ -336,15 +340,15 @@ html {
                                 </tr>
                             </thead>
                             <tbody id="verificationFDTable">
-                                <?php foreach($teamSigns as $e) { ?>
-                                <tr>
-                                    <td style="vertical-align:middle; text-align:center; font-weight:bold;"><?= $e['name'] ?></td>
-                                    <td style="vertical-align:middle; text-align:center; font-weight:bold;"><?= $e['position'] ?></td>
-                                    <td data-vfd-id="<?= $e['id'] ?? '' ?>" data-account-id="<?= $e['signee_id'] ?>">
-                                        <div class="vfd-esign" <?= $e['sign'] ? 'data-value="'.$e['sign'].'"' : '' ?>></div>
-                                        <input type="date" class="form-control" onchange="vfdDateChange(this)" <?= $e['date'] ? 'value="'.$e['date'].'"' : '' ?> />
-                                    </td>
-                                </tr>
+                                <?php foreach ($teamSigns as $e) { ?>
+                                    <tr>
+                                        <td style="vertical-align:middle; text-align:center; font-weight:bold;"><?= $e['name'] ?></td>
+                                        <td style="vertical-align:middle; text-align:center; font-weight:bold;"><?= $e['position'] ?></td>
+                                        <td data-vfd-id="<?= $e['id'] ?? '' ?>" data-account-id="<?= $e['signee_id'] ?>">
+                                            <div class="vfd-esign" <?= $e['sign'] ? 'data-value="' . $e['sign'] . '"' : '' ?>></div>
+                                            <input type="date" class="form-control" onchange="vfdDateChange(this)" <?= $e['date'] ? 'value="' . $e['date'] . '"' : '' ?> />
+                                        </td>
+                                    </tr>
                                 <?php } ?>
                             </tbody>
                         </table>
@@ -673,112 +677,116 @@ html {
         </div>
     </div>
 
-    <?php if(isset($haccpResource)): ?>
-    <div class="tab-pane" id="process_monitoring_forms">
-        e-forms
-    </div>
-    <div class="tab-pane" id="haccptasks">
-        <div class="row">
-            <div class="col-md-6">
-                <h5 style="font-weight: bold; margin:0 0 .75rem 0; display:flex; align-items:center; justify-content:start; gap: 1.2rem">
-                    <span>Pending </span>
-                    <span class="text-muted" style="font-weight:normal;"><span data-pendingtask-count>0</span> item(s)</span>
-                </h5>
-                <div class="todo-tasklist" id="pendingTaskContainer" style="overflow:auto; max-height: 90vh;">
-                    <p class="text-muted empty-list">There are no pending task(s) yet.</p>
+    <?php if (isset($haccpResource)) : ?>
+        <div class="tab-pane" id="process_monitoring_forms">
+            e-forms
+        </div>
+        <div class="tab-pane" id="haccptasks">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 style="font-weight: bold; margin:0 0 .75rem 0; display:flex; align-items:center; justify-content:start; gap: 1.2rem">
+                        <span>Pending </span>
+                        <span class="text-muted" style="font-weight:normal;"><span data-pendingtask-count>0</span> item(s)</span>
+                    </h5>
+                    <div class="todo-tasklist" id="pendingTaskContainer" style="overflow:auto; max-height: 90vh;">
+                        <p class="text-muted empty-list">There are no pending task(s) yet.</p>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <h5 style="font-weight: bold; margin:0 0 .75rem 0;">Add new task</h5>
-                <form class="row" style="margin-bottom: 2rem;" id="taskForm">
-                    <div class="form-group col-md-12">
-                        <label for="taskTtabTitle">Task title <span class="required">*</span></label>
-                        <input type="text" id="taskTtabTitle" class="form-control" placeholder="Enter task title" name="task_title" required>
-                    </div>
-                    <div class="form-group col-md-12">
-                        <label for="tasktabDescription">Description</label>
-                        <textarea class="form-control" name="task_description" rows="5" id="tasktabDescription" placeholder="Describe the task..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-12 control-label">Assign to</label>
-                        <div class="col-md-12">
-                            <div class="select-container">
-                                <select name="assigned_to" class="form-control mt-multiselect btn btn-default" data-internal>
-                                    <option value="" selected disabled>--Select--</option>
-                                    <?php foreach($cigEmployees as $e) { echo "<option value='{$e['ID']}'>{$e['name']}</option>"; } ?>
-                                </select>
-                            </div>
-                            <div class="hide select-container">
-                                <select class="form-control mt-multiselect btn btn-default" data-haccp>
-                                    <option value="" selected disabled>--Select--</option>
-                                    <?php foreach($employees as $e) { echo "<option value='{$e['ID']}'>{$e['name']}</option>"; } ?>
-                                </select>
-                            </div>
-                            <div class="mt-radio-inline">
-                                <label class="mt-radio mt-radio-outline">
-                                    <input type="radio" name="assignee_pool" value="internal" checked onchange="selectAssignee(this)"> Internal <span></span>
-                                </label>
-                                <label class="mt-radio mt-radio-outline">
-                                    <input type="radio" name="assignee_pool" value="haccp" onchange="selectAssignee(this)"> HACCP Team <span></span>
-                                </label>
+                <div class="col-md-6">
+                    <h5 style="font-weight: bold; margin:0 0 .75rem 0;">Add new task</h5>
+                    <form class="row" style="margin-bottom: 2rem;" id="taskForm">
+                        <div class="form-group col-md-12">
+                            <label for="taskTtabTitle">Task title <span class="required">*</span></label>
+                            <input type="text" id="taskTtabTitle" class="form-control" placeholder="Enter task title" name="task_title" required>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="tasktabDescription">Description</label>
+                            <textarea class="form-control" name="task_description" rows="5" id="tasktabDescription" placeholder="Describe the task..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-12 control-label">Assign to</label>
+                            <div class="col-md-12">
+                                <div class="select-container">
+                                    <select name="assigned_to" class="form-control mt-multiselect btn btn-default" data-internal>
+                                        <option value="" selected disabled>--Select--</option>
+                                        <?php foreach ($cigEmployees as $e) {
+                                            echo "<option value='{$e['ID']}'>{$e['name']}</option>";
+                                        } ?>
+                                    </select>
+                                </div>
+                                <div class="hide select-container">
+                                    <select class="form-control mt-multiselect btn btn-default" data-haccp>
+                                        <option value="" selected disabled>--Select--</option>
+                                        <?php foreach ($employees as $e) {
+                                            echo "<option value='{$e['ID']}'>{$e['name']}</option>";
+                                        } ?>
+                                    </select>
+                                </div>
+                                <div class="mt-radio-inline">
+                                    <label class="mt-radio mt-radio-outline">
+                                        <input type="radio" name="assignee_pool" value="internal" checked onchange="selectAssignee(this)"> Internal <span></span>
+                                    </label>
+                                    <label class="mt-radio mt-radio-outline">
+                                        <input type="radio" name="assignee_pool" value="haccp" onchange="selectAssignee(this)"> HACCP Team <span></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
+                        <div class="form-group col-md-12">
+                            <label for="taskTtabDueDate">Desired due date</label>
+                            <input type="date" id="taskTtabDueDate" name="task_due" class="form-control">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <button type="submit" class="btn btn green">Submit</button>
+                        </div>
+                    </form>
+                    <h5 style="font-weight: bold; margin:0 0 .75rem 0; display:flex; align-items:center; justify-content:start; gap: 1.2rem">
+                        <span>Completed tasks </span>
+                        <span class="text-muted" style="font-weight:normal;"><span data-completedtask-count>0</span> item(s)</span>
+                    </h5>
+                    <div class="todo-tasklist" id="completedTaskContainer" style="overflow:auto; max-height: 40vh;">
+                        <p class="text-muted empty-list">No task has been completed yet.</p>
                     </div>
-                    <div class="form-group col-md-12">
-                        <label for="taskTtabDueDate">Desired due date</label>
-                        <input type="date" id="taskTtabDueDate" name="task_due" class="form-control">
-                    </div>
-                    <div class="form-group col-md-12">
-                        <button type="submit" class="btn btn green">Submit</button>
-                    </div>
-                </form>
-                <h5 style="font-weight: bold; margin:0 0 .75rem 0; display:flex; align-items:center; justify-content:start; gap: 1.2rem">
-                    <span>Completed tasks </span>
-                    <span class="text-muted" style="font-weight:normal;"><span data-completedtask-count>0</span> item(s)</span>
-                </h5>
-                <div class="todo-tasklist" id="completedTaskContainer" style="overflow:auto; max-height: 40vh;">
-                    <p class="text-muted empty-list">No task has been completed yet.</p>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="tab-pane" id="history">
-        <div class="note note-info hide">
-            <h4 class="block">Note</h4>
-            <p>Changes were traced from every tab/section (Product Description, Process Flow Diagram, Hazard Analysis, and etc.) except for the Overview section above. Every update from the overview fields will affect the whole document and not by history/version.</p>
-        </div>
-        <div id="myHistoryLogs">
-            <div style="display: flex; align-items:center; justify-content:space-between; margin-bottom:2rem;">
-                <div class="">
-                    <select id="versionsDropdown" class="form-control" onchange="changeVersionEvt(this)"></select>
-                </div>
-                <a href="#" id="versionViewPDF" data-pdflink="<?= hash('md5', $haccpResource['id']) ?>" class="btn btn-sm blue" style="display:none;" target="_blank">
-                    <i class="fa fa-file-pdf-o" style="margin-right: .75rem;"></i>
-                    View PDF
-                </a>
+        <div class="tab-pane" id="history">
+            <div class="note note-info hide">
+                <h4 class="block">Note</h4>
+                <p>Changes were traced from every tab/section (Product Description, Process Flow Diagram, Hazard Analysis, and etc.) except for the Overview section above. Every update from the overview fields will affect the whole document and not by history/version.</p>
             </div>
-            <div style="max-height:100vh; overflow-y: auto;">
-                <div class="mt-element-list">
-                    <div class="mt-list-container list-news ext-1">
-                        <ul style="border-top: 1px solid #e7ecf1;" id="historyLogsList">
-                            <li class="mt-list-item hide">
-                                <div class="list-item-content" style="padding-left: 0; font-weight:600;">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec elementum gravida mauris, a tincidunt dolor porttitor eu.
-                                </div>
-                                <div class="list-datetime uppercasex small text-muted" style="padding-left: 0;margin-top:1rem;">
-                                    John Doe updated 3 weeks ago
-                                </div>
-                            </li>
-                        </ul>
+            <div id="myHistoryLogs">
+                <div style="display: flex; align-items:center; justify-content:space-between; margin-bottom:2rem;">
+                    <div class="">
+                        <select id="versionsDropdown" class="form-control" onchange="changeVersionEvt(this)"></select>
+                    </div>
+                    <a href="#" id="versionViewPDF" data-pdflink="<?= hash('md5', $haccpResource['id']) ?>" class="btn btn-sm blue" style="display:none;" target="_blank">
+                        <i class="fa fa-file-pdf-o" style="margin-right: .75rem;"></i>
+                        View PDF
+                    </a>
+                </div>
+                <div style="max-height:100vh; overflow-y: auto;">
+                    <div class="mt-element-list">
+                        <div class="mt-list-container list-news ext-1">
+                            <ul style="border-top: 1px solid #e7ecf1;" id="historyLogsList">
+                                <li class="mt-list-item hide">
+                                    <div class="list-item-content" style="padding-left: 0; font-weight:600;">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec elementum gravida mauris, a tincidunt dolor porttitor eu.
+                                    </div>
+                                    <div class="list-datetime uppercasex small text-muted" style="padding-left: 0;margin-top:1rem;">
+                                        John Doe updated 3 weeks ago
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div style="padding: 0 4rem; ">
+                        <h6 class="history-footer text-muted" style="border-left: 1px solid #e7ecf1; padding:2rem 1rem; font-weight:600;">
+                            Date started: <span id="historyStarted"></span>
+                        </h6>
                     </div>
                 </div>
-                <div style="padding: 0 4rem; ">
-                    <h6 class="history-footer text-muted" style="border-left: 1px solid #e7ecf1; padding:2rem 1rem; font-weight:600;">
-                        Date started: <span id="historyStarted"></span>
-                    </h6>
-                </div>
             </div>
         </div>
-    </div>
     <?php endif; ?>
 </div>

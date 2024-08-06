@@ -69,7 +69,7 @@ class Haccp
             )->fetchAssoc();
 
             if ($data['user_id'] != ($switch_user_id ?? $user_id)) {
-                throw new Exception("Incorrect HACCP Id.");
+                throw new Exception("Incorrect Food Safety Plan Id.");
             }
 
             if (!count($data)) {
@@ -109,7 +109,7 @@ class Haccp
             )->fetchAssoc();
 
             if ($data['user_id'] != ($switch_user_id ?? $user_id)) {
-                throw new Exception("Incorrect HACCP Id.");
+                throw new Exception("Incorrect Food Safety Plan Id.");
             }
 
             if (!count($data)) {
@@ -424,10 +424,10 @@ class Haccp
                     $this->sendEmail(
                         $emailInfo['recipient_email'],
                         $emailInfo['recipient_name'],
-                        'HACCP Module - Reviewer',
+                        'Food Safety Plan Module - Reviewer',
                         'Hi ' . $emailInfo['recipient_name'] . ', <br><br>
                             <b>Task</b> <br>
-                            InterlinkIQ HACCP Module Review <br><br>
+                            InterlinkIQ Food Safety Plan Module Review <br><br>
                             <b>Description</b> <br>
                             ' . $arr['description'] . ' <br><br>
                             <b>Assigned by</b> <br>
@@ -467,10 +467,10 @@ class Haccp
                     $this->sendEmail(
                         $emailInfo['recipient_email'],
                         $emailInfo['recipient_name'],
-                        'HACCP Module Notification',
+                        'Food Safety Plan Module Notification',
                         'Hi ' . $emailInfo['recipient_name'] . ', <br><br>
                             <b>Task</b> <br>
-                            InterlinkIQ HACCP Module Revision <br><br>
+                            InterlinkIQ Food Safety Plan Module Revision <br><br>
                             <b>Description</b> <br>
                             ' . $arr['description'] . ' has been returned by the reviewer for revision. <br><br>
                             <b>Comment</b> <br>
@@ -507,10 +507,10 @@ class Haccp
                     $this->sendEmail(
                         $emailInfo['recipient_email'],
                         $emailInfo['recipient_name'],
-                        'HACCP Module - Approver',
+                        'Food Safety Plan Module - Approver',
                         'Hi ' . $emailInfo['recipient_name'] . ', <br><br>
                             <b>Task</b> <br>
-                            InterlinkIQ HACCP Module for Approval <br><br>
+                            InterlinkIQ Food Safety Plan Module for Approval <br><br>
                             <b>Description</b> <br>
                             ' . $arr['description'] . ' <br><br>
                             <b>Assigned by</b> <br>
@@ -561,10 +561,10 @@ class Haccp
                     $this->sendEmail(
                         $emailInfo['recipient_email'],
                         $emailInfo['recipient_name'],
-                        'HACCP Module Notification',
+                        'Food Safety Plan Module Notification',
                         'Hi ' . $emailInfo['recipient_name'] . ', <br><br>
                             <b>Task</b> <br>
-                            InterlinkIQ HACCP Module Returned for Review
+                            InterlinkIQ Food Safety Plan Module Returned for Review
                             <b>Description</b> <br>
                             ' . $arr['description'] . ' has been rejected by the approver. Please review it now. <br><br>
                             <b>Comment</b> <br>
@@ -603,10 +603,10 @@ class Haccp
                     $this->sendEmail(
                         $emailInfo['recipient_email'],
                         $emailInfo['recipient_name'],
-                        'HACCP Module Notification',
+                        'Food Safety Plan Module Notification',
                         'Hi ' . $emailInfo['recipient_name'] . ', <br><br>
                             <b>Task</b> <br>
-                            InterlinkIQ HACCP Module Returned to Drafter
+                            InterlinkIQ Food Safety Plan Module Returned to Drafter
                             <b>Description</b> <br>
                             ' . $arr['description'] . ' has been reassigned to you. <br><br>
                             ' . $this->emailBtn($action) . '
@@ -886,7 +886,7 @@ class Haccp
                 $this->sendEmail(
                     $emailInfo['recipient_email'],
                     $emailInfo['recipient_name'],
-                    'HACCP Module Task Notification',
+                    'Food Safety Plan Module Task Notification',
                     'Hi ' . $emailInfo['recipient_name'] . ', <br><br>
                         <b>Task Title</b> <br>
                         ' . $data['title'] . ' <br><br>

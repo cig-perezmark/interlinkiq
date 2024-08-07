@@ -5,7 +5,7 @@ include_once __DIR__ . '/init.php';
 <link href="assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
 <link href="assets/global/plugins/jquery-notific8/jquery.notific8.min.css" rel="stylesheet" type="text/css" />
 <link href="assets/apps/css/todo-2.min.css" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" href="modules/haccp/style.css">
+<link rel="stylesheet" href="modules/fs/style.css">
 <script>
     var planBuilder = {
         processes: {},

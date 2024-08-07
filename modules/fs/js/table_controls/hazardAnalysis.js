@@ -3,51 +3,64 @@ tcTable.prototype.hazard_analysis_and_preventive_measures = function () {
     const table = this.tables.hazard_analysis_and_preventive_measures;
 
     if (!processes.length) {
-        HRow.empty(table, 8);
+        HRow.empty(table, 9);
         return;
     }
 
     processes.forEach((id) => {
         const d = planBuilder.processes[id];
         const ha = d.hazardAnalysis;
+        const rows = {};
 
-        const rowB = new HRow(table, { "data-id": id, "data-main-row": "" });
-        rowB.cell(wProcessStep(d, table), { class: "t-center", rowspan: 3 });
-        rowB.cell("B", { class: "bold" }, { textAlign: "center" });
-        rowB.cell(ha.B.potentialHazards, null, { width: "22%" }).on("input", (v) => (ha.B.potentialHazards = v));
-        rowB.cell(`<span class="sl-rating-score" data-risk="${ha.B.slRisk}">${ha.B.sl || ""}</span>`, {
-            "data-sl-rating-cell": "",
-        }).on("click", (e) => openSelectSLRating(e, ha.B));
-        rowB.cell(null, { "data-hazard": "B" }).on("yesno", ha.B.rlto, (v) => (ha.B.rlto = v));
-        rowB.cell(ha.B.justification).on("input", (v) => (ha.B.justification = v));
-        rowB.cell(ha.B.controlMeasures).on("input", (v) => (ha.B.controlMeasures = v));
-        rowB.cell(haSlResult(ha.B), { "data-sl-result-cell": "" });
+        Object.keys(ha).forEach((k, index) => {
+            const rowAttr = { "data-id": id };
+            
+            index == 0 && (rowAttr['data-main-row'] = '');
 
-        const rowC = new HRow(table, { "data-id": id });
-        rowC.cell("C", { class: "bold noborder" }, { textAlign: "center" });
-        rowC.cell(ha.C.potentialHazards, null, { width: "22%" }).on("input", (v) => (ha.C.potentialHazards = v));
-        rowC.cell(`<span class="sl-rating-score" data-risk="${ha.C.slRisk}">${ha.C.sl || ""}</span>`, {
-            "data-sl-rating-cell": "",
-        }).on("click", (e) => openSelectSLRating(e, ha.C));
-        rowC.cell(null, { "data-hazard": "C" }).on("yesno", ha.C.rlto, (v) => (ha.C.rlto = v));
-        rowC.cell(ha.C.justification).on("input", (v) => (ha.C.justification = v));
-        rowC.cell(ha.C.controlMeasures).on("input", (v) => (ha.C.controlMeasures = v));
-        rowC.cell(haSlResult(ha.C), { "data-sl-result-cell": "" });
+            rows[k] = new HRow(table, rowAttr);
+            
+            index == 0 && rows[k].cell(wProcessStep(d, table), { class: "t-center", rowspan: 6 });
 
-        const rowP = new HRow(table, { "data-id": id });
-        rowP.cell("P", { class: "bold noborder" }, { textAlign: "center" });
-        rowP.cell(ha.P.potentialHazards, null, { width: "22%" }).on("input", (v) => (ha.P.potentialHazards = v));
-        rowP.cell(`<span class="sl-rating-score" data-risk="${ha.P.slRisk}">${ha.P.sl || ""}</span>`, {
-            "data-sl-rating-cell": "",
-        }).on("click", (e) => openSelectSLRating(e, ha.P));
-        rowP.cell(null, { "data-hazard": "P" }).on("yesno", ha.P.rlto, (v) => (ha.P.rlto = v));
-        rowP.cell(ha.P.justification).on("input", (v) => (ha.P.justification = v));
-        rowP.cell(ha.P.controlMeasures).on("input", (v) => (ha.P.controlMeasures = v));
-        rowP.cell(haSlResult(ha.P), { "data-sl-result-cell": "" });
+            rows[k].cell(k, { class: "bold " + (index == 0 ?'': 'noborder') }, { textAlign: "center" });
+
+            const phCell = rows[k].cell(ha[k].potentialHazards, null, { width: "22%" }).on("input", (v) => (ha[k].potentialHazards = v));
+            const sD = severityDropdown();
+    
+            phCell.append(sD.container);
+
+            rows[k].cell(null, { "data-hazard": k }).on("yesno", ha[k].preventiveControl, (v) => (ha[k].preventiveControl = v));
+            
+            rows[k].cell(null, { class: "text-center" });
+            rows[k].cell(ha[k].justify, null).on("input", (v) => (ha[k].justify = v));
+            rows[k].cell(ha[k].controlMeasures, null).on("input", (v) => (ha[k].controlMeasures = v));
+            rows[k].cell(null, { "data-hazard": k }).on("yesno", ha[k].applied, (v) => (ha[k].applied = v));
+            let risk = rows[k].cell(null, { class: "text-center" });
+            risk.append(
+                `<div style="text-align: center; margin: 0 0 1rem 0;" data-ccpindicator></div>`
+            );
+        });
     });
 
     evaluateCCPperTable(processes, "ha");
 };
+
+function severityDropdown() {
+    const container = document.createElement('div');
+    const dropdown = document.createElement('select');
+
+    dropdown.innerHTML = `
+        <option value="">1</option>
+        <option value="">2</option>
+        <option value="">3</option>
+        <option value="">4</option>
+        <option value="">5</option>
+    `;
+    container.setAttribute('class', 'cell-select');
+    container.innerHTML = `<span>Severity:</span>`;
+    container.append(dropdown);
+
+    return {container, dropdown};
+}
 
 function haSlResult(rating) {
     switch (rating.slRisk) {

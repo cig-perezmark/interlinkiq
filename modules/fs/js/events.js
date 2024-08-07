@@ -3,7 +3,7 @@ function events() {
     $('a[data-toggle="tab"]').on("show.bs.tab", function () {
         // reset step selector
         $(".stepSelector select").html("<option selected disabled>None</option>").trigger("change");
-        closeSLRatingSelection();
+        // closeSLRatingSelection();
         const target = this.getAttribute("href").replace("#", "");
         new tcTable(target);
     });

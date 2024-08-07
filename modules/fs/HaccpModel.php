@@ -357,6 +357,7 @@ class Haccp
             $haccpParams = self::paramBuilder([
                 'user_id' => $arr['owner'],
                 'title' => $arr['description'],
+                'scope' => $arr['scope'],
                 'developed_by' => $arr['developer'] ?? null,
                 'developed_at' => date('Y-m-d', strtotime($this->ts)),
                 'developer_sign' => $arr['developer_sign'] ?? null,
@@ -394,7 +395,7 @@ class Haccp
             }
 
             // update haccp title
-            $this->conn->execute("UPDATE tbl_fsp SET title = ? WHERE id = ?", $arr['description'], $this->id);
+            $this->conn->execute("UPDATE tbl_fsp SET title = ?, scope = ? WHERE id = ?", $arr['description'], $arr['scope'], $this->id);
 
             if (isset($arr['save_as'])) {
                 $this->updateCurrentVersion($arr);

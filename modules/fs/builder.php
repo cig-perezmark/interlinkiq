@@ -1,5 +1,15 @@
 <?php
 
+/** @var Array $employees */
+
+/** @var Array $cigEmployees */
+
+/** @var Array $facilities */
+
+/** @var Array $teamSigns */
+
+/** @var mysqli_extended $conn */
+
 $builderTabs = [
     [
         'title' => 'Raw Product List',

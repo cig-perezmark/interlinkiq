@@ -2755,6 +2755,7 @@
                                         $filetype = htmlentities($rowFile['filetype'] ?? '');
                                         $files = htmlentities($rowFile["files"] ?? '');
                                         $type = 'iframe';
+                                        $datafancybox = 'data-fancybox';
                                         if ($filetype == 1) {
                                             $fileExtension = fileExtension($files);
                                             $src = $fileExtension['src'];
@@ -2842,6 +2843,7 @@
                                             $filetype = htmlentities($rowFile['filetype'] ?? '');
                                             $files = htmlentities($rowFile["files"] ?? '');
                                             $type = 'iframe';
+                                            $datafancybox = 'data-fancybox';
                                             if ($filetype == 1) {
                                                 $fileExtension = fileExtension($files);
                                                 $src = $fileExtension['src'];
@@ -2932,6 +2934,7 @@
                                             $filetype = htmlentities($rowFile['filetype'] ?? '');
                                             $files = htmlentities($rowFile["files"] ?? '');
                                             $type = 'iframe';
+                                            $datafancybox = 'data-fancybox';
                                             if ($filetype == 1) {
                                                 $fileExtension = fileExtension($files);
                                                 $src = $fileExtension['src'];
@@ -3022,6 +3025,7 @@
                                             $filetype = htmlentities($rowFile['filetype'] ?? '');
                                             $files = htmlentities($rowFile["files"] ?? '');
                                             $type = 'iframe';
+                                            $datafancybox = 'data-fancybox';
                                             if ($filetype == 1) {
                                                 $fileExtension = fileExtension($files);
                                                 $src = $fileExtension['src'];
@@ -3784,6 +3788,7 @@
             $filetype = htmlentities($row['filetype'] ?? '');
             $files = htmlentities($row["files"] ?? '');
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if ($filetype == 1) {
                 $fileExtension = fileExtension($files);
                 $src = $fileExtension['src'];
@@ -3922,6 +3927,7 @@
 
                     $data_files = $rowData['files'];
                     $type = 'iframe';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($data_files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($data_files);
@@ -4047,6 +4053,7 @@
             if ($process == true) {
                 $data_files = $rowData['files'];
                 $type = 'iframe';
+                $datafancybox = 'data-fancybox';
                 if (!empty($data_files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($data_files);
@@ -4153,6 +4160,7 @@
                 $filetype = htmlentities($row['j_filetype'] ?? '');
                 $files = htmlentities($row["j_files"] ?? '');
                 $type = 'iframe';
+                $datafancybox = 'data-fancybox';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -4211,6 +4219,7 @@
             $filetype = htmlentities($row['filetype'] ?? '');
             $files = htmlentities($row["files"] ?? '');
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($files)) {
                 if ($filetype == 1) {
                     $fileExtension = fileExtension($files);
@@ -4492,6 +4501,7 @@
                         $file_doc = $value['file_doc'];
                         $file_doc_temp = $value['file_doc'];
                         $type = 'iframe';
+                        $datafancybox = 'data-fancybox';
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($file_doc);
                             $src = $fileExtension['src'];
@@ -4575,6 +4585,7 @@
                     $filetype = htmlentities($rowData['filetype'] ?? '');
                     $files = htmlentities($rowData["files"] ?? '');
                     $type = 'iframe';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -4685,6 +4696,7 @@
                         $files = $_POST['fileurl'];
                         $filesize = 0;
                         $type = 'iframe';
+                        $datafancybox = 'data-fancybox';
 
                         mysqli_query( $conn,"UPDATE tbl_hr_job_description SET files='". $files ."', filetype='". $filetype ."' WHERE ID='". $ID ."'" );
 
@@ -4714,6 +4726,7 @@
                     $filetype = htmlentities($rowData['filetype'] ?? '');
                     $files = htmlentities($rowData["files"] ?? '');
                     $type = 'iframe';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -5072,6 +5085,7 @@
                                             $file_doc = $value['file_doc'];
                                             $file_doc_temp = $value['file_doc'];
                                             $type = 'iframe';
+                                            $datafancybox = 'data-fancybox';
                                             if ($filetype == 1) {
                                                 $fileExtension = fileExtension($file_doc);
                                                 $src = $fileExtension['src'];
@@ -6870,6 +6884,7 @@
             $filetype = htmlentities($row['filetype'] ?? '');
             $files = htmlentities($row["files"] ?? '');
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($files)) {
                 if ($filetype == 1) {
                     $fileExtension = fileExtension($files);
@@ -7066,6 +7081,7 @@
                     $filetype = htmlentities($rowData['filetype'] ?? '');
                     $files = htmlentities($rowData["files"] ?? '');
                     $type = 'iframe';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -7169,6 +7185,7 @@
                 $filetype = htmlentities($rowData['filetype'] ?? '');
                 $files = htmlentities($rowData["files"] ?? '');
                 $type = 'iframe';
+                $datafancybox = 'data-fancybox';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -8897,8 +8914,8 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <input type="hidden" name="prepared_signature_default_temp" value="'.$empty_signature.'" />
-                                            <img class="img img-fluid sign signature_default" src="'.$empty_signature.'" />
+                                            <input type="hidden" name="prepared_signature_default_temp" value="'.$prepared_signature.'" />
+                                            <img class="img img-fluid sign signature_default" src="'.$prepared_signature.'" />
                                             <input type="file" class="form-control hide sign signature_upload" name="prepared_file" />
                                             <div class="hide sign signature_sign">
                                                 <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
@@ -8937,8 +8954,8 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <input type="hidden" name="reviewed_signature_default_temp" value="'.$empty_signature.'" />
-                                            <img class="img img-fluid sign signature_default" src="'.$empty_signature.'" />
+                                            <input type="hidden" name="reviewed_signature_default_temp" value="'.$reviewed_signature.'" />
+                                            <img class="img img-fluid sign signature_default" src="'.$reviewed_signature.'" />
                                             <input type="file" class="form-control hide sign signature_upload" name="reviewed_file" />
                                             <div class="hide sign signature_sign">
                                                 <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
@@ -8995,8 +9012,8 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <input type="hidden" name="approved_signature_default_temp" value="'.$empty_signature.'" />
-                                            <img class="img img-fluid sign signature_default" src="'.$empty_signature.'" />
+                                            <input type="hidden" name="approved_signature_default_temp" value="'.$approved_signature.'" />
+                                            <img class="img img-fluid sign signature_default" src="'.$approved_signature.'" />
                                             <input type="file" class="form-control hide sign signature_upload" name="approved_file" />
                                             <div class="hide sign signature_sign">
                                                 <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
@@ -13026,13 +13043,13 @@
                     } else {
                         $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                         if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                            $row = mysqli_fetch_array($selectPictogram);
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                             $files = '';
                             $type = 'iframe';
-                            if (!empty($row["files"])) {
-                                $arr_filename = explode(' | ', $row["files"]);
-                                $arr_filetype = explode(' | ', $row["filetype"]);
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                 $str_filename = '';
 
                                 foreach($arr_filename as $val_filename) {
@@ -13042,8 +13059,8 @@
                                     $str_filetype = $val_filetype;
                                 }
 
-                                $files = $row["files"];
-                                if ($row["filetype"] == 1) {
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
                                     $fileExtension = fileExtension($files);
                                     $src = $fileExtension['src'];
                                     $embed = $fileExtension['embed'];
@@ -13052,7 +13069,7 @@
                                     $url = $base_url.'uploads/pictogram/';
 
                                     $files = $src.$url.rawurlencode($files).$embed;
-                                } else if ($row["filetype"] == 3) {
+                                } else if ($rowPictogram["filetype"] == 3) {
                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                 }
                             }
@@ -13407,13 +13424,13 @@
                     } else {
                         $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                         if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                            $row = mysqli_fetch_array($selectPictogram);
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                             $files = '';
                             $type = 'iframe';
-                            if (!empty($row["files"])) {
-                                $arr_filename = explode(' | ', $row["files"]);
-                                $arr_filetype = explode(' | ', $row["filetype"]);
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                 $str_filename = '';
 
                                 foreach($arr_filename as $val_filename) {
@@ -13423,8 +13440,8 @@
                                     $str_filetype = $val_filetype;
                                 }
 
-                                $files = $row["files"];
-                                if ($row["filetype"] == 1) {
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
                                     $fileExtension = fileExtension($files);
                                     $src = $fileExtension['src'];
                                     $embed = $fileExtension['embed'];
@@ -13433,7 +13450,7 @@
                                     $url = $base_url.'uploads/pictogram/';
 
                                     $files = $src.$url.rawurlencode($files).$embed;
-                                } else if ($row["filetype"] == 3) {
+                                } else if ($rowPictogram["filetype"] == 3) {
                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                 }
                             }
@@ -13516,13 +13533,13 @@
                     } else {
                         $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                         if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                            $row = mysqli_fetch_array($selectPictogram);
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                             $files = '';
                             $type = 'iframe';
-                            if (!empty($row["files"])) {
-                                $arr_filename = explode(' | ', $row["files"]);
-                                $arr_filetype = explode(' | ', $row["filetype"]);
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                 $str_filename = '';
 
                                 foreach($arr_filename as $val_filename) {
@@ -13532,8 +13549,8 @@
                                     $str_filetype = $val_filetype;
                                 }
 
-                                $files = $row["files"];
-                                if ($row["filetype"] == 1) {
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
                                     $fileExtension = fileExtension($files);
                                     $src = $fileExtension['src'];
                                     $embed = $fileExtension['embed'];
@@ -13542,7 +13559,7 @@
                                     $url = $base_url.'uploads/pictogram/';
 
                                     $files = $src.$url.rawurlencode($files).$embed;
-                                } else if ($row["filetype"] == 3) {
+                                } else if ($rowPictogram["filetype"] == 3) {
                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                 }
                             }
@@ -13736,6 +13753,7 @@
 
                                                                 $type = 'iframe';
                                                                 $filetype = $rowTemplate["filetype"];
+                                                                $datafancybox = 'data-fancybox';
                                                                 if ($filetype == 1) {
                                                                     $fileExtension = fileExtension($temp_file);
                                                                     $src = $fileExtension['src'];
@@ -14032,6 +14050,7 @@
 
                                                         $type = 'iframe';
                                                         $filetype = $rowTemplate["filetype"];
+                                                        $datafancybox = 'data-fancybox';
                                                         if ($filetype == 1) {
                                                             $fileExtension = fileExtension($temp_file);
                                                             $src = $fileExtension['src'];
@@ -14202,13 +14221,13 @@
                     } else {
                         $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                         if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                            $row = mysqli_fetch_array($selectPictogram);
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                             $files = '';
                             $type = 'iframe';
-                            if (!empty($row["files"])) {
-                                $arr_filename = explode(' | ', $row["files"]);
-                                $arr_filetype = explode(' | ', $row["filetype"]);
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                 $str_filename = '';
 
                                 foreach($arr_filename as $val_filename) {
@@ -14218,8 +14237,8 @@
                                     $str_filetype = $val_filetype;
                                 }
 
-                                $files = $row["files"];
-                                if ($row["filetype"] == 1) {
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
                                     $fileExtension = fileExtension($files);
                                     $src = $fileExtension['src'];
                                     $embed = $fileExtension['embed'];
@@ -14228,7 +14247,7 @@
                                     $url = $base_url.'uploads/pictogram/';
 
                                     $files = $src.$url.rawurlencode($files).$embed;
-                                } else if ($row["filetype"] == 3) {
+                                } else if ($rowPictogram["filetype"] == 3) {
                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                 }
                             }
@@ -14309,13 +14328,13 @@
                     } else {
                         $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                         if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                            $row = mysqli_fetch_array($selectPictogram);
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                             $files = '';
                             $type = 'iframe';
-                            if (!empty($row["files"])) {
-                                $arr_filename = explode(' | ', $row["files"]);
-                                $arr_filetype = explode(' | ', $row["filetype"]);
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                 $str_filename = '';
 
                                 foreach($arr_filename as $val_filename) {
@@ -14325,8 +14344,8 @@
                                     $str_filetype = $val_filetype;
                                 }
 
-                                $files = $row["files"];
-                                if ($row["filetype"] == 1) {
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
                                     $fileExtension = fileExtension($files);
                                     $src = $fileExtension['src'];
                                     $embed = $fileExtension['embed'];
@@ -14335,7 +14354,7 @@
                                     $url = $base_url.'uploads/pictogram/';
 
                                     $files = $src.$url.rawurlencode($files).$embed;
-                                } else if ($row["filetype"] == 3) {
+                                } else if ($rowPictogram["filetype"] == 3) {
                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                 }
                             }
@@ -14418,13 +14437,13 @@
                     } else {
                         $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                         if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                            $row = mysqli_fetch_array($selectPictogram);
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                             $files = '';
                             $type = 'iframe';
-                            if (!empty($row["files"])) {
-                                $arr_filename = explode(' | ', $row["files"]);
-                                $arr_filetype = explode(' | ', $row["filetype"]);
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                 $str_filename = '';
 
                                 foreach($arr_filename as $val_filename) {
@@ -14434,8 +14453,8 @@
                                     $str_filetype = $val_filetype;
                                 }
 
-                                $files = $row["files"];
-                                if ($row["filetype"] == 1) {
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
                                     $fileExtension = fileExtension($files);
                                     $src = $fileExtension['src'];
                                     $embed = $fileExtension['embed'];
@@ -14444,7 +14463,7 @@
                                     $url = $base_url.'uploads/pictogram/';
 
                                     $files = $src.$url.rawurlencode($files).$embed;
-                                } else if ($row["filetype"] == 3) {
+                                } else if ($rowPictogram["filetype"] == 3) {
                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                 }
                             }
@@ -16078,6 +16097,7 @@
 
                                             $type = 'iframe';
                                             $filetype = $rowTemplate["filetype"];
+                                            $datafancybox = 'data-fancybox';
                                             if ($filetype == 1) {
                                                 $fileExtension = fileExtension($temp_file);
                                                 $src = $fileExtension['src'];
@@ -16337,6 +16357,7 @@
 
                                 $type = 'iframe';
                                 $filetype = $rowTemplate["filetype"];
+                                $datafancybox = 'data-fancybox';
                                 if ($filetype == 1) {
                                     $fileExtension = fileExtension($temp_file);
                                     $src = $fileExtension['src'];
@@ -17075,7 +17096,7 @@
                             ON d.name = r.ID
 
                             WHERE d.type = 0
-                            AND LENGTH(d.file) = 0
+                            AND IFNULL(d.file = '', TRUE)
                             AND d.user_id = $data_user_id
                             AND d.supplier_id = $data_ID
                         ) AS o
@@ -18044,7 +18065,7 @@
                             ON d.name = r.ID
 
                             WHERE d.type = 0
-                            AND LENGTH(d.file) = 0
+                            AND IFNULL(d.file = '', TRUE)
                             AND d.user_id = $data_user_id
                             AND d.supplier_id = $data_ID
                         ) AS o
@@ -19799,13 +19820,13 @@
                     } else {
                         $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                         if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                            $row = mysqli_fetch_array($selectPictogram);
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                             $files = '';
                             $type = 'iframe';
-                            if (!empty($row["files"])) {
-                                $arr_filename = explode(' | ', $row["files"]);
-                                $arr_filetype = explode(' | ', $row["filetype"]);
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                 $str_filename = '';
 
                                 foreach($arr_filename as $val_filename) {
@@ -19815,8 +19836,8 @@
                                     $str_filetype = $val_filetype;
                                 }
 
-                                $files = $row["files"];
-                                if ($row["filetype"] == 1) {
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
                                     $fileExtension = fileExtension($files);
                                     $src = $fileExtension['src'];
                                     $embed = $fileExtension['embed'];
@@ -19825,7 +19846,7 @@
                                     $url = $base_url.'uploads/pictogram/';
 
                                     $files = $src.$url.rawurlencode($files).$embed;
-                                } else if ($row["filetype"] == 3) {
+                                } else if ($rowPictogram["filetype"] == 3) {
                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                 }
                             }
@@ -20218,6 +20239,7 @@
                                             $files = $rowRegulatory["files"];
                                             $filetype = $rowRegulatory["filetype"];
                                             $type = 'iframe';
+                                            $datafancybox = 'data-fancybox';
                                             if (!empty($files)) {
                                                 if ($filetype == 1) {
                                                     $fileExtension = fileExtension($files);
@@ -20268,13 +20290,13 @@
                     } else {
                         $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                         if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                            $row = mysqli_fetch_array($selectPictogram);
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                             $files = '';
                             $type = 'iframe';
-                            if (!empty($row["files"])) {
-                                $arr_filename = explode(' | ', $row["files"]);
-                                $arr_filetype = explode(' | ', $row["filetype"]);
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                 $str_filename = '';
 
                                 foreach($arr_filename as $val_filename) {
@@ -20284,8 +20306,8 @@
                                     $str_filetype = $val_filetype;
                                 }
 
-                                $files = $row["files"];
-                                if ($row["filetype"] == 1) {
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
                                     $fileExtension = fileExtension($files);
                                     $src = $fileExtension['src'];
                                     $embed = $fileExtension['embed'];
@@ -20294,7 +20316,7 @@
                                     $url = $base_url.'uploads/pictogram/';
 
                                     $files = $src.$url.rawurlencode($files).$embed;
-                                } else if ($row["filetype"] == 3) {
+                                } else if ($rowPictogram["filetype"] == 3) {
                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                 }
                             }
@@ -20377,13 +20399,13 @@
                     } else {
                         $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                         if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                            $row = mysqli_fetch_array($selectPictogram);
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                             $files = '';
                             $type = 'iframe';
-                            if (!empty($row["files"])) {
-                                $arr_filename = explode(' | ', $row["files"]);
-                                $arr_filetype = explode(' | ', $row["filetype"]);
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                 $str_filename = '';
 
                                 foreach($arr_filename as $val_filename) {
@@ -20393,8 +20415,8 @@
                                     $str_filetype = $val_filetype;
                                 }
 
-                                $files = $row["files"];
-                                if ($row["filetype"] == 1) {
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
                                     $fileExtension = fileExtension($files);
                                     $src = $fileExtension['src'];
                                     $embed = $fileExtension['embed'];
@@ -20403,7 +20425,7 @@
                                     $url = $base_url.'uploads/pictogram/';
 
                                     $files = $src.$url.rawurlencode($files).$embed;
-                                } else if ($row["filetype"] == 3) {
+                                } else if ($rowPictogram["filetype"] == 3) {
                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                 }
                             }
@@ -20595,6 +20617,7 @@
 
                                                                 $type = 'iframe';
                                                                 $filetype = $rowTemplate["filetype"];
+                                                                $datafancybox = 'data-fancybox';
                                                                 if ($filetype == 1) {
                                                                     $fileExtension = fileExtension($temp_file);
                                                                     $src = $fileExtension['src'];
@@ -20893,6 +20916,7 @@
 
                                                         $type = 'iframe';
                                                         $filetype = $rowTemplate["filetype"];
+                                                        $datafancybox = 'data-fancybox';
                                                         if ($filetype == 1) {
                                                             $fileExtension = fileExtension($temp_file);
                                                             $src = $fileExtension['src'];
@@ -21065,13 +21089,13 @@
                     } else {
                         $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                         if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                            $row = mysqli_fetch_array($selectPictogram);
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                             $files = '';
                             $type = 'iframe';
-                            if (!empty($row["files"])) {
-                                $arr_filename = explode(' | ', $row["files"]);
-                                $arr_filetype = explode(' | ', $row["filetype"]);
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                 $str_filename = '';
 
                                 foreach($arr_filename as $val_filename) {
@@ -21081,8 +21105,8 @@
                                     $str_filetype = $val_filetype;
                                 }
 
-                                $files = $row["files"];
-                                if ($row["filetype"] == 1) {
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
                                     $fileExtension = fileExtension($files);
                                     $src = $fileExtension['src'];
                                     $embed = $fileExtension['embed'];
@@ -21091,7 +21115,7 @@
                                     $url = $base_url.'uploads/pictogram/';
 
                                     $files = $src.$url.rawurlencode($files).$embed;
-                                } else if ($row["filetype"] == 3) {
+                                } else if ($rowPictogram["filetype"] == 3) {
                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                 }
                             }
@@ -21201,13 +21225,13 @@
                     } else {
                         $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                         if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                            $row = mysqli_fetch_array($selectPictogram);
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                             $files = '';
                             $type = 'iframe';
-                            if (!empty($row["files"])) {
-                                $arr_filename = explode(' | ', $row["files"]);
-                                $arr_filetype = explode(' | ', $row["filetype"]);
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                 $str_filename = '';
 
                                 foreach($arr_filename as $val_filename) {
@@ -21217,8 +21241,8 @@
                                     $str_filetype = $val_filetype;
                                 }
 
-                                $files = $row["files"];
-                                if ($row["filetype"] == 1) {
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
                                     $fileExtension = fileExtension($files);
                                     $src = $fileExtension['src'];
                                     $embed = $fileExtension['embed'];
@@ -21227,7 +21251,7 @@
                                     $url = $base_url.'uploads/pictogram/';
 
                                     $files = $src.$url.rawurlencode($files).$embed;
-                                } else if ($row["filetype"] == 3) {
+                                } else if ($rowPictogram["filetype"] == 3) {
                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                 }
                             }
@@ -21309,13 +21333,13 @@
                     } else {
                         $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                         if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                            $row = mysqli_fetch_array($selectPictogram);
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                             $files = '';
                             $type = 'iframe';
-                            if (!empty($row["files"])) {
-                                $arr_filename = explode(' | ', $row["files"]);
-                                $arr_filetype = explode(' | ', $row["filetype"]);
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                 $str_filename = '';
 
                                 foreach($arr_filename as $val_filename) {
@@ -21325,8 +21349,8 @@
                                     $str_filetype = $val_filetype;
                                 }
 
-                                $files = $row["files"];
-                                if ($row["filetype"] == 1) {
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
                                     $fileExtension = fileExtension($files);
                                     $src = $fileExtension['src'];
                                     $embed = $fileExtension['embed'];
@@ -21335,7 +21359,7 @@
                                     $url = $base_url.'uploads/pictogram/';
 
                                     $files = $src.$url.rawurlencode($files).$embed;
-                                } else if ($row["filetype"] == 3) {
+                                } else if ($rowPictogram["filetype"] == 3) {
                                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                 }
                             }
@@ -21863,6 +21887,7 @@
 
                                                     $type = 'iframe';
                                                     $filetype = $rowTemplate["filetype"];
+                                                    $datafancybox = 'data-fancybox';
                                                     if ($filetype == 1) {
                                                         $fileExtension = fileExtension($temp_file);
                                                         $src = $fileExtension['src'];
@@ -22117,6 +22142,7 @@
                                         if (!empty($doc_file_template)) {
                                             $type = 'iframe';
                                             $filetype = $rowTemplate["filetype"];
+                                            $datafancybox = 'data-fancybox';
                                             if ($filetype == 1) {
                                                 $fileExtension = fileExtension($doc_file_template);
                                                 $src = $fileExtension['src'];
@@ -23289,7 +23315,7 @@
                                 ON d.name = r.ID
 
                                 WHERE d.type = 0
-                                AND LENGTH(d.file) = 0
+                                AND IFNULL(d.file = '', TRUE)
                                 AND d.user_id = $data_user_id
                                 AND d.supplier_id = $data_ID
                             ) AS o
@@ -24251,7 +24277,7 @@
                         ON d.name = r.ID
 
                         WHERE d.type = 0
-                        AND LENGTH(d.file) = 0
+                        AND IFNULL(d.file = '', TRUE)
                         AND d.user_id = $data_user_id
                         AND d.supplier_id = $data_ID
                     ) AS o
@@ -25740,6 +25766,7 @@
         $filetype = $row['filetype'];
         $files = $row["files"];
         $type = 'iframe';
+        $datafancybox = 'data-fancybox';
         if (!empty($files)) {
             if ($filetype == 1) {
                 $fileExtension = fileExtension($files);
@@ -25863,6 +25890,7 @@
                 $last_id = mysqli_insert_id($conn);
 
                 $type = 'iframe';
+                $datafancybox = 'data-fancybox';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -25977,6 +26005,7 @@
             mysqli_query( $conn,"UPDATE tbl_supplier_regulatory set name='". $name ."', number='". $number ."', filesize='". $filesize ."', file_history='". $file_history ."', registration_date='". $registration_date ."', expiration_date='". $expiration_date ."' WHERE ID='". $ID ."'" );
 
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($files)) {
                 if ($filetype == 1) {
                     $fileExtension = fileExtension($files);
@@ -27551,6 +27580,7 @@
             $view = '<a href="#modalTemplate" class="btn btn-link" data-toggle="modal" onclick="btnTemplate('.$ID.', 0)">Upload</a>';
             if (!empty($file_final)) {
                 $type = 'iframe';
+                $datafancybox = 'data-fancybox';
                 if ($filetype == 1) {
                     $fileExtension = fileExtension($file_final);
                     $src = $fileExtension['src'];
@@ -27663,6 +27693,7 @@
             
             if (!empty($file_final)) {
                 $type = 'iframe';
+                $datafancybox = 'data-fancybox';
                 if ($filetype == 1) {
                     $fileExtension = fileExtension($file_final);
                     $src = $fileExtension['src'];
@@ -31944,6 +31975,7 @@
             $filetype = htmlentities($row['filetype'] ?? '');
             $data_files = $row['files'];
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($data_files)) {
                 if ($filetype == 1) {
                     $fileExtension = fileExtension($data_files);
@@ -32189,6 +32221,7 @@
                 $filetype = htmlentities($row['filetype'] ?? '');
                 $data_files = $row['files'];
                 $type = 'iframe';
+                $datafancybox = 'data-fancybox';
                 if (!empty($data_files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($data_files);
@@ -32552,7 +32585,7 @@
             }
         }
 
-        mysqli_query( $conn,"UPDATE tbl_eforms set portal_user='". $portal_user ."', department_id='". $department_id ."', record='". $record ."', assigned_to_id='". $assigned_to_id ."', description='". $description ."', filled_out='". $filled_out ."', filled_out_reason='". $filled_out_reason ."', signed='". $signed ."', signed_reason='". $signed_reason ."', frequency='". $frequency ."', frequency_other='". $frequency_other ."', compliance='". $compliance ."', compliance_reason='". $compliance_reason ."', verified_by='". $verified ."', notes='". $notes ."' WHERE ID='". $ID ."'" );
+        mysqli_query( $conn,"UPDATE tbl_eforms set portal_user='". $portal_user ."', department_id='". $department_id ."', record='". $record ."', assigned_to_id='". $assigned_to_id ."', description='". $description ."', files_date='". $files_date ."', filled_out='". $filled_out ."', filled_out_reason='". $filled_out_reason ."', signed='". $signed ."', signed_reason='". $signed_reason ."', frequency='". $frequency ."', frequency_other='". $frequency_other ."', compliance='". $compliance ."', compliance_reason='". $compliance_reason ."', verified_by='". $verified ."', notes='". $notes ."' WHERE ID='". $ID ."'" );
 
         $selectData = mysqli_query( $conn,'SELECT * FROM tbl_eforms WHERE ID="'. $ID .'" ORDER BY ID LIMIT 1' );
         if ( mysqli_num_rows($selectData) > 0 ) {
@@ -32677,6 +32710,7 @@
             $filetype = htmlentities($row['filetype'] ?? '');
             $data_files = $row['files'];
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($data_files)) {
                 if ($filetype == 1) {
                     $fileExtension = fileExtension($data_files);
@@ -32779,6 +32813,7 @@
                 $filetype = htmlentities($row['filetype'] ?? '');
                 $data_files = $row['files'];
                 $type = 'iframe';
+                $datafancybox = 'data-fancybox';
                 if (!empty($data_files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($data_files);
@@ -33131,6 +33166,7 @@
             $filetype = htmlentities($row['filetype'] ?? '');
             $data_files = $row['files'];
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($data_files)) {
                 if ($filetype == 1) {
                     $fileExtension = fileExtension($data_files);
@@ -33249,6 +33285,7 @@
                 $filetype = htmlentities($row['filetype'] ?? '');
                 $data_files = $row['files'];
                 $type = 'iframe';
+                $datafancybox = 'data-fancybox';
                 if (!empty($data_files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($data_files);
@@ -34714,13 +34751,13 @@
                         } else {
                             $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                             if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                $row = mysqli_fetch_array($selectPictogram);
+                                $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                 $files = '';
                                 $type = 'iframe';
-                                if (!empty($row["files"])) {
-                                    $arr_filename = explode(' | ', $row["files"]);
-                                    $arr_filetype = explode(' | ', $row["filetype"]);
+                                if (!empty($rowPictogram["files"])) {
+                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                     $str_filename = '';
 
                                     foreach($arr_filename as $val_filename) {
@@ -34730,8 +34767,8 @@
                                         $str_filetype = $val_filetype;
                                     }
 
-                                    $files = $row["files"];
-                                    if ($row["filetype"] == 1) {
+                                    $files = $rowPictogram["files"];
+                                    if ($rowPictogram["filetype"] == 1) {
                                         $fileExtension = fileExtension($files);
                                         $src = $fileExtension['src'];
                                         $embed = $fileExtension['embed'];
@@ -34740,7 +34777,7 @@
                                         $url = $base_url.'uploads/pictogram/';
 
                                         $files = $src.$url.rawurlencode($files).$embed;
-                                    } else if ($row["filetype"] == 3) {
+                                    } else if ($rowPictogram["filetype"] == 3) {
                                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                     }
                                 }
@@ -35102,13 +35139,13 @@
                         } else {
                             $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                             if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                $row = mysqli_fetch_array($selectPictogram);
+                                $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                 $files = '';
                                 $type = 'iframe';
-                                if (!empty($row["files"])) {
-                                    $arr_filename = explode(' | ', $row["files"]);
-                                    $arr_filetype = explode(' | ', $row["filetype"]);
+                                if (!empty($rowPictogram["files"])) {
+                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                     $str_filename = '';
 
                                     foreach($arr_filename as $val_filename) {
@@ -35118,8 +35155,8 @@
                                         $str_filetype = $val_filetype;
                                     }
 
-                                    $files = $row["files"];
-                                    if ($row["filetype"] == 1) {
+                                    $files = $rowPictogram["files"];
+                                    if ($rowPictogram["filetype"] == 1) {
                                         $fileExtension = fileExtension($files);
                                         $src = $fileExtension['src'];
                                         $embed = $fileExtension['embed'];
@@ -35128,7 +35165,7 @@
                                         $url = $base_url.'uploads/pictogram/';
 
                                         $files = $src.$url.rawurlencode($files).$embed;
-                                    } else if ($row["filetype"] == 3) {
+                                    } else if ($rowPictogram["filetype"] == 3) {
                                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                     }
                                 }
@@ -35216,13 +35253,13 @@
                         } else {
                             $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                             if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                $row = mysqli_fetch_array($selectPictogram);
+                                $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                 $files = '';
                                 $type = 'iframe';
-                                if (!empty($row["files"])) {
-                                    $arr_filename = explode(' | ', $row["files"]);
-                                    $arr_filetype = explode(' | ', $row["filetype"]);
+                                if (!empty($rowPictogram["files"])) {
+                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                     $str_filename = '';
 
                                     foreach($arr_filename as $val_filename) {
@@ -35232,8 +35269,8 @@
                                         $str_filetype = $val_filetype;
                                     }
 
-                                    $files = $row["files"];
-                                    if ($row["filetype"] == 1) {
+                                    $files = $rowPictogram["files"];
+                                    if ($rowPictogram["filetype"] == 1) {
                                         $fileExtension = fileExtension($files);
                                         $src = $fileExtension['src'];
                                         $embed = $fileExtension['embed'];
@@ -35242,7 +35279,7 @@
                                         $url = $base_url.'uploads/pictogram/';
 
                                         $files = $src.$url.rawurlencode($files).$embed;
-                                    } else if ($row["filetype"] == 3) {
+                                    } else if ($rowPictogram["filetype"] == 3) {
                                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                     }
                                 }
@@ -35307,13 +35344,13 @@
                         } else {
                             $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                             if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                $row = mysqli_fetch_array($selectPictogram);
+                                $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                 $files = '';
                                 $type = 'iframe';
-                                if (!empty($row["files"])) {
-                                    $arr_filename = explode(' | ', $row["files"]);
-                                    $arr_filetype = explode(' | ', $row["filetype"]);
+                                if (!empty($rowPictogram["files"])) {
+                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                     $str_filename = '';
 
                                     foreach($arr_filename as $val_filename) {
@@ -35323,8 +35360,8 @@
                                         $str_filetype = $val_filetype;
                                     }
 
-                                    $files = $row["files"];
-                                    if ($row["filetype"] == 1) {
+                                    $files = $rowPictogram["files"];
+                                    if ($rowPictogram["filetype"] == 1) {
                                         $fileExtension = fileExtension($files);
                                         $src = $fileExtension['src'];
                                         $embed = $fileExtension['embed'];
@@ -35333,7 +35370,7 @@
                                         $url = $base_url.'uploads/pictogram/';
 
                                         $files = $src.$url.rawurlencode($files).$embed;
-                                    } else if ($row["filetype"] == 3) {
+                                    } else if ($rowPictogram["filetype"] == 3) {
                                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                     }
                                 }
@@ -35425,13 +35462,13 @@
                         } else {
                             $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                             if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                $row = mysqli_fetch_array($selectPictogram);
+                                $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                 $files = '';
                                 $type = 'iframe';
-                                if (!empty($row["files"])) {
-                                    $arr_filename = explode(' | ', $row["files"]);
-                                    $arr_filetype = explode(' | ', $row["filetype"]);
+                                if (!empty($rowPictogram["files"])) {
+                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                     $str_filename = '';
 
                                     foreach($arr_filename as $val_filename) {
@@ -35441,8 +35478,8 @@
                                         $str_filetype = $val_filetype;
                                     }
 
-                                    $files = $row["files"];
-                                    if ($row["filetype"] == 1) {
+                                    $files = $rowPictogram["files"];
+                                    if ($rowPictogram["filetype"] == 1) {
                                         $fileExtension = fileExtension($files);
                                         $src = $fileExtension['src'];
                                         $embed = $fileExtension['embed'];
@@ -35451,7 +35488,7 @@
                                         $url = $base_url.'uploads/pictogram/';
 
                                         $files = $src.$url.rawurlencode($files).$embed;
-                                    } else if ($row["filetype"] == 3) {
+                                    } else if ($rowPictogram["filetype"] == 3) {
                                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                     }
                                 }
@@ -35637,13 +35674,13 @@
                         } else {
                             $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                             if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                $row = mysqli_fetch_array($selectPictogram);
+                                $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                 $files = '';
                                 $type = 'iframe';
-                                if (!empty($row["files"])) {
-                                    $arr_filename = explode(' | ', $row["files"]);
-                                    $arr_filetype = explode(' | ', $row["filetype"]);
+                                if (!empty($rowPictogram["files"])) {
+                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                     $str_filename = '';
 
                                     foreach($arr_filename as $val_filename) {
@@ -35653,8 +35690,8 @@
                                         $str_filetype = $val_filetype;
                                     }
 
-                                    $files = $row["files"];
-                                    if ($row["filetype"] == 1) {
+                                    $files = $rowPictogram["files"];
+                                    if ($rowPictogram["filetype"] == 1) {
                                         $fileExtension = fileExtension($files);
                                         $src = $fileExtension['src'];
                                         $embed = $fileExtension['embed'];
@@ -35663,7 +35700,7 @@
                                         $url = $base_url.'uploads/pictogram/';
 
                                         $files = $src.$url.rawurlencode($files).$embed;
-                                    } else if ($row["filetype"] == 3) {
+                                    } else if ($rowPictogram["filetype"] == 3) {
                                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                     }
                                 }
@@ -35754,13 +35791,13 @@
                         } else {
                             $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                             if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                $row = mysqli_fetch_array($selectPictogram);
+                                $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                 $files = '';
                                 $type = 'iframe';
-                                if (!empty($row["files"])) {
-                                    $arr_filename = explode(' | ', $row["files"]);
-                                    $arr_filetype = explode(' | ', $row["filetype"]);
+                                if (!empty($rowPictogram["files"])) {
+                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                     $str_filename = '';
 
                                     foreach($arr_filename as $val_filename) {
@@ -35770,8 +35807,8 @@
                                         $str_filetype = $val_filetype;
                                     }
 
-                                    $files = $row["files"];
-                                    if ($row["filetype"] == 1) {
+                                    $files = $rowPictogram["files"];
+                                    if ($rowPictogram["filetype"] == 1) {
                                         $fileExtension = fileExtension($files);
                                         $src = $fileExtension['src'];
                                         $embed = $fileExtension['embed'];
@@ -35780,7 +35817,7 @@
                                         $url = $base_url.'uploads/pictogram/';
 
                                         $files = $src.$url.rawurlencode($files).$embed;
-                                    } else if ($row["filetype"] == 3) {
+                                    } else if ($rowPictogram["filetype"] == 3) {
                                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                     }
                                 }
@@ -35817,13 +35854,13 @@
                         } else {
                             $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                             if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                $row = mysqli_fetch_array($selectPictogram);
+                                $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                 $files = '';
                                 $type = 'iframe';
-                                if (!empty($row["files"])) {
-                                    $arr_filename = explode(' | ', $row["files"]);
-                                    $arr_filetype = explode(' | ', $row["filetype"]);
+                                if (!empty($rowPictogram["files"])) {
+                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                     $str_filename = '';
 
                                     foreach($arr_filename as $val_filename) {
@@ -35833,8 +35870,8 @@
                                         $str_filetype = $val_filetype;
                                     }
 
-                                    $files = $row["files"];
-                                    if ($row["filetype"] == 1) {
+                                    $files = $rowPictogram["files"];
+                                    if ($rowPictogram["filetype"] == 1) {
                                         $fileExtension = fileExtension($files);
                                         $src = $fileExtension['src'];
                                         $embed = $fileExtension['embed'];
@@ -35843,7 +35880,7 @@
                                         $url = $base_url.'uploads/pictogram/';
 
                                         $files = $src.$url.rawurlencode($files).$embed;
-                                    } else if ($row["filetype"] == 3) {
+                                    } else if ($rowPictogram["filetype"] == 3) {
                                         $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                     }
                                 }
@@ -46205,7 +46242,7 @@
                 }
             }
         } else if ($type == 4) {
-            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND user_id = $ID AND LENGTH(files) = 0 ORDER BY title" );
+            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND user_id = $ID AND IFNULL(file = '', TRUE) ORDER BY title" );
             if ( mysqli_num_rows($selectData) > 0 ) {
                 $counter = 1;
                 while($rowData = mysqli_fetch_array($selectData)) {
@@ -47572,7 +47609,7 @@
                             foreach ($output_file as $key => $value) {
                                 $file_doc = $value['file_doc'];
                                 $type = 'iframe';
-
+                                $datafancybox = 'data-fancybox';
                                 $filetype = 1;
                                 if (!empty($value['file_type'])) { $filetype = $value['file_type']; }
                                 if ($filetype == 1) {
@@ -48891,7 +48928,7 @@
                                                     <li><a href="javascript:;" class="btnDelete" data-id="'. $item_ID .'" onclick="btnDelete('. $item_ID .')">Delete</a></li>
                                                     <li><a href="#modalReport" class="btnReport" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnReport('. $item_ID .')">Report</a></li>';
                                             
-                                                    if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477 OR $portal_user == 1486) {
+                                                    if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477 OR $portal_user == 1486 OR $portal_user == 1556 OR $portal_user == 1557) {
                                                         $output .= '<li><a href="#modalClone" data-toggle="modal" onclick="btnClone('. $item_ID .')">Clone</a></li>';
                                                     }
 
@@ -49288,13 +49325,13 @@
                                 } else {
                                     $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                                     if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                        $row = mysqli_fetch_array($selectPictogram);
+                                        $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                         $files = '';
                                         $type = 'iframe';
-                                        if (!empty($row["files"])) {
-                                            $arr_filename = explode(' | ', $row["files"]);
-                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                        if (!empty($rowPictogram["files"])) {
+                                            $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                            $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                             $str_filename = '';
 
                                             foreach($arr_filename as $val_filename) {
@@ -49304,8 +49341,8 @@
                                                 $str_filetype = $val_filetype;
                                             }
 
-                                            $files = $row["files"];
-                                            if ($row["filetype"] == 1) {
+                                            $files = $rowPictogram["files"];
+                                            if ($rowPictogram["filetype"] == 1) {
                                                 $fileExtension = fileExtension($files);
                                                 $src = $fileExtension['src'];
                                                 $embed = $fileExtension['embed'];
@@ -49314,7 +49351,7 @@
                                                 $url = $base_url.'uploads/pictogram/';
 
                                                 $files = $src.$url.rawurlencode($files).$embed;
-                                            } else if ($row["filetype"] == 3) {
+                                            } else if ($rowPictogram["filetype"] == 3) {
                                                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                             }
                                         }
@@ -49361,13 +49398,13 @@
                                                 } else {
                                                     $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                                                     if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                        $row = mysqli_fetch_array($selectPictogram);
+                                                        $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                                         $files = '';
                                                         $type = 'iframe';
-                                                        if (!empty($row["files"])) {
-                                                            $arr_filename = explode(' | ', $row["files"]);
-                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                        if (!empty($rowPictogram["files"])) {
+                                                            $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                            $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                                             $str_filename = '';
 
                                                             foreach($arr_filename as $val_filename) {
@@ -49377,8 +49414,8 @@
                                                                 $str_filetype = $val_filetype;
                                                             }
 
-                                                            $files = $row["files"];
-                                                            if ($row["filetype"] == 1) {
+                                                            $files = $rowPictogram["files"];
+                                                            if ($rowPictogram["filetype"] == 1) {
                                                                 $fileExtension = fileExtension($files);
                                                                 $src = $fileExtension['src'];
                                                                 $embed = $fileExtension['embed'];
@@ -49387,7 +49424,7 @@
                                                                 $url = $base_url.'uploads/pictogram/';
 
                                                                 $files = $src.$url.rawurlencode($files).$embed;
-                                                            } else if ($row["filetype"] == 3) {
+                                                            } else if ($rowPictogram["filetype"] == 3) {
                                                                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                             }
                                                         }
@@ -49408,13 +49445,13 @@
                                                 } else {
                                                     $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                                                     if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                        $row = mysqli_fetch_array($selectPictogram);
+                                                        $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                                         $files = '';
                                                         $type = 'iframe';
-                                                        if (!empty($row["files"])) {
-                                                            $arr_filename = explode(' | ', $row["files"]);
-                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                        if (!empty($rowPictogram["files"])) {
+                                                            $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                            $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                                             $str_filename = '';
 
                                                             foreach($arr_filename as $val_filename) {
@@ -49424,8 +49461,8 @@
                                                                 $str_filetype = $val_filetype;
                                                             }
 
-                                                            $files = $row["files"];
-                                                            if ($row["filetype"] == 1) {
+                                                            $files = $rowPictogram["files"];
+                                                            if ($rowPictogram["filetype"] == 1) {
                                                                 $fileExtension = fileExtension($files);
                                                                 $src = $fileExtension['src'];
                                                                 $embed = $fileExtension['embed'];
@@ -49434,7 +49471,7 @@
                                                                 $url = $base_url.'uploads/pictogram/';
 
                                                                 $files = $src.$url.rawurlencode($files).$embed;
-                                                            } else if ($row["filetype"] == 3) {
+                                                            } else if ($rowPictogram["filetype"] == 3) {
                                                                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                             }
                                                         }
@@ -49456,13 +49493,13 @@
                                             } else {
                                                 $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                                                 if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                    $row = mysqli_fetch_array($selectPictogram);
+                                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                                     $files = '';
                                                     $type = 'iframe';
-                                                    if (!empty($row["files"])) {
-                                                        $arr_filename = explode(' | ', $row["files"]);
-                                                        $arr_filetype = explode(' | ', $row["filetype"]);
+                                                    if (!empty($rowPictogram["files"])) {
+                                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                                         $str_filename = '';
 
                                                         foreach($arr_filename as $val_filename) {
@@ -49472,8 +49509,8 @@
                                                             $str_filetype = $val_filetype;
                                                         }
 
-                                                        $files = $row["files"];
-                                                        if ($row["filetype"] == 1) {
+                                                        $files = $rowPictogram["files"];
+                                                        if ($rowPictogram["filetype"] == 1) {
                                                             $fileExtension = fileExtension($files);
                                                             $src = $fileExtension['src'];
                                                             $embed = $fileExtension['embed'];
@@ -49482,7 +49519,7 @@
                                                             $url = $base_url.'uploads/pictogram/';
 
                                                             $files = $src.$url.rawurlencode($files).$embed;
-                                                        } else if ($row["filetype"] == 3) {
+                                                        } else if ($rowPictogram["filetype"] == 3) {
                                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                         }
                                                     }
@@ -49502,13 +49539,13 @@
                                             } else {
                                                 $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                                                 if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                    $row = mysqli_fetch_array($selectPictogram);
+                                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                                     $files = '';
                                                     $type = 'iframe';
-                                                    if (!empty($row["files"])) {
-                                                        $arr_filename = explode(' | ', $row["files"]);
-                                                        $arr_filetype = explode(' | ', $row["filetype"]);
+                                                    if (!empty($rowPictogram["files"])) {
+                                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                                         $str_filename = '';
 
                                                         foreach($arr_filename as $val_filename) {
@@ -49518,8 +49555,8 @@
                                                             $str_filetype = $val_filetype;
                                                         }
 
-                                                        $files = $row["files"];
-                                                        if ($row["filetype"] == 1) {
+                                                        $files = $rowPictogram["files"];
+                                                        if ($rowPictogram["filetype"] == 1) {
                                                             $fileExtension = fileExtension($files);
                                                             $src = $fileExtension['src'];
                                                             $embed = $fileExtension['embed'];
@@ -49528,7 +49565,7 @@
                                                             $url = $base_url.'uploads/pictogram/';
 
                                                             $files = $src.$url.rawurlencode($files).$embed;
-                                                        } else if ($row["filetype"] == 3) {
+                                                        } else if ($rowPictogram["filetype"] == 3) {
                                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                         }
                                                     }
@@ -49540,7 +49577,7 @@
                                             }
                                         echo '</li>';
                                         
-                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477 OR $portal_user == 1486) {
+                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477 OR $portal_user == 1486 OR $portal_user == 1556 OR $portal_user == 1557) {
                                             echo '<li class="pictogram-align-between">
                                                 <a href="#modalClone" data-toggle="modal" onclick="btnClone('. $library_ID .')">Clone</a>';
 
@@ -49550,13 +49587,13 @@
                                                 } else {
                                                     $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                                                     if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                        $row = mysqli_fetch_array($selectPictogram);
+                                                        $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                                         $files = '';
                                                         $type = 'iframe';
-                                                        if (!empty($row["files"])) {
-                                                            $arr_filename = explode(' | ', $row["files"]);
-                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                        if (!empty($rowPictogram["files"])) {
+                                                            $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                            $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                                             $str_filename = '';
 
                                                             foreach($arr_filename as $val_filename) {
@@ -49566,8 +49603,8 @@
                                                                 $str_filetype = $val_filetype;
                                                             }
 
-                                                            $files = $row["files"];
-                                                            if ($row["filetype"] == 1) {
+                                                            $files = $rowPictogram["files"];
+                                                            if ($rowPictogram["filetype"] == 1) {
                                                                 $fileExtension = fileExtension($files);
                                                                 $src = $fileExtension['src'];
                                                                 $embed = $fileExtension['embed'];
@@ -49576,7 +49613,7 @@
                                                                 $url = $base_url.'uploads/pictogram/';
 
                                                                 $files = $src.$url.rawurlencode($files).$embed;
-                                                            } else if ($row["filetype"] == 3) {
+                                                            } else if ($rowPictogram["filetype"] == 3) {
                                                                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                             }
                                                         }
@@ -49605,13 +49642,13 @@
                                                 } else {
                                                     $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                                                     if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                        $row = mysqli_fetch_array($selectPictogram);
+                                                        $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                                         $files = '';
                                                         $type = 'iframe';
-                                                        if (!empty($row["files"])) {
-                                                            $arr_filename = explode(' | ', $row["files"]);
-                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                        if (!empty($rowPictogram["files"])) {
+                                                            $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                            $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                                             $str_filename = '';
 
                                                             foreach($arr_filename as $val_filename) {
@@ -49621,8 +49658,8 @@
                                                                 $str_filetype = $val_filetype;
                                                             }
 
-                                                            $files = $row["files"];
-                                                            if ($row["filetype"] == 1) {
+                                                            $files = $rowPictogram["files"];
+                                                            if ($rowPictogram["filetype"] == 1) {
                                                                 $fileExtension = fileExtension($files);
                                                                 $src = $fileExtension['src'];
                                                                 $embed = $fileExtension['embed'];
@@ -49631,7 +49668,7 @@
                                                                 $url = $base_url.'uploads/pictogram/';
 
                                                                 $files = $src.$url.rawurlencode($files).$embed;
-                                                            } else if ($row["filetype"] == 3) {
+                                                            } else if ($rowPictogram["filetype"] == 3) {
                                                                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                             }
                                                         }
@@ -49653,13 +49690,13 @@
                                             } else {
                                                 $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                                                 if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                    $row = mysqli_fetch_array($selectPictogram);
+                                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                                     $files = '';
                                                     $type = 'iframe';
-                                                    if (!empty($row["files"])) {
-                                                        $arr_filename = explode(' | ', $row["files"]);
-                                                        $arr_filetype = explode(' | ', $row["filetype"]);
+                                                    if (!empty($rowPictogram["files"])) {
+                                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                                         $str_filename = '';
 
                                                         foreach($arr_filename as $val_filename) {
@@ -49669,8 +49706,8 @@
                                                             $str_filetype = $val_filetype;
                                                         }
 
-                                                        $files = $row["files"];
-                                                        if ($row["filetype"] == 1) {
+                                                        $files = $rowPictogram["files"];
+                                                        if ($rowPictogram["filetype"] == 1) {
                                                             $fileExtension = fileExtension($files);
                                                             $src = $fileExtension['src'];
                                                             $embed = $fileExtension['embed'];
@@ -49679,7 +49716,7 @@
                                                             $url = $base_url.'uploads/pictogram/';
 
                                                             $files = $src.$url.rawurlencode($files).$embed;
-                                                        } else if ($row["filetype"] == 3) {
+                                                        } else if ($rowPictogram["filetype"] == 3) {
                                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                         }
                                                     }
@@ -49699,13 +49736,13 @@
                                             } else {
                                                 $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                                                 if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                    $row = mysqli_fetch_array($selectPictogram);
+                                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                                     $files = '';
                                                     $type = 'iframe';
-                                                    if (!empty($row["files"])) {
-                                                        $arr_filename = explode(' | ', $row["files"]);
-                                                        $arr_filetype = explode(' | ', $row["filetype"]);
+                                                    if (!empty($rowPictogram["files"])) {
+                                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                                         $str_filename = '';
 
                                                         foreach($arr_filename as $val_filename) {
@@ -49715,8 +49752,8 @@
                                                             $str_filetype = $val_filetype;
                                                         }
 
-                                                        $files = $row["files"];
-                                                        if ($row["filetype"] == 1) {
+                                                        $files = $rowPictogram["files"];
+                                                        if ($rowPictogram["filetype"] == 1) {
                                                             $fileExtension = fileExtension($files);
                                                             $src = $fileExtension['src'];
                                                             $embed = $fileExtension['embed'];
@@ -49725,7 +49762,7 @@
                                                             $url = $base_url.'uploads/pictogram/';
 
                                                             $files = $src.$url.rawurlencode($files).$embed;
-                                                        } else if ($row["filetype"] == 3) {
+                                                        } else if ($rowPictogram["filetype"] == 3) {
                                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                         }
                                                     }
@@ -49745,13 +49782,13 @@
                                             } else {
                                                 $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                                                 if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                    $row = mysqli_fetch_array($selectPictogram);
+                                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                                     $files = '';
                                                     $type = 'iframe';
-                                                    if (!empty($row["files"])) {
-                                                        $arr_filename = explode(' | ', $row["files"]);
-                                                        $arr_filetype = explode(' | ', $row["filetype"]);
+                                                    if (!empty($rowPictogram["files"])) {
+                                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                                         $str_filename = '';
 
                                                         foreach($arr_filename as $val_filename) {
@@ -49761,8 +49798,8 @@
                                                             $str_filetype = $val_filetype;
                                                         }
 
-                                                        $files = $row["files"];
-                                                        if ($row["filetype"] == 1) {
+                                                        $files = $rowPictogram["files"];
+                                                        if ($rowPictogram["filetype"] == 1) {
                                                             $fileExtension = fileExtension($files);
                                                             $src = $fileExtension['src'];
                                                             $embed = $fileExtension['embed'];
@@ -49771,7 +49808,7 @@
                                                             $url = $base_url.'uploads/pictogram/';
 
                                                             $files = $src.$url.rawurlencode($files).$embed;
-                                                        } else if ($row["filetype"] == 3) {
+                                                        } else if ($rowPictogram["filetype"] == 3) {
                                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                         }
                                                     }
@@ -49794,13 +49831,13 @@
                                             } else {
                                                 $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                                                 if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                    $row = mysqli_fetch_array($selectPictogram);
+                                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                                     $files = '';
                                                     $type = 'iframe';
-                                                    if (!empty($row["files"])) {
-                                                        $arr_filename = explode(' | ', $row["files"]);
-                                                        $arr_filetype = explode(' | ', $row["filetype"]);
+                                                    if (!empty($rowPictogram["files"])) {
+                                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                                         $str_filename = '';
 
                                                         foreach($arr_filename as $val_filename) {
@@ -49810,8 +49847,8 @@
                                                             $str_filetype = $val_filetype;
                                                         }
 
-                                                        $files = $row["files"];
-                                                        if ($row["filetype"] == 1) {
+                                                        $files = $rowPictogram["files"];
+                                                        if ($rowPictogram["filetype"] == 1) {
                                                             $fileExtension = fileExtension($files);
                                                             $src = $fileExtension['src'];
                                                             $embed = $fileExtension['embed'];
@@ -49820,7 +49857,7 @@
                                                             $url = $base_url.'uploads/pictogram/';
 
                                                             $files = $src.$url.rawurlencode($files).$embed;
-                                                        } else if ($row["filetype"] == 3) {
+                                                        } else if ($rowPictogram["filetype"] == 3) {
                                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                         }
                                                     }
@@ -49840,13 +49877,13 @@
                                             } else {
                                                 $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                                                 if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                    $row = mysqli_fetch_array($selectPictogram);
+                                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                                     $files = '';
                                                     $type = 'iframe';
-                                                    if (!empty($row["files"])) {
-                                                        $arr_filename = explode(' | ', $row["files"]);
-                                                        $arr_filetype = explode(' | ', $row["filetype"]);
+                                                    if (!empty($rowPictogram["files"])) {
+                                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                                         $str_filename = '';
 
                                                         foreach($arr_filename as $val_filename) {
@@ -49856,8 +49893,8 @@
                                                             $str_filetype = $val_filetype;
                                                         }
 
-                                                        $files = $row["files"];
-                                                        if ($row["filetype"] == 1) {
+                                                        $files = $rowPictogram["files"];
+                                                        if ($rowPictogram["filetype"] == 1) {
                                                             $fileExtension = fileExtension($files);
                                                             $src = $fileExtension['src'];
                                                             $embed = $fileExtension['embed'];
@@ -49866,7 +49903,7 @@
                                                             $url = $base_url.'uploads/pictogram/';
 
                                                             $files = $src.$url.rawurlencode($files).$embed;
-                                                        } else if ($row["filetype"] == 3) {
+                                                        } else if ($rowPictogram["filetype"] == 3) {
                                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                         }
                                                     }
@@ -49886,13 +49923,13 @@
                                             } else {
                                                 $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                                                 if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                    $row = mysqli_fetch_array($selectPictogram);
+                                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                                     $files = '';
                                                     $type = 'iframe';
-                                                    if (!empty($row["files"])) {
-                                                        $arr_filename = explode(' | ', $row["files"]);
-                                                        $arr_filetype = explode(' | ', $row["filetype"]);
+                                                    if (!empty($rowPictogram["files"])) {
+                                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                                         $str_filename = '';
 
                                                         foreach($arr_filename as $val_filename) {
@@ -49902,8 +49939,8 @@
                                                             $str_filetype = $val_filetype;
                                                         }
 
-                                                        $files = $row["files"];
-                                                        if ($row["filetype"] == 1) {
+                                                        $files = $rowPictogram["files"];
+                                                        if ($rowPictogram["filetype"] == 1) {
                                                             $fileExtension = fileExtension($files);
                                                             $src = $fileExtension['src'];
                                                             $embed = $fileExtension['embed'];
@@ -49912,7 +49949,7 @@
                                                             $url = $base_url.'uploads/pictogram/';
 
                                                             $files = $src.$url.rawurlencode($files).$embed;
-                                                        } else if ($row["filetype"] == 3) {
+                                                        } else if ($rowPictogram["filetype"] == 3) {
                                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                         }
                                                     }
@@ -49932,13 +49969,13 @@
                                             } else {
                                                 $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                                                 if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                    $row = mysqli_fetch_array($selectPictogram);
+                                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                                     $files = '';
                                                     $type = 'iframe';
-                                                    if (!empty($row["files"])) {
-                                                        $arr_filename = explode(' | ', $row["files"]);
-                                                        $arr_filetype = explode(' | ', $row["filetype"]);
+                                                    if (!empty($rowPictogram["files"])) {
+                                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                                         $str_filename = '';
 
                                                         foreach($arr_filename as $val_filename) {
@@ -49948,8 +49985,8 @@
                                                             $str_filetype = $val_filetype;
                                                         }
 
-                                                        $files = $row["files"];
-                                                        if ($row["filetype"] == 1) {
+                                                        $files = $rowPictogram["files"];
+                                                        if ($rowPictogram["filetype"] == 1) {
                                                             $fileExtension = fileExtension($files);
                                                             $src = $fileExtension['src'];
                                                             $embed = $fileExtension['embed'];
@@ -49958,7 +49995,7 @@
                                                             $url = $base_url.'uploads/pictogram/';
 
                                                             $files = $src.$url.rawurlencode($files).$embed;
-                                                        } else if ($row["filetype"] == 3) {
+                                                        } else if ($rowPictogram["filetype"] == 3) {
                                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                         }
                                                     }
@@ -49978,13 +50015,13 @@
                                             } else {
                                                 $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                                                 if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                                    $row = mysqli_fetch_array($selectPictogram);
+                                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                                     $files = '';
                                                     $type = 'iframe';
-                                                    if (!empty($row["files"])) {
-                                                        $arr_filename = explode(' | ', $row["files"]);
-                                                        $arr_filetype = explode(' | ', $row["filetype"]);
+                                                    if (!empty($rowPictogram["files"])) {
+                                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                                         $str_filename = '';
 
                                                         foreach($arr_filename as $val_filename) {
@@ -49994,8 +50031,8 @@
                                                             $str_filetype = $val_filetype;
                                                         }
 
-                                                        $files = $row["files"];
-                                                        if ($row["filetype"] == 1) {
+                                                        $files = $rowPictogram["files"];
+                                                        if ($rowPictogram["filetype"] == 1) {
                                                             $fileExtension = fileExtension($files);
                                                             $src = $fileExtension['src'];
                                                             $embed = $fileExtension['embed'];
@@ -50004,7 +50041,7 @@
                                                             $url = $base_url.'uploads/pictogram/';
 
                                                             $files = $src.$url.rawurlencode($files).$embed;
-                                                        } else if ($row["filetype"] == 3) {
+                                                        } else if ($rowPictogram["filetype"] == 3) {
                                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                                         }
                                                     }
@@ -50075,7 +50112,12 @@
                                         $user_array_list = array(1, 464);
                                         if (!empty($row["l_description_tmp"]) AND in_array($user_id, $user_array_list)) {
                                             $arr_tmp = json_decode($row["l_description_tmp"],true);
-                                            if (isset(end($arr_tmp)['status']) AND end($arr_tmp)['status'] != 4) {
+
+                                            $last_array = end($arr_tmp); // Assuming $your_arrays contains your list of arrays
+                                            $key_to_check = 'status';
+
+                                            if (isset($last_array['status']) AND $last_array['status'] != 4) {
+                                            // if (isset(end($arr_tmp)['status']) AND end($arr_tmp)['status'] != 4) {
                                                echo '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$library_ID.')">here</a> to view</span>';
                                             }
                                         }
@@ -50103,6 +50145,7 @@
                                                     $type = 'iframe';
                                                     $target = '';
                                                     $file_extension = 'fa-youtube-play';
+                                                    $datafancybox = 'data-fancybox';
                                                     if (!empty($rowFiles["files"])) {
                                                         $arr_filename = explode(' | ', $rowFiles["files"]);
                                                         $arr_filetype = explode(' | ', $rowFiles["filetype"]);
@@ -50518,6 +50561,7 @@
                                                             $files = $rowComplinace["files"];
                                                             $type = 'iframe';
                                                             $file_extension = 'fa-youtube-play';
+                                                            $datafancybox = 'data-fancybox';
                                                             if (!empty($files)) {
                                                                 if ($filetype == 1) {
                                                                     $fileExtension = fileExtension($files);
@@ -50594,6 +50638,7 @@
                                                                             $files = $rowComplinaceItem["files"];
                                                                             $type = 'iframe';
                                                                             $file_extension = 'fa-youtube-play';
+                                                                            $datafancybox = 'data-fancybox';
                                                                             if (!empty($files)) {
                                                                                 if ($filetype == 1) {
                                                                                     $fileExtension = fileExtension($files);
@@ -50742,6 +50787,7 @@
                                                             $files = '';
                                                             $type = 'iframe';
                                                             $file_extension = 'fa-youtube-play';
+                                                            $datafancybox = 'data-fancybox';
                                                             if (!empty($rowReview["files"])) {
                                                                 $arr_filename = explode(' | ', $rowReview["files"]);
                                                                 $arr_filetype = explode(' | ', $rowReview["filetype"]);
@@ -50850,6 +50896,7 @@
                                                                             $files = '';
                                                                             $type = 'iframe';
                                                                             $file_extension = 'fa-youtube-play';
+                                                                            $datafancybox = 'data-fancybox';
                                                                             if (!empty($rowReferences["files"])) {
                                                                                 $arr_filename = explode(' | ', $rowReviewItem["files"]);
                                                                                 $arr_filetype = explode(' | ', $rowReviewItem["filetype"]);
@@ -50972,6 +51019,7 @@
                                                                                             $files = '';
                                                                                             $type = 'iframe';
                                                                                             $file_extension = 'fa-youtube-play';
+                                                                                            $datafancybox = 'data-fancybox';
                                                                                             if (!empty($rowReferences["files"])) {
                                                                                                 $arr_filename = explode(' | ', $rowReviewItem["files"]);
                                                                                                 $arr_filetype = explode(' | ', $rowReviewItem["filetype"]);
@@ -51085,6 +51133,7 @@
                                                     $files = '';
                                                     $type = 'iframe';
                                                     $file_extension = 'fa-youtube-play';
+                                                    $datafancybox = 'data-fancybox';
                                                     if (!empty($rowTemplate["files"])) {
                                                         $arr_filename = explode(' | ', $rowTemplate["files"]);
                                                         $arr_filetype = explode(' | ', $rowTemplate["filetype"]);
@@ -51188,6 +51237,7 @@
                                                         $files = '';
                                                         $type = 'iframe';
                                                         $file_extension = 'fa-youtube-play';
+                                                        $datafancybox = 'data-fancybox';
                                                         if (!empty($rowReferences["files"])) {
                                                             $arr_filename = explode(' | ', $rowReferences["files"]);
                                                             $arr_filetype = explode(' | ', $rowReferences["filetype"]);
@@ -51658,6 +51708,7 @@
                                             $type = 'iframe';
                                             $target = '';
                                             $file_extension = 'fa-youtube-play';
+                                            $datafancybox = 'data-fancybox';
                                             if (!empty($rowFiles["files"])) {
                                                 $arr_filename = explode(' | ', $rowFiles["files"]);
                                                 $arr_filetype = explode(' | ', $rowFiles["filetype"]);
@@ -52068,6 +52119,7 @@
                                                     $files = $rowComplinace["files"];
                                                     $type = 'iframe';
                                                     $file_extension = 'fa-youtube-play';
+                                                    $datafancybox = 'data-fancybox';
                                                     if (!empty($files)) {
                                                         if ($filetype == 1) {
                                                             $fileExtension = fileExtension($files);
@@ -52131,6 +52183,7 @@
                                                                     $files = $rowComplinaceItem["files"];
                                                                     $type = 'iframe';
                                                                     $file_extension = 'fa-youtube-play';
+                                                                    $datafancybox = 'data-fancybox';
                                                                     if (!empty($files)) {
                                                                         if ($filetype == 1) {
                                                                             $fileExtension = fileExtension($files);
@@ -52270,6 +52323,7 @@
                                                     $files = '';
                                                     $type = 'iframe';
                                                     $file_extension = 'fa-youtube-play';
+                                                    $datafancybox = 'data-fancybox';
                                                     if (!empty($rowReview["files"])) {
                                                         $arr_filename = explode(' | ', $rowReview["files"]);
                                                         $arr_filetype = explode(' | ', $rowReview["filetype"]);
@@ -52365,6 +52419,7 @@
                                                                     $files = '';
                                                                     $type = 'iframe';
                                                                     $file_extension = 'fa-youtube-play';
+                                                                    $datafancybox = 'data-fancybox';
                                                                     if (!empty($rowReferences["files"])) {
                                                                         $arr_filename = explode(' | ', $rowReviewItem["files"]);
                                                                         $arr_filetype = explode(' | ', $rowReviewItem["filetype"]);
@@ -52474,6 +52529,7 @@
                                                                                     $files = '';
                                                                                     $type = 'iframe';
                                                                                     $file_extension = 'fa-youtube-play';
+                                                                                    $datafancybox = 'data-fancybox';
                                                                                     if (!empty($rowReferences["files"])) {
                                                                                         $arr_filename = explode(' | ', $rowReviewItem["files"]);
                                                                                         $arr_filetype = explode(' | ', $rowReviewItem["filetype"]);
@@ -52575,6 +52631,7 @@
                                             $files = '';
                                             $type = 'iframe';
                                             $file_extension = 'fa-youtube-play';
+                                            $datafancybox = 'data-fancybox';
                                             if (!empty($rowTemplate["files"])) {
                                                 $arr_filename = explode(' | ', $rowTemplate["files"]);
                                                 $arr_filetype = explode(' | ', $rowTemplate["filetype"]);
@@ -52669,6 +52726,7 @@
                                                 $files = '';
                                                 $type = 'iframe';
                                                 $file_extension = 'fa-youtube-play';
+                                                $datafancybox = 'data-fancybox';
                                                 if (!empty($rowReferences["files"])) {
                                                     $arr_filename = explode(' | ', $rowReferences["files"]);
                                                     $arr_filetype = explode(' | ', $rowReferences["filetype"]);
@@ -54119,9 +54177,9 @@
             l.description_tmp AS l_description_tmp,
             l.description_comment AS l_description_comment,
             ur.ID AS u_reviewer_ID,
-            CASE WHEN LENGTH(ur.first_name) = 0 AND LENGTH(ur.last_name) = 0 THEN '---' ELSE CONCAT(ur.first_name, ' ', ur.last_name) END AS u_reviewer,
+            CASE WHEN IFNULL(ur.first_name = '', TRUE) AND IFNULL(ur.last_name = '', TRUE) THEN '---' ELSE CONCAT(ur.first_name, ' ', ur.last_name) END AS u_reviewer,
             ua.ID AS u_approver_ID,
-            CASE WHEN LENGTH(ua.first_name) = 0 AND LENGTH(ua.last_name) = 0 THEN '---' ELSE CONCAT(ua.first_name, ' ', ua.last_name) END AS u_approver
+            CASE WHEN IFNULL(ua.first_name = '', TRUE) AND IFNULL(ua.last_name = '', TRUE) THEN '---' ELSE CONCAT(ua.first_name, ' ', ua.last_name) END AS u_approver
             FROM tbl_library AS l
 
             LEFT JOIN (
@@ -55652,6 +55710,7 @@
 
             $files = '';
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($row["files"])) {
                 $arr_filename = explode(' | ', $row["files"]);
                 $arr_filetype = explode(' | ', $row["filetype"]);
@@ -55917,6 +55976,7 @@
                         $type = 'iframe';
                         $target = '';
                         $file_extension = 'fa-youtube-play';
+                        $datafancybox = 'data-fancybox';
                         if (!empty($files)) {
                             if ($filetype == 1) {
                                 $fileExtension = fileExtension($files);
@@ -56061,6 +56121,7 @@
                     $type = 'iframe';
                     $target = '';
                     $file_extension = 'fa-file-image-o';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -56529,6 +56590,7 @@
             $filetype = $row['filetype'];
             $files = $row["files"];
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($files)) {
                 if ($filetype == 1) {
                     $fileExtension = fileExtension($files);
@@ -56692,6 +56754,7 @@
             $filetype = $row['filetype'];
             $files = $row["files"];
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($files)) {
                 if ($filetype == 1) {
                     $fileExtension = fileExtension($files);
@@ -57059,6 +57122,7 @@
                     $files = $rowData["files"];
                     $type = 'iframe';
                     $file_extension = 'fa-youtube-play';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -57259,6 +57323,7 @@
                 $files = $rowData["files"];
                 $type = 'iframe';
                 $file_extension = 'fa-youtube-play';
+                $datafancybox = 'data-fancybox';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -57434,6 +57499,7 @@
                     $files = $rowData["files"];
                     $type = 'iframe';
                     $file_extension = 'fa-youtube-play';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -57593,6 +57659,7 @@
                 $files = $rowData["files"];
                 $type = 'iframe';
                 $file_extension = 'fa-youtube-play';
+                $datafancybox = 'data-fancybox';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -57762,6 +57829,7 @@
 
             $files = '';
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($row["files"])) {
                 $arr_filename = explode(' | ', $row["files"]);
                 $arr_filetype = explode(' | ', $row["filetype"]);
@@ -57901,6 +57969,7 @@
 
             $files = '';
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($row["files"])) {
                 $arr_filename = explode(' | ', $row["files"]);
                 $arr_filetype = explode(' | ', $row["filetype"]);
@@ -58050,6 +58119,7 @@
 
             $files = '';
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($row["files"])) {
                 $arr_filename = explode(' | ', $row["files"]);
                 $arr_filetype = explode(' | ', $row["filetype"]);
@@ -58276,6 +58346,7 @@
                     $files = $rowReview["files"];
                     $type = 'iframe';
                     $file_extension = 'fa-youtube-play';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -58381,6 +58452,7 @@
             if ($process == true) {
                 $type = 'iframe';
                 $file_extension = 'fa-youtube-play';
+                $datafancybox = 'data-fancybox';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -58566,6 +58638,7 @@
                     $files = $rowReview["files"];
                     $type = 'iframe';
                     $file_extension = 'fa-youtube-play';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -58701,6 +58774,7 @@
             if ($process == true) {
                 $type = 'iframe';
                 $file_extension = 'fa-youtube-play';
+                $datafancybox = 'data-fancybox';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -58848,6 +58922,7 @@
                     $files = $rowReview["files"];
                     $type = 'iframe';
                     $file_extension = 'fa-youtube-play';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -58993,6 +59068,7 @@
             if ($process == true) {
                 $type = 'iframe';
                 $file_extension = 'fa-youtube-play';
+                $datafancybox = 'data-fancybox';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -59074,6 +59150,7 @@
 
             $files = '';
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($row["files"])) {
                 $arr_filename = explode(' | ', $row["files"]);
                 $arr_filetype = explode(' | ', $row["filetype"]);
@@ -59256,6 +59333,7 @@
                     $files = $rowData["files"];
                     $type = 'iframe';
                     $file_extension = 'fa-youtube-play';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -59389,6 +59467,7 @@
             if ($process == true) {
                 $type = 'iframe';
                 $file_extension = 'fa-youtube-play';
+                $datafancybox = 'data-fancybox';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -59486,6 +59565,7 @@
 
             $files = '';
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($row["files"])) {
                 $arr_filename = explode(' | ', $row["files"]);
                 $arr_filetype = explode(' | ', $row["filetype"]);
@@ -59671,6 +59751,7 @@
                     $files = $rowData["files"];
                     $type = 'iframe';
                     $file_extension = 'fa-youtube-play';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -59804,6 +59885,7 @@
             if ($process == true) {
                 $type = 'iframe';
                 $file_extension = 'fa-youtube-play';
+                $datafancybox = 'data-fancybox';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -61008,7 +61090,7 @@
                 <select class="form-control mt-multiselect btn btn-default" name="user" required>
                     <option value="">Select</option>';
 
-                    if ($portal_user == 1 OR $portal_user == 2 OR $portal_user == 19 OR $portal_user == 163 OR $current_userEmployerID == 27 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1486) {
+                    if ($portal_user == 1 OR $portal_user == 2 OR $portal_user == 19 OR $portal_user == 163 OR $current_userEmployerID == 27 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1486 OR $portal_user == 1556 OR $portal_user == 1557) {
                         $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = 0 AND is_verified = 1 AND is_active = 1" );
                         if ($current_client == 1) { $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = 0 AND is_verified = 1 AND is_active = 1 AND client = 1" ); }
 
@@ -61285,7 +61367,8 @@
                 </thead>
                 <tbody>';
 
-                    $resultItem = mysqli_query( $conn,"SELECT
+                    $resultItem = mysqli_query( $conn,"
+                        SELECT
                         mainID, parentID, childID, parentCollab, parentName, libType,
                         com_Total,
 
@@ -61454,7 +61537,8 @@
                         ) AS f2
                         ON r.f_ID = f2.ID
 
-                        ORDER BY parentName" );
+                        ORDER BY parentName
+                    " );
                     if ( mysqli_num_rows($resultItem) > 0 ) {
                         while($rowItem = mysqli_fetch_array($resultItem)) {
                             $item_ID = $rowItem["mainID"];
@@ -61486,6 +61570,7 @@
                             $filetype = $rowItem['f_filetype'];
                             $files = $rowItem["f_files"];
                             $type = 'iframe';
+                            $datafancybox = 'data-fancybox';
                             if ($filetype == 1) {
                                 $fileExtension = fileExtension($files);
                                 $src = $fileExtension['src'];
@@ -61507,6 +61592,7 @@
                             $t_files = $rowItem["t_files"];
                             $t_filetype = $rowItem['t_filetype'];
                             $type = 'iframe';
+                            $datafancybox = 'data-fancybox';
                             if ($t_filetype == 1) {
                                 if (!empty($t_files)) {
                                     $fileExtension = fileExtension($t_files);
@@ -61930,7 +62016,7 @@
             if ($ID > 0) {
                 $sql_extra = '';
                 if ($types == 2) {
-                    $sql_extra = ' AND (expiry_date IS NULL OR LENGTH(expiry_date) = 0 OR DATE(expiry_date) < CURDATE())';
+                    $sql_extra = " AND (expiry_date IS NULL OR IFNULL(expiry_date = '', TRUE) OR DATE(expiry_date) < CURDATE()) ";
                 } else if ($types == 3) {
                     $sql_extra = ' AND expiry_date IS NOT NULL
                     AND LENGTH(expiry_date) > 0
@@ -61955,7 +62041,7 @@
             } else {
                 $sql_extra = '';
                 if ($types == 2) {
-                    $sql_extra = ' AND (DocumentDueDate IS NULL OR LENGTH(DocumentDueDate) = 0 OR DATE(DocumentDueDate) < CURDATE())';
+                    $sql_extra = " AND (DocumentDueDate IS NULL OR IFNULL(DocumentDueDate = '', TRUE) OR DATE(DocumentDueDate) < CURDATE()) ";
                 } else if ($types == 3) {
                     $sql_extra = ' AND DocumentDueDate IS NOT NULL
                     AND LENGTH(DocumentDueDate) > 0
@@ -62011,7 +62097,7 @@
             if ($ID == 1) {
                 $sql_extra = '';
                 if ($types == 2) {
-                    $sql_extra = ' AND (Expiration_Date_Type_Accreditation IS NULL OR LENGTH(Expiration_Date_Type_Accreditation) = 0 OR DATE(Expiration_Date_Type_Accreditation) < CURDATE())';
+                    $sql_extra = " AND (Expiration_Date_Type_Accreditation IS NULL OR IFNULL(Expiration_Date_Type_Accreditation = '', TRUE) OR DATE(Expiration_Date_Type_Accreditation) < CURDATE()) ";
                 } else if ($types == 3) {
                     $sql_extra = ' AND Expiration_Date_Type_Accreditation IS NOT NULL
                     AND LENGTH(Expiration_Date_Type_Accreditation) > 0
@@ -62033,7 +62119,7 @@
             } else if ($ID == 2) {
                 $sql_extra = '';
                 if ($types == 2) {
-                    $sql_extra = ' AND (Expiration_Date_Certification IS NULL OR LENGTH(Expiration_Date_Certification) = 0 OR DATE(Expiration_Date_Certification) < CURDATE())';
+                    $sql_extra = " AND (Expiration_Date_Certification IS NULL OR IFNULL(Expiration_Date_Certification = '', TRUE) OR DATE(Expiration_Date_Certification) < CURDATE()) ";
                 } else if ($types == 3) {
                     $sql_extra = ' AND Expiration_Date_Certification IS NOT NULL
                     AND LENGTH(Expiration_Date_Certification) > 0
@@ -62055,7 +62141,7 @@
             } else if ($ID == 3) {
                 $sql_extra = '';
                 if ($types == 2) {
-                    $sql_extra = ' AND (Expiration_Date IS NULL OR LENGTH(Expiration_Date) = 0 OR DATE(Expiration_Date) < CURDATE())';
+                    $sql_extra = " AND (Expiration_Date IS NULL OR IFNULL(Expiration_Date = '', TRUE) OR DATE(Expiration_Date) < CURDATE()) ";
                 } else if ($types == 3) {
                     $sql_extra = ' AND Expiration_Date IS NOT NULL
                     AND LENGTH(Expiration_Date) > 0
@@ -62077,7 +62163,7 @@
             } else if ($ID == 4) {
                 $sql_extra = '';
                 if ($types == 2) {
-                    $sql_extra = ' AND (expiry_date IS NULL OR LENGTH(expiry_date) = 0 OR DATE(expiry_date) < CURDATE())';
+                    $sql_extra = " AND (expiry_date IS NULL OR IFNULL(expiry_date = '', TRUE) OR DATE(expiry_date) < CURDATE()) ";
                 } else if ($types == 3) {
                     $sql_extra = ' AND expiry_date IS NOT NULL
                     AND LENGTH(expiry_date) > 0

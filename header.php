@@ -1596,7 +1596,7 @@ License: You must have a valid license purchased only from themeforest(the above
                             <?php endif; ?>
                         </li>
                         <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-                            <?php if($user_id == 2 || $user_id == 1 || $user_id == 19 || $user_id == 43 || $user_id == 35 || $user_id == 54 || $user_id == 40 || $user_id == 41 || $user_id == 42 || $user_id == 178 || $user_id == 55 || $user_id == 100 || $user_id == 693 || $user_id == 88 || $user_id == 1027 || $user_id == 1360 || $user_id == 1365 || $user_id == 1366 || $user_id == 1453 || $user_id == 1481): ?>
+                            <?php if($user_id == 2 || $user_id == 1 || $user_id == 19 || $user_id == 43 || $user_id == 35 || $user_id == 54 || $user_id == 40 || $user_id == 41 || $user_id == 42 || $user_id == 178 || $user_id == 55 || $user_id == 100 || $user_id == 693 || $user_id == 88 || $user_id == 1027 || $user_id == 1360 || $user_id == 1365 || $user_id == 1366 || $user_id == 1453 || $user_id == 1481 || $user_id == 481 || $switch_user_id == 34): ?>
                             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
 
                                 <i class="icon-bell"></i>
@@ -1617,7 +1617,7 @@ License: You must have a valid license purchased only from themeforest(the above
                                     <h3>
                                         <span class="bold hide">12 pending</span> Notifications
                                     </h3>
-                                    <a href="#">view all</a>
+                                    <a href="task-management">view all</a>
                                 </li>
                                 <li>
                                     <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">

@@ -231,9 +231,9 @@
                                                         ON s.email = e.businessemailAddress
                                                         
                                                         WHERE s.page = 2 
-                                                        AND s.category = 3 
+                                                        -- AND s.category = 3 
                                                         AND s.is_deleted = 0 
-                                                        AND s.status = 1 
+                                                        -- AND s.status = 1 
                                                         AND s.user_id = $current_userEmployerID
                                                         AND FIND_IN_SET($current_userEmployeeID, REPLACE(s.employee_id, ' ', ''))
                                                         

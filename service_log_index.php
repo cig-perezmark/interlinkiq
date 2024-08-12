@@ -1095,16 +1095,16 @@
                             <div class="col-md-8">
                                 <select class="form-control" name="action" id="task_action">
                                     <?php
-                        $actions = $con->query("SELECT * FROM tbl_service_logs_actions");
-                        if(mysqli_num_rows($actions) > 0) {
-                            while($row = $actions->fetch_assoc()) {
-                                echo "<option value='{$row['name']}'>{$row['name']}</option>";
-                            }
-                        }
-                        else {
-                            echo "<option><i>No items found.</i></option>";
-                        }
-                    ?>
+                                        $actions = $con->query("SELECT * FROM tbl_service_logs_actions");
+                                        if(mysqli_num_rows($actions) > 0) {
+                                            while($row = $actions->fetch_assoc()) {
+                                                echo "<option value='{$row['name']}'>{$row['name']}</option>";
+                                            }
+                                        }
+                                        else {
+                                            echo "<option><i>No items found.</i></option>";
+                                        }
+                                    ?>
                                 </select>
                             </div>
                         </div>
@@ -1119,15 +1119,15 @@
                             <div class="col-md-8">
                                 <select class="form-control mt-multiselect" name="account" id="task_account">
                                     <?php
-                        $accounts = $con->query("SELECT * FROM tbl_service_logs_accounts order by name ASC");
-                        if(mysqli_num_rows($accounts) > 0) {
-                            while($row = $accounts->fetch_assoc()) {
-                                echo "<option value='{$row['name']}'>{$row['name']}</option>";
-                            }
-                        }
-                        else {
-                            echo "<option><i>No items found.</i></option>";
-                        }
+                                        $accounts = $con->query("SELECT * FROM tbl_service_logs_accounts WHERE owner_pk = $switch_user_id order by name ASC");
+                                        if(mysqli_num_rows($accounts) > 0) {
+                                            while($row = $accounts->fetch_assoc()) {
+                                                echo "<option value='{$row['name']}'>{$row['name']}</option>";
+                                            }
+                                        }
+                                        else {
+                                            echo "<option><i>No items found.</i></option>";
+                                        }
                                     ?>
                                 </select>
                             </div>

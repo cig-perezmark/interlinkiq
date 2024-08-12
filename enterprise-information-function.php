@@ -1,5 +1,6 @@
 <?php
 include_once 'database.php';
+$local_date = date('Y-m-d');
 if (!empty($_COOKIE['switchAccount'])) {
 	$portal_user = $_COOKIE['ID'];
 	$user_id = $_COOKIE['switchAccount'];
@@ -118,7 +119,7 @@ if (isset($_POST['btnTrademarkUpdate'])) {
 		move_uploaded_file($tmp,$path);
 	}
     
-    mysqli_query($conn,"UPDATE tblEnterpiseDetails_Trademark set trademark_name='$trademark_name', trade_name='$trade_name', files='$files' WHERE ID='$ID'");  
+    mysqli_query($conn,"UPDATE tblEnterpiseDetails_Trademark set trademark_name='$trademark_name', trade_name='$trade_name', files='$files', last_modified='$local_date' WHERE ID='$ID'");  
     echo '<script> window.location.href = "enterprise-info";</script>';
 }
 if (isset($_POST['btnAccountUpdate'])) { 
@@ -215,8 +216,8 @@ if (isset($_POST['btnTrademarks'])) {
 		move_uploaded_file($tmp,$path);
 	}
     
-    $sql = "INSERT INTO tblEnterpiseDetails_Trademark (user_id, portal_user, trademark_name, trade_name, files)
-    VALUES ('$user_id', '$portal_user', '$trademark_name', '$trade_name', '$files')";
+    $sql = "INSERT INTO tblEnterpiseDetails_Trademark (user_id, portal_user, trademark_name, trade_name, filesm last_modified)
+    VALUES ('$user_id', '$portal_user', '$trademark_name', '$trade_name', '$files', '$local_date')";
     if(mysqli_query($conn, $sql)){
         echo '<script> window.location.href = "enterprise-info";</script>';
     }

@@ -72,33 +72,6 @@
                 </div>
 
                 <!--END SEARCH BAR-->
-                <?php if($current_client != 1): ?>
-                <?php if($current_userEmployeeID == 0 OR $current_userEmployeeID == 64 OR $current_userEmployeeID == 81  OR $current_userEmployeeID == 78 OR $_COOKIE['ID'] == 1106): ?>
-                <!--<div class="row">-->
-                <!--	<div class="col-lg-12">-->
-                <!--                  		<div class="portlet-title" style="margin-bottom:10px;float:right">-->
-                <!--                          	<div class="actions">-->
-                <!--                              	<div class="btn-group">-->
-                <!--  	                                <a class="btn dark btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions-->
-                <!--      	                                <i class="fa fa-angle-down"></i>-->
-                <!--          	                        </a>-->
-                <!--              	                    <ul class="dropdown-menu pull-right">-->
-                <!--                  	                    <li>-->
-                <!--<a data-toggle="modal" data-target="<?php echo $FreeAccess == false ? '#exampleModal':'#modalService'; ?>"> Assign Form</a>-->
-                <!--                                      	</li>-->
-                <!--                                      	<?php if($switch_user_id == 163): ?>-->
-                <!--                                      	<li>-->
-                <!--                                          	<a data-toggle="modal" data-target="<?php echo $FreeAccess == false ? '#clone_modal':'#modalService'; ?>"> Clone Form</a>-->
-                <!--                                      	</li>-->
-                <!--                                      	<?php endif; ?>-->
-                <!--                                  	</ul>-->
-                <!--                              	</div>-->
-                <!--                          	</div>-->
-                <!--                      	</div>-->
-                <!--                      </div>-->
-                <!--</div>-->
-                <?php endif; ?>
-                <?php endif; ?>
                 <?php if($current_client == 1): ?>
                 <?php if($current_userAdminAccess == 1): ?>
                 <div class="row">
@@ -166,14 +139,22 @@
                             </thead>
                             <tbody>
                                 <?php
-                                    
+                                        $select_user_role = "SELECT * FROM tbl_user WHERE ID = {$_COOKIE['ID']}";
+                                        $user_role = mysqli_query($conn,$select_user_role);
+                                        $user_role_array = mysqli_fetch_assoc($user_role);
+                                        $user_roles = $user_role_array['form_role'];
                                         if($current_client != 1) {
-                                            if($current_userEmployeeID == 0){
-                                                $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE user_id = '" . $_COOKIE['ID'] . "' AND enterprise_id = '" . $_COOKIE['ID'] . "'"); 
+                                            if($user_roles != 1){
+                                                if($current_userEmployeeID == 0){
+                                                    $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE user_id = '" . $_COOKIE['ID'] . "' AND enterprise_id = '" . $_COOKIE['ID'] . "'"); 
+                                                } else{
+                                                        $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE enterprise_id = '$switch_user_id' AND user_id = {$_COOKIE['ID']}"); 
+                                                }
                                             }
                                             else{
-                                                    $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE enterprise_id = '$switch_user_id' AND user_id = {$_COOKIE['ID']}"); 
+                                                $check_form_owned = mysqli_query($conn,"SELECT * FROM tbl_forms_owned WHERE enterprise_id = '$switch_user_id'"); 
                                             }
+                                            
                                             $num_rows = mysqli_num_rows($check_form_owned);
                                             if($num_rows > 0 ){
                                                 $check_result = mysqli_fetch_array($check_form_owned);

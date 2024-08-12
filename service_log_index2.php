@@ -1,6 +1,6 @@
 <?php 
-    $title = "Service Log";
-    $site = "service_log";
+    $title = "Service Logs";
+    $site = "service_logs";
     $breadcrumbs = '';
     $sub_breadcrumbs = '';
 
@@ -9,21 +9,38 @@
     }
     $breadcrumbs .= '<li><span>'. $title .'</span></li>';
 
-    include_once 'alt-setup/setup.php';
+    // include_once 'alt-setup/setup.php';
     include_once ('header.php'); 
-    // include_once ('task_service_log/private/connection.php');
+    // include_once ('task_service_log2/private/connection.php');
 
     $con = $conn;
 ?>
 <link rel="stylesheet" href="modules/Init.style.css">
+<style>
+#service_logs_table * {
+    box-sizing: border-box;
+}
+</style>
+</style>
 <!-- END PAGE HEADER-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="note note-success">
+            <h4> Reminder: Log Your Tasks</h4>
+            <p style="font-size: 1em;">
+                Please log your tasks regularly. Accurate task logging is crucial for your compensation and for tracking the company's sales performance.
+            </p>
+        </div>
+
+    </div>
+</div>
 <div class="row">
     <div class="col-md-12">
         <div class="portlet light">
             <div class="portlet-title tabbable-line">
                 <div class="caption caption-md">
                     <i class="icon-globe theme-font hide"></i>
-                    <span class="caption-subject font-blue-madison bold uppercase">Service Time Logs</span>
+                    <span class="caption-subject font-blue-madison bold uppercase" id="serviceLogsCardTitle">My Services</span>
                 </div>
                 <ul class="nav nav-tabs">
                     <li class="activex hide">
@@ -35,23 +52,26 @@
                             <i class="fa fa-angle-down"></i>
                         </a>
                         <ul class="dropdown-menu pull-right" style="min-width: auto;">
-
                             <li>
-                                <a data-toggle="modal" href="#newTask">
-                                    <i class="icon-plus"></i> Add new </a>
+                                <a data-toggle="modal" href="#addServiceLogModal">
+                                    <i class="icon-plus"></i> Add new
+                                </a>
                             </li>
                             <li class="divider"></li>
                             <li title="Service logs from the last 30 days" class="active">
-                                <a href="#SERVICES" data-toggle="tab">
-                                    <i class="icon-clock"></i> My Logs </a>
+                                <a href="#SERVICES" data-toggle="tab" data-service-log-tab="My Services">
+                                    <i class="icon-clock"></i> My Services
+                                </a>
                             </li>
-                            <li title="For Approval Logs">
-                                <a href="javascript:;" data-target="#pending_logs_tab" data-toggle="tab">
-                                    <i class="icon-question"></i> Pending </a>
+                            <li title="Overtime logs pending for manager's approval">
+                                <a href="javascript:;" data-target="#pending_logs_tab" data-toggle="tab" data-service-log-tab="Pending Logs">
+                                    <i class="icon-question"></i> Pending
+                                </a>
                             </li>
                             <li title="Disapproved Logs">
-                                <a href="javascript:;" data-target="#invalid_logs_tab" data-toggle="tab">
-                                    <i class="icon-dislike"></i> Invalid </a>
+                                <a href="javascript:;" data-target="#invalid_logs_tab" data-toggle="tab" data-service-log-tab="Invalid Logs">
+                                    <i class="icon-dislike"></i> Invalid
+                                </a>
                             </li>
                         </ul>
                     </li>
@@ -69,7 +89,7 @@
                     <?php } ?>
 
                     <li>
-                        <a href="#PERFORMANCE" data-toggle="tab">Performance</a>
+                        <a href="#PERFORMANCE" data-toggle="tab" data-service-log-tab="Performance Summary">Performance</a>
                     </li>
 
                     <?php if($_COOKIE['ID'] == 38 || $_COOKIE['ID'] == 387 || $_COOKIE['ID'] == 32 || $_COOKIE['ID'] == 43): ?>
@@ -79,11 +99,11 @@
                     <?php endif; ?>
 
                     <li>
-                        <a href="#VA_SUMMARY" data-toggle="tab">VA Summary</a>
+                        <a href="#VA_SUMMARY" data-toggle="tab" data-service-log-tab="VA Summary">VA Summary</a>
                     </li>
 
-                    <li>
-                        <a href="#Overtime_fa" data-toggle="tab">Overtime for Approval</a>
+                    <li title="Overtime service logs from the department members">
+                        <a href="#Overtime_fa" data-toggle="tab" data-service-log-tab="Overtime Logs - For Approvals">For Approvals</a>
                     </li>
 
                     <?php if($_COOKIE['ID'] == 387 || $_COOKIE['ID'] == 456 || $_COOKIE['ID'] == 66  || $_COOKIE['ID'] == 100 || $_COOKIE['ID'] == 3 || $_COOKIE['ID'] == 43 || $_COOKIE['ID'] == 34 || $_COOKIE['ID'] == 54): ?>
@@ -97,7 +117,10 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="SERVICES">
                         <div style="margin-bottom: 2rem;">
-                            <h3> Records from the last 30 days </h3>
+                            <div>
+                                <h3>My Service Logs</h3>
+                                <p> Records from the last 30 days </p>
+                            </div>
                             <div class="alert alert-success alert-dismissable" id="advSearchAlert" style="display: none; margin-top:1rem;">
                                 <button type="button" class="close" aria-hidden="true"></button>
                                 <strong>
@@ -110,7 +133,7 @@
                                 </span>
                             </div>
                         </div>
-                        <a data-toggle="modal" href="#newTask" id="addNewTaskBtn" style="display: none;" title="Add new log(s)">
+                        <a data-toggle="modal" href="#addServiceLogModal" id="addNewTaskBtn" style="display: none;" title="Add new log(s)">
                             <i class="fa fa-plus icon-margin-right"></i>
                             Add New
                         </a>
@@ -118,45 +141,70 @@
                             <i class="fa fa-refresh"></i>
                         </a>
                         <div class="portlet-body">
-                            <table class="table table-bordered table-hover" id="service_logs_table">
-                                <thead>
-                                    <tr>
-                                        <th style="max-width: 7rem;">Task ID</th>
-                                        <th>Name</th>
-                                        <th>Description</th>
-                                        <th style="max-width: 10rem;">Action</th>
-                                        <th>Comment</th>
-                                        <th style="max-width: 12rem;">Account</th>
-                                        <th style="max-width: 10rem;">Task Date</th>
-                                        <th style="max-width: 5rem;">Minutes</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
-
-
-                        <div class="tabbable tabbable-tabdrop hide">
-                            <ul class="nav nav-tabs">
-                                <li class="active">
-                                    <a href="#tab_service_log" data-toggle="tab">Service Logs</a>
-                                </li>
-                                <li>
-                                    <a href="#tab_log_approval" data-toggle="tab">For Approval Logs</a>
-                                </li>
-                                <li>
-                                    <a href="#tab_disapprove" data-toggle="tab">Disapproved Logs</a>
-                                </li>
-                            </ul>
-                            <div class="tab-content margin-top-20">
-                                <div class="tab-pane active" id="tab_service_log">
-
-                                </div>
-
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover" id="service_logs_table">
+                                    <thead>
+                                        <tr>
+                                            <th>Task ID</th>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Action</th>
+                                            <th>Comment</th>
+                                            <th>Account</th>
+                                            <th>Task Date</th>
+                                            <th>Minutes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
                             </div>
                         </div>
-
                     </div>
+                    <div class="tab-pane" id="VA_SUMMARY">
+                        <a href="javascript:;" id="refreshVASummaryTableBtn" style="display: none;" title="Refresh">
+                            <i class="fa fa-refresh"></i>
+                        </a>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <table id="vasummary_table" class="table table-bordered table-hover table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Date(s)</th>
+                                            <th>Total Hour(s) Rendered</th>
+                                            <th>Overtime (From Logs)</th>
+                                            <th style="max-width: 4rem; box-sizing: border-box;">Total Task(s)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody> </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="portlet light hide" style="padding-left:0; padding-right: 0;">
+                            <div class="portlet-title" style="border: none; margin-bottom: 0;">
+                                <div class="btn-group">
+                                    <a class="btn grey-cascade" href="javascript:;" data-toggle="dropdown">
+                                        <span class="hidden-xs"> Export </span>
+                                        <i class="fa fa-angle-down"></i>
+                                    </a>
+                                    <ul class="dropdown-menu" id="vasummary_table_actions">
+                                        <li>
+                                            <a href="javascript:;" data-action="0" class="tool-action">
+                                                <i class="icon-cloud-upload"></i> CSV</a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript:;" data-action="1" class="tool-action">
+                                                <i class="icon-paper-clip"></i> Excel</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="actions hide" style="padding-bottom: 0;">
+                                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;"> </a>
+                                </div>
+                            </div>
+                            <div class="portlet-body"></div>
+                        </div>
+                    </div>
+
                     <div class="tab-pane" id="Weekly">
                         <div class="row">
                             <div class="col-md-9">
@@ -184,74 +232,32 @@
                         </div>
                     </div>
                     <div class="tab-pane" id="Overtime_fa">
+                        <a href="javascript:;" id="refreshForApprovalsTableBtn" style="display: none;" title="Refresh">
+                            <i class="fa fa-refresh"></i>
+                        </a>
                         <div class="row">
-                            <div class="col-md-9">
-                                <h3 style="margin: 0 0 1rem 0;">Service logs Overtime for approval</h3>
-                            </div>
-                            <br><br>
                             <div class="col-md-12">
-                                <div class="table-scrollable">
-                                    <div style="padding:15px">
-                                        <label><input type="checkbox" id="checkAll" onclick="checkAll()"> Check All</label>
-                                    </div>
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Task ID</th>
-                                                <th>Name</th>
-                                                <th>Description</th>
-                                                <th>Action</th>
-                                                <th>Comment</th>
-                                                <th>Account</th>
-                                                <th>Task Date</th>
-                                                <th>Minutes</th>
-                                                <th width="50px"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                        $checker = mysqli_query($conn,"SELECT * FROM others_employee_details WHERE employee_id='$current_userEmployeeID'");
-                                        $check_result = mysqli_fetch_array($checker);
-                                        
-                                        if (!empty($check_result)) {
-                                            $new_check_result = explode(",",$check_result['pto_to_approved']);
-                                            foreach($new_check_result as $explode_values) {
-                                                $overtime_query = mysqli_query($conn, "select * from tbl_service_logs INNER JOIN tbl_user ON tbl_service_logs.user_id =  tbl_user.ID where tbl_service_logs.not_approved = 1 AND tbl_service_logs.user_id = '$explode_values' ");
-                                                foreach($overtime_query as $ot_row) {
-                                                    echo '<tr id="scope_'.$ot_row['task_id'].'" >
-                                                   
-                                                        <td><input type="checkbox" name="scope_update_id[]" class="update_scope" value="'.$ot_row['task_id'].'" /> '.$ot_row['task_id'].'</td>
-                                                        <td>'.$ot_row['first_name'].' '.$ot_row['last_name'].'</td>
-                                                        <td>'.$ot_row['description'].'</td>
-                                                        <td>'.$ot_row['action'].'</td>
-                                                        <td>'.$ot_row['comment'].'</td>
-                                                        <td>'.$ot_row['account'].'</td>
-                                                        <td><a href="#modal_update_status" data-toggle="modal" type="button" id="add_status" data-id="'.$ot_row['task_id'].'" >'.$ot_row['task_date'].'</a></td>
-                                                        <td>'.$ot_row['minute'].'</td>
-                                                        <td><button type="button" data-id="'.$ot_row['task_id'].'" id="disapprove_btn" data-toggle="modal" data-target="#modal_comment" class="btn btn-danger btn-xs">Disapprove</button></td>
-                                                    </tr>';
-                                                }
-                                            }
-                                        }
-                                    ?>
-                                            <tr style="border:none;">
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td class="noborder" style="border:solid transparent 1px !important;border-bottom:solid #ccc 1px !important;">
-
-                                                    <button type="button" name="btn_appr_update" id="btn_appr_update" class="btn btn-success btn-xs">Approved</button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
+                                <div style="padding:15px" class="hide">
+                                    <label><input type="checkbox" id="checkAll" onclick="checkAll()"> Check All</label>
                                 </div>
+                                <table class="table table-bordered" id="for_approval_logs_table">
+                                    <thead>
+                                        <tr>
+                                            <th style="max-width: 3rem; min-width:3rem; box-sizing: border-box;" title="Select all item(s)">
+                                                <input type="checkbox" id="checkAll" onclick="checkAll()">
+                                            </th>
+                                            <th>Task ID</th>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Action</th>
+                                            <th>Comment</th>
+                                            <th>Account</th>
+                                            <th>Task Date</th>
+                                            <th>Minutes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -285,7 +291,7 @@
                                                         <tr role="row">
                                                             <th class="text-bold text-center bg-light" aria-controls="timein_summary_table" width="10%">Name</th>
                                                             <?php
-                                                            $query = "SELECT DISTINCT DATE(tbl_timein.time_in_datetime) AS date 
+                                                            $query = "SELECT DISTINCT DATE(tbl_timein.time_in_datetime) AS date
                                                                         FROM tbl_timein 
                                                                         LEFT JOIN tbl_hr_employee 
                                                                         ON tbl_hr_employee.ID = tbl_timein.user_id 
@@ -506,53 +512,6 @@
                         </div>
                     </div>
                     <div class="tab-pane" id="PERFORMANCE">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="">
-                                    <h3 style="margin: 0 0 1rem 0;">
-                                        Performance Summary
-                                    </h3>
-                                    <h5 class="font-grey-cascade">Last render date: <span data-performance="current_date"></span></h5>
-                                </div>
-                            </div>
-                            <div class="col-md-9">
-                                <div class="alert alert-info">
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                    <strong>Reminder!</strong>
-                                    <p>
-                                        Don't forget to log your tasks! It is important for your compensation and company's
-                                        sales.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-                        <div class="row">
-                            <div class="input-daterange">
-                                <div class="col-md-1">
-                                    <label>From:</label>
-                                </div>
-                                <div class="col-md-2">
-                                    <input type="text" name="start_date_filter1" id="start_date_filter1" class="form-control" />
-                                </div>
-                                <div class="col-md-1">
-                                    <label>To:</label>
-                                </div>
-                                <div class="col-md-2">
-                                    <input type="text" name="end_date_filter1" id="end_date_filter1" class="form-control" />
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <input type="button" name="search_date1" id="search_date1" value="Search" class="btn btn-info" />
-                            </div>
-                        </div>
-                        <br>
-                        <div id="filter_data_range">
-
-                        </div>
-
 
                         <div class="m-grid">
                             <div class="row">
@@ -563,12 +522,18 @@
                                         </div>
                                         <div class="details">
                                             <div class="number" data-performance="overall_time">0</div>
-                                            <div class="desc"> Overall Time Spent </div>
+                                            <div class="desc">
+                                                Overall Time Spent
+                                                <br>
+                                                <a href="#" class="small">
+                                                    <i class="fa fa-refresh"></i>
+                                                    Refresh
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="row widget-row">
                                         <div class="col-md-6">
-                                            <!-- BEGIN WIDGET THUMB -->
                                             <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
                                                 <h4 class="widget-thumb-heading">Completed Tasks</h4>
                                                 <div class="widget-thumb-wrap">
@@ -579,10 +544,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- END WIDGET THUMB -->
                                         </div>
                                         <div class="col-md-6">
-                                            <!-- BEGIN WIDGET THUMB -->
                                             <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
                                                 <h4 class="widget-thumb-heading">Days Worked</h4>
                                                 <div class="widget-thumb-wrap">
@@ -593,10 +556,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- END WIDGET THUMB -->
                                         </div>
                                         <div class="col-md-6">
-                                            <!-- BEGIN WIDGET THUMB -->
                                             <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
                                                 <h4 class="widget-thumb-heading">Average Hours/Day</h4>
                                                 <div class="widget-thumb-wrap">
@@ -608,10 +569,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- END WIDGET THUMB -->
                                         </div>
                                         <div class="col-md-6">
-                                            <!-- BEGIN WIDGET THUMB -->
                                             <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20 ">
                                                 <h4 class="widget-thumb-heading">Average hours/week</h4>
                                                 <div class="widget-thumb-wrap">
@@ -622,7 +581,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- END WIDGET THUMB -->
                                         </div>
                                     </div>
                                 </div>
@@ -701,41 +659,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane" id="VA_SUMMARY">
-                        <div class="">
-                            <h3 style="margin: 0 0 1rem 0;"> Employee List</h3>
-                            <p class="default">
-                                Service logs summary of your employees.
-                            </p>
-                        </div>
-                        <div class="portlet light" style="padding-left:0; padding-right: 0;">
-                            <div class="portlet-title" style="border: none; margin-bottom: 0;">
-                                <div class="btn-group">
-                                    <a class="btn grey-cascade" href="javascript:;" data-toggle="dropdown">
-                                        <span class="hidden-xs"> Export </span>
-                                        <i class="fa fa-angle-down"></i>
-                                    </a>
-                                    <ul class="dropdown-menu" id="vasummary_table_actions">
-                                        <li>
-                                            <a href="javascript:;" data-action="0" class="tool-action">
-                                                <i class="icon-cloud-upload"></i> CSV</a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:;" data-action="1" class="tool-action">
-                                                <i class="icon-paper-clip"></i> Excel</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="actions" style="padding-bottom: 0;">
-                                    <a class="btn btn-circle btn-icon-only btn-default fullscreen" href="javascript:;"> </a>
-                                </div>
-                            </div>
-                            <div class="portlet-body">
-                                <table id="va_summary_table" class="table table-bordered table-hover order-column dataTable no-footer">
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+
 
                     <div class="tab-pane" id="pending_logs_tab">
                         <div class="row">
@@ -744,72 +668,68 @@
                             </div>
                             <br><br>
                             <div class="col-md-12">
-                                <div class="table-scrollable">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Task ID</th>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Action</th>
+                                            <th>Comment</th>
+                                            <th>Account</th>
+                                            <th>Task Date</th>
+                                            <th>Minutes</th>
+                                            <th width="50px"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                            $overtime_query1 = mysqli_query($conn, "select * from tbl_service_logs where not_approved = 3 and user_id = '".$_COOKIE['ID']."' ");
+                                            foreach($overtime_query1 as $ot_row){?>
 
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Task ID</th>
-                                                <th>Name</th>
-                                                <th>Description</th>
-                                                <th>Action</th>
-                                                <th>Comment</th>
-                                                <th>Account</th>
-                                                <th>Task Date</th>
-                                                <th>Minutes</th>
-                                                <th width="50px"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                                $overtime_query1 = mysqli_query($conn, "select * from tbl_service_logs where not_approved = 3 and user_id = '".$_COOKIE['ID']."' ");
-                                                foreach($overtime_query1 as $ot_row){?>
+                                        <tr id="scope_<?= $ot_row['task_id']; ?>">
 
-                                            <tr id="scope_<?= $ot_row['task_id']; ?>">
+                                            <td><?= $ot_row['task_id']; ?></td>
+                                            <td>
+                                                <?php 
+                                                            $uuser = $ot_row['user_id'];
+                                                            $query_user = mysqli_query($conn, "select * from tbl_user where ID = '$uuser'");
+                                                            foreach($query_user as $uuser_row){
+                                                                echo $uuser_row['first_name'].' '.$uuser_row['last_name'];
+                                                            }
+                                                        ?>
+                                            </td>
+                                            <td><?= $ot_row['description']; ?></td>
+                                            <td><?= $ot_row['action']; ?></td>
+                                            <td><?= $ot_row['comment']; ?></td>
+                                            <td><?= $ot_row['account']; ?></td>
+                                            <td>
+                                                <a href="#modal_update_status" data-toggle="modal" type="button" id="add_status" data-id="<?php echo $ot_row['task_id']; ?>"><?= $ot_row['task_date']; ?></a>
+                                            </td>
+                                            <td><?= $ot_row['minute']; ?></td>
+                                            <td>
+                                                <input type="checkbox" name="send_update_id[]" class="send_appr" value="<?= $ot_row['task_id']; ?>" />
+                                            </td>
 
-                                                <td><?= $ot_row['task_id']; ?></td>
-                                                <td>
-                                                    <?php 
-                                                                $uuser = $ot_row['user_id'];
-                                                                $query_user = mysqli_query($conn, "select * from tbl_user where ID = '$uuser'");
-                                                                foreach($query_user as $uuser_row){
-                                                                    echo $uuser_row['first_name'].' '.$uuser_row['last_name'];
-                                                                }
-                                                            ?>
-                                                </td>
-                                                <td><?= $ot_row['description']; ?></td>
-                                                <td><?= $ot_row['action']; ?></td>
-                                                <td><?= $ot_row['comment']; ?></td>
-                                                <td><?= $ot_row['account']; ?></td>
-                                                <td>
-                                                    <a href="#modal_update_status" data-toggle="modal" type="button" id="add_status" data-id="<?php echo $ot_row['task_id']; ?>"><?= $ot_row['task_date']; ?></a>
-                                                </td>
-                                                <td><?= $ot_row['minute']; ?></td>
-                                                <td>
-                                                    <input type="checkbox" name="send_update_id[]" class="send_appr" value="<?= $ot_row['task_id']; ?>" />
-                                                </td>
+                                        </tr>
+                                        <?php }
+                                        ?>
+                                        <tr style="border:none;">
+                                            <td style="border:none;"></td>
+                                            <td style="border:none;"></td>
+                                            <td style="border:none;"></td>
+                                            <td style="border:none;"></td>
+                                            <td style="border:none;"></td>
+                                            <td style="border:none;"></td>
+                                            <td style="border:none;"></td>
+                                            <td style="border:none;"></td>
+                                            <td class="noborder" style="border:solid transparent 1px !important;border-bottom:solid #ccc 1px !important;">
+                                                <button type="button" name="btn_send_appr" id="btn_send_appr" class="btn btn-success btn-xs">Send for Approval</button>
+                                            </td>
 
-                                            </tr>
-                                            <?php }
-                                            ?>
-                                            <tr style="border:none;">
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td class="noborder" style="border:solid transparent 1px !important;border-bottom:solid #ccc 1px !important;">
-                                                    <button type="button" name="btn_send_appr" id="btn_send_appr" class="btn btn-success btn-xs">Send for Approval</button>
-                                                </td>
-
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                </div>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -820,69 +740,65 @@
                             </div>
                             <br><br>
                             <div class="col-md-12">
-                                <div class="table-scrollable">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Task ID</th>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Action</th>
+                                            <th>Account</th>
+                                            <th>Task Date</th>
+                                            <th>Minutes</th>
+                                            <th>Approver Comment</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                            $overtime_query1 = mysqli_query($conn, "select * from tbl_service_logs where not_approved = 4 and user_id = '".$_COOKIE['ID']."' ");
+                                            foreach($overtime_query1 as $ot_row){?>
 
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Task ID</th>
-                                                <th>Name</th>
-                                                <th>Description</th>
-                                                <th>Action</th>
-                                                <th>Account</th>
-                                                <th>Task Date</th>
-                                                <th>Minutes</th>
-                                                <th>Approver Comment</th>
-                                                <th>Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                                $overtime_query1 = mysqli_query($conn, "select * from tbl_service_logs where not_approved = 4 and user_id = '".$_COOKIE['ID']."' ");
-                                                foreach($overtime_query1 as $ot_row){?>
+                                        <tr id="scope_<?= $ot_row['task_id']; ?>">
 
-                                            <tr id="scope_<?= $ot_row['task_id']; ?>">
+                                            <td><?= $ot_row['task_id']; ?></td>
+                                            <td>
+                                                <?php 
+                                                            $uuser = $ot_row['user_id'];
+                                                            $query_user = mysqli_query($conn, "select * from tbl_user where ID = '$uuser'");
+                                                            foreach($query_user as $uuser_row){
+                                                                echo $uuser_row['first_name'].' '.$uuser_row['last_name'];
+                                                            }
+                                                        ?>
+                                            </td>
+                                            <td><?= $ot_row['description']; ?></td>
+                                            <td><?= $ot_row['comment']; ?></td>
+                                            <td><?= $ot_row['account']; ?></td>
 
-                                                <td><?= $ot_row['task_id']; ?></td>
-                                                <td>
-                                                    <?php 
-                                                                $uuser = $ot_row['user_id'];
-                                                                $query_user = mysqli_query($conn, "select * from tbl_user where ID = '$uuser'");
-                                                                foreach($query_user as $uuser_row){
-                                                                    echo $uuser_row['first_name'].' '.$uuser_row['last_name'];
-                                                                }
-                                                            ?>
-                                                </td>
-                                                <td><?= $ot_row['description']; ?></td>
-                                                <td><?= $ot_row['comment']; ?></td>
-                                                <td><?= $ot_row['account']; ?></td>
+                                            <td>
+                                                <a href="#modal_update_status" data-toggle="modal" type="button" id="add_status" data-id="<?php echo $ot_row['task_id']; ?>"><?= $ot_row['task_date']; ?></a>
+                                            </td>
+                                            <td><?= $ot_row['minute']; ?></td>
+                                            <td><?= $ot_row['reasons']; ?></td>
+                                            <td><label style="color:red">Disapprove</label></td>
+                                        </tr>
+                                        <?php }
+                                        ?>
+                                        <tr style="border:none;">
+                                            <td style="border:none;"></td>
+                                            <td style="border:none;"></td>
+                                            <td style="border:none;"></td>
+                                            <td style="border:none;"></td>
+                                            <td style="border:none;"></td>
+                                            <td style="border:none;"></td>
+                                            <td style="border:none;"></td>
+                                            <td style="border:none;"></td>
+                                            <td class="noborder" style="border:solid transparent 1px !important;border-bottom:solid #ccc 1px !important;">
 
-                                                <td>
-                                                    <a href="#modal_update_status" data-toggle="modal" type="button" id="add_status" data-id="<?php echo $ot_row['task_id']; ?>"><?= $ot_row['task_date']; ?></a>
-                                                </td>
-                                                <td><?= $ot_row['minute']; ?></td>
-                                                <td><?= $ot_row['reasons']; ?></td>
-                                                <td><label style="color:red">Disapprove</label></td>
-                                            </tr>
-                                            <?php }
-                                            ?>
-                                            <tr style="border:none;">
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td style="border:none;"></td>
-                                                <td class="noborder" style="border:solid transparent 1px !important;border-bottom:solid #ccc 1px !important;">
-
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -904,7 +820,7 @@
                                 time </p>
                         </div>
                         <div class="d-flex align-items-start justify-content-between">
-                            <a href="task_service_log/SERVICES_LOG_TEMPLATE_UTF8.csv" class="btn green">
+                            <a href="task_service_log2/SERVICES_LOG_TEMPLATE_UTF8.csv" class="btn green">
                                 <i class="fa fa-download"></i>
                                 Download template
                             </a>
@@ -1034,117 +950,6 @@
     <!-- /.modal-dialog -->
 </div>
 
-<!-- new task modal -->
-<div class="modal fade in" id="newTask" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                <h4 class="modal-title">New Task</h4>
-            </div>
-            <div class="modal-body">
-                <form class="form-horizontal" role="form" id="task_form">
-                    <div class="form-body">
-                        <input type="hidden" name="_token" value="<?= isset($_COOKIE['ID']) ? $_COOKIE['ID'] : 'none' ?>">
-                        <div class="alert alert-danger display-hide">
-                            <button class="close" data-close="alert"></button>
-                            Please provide the complete information of the task.
-                        </div>
-                        <div class="alert alert-success display-hide">
-                            <button class="close" data-close="alert"></button>
-                            Data submitted successfuly!
-                        </div>
-                        <div class="form-group">
-                            <label class="col-md-3 control-label">Task Owner</label>
-                            <div class="col-md-8">
-                                <p class="form-control-static" style="font-weight: 600;">
-                                    <?php
-                                        $name = $conn->execute("SELECT TRIM(CONCAT(first_name, ' ', last_name)) AS name FROM tbl_user WHERE ID = ?", $portal_user)->fetchAssoc()['name'] ?? '';
-                                        echo $name;        
-                                    ?>
-                                </p>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="task_description" class="col-md-3 control-label">Description</label>
-                            <div class="col-md-8">
-                                <textarea class="form-control" name="description" id="task_description" rows="3" placeholder="Describe your task"></textarea>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="task_action" class="col-md-3 control-label">Action</label>
-                            <div class="col-md-8">
-                                <select class="form-control" name="action" id="task_action">
-                                    <?php
-                        $actions = $con->query("SELECT * FROM tbl_service_logs_actions");
-                        if(mysqli_num_rows($actions) > 0) {
-                            while($row = $actions->fetch_assoc()) {
-                                echo "<option value='{$row['name']}'>{$row['name']}</option>";
-                            }
-                        }
-                        else {
-                            echo "<option><i>No items found.</i></option>";
-                        }
-                    ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="task_comment" class="col-md-3 control-label">Comment</label>
-                            <div class="col-md-8">
-                                <textarea class="form-control" name="comment" id="task_comment" placeholder="Add comment" rows="3"></textarea>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="task_account" class="col-md-3 control-label">Account</label>
-                            <div class="col-md-8">
-                                <select class="form-control mt-multiselect" name="account" id="task_account">
-                                    <?php
-                        $accounts = $con->query("SELECT * FROM tbl_service_logs_accounts order by name ASC");
-                        if(mysqli_num_rows($accounts) > 0) {
-                            while($row = $accounts->fetch_assoc()) {
-                                echo "<option value='{$row['name']}'>{$row['name']}</option>";
-                            }
-                        }
-                        else {
-                            echo "<option><i>No items found.</i></option>";
-                        }
-                                    ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="taskdate" class="col-md-3 control-label">Task Date</label>
-                            <div class="col-md-8">
-                                <input class="form-control" type="date" name="task_date" id="taskdate">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="task_minute" class="col-md-3 control-label">Minute</label>
-                            <div class="col-md-8">
-                                <input class="form-control" name="minute" id="task_minute" type="number" min="0.1" step="0.1">
-                            </div>
-                        </div>
-                        <button type="submit" id="task_submit_btn" style="display: none;"></button>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-
-                <?php if(!empty($_COOKIE['ID'])){ ?>
-                <button type="button" class="btn dark btn-outline" data-dismiss="modal">Close</button>
-                <button type="button" onclick="$('#task_submit_btn').trigger('click')" class="btn green">Save
-                    Task</button>
-                <?php }else{ ?>
-                <i>Your Cookies has expired please relogin. Thank you</i>
-                <?php } ?>
-            </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-<!-- Update Details -->
 <?php
     $user_pk = $_COOKIE['ID'];
     $total_minute =0;
@@ -1301,13 +1106,13 @@
 <!-- CUSTOM SCRIPT -->
 
 <script src="modules/js/init.js"></script>
-<script src="task_service_log/js/init.js"></script>
-<script src="task_service_log/js/script.js"></script>
+<script src="task_service_log2/js/init.js"></script>
+<script src="task_service_log2/js/script.js"></script>
 
-<?php include_once "service_log_index2_scripts.php"; ?>
+<?php // include_once "service_log_index2_scripts.php"; ?>
 
-<script src='task_service_log/script.js'></script>
-<script src='task_service_log/va_summ_script.js'></script>
+<!-- <script src='task_service_log2/script.js'></script>
+<script src='task_service_log2/va_summ_script.js'></script> -->
 
 </body>
 

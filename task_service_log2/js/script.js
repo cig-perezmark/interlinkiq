@@ -1,8 +1,10 @@
-Init.baseUrl = 'task_service_log/services/index.php?';
+Init.baseUrl = 'task_service_log2/services/index.php?';
+const ServiceLogsInstance = {};
 
 jQuery(function () {
-    const serviceLogs = initServiceLogs();
+    ServiceLogsInstance.logs = initServiceLogs();
     const overtimeForApprovalLogs = initForApprovalLogs();
+    const vaSummaryTable = initVASummaryTable();
     
     $('#refreshServiceLogsTableBtn').on('click', function() {
         const btn = $(this);
@@ -15,9 +17,14 @@ jQuery(function () {
         btn.addClass('disabled-by-action');
         document.body.classList.add('is-loading');
 
-        serviceLogs.fetch(function() {
+        ServiceLogsInstance.logs.fetch(function() {
             btn.removeClass('disabled-by-action');
             document.body.classList.remove('is-loading');
         });
     })
+
+    $('[data-service-log-tab]').on('click', function() {
+        const tabTitle = this.dataset.serviceLogTab || 'Service Logs';
+        $('#serviceLogsCardTitle').text(tabTitle);
+    });
 });

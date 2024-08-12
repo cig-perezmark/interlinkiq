@@ -1,3 +1,21 @@
+const haData = () => ({
+    potentialHazards: "",
+    severity: 0,
+    preventiveControl: "",
+    likelihood: 0,
+    justify: "",
+    controlMeasures: "",
+    applied: "",
+});
+
+const ccpDData = () => ({
+    control: "",
+    q1: "",
+    q2: "",
+    q3: "",
+    q4: "",
+});
+
 class DiagramObject {
     constructor() {}
 
@@ -34,59 +52,23 @@ class DiagramObject {
             if (!planBuilder.processes[key]) {
                 planBuilder.processes[key] = {
                     hazardAnalysis: {
-                        B: {
-                            potentialHazards: "",
-                            rlto: null,
-                            justification: "",
-                            controlMeasures: "",
-                        },
-                        C: {
-                            potentialHazards: "",
-                            rlto: null,
-                            justification: "",
-                            controlMeasures: "",
-                        },
-                        P: {
-                            potentialHazards: "",
-                            rlto: null,
-                            justification: "",
-                            controlMeasures: "",
-                        },
+                        B: haData(),
+                        C: haData(),
+                        P: haData(),
+                        A: haData(),
+                        I: haData(),
+                        E: haData(),
                     },
                     ccpDetermination: {
                         ccpNumber: null,
-                        B: {
-                            control: "",
-                            q1: "",
-                            q2: "",
-                            q3: "",
-                            q4: "",
-                        },
-                        C: {
-                            control: "",
-                            q1: "",
-                            q2: "",
-                            q3: "",
-                            q4: "",
-                        },
-                        P: {
-                            control: "",
-                            q1: "",
-                            q2: "",
-                            q3: "",
-                            q4: "",
-                        },
+                        B: ccpDData(),
+                        C: ccpDData(),
+                        P: ccpDData(),
+                        A: ccpDData(),
+                        I: ccpDData(),
+                        E: ccpDData(),
                     },
-                    clmca: {
-                        criticalLimits: "",
-                        monitoringProcedures: {
-                            what: "",
-                            who: "",
-                            when: "",
-                            how: "",
-                        },
-                        correctiveAction: "",
-                    },
+                    processNarrative: "",
                     vrk: {
                         procedures: {
                             what: "",

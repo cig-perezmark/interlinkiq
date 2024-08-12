@@ -1,4 +1,4 @@
-let baseUrl = "haccp?api&";
+let baseUrl = "food-safety-plan?api&";
 
 function submits() {
     $("#saveHACCPForm").on("submit", function (evt) {
@@ -619,7 +619,7 @@ function fetchVersionLogs(version = null, loader = null) {
                    dropdown.append(`<option value="${v.id}" ${v.active ? 'selected' : ''}>${v.version}</option>`);
                    
                    if(v.active) {
-                       $('#versionViewPDF').attr('href', `haccp?pdf=${$('#versionViewPDF').attr('data-pdflink')}&version=${v.id}`)[v.current ? 'fadeOut' : 'fadeIn']();
+                       $('#versionViewPDF').attr('href', `food-safety-plan?pdf=${$('#versionViewPDF').attr('data-pdflink')}&version=${v.id}`)[v.current ? 'fadeOut' : 'fadeIn']();
                    }
                 });
             }

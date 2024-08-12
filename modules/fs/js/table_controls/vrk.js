@@ -1,6 +1,6 @@
-tcTable.prototype.verification_and_record_keeping = function () {
+tcTable.prototype.process_preventive_control = function () {
     const processes = DiagramObject.getCCPData();
-    const table = this.tables.verification_and_record_keeping;
+    const table = this.tables.process_preventive_control;
 
     if (!processes.length) {
         HRow.empty(table, 7);
@@ -13,9 +13,18 @@ tcTable.prototype.verification_and_record_keeping = function () {
 
         const row = new HRow(table, { "data-id": id });
         row.cell(wProcessStep(d, table), { class: "t-center" });
-        row.cell(vrk.procedures.what).on("input", (v) => (vrk.procedures.what = v));
-        row.cell(vrk.procedures.how).on("input", (v) => (vrk.procedures.how = v));
-        row.cell(vrk.procedures.when).on("input", (v) => (vrk.procedures.when = v));
+        row.cell(vrk.procedures.what).on(
+            "input",
+            (v) => (vrk.procedures.what = v)
+        );
+        row.cell(vrk.procedures.how).on(
+            "input",
+            (v) => (vrk.procedures.how = v)
+        );
+        row.cell(vrk.procedures.when).on(
+            "input",
+            (v) => (vrk.procedures.when = v)
+        );
         const whoCell = row.cell(null);
         whoCell.append("<div>Performed by:</div>");
         whoCell.on(

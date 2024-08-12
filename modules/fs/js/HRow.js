@@ -26,7 +26,11 @@ class HRow {
         return hcell;
     }
 
-    static empty(table, colsize = null, text = "No process step(s) has been added yet.") {
+    static empty(
+        table,
+        colsize = null,
+        text = "No process step(s) has been added yet."
+    ) {
         // reset tbody
         const tbody = table.querySelector("tbody");
         tbody && (tbody.innerHTML = "");
@@ -43,10 +47,16 @@ class HCell {
         const td = document.createElement("td");
 
         // assigning attributes
-        attr && Object.entries(attr).forEach(([name, value]) => td.setAttribute(name, value));
+        attr &&
+            Object.entries(attr).forEach(([name, value]) =>
+                td.setAttribute(name, value)
+            );
 
         // assigning styles
-        style && Object.entries(style).forEach(([name, value]) => (td.style[name] = value));
+        style &&
+            Object.entries(style).forEach(
+                ([name, value]) => (td.style[name] = value)
+            );
 
         // writing content
         if (content instanceof HTMLElement) {
@@ -137,20 +147,29 @@ class HCell {
             ynContainer.innerHTML = `
                 <div class="table-yn-container">
                     <label class="mt-radio mt-radio-outline ">
-                        Yes<input type="radio" value="y" name="${name}" ${arg1 == "y" ? "checked" : ""}><span></span>
-                    </label>
-                    <label class="mt-radio mt-radio-outline">
-                        No<input type="radio" value="n" name="${name}" ${arg1 == "n" ? "checked" : ""}><span></span>
-                    </label>
-                </div>`;
-            ynContainer.querySelectorAll("input[type=radio]").forEach((radio) => {
-                radio.addEventListener("change", function () {
-                    this.checked && callback && callback(this.value, this);
+                        Yes<input type="radio" value="y" name="${name}" ${
+                arg1 == "y" ? "checked" : ""
+            }><span></span>
+                            </label>
+                            <label class="mt-radio mt-radio-outline">
+                                No<input type="radio" value="n" name="${name}" ${
+                arg1 == "n" ? "checked" : ""
+            }><span></span>
+                            </label>
+                        </div>
+                `;
+            ynContainer
+                .querySelectorAll("input[type=radio]")
+                .forEach((radio) => {
+                    radio.addEventListener("change", function () {
+                        this.checked && callback && callback(this.value, this);
+                    });
                 });
-            });
 
             this.cell.appendChild(ynContainer);
-            ynContainer.querySelector("input[type=radio]:checked")?.dispatchEvent(new Event("change"));
+            ynContainer
+                .querySelector("input[type=radio]:checked")
+                ?.dispatchEvent(new Event("change"));
             return ynContainer;
         }
 

@@ -1,35 +1,83 @@
+<?php
+
+$builderTabs = [
+    [
+        'title' => 'Raw Product List',
+        'link' => 'product_information',
+        'active' => true,
+    ],
+    [
+        'title' => 'Process Flow Diagram',
+        'link' => 'process_flow_diagram'
+    ],
+    [
+        'title' => 'Process Narrative',
+        'link' => 'process_narrative'
+    ],
+    [
+        'title' => 'Hazard Analysis',
+        'link' => 'hazard_analysis_and_preventive_measures'
+    ],
+    [
+        'title' => 'CCP Determination',
+        'link' => 'ccp_determination'
+    ],
+    [
+        'title' => 'Process Preventive Controls',
+        'link' => 'process_preventive_control'
+    ],
+    [
+        'title' => 'Food Allergen Preventive Controls',
+        'link' => 'process_preventive_control'
+    ],
+    [
+        'title' => 'Sanitation Preventive Controls',
+        'link' => 'process_preventive_control'
+    ],
+    [
+        'title' => 'Supply Chain Preventive Controls',
+        'link' => 'process_preventive_control'
+    ],
+    [
+        'title' => 'Validation',
+        'link' => 'process_preventive_control'
+    ],
+];
+
+?>
+
 <style>
-.mt-timeline-2>.mt-container>.mt-item>.mt-timeline-content>.mt-content-container::before {
-    top: auto;
-    bottom: 28px;
-}
+    .mt-timeline-2>.mt-container>.mt-item>.mt-timeline-content>.mt-content-container::before {
+        top: auto;
+        bottom: 28px;
+    }
 
-.mt-timeline-2>.mt-container>.mt-item>.mt-timeline-icon {
-    bottom: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-}
+    .mt-timeline-2>.mt-container>.mt-item>.mt-timeline-icon {
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+    }
 
-.mt-timeline-2>.mt-container>.mt-item {
-    position: relative;
-    padding-bottom: 0;
-    padding-top: 60px;
-}
+    .mt-timeline-2>.mt-container>.mt-item {
+        position: relative;
+        padding-bottom: 0;
+        padding-top: 60px;
+    }
 
-body,
-html {
-    scroll-behavior: smooth;
-}
+    body,
+    html {
+        scroll-behavior: smooth;
+    }
 </style>
 
 <div style="padding: .5rem 1.5rem; margin-bottom: 20px; display:flex; justify-content:space-between;" class="bg-default">
     <h4><strong>**BASIC INFORMATION</strong></h4>
-    <?php if(isset($haccpResource)): ?>
-    <h5>
-        <strong>STATUS:<i><?= $haccpResource['status'] ?></i></strong>
-    </h5>
+    <?php if (isset($haccpResource)) : ?>
+        <h5>
+            <strong>STATUS:<i><?= $haccpResource['status'] ?></i></strong>
+        </h5>
     <?php endif; ?>
 </div>
 <section class="row margin-bottom-20">
@@ -37,16 +85,20 @@ html {
         <label for="haccp-builder-documentCode">Select Facility</label>
         <select class="form-control" name="facility" <?= count($facilities) == 1 ? 'disabled' : '' ?> onchange="updBuilderData(this, 'facility')">
             <option value="" disabled>--Select--</option>
-            <?php 
-                foreach($facilities as $f) {
-                    echo '<option value="'. $f['facility_id'] .'">'. $f['facility_category'] .'</option>';
-                }
+            <?php
+            foreach ($facilities as $f) {
+                echo '<option value="' . $f['facility_id'] . '">' . $f['facility_category'] . '</option>';
+            }
             ?>
         </select>
     </div>
     <div class="form-group col-md-9">
-        <label for="haccp-builder-description">HACCP Description/Title </label>
-        <textarea id="haccp-builder-description" rows="3" class="form-control" data-inputkey="description" placeholder="Add description..."><?= $resource('description') ?></textarea>
+        <label for="haccp-builder-description">Food Safety Plan Title </label>
+        <textarea id="haccp-builder-description" rows="3" class="form-control" data-inputkey="description" placeholder="Add title..."><?= $resource('description') ?></textarea>
+    </div>
+    <div class="form-group col-md-9">
+        <label for="haccp-builder-description">Scope </label>
+        <textarea id="haccp-builder-description" rows="3" class="form-control" data-inputkey="scope" placeholder="Enter scope of the Food Safety Plan..."><?= $resource('scope') ?></textarea>
     </div>
     <div class="col-md-12"></div>
     <div class="form-group col-md-3">
@@ -57,12 +109,12 @@ html {
         <label for="haccp-builder-issueDate">Issue Date </label>
         <input type="date" id="haccp-builder-issueDate" class="form-control" data-inputkey="issue_date" value="<?= $resource('issue_date') ?>">
     </div>
-    <?php if(!isset($haccpResource)): ?>
-    <div class="col-md-12">
-        <div style="display: flex; justify-content: start;">
-            <button type="button" id="haccpBuilderSaveBtn" class="btn btn-danger" onclick="saveNewHaccp(this)" disabled> Save as draft </button>
+    <?php if (!isset($haccpResource)) : ?>
+        <div class="col-md-12">
+            <div style="display: flex; justify-content: start;">
+                <button type="button" id="haccpBuilderSaveBtn" class="btn btn-danger" onclick="saveNewHaccp(this)" disabled> Save as draft </button>
+            </div>
         </div>
-    </div>
     <?php endif; ?>
 </section>
 <div style="padding: .5rem 1.5rem; margin-bottom: 20px; margin-top: 50px;" class="bg-default">
@@ -95,34 +147,44 @@ html {
                 <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-                <li><a href="#process_flow_diagram" data-toggle="tab"> Process Flow Diagram </a></li>
-                <li><a href="#hazard_analysis_and_preventive_measures" data-toggle="tab"> Hazard Analysis </a></li>
-                <li><a href="#ccp_determination" data-toggle="tab"> CCP Determination </a></li>
-                <li><a href="#clm_and_ca" data-toggle="tab"> Critical Limits, Monitoring, and Corrective Actions </a></li>
-                <li><a href="#verification_and_record_keeping" data-toggle="tab"> Verification and Record Keeping</a></li>
-                <li><a href="#master_sheet" data-toggle="tab"> HACCP Master Sheet </a></li>
-                <?php if(isset($haccpResource)): ?>
-                <li><a href="#process_monitoring_forms" data-toggle="tab"> Process Monitoring Forms </a></li>
-                <li><a href="#haccptasks" data-toggle="tab"> Tasks <span class="badge badge-danger" data-tasksbadge="0">0</span> </a></li>
-                <li><a href="#history" data-toggle="tab"> History </a></li>
-                <?php endif;?>
+                <?php foreach ($builderTabs as $index => $tab) : ?>
+                    <?php if ($index == 0) continue; ?>
+                    <li>
+                        <a href="#<?= $tab['link'] ?>" data-toggle="tab"><?= $tab['title'] ?></a>
+                    </li>
+                <?php endforeach; ?>
+                <?php if (isset($haccpResource)) : ?>
+                    <li>
+                        <a href="#process_monitoring_forms" data-toggle="tab"> Process Monitoring Forms </a>
+                    </li>
+                    <li>
+                        <a href="#haccptasks" data-toggle="tab"> Tasks <span class="badge badge-danger" data-tasksbadge="0">0</span> </a>
+                    </li>
+                    <li>
+                        <a href="#history" data-toggle="tab"> History </a>
+                    </li>
+                <?php endif; ?>
             </ul>
         </li>
-        <li class="active"><a href="#product_information" data-toggle="tab"> Product Description </a></li>
-        <li class="hbtabwide"><a href="#process_flow_diagram" data-toggle="tab"> Process Flow Diagram </a></li>
-        <li class="hbtabwide"><a href="#hazard_analysis_and_preventive_measures" data-toggle="tab"> Hazard Analysis </a></li>
-        <li class="hbtabwide"><a href="#ccp_determination" data-toggle="tab"> CCP Determination </a></li>
-        <li class="hbtabwide"><a href="#clm_and_ca" data-toggle="tab"> Critical Limits, Monitoring, and Corrective Actions </a></li>
-        <li class="hbtabwide"><a href="#verification_and_record_keeping" data-toggle="tab"> Verification and Record Keeping</a></li>
-        <li class="hbtabwide"><a href="#master_sheet" data-toggle="tab"> HACCP Master Sheet </a></li>
-        <?php if(isset($haccpResource)): ?>
-        <li class="hbtabwide"><a href="#process_monitoring_forms" data-toggle="tab"> Process Monitoring Forms </a></li>
-        <li class="hbtabwide"><a href="#haccptasks" data-toggle="tab"> Tasks <span class="badge badge-danger" data-tasksbadge="0">0</span> </a></li>
-        <li class="hbtabwide"><a href="#history" data-toggle="tab"> History </a></li>
-        <?php endif;?>
+        <?php foreach ($builderTabs as $index => $tab) : ?>
+            <li class="<?= (isset($tab['active']) && $tab['active'] ? 'active' : '') . ($index >= 1 ? ' hbtabwide' : '') ?>">
+                <a href="#<?= $tab['link'] ?>" data-toggle="tab"><?= $tab['title'] ?></a>
+            </li>
+        <?php endforeach; ?>
+        <?php if (isset($haccpResource)) : ?>
+            <li class="hbtabwide">
+                <a href="#process_monitoring_forms" data-toggle="tab"> Process Monitoring Forms </a>
+            </li>
+            <li class="hbtabwide">
+                <a href="#haccptasks" data-toggle="tab"> Tasks <span class="badge badge-danger" data-tasksbadge="0">0</span> </a>
+            </li>
+            <li class="hbtabwide">
+                <a href="#history" data-toggle="tab"> History </a>
+            </li>
+        <?php endif; ?>
     </ul>
 </div>
-<h4 class="bold" id="builder-title">Product Description </h4>
+<h4 class="bold" id="builder-title">Raw Product List </h4>
 <div class="tab-content">
     <div class="tab-pane active" id="product_information">
         <div class="row">
@@ -147,34 +209,38 @@ html {
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <tbody id="addedProductsList">
-                            <?php 
-                                if(isset($haccpResource) && count($haccpResource['products'])) { 
-                                    $haccpProducts = '('.implode(',', $haccpResource['products']).')'; 
-                                    $products = $conn->query("SELECT p.ID as id,p.image,p.description,p.name,c.name as category FROM tbl_products p LEFT JOIN tbl_products_category c ON p.category = c.ID  WHERE p.ID in $haccpProducts"); 
-                                    if($products->num_rows) { 
-                                        while($row = $products->fetch_assoc()) { $img = explode(',',$row['image'])[0]; $img = empty($img) ? null : '//interlinkiq.com/uploads/products/' . $img; $img = !empty($img) ? $img : "https://via.placeholder.com/120x90/EFEFEF/AAAAAA.png?text=No+Image"; echo '<tr>
+                            <?php
+                            if (isset($haccpResource) && count($haccpResource['products'])) {
+                                $haccpProducts = '(' . implode(',', $haccpResource['products']) . ')';
+                                $products = $conn->query("SELECT p.ID as id,p.image,p.description,p.name,c.name as category FROM tbl_products p LEFT JOIN tbl_products_category c ON p.category = c.ID  WHERE p.ID in $haccpProducts");
+                                if ($products->num_rows) {
+                                    while ($row = $products->fetch_assoc()) {
+                                        $img = explode(',', $row['image'])[0];
+                                        $img = empty($img) ? null : '//interlinkiq.com/uploads/products/' . $img;
+                                        $img = !empty($img) ? $img : "https://via.placeholder.com/120x90/EFEFEF/AAAAAA.png?text=No+Image";
+                                        echo '<tr>
                                                 <td style="width: 88%">
-                                                <div class="d-flex-center">
-                                                    <img src="'.$img.'" alt="Product Image" style="width: 8rem; margin-right: 1rem">
-                                                    <div>
-                                                    <span class="bold">'.$row['name'].'</span> <br>
-                                                    <span class="text-muted">Category: '.$row['category'].'</span>
+                                                    <div class="d-flex-center">
+                                                        <img src="' . $img . '" alt="Product Image" style="width: 8rem; margin-right: 1rem">
+                                                        <div>
+                                                            <span class="bold">' . $row['name'] . '</span> <br>
+                                                            <span class="text-muted">Category: ' . $row['category'] . '</span>
+                                                        </div>
                                                     </div>
-                                                </div>
                                                 </td>
                                                 <td style="width: 12%">
                                                     <div class="d-flex-center">
-                                                        <a href="javascript:void(0)" class="btn btn-outlinex btn-circle red btn-sm" onclick="removeProductBtnClick(event, '.$row['id'].')">Remove</a>
+                                                        <a href="javascript:void(0)" class="btn btn-outlinex btn-circle red btn-sm" onclick="removeProductBtnClick(event, ' . $row['id'] . ')">Remove</a>
                                                     </div>
                                                 </td>
-                                            </tr>'; 
-                                        } 
-                                    } 
-                                } 
-                                
-                                if(isset($haccpResource) && count($haccpResource['products']) == 0) { 
-                                    echo '<tr class="no-products"><td>No product(s) added.</td></tr>'; 
-                                } 
+                                            </tr>';
+                                    }
+                                }
+                            }
+
+                            if (isset($haccpResource) && count($haccpResource['products']) == 0) {
+                                echo '<tr class="no-products"><td>No product(s) added.</td></tr>';
+                            }
                             ?>
                         </tbody>
                     </table>
@@ -336,15 +402,15 @@ html {
                                 </tr>
                             </thead>
                             <tbody id="verificationFDTable">
-                                <?php foreach($teamSigns as $e) { ?>
-                                <tr>
-                                    <td style="vertical-align:middle; text-align:center; font-weight:bold;"><?= $e['name'] ?></td>
-                                    <td style="vertical-align:middle; text-align:center; font-weight:bold;"><?= $e['position'] ?></td>
-                                    <td data-vfd-id="<?= $e['id'] ?? '' ?>" data-account-id="<?= $e['signee_id'] ?>">
-                                        <div class="vfd-esign" <?= $e['sign'] ? 'data-value="'.$e['sign'].'"' : '' ?>></div>
-                                        <input type="date" class="form-control" onchange="vfdDateChange(this)" <?= $e['date'] ? 'value="'.$e['date'].'"' : '' ?> />
-                                    </td>
-                                </tr>
+                                <?php foreach ($teamSigns as $e) { ?>
+                                    <tr>
+                                        <td style="vertical-align:middle; text-align:center; font-weight:bold;"><?= $e['name'] ?></td>
+                                        <td style="vertical-align:middle; text-align:center; font-weight:bold;"><?= $e['position'] ?></td>
+                                        <td data-vfd-id="<?= $e['id'] ?? '' ?>" data-account-id="<?= $e['signee_id'] ?>">
+                                            <div class="vfd-esign" <?= $e['sign'] ? 'data-value="' . $e['sign'] . '"' : '' ?>></div>
+                                            <input type="date" class="form-control" onchange="vfdDateChange(this)" <?= $e['date'] ? 'value="' . $e['date'] . '"' : '' ?> />
+                                        </td>
+                                    </tr>
                                 <?php } ?>
                             </tbody>
                         </table>
@@ -369,22 +435,30 @@ html {
         </div>
         <div class="row" style="margin-bottom: 2rem;">
             <div class="col-md-12">
-                <h5 class="bold">Hazard Assessment</h5>
+                <p class="">
+                    Hazard identification (column 2) considers known or reasonably foreseeable hazards (i.e., potential hazards) that may be present in the food because the hazard occurs naturally, the hazard may be unintentionally introduced, or the hazard may be intentionally introduced for economic gain.
+                </p>
             </div>
             <div class="col-md-6">
-                <h5 class="bold">Likelihood occurrence:</h5>
-                <ul>
-                    <li>Rarely&mdash;only one or two occurrences known historically, or has never happened </li>
-                    <li>Occassionally&mdash;known to occur, but less than once or twice a year</li>
-                    <li>Sometimes&mdash;known to occur, more frequently than a couple of times a year</li>
-                    <li>Frequently&mdash;known to occur on regular basis</li>
-                </ul>
-                <h5 class="bold">Severity of occurrence:</h5>
-                <ul>
-                    <li>Inconsequential&mdash;little to known risk to customer health or safety&mdash;nuisance or annoyance </li>
-                    <li>Limited&mdash;can cause some harm to a customer, but will not lead to a hospitalization clinic visit, even in a vulnerable population</li>
-                    <li>Moderate&mdash;will cause illness or injury to a customer, potentially leading to a hospital or clinic visit and hospitalization in a vulnerable population</li>
-                    <li>Catastrophic&mdash;will cause sever illness or injury with a significant chance of disability or death in all populations</li>
+                <ul style="list-style-type: none; font-weight: 600; display:grid; gap:.5rem">
+                    <li>
+                        B = Biological hazards including bacteria, viruses, parasites, and environmental pathogens
+                    </li>
+                    <li>
+                        C = Chemical hazards, including radiological hazards, food allergens, substances such as pesticides and drug residues, natural toxins, decomposition, and unapproved food or color additives
+                    </li>
+                    <li>
+                        P = Physical hazards include potentially harmful extraneous matter that may cause choking, injury, or other adverse health effects
+                    </li>
+                    <li>
+                        A = Allergen Hazards
+                    </li>
+                    <li>
+                        I = Intentional Contamination
+                    </li>
+                    <li>
+                        E = Economic Fraud
+                    </li>
                 </ul>
             </div>
             <div class="col-md-6">
@@ -392,64 +466,81 @@ html {
                     <table class="table hazardAssessmentTable">
                         <tbody>
                             <tr>
-                                <td colspan="2"></td>
-                                <td colspan="4" justlabel class="bold" style="text-align:center;">Likelihood</td>
+                                <td colspan="3">Risk Assessment Control Measure</td>
+                                <td colspan="5" class="bold" style="text-align:center;">Severity</td>
                             </tr>
                             <tr>
-                                <td colspan="2"></td>
-                                <td style="width: 16%;" class="ll">Rarely<br>(1)</td>
-                                <td style="width: 16%;" class="ll">Occassionally<br>(2)</td>
-                                <td style="width: 16%;" class="ll">Sometimes<br>(3)</td>
-                                <td style="width: 16%;" class="ll">Frequently<br>(4)</td>
+                                <td colspan="3" data-risk="low">1 &mdash; 4 = Low Risk</td>
+                                <td rowspan="2" style="width: 14%;" class="ll">Negligible</td>
+                                <td rowspan="2" style="width: 14%;" class="ll">Minor</td>
+                                <td rowspan="2" style="width: 14%;" class="ll">Moderate</td>
+                                <td rowspan="2" style="width: 14%;" class="ll">Major</td>
+                                <td rowspan="2" style="width: 14%;" class="ll">Extreme</td>
                             </tr>
                             <tr>
-                                <td rowspan="4" justlabel class="bold" style="text-orientation: mixed;writing-mode: vertical-lr;transform: rotate(180deg); text-align:center;">
-                                    Severity </td>
-                                <td class="ll">Inconsequential<br>(1)</td>
-                                <td data-risk="low">I&mdash;R<br>(1)</td>
-                                <td data-risk="low">I&mdash;O<br>(2)</td>
-                                <td data-risk="low">I&mdash;S<br>(3)</td>
-                                <td data-risk="low">I&mdash;F<br>(4)</td>
+                                <td colspan="3" data-risk="medium">5 &mdash; 10 = Medium Risk</td>
                             </tr>
                             <tr>
-                                <td class="ll">Limited<br>(3)</td>
-                                <td data-risk="low">L&mdash;R<br>(3)</td>
-                                <td data-risk="acceptable">L&mdash;O<br>(6)</td>
-                                <td data-risk="acceptable">L&mdash;S<br>(9)</td>
-                                <td data-risk="significant">L&mdash;F<br>(12)</td>
+                                <td colspan="3" data-risk="high">12 &mdash; 25 = High Risk</td>
+                                <td>1</td>
+                                <td>2</td>
+                                <td>3</td>
+                                <td>4</td>
+                                <td>5</td>
                             </tr>
                             <tr>
-                                <td class="ll">Moderate<br>(5)</td>
-                                <td data-risk="acceptable">M&mdash;R<br>(5)</td>
-                                <td data-risk="significant">M&mdash;O<br>(10)</td>
-                                <td data-risk="significant">M&mdash;S<br>(15)</td>
-                                <td data-risk="high">M&mdash;F<br>(20)</td>
+                                <td rowspan="5" class="bold" style="text-orientation: mixed;writing-mode: vertical-lr;transform: rotate(180deg); text-align:center;">
+                                    (Probability) <br> Likelihood
+                                </td>
+                                <td>Very Unlikely</td>
+                                <td>1</td>
+                                <td data-risk="low">1</td>
+                                <td data-risk="low">2</td>
+                                <td data-risk="low">3</td>
+                                <td data-risk="low">4</td>
+                                <td data-risk="medium">5</td>
                             </tr>
                             <tr>
-                                <td class="ll">Catastrophic<br>(10)</td>
-                                <td data-risk="significant">C&mdash;R<br>(10)</td>
-                                <td data-risk="high">C&mdash;O<br>(20)</td>
-                                <td data-risk="high">C&mdash;S<br>(30)</td>
-                                <td data-risk="high">C&mdash;F<br>(40)</td>
+                                <td>Rarely Occur</td>
+                                <td>2</td>
+                                <td data-risk="low">2</td>
+                                <td data-risk="low">4</td>
+                                <td data-risk="medium">6</td>
+                                <td data-risk="medium">8</td>
+                                <td data-risk="medium">10</td>
                             </tr>
                             <tr>
-                                <td colspan="6"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <table class="table hazardAssessmentLegend">
-                        <tbody>
-                            <tr>
-                                <td data-risk="low" style="width: 10%;"></td>
-                                <td style="width: 40%;">Low Risk</td>
-                                <td data-risk="significant" style="width: 10%;"></td>
-                                <td style="width: 40%;">Significant Risk (Preventive Control)</td>
+                                <td>Possible</td>
+                                <td>3</td>
+                                <td data-risk="low">3</td>
+                                <td data-risk="medium">6</td>
+                                <td data-risk="medium">9</td>
+                                <td data-risk="high">12</td>
+                                <td data-risk="high">15</td>
                             </tr>
                             <tr>
-                                <td data-risk="acceptable"></td>
-                                <td>Acceptable Risk</td>
-                                <td data-risk="high"></td>
-                                <td>High Risk (CCP)</td>
+                                <td>Likely Occur</td>
+                                <td>4</td>
+                                <td data-risk="low">4</td>
+                                <td data-risk="medium">8</td>
+                                <td data-risk="high">12</td>
+                                <td data-risk="high">16</td>
+                                <td data-risk="high">20</td>
+                            </tr>
+                            <tr>
+                                <td>Occurs Frequently</td>
+                                <td>5</td>
+                                <td data-risk="medium">5</td>
+                                <td data-risk="medium">10</td>
+                                <td data-risk="high">15</td>
+                                <td data-risk="high">20</td>
+                                <td data-risk="high">25</td>
+                            </tr>
+                            <tr>
+                                <td colspan="8"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="8">Risk = Severity x Likelihood (Probability)</td>
                             </tr>
                         </tbody>
                     </table>
@@ -460,7 +551,7 @@ html {
             <table id="hbHazardAnalysis">
                 <thead>
                     <tr>
-                        <th style="width: 13%;">
+                        <th style="width: 13%;" rowspan="2">
                             <div style="display:flex; align-items:center;flex-direction:column; justify-content:space-between;gap:3rem;">
                                 <span>Process Step </span>
                                 <label class="stepSelector">
@@ -471,58 +562,42 @@ html {
                                 </label>
                             </div>
                         </th>
-                        <th colspan="2" style="width: 26%;">
+                        <th colspan="2" style="width: 26%;" rowspan="2">
                             Identify potential hazards introduced, controlled, or enhanced at this step <br>
                             <small class="text-muted font-normal">
-                                B = biological, C = chemical, P = physical </small>
+                                Severity Level (S): <br>
+                                <ul style="list-style-type:none; margin:0;padding:0;">
+                                    <li>1 = Negligible</li>
+                                    <li>2 = Minor</li>
+                                    <li>3 = Moderate</li>
+                                    <li>4 = Major</li>
+                                    <li>5 = Extreme</li>
+                                </ul>
+                            </small>
                         </th>
-                        <th style="width: 5%;" class="tooltips" data-container="body" data-placement="bottom" data-html="true" data-original-title="Severity&mdash;Likelihood rating">S&mdash;L</th>
-                        <th style="width: 10%;">
-                            Is the Potential Food Safety Hazard Reasonably Likely to Occur (RLTO)? <br>
-                            <small class="text-muted font-normal"> (Yes or No) </small>
+                        <th style="width: 11%;" colspan="2">
+                            Do any potential food safety hazards require preventive control?
                         </th>
-                        <th style="width: 20%;"> Justification/Basis for Decision</th>
-                        <th style="width: 18%;">
-                            What measure(s) can be applied to prevent or eliminate the hazard or reduce it to an acceptable level? </th>
-                        <th style="width: 8%;">PC/CCP?</th>
+                        <th style="width: 10%;" rowspan="2">
+                            Justify your decision
+                        </th>
+                        <th style="width: 20%;" rowspan="2">
+                            What preventive control measure(s) can be applied to significantly minimize or prevent the food safety hazard?<br>
+                            Process including CCPs, Allergen, Sanitation, Supply-chain, other preventive control
+                        </th>
+                        <th style="width: 10%;" colspan="2">
+                            Is the preventive control applied at this step?
+                        </th>
+                    </tr>
+                    <tr style="text-align: center;">
+                        <td class="noborder">Yes/No</td>
+                        <td>Likelihood (L)</td>
+                        <td>Yes/No</td>
+                        <td>Risk</td>
                     </tr>
                 </thead>
                 <tbody class="haccp-builder-table-body"></tbody>
             </table>
-        </div>
-        <div class="hide" id="s-l-rating-selection-container">
-            <ul id="s-l-rating-selection" class="dropdown-menu">
-                <li style="padding: 1rem; width: 32rem;" class="bg-grey-cararra">
-                    <table class="table hazardAssessmentTable slratingtable" style="background-color: transparent;">
-                        <tbody>
-                            <tr>
-                                <td style="width: 25%" data-risk="low">I&mdash;R<br>(1)<span></span></td>
-                                <td style="width: 25%" data-risk="low">I&mdash;O<br>(2)<span></span></td>
-                                <td style="width: 25%" data-risk="low">I&mdash;S<br>(3)<span></span></td>
-                                <td style="width: 25%" data-risk="low">I&mdash;F<br>(4)<span></span></td>
-                            </tr>
-                            <tr>
-                                <td data-risk="low">L&mdash;R<br>(3)<span></span></td>
-                                <td data-risk="acceptable">L&mdash;O<br>(6)<span></span></td>
-                                <td data-risk="acceptable">L&mdash;S<br>(9)<span></span></td>
-                                <td data-risk="significant">L&mdash;F<br>(12)<span></span></td>
-                            </tr>
-                            <tr>
-                                <td data-risk="acceptable">M&mdash;R<br>(5)<span></span></td>
-                                <td data-risk="significant">M&mdash;O<br>(10)<span></span></td>
-                                <td data-risk="significant">M&mdash;S<br>(15)<span></span></td>
-                                <td data-risk="high">M&mdash;F<br>(20)<span></span></td>
-                            </tr>
-                            <tr>
-                                <td data-risk="significant">C&mdash;R<br>(10)<span></span></td>
-                                <td data-risk="high">C&mdash;O<br>(20)<span></span></td>
-                                <td data-risk="high">C&mdash;S<br>(30)<span></span></td>
-                                <td data-risk="high">C&mdash;F<br>(40)<span></span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </li>
-            </ul>
         </div>
     </div>
     <div data-section="ccpDetermination" class="tab-pane" id="ccp_determination">
@@ -581,12 +656,12 @@ html {
             </table>
         </div>
     </div>
-    <div data-section="clmca" class="tab-pane" id="clm_and_ca">
+    <div data-section="processNarrative" class="tab-pane" id="process_narrative">
         <div class="haccpTableContainer">
-            <table id="hbCLMCA">
+            <table id="hbProcessNarrative">
                 <thead>
                     <tr>
-                        <th rowspan="2" style="width: 10%;">
+                        <th style="width: 20%;">
                             <div style="display:flex; align-items:center;flex-direction:column; justify-content:space-between;gap:3rem;">
                                 <span>Process Step / CCP </span>
                                 <label class="stepSelector">
@@ -597,188 +672,132 @@ html {
                                 </label>
                             </div>
                         </th>
-                        <th rowspan="2" style="width: 15%;">Critical Limits</th>
-                        <th colspan="4" style="width: 60%;">Monitoring Procedures</th>
-                        <th rowspan="2" style="width: 15%;">Corrective Actions</th>
-                    </tr>
-                    <tr>
-                        <th style="width: 15%;">What</th>
-                        <th style="width: 15%;">How</th>
-                        <th style="width: 15%;">Frequency</th>
-                        <th style="width: 15%;">Who</th>
+                        <th>Process Narrative</th>
                     </tr>
                 </thead>
                 <tbody class="haccp-builder-table-body"></tbody>
             </table>
         </div>
     </div>
-    <div data-section="vrk" class="tab-pane" id="verification_and_record_keeping">
+    <div data-section="ppc" class="tab-pane" id="process_preventive_control">
         <div class="haccpTableContainer">
-            <table id="hbVRK">
-                <thead>
-                    <tr>
-                        <th style="width: 10%;" rowspan="2">
-                            <div style="display:flex; align-items:center;flex-direction:column; justify-content:space-between;gap:3rem;">
-                                <span>Process Step / CCP </span>
-                                <label class="stepSelector">
-                                    Find:
-                                    <select class="">
-                                        <option selected disabled>None</option>
-                                    </select>
-                                </label>
-                            </div>
-                        </th>
-                        <th style="width: 64%;" colspan="4">
-                            Verification Procedures <br>
-                            <small class="text-muted font-normal">
-                                (What, How, Frequency, Who) </small>
-                        </th>
-                        <th style="width: 26%;" rowspan="2">Records</th>
-                    </tr>
-                    <tr>
-                        <th style="width: 16%;">What</th>
-                        <th style="width: 16%;">How</th>
-                        <th style="width: 16%;">Frequency</th>
-                        <th style="width: 16%;">Who</th>
-                    </tr>
-                </thead>
-                <tbody class="haccp-builder-table-body"></tbody>
-            </table>
-        </div>
-    </div>
-    <div class="tab-pane" id="master_sheet">
-        <div class="haccpTableContainer">
-            <table id="hbMasterSheet">
-                <thead>
-                    <tr>
-                        <th rowspan="2" style="width: 10%;"> Critical Control Point</th>
-                        <th rowspan="2" style="width: 10%;"> Significant Hazards</th>
-                        <th rowspan="2" style="width: 10%;"> Critical Limits for Each Control Measure</th>
-                        <th colspan="4">Monitoring Procedures</th>
-                        <th rowspan="2" style="width: 10%;">Corrective Action</th>
-                        <th rowspan="2" style="width: 10%;"> Verification Procedure <small class="text-muted font-normal">
-                                (What, How, Frequency, Who) </small>
-                        </th>
-                        <th rowspan="2" style="width: 10%;"> Records</th>
-                    </tr>
-                    <tr>
-                        <th style="width: 10%;">What</th>
-                        <th style="width: 10%;">How</th>
-                        <th style="width: 10%;">Frequency</th>
-                        <th style="width: 10%;">Who</th>
-                    </tr>
-                </thead>
+            <table id="hbPPC">
+                <thead></thead>
                 <tbody class="haccp-builder-table-body"></tbody>
             </table>
         </div>
     </div>
 
-    <?php if(isset($haccpResource)): ?>
-    <div class="tab-pane" id="process_monitoring_forms">
-        e-forms
-    </div>
-    <div class="tab-pane" id="haccptasks">
-        <div class="row">
-            <div class="col-md-6">
-                <h5 style="font-weight: bold; margin:0 0 .75rem 0; display:flex; align-items:center; justify-content:start; gap: 1.2rem">
-                    <span>Pending </span>
-                    <span class="text-muted" style="font-weight:normal;"><span data-pendingtask-count>0</span> item(s)</span>
-                </h5>
-                <div class="todo-tasklist" id="pendingTaskContainer" style="overflow:auto; max-height: 90vh;">
-                    <p class="text-muted empty-list">There are no pending task(s) yet.</p>
+    <?php if (isset($haccpResource)) : ?>
+        <div class="tab-pane" id="process_monitoring_forms">
+            e-forms
+        </div>
+        <div class="tab-pane" id="haccptasks">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 style="font-weight: bold; margin:0 0 .75rem 0; display:flex; align-items:center; justify-content:start; gap: 1.2rem">
+                        <span>Pending </span>
+                        <span class="text-muted" style="font-weight:normal;"><span data-pendingtask-count>0</span> item(s)</span>
+                    </h5>
+                    <div class="todo-tasklist" id="pendingTaskContainer" style="overflow:auto; max-height: 90vh;">
+                        <p class="text-muted empty-list">There are no pending task(s) yet.</p>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <h5 style="font-weight: bold; margin:0 0 .75rem 0;">Add new task</h5>
-                <form class="row" style="margin-bottom: 2rem;" id="taskForm">
-                    <div class="form-group col-md-12">
-                        <label for="taskTtabTitle">Task title <span class="required">*</span></label>
-                        <input type="text" id="taskTtabTitle" class="form-control" placeholder="Enter task title" name="task_title" required>
-                    </div>
-                    <div class="form-group col-md-12">
-                        <label for="tasktabDescription">Description</label>
-                        <textarea class="form-control" name="task_description" rows="5" id="tasktabDescription" placeholder="Describe the task..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-md-12 control-label">Assign to</label>
-                        <div class="col-md-12">
-                            <div class="select-container">
-                                <select name="assigned_to" class="form-control mt-multiselect btn btn-default" data-internal>
-                                    <option value="" selected disabled>--Select--</option>
-                                    <?php foreach($cigEmployees as $e) { echo "<option value='{$e['ID']}'>{$e['name']}</option>"; } ?>
-                                </select>
-                            </div>
-                            <div class="hide select-container">
-                                <select class="form-control mt-multiselect btn btn-default" data-haccp>
-                                    <option value="" selected disabled>--Select--</option>
-                                    <?php foreach($employees as $e) { echo "<option value='{$e['ID']}'>{$e['name']}</option>"; } ?>
-                                </select>
-                            </div>
-                            <div class="mt-radio-inline">
-                                <label class="mt-radio mt-radio-outline">
-                                    <input type="radio" name="assignee_pool" value="internal" checked onchange="selectAssignee(this)"> Internal <span></span>
-                                </label>
-                                <label class="mt-radio mt-radio-outline">
-                                    <input type="radio" name="assignee_pool" value="haccp" onchange="selectAssignee(this)"> HACCP Team <span></span>
-                                </label>
+                <div class="col-md-6">
+                    <h5 style="font-weight: bold; margin:0 0 .75rem 0;">Add new task</h5>
+                    <form class="row" style="margin-bottom: 2rem;" id="taskForm">
+                        <div class="form-group col-md-12">
+                            <label for="taskTtabTitle">Task title <span class="required">*</span></label>
+                            <input type="text" id="taskTtabTitle" class="form-control" placeholder="Enter task title" name="task_title" required>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label for="tasktabDescription">Description</label>
+                            <textarea class="form-control" name="task_description" rows="5" id="tasktabDescription" placeholder="Describe the task..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-12 control-label">Assign to</label>
+                            <div class="col-md-12">
+                                <div class="select-container">
+                                    <select name="assigned_to" class="form-control mt-multiselect btn btn-default" data-internal>
+                                        <option value="" selected disabled>--Select--</option>
+                                        <?php foreach ($cigEmployees as $e) {
+                                            echo "<option value='{$e['ID']}'>{$e['name']}</option>";
+                                        } ?>
+                                    </select>
+                                </div>
+                                <div class="hide select-container">
+                                    <select class="form-control mt-multiselect btn btn-default" data-haccp>
+                                        <option value="" selected disabled>--Select--</option>
+                                        <?php foreach ($employees as $e) {
+                                            echo "<option value='{$e['ID']}'>{$e['name']}</option>";
+                                        } ?>
+                                    </select>
+                                </div>
+                                <div class="mt-radio-inline">
+                                    <label class="mt-radio mt-radio-outline">
+                                        <input type="radio" name="assignee_pool" value="internal" checked onchange="selectAssignee(this)"> Internal <span></span>
+                                    </label>
+                                    <label class="mt-radio mt-radio-outline">
+                                        <input type="radio" name="assignee_pool" value="haccp" onchange="selectAssignee(this)"> HACCP Team <span></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
+                        <div class="form-group col-md-12">
+                            <label for="taskTtabDueDate">Desired due date</label>
+                            <input type="date" id="taskTtabDueDate" name="task_due" class="form-control">
+                        </div>
+                        <div class="form-group col-md-12">
+                            <button type="submit" class="btn btn green">Submit</button>
+                        </div>
+                    </form>
+                    <h5 style="font-weight: bold; margin:0 0 .75rem 0; display:flex; align-items:center; justify-content:start; gap: 1.2rem">
+                        <span>Completed tasks </span>
+                        <span class="text-muted" style="font-weight:normal;"><span data-completedtask-count>0</span> item(s)</span>
+                    </h5>
+                    <div class="todo-tasklist" id="completedTaskContainer" style="overflow:auto; max-height: 40vh;">
+                        <p class="text-muted empty-list">No task has been completed yet.</p>
                     </div>
-                    <div class="form-group col-md-12">
-                        <label for="taskTtabDueDate">Desired due date</label>
-                        <input type="date" id="taskTtabDueDate" name="task_due" class="form-control">
-                    </div>
-                    <div class="form-group col-md-12">
-                        <button type="submit" class="btn btn green">Submit</button>
-                    </div>
-                </form>
-                <h5 style="font-weight: bold; margin:0 0 .75rem 0; display:flex; align-items:center; justify-content:start; gap: 1.2rem">
-                    <span>Completed tasks </span>
-                    <span class="text-muted" style="font-weight:normal;"><span data-completedtask-count>0</span> item(s)</span>
-                </h5>
-                <div class="todo-tasklist" id="completedTaskContainer" style="overflow:auto; max-height: 40vh;">
-                    <p class="text-muted empty-list">No task has been completed yet.</p>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="tab-pane" id="history">
-        <div class="note note-info hide">
-            <h4 class="block">Note</h4>
-            <p>Changes were traced from every tab/section (Product Description, Process Flow Diagram, Hazard Analysis, and etc.) except for the Overview section above. Every update from the overview fields will affect the whole document and not by history/version.</p>
-        </div>
-        <div id="myHistoryLogs">
-            <div style="display: flex; align-items:center; justify-content:space-between; margin-bottom:2rem;">
-                <div class="">
-                    <select id="versionsDropdown" class="form-control" onchange="changeVersionEvt(this)"></select>
-                </div>
-                <a href="#" id="versionViewPDF" data-pdflink="<?= hash('md5', $haccpResource['id']) ?>" class="btn btn-sm blue" style="display:none;" target="_blank">
-                    <i class="fa fa-file-pdf-o" style="margin-right: .75rem;"></i>
-                    View PDF
-                </a>
+        <div class="tab-pane" id="history">
+            <div class="note note-info hide">
+                <h4 class="block">Note</h4>
+                <p>Changes were traced from every tab/section (Product Description, Process Flow Diagram, Hazard Analysis, and etc.) except for the Overview section above. Every update from the overview fields will affect the whole document and not by history/version.</p>
             </div>
-            <div style="max-height:100vh; overflow-y: auto;">
-                <div class="mt-element-list">
-                    <div class="mt-list-container list-news ext-1">
-                        <ul style="border-top: 1px solid #e7ecf1;" id="historyLogsList">
-                            <li class="mt-list-item hide">
-                                <div class="list-item-content" style="padding-left: 0; font-weight:600;">
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec elementum gravida mauris, a tincidunt dolor porttitor eu.
-                                </div>
-                                <div class="list-datetime uppercasex small text-muted" style="padding-left: 0;margin-top:1rem;">
-                                    John Doe updated 3 weeks ago
-                                </div>
-                            </li>
-                        </ul>
+            <div id="myHistoryLogs">
+                <div style="display: flex; align-items:center; justify-content:space-between; margin-bottom:2rem;">
+                    <div class="">
+                        <select id="versionsDropdown" class="form-control" onchange="changeVersionEvt(this)"></select>
+                    </div>
+                    <a href="#" id="versionViewPDF" data-pdflink="<?= hash('md5', $haccpResource['id']) ?>" class="btn btn-sm blue" style="display:none;" target="_blank">
+                        <i class="fa fa-file-pdf-o" style="margin-right: .75rem;"></i>
+                        View PDF
+                    </a>
+                </div>
+                <div style="max-height:100vh; overflow-y: auto;">
+                    <div class="mt-element-list">
+                        <div class="mt-list-container list-news ext-1">
+                            <ul style="border-top: 1px solid #e7ecf1;" id="historyLogsList">
+                                <li class="mt-list-item hide">
+                                    <div class="list-item-content" style="padding-left: 0; font-weight:600;">
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec elementum gravida mauris, a tincidunt dolor porttitor eu.
+                                    </div>
+                                    <div class="list-datetime uppercasex small text-muted" style="padding-left: 0;margin-top:1rem;">
+                                        John Doe updated 3 weeks ago
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div style="padding: 0 4rem; ">
+                        <h6 class="history-footer text-muted" style="border-left: 1px solid #e7ecf1; padding:2rem 1rem; font-weight:600;">
+                            Date started: <span id="historyStarted"></span>
+                        </h6>
                     </div>
                 </div>
-                <div style="padding: 0 4rem; ">
-                    <h6 class="history-footer text-muted" style="border-left: 1px solid #e7ecf1; padding:2rem 1rem; font-weight:600;">
-                        Date started: <span id="historyStarted"></span>
-                    </h6>
-                </div>
             </div>
         </div>
-    </div>
     <?php endif; ?>
 </div>

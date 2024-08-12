@@ -1,0 +1,141 @@
+.d-flex {
+    display: flex;
+    color: inherit;
+}
+
+.d-flex.justify-content-between {
+    justify-content: space-between;   
+}
+
+.d-flex.align-items-center {
+    align-items: center;
+}
+
+.d-flex.justify-content-end {
+    justify-content: end;
+}
+
+.d-flex.d-flex.align-items-start {
+    align-items: flex-start;
+}
+
+.gap-5px {
+    gap: 5px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+#tbl-services-time-log thead tr:first-child th {
+    position: relative;
+    cursor: pointer;
+    padding-right: 2.35rem !important;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;
+}
+
+table th::after {
+    content: none !important;
+}
+
+.lowercase {
+    text-transform: lowercase !important;
+}
+
+.widget-thumb-body-stat {
+    font-weight: 600;
+    margin-top: 5px;
+    font-size: 1.95rem !important;
+}
+
+.d-inline-block {
+    display: inline-block !important;
+}
+
+.dateinput {
+    position: relative;
+}
+
+.dateinput [readonly] {
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.dateinput .date-picker {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    opacity: 0;
+}
+
+.w-200 {
+    min-width: 20rem !important;
+}
+
+.text-bold {
+    font-weight: 700
+}
+
+#va_summary_table tbody tr td:not(:first-child) {
+    text-align: center !important;
+}
+
+table.massUploadTBL * {
+    border-color: #2F353B !important;
+    transition: all .15s ease-in-out;
+    cursor: pointer;
+}
+
+table.massUploadTBL td:focus {
+    background-color: #798995 !important;
+    color: #fff;
+    border-radius: 3px !important;
+    /* outline: 2px solid #2F353B !important; */
+    cursor: text;
+}
+
+table.massUploadTBL tr:hover td:focus {
+    background-color: #798995 !important;
+}
+
+.weekend {
+    background-color: #e750500d !important;
+    /* font-weight: 600 !important; */
+    position: relative;
+}
+
+.weekend::after {
+    display: inline-block;
+    padding: 2px;
+    font-size: 0.75rem;
+    position: absolute;
+    inset: auto 0 0 auto;
+    opacity: .75;
+    color: #e7505a !important;
+}
+
+.weekend.d-6::after {
+    content: 'Sun';
+}
+
+.weekend.d-5::after {
+    content: 'Sat';
+}
+
+.noservicelog {
+    /* background-color: #e7505005; */
+    color: #444;
+}
+
+.error-input {
+    color: #e7505a !important;
+}
+
+tr:hover .error-input {
+    color: #e7505a !important;
+}

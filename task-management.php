@@ -362,7 +362,7 @@
 
                                                             if (isset($last_array['status'])) {
                                                                 if ($last_array['status'] != 4) {
-                                                                   $description = '<a href="#modalChanges" data-toggle="modal" onclick="btnChangesView('.$l_ID.')">View</a>';
+                                                                  $description = '<a href="#modalChanges" data-toggle="modal" onclick="btnChangesView('.$l_ID.')">View</a>';
                                                                 }
                                                             } else {
                                                                 $description = isset($arr_tmp['status']);
@@ -787,7 +787,7 @@
                                                                 echo '<tr>
                                                                     <td><a href="'.$base_url.'ffva?v='.$f_ID.'" target="_blank">'.$f_company.'</a></td>';
 
-                                                                    if ($switch_user_id == 5) {
+                                                                    if ($switch_user_id == 34) {
                                                                         echo '<td class="text-center int_review_status">';
                                                                             if (!empty($er_name)) {  echo $er_name .'<br>'; }
                                                                             echo '<a href="#modalViewInt" class="btn btn-link btn-sm" data-toggle="modal" onClick="btnInt('.$f_ID.', 1, 1)">View</a>';
@@ -929,7 +929,7 @@
                                                                 echo '<tr>
                                                                     <td><a href="'.$base_url.'ffva?v='.$f_ID.'" target="_blank">'.$f_product.'</a></td>';
 
-                                                                    if ($switch_user_id == 5) {
+                                                                    if ($switch_user_id == 34) {
                                                                         echo '<td class="text-center int_review_status">';
                                                                             if (!empty($er_name)) {  echo $er_name .'<br>'; }
                                                                             echo '<a href="#modalViewInt" class="btn btn-link btn-sm" data-toggle="modal" onClick="btnInt('.$f_ID.', 1, 1)">View</a>';
@@ -1196,6 +1196,77 @@
                                     </table>
                                 </div>
                             </div>
+
+                            <div class="portlet light portlet-fit">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <span class="caption-subject font-dark bold uppercase">Meeting Minutes</span>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <table class="table table-bordered table-hover tableData">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 130px;">Account</th>
+                                                <th>Agenda</th>
+                                                <th class="text-center" style="width: 80px;">Due Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                                $sql_custom = '';
+                                                if ($current_userEmployeeID > 0) {
+                                                    $sql_custom = " AND a.assigned_to = $current_userEmployeeID ";
+                                                }
+                                                $selectData = mysqli_query( $conn,"
+                                                    SELECT 
+                                                    a.action_id AS a_action_id,
+                                                    a.action_meeting_id AS a_action_meeting_id,
+                                                    a.action_details AS a_action_details,
+                                                    a.target_due_date AS a_target_due_date,
+                                                    m.account AS m_account,
+                                                    m.agenda AS m_agenda
+                                                    FROM tbl_meeting_minutes_action_items AS a
+                                                    
+                                                    LEFT JOIN (
+                                                    	SELECT
+                                                        id,
+                                                        user_ids,
+                                                        account,
+                                                        agenda
+                                                    	FROM tbl_meeting_minutes
+                                                    ) AS m
+                                                    ON a.action_meeting_id = m.id
+                                                    
+                                                    WHERE m.user_ids = $switch_user_id
+                                                    AND a.status LIKE 'Open'
+                                                    $sql_custom
+                                                " );
+                                                if ( mysqli_num_rows($selectData) > 0 ) {
+                                                    while($rowData = mysqli_fetch_array($selectData)) {
+                                                        $a_action_id = $rowData["a_action_id"];
+                                                        $m_account = $rowData["m_account"];
+                                                        $m_agenda = htmlentities($rowData["m_agenda"] ?? '');
+                                                        $a_action_details = htmlentities($rowData["a_action_details"] ?? '');
+                                                        $a_target_due_date = htmlentities($rowData["a_target_due_date"] ?? '');
+                                                        
+                                                        echo '<tr>
+                                                            <td>
+                                                                <a href="#modal_update_status" data-toggle="modal" type="button" id="add_status" onclick="btnMOM('.$a_action_id.')">'.$m_account.'</a>
+                                                            </td>
+                                                            <td>
+                                                                <strong>'.$m_agenda.'</strong></br>
+                                                                '.$a_action_details.'
+                                                            </td>
+                                                            <td class="text-center">'.$a_target_due_date.'</td>
+                                                        </tr>';
+                                                    }
+                                                }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                             <!-- END BORDERED TABLE PORTLET-->
                         </div>
 
@@ -1274,6 +1345,23 @@
                             </div>
                         </div>
                         
+                        <!--Meeting Minutes Section-->
+                        <div class="modal fade" id="modal_update_status" tabindex="-1" role="basic" aria-hidden="true">
+                            <div class="modal-dialog ">
+                                <div class="modal-content">
+                                    <form method="post" class="form-horizontal modalForm modal_update_status">
+                                        <div class="modal-header">
+                                           <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                            <h4 class="modal-title">Action Items Details</h4>
+                                        </div>
+                                        <div class="modal-body"></div>
+                                        <div class="modal-footer">
+                                           <input class="btn btn-info" type="submit" name="btnSave_status" id="btnSave_status" value="Save" >
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div><!-- END CONTENT BODY -->
 
         <?php include_once ('footer.php'); ?>
@@ -1546,6 +1634,55 @@
                         if ($.trim(response)) {
                             msg = "Sucessfully Save!";
                             $('#modalViewInt').modal('hide');
+                        } else {
+                            msg = "Error!"
+                        }
+                        l.stop();
+
+                        bootstrapGrowl(msg);
+                    }
+                });
+            }));
+            
+            // Meeting Minutes Section
+            function btnMOM(id) {
+                $.ajax({
+                    type: "GET",
+                    url: "meeting_minutes/fetch_minutes.php?GetAI="+id,
+                    dataType: "html",
+                    success: function(data){
+                        $("#modal_update_status .modal-body").html(data);
+                        $(".modalForm").validate();
+                        selectMulti();
+                    }
+                });
+            }
+            $(".modal_update_status").on('submit',(function(e) {
+                e.preventDefault();
+                var action_ids = $("#action_ids").val();
+                formObj = $(this);
+                if (!formObj.validate().form()) return false;
+                    
+                var formData = new FormData(this);
+                formData.append('btnSave_status',true);
+
+                var l = Ladda.create(document.querySelector('#btnSave_status'));
+                l.start();
+
+                $.ajax({
+                    url: "meeting_minutes/fetch_minutes.php",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData:false,
+                    cache: false,
+                    success: function(response) {
+                        if ($.trim(response)) {
+                            console.log(response);
+                            msg = "Sucessfully Save!";
+                                $('#statusTbl_'+action_ids).empty();
+                                $('#statusTbl_'+action_ids).append(response);
+                             $('#modal_update_status').modal('hide');
                         } else {
                             msg = "Error!"
                         }

@@ -1,6 +1,6 @@
 jQuery(document).ready(function () {
-    // initSelect2AddProducts();
-    // initHaccpTeamRosterTable();
+    initSelect2AddProducts();
+    initHaccpTeamRosterTable();
 
     events();
     submits();

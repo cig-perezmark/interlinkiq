@@ -194,7 +194,7 @@
                         cr.enterprise_id,
                         cr.flag,
                         CASE
-                            WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 3 MONTH) AND chd.type = 1 THEN 'Expired'
+                            WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
                             ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
                         END as activity_date,
                         chd.performer_name
@@ -232,7 +232,7 @@
                         cr.enterprise_id,
                         cr.flag,
                         CASE
-                            WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 3 MONTH) AND chd.type = 1 THEN 'Expired'
+                            WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
                             ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
                         END as activity_date,
                         chd.performer_name
@@ -330,7 +330,7 @@
                     cr.enterprise_id,
                     cr.flag,
                     CASE
-                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 3 MONTH) AND chd.type = 1 THEN 'Expired'
+                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
                         ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
                     END as activity_date,
                     chd.performer_name
@@ -517,7 +517,7 @@
                     cr.enterprise_id,
                     cr.flag,
                     CASE
-                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 3 MONTH) AND chd.type = 1 THEN 'Expired'
+                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
                         ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
                     END as activity_date,
                     chd.performer_name
@@ -604,7 +604,7 @@
                     cr.enterprise_id,
                     cr.flag,
                     CASE
-                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 3 MONTH) AND chd.type = 1 THEN 'Expired'
+                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
                         ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
                     END as activity_date,
                     chd.performer_name
@@ -691,7 +691,7 @@
                     cr.enterprise_id,
                     cr.flag,
                     CASE
-                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 3 MONTH) AND chd.type = 1 THEN 'Expired'
+                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
                         ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
                     END as activity_date,
                     chd.performer_name
@@ -715,6 +715,92 @@
             WHERE 
                 cr.account_phone LIKE '%".$searchValue."%'
                 AND cr.enterprise_id = $user_id";
+
+        $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
+        $totalData = mysqli_fetch_assoc($totalDataQuery)['total'];
+        $totalFiltered = $totalData;
+
+        if (!empty($request['search']['value'])) {
+            $sql .= " AND (cr.account_name LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.account_email LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.contact_phone LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR cr.Account_Source LIKE '%".$request['search']['value']."%' ";
+            $sql .= " OR chd.performer_name LIKE '%".$request['search']['value']."%' )";
+        }
+
+        $totalFilteredQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
+        $totalFiltered = mysqli_fetch_assoc($totalFilteredQuery)['total'];
+
+        $sql .= " ORDER BY ".$columns[$request['order'][0]['column']]." ".$request['order'][0]['dir']." LIMIT ".$request['start']." ,".$request['length']." ";
+
+        $query = mysqli_query($conn, $sql);
+
+        $data = array();
+        while ($row = mysqli_fetch_assoc($query)) {
+            $row['status'] = ($row['flag'] == 1) ? $row["account_status"] : '<span class="font-red">Archived</span>';
+            $row['checkbox_display'] = ($row['flag'] != 0 && $row['account_status'] != "Manual") ? '' : 'd-none';
+            $data[] = $row;
+        }
+
+        $json_data = array(
+            "draw" => intval($request['draw']),
+            "recordsTotal" => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data" => $data
+        );
+
+        echo json_encode($json_data);
+    }
+    
+    if (isset($_POST['search_contact_country'])) {
+        $searchValue = $_POST['searchCountryVal'];
+        $request = $_REQUEST;
+
+        $columns = array(
+            0 => 'crm_id',
+            1 => 'account_name',
+            2 => 'account_email',
+            3 => 'contact_phone',
+            4 => 'Account_Source',
+            5 => 'account_status',
+            6 => 'activity_date',
+            7 => 'performer_name'
+        );
+
+        $sql = "SELECT 
+                    cr.crm_id,
+                    cr.account_rep, 
+                    cr.account_name, 
+                    cr.account_email,  
+                    cr.Account_Source, 
+                    cr.account_status,
+                    cr.contact_phone,
+                    cr.enterprise_id,
+                    cr.flag,
+                    CASE
+                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
+                        ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
+                    END as activity_date,
+                    chd.performer_name
+                FROM tbl_Customer_Relationship AS cr
+                LEFT JOIN (
+                    SELECT
+                        contact_id, 
+                        history_id,
+                        timestamp,
+                        type,
+                        performer_name
+                    FROM tbl_crm_history_data
+                    WHERE history_id IN (
+                        SELECT
+                            MAX(history_id)
+                        FROM tbl_crm_history_data
+                        GROUP BY contact_id
+                    )
+                ) AS chd
+                ON chd.contact_id = cr.crm_id
+            WHERE 
+                cr.account_country = $searchValue AND cr.enterprise_id = $user_id";
 
         $totalDataQuery = mysqli_query($conn, "SELECT COUNT(*) AS total FROM ($sql) AS subquery");
         $totalData = mysqli_fetch_assoc($totalDataQuery)['total'];
@@ -778,7 +864,7 @@
                     cr.enterprise_id,
                     cr.flag,
                     CASE
-                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 3 MONTH) AND chd.type = 1 THEN 'Expired'
+                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
                         ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
                     END as activity_date,
                     chd.performer_name
@@ -864,7 +950,7 @@
                     cr.enterprise_id,
                     cr.flag,
                     CASE
-                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 3 MONTH) AND chd.type = 1 THEN 'Expired'
+                        WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
                         ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
                     END as activity_date,
                     chd.performer_name
@@ -952,7 +1038,7 @@
                         cr.enterprise_id,
                         cr.flag,
                         CASE
-                            WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 3 MONTH) AND chd.type = 1 THEN 'Expired'
+                            WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
                             ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
                         END as activity_date,
                         chd.performer_name
@@ -980,7 +1066,7 @@
                         cr.enterprise_id,
                         cr.flag,
                         CASE
-                            WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 3 MONTH) AND chd.type = 1 THEN 'Expired'
+                            WHEN chd.timestamp < DATE_SUB(NOW(), INTERVAL 1 MONTH) AND chd.type = 1 THEN 'Expired'
                             ELSE DATE_FORMAT(chd.timestamp, '%M %e, %Y')
                         END as activity_date,
                         chd.performer_name

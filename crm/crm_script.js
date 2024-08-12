@@ -1178,6 +1178,79 @@ $(document).ready(function() {
         });
     });
     
+    $('#searchFormCountry').on('submit', function(e) {
+        e.preventDefault();
+        var searchVal = $('#searchCountryValue').val();
+
+        if ($.fn.DataTable.isDataTable('#dataTable_1')) {
+            $('#dataTable_1').DataTable().destroy();
+            $('#dataTable_1').addClass('d-none');
+        }
+        if ($.fn.DataTable.isDataTable('#dataTable_2')) {
+            $('#dataTable_2').DataTable().destroy();
+            $('#dataTable_2').addClass('d-none');
+        }
+        $('#site_activities_loading, #spinner-text').removeClass('d-none');
+
+        $('#dataTable_2').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "crm/controller_functions.php",
+                "type": "POST",
+                "data": {
+                    search_contact_country: true,
+                    searchCountryVal: searchVal,
+                }
+            },
+            "columns": [
+                { "data": "crm_id", "render": function(data, type, row) {
+                    return `<label class="mt-checkbox ${row.checkbox_display || ''}">
+                                <input type="checkbox" class="checkbox_action" data-value="crm_date_added" value="${data || ''}"/>
+                                <span></span>
+                            </label>`;
+                }},
+                { "data": "account_name", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "account_email", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "contact_phone", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "Account_Source", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "status", "render": function(data, type, row) {
+                    return `<span class="contact-status">${data || ''}</span>`;
+                }},
+                { "data": "activity_date", "render": function(data, type, row) {
+                    if (data === 'Expired') {
+                        return '<span class="font-red bold">Expired Campaign</span>';
+                    } else {
+                        return data || '';
+                    }
+                }},
+                { "data": "performer_name", "render": function(data, type, row) {
+                    return data || '';
+                }},
+                { "data": "crm_id", "render": function(data, type, row) {
+                    return `<div class="clearfix">
+                                <div class="">
+                                    <a class="btn btn-sm blue tooltips" data-original-title="Add Task" href="customer_details.php?view_id=${data || ''}"><i class="icon-eye"></i> View</a>
+                                    <a class="btn btn-sm red tooltips activity-history" id="${data || ''}" data-toggle="modal" href="#activity-history"><i class="bi bi-activity"></i> Activity</a>
+                                </div>
+                            </div>`;
+                }}
+            ],
+            "initComplete": function(settings, json) {
+                $('#dataTable_2').removeClass('d-none');
+                $('#site_activities_loading, #spinner-text').addClass('d-none');
+            }
+        });
+    });
+    
     $('#searchFormNo').on('submit', function(e) {
         e.preventDefault();
         var searchVal = $('#searchNoValue').val();

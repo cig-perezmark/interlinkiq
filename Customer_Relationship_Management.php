@@ -14,6 +14,19 @@
 
     include_once ('header.php'); 
     
+    $stmt = $conn->prepare('SELECT id, name FROM countries ORDER BY name ASC');
+    if ($stmt === false) {
+        echo 'Error preparing Statement: ' . $conn->error;
+        exit;
+    }
+    $stmt->execute();
+    $stmt->bind_result($id, $name);
+    $countries = [];
+    while ($stmt->fetch()) {
+        $countries[] = ['id' => $id, 'name' => $name];
+    }
+    $stmt->close();
+    
 ?>
 <style type="text/css">
     /*Loader*/
@@ -311,6 +324,20 @@
                                             <label>Contact email</label>
                                             <div class="input-group" style="margin-bottom:1rem">
                                                 <input type="text" class="form-control" id="searchEmailValue" placeholder="Search contact email">
+                                                <span class="input-group-btn">
+                                                    <button type="submit" class="btn green" type="button"><i class="fa fa-search"></i></button>
+                                                </span>
+                                            </div>
+                                        </form>
+                                        <form id="searchFormCountry">
+                                            <label>Contact Country</label>
+                                            <div class="input-group" style="margin-bottom:1rem">
+                                                <select class="form-control mt-multiselect btn btn-default" id="searchCountryValue" placeholder="Search contact email">
+                                                    <option>Select Country</option>
+                                                    <?php if(!empty($countries)): foreach($countries as $country): ?>
+                                                    <option value="<?=$country['id']?>"><?=$country['name']?></option>
+                                                    <?php endforeach; endif ?>
+                                                </select>
                                                 <span class="input-group-btn">
                                                     <button type="submit" class="btn green" type="button"><i class="fa fa-search"></i></button>
                                                 </span>

@@ -233,10 +233,6 @@ div + :has(table.table-borderless) {
     border-top-color: transparent;
 }
 
-#haccp_builder .tab-content {
-    /* min-height: 100vh; */
-}
-
 #builder-title {
     scroll-margin-top: 200px;
 }
@@ -327,10 +323,7 @@ p.form-control.borderless.hover:hover {
 [data-risk="low"] {
     background-color: #a1f1b2;
 }
-[data-risk="significant"] {
-    background-color: #f3ca8b;
-}
-[data-risk="acceptable"] {
+[data-risk="medium"] {
     background-color: #fef77d;
 }
 [data-risk="high"] {
@@ -561,7 +554,7 @@ td:has(.slRating) {
     margin-left: 15px !important;
 }
 
-.stepSelector select {
+.stepSelector select, .cell-select {
     outline: none;
 }
 

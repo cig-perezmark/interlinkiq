@@ -296,7 +296,7 @@
                 if($(e).val() == 1) {
                     $(e).parent().find('.fileUpload').show();
                     $(e).parent().find('.fileUpload').prop('required',true);
-                } else if($(e).val() == 2 || $(e).val() == 3) {
+                } else if($(e).val() == 2 || $(e).val() == 3 || $(e).val() == 4) {
                     $(e).parent().find('.fileURL').show();
                     $(e).parent().find('.fileURL').prop('required',true);
                 }

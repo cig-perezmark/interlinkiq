@@ -76,9 +76,23 @@ if (!isset($_COOKIE['ID'])) {
     // if (isset($_SERVER["HTTP_REFERER"])) {
     //     header("Location: " . $_SERVER["HTTP_REFERER"]);
     // }
-
-    echo '<script>
-            window.location.href = "login";
+  
+        // if (isset($_SERVER["HTTP_REFERER"])) {
+        //     header("Location: " . $_SERVER["HTTP_REFERER"]);
+        // }
+        
+        $location = 'login';
+        if (isset($_GET['c'])) {
+            $client_ID = $_GET['c'];
+            $selectClient = mysqli_query( $conn,"SELECT * FROM tbl_user_client WHERE ID = $client_ID" );
+            if ( mysqli_num_rows($selectClient) > 0 ) {
+                $rowClient = mysqli_fetch_array($selectClient);
+                $location = $rowClient["url"];
+            }
+        }
+        
+        echo '<script>
+            window.location.href = "'.$location.'";
             // if (document.referrer == "") {
             //     window.location.href = "login";
             // } else {
@@ -313,6 +327,8 @@ License: You must have a valid license purchased only from themeforest(the above
     <link rel="stylesheet" type="text/css" href="assets/global/plugins/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" />
     <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/gh/lipis/flag-icons@6.6.6/css/flag-icons.min.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <link rel="stylesheet" type="text/css" href="https://htmlguyllc.github.io/jAlert/dist/jAlert.css">
     <!-- END GLOBAL MANDATORY STYLES -->
@@ -887,10 +903,115 @@ function menu($name, $current_userEmployerID, $current_userEmployeeID)
             <div class="page-logo">
                 <center>
                     <?php
-                    if ($current_client == 1) {
-                        if ($switch_user_id == 27) {
-                            if (!empty($enterp_logo)) {
-                                echo '<a href="dashboard"><img src="companyDetailsFolder/' . $enterp_logo . '" height="60px" alt="logo" /></a>';
+                            if ($current_client == 1) {
+                                if ($switch_user_id == 27) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="assets/img/Canna-OS-Logo_gear.png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="assets/img/Canna-OS-Logo_gear.png" height="60px" alt="logo" /></a>';
+                                }
+                                
+                            } else if ($current_client == 2) {
+                                if ($switch_user_id == 1360) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="/companyDetailsFolder/252423%20-%20FoodSafety%20360%20V1%20with%20register%20logo.png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="/companyDetailsFolder/252423%20-%20FoodSafety%20360%20V1%20with%20register%20logo.png" height="60px" alt="logo" /></a>';
+                                }
+                                
+                            } else if ($current_client == 3) {
+                                if ($switch_user_id == 1365) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="/companyDetailsFolder/190391%20-%20SafeCannabis%20360%20(2).png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="/companyDetailsFolder/190391%20-%20SafeCannabis%20360%20(2).png" height="60px" alt="logo" /></a>';
+                                }
+                                
+                            } else if ($current_client == 4) {
+                                if ($switch_user_id == 1366) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="/companyDetailsFolder/190391%20-%20SafeCannabis%20360%20(2).png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="/companyDetailsFolder/190391%20-%20SafeCannabis%20360%20(2).png" height="60px" alt="logo" /></a>';
+                                }
+                                
+                            } else if ($current_client == 5) {
+                                if ($switch_user_id == 1453) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="/companyDetailsFolder/574189 - Viking Atlantic Sales Group, LLC.png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="/companyDetailsFolder/574189 - Viking Atlantic Sales Group, LLC.png" height="60px" alt="logo" /></a>';
+                                }
+                                
+                            } else if ($current_client == 7) {
+                                if ($switch_user_id == 1469) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/388267 - Cannabis360.png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/388267 - Cannabis360.png" height="60px" alt="logo" /></a>';
+                                }
+                                
+                            } else if ($current_client == 8) {
+                                if ($switch_user_id == 1471) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/165028 - SafeSupplements 360.png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/165028 - SafeSupplements 360.png" height="60px" alt="logo" /></a>';
+                                }
+                                
+                            } else if ($current_client == 9) {
+                                if ($switch_user_id == 1477) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/175668 - FS_RGB_R_Stacked_SiennaTuscany.jpg" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/175668 - FS_RGB_R_Stacked_SiennaTuscany.jpg" height="60px" alt="logo" /></a>';
+                                }
+                                
+                            } else if ($current_client == 10) {
+                                if ($switch_user_id == 1479) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/852876 - New Focuss Logo.png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/852876 - New Focuss Logo.png" height="60px" alt="logo" /></a>';
+                                }
+                                
+                            } else if ($current_client == 11) {
+                                if ($switch_user_id == 1486) {
+                                    if(!empty($enterp_logo)) {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/'.$enterp_logo.'" height="60px" alt="logo" /></a>';
+                                    } else {
+                                        echo '<a href="dashboard"><img src="companyDetailsFolder/449248 - marukan logo.png" height="60px" alt="logo" /></a>';
+                                    }
+                                } else {
+                                    echo '<a href="dashboard"><img src="companyDetailsFolder/449248 - marukan logo.png" height="60px" alt="logo" /></a>';
+                                }
                             } else {
                                 echo '<a href="dashboard"><img src="assets/img/Canna-OS-Logo_gear.png" height="60px" alt="logo" /></a>';
                             }
@@ -1315,23 +1436,22 @@ function menu($name, $current_userEmployerID, $current_userEmployeeID)
                             </li>
                         <?php } ?>
                         <?php
-                        // if ($switch_user_id == 1) {
-                        //     echo '<li class="dropdown dropdown-extended">
-                        //         <a href="javascript:;" class="dropdown-toggle" onclick="offCanvas(2)">
-                        //             <i class="icon-note"></i>
-                        //         </a>
-                        //         <ul class="dropdown-menu hide"></ul>
-                        //     </li>';
-                        // }
-                        if ($switch_user_id == 1 or $switch_user_id == 34 or $switch_user_id == 163) {
-                            echo '
-                                <li class="dropdown dropdown-extended">
-                                    <a href="#addServiceLogModal" class="dropdown-toggle" data-toggle="modal">
-                                        <i class="icon-clock"></i>
-                                    </a>
-                                    <ul class="dropdown-menu hide"></ul>
-                                </li>
-                                <li class="dropdown dropdown-extended">
+                            // if ($switch_user_id == 1) {
+                            //     echo '<li class="dropdown dropdown-extended">
+                            //         <a href="javascript:;" class="dropdown-toggle" onclick="offCanvas(2)">
+                            //             <i class="icon-note"></i>
+                            //         </a>
+                            //         <ul class="dropdown-menu hide"></ul>
+                            //     </li>';
+                            // }
+                            if ($switch_user_id == 1 OR $switch_user_id == 34 OR $switch_user_id == 163) {
+                                // echo '<li class="dropdown dropdown-extended">
+                                //     <a href="javascript:;" class="dropdown-toggle">
+                                //         <i class="icon-clock"></i>
+                                //     </a>
+                                //     <ul class="dropdown-menu hide"></ul>
+                                // </li>';
+                                echo '<li class="dropdown dropdown-extended">
                                     <a href="javascript:;" class="dropdown-toggle" onclick="offCanvas(1)">
                                         <i class="icon-envelope"></i>
                                         <span class="hide badge badge-success" id="countNotif"></span>
@@ -2635,6 +2755,152 @@ function menu($name, $current_userEmployerID, $current_userEmployeeID)
                                         <span class="title"><b>TRIAL</b></span>
                                     </a>
                                 </li>';
+
+    
+                                while($rowMenu = mysqli_fetch_array($selectMenu)) {
+                                    $menu_ID = $rowMenu['m_ID'];
+                                    $menu_collab = $rowMenu['m_collab'];
+                                    $menu_icon = $rowMenu['m_icon'];
+                                    $menu_url = $rowMenu['m_url'];
+                                    $menu_description = $rowMenu['m_description'];
+    
+                                    $sub_date_start = $rowMenu["s_date_start"];
+                                    $sub_date_start = new DateTime($sub_date_start);
+                                    $sub_date_start_o = $sub_date_start->format('Y/m/d');
+                                    $sub_date_start = $sub_date_start->format('M d, Y');
+    
+                                    $sub_date_end = $rowMenu["s_date_end"];
+                                    $sub_date_end = new DateTime($sub_date_end);
+                                    $sub_date_end_o = $sub_date_end->format('Y/m/d');
+                                    $sub_date_end = $sub_date_end->format('M d, Y');
+    
+    
+                                    echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID);
+                                }
+                            }
+                            
+                            
+                            // AVAILABLE MODULE
+                            // if($current_userID <> 27 AND $current_userID <> 20 AND $current_userID <> 458 AND $current_userID <> 550 AND $current_userID <> 552 AND $current_userID <> 553) {
+                            //     $selectMenu = mysqli_query( $conn,"SELECT * FROM tbl_menu WHERE module = 1 AND type = 0 AND deleted = 0 ORDER BY description ASC" );
+                            //     if ( mysqli_num_rows($selectMenu) > 0 ) {
+                            //         echo '<li class="nav-item nav-item-section nav-item-section-module active">
+                            //             <a href="javascript:;" class="nav-link disabled-link disable-targetx" style="cursor: unset !important;">
+                            //                 <span class="title"><b>AVAILABLE MODULE</b></span>
+                            //             </a>
+                            //         </li>';
+    
+                            //         while($rowMenu = mysqli_fetch_array($selectMenu)) {
+                            //             $menu_ID = $rowMenu['ID'];
+                            //             $menu_collab = $rowMenu['collab'];
+                            //             $menu_icon = $rowMenu['icon'];
+                            //             $menu_url = $rowMenu['url'];
+                            //             $menu_description = $rowMenu['description'];
+    
+                            //             $countRunning = 0;
+                            //             $countExclusive = 0;
+                            //             $countExclusive_arr = array();
+                            //             $countOther = 0;
+                            //             $countOther_arr = array();
+                            //             $selectMenuSubs = mysqli_query( $conn,"SELECT * FROM tbl_menu_subscription WHERE deleted = 0 AND menu_id = $menu_ID" );
+                            //             if ( mysqli_num_rows($selectMenuSubs) > 0 ) {
+                            //                 while($rowMenuSub = mysqli_fetch_array($selectMenuSubs)) {
+                            //                     $sub_type = $rowMenuSub["type"];
+                            //                     $sub_user_id = $rowMenuSub["user_id"];
+                            //                     $sub_date_start = $rowMenuSub["date_start"];
+                            //                     $sub_date_start = new DateTime($sub_date_start);
+                            //                     $sub_date_start_o = $sub_date_start->format('Y/m/d');
+                            //                     $sub_date_start = $sub_date_start->format('M d, Y');
+                                                
+                            //                     $sub_date_end = $rowMenuSub["date_end"];
+                            //                     $sub_date_end = new DateTime($sub_date_end);
+                            //                     $sub_date_end_o = $sub_date_end->format('Y/m/d');
+                            //                     $sub_date_end = $sub_date_end->format('M d, Y');
+    
+                            //                     if ($sub_date_start_o <= $current_dateNow_o && $sub_date_end_o >= $current_dateNow_o) {
+                            //                         $countRunning++;
+    
+                            //                         if ($sub_type == 3) {
+                            //                             $countExclusive++;
+                            //                             array_push($countExclusive_arr, $sub_user_id);
+                            //                         } else {
+                            //                             $countOther++;
+                            //                             array_push($countOther_arr, $sub_user_id);
+                            //                         }
+                            //                     }
+                            //                 }
+    
+                            //                 if ($countRunning == 0) {
+                            //                     echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID);
+                            //                 } else {
+                            //                     if ($countExclusive == 0 && !in_array($switch_user_id, $countOther_arr)) {
+                            //                         echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID);
+                            //                     }
+                            //                 }
+                            //             } else {
+                            //                 echo sidebarDisplay($site, $menu_ID, $menu_collab, $menu_icon, $menu_url, $menu_description, $current_userEmployerID, $current_userEmployeeID);
+                            //             }
+                            //         }
+                            //     }
+                            // }
+                        }
+                        
+                        if ($switch_user_id == 464) {
+                            echo '<li class="nav-item ">
+                                <a href="inventory" class="nav-link">
+                                    <i class="icon-graph"></i>
+                                    <span class="title">Inventory</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>';
+                            echo '<li class="nav-item ">
+                                <a href="sales" class="nav-link">
+                                    <i class="icon-graph"></i>
+                                    <span class="title">Sales</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>';
+                            echo '<li class="nav-item ">
+                                <a href="production" class="nav-link">
+                                    <i class="icon-graph"></i>
+                                    <span class="title">Production</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>';
+                            echo '<li class="nav-item ">
+                                <a href="product_and_formulation" class="nav-link">
+                                    <i class="icon-graph"></i>
+                                    <span class="title">Product and Formulation</span>
+                                    <span class="selected"></span>
+                                </a>
+                            </li>';
+                        }
+                    ?>
+                    <?php if($_COOKIE['ID'] == 48100 OR $switch_user_id == 163 OR $_COOKIE['ID'] == 1167 OR $_COOKIE['ID'] == 117 OR $switch_user_id == 464 OR $switch_user_id == 1563 ): ?>
+                    <li class="nav-item">
+                        <a href="glp_dashboard" class="nav-link" disabled>
+                            <i class="icon-graph"></i>
+                            <span class="title">GLP</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+                    <?php if($_COOKIE['ID'] == 48100 OR $switch_user_id == 163 OR $_COOKIE['ID'] == 1167 OR $_COOKIE['ID'] == 117 OR $switch_user_id == 464 ): ?>
+                    <li class="nav-item">
+                        <a href="equipment_register" class="nav-link" disabled>
+                            <i class="icon-graph"></i>
+                            <span class="title">Equipment Calibration</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+                    <li class="nav-item hide <?php echo $site === "form-owned" ? "active" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('form-owned', $current_userEmployerID, $current_userEmployeeID); } ?>">
+                        <a href="form-owned" class="nav-link" disabled>
+                            <i class="icon-graph"></i>
+                            <span class="title">E-Forms</span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
 
                             while ($rowMenu = mysqli_fetch_array($selectMenu)) {
                                 $menu_ID = $rowMenu['m_ID'];

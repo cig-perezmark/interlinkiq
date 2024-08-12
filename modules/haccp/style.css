@@ -683,6 +683,6 @@ span[data-tasksbadge] {
 }
 
 
-.accordion .panel-heading h4 a.btn {
+.accordion .panel-heading h6 a.btn {
     padding: 5px 10px !important;
 }

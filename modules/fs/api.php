@@ -251,11 +251,11 @@ if (isset($_GET['update-client-signatures'])) {
 
 /**
  * =======================
- * HACCP PLAN DATA
+ * Food Safety Plan DATA
  * =======================  
  */
 
-// creating new haccp plan
+// creating new Food Safety Plan
 if (isset($_GET['create'])) {
     $haccp = new Haccp();
 
@@ -274,7 +274,7 @@ if (isset($_GET['create'])) {
     $data['developer_sign'] = isset($employer) && $employer == CIG_USER_ID ? ARNEL_RYAN_SIGN_PNG : null;
 
     $haccp->create($data);
-    $haccp->createLog('Initialized HACCP Plan as draft', Haccp::$step[1], $portal_user);
+    $haccp->createLog('Initialized Food Safety Plan as draft', Haccp::$step[1], $portal_user);
 
     return send_response([
         'message' => 'Successfully saved as draft.',

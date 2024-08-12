@@ -14,136 +14,159 @@ tcTable.prototype.hazard_analysis_and_preventive_measures = function () {
 
         Object.keys(ha).forEach((k, index) => {
             const rowAttr = { "data-id": id };
-            
-            index == 0 && (rowAttr['data-main-row'] = '');
+            const riskIndicator = document.createElement("span");
+
+            index == 0 && (rowAttr["data-main-row"] = "");
 
             rows[k] = new HRow(table, rowAttr);
-            
-            index == 0 && rows[k].cell(wProcessStep(d, table), { class: "t-center", rowspan: 6 });
 
-            rows[k].cell(k, { class: "bold " + (index == 0 ?'': 'noborder') }, { textAlign: "center" });
+            index == 0 &&
+                rows[k].cell(wProcessStep(d, table), {
+                    class: "t-center",
+                    rowspan: 6,
+                });
 
-            const phCell = rows[k].cell(ha[k].potentialHazards, null, { width: "22%" }).on("input", (v) => (ha[k].potentialHazards = v));
-            const sD = severityDropdown();
-    
-            phCell.append(sD.container);
-
-            rows[k].cell(null, { "data-hazard": k }).on("yesno", ha[k].preventiveControl, (v) => (ha[k].preventiveControl = v));
-            
-            rows[k].cell(null, { class: "text-center" });
-            rows[k].cell(ha[k].justify, null).on("input", (v) => (ha[k].justify = v));
-            rows[k].cell(ha[k].controlMeasures, null).on("input", (v) => (ha[k].controlMeasures = v));
-            rows[k].cell(null, { "data-hazard": k }).on("yesno", ha[k].applied, (v) => (ha[k].applied = v));
-            let risk = rows[k].cell(null, { class: "text-center" });
-            risk.append(
-                `<div style="text-align: center; margin: 0 0 1rem 0;" data-ccpindicator></div>`
+            rows[k].cell(
+                k,
+                { class: "bold " + (index == 0 ? "" : "noborder") },
+                { textAlign: "center" }
             );
+
+            const phCell = rows[k].cell(ha[k].potentialHazards, null, {
+                width: "22%",
+            });
+            const sD = severityDropdown(ha[k].severity);
+
+            phCell.append(`<span></span>`);
+            phCell.on(
+                "input",
+                `<div></div>`,
+                (v) => (ha[k].potentialHazards = v)
+            );
+            phCell.append(sD.container);
+            // hook severity selection
+            sD.dropdown.addEventListener("change", function () {
+                ha[k].severity = this.value;
+                updateRiskIndicator(
+                    riskIndicator,
+                    parseInt(this.value) * parseInt(ha[k].likelihood) ?? ""
+                );
+            });
+
+            rows[k]
+                .cell(null, { "data-hazard": k }, { width: "8%" })
+                .on(
+                    "yesno",
+                    ha[k].preventiveControl,
+                    (v) => (ha[k].preventiveControl = v)
+                );
+
+            const lh = rows[k].cell(null, { class: "text-center" });
+            const lD = likelihoodDropdown(ha[k].likelihood);
+
+            lh.append(lD.container);
+            lD.dropdown.addEventListener("change", function () {
+                ha[k].likelihood = this.value;
+                updateRiskIndicator(
+                    riskIndicator,
+                    parseInt(this.value) * parseInt(ha[k].severity) ?? ""
+                );
+            });
+
+            rows[k]
+                .cell(ha[k].justify, null)
+                .on("input", (v) => (ha[k].justify = v));
+            rows[k]
+                .cell(ha[k].controlMeasures, null)
+                .on("input", (v) => (ha[k].controlMeasures = v));
+            rows[k]
+                .cell(null, { "data-hazard": k }, { width: "8%" })
+                .on("yesno", ha[k].applied, (v) => (ha[k].applied = v));
+            let risk = rows[k].cell(null, { class: "text-center" });
+            risk.append(riskIndicator);
         });
     });
 
     evaluateCCPperTable(processes, "ha");
 };
 
-function severityDropdown() {
-    const container = document.createElement('div');
-    const dropdown = document.createElement('select');
+function updateRiskIndicator(el, risk) {
+    if (!risk) return;
+
+    if (risk >= 1 && risk <= 4) {
+        el.closest("td").setAttribute("data-risk", "low");
+    } else if (risk >= 5 && risk <= 10) {
+        el.closest("td").setAttribute("data-risk", "medium");
+    } else if (risk >= 12 && risk <= 25) {
+        el.closest("td").setAttribute("data-risk", "high");
+    }
+
+    el.innerText = risk;
+}
+
+function severityDropdown(initialValue) {
+    const container = document.createElement("div");
+    const dropdown = document.createElement("select");
 
     dropdown.innerHTML = `
-        <option value="">1</option>
-        <option value="">2</option>
-        <option value="">3</option>
-        <option value="">4</option>
-        <option value="">5</option>
+        <option value="" ${
+            !initialValue ? "selected" : ""
+        } disabled>select</option>
+        <option value="1" ${
+            initialValue == 1 ? "selected" : ""
+        }>Negligible (1)</option>
+        <option value="2" ${
+            initialValue == 2 ? "selected" : ""
+        }>Minor (2)</option>
+        <option value="3" ${
+            initialValue == 3 ? "selected" : ""
+        }>Moderate (3)</option>
+        <option value="4" ${
+            initialValue == 4 ? "selected" : ""
+        }>Major (4)</option>
+        <option value="5" ${
+            initialValue == 5 ? "selected" : ""
+        }>Extreme (5)</option>
     `;
-    container.setAttribute('class', 'cell-select');
-    container.innerHTML = `<span>Severity:</span>`;
+    container.setAttribute("class", "cell-select margin-top-20");
+    container.innerHTML = `<span>Severity: </span>`;
     container.append(dropdown);
 
-    return {container, dropdown};
+    return { container, dropdown };
 }
 
-function haSlResult(rating) {
-    switch (rating.slRisk) {
-        case "high":
-            return "CCP";
-        case "significant":
-            return "Preventive Control";
-        case "acceptable":
-            return "Control not required.";
-        case "low":
-            return "Control not required.";
-    }
-    return "";
-}
+function likelihoodDropdown(initialValue) {
+    const container = document.createElement("div");
+    const dropdown = document.createElement("select");
 
-function openSelectSLRating(e, { slRisk, sl }) {
-    if (!e || e.target.closest("#s-l-rating-selection"))
-        return `<span class="sl-rating-score" data-risk="${slRisk}">${sl || ""}</span>`;
+    dropdown.style.width = "125px";
+    dropdown.style.overflow = "hidden";
+    dropdown.style.textOverflow = "ellipsis";
+    dropdown.style.whiteSpace = "nowrap";
+    dropdown.innerHTML = `
+        <option value="" ${
+            !initialValue ? "selected" : ""
+        } disabled>select</option>
+        <option value="1" ${
+            initialValue == 1 ? "selected" : ""
+        }>Very Unlikely (1)</option>
+        <option value="2" ${
+            initialValue == 2 ? "selected" : ""
+        }>Rarely Occur (2)</option>
+        <option value="3" ${
+            initialValue == 3 ? "selected" : ""
+        }>Possible (3)</option>
+        <option value="4" ${
+            initialValue == 4 ? "selected" : ""
+        }>Likely Occur (4)</option>
+        <option value="5" ${
+            initialValue == 5 ? "selected" : ""
+        }>Occurs Frequently (5)</option>
+    `;
+    container.setAttribute("class", "cell-select");
+    container.append(dropdown);
 
-    const slRatingSelection = document.getElementById("s-l-rating-selection");
-    const td = e.target.closest("td");
-    td.classList.toggle("sl-selection-active");
-
-    if (td.classList.contains("sl-selection-active")) {
-        closeSLRatingSelection();
-        const slRatingElement = document.createElement("div");
-        slRatingElement.classList.add("slRating", "btn-group", "btn-group-xs", "open");
-        slRatingElement.append(slRatingSelection);
-        td.append(slRatingElement);
-    } else {
-        $("#s-l-rating-selection-container").append(slRatingSelection);
-        $(td).find(".slRating").remove();
-    }
-}
-
-function selectSLRatingClickEvt(e) {
-    const td = e.target.closest("[data-sl-rating-cell]");
-    const tdRate = e.target.closest("td");
-    const tempArr = tdRate.innerText.split("\n");
-    const ratingSelected = tempArr[0];
-
-    let rating = td.querySelector("span.sl-rating-score");
-
-    if (!rating) {
-        rating = document.createElement("span");
-        rating.classList.add("sl-rating-score");
-        td.append(rating);
-    }
-
-    // record
-    const tr = td.closest("tr[data-id]");
-    const processId = tr.dataset.id;
-    const hazard = tr.querySelector("[data-hazard]").dataset.hazard;
-    const risk = tdRate.dataset.risk;
-    const slRate = ratingSelected.replace(/—/g, "&#8212;");
-
-    planBuilder.processes[processId].hazardAnalysis[hazard].sl = slRate;
-    planBuilder.processes[processId].hazardAnalysis[hazard].slScore = Number(tempArr[1].replace(/\(|\)/g, ""));
-    planBuilder.processes[processId].hazardAnalysis[hazard].slRisk = risk;
-
-    rating.setAttribute("data-risk", risk);
-    rating.innerText = ratingSelected;
-    e.target.closest("tr[data-id]").querySelector("[data-sl-result-cell]").innerText =
-        slRate && slRate != ""
-            ? risk == "high"
-                ? "CCP"
-                : risk == "significant"
-                ? "Preventive Control"
-                : "Control not required."
-            : "";
-    closeSLRatingSelection();
-    evaluateCCPperTable(DiagramObject.getProcessStepsData(), "ha");
-}
-
-function closeSLRatingSelection() {
-    const slRatingSelection = document.getElementById("s-l-rating-selection");
-    const td = slRatingSelection.closest("[data-sl-rating-cell]");
-
-    if (td) {
-        td.classList.remove("sl-selection-active");
-        $("#s-l-rating-selection-container").append(slRatingSelection);
-        $(td).find(".slRating").remove();
-    }
+    return { container, dropdown };
 }
 
 function checkCCPStep(id) {
@@ -158,7 +181,7 @@ function checkCCPStep(id) {
     }
 
     Object.entries(hazardAnalysis).forEach(([key, value]) => {
-        if (value.slRisk == "high") {
+        if (value.severity * value.likelihood >= 12) {
             result.ha = true;
         }
     });
@@ -196,7 +219,9 @@ function evaluateCCPperTable(processes, from) {
             $("#" + link).addClass("ccp-error");
             warning
                 .find(".affected-process-steps")
-                .append(`<li><a href="#${link}" style="color:inherit;">${label}</a></li>`);
+                .append(
+                    `<li><a href="#${link}" style="color:inherit;">${label}</a></li>`
+                );
         });
 
         warning.fadeIn();

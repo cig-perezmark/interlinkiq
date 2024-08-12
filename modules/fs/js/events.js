@@ -2,7 +2,9 @@ function events() {
     // builder tabs event
     $('a[data-toggle="tab"]').on("show.bs.tab", function () {
         // reset step selector
-        $(".stepSelector select").html("<option selected disabled>None</option>").trigger("change");
+        $(".stepSelector select")
+            .html("<option selected disabled>None</option>")
+            .trigger("change");
         // closeSLRatingSelection();
         const target = this.getAttribute("href").replace("#", "");
         new tcTable(target);
@@ -17,7 +19,11 @@ function events() {
             $(parent)
                 .find("#" + this.value)
                 .get(0)
-                ?.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+                ?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                    inline: "nearest",
+                });
         }
     });
 
@@ -39,8 +45,6 @@ function events() {
         maxHeight: 250,
         buttonClass: "mt-multiselect btn btn-default",
     });
-
-    $("#s-l-rating-selection .hazardAssessmentTable td span").on("click", selectSLRatingClickEvt);
 
     // inputs in haccp builder (basic information section)
     $("[data-inputkey]").on("input", function () {

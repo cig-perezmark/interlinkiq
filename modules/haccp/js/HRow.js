@@ -133,7 +133,7 @@ class HCell {
         else if (eventName == "yesno") {
             const name = "y_n_" + generateRandomString(6);
             const ynContainer = document.createElement("div");
-            ynContainer.style.textAlign = "center";
+            ynContainer.style.textAlign = "left";
             ynContainer.innerHTML = `
                 <div class="table-yn-container">
                     <label class="mt-radio mt-radio-outline ">

@@ -5,7 +5,9 @@ function wProcessStep(data, table) {
     shortLabel += data.label.length > 8 ? "..." : "";
     dd?.insertAdjacentHTML(
         "beforeend",
-        `<option title="${data.label}" value="${"stepselect_" + data.id}">(${data.process}) ${shortLabel}</option>`
+        `<option title="${data.label}" value="${"stepselect_" + data.id}">(${
+            data.process
+        }) ${shortLabel}</option>`
     );
 
     const div = document.createElement("div");
@@ -29,10 +31,11 @@ function tcTable(tabId) {
 
 tcTable.prototype = {
     tables: {
-        hazard_analysis_and_preventive_measures: document.getElementById("hbHazardAnalysis"),
+        hazard_analysis_and_preventive_measures:
+            document.getElementById("hbHazardAnalysis"),
         ccp_determination: document.getElementById("hbCCPdetermination"),
         process_narrative: document.getElementById("hbProcessNarrative"),
-        verification_and_record_keeping: document.getElementById("hbVRK"),
+        process_preventive_control: document.getElementById("hbPPC"),
         // master_sheet: document.getElementById("hbMasterSheet"),
     },
 };

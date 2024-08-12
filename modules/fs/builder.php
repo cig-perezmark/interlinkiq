@@ -24,23 +24,23 @@ $builderTabs = [
     ],
     [
         'title' => 'Process Preventive Controls',
-        'link' => 'product_information'
+        'link' => 'process_preventive_control'
     ],
     [
         'title' => 'Food Allergen Preventive Controls',
-        'link' => 'product_information'
+        'link' => 'process_preventive_control'
     ],
     [
         'title' => 'Sanitation Preventive Controls',
-        'link' => 'product_information'
+        'link' => 'process_preventive_control'
     ],
     [
         'title' => 'Supply Chain Preventive Controls',
-        'link' => 'product_information'
+        'link' => 'process_preventive_control'
     ],
     [
         'title' => 'Validation',
-        'link' => 'product_information'
+        'link' => 'process_preventive_control'
     ],
 ];
 
@@ -575,7 +575,7 @@ $builderTabs = [
                                 </ul>
                             </small>
                         </th>
-                        <th style="width:auto;" colspan="2">
+                        <th style="width: 11%;" colspan="2">
                             Do any potential food safety hazards require preventive control?
                         </th>
                         <th style="width: 10%;" rowspan="2">
@@ -585,12 +585,12 @@ $builderTabs = [
                             What preventive control measure(s) can be applied to significantly minimize or prevent the food safety hazard?<br>
                             Process including CCPs, Allergen, Sanitation, Supply-chain, other preventive control
                         </th>
-                        <th style="width: 18%;" colspan="2">
+                        <th style="width: 10%;" colspan="2">
                             Is the preventive control applied at this step?
                         </th>
                     </tr>
                     <tr style="text-align: center;">
-                        <td>Yes/No</td>
+                        <td class="noborder">Yes/No</td>
                         <td>Likelihood (L)</td>
                         <td>Yes/No</td>
                         <td>Risk</td>
@@ -679,62 +679,10 @@ $builderTabs = [
             </table>
         </div>
     </div>
-    <div data-section="vrk" class="tab-pane" id="verification_and_record_keeping">
+    <div data-section="ppc" class="tab-pane" id="process_preventive_control">
         <div class="haccpTableContainer">
-            <table id="hbVRK">
-                <thead>
-                    <tr>
-                        <th style="width: 10%;" rowspan="2">
-                            <div style="display:flex; align-items:center;flex-direction:column; justify-content:space-between;gap:3rem;">
-                                <span>Process Step / CCP </span>
-                                <label class="stepSelector">
-                                    Find:
-                                    <select class="">
-                                        <option selected disabled>None</option>
-                                    </select>
-                                </label>
-                            </div>
-                        </th>
-                        <th style="width: 64%;" colspan="4">
-                            Verification Procedures <br>
-                            <small class="text-muted font-normal">
-                                (What, How, Frequency, Who) </small>
-                        </th>
-                        <th style="width: 26%;" rowspan="2">Records</th>
-                    </tr>
-                    <tr>
-                        <th style="width: 16%;">What</th>
-                        <th style="width: 16%;">How</th>
-                        <th style="width: 16%;">Frequency</th>
-                        <th style="width: 16%;">Who</th>
-                    </tr>
-                </thead>
-                <tbody class="haccp-builder-table-body"></tbody>
-            </table>
-        </div>
-    </div>
-    <div class="tab-pane" id="master_sheet">
-        <div class="haccpTableContainer">
-            <table id="hbMasterSheet">
-                <thead>
-                    <tr>
-                        <th rowspan="2" style="width: 10%;"> Critical Control Point</th>
-                        <th rowspan="2" style="width: 10%;"> Significant Hazards</th>
-                        <th rowspan="2" style="width: 10%;"> Critical Limits for Each Control Measure</th>
-                        <th colspan="4">Monitoring Procedures</th>
-                        <th rowspan="2" style="width: 10%;">Corrective Action</th>
-                        <th rowspan="2" style="width: 10%;"> Verification Procedure <small class="text-muted font-normal">
-                                (What, How, Frequency, Who) </small>
-                        </th>
-                        <th rowspan="2" style="width: 10%;"> Records</th>
-                    </tr>
-                    <tr>
-                        <th style="width: 10%;">What</th>
-                        <th style="width: 10%;">How</th>
-                        <th style="width: 10%;">Frequency</th>
-                        <th style="width: 10%;">Who</th>
-                    </tr>
-                </thead>
+            <table id="hbPPC">
+                <thead></thead>
                 <tbody class="haccp-builder-table-body"></tbody>
             </table>
         </div>

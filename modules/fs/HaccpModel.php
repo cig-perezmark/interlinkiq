@@ -54,6 +54,8 @@ class Haccp
     public function setId($id, $hashed = false)
     {
         global $switch_user_id, $user_id;
+        ob_start();
+
         try {
             if (!isset($id)) {
                 throw new Exception('ID cannot be null');
@@ -61,7 +63,7 @@ class Haccp
 
             $data = $this->conn->execute(
                 "SELECT id, title, user_id,
-                (SELECT id FROM tbl_fsp_version WHERE haccp_id = h.id AND since IS NOT NULL ORDER BY created_at DESC LIMIT 1) AS vid,
+                (SELECT id FROM tbl_fsp_version WHERE fsp_id = h.id AND since IS NOT NULL ORDER BY created_at DESC LIMIT 1) AS vid,
                 (SELECT facility_id FROM tbl_fsp_version_details WHERE version_id = vid) AS facility,
                 (SELECT id FROM tbl_fsp_version_details WHERE version_id = vid) AS did
                 FROM tbl_fsp h WHERE " . ($hashed ? 'md5(id)' : 'id') . " = ? AND deleted_at IS NULL",
@@ -88,6 +90,7 @@ class Haccp
             http_response_code(500);
             exit($e->getMessage());
         }
+        ob_flush();
     }
 
     public function setVersion($version_id, $hashed = false)
@@ -322,8 +325,8 @@ class Haccp
      */
     public function sendEmail($to, $user, $subject, $body, $from, $name)
     {
+        $mail = new PHPMailer(true);
         try {
-            $mail = new PHPMailer(true);
             $mail->isSMTP();
             // $mail->SMTPDebug  = SMTP::DEBUG_SERVER;
             $mail->Host       = 'interlinkiq.com';
@@ -641,7 +644,7 @@ class Haccp
     public function newVersion($status, $data)
     {
         // creating new version....
-        $this->conn->execute("INSERT INTO tbl_fsp_version (haccp_id, status) VALUE(?,?)", $this->id, $status);
+        $this->conn->execute("INSERT INTO tbl_fsp_version (fsp_id, status) VALUE(?,?)", $this->id, $status);
         $versionId = $this->conn->lastInsertID();
 
         // assigning new version details

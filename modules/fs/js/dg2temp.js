@@ -1,3 +1,21 @@
+const haData = () => ({
+    potentialHazards: "",
+    severity: 0,
+    preventiveControl: "",
+    likelihood: 0,
+    justify: "",
+    controlMeasures: "",
+    applied: "",
+});
+
+const ccpDData = () => ({
+    control: "",
+    q1: "",
+    q2: "",
+    q3: "",
+    q4: "",
+});
+
 class DiagramObject {
     constructor() {}
 
@@ -34,84 +52,21 @@ class DiagramObject {
             if (!planBuilder.processes[key]) {
                 planBuilder.processes[key] = {
                     hazardAnalysis: {
-                        B: {
-                            potentialHazards: "",
-                            severity: 0,
-                            preventiveControl: "",
-                            likelihood: 0,
-                            justify: '',
-                            controlMeasures: '',
-                            applied: "",
-                        },
-                        C: {
-                            potentialHazards: "",
-                            severity: 0,
-                            preventiveControl: "",
-                            likelihood: 0,
-                            justify: '',
-                            controlMeasures: '',
-                            applied: "",
-                        },
-                        P: {
-                            potentialHazards: "",
-                            severity: 0,
-                            preventiveControl: "",
-                            likelihood: 0,
-                            justify: '',
-                            controlMeasures: '',
-                            applied: "",
-                        },
-                        A: {
-                            potentialHazards: "",
-                            severity: 0,
-                            preventiveControl: "",
-                            likelihood: 0,
-                            justify: '',
-                            controlMeasures: '',
-                            applied: "",
-                        },
-                        I: {
-                            potentialHazards: "",
-                            severity: 0,
-                            preventiveControl: "",
-                            likelihood: 0,
-                            justify: '',
-                            controlMeasures: '',
-                            applied: "",
-                        },
-                        E: {
-                            potentialHazards: "",
-                            severity: 0,
-                            preventiveControl: "",
-                            likelihood: 0,
-                            justify: '',
-                            controlMeasures: '',
-                            applied: "",
-                        },
+                        B: haData(),
+                        C: haData(),
+                        P: haData(),
+                        A: haData(),
+                        I: haData(),
+                        E: haData(),
                     },
                     ccpDetermination: {
                         ccpNumber: null,
-                        B: {
-                            control: "",
-                            q1: "",
-                            q2: "",
-                            q3: "",
-                            q4: "",
-                        },
-                        C: {
-                            control: "",
-                            q1: "",
-                            q2: "",
-                            q3: "",
-                            q4: "",
-                        },
-                        P: {
-                            control: "",
-                            q1: "",
-                            q2: "",
-                            q3: "",
-                            q4: "",
-                        },
+                        B: ccpDData(),
+                        C: ccpDData(),
+                        P: ccpDData(),
+                        A: ccpDData(),
+                        I: ccpDData(),
+                        E: ccpDData(),
                     },
                     processNarrative: "",
                     vrk: {

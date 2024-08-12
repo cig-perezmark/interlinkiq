@@ -3,6 +3,8 @@
     $site = "department";
     $breadcrumbs = '';
     $sub_breadcrumbs = 'HR';
+    $target = '';
+    $datafancybox = 'data-fancybox';
 
     if ($sub_breadcrumbs) {
         $breadcrumbs .= '<li><span>'. $sub_breadcrumbs .'</span><i class="fa fa-angle-right"></i></li>';
@@ -195,6 +197,10 @@
                                                                             $files = $src.$url.rawurlencode($files).$embed;
                                                                         } else if ($filetype == 3) {
                                                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                                        } else if ($filetype == 4) {
+                                                                            $file_extension = 'fa-strikethrough';
+                                                                            $target = '_blank';
+                                                                            $datafancybox = '';
                                                                         }
                                                                     }
                                                                     
@@ -202,7 +208,7 @@
                                                                         <td>'. $table_counter .'</td>
                                                                         <td>'. htmlentities($row["title"] ?? '') .'</td>
                                                                         <td>'. htmlentities($row["description"] ?? '') .'</td>
-                                                                        <td class="text-center"><p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p></td>';
+                                                                        <td class="text-center"><p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p></td>';
         
                                                                         // $dept_id = $row["ID"];
                                                                         // $countDepartment = 0;
@@ -274,6 +280,10 @@
                                                                             $files = $src.$url.rawurlencode($files).$embed;
                                                                         } else if ($filetype == 3) {
                                                                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                                        } else if ($filetype == 4) {
+                                                                            $file_extension = 'fa-strikethrough';
+                                                                            $target = '_blank';
+                                                                            $datafancybox = '';
                                                                         }
                                                                     }
                                                                     
@@ -281,7 +291,7 @@
                                                                         <td>'. $table_counter .'</td>
                                                                         <td>'. htmlentities($row["title"] ?? '') .'</td>
                                                                         <td>'. htmlentities($row["description"] ?? '') .'</td>
-                                                                        <td class="text-center"><p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p></td>';
+                                                                        <td class="text-center"><p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p></td>';
         
                                                                         // $dept_id = $row["ID"];
                                                                         // $countDepartment = 0;
@@ -589,21 +599,6 @@
             }
             function btnClose(view) {
                 $('#'+view+' .modal-body').html('');
-            }
-            function uploadNew(e) {
-                $(e).parent().hide();
-                $(e).parent().parent().find('select').removeClass('hide');
-            }
-            function changeType(e) {
-                $(e).parent().find('input').hide();
-                $(e).parent().find('input').prop('required',false);
-                if($(e).val() == 1) {
-                    $(e).parent().find('.fileUpload').show();
-                    $(e).parent().find('.fileUpload').prop('required',true);
-                } else if($(e).val() == 2 || $(e).val() == 3 || $(e).val() == 4) {
-                    $(e).parent().find('.fileURL').show();
-                    $(e).parent().find('.fileURL').prop('required',true);
-                }
             }
             function btnView(id, count, view) {
                 btnClose(view);

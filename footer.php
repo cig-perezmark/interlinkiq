@@ -231,9 +231,9 @@
                                                         ON s.email = e.businessemailAddress
                                                         
                                                         WHERE s.page = 2 
-                                                        AND s.category = 3 
+                                                        -- AND s.category = 3 
                                                         AND s.is_deleted = 0 
-                                                        AND s.status = 1 
+                                                        -- AND s.status = 1 
                                                         AND s.user_id = $current_userEmployerID
                                                         AND FIND_IN_SET($current_userEmployeeID, REPLACE(s.employee_id, ' ', ''))
                                                         
@@ -1367,720 +1367,728 @@
 
 
                     <script type="text/javascript">
-$(document).ready(function() {
-    $(".modalForm").validate();
-    $(".modalService").validate();
-    $(".modalCollab").validate();
-
-    // var id = '<?php echo $current_userID; ?>';
-    // $.ajax({
-    //     url: 'function.php?my_task='+id,
-    //     dataType: "html",
-    //     success: function(data){
-    //         $(".dropdown-menu .myTask").html(data);
-    //     }
-    // });
-    $(".dropdown-menu .myTask").html(0);
-
-
-    selectMulti();
-
-    var count_Facility = $('#menuFacility ul > li.hide').length;
-    if (count_Facility < 4) {
-        $('#menuFacility').removeClass('hide');
-    }
-
-    var count_HR = $('#menuHR ul > li.hide').length;
-    var count_HR_total = $('#menuHR ul > li').length;
-    if (count_HR < count_HR_total) {
-        $('#menuHR').removeClass('hide');
-    }
-
-    var count_CMA = $('#menuCMA ul > li.hide').length;
-    if (count_CMA < 5) {
-        $('#menuCMA').removeClass('hide');
-    }
-
-    const myTimeout = setTimeout(googleExtras, 5000);
-
-
-    var id = '<?php echo $current_userID; ?>';
-    // setInterval(function() {
-    // $.ajax({
-    //     type: "GET",
-    //     url: "function.php?modalChat_Refresh=" + id,
-    //     dataType: "html",
-    //     success: function(data) {
-    //         // alert(data); 
-    //         var countNotif = $('#countNotif');
-    //         var sendMessage2 = $('#sendMessage2').hasClass('in');
-
-    //         if (data > 0) {
-    //             if (countNotif.html() != data) {
-    //                 $('#countNotif').removeClass('hide');
-    //                 countNotif.html(data);
-    //                 // offCanvasChat(id);
-
-    //                 if (sendMessage2 == true) {
-    //                     var to_id = $('#sendMessage2 input[name*="to_id"]').val();
-    //                     var from_id = $('#sendMessage2 input[name*="from_id"]').val();
-
-    //                     // sendChat(to_id, from_id)
-    //                 }
-    //             }
-    //         } else {
-    //             if (countNotif.html() != data) {
-    //                 $('#countNotif').addClass('hide');
-    //                 countNotif.html(data);
-    //                 // offCanvasChat(id); 
-
-    //                 // alert(offCanvasChat(id)); 
-    //                 if (sendMessage2 == true) {
-    //                     var to_id = $('#sendMessage2 input[name*="to_id"]').val();
-    //                     var from_id = $('#sendMessage2 input[name*="from_id"]').val();
-
-    //                     // sendChat(to_id, from_id)
-    //                 }
-    //             }
-    //         }
-    //     }
-    // });
-    // }, 1000);
-});
-
-
-// OFFCANVAS
-function offCanvas(id) {
-    if (id == 1) {
-        $('#chatbox').toggleClass('show');
-        $('#chatboxDrop').toggleClass('show');
-    } else if (id == 2) {
-        $('#stickyNote').toggleClass('show');
-        $('#stickyNoteDrop').toggleClass('show');
-    }
-    // $('.offcanvas').modal({backdrop: 'static', keyboard: false}, 'show');
-}
-
-function offCanvasChat(id) {
-    $.ajax({
-        type: "GET",
-        url: "function.php?modalChatBox_Refresh=" + id + "&p=1",
-        dataType: "html",
-        success: function(data) {
-            $('#chatbox #userList').html(data);
-        }
-    });
-}
-
-function sendChat(id, id2) {
-    $.ajax({
-        type: "GET",
-        url: "function.php?modalNew_Chat=" + id + "&chat=" + id2,
-        dataType: "html",
-        success: function(data) {
-            $("#sendMessage2 .modal-body").html(data);
-            $('.modalMessage2').trigger("reset");
-        }
-    });
-}
-$("#txtSearch").keyup(function() {
-
-    // Retrieve the input field text and reset the count to zero
-    var filter = $(this).val(),
-        count = 0;
-
-    // Loop through the comment list
-    $('#userList > div .userData').each(function() {
-
-        // If the list item does not contain the text phrase fade it out
-        if ($(this).text().search(new RegExp(filter, "i")) < 0) {
-            $(this).parent().parent().hide();
-
-            // Show the list item if the phrase matches and increase the count by 1
-        } else {
-            $(this).parent().parent().show();
-            count++;
-        }
-    });
-});
-$(".modalMessage2").on('submit', (function(e) {
-    e.preventDefault();
-
-    var formData = new FormData(this);
-    formData.append('btnSend_Chat', true);
-
-    $.ajax({
-        url: "function.php",
-        type: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,
-        cache: false,
-        success: function(response) {
-            var obj = jQuery.parseJSON(response);
-            var secContainer = $('#sendMessage2 .modal-body .secContainer').first().hasClass('secSender');
-
-            if (secContainer == true) {
-                $('#sendMessage2 .modal-body .secContainer').first().find('.secMessage').prepend(obj.data_2);
-            } else {
-                $('#sendMessage2 .modal-body').prepend(obj.data_1);
-            }
-            $('.modalMessage2').trigger("reset");
-            offCanvasChat(obj.current_userID);
-        }
-    });
-}));
-
-
-// FOR GOOGLE TRANSLATE
-function googleExtras() {
-    $('#google_translate_element > div > span').remove(); // remove Google Logo
-    $('#google_translate_element > div').first().contents().eq(1).remove(); // remove Text
-}
-
-function btnLogout() {
-    var id = '<?php echo $current_userID; ?>';
-    window.location.href = '<?=$base_url?>function.php?logout=' + id;
-    localStorage.setItem('islogin', 'no');
-
-    // $.ajax({
-    //     url: 'function.php?logout='+id,
-    //     context: document.body,
-    //     contentType: false,
-    //     processData:false,
-    //     cache: false,
-    //     success: function(response) {
-    //         window.location.href = response;
-    //     }
-    // });
-}
-
-function btnLocked() {
-    $.jTimeout.reset(0);
-    $('#secondsRemaining').val($.jTimeout().getSecondsTillExpiration());
-}
-
-function bootstrapGrowl(msg, type = "success") {
-    $.bootstrapGrowl(msg, {
-        ele: "body",
-        type,
-        offset: {
-            from: "top",
-            amount: 100
-        },
-        align: "right",
-        width: 250,
-        delay: 5000,
-        allow_dismiss: 1,
-        stackup_spacing: 10
-    })
-}
-
-function fancyBoxes() {
-    Fancybox.bind('[data-fancybox]', {
-        Toolbar: {
-            display: [{
-                    id: "prev",
-                    position: "center"
-                },
-                {
-                    id: "counter",
-                    position: "center"
-                },
-                {
-                    id: "next",
-                    position: "center"
-                },
-                "zoom",
-                "slideshow",
-                "fullscreen",
-                "download",
-                "thumbs",
-                "close",
-            ],
-        },
-    });
-}
-
-function selectMulti() {
-    $('.mt-multiselect').multiselect({
-        widthSynchronizationMode: 'ifPopupIsSmaller',
-        buttonTextAlignment: 'left',
-        buttonWidth: '100%',
-        maxHeight: 200,
-        enableResetButton: true,
-        enableFiltering: true,
-        enableCaseInsensitiveFiltering: true,
-        includeSelectAllOption: true,
-        nonSelectedText: 'None selected'
-    });
-    $('.multiselect-container .multiselect-filter', $('.mt-multiselect').parent()).css({
-        'position': 'sticky',
-        'top': '0px',
-        'z-index': 1,
-    })
-}
-
-function serviceCat(val) {
-    if (val == 7) {
-        $('#serviceDesiredDueDate').addClass('hide');
-    } else {
-        $('#serviceDesiredDueDate').removeClass('hide');
-    }
-}
-
-function btnSwitch(id) {
-    $.ajax({
-        type: "GET",
-        url: "function.php?modalSwitch=" + id,
-        dataType: "html",
-        success: function(data) {
-            window.location.href = 'dashboard';
-        }
-    });
-}
-
-function set_newCookie(id) {
-    const d = new Date();
-    d.setTime(d.getTime() + (1 * 24 * 60 * 60 * 1000));
-    let expires = "expires=" + d.toUTCString();
-    document.cookie = 'user_company_id' + "=" + id + ";" + expires + ";path=/";
-}
-
-$(".modalService").on('submit', (function(e) {
-    e.preventDefault();
-
-    formObj = $(this);
-    if (!formObj.validate().form()) return false;
-
-    var formData = new FormData(this);
-    formData.append('btnSave_Services', true);
-
-    var l = Ladda.create(document.querySelector('#btnSave_Services'));
-    l.start();
-
-    $.ajax({
-        url: "function.php",
-        type: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,
-        cache: false,
-        success: function(response) {
-            if ($.trim(response)) {
-                msg = "Sucessfully Save!";
-                var obj = jQuery.parseJSON(response);
-
-                var html = '<tr id="tr_' + obj.ID + '">';
-                html += '<td>' + obj.ID + '</td>';
-                html += '<td>' + obj.category + '</td>';
-                html += '<td>';
-                html += '<p style="margin: 0;"><b>' + obj.title + '</b></p>';
-                html += '<p style="margin: 0;">' + obj.description + '</p>';
-
-                if (obj.files != "") {
-                    html += '<p style="margin: 0;">' + obj.files + '</p>';
-                }
-
-                html += '</td>';
-                html += '<td>';
-                html += '<p style="margin: 0;">' + obj.contact + '</p>';
-                html += '<p style="margin: 0;"><a href="mailto:' + obj.email + '" target="_blank">' + obj.email + '</a></p>';
-                html += '</td>';
-                html += '<td class="text-center">' + obj.last_modified + '</td>';
-                html += '<td class="text-center">' + obj.due_date + '</td>';
-                html += '<td class="text-center">Pending</td>';
-                html += '<td class="text-center">';
-                html += '<div class="btn-group btn-group-circle">';
-                html += '<a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-id="' + obj.ID + '" data-toggle="modal" onclick="btnView(' + obj.ID + ')">View</a>';
-                html += '<a href="javascript:;" class="btn btn-outlinex green btn-sm btnDone" data-id="' + obj.ID + '" onclick="btnDone(' + obj.ID + ')">Done</a>';
-                html += '</div>';
-                html += '</td>';
-                html += '</tr>';
-
-                $('#tableDataServices tbody').append(html);
-                $('#modalService').modal('hide');
-            } else {
-                msg = "Error!"
-            }
-            l.stop();
-
-            bootstrapGrowl(msg);
-        }
-    });
-}));
-
-$(".modalCollab").on('submit', (function(e) {
-    e.preventDefault();
-
-    formObj = $(this);
-    if (!formObj.validate().form()) return false;
-
-    var formData = new FormData(this);
-    formData.append('btnSave_Collab', true);
-
-    var l = Ladda.create(document.querySelector('#btnSave_Collab'));
-    l.start();
-
-    $.ajax({
-        url: "function.php",
-        type: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,
-        cache: false,
-        success: function(response) {
-            if ($.trim(response)) {
-                msg = "Sucessfully Save!";
-                $('#modalCollab').modal('hide');
-            } else {
-                msg = "Error!"
-            }
-            l.stop();
-
-            bootstrapGrowl(msg);
-        }
-    });
-}));
-
-
-// Instructions Section
-function selectInstruction(id) {
-    $('.selInstruction').addClass('hide');
-    if (id == 0) {
-        $('#selFile').removeClass('hide');
-    } else {
-        $('#selURL').removeClass('hide');
-    }
-}
-
-function btnInstruction() {
-    var site = '<?php echo $site; ?>';
-    $.ajax({
-        type: "GET",
-        url: "function.php?modalInstruction=" + site,
-        dataType: "html",
-        success: function(data) {
-            $("#modalInstruction .modal-body").html(data);
-        }
-    });
-}
-$(".modalInstruction").on('submit', (function(e) {
-    e.preventDefault();
-
-    formObj = $(this);
-    if (!formObj.validate().form()) return false;
-
-    var formData = new FormData(this);
-    formData.append('btnSave_Instruction', true);
-
-    var l = Ladda.create(document.querySelector('#btnSave_Instruction'));
-    l.start();
-
-    $.ajax({
-        url: "function.php",
-        type: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,
-        cache: false,
-        success: function(response) {
-            if ($.trim(response)) {
-                msg = "Sucessfully Save!";
-                $('#modalInstruction').modal('hide');
-            } else {
-                msg = "Error!"
-            }
-            l.stop();
-
-            bootstrapGrowl(msg);
-        }
-    });
-}));
-
-function uploadNewOld(e) {
-    $(e).parent().hide();
-    $(e).parent().prev('.form-control').removeClass('hide');
-}
-
-function uploadNew(e) {
-    $(e).parent().hide();
-    $(e).parent().parent().find('select').removeClass('hide');
-}
-
-
-// Pictogram
-function btnPictogram(code) {
-    $.ajax({
-        type: "GET",
-        url: "function.php?modalPictogram=" + code,
-        dataType: "html",
-        success: function(data) {
-            $("#modalPictogram .modal-body").html(data);
-        }
-    });
-}
-$(".modalPictogram").on('submit', (function(e) {
-    e.preventDefault();
-
-    formObj = $(this);
-    if (!formObj.validate().form()) return false;
-
-    var formData = new FormData(this);
-    formData.append('btnSave_Pictogram', true);
-
-    var l = Ladda.create(document.querySelector('#btnSave_Pictogram'));
-    l.start();
-
-    $.ajax({
-        url: "function.php",
-        type: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,
-        cache: false,
-        success: function(response) {
-            if ($.trim(response)) {
-                msg = "Sucessfully Save!";
-                $('#modalPictogram').modal('hide');
-            } else {
-                msg = "Error!"
-            }
-            l.stop();
-
-            bootstrapGrowl(msg);
-        }
-    });
-}));
-
-// Speakup Section
-function btnSpeakup(id) {
-    $.ajax({
-        type: "GET",
-        url: "function.php?modalSpeakup=" + id,
-        dataType: "html",
-        success: function(data) {
-            $("#modalSpeakUpView .modal-body").html(data);
-        }
-    });
-}
-
-function btnSpeakupAll(id) {
-    $.ajax({
-        type: "GET",
-        url: "function.php?modalSpeakupAll=" + id,
-        dataType: "html",
-        success: function(data) {
-            $("#modalSpeakUpViewAll .modal-body table tbody").html(data);
-            $('#tableData_Speakup').DataTable();
-        }
-    });
-}
-$(".modalSpeakUp").on('submit', (function(e) {
-    e.preventDefault();
-
-    formObj = $(this);
-    if (!formObj.validate().form()) return false;
-
-    var formData = new FormData(this);
-    formData.append('btnSave_Speakup', true);
-
-    var l = Ladda.create(document.querySelector('#btnSave_Speakup'));
-    l.start();
-
-    $.ajax({
-        url: "function.php",
-        type: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,
-        cache: false,
-        success: function(response) {
-            if ($.trim(response)) {
-                msg = "Sucessfully Sent!";
-
-                var obj = jQuery.parseJSON(response);
-                $('#speakup_employee .dropdown-menu-list').prepend(obj.data);
-                $('#modalSpeakUp').modal('hide');
-                $('.modalSpeakUp').trigger("reset");
-            } else {
-                msg = "Error!"
-            }
-            l.stop();
-
-            bootstrapGrowl(msg);
-        }
-    });
-}));
-$(".modalSpeakUpView").on('submit', (function(e) {
-    e.preventDefault();
-
-    formObj = $(this);
-    if (!formObj.validate().form()) return false;
-
-    var formData = new FormData(this);
-    formData.append('btnSave_SpeakupView', true);
-
-    var l = Ladda.create(document.querySelector('#btnSave_SpeakupView'));
-    l.start();
-
-    $.ajax({
-        url: "function.php",
-        type: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,
-        cache: false,
-        success: function(response) {
-            if ($.trim(response)) {
-                msg = "Sucessfully Sent!";
-
-                var obj = jQuery.parseJSON(response);
-                var html = '<li>' + obj.comment + '<br>' + obj.last_modified + '</li>';
-                alert(html);
-                $('#modalSpeakUpView .modal-body ul').append(html);
-                alert(html);
-                $('.modalSpeakUpView').trigger("reset");
-            } else {
-                msg = "Error!"
-            }
-            l.stop();
-
-            bootstrapGrowl(msg);
-        }
-    });
-}));
-$("#textSpeakUp").each(function() {
-    if (this.scrollHeight == 0) {
-        setHeight = 34;
-    } else {
-        setHeight = this.scrollHeight;
-    }
-
-    this.setAttribute("style", "height:" + (setHeight) + "px; overflow-y:hidden; resize: none;");
-}).on("input", function() {
-    this.style.height = 0;
-    this.style.height = (this.scrollHeight) + "px";
-});
-
-// Sticky Notes
-function noteView(id) {
-    $.ajax({
-        type: "GET",
-        url: "function.php?modalNotes_view=" + id,
-        dataType: "html",
-        success: function(data) {
-            $("#modalNotesView .modal-body").html(data);
-            selectMulti();
-        }
-    });
-}
-
-function noteViewCopy(id) {
-    $.ajax({
-        type: "GET",
-        url: "function.php?modalNotes_view=" + id,
-        dataType: "html",
-        success: function(data) {
-            $("#modalNotesViewCopy .modal-body").html(data);
-            selectMulti();
-        }
-    });
-}
-
-function noteDelete(id) {
-    swal({
-        title: "Are you sure?",
-        text: "Your item will be deleted!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonClass: "btn-danger",
-        confirmButtonText: "Yes, confirm!",
-        closeOnConfirm: false
-    }, function() {
-        $.ajax({
-            type: "GET",
-            url: "function.php?modalNotes_delete=" + id,
-            dataType: "html",
-            success: function(response) {
-                $('#note_' + id).remove();
-            }
-        });
-        swal("Done!", "This item has been deleted.", "success");
-    });
-}
-$(".modalNotes").on('submit', (function(e) {
-    e.preventDefault();
-
-    formObj = $(this);
-    if (!formObj.validate().form()) return false;
-
-    var formData = new FormData(this);
-    formData.append('btnSave_Notes', true);
-
-    var l = Ladda.create(document.querySelector('#btnSave_Notes'));
-    l.start();
-
-    $.ajax({
-        url: "function.php",
-        type: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,
-        cache: false,
-        success: function(response) {
-            if ($.trim(response)) {
-                msg = "Sucessfully Save!";
-
-                var obj = jQuery.parseJSON(response);
-                $('#userNotes').prepend(obj.data);
-                $('#modalNotes').modal('hide');
-                $('.modalNotes').trigger("reset");
-            } else {
-                msg = "Error!"
-            }
-            l.stop();
-
-            bootstrapGrowl(msg);
-        }
-    });
-}));
-$(".modalNotesView").on('submit', (function(e) {
-    e.preventDefault();
-
-    formObj = $(this);
-    if (!formObj.validate().form()) return false;
-
-    var formData = new FormData(this);
-    formData.append('btnUpdate_Notes', true);
-
-    var l = Ladda.create(document.querySelector('#btnUpdate_Notes'));
-    l.start();
-
-    $.ajax({
-        url: "function.php",
-        type: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,
-        cache: false,
-        success: function(response) {
-            if ($.trim(response)) {
-                msg = "Sucessfully Save!";
-
-                var obj = jQuery.parseJSON(response);
-                $('#userNotes #note_' + obj.ID).html(obj.data);
-                $('#modalNotesView').modal('hide');
-                $('.modalNotesView').trigger("reset");
-            } else {
-                msg = "Error!"
-            }
-            l.stop();
-
-            bootstrapGrowl(msg);
-        }
-    });
-}));
+                        $(document).ready(function() {
+                            $(".modalForm").validate();
+                            $(".modalService").validate();
+                            $(".modalCollab").validate();
+                        
+                            // var id = '<?php echo $current_userID; ?>';
+                            // $.ajax({
+                            //     url: 'function.php?my_task='+id,
+                            //     dataType: "html",
+                            //     success: function(data){
+                            //         $(".dropdown-menu .myTask").html(data);
+                            //     }
+                            // });
+                            $(".dropdown-menu .myTask").html(0);
+                        
+                        
+                            selectMulti();
+                        
+                            var count_Facility = $('#menuFacility ul > li.hide').length;
+                            if (count_Facility < 4) {
+                                $('#menuFacility').removeClass('hide');
+                            }
+                        
+                            var count_HR = $('#menuHR ul > li.hide').length;
+                            var count_HR_total = $('#menuHR ul > li').length;
+                            if (count_HR < count_HR_total) {
+                                $('#menuHR').removeClass('hide');
+                            }
+                        
+                            var count_CMA = $('#menuCMA ul > li.hide').length;
+                            if (count_CMA < 5) {
+                                $('#menuCMA').removeClass('hide');
+                            }
+                        
+                            const myTimeout = setTimeout(googleExtras, 5000);
+                        
+                        
+                            var id = '<?php echo $current_userID; ?>';
+                            // setInterval(function() {
+                            // $.ajax({
+                            //     type: "GET",
+                            //     url: "function.php?modalChat_Refresh=" + id,
+                            //     dataType: "html",
+                            //     success: function(data) {
+                            //         // alert(data); 
+                            //         var countNotif = $('#countNotif');
+                            //         var sendMessage2 = $('#sendMessage2').hasClass('in');
+                        
+                            //         if (data > 0) {
+                            //             if (countNotif.html() != data) {
+                            //                 $('#countNotif').removeClass('hide');
+                            //                 countNotif.html(data);
+                            //                 // offCanvasChat(id);
+                        
+                            //                 if (sendMessage2 == true) {
+                            //                     var to_id = $('#sendMessage2 input[name*="to_id"]').val();
+                            //                     var from_id = $('#sendMessage2 input[name*="from_id"]').val();
+                        
+                            //                     // sendChat(to_id, from_id)
+                            //                 }
+                            //             }
+                            //         } else {
+                            //             if (countNotif.html() != data) {
+                            //                 $('#countNotif').addClass('hide');
+                            //                 countNotif.html(data);
+                            //                 // offCanvasChat(id); 
+                        
+                            //                 // alert(offCanvasChat(id)); 
+                            //                 if (sendMessage2 == true) {
+                            //                     var to_id = $('#sendMessage2 input[name*="to_id"]').val();
+                            //                     var from_id = $('#sendMessage2 input[name*="from_id"]').val();
+                        
+                            //                     // sendChat(to_id, from_id)
+                            //                 }
+                            //             }
+                            //         }
+                            //     }
+                            // });
+                            // }, 1000);
+                        });
+                        
+                        
+                        // OFFCANVAS
+                        function offCanvas(id) {
+                            if (id == 1) {
+                                $('#chatbox').toggleClass('show');
+                                $('#chatboxDrop').toggleClass('show');
+                            } else if (id == 2) {
+                                $('#stickyNote').toggleClass('show');
+                                $('#stickyNoteDrop').toggleClass('show');
+                            }
+                            // $('.offcanvas').modal({backdrop: 'static', keyboard: false}, 'show');
+                        }
+                        
+                        function offCanvasChat(id) {
+                            $.ajax({
+                                type: "GET",
+                                url: "function.php?modalChatBox_Refresh=" + id + "&p=1",
+                                dataType: "html",
+                                success: function(data) {
+                                    $('#chatbox #userList').html(data);
+                                }
+                            });
+                        }
+                        
+                        function sendChat(id, id2) {
+                            $.ajax({
+                                type: "GET",
+                                url: "function.php?modalNew_Chat=" + id + "&chat=" + id2,
+                                dataType: "html",
+                                success: function(data) {
+                                    $("#sendMessage2 .modal-body").html(data);
+                                    $('.modalMessage2').trigger("reset");
+                                }
+                            });
+                        }
+                        $("#txtSearch").keyup(function() {
+                        
+                            // Retrieve the input field text and reset the count to zero
+                            var filter = $(this).val(),
+                                count = 0;
+                        
+                            // Loop through the comment list
+                            $('#userList > div .userData').each(function() {
+                        
+                                // If the list item does not contain the text phrase fade it out
+                                if ($(this).text().search(new RegExp(filter, "i")) < 0) {
+                                    $(this).parent().parent().hide();
+                        
+                                    // Show the list item if the phrase matches and increase the count by 1
+                                } else {
+                                    $(this).parent().parent().show();
+                                    count++;
+                                }
+                            });
+                        });
+                        $(".modalMessage2").on('submit', (function(e) {
+                            e.preventDefault();
+                        
+                            var formData = new FormData(this);
+                            formData.append('btnSend_Chat', true);
+                        
+                            $.ajax({
+                                url: "function.php",
+                                type: "POST",
+                                data: formData,
+                                contentType: false,
+                                processData: false,
+                                cache: false,
+                                success: function(response) {
+                                    var obj = jQuery.parseJSON(response);
+                                    var secContainer = $('#sendMessage2 .modal-body .secContainer').first().hasClass('secSender');
+                        
+                                    if (secContainer == true) {
+                                        $('#sendMessage2 .modal-body .secContainer').first().find('.secMessage').prepend(obj.data_2);
+                                    } else {
+                                        $('#sendMessage2 .modal-body').prepend(obj.data_1);
+                                    }
+                                    $('.modalMessage2').trigger("reset");
+                                    offCanvasChat(obj.current_userID);
+                                }
+                            });
+                        }));
+                        
+                        
+                        // FOR GOOGLE TRANSLATE
+                        function googleExtras() {
+                            $('#google_translate_element > div > span').remove(); // remove Google Logo
+                            $('#google_translate_element > div').first().contents().eq(1).remove(); // remove Text
+                        }
+                        
+                        function btnLogout() {
+                            var id = '<?php echo $current_userID; ?>';
+                            window.location.href = '<?=$base_url?>function.php?logout=' + id;
+                            localStorage.setItem('islogin', 'no');
+                        
+                            // $.ajax({
+                            //     url: 'function.php?logout='+id,
+                            //     context: document.body,
+                            //     contentType: false,
+                            //     processData:false,
+                            //     cache: false,
+                            //     success: function(response) {
+                            //         window.location.href = response;
+                            //     }
+                            // });
+                        }
+                        
+                        function btnLocked() {
+                            $.jTimeout.reset(0);
+                            $('#secondsRemaining').val($.jTimeout().getSecondsTillExpiration());
+                        }
+                        
+                        function bootstrapGrowl(msg, type = "success") {
+                            $.bootstrapGrowl(msg, {
+                                ele: "body",
+                                type,
+                                offset: {
+                                    from: "top",
+                                    amount: 100
+                                },
+                                align: "right",
+                                width: 250,
+                                delay: 5000,
+                                allow_dismiss: 1,
+                                stackup_spacing: 10
+                            })
+                        }
+                        
+                        function fancyBoxes() {
+                            Fancybox.bind('[data-fancybox]', {
+                                Toolbar: {
+                                    display: [{
+                                            id: "prev",
+                                            position: "center"
+                                        },
+                                        {
+                                            id: "counter",
+                                            position: "center"
+                                        },
+                                        {
+                                            id: "next",
+                                            position: "center"
+                                        },
+                                        "zoom",
+                                        "slideshow",
+                                        "fullscreen",
+                                        "download",
+                                        "thumbs",
+                                        "close",
+                                    ],
+                                },
+                            });
+                        }
+                        
+                        function selectMulti() {
+                            $('.mt-multiselect').multiselect({
+                                widthSynchronizationMode: 'ifPopupIsSmaller',
+                                buttonTextAlignment: 'left',
+                                buttonWidth: '100%',
+                                maxHeight: 200,
+                                enableResetButton: true,
+                                enableFiltering: true,
+                                enableCaseInsensitiveFiltering: true,
+                                includeSelectAllOption: true,
+                                nonSelectedText: 'None selected'
+                            });
+                            $('.multiselect-container .multiselect-filter', $('.mt-multiselect').parent()).css({
+                                'position': 'sticky',
+                                'top': '0px',
+                                'z-index': 1,
+                            })
+                        }
+                        
+                        function serviceCat(val) {
+                            if (val == 7) {
+                                $('#serviceDesiredDueDate').addClass('hide');
+                            } else {
+                                $('#serviceDesiredDueDate').removeClass('hide');
+                            }
+                        }
+                        
+                        function btnSwitch(id) {
+                            $.ajax({
+                                type: "GET",
+                                url: "function.php?modalSwitch=" + id,
+                                dataType: "html",
+                                success: function(data) {
+                                    window.location.href = 'dashboard';
+                                }
+                            });
+                        }
+                        
+                        function set_newCookie(id) {
+                            const d = new Date();
+                            d.setTime(d.getTime() + (1 * 24 * 60 * 60 * 1000));
+                            let expires = "expires=" + d.toUTCString();
+                            document.cookie = 'user_company_id' + "=" + id + ";" + expires + ";path=/";
+                        }
+                        
+                        $(".modalService").on('submit', (function(e) {
+                            e.preventDefault();
+                        
+                            formObj = $(this);
+                            if (!formObj.validate().form()) return false;
+                        
+                            var formData = new FormData(this);
+                            formData.append('btnSave_Services', true);
+                        
+                            var l = Ladda.create(document.querySelector('#btnSave_Services'));
+                            l.start();
+                        
+                            $.ajax({
+                                url: "function.php",
+                                type: "POST",
+                                data: formData,
+                                contentType: false,
+                                processData: false,
+                                cache: false,
+                                success: function(response) {
+                                    if ($.trim(response)) {
+                                        msg = "Sucessfully Save!";
+                                        var obj = jQuery.parseJSON(response);
+                        
+                                        var html = '<tr id="tr_' + obj.ID + '">';
+                                        html += '<td>' + obj.ID + '</td>';
+                                        html += '<td>' + obj.category + '</td>';
+                                        html += '<td>';
+                                        html += '<p style="margin: 0;"><b>' + obj.title + '</b></p>';
+                                        html += '<p style="margin: 0;">' + obj.description + '</p>';
+                        
+                                        if (obj.files != "") {
+                                            html += '<p style="margin: 0;">' + obj.files + '</p>';
+                                        }
+                        
+                                        html += '</td>';
+                                        html += '<td>';
+                                        html += '<p style="margin: 0;">' + obj.contact + '</p>';
+                                        html += '<p style="margin: 0;"><a href="mailto:' + obj.email + '" target="_blank">' + obj.email + '</a></p>';
+                                        html += '</td>';
+                                        html += '<td class="text-center">' + obj.last_modified + '</td>';
+                                        html += '<td class="text-center">' + obj.due_date + '</td>';
+                                        html += '<td class="text-center">Pending</td>';
+                                        html += '<td class="text-center">';
+                                        html += '<div class="btn-group btn-group-circle">';
+                                        html += '<a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-id="' + obj.ID + '" data-toggle="modal" onclick="btnView(' + obj.ID + ')">View</a>';
+                                        html += '<a href="javascript:;" class="btn btn-outlinex green btn-sm btnDone" data-id="' + obj.ID + '" onclick="btnDone(' + obj.ID + ')">Done</a>';
+                                        html += '</div>';
+                                        html += '</td>';
+                                        html += '</tr>';
+                        
+                                        $('#tableDataServices tbody').append(html);
+                                        $('#modalService').modal('hide');
+                                    } else {
+                                        msg = "Error!"
+                                    }
+                                    l.stop();
+                        
+                                    bootstrapGrowl(msg);
+                                }
+                            });
+                        }));
+                        
+                        $(".modalCollab").on('submit', (function(e) {
+                            e.preventDefault();
+                        
+                            formObj = $(this);
+                            if (!formObj.validate().form()) return false;
+                        
+                            var formData = new FormData(this);
+                            formData.append('btnSave_Collab', true);
+                        
+                            var l = Ladda.create(document.querySelector('#btnSave_Collab'));
+                            l.start();
+                        
+                            $.ajax({
+                                url: "function.php",
+                                type: "POST",
+                                data: formData,
+                                contentType: false,
+                                processData: false,
+                                cache: false,
+                                success: function(response) {
+                                    if ($.trim(response)) {
+                                        msg = "Sucessfully Save!";
+                                        $('#modalCollab').modal('hide');
+                                    } else {
+                                        msg = "Error!"
+                                    }
+                                    l.stop();
+                        
+                                    bootstrapGrowl(msg);
+                                }
+                            });
+                        }));
+                        
+                        
+                        // Instructions Section
+                        function selectInstruction(id) {
+                            $('.selInstruction').addClass('hide');
+                            if (id == 0) {
+                                $('#selFile').removeClass('hide');
+                            } else {
+                                $('#selURL').removeClass('hide');
+                            }
+                        }
+                        function btnInstruction() {
+                            var site = '<?php echo $site; ?>';
+                            $.ajax({
+                                type: "GET",
+                                url: "function.php?modalInstruction=" + site,
+                                dataType: "html",
+                                success: function(data) {
+                                    $("#modalInstruction .modal-body").html(data);
+                                }
+                            });
+                        }
+                        $(".modalInstruction").on('submit', (function(e) {
+                            e.preventDefault();
+                        
+                            formObj = $(this);
+                            if (!formObj.validate().form()) return false;
+                        
+                            var formData = new FormData(this);
+                            formData.append('btnSave_Instruction', true);
+                        
+                            var l = Ladda.create(document.querySelector('#btnSave_Instruction'));
+                            l.start();
+                        
+                            $.ajax({
+                                url: "function.php",
+                                type: "POST",
+                                data: formData,
+                                contentType: false,
+                                processData: false,
+                                cache: false,
+                                success: function(response) {
+                                    if ($.trim(response)) {
+                                        msg = "Sucessfully Save!";
+                                        $('#modalInstruction').modal('hide');
+                                    } else {
+                                        msg = "Error!"
+                                    }
+                                    l.stop();
+                        
+                                    bootstrapGrowl(msg);
+                                }
+                            });
+                        }));
+                        function uploadNewOld(e) {
+                            $(e).parent().hide();
+                            $(e).parent().prev('.form-control').removeClass('hide');
+                        }
+                        function uploadNew(e) {
+                            $(e).parent().hide();
+                            $(e).parent().parent().find('select').removeClass('hide');
+                        }
+                        function changeType(e) {
+                            $(e).parent().find('input').hide();
+                            $(e).parent().find('input').prop('required',false);
+                            if($(e).val() == 1) {
+                                $(e).parent().find('.fileUpload').show();
+                                $(e).parent().find('.fileUpload').prop('required',true);
+                            } else if($(e).val() == 2 || $(e).val() == 3 || $(e).val() == 4) {
+                                $(e).parent().find('.fileURL').show();
+                                $(e).parent().find('.fileURL').prop('required',true);
+                            }
+                        }
+                        
+                        
+                        // Pictogram
+                        function btnPictogram(code) {
+                            $.ajax({
+                                type: "GET",
+                                url: "function.php?modalPictogram="+code,
+                                dataType: "html",
+                                success: function(data){
+                                    $("#modalPictogram .modal-body").html(data);
+                                }
+                            });
+                        }
+                        $(".modalPictogram").on('submit',(function(e) {
+                            e.preventDefault();
+                        
+                            formObj = $(this);
+                            if (!formObj.validate().form()) return false;
+                        
+                            var formData = new FormData(this);
+                            formData.append('btnSave_Pictogram',true);
+                        
+                            var l = Ladda.create(document.querySelector('#btnSave_Pictogram'));
+                            l.start();
+                        
+                            $.ajax({
+                                url: "function.php",
+                                type: "POST",
+                                data: formData,
+                                contentType: false,
+                                processData:false,
+                                cache: false,
+                                success: function(response) {
+                                    if ($.trim(response)) {
+                                        msg = "Sucessfully Save!";
+                                        $('#modalPictogram').modal('hide');
+                                    } else {
+                                        msg = "Error!"
+                                    }
+                                    l.stop();
+                        
+                                    bootstrapGrowl(msg);
+                                }        
+                            });
+                        }));
+                        
+                        // Speakup Section
+                        function btnSpeakup(id) {
+                            $.ajax({
+                                type: "GET",
+                                url: "function.php?modalSpeakup=" + id,
+                                dataType: "html",
+                                success: function(data) {
+                                    $("#modalSpeakUpView .modal-body").html(data);
+                                }
+                            });
+                        }
+                        
+                        function btnSpeakupAll(id) {
+                            $.ajax({
+                                type: "GET",
+                                url: "function.php?modalSpeakupAll=" + id,
+                                dataType: "html",
+                                success: function(data) {
+                                    $("#modalSpeakUpViewAll .modal-body table tbody").html(data);
+                                    $('#tableData_Speakup').DataTable();
+                                }
+                            });
+                        }
+                        $(".modalSpeakUp").on('submit', (function(e) {
+                            e.preventDefault();
+                        
+                            formObj = $(this);
+                            if (!formObj.validate().form()) return false;
+                        
+                            var formData = new FormData(this);
+                            formData.append('btnSave_Speakup', true);
+                        
+                            var l = Ladda.create(document.querySelector('#btnSave_Speakup'));
+                            l.start();
+                        
+                            $.ajax({
+                                url: "function.php",
+                                type: "POST",
+                                data: formData,
+                                contentType: false,
+                                processData: false,
+                                cache: false,
+                                success: function(response) {
+                                    if ($.trim(response)) {
+                                        msg = "Sucessfully Sent!";
+                        
+                                        var obj = jQuery.parseJSON(response);
+                                        $('#speakup_employee .dropdown-menu-list').prepend(obj.data);
+                                        $('#modalSpeakUp').modal('hide');
+                                        $('.modalSpeakUp').trigger("reset");
+                                    } else {
+                                        msg = "Error!"
+                                    }
+                                    l.stop();
+                        
+                                    bootstrapGrowl(msg);
+                                }
+                            });
+                        }));
+                        $(".modalSpeakUpView").on('submit', (function(e) {
+                            e.preventDefault();
+                        
+                            formObj = $(this);
+                            if (!formObj.validate().form()) return false;
+                        
+                            var formData = new FormData(this);
+                            formData.append('btnSave_SpeakupView', true);
+                        
+                            var l = Ladda.create(document.querySelector('#btnSave_SpeakupView'));
+                            l.start();
+                        
+                            $.ajax({
+                                url: "function.php",
+                                type: "POST",
+                                data: formData,
+                                contentType: false,
+                                processData: false,
+                                cache: false,
+                                success: function(response) {
+                                    if ($.trim(response)) {
+                                        msg = "Sucessfully Sent!";
+                        
+                                        var obj = jQuery.parseJSON(response);
+                                        var html = '<li>' + obj.comment + '<br>' + obj.last_modified + '</li>';
+                                        alert(html);
+                                        $('#modalSpeakUpView .modal-body ul').append(html);
+                                        alert(html);
+                                        $('.modalSpeakUpView').trigger("reset");
+                                    } else {
+                                        msg = "Error!"
+                                    }
+                                    l.stop();
+                        
+                                    bootstrapGrowl(msg);
+                                }
+                            });
+                        }));
+                        $("#textSpeakUp").each(function() {
+                            if (this.scrollHeight == 0) {
+                                setHeight = 34;
+                            } else {
+                                setHeight = this.scrollHeight;
+                            }
+                        
+                            this.setAttribute("style", "height:" + (setHeight) + "px; overflow-y:hidden; resize: none;");
+                        }).on("input", function() {
+                            this.style.height = 0;
+                            this.style.height = (this.scrollHeight) + "px";
+                        });
+                        
+                        // Sticky Notes
+                        function noteView(id) {
+                            $.ajax({
+                                type: "GET",
+                                url: "function.php?modalNotes_view=" + id,
+                                dataType: "html",
+                                success: function(data) {
+                                    $("#modalNotesView .modal-body").html(data);
+                                    selectMulti();
+                                }
+                            });
+                        }
+                        
+                        function noteViewCopy(id) {
+                            $.ajax({
+                                type: "GET",
+                                url: "function.php?modalNotes_view=" + id,
+                                dataType: "html",
+                                success: function(data) {
+                                    $("#modalNotesViewCopy .modal-body").html(data);
+                                    selectMulti();
+                                }
+                            });
+                        }
+                        
+                        function noteDelete(id) {
+                            swal({
+                                title: "Are you sure?",
+                                text: "Your item will be deleted!",
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonClass: "btn-danger",
+                                confirmButtonText: "Yes, confirm!",
+                                closeOnConfirm: false
+                            }, function() {
+                                $.ajax({
+                                    type: "GET",
+                                    url: "function.php?modalNotes_delete=" + id,
+                                    dataType: "html",
+                                    success: function(response) {
+                                        $('#note_' + id).remove();
+                                    }
+                                });
+                                swal("Done!", "This item has been deleted.", "success");
+                            });
+                        }
+                        $(".modalNotes").on('submit', (function(e) {
+                            e.preventDefault();
+                        
+                            formObj = $(this);
+                            if (!formObj.validate().form()) return false;
+                        
+                            var formData = new FormData(this);
+                            formData.append('btnSave_Notes', true);
+                        
+                            var l = Ladda.create(document.querySelector('#btnSave_Notes'));
+                            l.start();
+                        
+                            $.ajax({
+                                url: "function.php",
+                                type: "POST",
+                                data: formData,
+                                contentType: false,
+                                processData: false,
+                                cache: false,
+                                success: function(response) {
+                                    if ($.trim(response)) {
+                                        msg = "Sucessfully Save!";
+                        
+                                        var obj = jQuery.parseJSON(response);
+                                        $('#userNotes').prepend(obj.data);
+                                        $('#modalNotes').modal('hide');
+                                        $('.modalNotes').trigger("reset");
+                                    } else {
+                                        msg = "Error!"
+                                    }
+                                    l.stop();
+                        
+                                    bootstrapGrowl(msg);
+                                }
+                            });
+                        }));
+                        $(".modalNotesView").on('submit', (function(e) {
+                            e.preventDefault();
+                        
+                            formObj = $(this);
+                            if (!formObj.validate().form()) return false;
+                        
+                            var formData = new FormData(this);
+                            formData.append('btnUpdate_Notes', true);
+                        
+                            var l = Ladda.create(document.querySelector('#btnUpdate_Notes'));
+                            l.start();
+                        
+                            $.ajax({
+                                url: "function.php",
+                                type: "POST",
+                                data: formData,
+                                contentType: false,
+                                processData: false,
+                                cache: false,
+                                success: function(response) {
+                                    if ($.trim(response)) {
+                                        msg = "Sucessfully Save!";
+                        
+                                        var obj = jQuery.parseJSON(response);
+                                        $('#userNotes #note_' + obj.ID).html(obj.data);
+                                        $('#modalNotesView').modal('hide');
+                                        $('.modalNotesView').trigger("reset");
+                                    } else {
+                                        msg = "Error!"
+                                    }
+                                    l.stop();
+                        
+                                    bootstrapGrowl(msg);
+                                }
+                            });
+                        }));
                     </script>
 
 

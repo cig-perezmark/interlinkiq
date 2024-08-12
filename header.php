@@ -816,10 +816,15 @@ License: You must have a valid license purchased only from themeforest(the above
             height: 60px;
         }
 
-        .pictogram-align {
-            display: flex;
-            align-items: center;
-        }
+    .pictogram-align {
+        display: flex !important;
+        align-items: center;
+    }
+    .pictogram-align-between {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+    }
 
         body.is-loading * {
             cursor: progress !important;
@@ -1723,17 +1728,10 @@ function menu($name, $current_userEmployerID, $current_userEmployeeID)
                                     </ul>
                                 </li>
                             <?php endif; ?>
-                            <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-                                <?php if ($user_id == 108 or $user_id == 1) : ?>
-                                    <a data-toggle="modal" data-target="#modal_export" class="dropdown-toggle">
-                                        <i class="icon-cloud-upload"></i>
-                                    </a>
-                                <?php endif; ?>
-                            </li>
-                            <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
-                                <?php if ($user_id == 2 || $user_id == 1 || $user_id == 19 || $user_id == 43 || $user_id == 35 || $user_id == 54 || $user_id == 40 || $user_id == 41 || $user_id == 42 || $user_id == 178 || $user_id == 55 || $user_id == 100 || $user_id == 693 || $user_id == 88 || $user_id == 1027 || $user_id == 1360 || $user_id == 1365 || $user_id == 1366 || $user_id == 1453) : ?>
-                                    <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-
+                        </li>
+                        <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
+                            <?php if($user_id == 2 || $user_id == 1 || $user_id == 19 || $user_id == 43 || $user_id == 35 || $user_id == 54 || $user_id == 40 || $user_id == 41 || $user_id == 42 || $user_id == 178 || $user_id == 55 || $user_id == 100 || $user_id == 693 || $user_id == 88 || $user_id == 1027 || $user_id == 1360 || $user_id == 1365 || $user_id == 1366 || $user_id == 1453 || $user_id == 1481 || $user_id == 481 || $switch_user_id == 34): ?>
+                            <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                                         <i class="icon-bell"></i>
                                         <span class="badge badge-default">
                                             <?php
@@ -1743,20 +1741,21 @@ function menu($name, $current_userEmployerID, $current_userEmployeeID)
                                             while ($row = mysqli_fetch_array($result)) {
                                                 echo $row['count'];
                                             }
-                                            ?>
-                                        </span>
-                                    </a>
-                                <?php endif; ?>
-                                <ul class="dropdown-menu">
-                                    <li class="external">
-                                        <h3>
-                                            <span class="bold hide">12 pending</span> Notifications
-                                        </h3>
-                                        <a href="#">view all</a>
-                                    </li>
-                                    <li>
-                                        <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
-                                            <?php
+
+                                        ?>
+                                </span>
+                            </a>
+                            <?php endif; ?>
+                            <ul class="dropdown-menu">
+                                <li class="external">
+                                    <h3>
+                                        <span class="bold hide">12 pending</span> Notifications
+                                    </h3>
+                                    <a href="task-management">view all</a>
+                                </li>
+                                <li>
+                                    <ul class="dropdown-menu-list scroller" style="height: 250px;" data-handle-color="#637283">
+                                        <?php 
                                             $users = $user_id;
                                             $result = mysqli_query($conn, "SELECT count(*) AS count FROM tbl_user WHERE client = $current_client ORDER BY ID desc");
 

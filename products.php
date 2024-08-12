@@ -271,36 +271,36 @@
                                         <span class="icon-puzzle font-dark"></span>
                                         <span class="caption-subject font-dark bold uppercase">Products</span>
                                         <?php
-                                            if($current_client == 0) {
-                                                // $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site' AND (user_id = $switch_user_id OR user_id = $current_userEmployerID OR user_id = 163)");
-                                                $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site'");
-                                                while ($row = mysqli_fetch_assoc($result)) {
-                                                    $type_id = $row["type"];
-                                                    $file_title = $row["file_title"];
-                                                    $video_url = $row["youtube_link"];
+                                            // if($current_client == 0) {
+                                            //     // $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site' AND (user_id = $switch_user_id OR user_id = $current_userEmployerID OR user_id = 163)");
+                                            //     $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site'");
+                                            //     while ($row = mysqli_fetch_assoc($result)) {
+                                            //         $type_id = $row["type"];
+                                            //         $file_title = $row["file_title"];
+                                            //         $video_url = $row["youtube_link"];
                                                     
-                                                    $file_upload = $row["file_upload"];
-                                                    if (!empty($file_upload)) {
-                                        	            $fileExtension = fileExtension($file_upload);
-                                        				$src = $fileExtension['src'];
-                                        				$embed = $fileExtension['embed'];
-                                        				$type = $fileExtension['type'];
-                                        				$file_extension = $fileExtension['file_extension'];
-                                        	            $url = $base_url.'uploads/instruction/';
+                                            //         $file_upload = $row["file_upload"];
+                                            //         if (!empty($file_upload)) {
+                                        	   //         $fileExtension = fileExtension($file_upload);
+                                        				// $src = $fileExtension['src'];
+                                        				// $embed = $fileExtension['embed'];
+                                        				// $type = $fileExtension['type'];
+                                        				// $file_extension = $fileExtension['file_extension'];
+                                        	   //         $url = $base_url.'uploads/instruction/';
                                         
-                                                		$file_url = $src.$url.rawurlencode($file_upload).$embed;
-                                                    }
+                                            //     		$file_url = $src.$url.rawurlencode($file_upload).$embed;
+                                            //         }
                                                     
-                                                    $icon = $row["icon"];
-                                                    if (!empty($icon)) { 
-                                                        if ($type_id == 0) {
-                                                            echo ' <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
-                                                        } else {
-                                                            echo ' <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
-                                                        }
-                                                    }
-	                                            }
-                                            }
+                                            //         $icon = $row["icon"];
+                                            //         if (!empty($icon)) { 
+                                            //             if ($type_id == 0) {
+                                            //                 echo ' <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                            //             } else {
+                                            //                 echo ' <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                            //             }
+                                            //         }
+	                                           // }
+                                            // }
                                         ?>
                                     </div>
                                     <div class="actions">
@@ -449,7 +449,53 @@
                                                 </ul>
                                                 <div class="tab-content margin-top-20">
                                                     <div class="tab-pane active" id="tabBasic">
-                                                        <h4><strong>Basic Details</strong></h4>
+                                                        <h4 class="pictogram-align">
+                                                            <strong>Basic Details</strong>
+                                                            <?php
+                                                                $pictogram = 'prod_basic';
+                                                                if ($switch_user_id == 163) {
+                                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                                } else {
+                                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                                        $row = mysqli_fetch_array($selectPictogram);
+            
+                                                                        $files = '';
+                                                                        $type = 'iframe';
+                                                                        if (!empty($row["files"])) {
+                                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                                            $str_filename = '';
+            
+                                                                            foreach($arr_filename as $val_filename) {
+                                                                                $str_filename = $val_filename;
+                                                                            }
+                                                                            foreach($arr_filetype as $val_filetype) {
+                                                                                $str_filetype = $val_filetype;
+                                                                            }
+            
+                                                                            $files = $row["files"];
+                                                                            if ($row["filetype"] == 1) {
+                                                                                $fileExtension = fileExtension($files);
+                                                                                $src = $fileExtension['src'];
+                                                                                $embed = $fileExtension['embed'];
+                                                                                $type = $fileExtension['type'];
+                                                                                $file_extension = $fileExtension['file_extension'];
+                                                                                $url = $base_url.'uploads/pictogram/';
+            
+                                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                                            } else if ($row["filetype"] == 3) {
+                                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                                            }
+                                                                        }
+            
+                                                                        if (!empty($files)) {
+                                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ?>
+                                                        </h4>
                                                         <div class="row margin-bottom-20">
                                                             <div class="col-md-6 productMain">
                                                                 <p><strong>Main Product View</strong></p>
@@ -750,7 +796,53 @@
                                                         </div>
                                                     </div>
                                                     <div class="tab-pane" id="tabProductDescription">
-                                                        <h4><strong>Product Description, including Important Food Safety Characteristics</strong></h4>
+                                                        <h4 class="pictogram-align">
+                                                            <strong>Product Description, including Important Food Safety Characteristics</strong>
+                                                            <?php
+                                                                $pictogram = 'prod_desc';
+                                                                if ($switch_user_id == 163) {
+                                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                                } else {
+                                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                                        $row = mysqli_fetch_array($selectPictogram);
+            
+                                                                        $files = '';
+                                                                        $type = 'iframe';
+                                                                        if (!empty($row["files"])) {
+                                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                                            $str_filename = '';
+            
+                                                                            foreach($arr_filename as $val_filename) {
+                                                                                $str_filename = $val_filename;
+                                                                            }
+                                                                            foreach($arr_filetype as $val_filetype) {
+                                                                                $str_filetype = $val_filetype;
+                                                                            }
+            
+                                                                            $files = $row["files"];
+                                                                            if ($row["filetype"] == 1) {
+                                                                                $fileExtension = fileExtension($files);
+                                                                                $src = $fileExtension['src'];
+                                                                                $embed = $fileExtension['embed'];
+                                                                                $type = $fileExtension['type'];
+                                                                                $file_extension = $fileExtension['file_extension'];
+                                                                                $url = $base_url.'uploads/pictogram/';
+            
+                                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                                            } else if ($row["filetype"] == 3) {
+                                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                                            }
+                                                                        }
+            
+                                                                        if (!empty($files)) {
+                                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ?>
+                                                        </h4>
                                                         <div class="row">
                                                             <div class="col-md-4">
                                                                 <div class="form-group">
@@ -797,7 +889,53 @@
                                                         </div>
                                                     </div>
                                                     <div class="tab-pane" id="tabAllergens">
-                                                        <h4><strong>Allergens</strong></h4>
+                                                        <h4 class="pictogram-align">
+                                                            <strong>Allergens</strong>
+                                                            <?php
+                                                                $pictogram = 'prod_allergen';
+                                                                if ($switch_user_id == 163) {
+                                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                                } else {
+                                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                                        $row = mysqli_fetch_array($selectPictogram);
+            
+                                                                        $files = '';
+                                                                        $type = 'iframe';
+                                                                        if (!empty($row["files"])) {
+                                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                                            $str_filename = '';
+            
+                                                                            foreach($arr_filename as $val_filename) {
+                                                                                $str_filename = $val_filename;
+                                                                            }
+                                                                            foreach($arr_filetype as $val_filetype) {
+                                                                                $str_filetype = $val_filetype;
+                                                                            }
+            
+                                                                            $files = $row["files"];
+                                                                            if ($row["filetype"] == 1) {
+                                                                                $fileExtension = fileExtension($files);
+                                                                                $src = $fileExtension['src'];
+                                                                                $embed = $fileExtension['embed'];
+                                                                                $type = $fileExtension['type'];
+                                                                                $file_extension = $fileExtension['file_extension'];
+                                                                                $url = $base_url.'uploads/pictogram/';
+            
+                                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                                            } else if ($row["filetype"] == 3) {
+                                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                                            }
+                                                                        }
+            
+                                                                        if (!empty($files)) {
+                                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ?>
+                                                        </h4>
                                                         <div class="row">
                                                             <div class="col-md-4">
                                                                 <div class="form-group">
@@ -865,7 +1003,53 @@
                                                         </div>
                                                     </div>
                                                     <div class="tab-pane" id="tabDimensions">
-                                                        <h4><strong>Dimensions</strong></h4>
+                                                        <h4 class="pictogram-align">
+                                                            <strong>Dimensions</strong>
+                                                            <?php
+                                                                $pictogram = 'prod_dimension';
+                                                                if ($switch_user_id == 163) {
+                                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                                } else {
+                                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                                        $row = mysqli_fetch_array($selectPictogram);
+            
+                                                                        $files = '';
+                                                                        $type = 'iframe';
+                                                                        if (!empty($row["files"])) {
+                                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                                            $str_filename = '';
+            
+                                                                            foreach($arr_filename as $val_filename) {
+                                                                                $str_filename = $val_filename;
+                                                                            }
+                                                                            foreach($arr_filetype as $val_filetype) {
+                                                                                $str_filetype = $val_filetype;
+                                                                            }
+            
+                                                                            $files = $row["files"];
+                                                                            if ($row["filetype"] == 1) {
+                                                                                $fileExtension = fileExtension($files);
+                                                                                $src = $fileExtension['src'];
+                                                                                $embed = $fileExtension['embed'];
+                                                                                $type = $fileExtension['type'];
+                                                                                $file_extension = $fileExtension['file_extension'];
+                                                                                $url = $base_url.'uploads/pictogram/';
+            
+                                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                                            } else if ($row["filetype"] == 3) {
+                                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                                            }
+                                                                        }
+            
+                                                                        if (!empty($files)) {
+                                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ?>
+                                                        </h4>
                                                         <div class="row">
                                                             <div class="col-md-4">
                                                                 <div class="form-group">
@@ -910,7 +1094,53 @@
                                                         </div>
                                                     </div>
                                                     <div class="tab-pane" id="tabStorage">
-                                                        <h4><strong>Storage</strong></h4>
+                                                        <h4 class="pictogram-align">
+                                                            <strong>Storage</strong>
+                                                            <?php
+                                                                $pictogram = 'prod_storage';
+                                                                if ($switch_user_id == 163) {
+                                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                                } else {
+                                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                                        $row = mysqli_fetch_array($selectPictogram);
+            
+                                                                        $files = '';
+                                                                        $type = 'iframe';
+                                                                        if (!empty($row["files"])) {
+                                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                                            $str_filename = '';
+            
+                                                                            foreach($arr_filename as $val_filename) {
+                                                                                $str_filename = $val_filename;
+                                                                            }
+                                                                            foreach($arr_filetype as $val_filetype) {
+                                                                                $str_filetype = $val_filetype;
+                                                                            }
+            
+                                                                            $files = $row["files"];
+                                                                            if ($row["filetype"] == 1) {
+                                                                                $fileExtension = fileExtension($files);
+                                                                                $src = $fileExtension['src'];
+                                                                                $embed = $fileExtension['embed'];
+                                                                                $type = $fileExtension['type'];
+                                                                                $file_extension = $fileExtension['file_extension'];
+                                                                                $url = $base_url.'uploads/pictogram/';
+            
+                                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                                            } else if ($row["filetype"] == 3) {
+                                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                                            }
+                                                                        }
+            
+                                                                        if (!empty($files)) {
+                                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ?>
+                                                        </h4>
                                                         <div class="row">
                                                             <div class="col-md-3">
                                                                 <div class="form-group">
@@ -982,7 +1212,53 @@
                                                         </div>
                                                     </div>
                                                     <div class="tab-pane" id="tabManufacturing">
-                                                        <h4><strong>Manufacturing Details</strong></h4>
+                                                        <h4 class="pictogram-align">
+                                                            <strong>Manufacturing Details</strong>
+                                                            <?php
+                                                                $pictogram = 'prod_manuf';
+                                                                if ($switch_user_id == 163) {
+                                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                                } else {
+                                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                                        $row = mysqli_fetch_array($selectPictogram);
+            
+                                                                        $files = '';
+                                                                        $type = 'iframe';
+                                                                        if (!empty($row["files"])) {
+                                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                                            $str_filename = '';
+            
+                                                                            foreach($arr_filename as $val_filename) {
+                                                                                $str_filename = $val_filename;
+                                                                            }
+                                                                            foreach($arr_filetype as $val_filetype) {
+                                                                                $str_filetype = $val_filetype;
+                                                                            }
+            
+                                                                            $files = $row["files"];
+                                                                            if ($row["filetype"] == 1) {
+                                                                                $fileExtension = fileExtension($files);
+                                                                                $src = $fileExtension['src'];
+                                                                                $embed = $fileExtension['embed'];
+                                                                                $type = $fileExtension['type'];
+                                                                                $file_extension = $fileExtension['file_extension'];
+                                                                                $url = $base_url.'uploads/pictogram/';
+            
+                                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                                            } else if ($row["filetype"] == 3) {
+                                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                                            }
+                                                                        }
+            
+                                                                        if (!empty($files)) {
+                                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ?>
+                                                        </h4>
                                                         <div class="row" data-manufacturing-details="default">
                                                             <div class="col-md-4">
                                                                 <div class="form-group">
@@ -1139,7 +1415,53 @@
                                                         </div>
                                                     </div>
                                                     <div class="tab-pane" id="tabExercises">
-                                                        <h4><strong>Exercises</strong></h4>
+                                                        <h4 class="pictogram-align">
+                                                            <strong>Exercises</strong>
+                                                            <?php
+                                                                $pictogram = 'prod_exercise';
+                                                                if ($switch_user_id == 163) {
+                                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                                } else {
+                                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                                        $row = mysqli_fetch_array($selectPictogram);
+            
+                                                                        $files = '';
+                                                                        $type = 'iframe';
+                                                                        if (!empty($row["files"])) {
+                                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                                            $str_filename = '';
+            
+                                                                            foreach($arr_filename as $val_filename) {
+                                                                                $str_filename = $val_filename;
+                                                                            }
+                                                                            foreach($arr_filetype as $val_filetype) {
+                                                                                $str_filetype = $val_filetype;
+                                                                            }
+            
+                                                                            $files = $row["files"];
+                                                                            if ($row["filetype"] == 1) {
+                                                                                $fileExtension = fileExtension($files);
+                                                                                $src = $fileExtension['src'];
+                                                                                $embed = $fileExtension['embed'];
+                                                                                $type = $fileExtension['type'];
+                                                                                $file_extension = $fileExtension['file_extension'];
+                                                                                $url = $base_url.'uploads/pictogram/';
+            
+                                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                                            } else if ($row["filetype"] == 3) {
+                                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                                            }
+                                                                        }
+            
+                                                                        if (!empty($files)) {
+                                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ?>
+                                                        </h4>
                                                         <div class="row">
                                                             <div class="col-md-6">
                                                                 <div class="form-group">
@@ -1156,7 +1478,53 @@
                                                         </div>
                                                     </div>
                                                     <div class="tab-pane" id="tabDocuments">
-                                                        <h4><strong>Documents</strong></h4>
+                                                        <h4 class="pictogram-align">
+                                                            <strong>Documents</strong>
+                                                            <?php
+                                                                $pictogram = 'prod_docs';
+                                                                if ($switch_user_id == 163) {
+                                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                                } else {
+                                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                                        $row = mysqli_fetch_array($selectPictogram);
+            
+                                                                        $files = '';
+                                                                        $type = 'iframe';
+                                                                        if (!empty($row["files"])) {
+                                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                                            $str_filename = '';
+            
+                                                                            foreach($arr_filename as $val_filename) {
+                                                                                $str_filename = $val_filename;
+                                                                            }
+                                                                            foreach($arr_filetype as $val_filetype) {
+                                                                                $str_filetype = $val_filetype;
+                                                                            }
+            
+                                                                            $files = $row["files"];
+                                                                            if ($row["filetype"] == 1) {
+                                                                                $fileExtension = fileExtension($files);
+                                                                                $src = $fileExtension['src'];
+                                                                                $embed = $fileExtension['embed'];
+                                                                                $type = $fileExtension['type'];
+                                                                                $file_extension = $fileExtension['file_extension'];
+                                                                                $url = $base_url.'uploads/pictogram/';
+            
+                                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                                            } else if ($row["filetype"] == 3) {
+                                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                                            }
+                                                                        }
+            
+                                                                        if (!empty($files)) {
+                                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ?>
+                                                        </h4>
                                                         <div class="row">
                                                             <div class="col-md-6">
                                                                 <div class="form-group">
@@ -1566,7 +1934,53 @@
                                     <form method="post" enctype="multipart/form-data" class="modalForm modalNewLab">
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                            <h4 class="modal-title">New Lab</h4>
+                                            <h4 class="modal-title pictogram-align">
+                                                New Lab
+                                                <?php
+                                                    $pictogram = 'prod_lab_add';
+                                                    if ($switch_user_id == 163) {
+                                                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                    } else {
+                                                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                            $row = mysqli_fetch_array($selectPictogram);
+
+                                                            $files = '';
+                                                            $type = 'iframe';
+                                                            if (!empty($row["files"])) {
+                                                                $arr_filename = explode(' | ', $row["files"]);
+                                                                $arr_filetype = explode(' | ', $row["filetype"]);
+                                                                $str_filename = '';
+
+                                                                foreach($arr_filename as $val_filename) {
+                                                                    $str_filename = $val_filename;
+                                                                }
+                                                                foreach($arr_filetype as $val_filetype) {
+                                                                    $str_filetype = $val_filetype;
+                                                                }
+
+                                                                $files = $row["files"];
+                                                                if ($row["filetype"] == 1) {
+                                                                    $fileExtension = fileExtension($files);
+                                                                    $src = $fileExtension['src'];
+                                                                    $embed = $fileExtension['embed'];
+                                                                    $type = $fileExtension['type'];
+                                                                    $file_extension = $fileExtension['file_extension'];
+                                                                    $url = $base_url.'uploads/pictogram/';
+
+                                                                    $files = $src.$url.rawurlencode($files).$embed;
+                                                                } else if ($row["filetype"] == 3) {
+                                                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                                }
+                                                            }
+
+                                                            if (!empty($files)) {
+                                                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                            }
+                                                        }
+                                                    }
+                                                ?>
+                                            </h4>
                                         </div>
                                         <div class="modal-body"></div>
                                         <div class="modal-footer">
@@ -1583,7 +1997,53 @@
                                     <form method="post" enctype="multipart/form-data" class="modalForm modalEditLab">
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                            <h4 class="modal-title">Lab Details</h4>
+                                            <h4 class="modal-title pictogram-align">
+                                                Lab Details
+                                                <?php
+                                                    $pictogram = 'prod_lab_edit';
+                                                    if ($switch_user_id == 163) {
+                                                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                    } else {
+                                                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                            $row = mysqli_fetch_array($selectPictogram);
+
+                                                            $files = '';
+                                                            $type = 'iframe';
+                                                            if (!empty($row["files"])) {
+                                                                $arr_filename = explode(' | ', $row["files"]);
+                                                                $arr_filetype = explode(' | ', $row["filetype"]);
+                                                                $str_filename = '';
+
+                                                                foreach($arr_filename as $val_filename) {
+                                                                    $str_filename = $val_filename;
+                                                                }
+                                                                foreach($arr_filetype as $val_filetype) {
+                                                                    $str_filetype = $val_filetype;
+                                                                }
+
+                                                                $files = $row["files"];
+                                                                if ($row["filetype"] == 1) {
+                                                                    $fileExtension = fileExtension($files);
+                                                                    $src = $fileExtension['src'];
+                                                                    $embed = $fileExtension['embed'];
+                                                                    $type = $fileExtension['type'];
+                                                                    $file_extension = $fileExtension['file_extension'];
+                                                                    $url = $base_url.'uploads/pictogram/';
+
+                                                                    $files = $src.$url.rawurlencode($files).$embed;
+                                                                } else if ($row["filetype"] == 3) {
+                                                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                                }
+                                                            }
+
+                                                            if (!empty($files)) {
+                                                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                            }
+                                                        }
+                                                    }
+                                                ?>
+                                            </h4>
                                         </div>
                                         <div class="modal-body"></div>
                                         <div class="modal-footer">
@@ -1752,11 +2212,6 @@
                 $('#'+view+' form')[0].reset();
                 $('#'+view+' form table tbody').html('');
                 $('#'+view+' form #image_preview').html('');
-            }
-            
-            function uploadNew(e) {
-                $(e).parent().hide();
-                $(e).parent().prev('.form-control').removeClass('hide');
             }
 
             function inputInvalid(modal) {

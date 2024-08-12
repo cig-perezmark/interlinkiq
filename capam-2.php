@@ -1307,10 +1307,6 @@
                 $(this).addClass('active');
             })
 
-            function uploadNew(e) {
-                $(e).parent().hide();
-                $(e).parent().prev('.form-control').removeClass('hide');
-            }
             function btnCategory(e) {
                 $(e).parent().next('.form-control').toggleClass('hide');
             }

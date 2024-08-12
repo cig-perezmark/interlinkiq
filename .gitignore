@@ -87,6 +87,6 @@ function-99.php
 rvm-2.php
 wp-*
 
-
 .htaccess
 .vscode
+function-*.php

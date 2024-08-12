@@ -590,21 +590,6 @@
                 }();
                 jQuery(document).ready(function(){FormRepeater.init()});
             }
-            function uploadNew(e) {
-                $(e).parent().hide();
-                $(e).parent().parent().find('select').removeClass('hide');
-            }
-            function changeType(e) {
-                $(e).parent().find('input').hide();
-                $(e).parent().find('input').prop('required',false);
-                if($(e).val() == 1) {
-                    $(e).parent().find('.fileUpload').show();
-                    $(e).parent().find('.fileUpload').prop('required',true);
-                } else if($(e).val() == 2 || $(e).val() == 3) {
-                    $(e).parent().find('.fileURL').show();
-                    $(e).parent().find('.fileURL').prop('required',true);
-                }
-            }
             function btnNew(id) {
                 $.ajax({    
                     type: "GET",

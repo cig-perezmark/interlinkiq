@@ -268,6 +268,7 @@ if(isset($_GET['pdf'])) {
                 -- conditions
                 WHERE MD5(aw.id) = ?
                     AND aw.deleted_at IS NULL
+                    AND ipr.deleted_at IS NULL
                     
                 -- other clauses
                 GROUP BY aw.id

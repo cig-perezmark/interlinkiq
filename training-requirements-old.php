@@ -102,31 +102,47 @@
                                     <div class="caption">
                                         <i class="icon-graduation font-dark"></i>
                                         <span class="caption-subject font-dark bold uppercase">Training Requirements</span>
-                                    </div>
-                                    <div class="actions">
-                                        <div class="btn-group">
-                                            <a class="btn dark btn-outline btn-circle btn-sm" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Actions
-                                                <i class="fa fa-angle-down"></i>
-                                            </a>
-                                            <ul class="dropdown-menu pull-right">
-                                                <li>
-                                                    <a data-toggle="modal" href="#modalNew" onclick="btnNew(1)">Add New Training</a>
-                                                </li>
-                                                <li class="divider"> </li>
-                                                <li>
-                                                    <a href="javascript:;">Option 2</a>
-                                                </li>
-                                                <li>
-                                                    <a href="javascript:;">Option 3</a>
-                                                </li>
-                                                <li>
-                                                    <a href="javascript:;">Option 4</a>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                        <?php
+                                            if($current_client == 0) {
+                                                // $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site' AND (user_id = $switch_user_id OR user_id = $current_userEmployerID OR user_id = 163)");
+                                                $result = mysqli_query($conn, "SELECT * FROM tbl_pages_demo_video WHERE page = '$site'");
+                                                while ($row = mysqli_fetch_assoc($result)) {
+                                                    $type_id = $row["type"];
+                                                    $file_title = $row["file_title"];
+                                                    $video_url = $row["youtube_link"];
+                                                    
+                                                    $file_upload = $row["file_upload"];
+                                                    if (!empty($file_upload)) {
+                                        	            $fileExtension = fileExtension($file_upload);
+                                        				$src = $fileExtension['src'];
+                                        				$embed = $fileExtension['embed'];
+                                        				$type = $fileExtension['type'];
+                                        				$file_extension = $fileExtension['file_extension'];
+                                        	            $url = $base_url.'uploads/instruction/';
+                                        
+                                                		$file_url = $src.$url.rawurlencode($file_upload).$embed;
+                                                    }
+                                                    
+                                                    $icon = $row["icon"];
+                                                    if (!empty($icon)) { echo '<img src="'.$src.$url.rawurlencode($icon).'" style="width: 32px; height: 32px; object-fit: contain; object-position: center;" />'; }
+                                                    if ($type_id == 0) {
+                                                        echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'">'.$file_title.'</a>';
+                                                    } else {
+                                                        echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox>'.$file_title.'</a>';
+                                                    }
+	                                            }
+                                                
+                                                if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163) {
+                                                    echo ' <a data-toggle="modal" data-target="#modalInstruction" class="btn btn-circle btn-success btn-xs" onclick="btnInstruction()">Add New Instruction</a>';
+                                                }
+                                            }
+                                        ?>
                                     </div>
                                 </div>
                                 <div class="portlet-body">
+                                    
+                                    
+                                        
                                     <?php
                                         if ($current_client == 1) {
                                             echo '<div class="table-responsive">
@@ -167,11 +183,11 @@
                                                             ORDER BY e.last_name" );
                                                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                             while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
-                                                                $employee_ID = htmlentities($rowEmployee['e_ID'] ?? '');
-                                                                $employee_user_ID = htmlentities($rowEmployee['u_ID'] ?? '');
+                                                                $employee_ID = $rowEmployee['e_ID'];
+                                                                $employee_user_ID = $rowEmployee['u_ID'];
 
                                                                 $position = array();
-                                                                $jd = htmlentities($rowEmployee["e_job_description_id"] ?? '');
+                                                                $jd = $rowEmployee["e_job_description_id"];
                                                                 if (!empty($jd)) {
                                                                     $jd_arr = explode(", ", $jd);
                                                                     foreach ($jd_arr as $value) {
@@ -257,7 +273,7 @@
                                                     <div class="col-sm-3">
                                                         <h5 class="legend">
                                                             <div class="training added"></div>
-                                                            Training Incomplete
+                                                            Training Added w/ No Training Record
                                                         </h5>
                                                     </div>
                                                     <div class="col-sm-3">
@@ -280,174 +296,133 @@
                                                         <tr>
                                                             <th>Employee Name</th>
                                                             <th>Position</th>';
-
-                                                            $arr_training = array();
-                                                            $selectTraining = mysqli_query( $conn,"SELECT ID, title, job_description_id, quiz_id FROM tbl_hr_trainings WHERE status = 1 AND deleted = 0 AND user_id = $switch_user_id ORDER BY title" );
-                                                            if ( mysqli_num_rows($selectTraining) > 0 ) {
-                                                                while($rowTraining = mysqli_fetch_array($selectTraining)) {
-                                                                    $output = array (
-                                                                        'ID'  =>  $rowTraining["ID"],
-                                                                        'jd_id'  =>  $rowTraining["job_description_id"],
-                                                                        'q_id'  =>  $rowTraining["quiz_id"]
-                                                                    );
-                                                                    array_push($arr_training, $output);
-                                                                    echo '<td><a href="#modalViewTraining" class="btn btn-link btn-sm" data-toggle="modal" onclick="btnViewTraining('.$rowTraining["ID"].')">'.htmlentities($rowTraining["title"] ?? '').'</a></td>';
+                                                            $result = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_trainings WHERE status = 1 AND deleted = 0 AND user_id = $switch_user_id" );
+                                                            if ( mysqli_num_rows($result) > 0 ) {
+                                                                $i=0;
+                                                                while($row = mysqli_fetch_array($result)) {
+                                                                    echo '<td><a href="#modalViewTraining" class="btn btn-link btn-sm" data-toggle="modal" onclick="btnViewTraining('.$row["ID"].')">'.htmlentities($row["title"] ?? '').'</a></td>';
                                                                 }
                                                             }
                                                         echo '</tr>
                                                     </thead>
                                                     <tbody>';
-                                                    
-                                                        $arr_employee = array();
-                                                        $selectData = mysqli_query( $conn,"
-                                                            SELECT
-                                                            u_ID,
-                                                            e_ID,
-                                                            e_user_id,
-                                                            e_first_name,
-                                                            e_last_name,
-                                                            e_job_description_id,
-                                                            j_title,
-                                                            t.ID AS t_ID,
-                                                            t.title AS t_title,
-                                                            t.job_description_id AS t_job_description_id,
-                                                            t.quiz_id AS t_quiz_id,
-                                                            q.quiz_id AS q_quiz_id,
-                                                            q.max_ID AS q_max_ID,
-                                                            q.result AS q_result,
-                                                            q.last_modified AS q_last_modified
-
-                                                            FROM (
-                                                                SELECT
-                                                                u.ID AS u_ID,
-                                                                e.ID AS e_ID,
-                                                                e.user_id AS e_user_id,
-                                                                e.first_name AS e_first_name,
-                                                                e.last_name AS e_last_name,
-                                                                e.job_description_id AS e_job_description_id,
-                                                                GROUP_CONCAT(j.title SEPARATOR ', ') AS j_title
-
-                                                                FROM tbl_hr_employee AS e
-
-                                                                LEFT JOIN (
-                                                                    SELECT
-                                                                    *
-                                                                    FROM tbl_hr_job_description
-                                                                    WHERE user_id = $switch_user_id
-                                                                    AND status = 1
-                                                                ) AS j
-                                                                ON FIND_IN_SET(j.ID, REPLACE(e.job_description_id, ' ', '')) > 0
-
-                                                                RIGHT JOIN (
-                                                                    SELECT
-                                                                    *
-                                                                    FROM tbl_user
-                                                                    WHERE is_verified = 1
-                                                                    AND is_active = 1
-                                                                ) AS u
-                                                                ON u.employee_id = e.ID
-
-                                                                WHERE e.user_id = $switch_user_id
-                                                                AND e.suspended = 0 
-                                                                AND e.status = 1 
-
-                                                                GROUP BY e.ID
-                                                            ) r
-
-                                                            LEFT JOIN (
-                                                                SELECT 
-                                                                ID, 
-                                                                user_id,
-                                                                title, 
-                                                                job_description_id, 
-                                                                quiz_id 
-                                                                FROM tbl_hr_trainings 
-                                                                WHERE status = 1 
-                                                                AND deleted = 0 
-                                                            ) AS t
-                                                            ON t.user_id = r.e_user_id
-
-                                                            LEFT JOIN (
-                                                                SELECT MAX(ID) AS max_ID, user_id, quiz_id, result, start_time, end_time, signature, last_modified
-                                                                FROM tbl_hr_quiz_result
-                                                                WHERE result = 100
-                                                                GROUP BY quiz_id, user_id
-                                                            ) AS q
-                                                            ON r.u_ID = q.user_id
-                                                            AND t.quiz_id = q.quiz_id
-
-                                                            -- WHERE r.u_ID = 43
-
-                                                            ORDER BY e_last_name, t_title
-                                                        " );
-                                                        if ( mysqli_num_rows($selectData) > 0 ) {
-                                                            while($rowData = mysqli_fetch_array($selectData)) {
-                                                                $u_ID = htmlentities($rowData['u_ID'] ?? '');
-                                                                $e_ID = htmlentities($rowData['e_ID'] ?? '');
-                                                                $t_ID = htmlentities($rowData['t_ID'] ?? '');
-                                                                $e_first_name = htmlentities($rowData['e_first_name'] ?? '');
-                                                                $e_last_name = htmlentities($rowData['e_last_name'] ?? '');
-                                                                $j_title = htmlentities($rowData['j_title'] ?? '');
-
-                                                                if (!in_array($u_ID, $arr_employee)) {
-                                                                    array_push($arr_employee, $u_ID);
-                                                                    $arr_employee_count = 0;
-
-                                                                    echo '<tr id="tr_'.$e_ID.'">
-                                                                        <td><a href="#modalViewEmployee" class="btn btn-link btn-sm" data-toggle="modal" onclick="btnViewEmployee('.$e_ID.')">'.$e_last_name.', '.$e_first_name.'</a></td>
-                                                                        <td>'.$j_title.'</td>';
+                                                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE user_id = $switch_user_id AND suspended = 0 AND status = 1 ORDER BY last_name" );
+                                                        if ( mysqli_num_rows($selectEmployee) > 0 ) {
+                                                            while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
+                                                                $employee_ID = htmlentities($rowEmployee['ID'] ?? '');
+                                                                $employee_first_name = htmlentities($rowEmployee['first_name'] ?? '');
+                                                                $employee_last_name = htmlentities($rowEmployee['last_name'] ?? '');
+                                                                $employee_type = htmlentities($rowEmployee['type_id'] ?? '');
+                                                                $type_arr = array(
+                                                                    1 => 'Full-time',
+                                                                    2 => 'Part-time',
+                                                                    3 => 'OJT',
+                                                                    4 => 'Freelance',
+                                                                    5 => 'OJT Crossover',
+                                                                    6 => 'Trainee',
+                                                                    7 => 'Consultant'
+                                                                );
+    
+                                                                $position = array();
+                                                                $jd = $rowEmployee["job_description_id"];
+                                                                if (!empty($jd)) {
+                                                                    $jd_arr = explode(", ", $jd);
+                                                                    foreach ($jd_arr as $value) {
+                                                                        $resultJD = mysqli_query( $conn,"SELECT title FROM tbl_hr_job_description WHERE ID = $value" );
+                                                                        if ( mysqli_num_rows($resultJD) > 0 ) {
+                                                                            $rowJD = mysqli_fetch_array($resultJD);
+                                                                            array_push($position, htmlentities($rowJD["title"] ?? ''));
+                                                                        }
+                                                                    }
                                                                 }
-
-                                                                        if (!empty($rowData['q_quiz_id']) AND !empty($rowData['e_job_description_id']) AND !empty($rowData['t_job_description_id'])) {
-
-                                                                            $e_job_description_id = $rowData['e_job_description_id'];
-                                                                            $t_job_description_id = $rowData['t_job_description_id'];
-                                                                            $arr_jd_id_emp = explode(", ", $e_job_description_id);
-                                                                            $arr_jd_id_training = explode(", ", $t_job_description_id);
-                                                                            if (array_intersect($arr_jd_id_emp, $arr_jd_id_training)) {
+                                                                $position = implode(', ', $position);
+    
+                                                                echo '<tr id="tr_'.$employee_ID.'">
+                                                                    <td><a href="#modalViewEmployee" class="btn btn-link btn-sm" data-toggle="modal" onclick="btnViewEmployee('.$employee_ID.')">'.$employee_last_name.', '.$employee_first_name.'</a></td>
+                                                                    <td>'.$position.'</td>';
+    
+                                                                    $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE status = 1 AND deleted = 0 AND user_id = $switch_user_id" );
+                                                                    if ( mysqli_num_rows($result) > 0 ) {
+                                                                        $i=0;
+                                                                        while($row = mysqli_fetch_array($result)) {
+    
+                                                                            $found = null;
+                                                                            $array_rowEmployee = explode(", ", $rowEmployee["job_description_id"]);
+                                                                            $array_rowTraining = explode(", ", $row["job_description_id"]);
+                                                                            foreach($array_rowEmployee as $emp_JD) {
+                                                                                if (in_array($emp_JD,$array_rowTraining)) {
+                                                                                    $found = true;
+                                                                                }
+                                                                            }
+    
+                                                                            if ( $found == true ) {
+                                                                                $trainingResult = 0;
+                                                                                $completed_date = '';
+                                                                                $due_date = '';
+    
+                                                                                $selectUser = mysqli_query( $conn,"SELECT ID FROM tbl_user WHERE employee_id = $employee_ID" );
+                                                                                if ( mysqli_num_rows($selectUser) > 0 ) {
+                                                                                    $rowUser = mysqli_fetch_array($selectUser);
+                                                                                    $employee_user_ID = $rowUser['ID'];
+    
+                                                                                    $selectQuizResult = mysqli_query( $conn,"SELECT ID, quiz_id, result, last_modified FROM tbl_hr_quiz_result WHERE user_id = $employee_user_ID " );
+                                                                                    if ( mysqli_num_rows($selectQuizResult) > 0 ) {
+                                                                                        while($rowQuizResult = mysqli_fetch_array($selectQuizResult)) {
+                                                                                            $trainingResultID = $rowQuizResult['ID'];
+                                                                                            $trainingQuizID = $rowQuizResult['quiz_id'];
+    
+                                                                                            if (!empty($row['quiz_id'])) {
+                                                                                                $array_quiz_id = explode(', ', $row['quiz_id']);
+                                                                                                if (in_array($trainingQuizID, $array_quiz_id)) {
+                                                                                                    $trainingResult = $rowQuizResult['result'];
                                                                                     
-                                                                                $trainingResult = $rowData['q_result'];
-                                                                                $completed_date = $rowData['q_last_modified'];
-                                                                                $completed_date = new DateTime($completed_date);
-                                                                                $completed_date_o = $completed_date->format('Y/m/d');
-                                                                                $completed_date = $completed_date->format('M d, Y');
+                                                                                                    $completed_date = $rowQuizResult['last_modified'];
+                                                                                                    $completed_date = new DateTime($completed_date);
+                                                                                                    $completed_date_o = $completed_date->format('Y/m/d');
+                                                                                                    $completed_date = $completed_date->format('M d, Y');
+                                                                                                    
+                                                                                                    $due_date = date('Y-m-d', strtotime('+1 year', strtotime($completed_date)) );
+                                                                                                    $due_date = new DateTime($due_date);
+                                                                                                    $due_date_o = $due_date->format('Y/m/d');
+                                                                                                    $due_date = $due_date->format('M d, Y');
     
-                                                                                $due_date = date('Y-m-d', strtotime('+1 year', strtotime($completed_date)) );
-                                                                                $due_date = new DateTime($due_date);
-                                                                                $due_date_o = $due_date->format('Y/m/d');
-                                                                                $due_date = $due_date->format('M d, Y');
-    
-                                                                                $current_date = date('M d, Y');
-                                                                                $current_date = new DateTime($current_date);
-                                                                                $current_date_o = $current_date->format('Y/m/d');
-                                                                                $current_date = $current_date->format('M d, Y');
-    
-                                                                                if ($trainingResult == 100) {
-                                                                                    if ($current_date_o >= $due_date_o) {
-                                                                                        echo '<td class="training expired"><a href="#modalView" type="button" class="btn btn-outline btn-transparent btn-sm sbold default" data-toggle="modal" onclick="btnView('.$rowData['u_ID'].', '.$rowData['t_ID'].')">'.$completed_date.'</a></td>';
+                                                                                                    $current_date = date('M d, Y');
+                                                                                                    $current_date = 'Oct 27, 2022';
+                                                                                                    $current_date = new DateTime($current_date);
+                                                                                                    $current_date_o = $current_date->format('Y/m/d');
+                                                                                                    $current_date = $current_date->format('M d, Y');
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                        if ($trainingResult == 100) {
+                                                                                            if ($current_date_o >= $due_date_o) {
+                                                                                                echo '<td class="training expired">'.$completed_date.'</td>';
+                                                                                            } else {
+                                                                                                echo '<td class="training completed"><a href="#modalView" type="button" class="btn btn-outline btn-transparent btn-sm sbold default" data-toggle="modal" onclick="btnView('.$employee_user_ID.', '.$row['ID'].')">'.$completed_date.'</a></td>';
+                                                                                            }
+                                                                                        } else {
+                                                                                            echo '<td class="training added"></td>';
+                                                                                        }
                                                                                     } else {
-                                                                                        echo '<td class="training completed"><a href="#modalView" type="button" class="btn btn-outline btn-transparent btn-sm sbold default" data-toggle="modal" onclick="btnView('.$rowData['u_ID'].', '.$rowData['t_ID'].')">'.$completed_date.'</a></td>';
+                                                                                        echo '<td class="training added"></td>';
                                                                                     }
                                                                                 } else {
-                                                                                    echo '<td class="training added"></td>';
+                                                                                    echo '<td class="training not-applicable"></td>';
                                                                                 }
                                                                             } else {
                                                                                 echo '<td></td>';
                                                                             }
-                                                                        } else {
-                                                                            echo '<td></td>';
                                                                         }
-                                                                        $arr_employee_count++;
+                                                                    }
     
-                                                                if (count($arr_training) == $arr_employee_count) {
-                                                                    echo '</tr>';
-                                                                }
+                                                                echo '</tr>';
                                                             }
                                                         }
                                                     echo '</tbody>
                                                 </table>
                                             </div>';
                                         }
+                                    
                                     ?>
                                 </div>
                             </div>

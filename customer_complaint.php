@@ -104,12 +104,12 @@
                                                 <tr id="care_row<?php echo $row['care_id'] ?>">
                                                     <td class="<?php echo $current_client == 1 ? 'hide':''; ?>"><?php echo $row['care_id'] ?></td>
                                                     <td><?php echo $cam_date ?></td>
-                                                    <td><?php echo $row['cusName'] ?></td>
+                                                    <td><?php echo htmlentities($row['cusName'] ?? '') ?></td>
                                                     <td class="<?php echo $current_client == 1 ? '':'hide'; ?>"><?php echo $complaint_type ?></td>
                                                     <td class="<?php echo $current_client == 1 ? '':'hide'; ?>"><?php echo $complaint_category ?></td>
-                                                    <td class="<?php echo $current_client == 1 ? 'hide':''; ?>"><?php echo $row['cusAddress'] ?></td>
-                                                    <td class="<?php echo $current_client == 1 ? 'hide':''; ?>"><?php echo $row['phoneNo'] ?></td>
-                                                    <td><?php echo $row['product_name'] ?></td>
+                                                    <td class="<?php echo $current_client == 1 ? 'hide':''; ?>"><?php echo htmlentities($row['cusAddress'] ?? '') ?></td>
+                                                    <td class="<?php echo $current_client == 1 ? 'hide':''; ?>"><?php echo htmlentities($row['phoneNo'] ?? '') ?></td>
+                                                    <td><?php echo htmlentities($row['product_name'] ?? '') ?></td>
                                                     <td class="text-center <?php echo $current_client == 1 ? 'hide':''; ?>">
                                                         <div class="btn-group btn-group">
                             	                            <a  href="#modal_capa" data-toggle="modal" type="button" id="update_capa" data-id="<?= $row['care_id']; ?>" class="btn btn-outline dark btn-sm">ICAR</a>

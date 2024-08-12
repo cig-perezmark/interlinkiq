@@ -11,6 +11,7 @@
     $arnel_signature_spi .= 'Xr1+czBDFkyJDR+fn51keOHFnB3KLRaDwXLFjwx5MnT9hFxPn9+vVbOGDAgF9iYmK8586dG8G4eHK5vNGUKVMaXLx48RcAvC5duiyxt7efM3DgQB0TjQwODsaKFSvKbS1SKpXl9hR17NhxeUhISCzDbDweD7GxscjKyjL6L02bNr3s6+u7LTY2dkS56gGFInj06NG/btiwoWfjxo3zZDIZLly4gC1btsDBwQF5eXlhYrE4SKvV1uLz+UldunTZ9cknnxwsKChIbtasGUaNGtXt9OnTK4nelPPnz18sl8v1xcXF2L59+yA2g2s0Gl5cXFwAgNy+ffvOyMzMVEVERJQ7Y6VGjRqnRo0aNdvBwUE8ZsyY82wmqVOnzqnZs2dPcHNzi+fxeIiKioJMJhOxz6vMzs42ntAdFBT0eWBg4IWnT5/i77zJx8fH5+8x3LuAKlWqKPv3779q+fLlP5rRgLeqVq06PSws7JzBYIBpBYS5NAaD1OLiYpSWlkKlUkGtVkMqlaJz585wcHCAUCiU0GuU2JAeGBi4e9KkSXv5fP6NR48eYffu3T+wooiPunfvvvV///tf+P79+wscHBzg7u6OyMhIJCUlvbB/x8nJ6VK3bt1mzp49OyI5OVl8+vTpL1QqlRcA/sOHDweyfarmzZtvr1Wr1orvvvvuzp07d3Dt2jUnAHqS2oLTp0//SnnR+C5dusxdvHjx7mnTpuHKlSvGRgYNGvRCUrdjx47bz58/31Kn01WpVq3aiWXLlq1kzo1kglZqtRr5+fnGBLVUKsXHH3+8OjY2dgBMCsHT09NbDRs2bM3evXs/7dSpkyY4ONh4wE/Dhg0T+/Xr187f39/p6tWr2fPmzVMzFTTjxo1r+9NPP20BVRE1aNDggEqlilmyZAlq1qzZKC4urlyqxtbWNjY0NHRLixYt9n/44YdPHz9+jPnz5/OioqLGWltb327Tps3Rzz77bFfz5s1VV65cacW4EjweL6dbt26r161bt9LBwaHkzJkzcHR0xMqVK3Ho0KHU2bNn69makMvlprRv337e4MGDN1epUsV4YvY/FjR5F6VdXC4X06ZN23jt2jWHq1evfq7T6dzEYvHToKCg3UOGDPlh9+7dhQqF4m8hQqfToVatWnBwcIBer4dEIil0dnZ+kJGR4WJjY/PIzc3tYI0aNX5s37790969e+PRo0fo2rUrVCrVtIyMjAYSiSQ3MzMzYtCgQXIej4fi4mI4OzujR48e0Ov1SE9PH7N169bZAoGgicFgyPf39z8wbNiwnzIyMlQ6nQ7NmzdXTpgw4Zvly5evBuDIaG47O7srLVq0WDd37tzfz58/j7y8PPTo0QNt27aNad++/bTr168vASDg8XjZwcHBu6dNm7ZQLpdn8/n8ciF5g8EAmexFy2v06NEHjhw5kiCRSDy6d+8e4e3tXWr6lpoGDRrA39+/XCVGu3bt7kRGRoZduXLlhYBHQUHBoPDw8AcdO3Zc5ObmhrCwMOTn5yM1NRUeHh4qNze3Z97e3pDJZEhOTsbBgwe7btiwYRsAB5aP3mT16tVbbt++7aHVapszPp1EIkns3r37lqlTp65v1KhRXnJyMuRyOWrVqoV9+/YtKy4u3vjjjz8WdurUCQAwbdo0PHjwIL1x48a7ZTJZ/GeffbanZcuWj6pWrYrc3FzI5XIkJydDKBRCqVTeEolEcWq12t3T0/Ohi4vLpXHjxq3jcrlPCwsL32k97T+ah2NertG3b9/FgwcP/jUnJ6e1k5PT0YCAACNhvUmbWq1Ww83NTbNly5bBy5cvD27YsOFxhUIhZxLGRUVFsLW1hZWVFby9vW8FBATcEggEOHLkCEpLS42JaybRS8nq5BEjRoxs3bo1V6VS6QsLC+Ht7Y3Hjx8bq1CWLFmyy8fH52ZycnIHvV6P+Pj4i3w+P9rT0xN8Pt9oKuv1ehQUFBjGjx+/Mi4u7mZCQkLzbt26HezcuXO8XC7H+fPnzRaVm1srtVoNBweH2zVq1Ljt5ORk1PhsYOpJ2QxMr7Fa3KtXrwGmxQQAcOjQoa+3bdt2avjw4TfEYjHCwsKwbt06uLu7Izk5GcOGDYNGo+HNmzdv7KlTp5aZpE7ybWxs7t64cWMAK11TEBQUtK1Zs2bfz5kzJ4PD4aCgoAAKhcJ4wjKXy4WLi0shU9RdUlKClStXQigUPl6xYsUgT09PBAQEGC0a5kyV1NRUpgStZNasWd3kcjmnW7dujyMjIw1BQUE4d+7c+1Np8rovtWPKbV4VGFOwZcuWTwIDA59ERESguLgYb/KVtOzxaLVatGjRIq1nz5575HI5CgoKylXVMMSr0WiMFfumBM1uT6VSMffomePnmEVnoLi4GH379o11cHCIBYCZM2fi0aNHZo8qYA6Z7d69e4RGo4nw8/NDSUnJax3qxNQTMr4JW5Mxm3DNRY+bNm2aExgYOP/ChQvhZpq1WbFixUx/f/9ejFk6ffp02NnZYeHChbh+/bp0+fLlqx4+fFguZC8UCnP69u0b0r1797ObN29ucO7cuc1SqdRu1qxZocHBwX+eOXMGRUVFEIlEL1g0THKaLRikUikEAgFUKhUUCkW5F3kwJXZubm7g8XgoLS2Fh4fH44yMDOPOi7f14s3XZrgVK1a8ciOenp7w8vKCUChEw4YNzRLpy4CRvu/itDCVSmXc+v8mmboyQVNaWgp7e3toNJqXmusGgwEKheKtEQazS57L5Zods06nw4wZMzbfvXu3f25ublvT63fv3u149uzZxn369Ln14MEDODk5wc7ODrGxsXUWLVoUXlpa2saE2VJ27drVTSgUxuTl5cFgMMS0aNEiOCAgQDxlypTcCxcuvHEXxmAwGNeXLXj+6e1YFTLc1KlTX8snmz59OhYvXgyNRvNe7jWzgDHxXOkxGh06dNBu3rx5eL9+/SLVarWbyWXJ9u3bewuFwlv5+fmoV68eZs2a1WPv3r2btFqtad4se9WqVV0++eSTu7t27TKecyKRSErEYnHJX7WI3iW8jd0Fb7SWRa/XY8mSJfj6668hEAgsu3zfc2C0rblPYWEhevTokTx9+vQhKKuoMV1r3759+0IoFGLo0KFfLViw4BdTZhOJRPKlS5f2Cw0NvavX6+Ho6Fju3Mr39bgFxmRlvzviZZ+/reH+DixZsgQAsHjx4gpNx7+DjP8Ppzu9C6J6mUBUKBSYOXPm2fT09N5btmzZDDrawd7e/sHKlStna7Va4ebNmzcmJiaaO99Ss2TJkk8nTZp0gXmXgKenJ/Ly8t5rvEgkEhgMBhw8eBA7d+5EUVHRKz13586df47hGKbT6XT45JNPjH6ZnZ0d6tev/1qMx2z+5HK52LVrF5RKJebOnVtpyoC9afS/DMxO9VexKAQCgfF+5m05lVksKpUKM2fOPGltbf3x8ePHe9vZ2eW3aNHiN7lcXvThhx/uT0xMNFsDOHLkyK/Hjx9/kNkmxOFwULt2bePBsQKB4K0LlL8KMpkMFy9exPLly3H58uV368O9CVi2bBmWLVtWTnr0798fo0aNQlBQkDFq+NJB8vmQy+U4ffo07t27B51OhwULFuD+/fvYt2+f8RW/7PulUinUajVycnKQkZHx2ovwJhjhVcDKyuq1THAOh4OtW7ciKioK7u7umDp1qtEUYgcQGEZ7/PgxTp48CV9fX3To8PytXyUlJS/43MxePoPBgFatWt1JSUm5Q5rPJjQ09A/T4AgDEydOnL1ixYoVfD6/3I5rZpfBy0ywl1Xuv2wdmfmzNwNXJpCZ9MhPP/2EuXPnvtW3qL5T0a9QKPDzzz9jx44d+Oyzz/Dpp5+iadOm5VIQfD7fuCuXx+MZk7rjxo17IW/y+++/IyQkBHv27CkXTpbL5Th16hR+//13yOVyMFGw0aNHlwstMzuFma35IpEIUmlZLTVT4CsQCIy7lRkiYBMDo0HFYjE4HI7xnBKBQIDo6Gh06tQJVlZWUCgUxj7ZzzPz3b9/P1q3bo26deuWIyymfx6PB7FYDLFYXO55g8GACxcu4MKFCwCAa9eu4ddffzWeRsbhcGBjY4OMjAxs3LgR4eHhyM3NhZWVFRYvXgw7OzvmNK8XLAHGfJdIJKhSpQrGjBkDnU4nHDx4cFhFzNauXbvw+fPnf8eczWLKHAyezDGRlZUVxGIx8vLyoNFo4ODg8AKDst/vwIxPKBQaNaZIJML58+cxc+ZMNG3aFC1btiynTZlnmHeRJyYm4urVq7h9+zZmzpz51g/P+kdsLZ1Oh7CwMISHh2PYsGEQi8Vo3brsSJPc3FykpKQgMjISN2/exMyZM5GcnFxhknL//v0QiUTGF9sfPXoUM2bMML7JEyg7Fvyzzz5DTk4OvvnmG9jYlO2QSU9Px9OnT5GdnQ1KSOPWrVuQy+W4evUqBAIBeDwecnJykJ2dDXt7e/D5fGg0GqNtX1BQgKysLERHR0OpVEIul4PH4+HWrVuYOHEiunbtiqlTpxpfiMgk2blcLiQSCUpLS3Hy5ElcunQJQqEQa9euhb29vfFcjpSUFDx9+hTXrl1DQUEBHBwcUFxcbGQ2Uzh06BAGDRqEsLAwY67qxIkT+Pzzz5GYmFhOo02cONH4/eTJk+U0HptBZDIZmE25Y8eODc3Lyxtsbi38/f33rlu3bhKzL8+clmIO82UznVAohF6vx5kzZ3DkyBGcP38eIpEI7dq1w8iRIxEYGAi9Xg+RSASVSoUffvjB+M6EhIQEqFQqODs7w8nJCfv370doaKjxxOmoqCj0798fHh4eEAqFzJYifP/99zh06BBycnLKWWFvHf5u1OVNwbhx47B69Wo4Ojq+1vNCoRAODg4vvW/OnDk4fvw4vL29X5C0lSX7mWPhHBwc4OzsDBcXF7i4uIDZImNqEpmCg4OD8Zg/qVSKKlWqoGXLlvD09HzBzJk4cSK+/PJL+Pv7mz1/41VK3dq3b4/WrVvD1dX1lfDXp08fPHnyBPfu3cP9+/df+MTFxWHVqlX1AeTi+Xkoxo+tre3+2NhYcWWRvJSUFPTv3x9OTk5o1aoVvvzySxgMBuzevdvI0Kbg4eFhfA9faGgovLy8zJqGNjY2FbYhk8mwZMkSfPXVV2jevPk75aMX+Op9YTgL/LMglUpx7NgxPHnyBLGxseU+jx49QlxcHFq0aLHBHLPVq1dv84QJEwRMxb05erp+/Xq5l6LweDw0btwYkydPNprxFQFTu/p30kwikeitpqleleE4FTHXf/kNJhYwD7Vq1cL06dNfqG7h8Xh4/Pix8+rVq2+g/BkraNiw4cI//vhj9u3bt/XVq1dH3bp1jRpYqVRCpVIhOjoaPXv2fOmOj38zvKqSsmSmLWCE5ORkREREQCgUQqfTGT8GgwFyudwdrKP6bG1tI6dMmdJ5/fr133p6euqLi4uNPm9kZCR69OiBunXrolatWujQocN/mtne+6CJBd5PUKvV2LdvH9RqNapXr17OPORwOLcXL17cJiMjo4FcLn/Wv3//szVq1FDI5XKjD11aWorJkydj/fr17+zkbgvDWeBfz3S///678XVgXC6XCbwYPv3008jCwsLIP//8Ez4+PpDL5cY8qk6nQ79+/ZCQkGBBooXhLPBXQKvV4uzZs8bvVatWhbe3N5KTk2Fvb298bzhzcGteXh7WrFljYbZXAEvQxAKvDF5eXggODoa/vz969OgBoVCIpKQkzJo1C5cuXfp/jZtXjuxb0gIW+KsgFAoREBCA0aNHo3r16haE4J9LCwwDcBhARSXhtQHUYo8TgBbAUwCP6bcWAEIApAL4CYCcdX89AAMBqABsB5D4kvE0BjAIQBa1xd7iLAMwCmUV8AcAmIroHgDaAbgNYBf1WRG4AwhF2TFwOwDcp99rAqhjZr4ZAO6atDEOwGkA8azfXGiMtgC2sdqtCEYT/tNNfhcD6A+gKYAHNMZi1vWGhCc5gE2EL6NiAzAUZRHKwzTGyqANgJ40j58BsA9SqUrzsSGcRrOuWQMYACAAQAyA3TCzLYgFfjSuUgBbADxjywQAg2lepwAcMXn2fwD6Ef1sBlDIuuZLNGYF4CCAi++rhvuCCMqrknvm0gKU0ILn0zPf0PWJtOjhAM7TojG7JPsDKACwE8BeIorKjoeeTPdvJQJLIAYAyg61uQfgAvWVC4B9NuIuAHEA1tLfP8E6O9MEWhCBHwOwnoTHZ3RtOmu+JTQ3A42JDRPo9/YmRJEB4ASANSSAhlQyXx/CiekBqQ4AbhCzrgAQRUzHlOWEAsghgXQUQBKev2H1A7r2G4B11P7mSsawCkA24fR3Yihn1vieAdgHYCO1xRwl70zju0ljvGfyrCn0IvrZAWAPgDQSjiChd57aWEdru4r17DRahw0AIggXzGnYI+j+3TSHHABL3qSGexMM5wHgEAAlabaqldwrJs0iIwmyDEAsyk6zsiECYx8jd48YGUQos1jXVhDDmAMnAEUswmfuP8sijCusa4OI+TkA2gJQAHBjtZUC4KMK+oomSc7AJ7Ro1ig7QIc93xlEHB4sQjtAElZtIkCOE7Mx0Jaeraj2rS+AM2Z+nwEgGc8P7eGQZGe29D8F8DXr/j9YAuEBER4DzQFoyNIwheokNNhv6dlN8wMx9HnWte9YGnsirT1jVgkAPAIw3kw/XLIO2LRwjBgcALqRcBKxNKGcNJcVCYQ+rGcfsejkGdEkA71pXaq8KYZ7E4nvYGK0HkSolRX6KUnrFJAknkxSLhdAM3r2d9b9+0j1MwS10gTxFe3tYd799qvJ4rcEYEeEc4p17QItdjUyU/aQ1nKjuXmZMTkZ08XVxMyKIOL2JzOUma8MwFek9VLp3gDCyYckIPisudWncYAlcFCJBdGWNJEpHKS1UbLMWkYg2BA+DrPuP0Dj4REjzGZdSwKgg5mXOtJc8k1wcZbWFaTR2Of5WbHGdIoEFSPpNcQY5voxEFMtNfmdKfMPIkHNuAAPybrxIxdDR0KFgd/JhWFcotWsayksAfBG4E2kBX4hE6xGJWaXOdhMBHWOJSGziWkZSCDzhkOLzUid4cRUHStoO4uQVJ2IgCEICUkrMet3EAEqqM3qJEEPkCTnkllhzpTS0sfNRONLTX4DgB8AXCVcMXCetJKNCe4MZM74mZiGjsQgpmBLxPSdmWsPTb63B9CApLwPEWAG63oh4UfMsggYWExrEmOmn3RiYlfWWlUjXAhJIzUnwVFAeBrE0jKPWG2FkP81tgKGY3z3ocSobvSXMV1TTZ4pIRxbAcgkhmbgMetZUwthDoBIE5/2H2c4RsuIWBLqZVCbtI2/ibYwPbJLQ4zDY/XDJwS4kaRbY6b9ODIzdgP4nhA9jqWBBSZI19PHmpg7FMAYCkL0I9/shhlC05OfMJ2c92LSJkUmmt6NAgndKpDKprgzkJ+zjMzBQgooVITfABpL+kvw3pb8tJlEtDXpOa3JnLhmLJU5ALrQ/NQVmNZ3yLz+iRhvGOFEC6AzmefnSfvIAHQHcMuknY9p3cabCSyZAo8YqDq1v44YPN0MkzK0bhr8UpvRYFxa88YkJN7c20nfYNDEjxiBKW51JPPqBn3Y71pbb+JDgQIC8Sa/jSAJxKkgGqYjZO9l9RPOIuLlZC7uIILPIckaDWCKiXmTQY73NRNTFAAuA1hIWoHp5wrLFxtN0vEIMcYTE+27lKKdnEp8zkKW4w9WQINpdzBpgZYVBKzCX7I+w6kP9ssZm5DJ7Gzig2bg+VHnQvLpUljmIeMTM7g4TEQrA/Aj4XwDBaLiSStnE54YqE9CrzHrtzEkuNj39asA52zoRkzlRhHLHSbXL5E27U9+qWl0+KHJWhymcfv8XT4y/bzNSpMisv8ZSZnIiiL1ZTntbNPHnhZHzkoDJBAyh1OINoFlbnLJF1zBijTlkzSrbdLHANJwaUR4bEfYmUyo+8QsPDMmiZTMi69YmiCXtPQ20kiM/+jCWlgORdU2/QULAJQ++ZVlytpTsCfDzL3tKtD0DEwhc3MYgP2s3xNJaFVjmU2ONF8lMdEBchf+R9qWgW2kLcG6190kUDWTcM0ls/cm69pdWmdv0nJfEr30AnCSdd8VE5wXkiA6TmsJWhfGkoimNmCSAiqg8TuRgC1h0dhjFrMdJI3WmGj4zcIb1HB1iQA9X3KfP03Iz4x5+wjAApbPksWKWsaSpOUREU8i4rOqwFSOZy2UjIjrW1bKIIkQDIrSpbPMLi3L3G1EjNqqgvkcI8bg0ifcxPS0pYXrWQlOnIgA2GmBcNKsTLsbSMrzzDDmLZh5GytBJ2L0MdSPJ30YX/AOgDDCqTV9Z96ltoHGVZ+ECPOsub6siYGY9XInc4/RVrdIKDHm26fUtiMF3gzkn1dh9WNTQZQyGWV5WIYWFpEGFZMFkM9KAXUj/HvRs09YdFCFaJaJWp4kuqlBzOtJGpX3pjTcm2S4OkTUHi+5rzUxiksFpkEOLfoTImYhi/AfUwTqDoWzP6qknxBa8Nvk0/3GaktAkapEausZ+Q4MLKdFjaZriyvppwa1cZc+N01MEW8SHA0qacORcNLGBJ/3WPN9QH2ZwijCU0Wwhgg7hcbBfGaz1iORxh6PspyjmDRqOpmcaSbP/q+CviYTvm7T+oSZ4OE+zeM2tTmcru0ipjAd48gK+qlPY2Zwk8SiBT71m0aCL99E6/YhJmNo6BAxoisxbTbNmxkDOy/5txnuTVaaCGjQ6S9xMplIYSqZCKbgRgRbSlKRfY8daUYuacOcl4zJgyRdAS2yqcPdkDTkY5Z5wvZJnYkRHr2kH1siAj0tcqmZ1EFaJXjh0lizWKFyRms0IOkfg/JVG+zoJbcSXFShOZpKaTmeV9440XzVhCcVrWdVloZlQ5pJNJkNNWkuOXixMsaaLAehCc7dWcExNuTQ2pkDO7KqOOSO5JmxpByJzkyrqt3JMigmGjOQ1q7KWg92wCX5ZYGTV1VSluJlC1jgDblmrwLv+47vb1CWyAQ51R+9J+MaQJHRsyhL2v4IIPAvtsHHX8tbvg58QWF8c/A/lOUGQb7TIFb0d8Y7wGFLMmv/X0n2953hxqOs4JaJJNr8w+PxQVnI+yeKWj4kvyOAQs+rXsXBJl/sKJ7Xib4tGFGJkLIiUxcoy2ExQZ0WMJ9wftPQGMDn/98Y7lXTAt5ks5uGpIUoCymno3z1Odsf47BsdSfy4VJe4V6QI80kWaeZeaY6EXhCJf6EOT+AS9cy8GLo14V8jQQz/uBxCopUJ+faFs8rzTtRVE+H8ukIW2ozheWf1SBNojGDAzE586hgviXUt7m5FlOgiIESChow803G88TvKTwvb1Oy/E6VGZzwqe8nZvxuAY2b7ZN70lomVzCHfFqTvxp2r0FzyjT5XURRyLQK/FxzNJtqxg/1YEVBK+o/i0Xr1ckXlv8l27OSKKUXypKuT4gIFrLMoI9Zka1YlIWdQVL7AEX67hBRf4WyHNBN+s68YN0BZXmh1SxtsZKlJWJZEaZNLLOnOcqS6g8pihSF59tgFpKm2ULRyWSUlQCxo6TRxFDxKAtPM0GUBazfT6Msl8dAOEW0mP4fEaGGoywPOJY0YCYtKCgK94DufYiyKKyI8KAl/HmTEPqJ+mais97URgfC0TpqI4uED5cVzTxFQYgEmgNz7Tyt3yFqNxZlOwBAY2G2raxGWV6NiTQywY7vCJ/HaP1v0tyZcZ0iIfSUTH8nlO3mYMayh6VFrVFWQZJI6/U7RRkZ8/Yga9xcGjOTJqmNspB9Aq03O7/bkegsnsY9tBJy70b3PqZ16c4KwGyj9h+jLM1TjfXMTpSlIeLonq54XnifCqDrm0gL2KKs6uIYIbIpRWz60GC0ZBJY029MpbiYpPxBipAxJUl/EPI/pu+1yUTUoiwU7Y6yyocCPN8qw2a4K3heHXKXECAlZF3G89D4dmp/CLX/HWlJGzxPgH5L/4fSvd4oy+s9obmJUZbzu0cSvBoh2pGEkAZl1TL/Q1ktqAFlW2yAshD3JNJqOpTl9bjEJJlkyoWSdO9IDLiDFrM24ewQnieJe+P5FiYZCQgDmbFCIpwwGrM3WRsMns7geQWLjAgphSUM0l7CcAwuB5Ag3UYExmOteShF92zI3L5K36vSujBJ6c0keNxpnvGs6G9XEow8FsOloKxAgkvjOUwCugn124HaKkBZ7o9PzKGE+ZxpA6K18TTWadQOs88vmtbWhejxOj03CM/zmDISfgaUVezYkSCMeRMMN5zMDPbRvcG0qOF4XnTMwDKUVYJYkxT2Z5lUxSirw2M0YCExsDWZF+ySoc9ICoGI6TOWtJ7EMll4hDhP0g5X6dpulN802JgWgdlwamqudaY5JaOszKcGaaoAMq/aEnEx2m0vym8L8iCGZkq55qOs2LkKmVjzqH0mzM4jbZBPzCYhE5FdsuVMuG9CAqoYz7fXgMbamnCaRgTsQ2OfQ4zNJb/yR9ZzXSh8ziFCevIShtuL59trQGPNJb+wC5lSzLhcyURjz6Mpjb0JzbcN69pIVv+dSeCwGS6efv+A6IXtv39IeF9Ja1Gd5l+NBK+5vORmlC/GFhCj16Fxs3OLdYhmvFFWWpZu4hdnsrRxdwAP3kRplz8xDttv+5P+NjTDcNdoISQ0WA3LVFPheXU+uxCZR8TGru5OQsXbIZhJ+hJSq9CC8vC8PIeH8rt/uXheUlUPL9ZrHiep5kgM/Tn9rqexMEnRNJKiH5PEZ/sPOXi+e9mP8JSNstq9NSgrccpEWUXEenqGQ3/FhCu2X5JFi+xLbStN5qOmOTH+5u8sYtXh+f43vYn/ysfzgulXAQ5LQ4EIM5HGlUDfmaAHY/U8Zt2fSIIjgObIzhXeq8DvB56f6qwnrZNs4u+dY/nbvrSGHNazkWba9DARthoyqWvgxTzmU8IbU9xdaoKTApa/yof5fPJfDppkkXYSsRxtH1rYDLy4L8uDFlPDGhjzl2MSEWUjxwrl9z1ZVTIBJfVzgPymUyz/sZuZ9k37ysaLmwkb0Bx1xGznaKwq1tibsvAlMAlafE6mURb5N01IU/LIVDlKGjyQxpxmImBUeL6DgQGm0iPTjPDhsOakJ0KpT/cZiBn5RPz8CnDxVxjOyeQ3J5oDx2QscpqHIws/9mT2MhtC2XORseIBHBq7jrVWUvpbhOe70xmoy6LJS2R6CmnOugroutRMlDuI8KVD+XI1ZsNwlpm+OX8nslpZWuB3GsgEluY4gbKSqdUkvRvStaqUu/mdRUCV9cNlSWNHaoshtG/wfGcwz4RxtcRwNhQUYXYcjDPD4Kb9icn+rk+hb0YqR1KU7SAFHDQ0h4/IjncljVmdGP4yyo5eCEDZkRGfk7/RH2XlYwuI4OrT3xpk9iwlie7EYgodSctUlN/BPIHGfIUsBnP4k1AgwYP8EhW1G0bRUnO4YAs+0/85Zn4vJZ/RlWXu25GgMx1XApmr7F3a42hMF1FW0fGtyTUxK5rqwWLuYeSfMWaxNZ7vNuESHXajQFovchtU1N4pVgDPjaUY9tAzvvS9Ea0ljywZ9rin0Vrfpza5FeDQ3PfX1nDx5POEkR/jQvZ7OGm4DSS9o8hUi0RZItUaL1bF6yv5XkiRpSBCcgmL+Aystgw0+dtEwIxDXpXM2QYsKccz05+YNNFCYoxrJDAOkn92g0yMaFqAtuTXZBDhLyUzezhpwZtk1m4np70t+Wt7yAeIJ/ycpOdr05h3k8AoomujqM1DdL2I8DmKCJ5XAf6EZHaOI5+xE0nlOqxorgEv7rPTV/C/oYLfi2nMJaTpp9IYBSbj0pJfFkZmtYGETSgRL1PzeYGEmj2eH2txB2Wla1H0v4DwJ6V7xpG/1oloJJHWJp+CFkfJh/ejvhgfbhUxXEsKGAUTzm+SJRJGdBBKwa7zJCBqE9PqiJn0FeDQ3Pe/lRZgcg2fE1HxzKjkySi/j4tPpqeIpaXqsMxG5ruEJFoOIWIIaQmeSW7JnqWNHFl+U3/SBDVZZgafGNDDxNH3MzFnAmncH5nJKYXQtUYm1+aRJmpC39kFrUwwpDGZuF+YOPhTWCFosELdn+P57gobEjxjTdq2JXyxNVUtE/OoOuEi1MQE8kb5InEbVvpEhucnqLnieR2hIwun+0iwNqSx+piYXbXNSHdHYryRZswxa5TtHuhL8/JG+XNMhtAcmACTzGQuk8h/Nu2zJa1ZL5N19mLNhZ0Wmkx/2WBHfY82cTvsUP6kOdPvNgBq/lteV+VCEqU53n/gUqRLTWH8fhRA6UwEtJ3MwwX478Bh0m4WeE3F9S43oL4KqCjCVPgvwKmeJOBOkpDfksRmonexlBu69h+io+uoeFeABV4DOJZTli1ggXdrJlnAAhawMJwFLGBhOAtYwAIWhrOABSwMZwELWMAE/m8AhwxO7Lysl3kAAAAASUVORK5CYII=';
     $local_date = date('Y-m-d');
     $target = '';
+    $datafancybox = 'data-fancybox';
 
     // PHP MAILER FUNCTION
     use PHPMailer\PHPMailer\PHPMailer;
@@ -529,20 +530,19 @@
         $mime_array = array(
             'text/x-php',
             'text/plain', 
-            'text/plain', 
             'text/css', 
             'text/html', 
+            'text/xml', 
             'text/javascript', 
+            'font/ttf', 
+            'font/woff', 
+            'font/woff2', 
             'application/json', 
             'application/x-httpd-php', 
             'application/rtf', 
             'application/x-sh', 
-            'font/ttf', 
-            'font/woff', 
-            'font/woff2', 
             'application/xhtml+xml', 
             'application/xml', 
-            'text/xml', 
             'application/atom+xml', 
             'application/vnd.mozilla.xul+xml', 
             'application/x-msdownload'
@@ -882,9 +882,11 @@
                 $sql = "INSERT INTO tbl_user_info (user_id, mobile) VALUES ('$last_id', '$phone')";
                 mysqli_query($conn, $sql);
 
+                $client_name = "InterlinkIQ";
                 $selectClient= mysqli_query( $conn,"SELECT * FROM tbl_user_client WHERE ID = $client");
                 if ( mysqli_num_rows($selectClient) > 0 ) {
                     $rowClient = mysqli_fetch_array($selectClient);
+                    $client_name = $rowClient['name'];
                 }
 
                 $sender_name = 'Interlink IQ';
@@ -903,7 +905,7 @@
                 $recipients_email = 'csuccess@consultareinc.com';
                 $recipients[$recipients_email] = $recipients_name;
 
-                $subject = 'New User Registered from '.$rowClient['name'];
+                $subject = 'New User Registered from '.$client_name;
                 $body = 'Hi Team,<br><br>
 
                 See details for our new user registered below<br><br>
@@ -2135,7 +2137,7 @@
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
             </div>
         </div>';
 
@@ -2753,6 +2755,7 @@
                                         $filetype = htmlentities($rowFile['filetype'] ?? '');
                                         $files = htmlentities($rowFile["files"] ?? '');
                                         $type = 'iframe';
+                                        $datafancybox = 'data-fancybox';
                                         if ($filetype == 1) {
                                             $fileExtension = fileExtension($files);
                                             $src = $fileExtension['src'];
@@ -2767,6 +2770,7 @@
                                         } else if ($filetype == 4) {
                                             $file_extension = 'fa-strikethrough';
                                             $target = '_blank';
+                                            $datafancybox = '';
                                         }
 
                                         $file_start_date = $rowFile["start_date"];
@@ -2790,7 +2794,7 @@
                                         $file_uploaded_date = $file_uploaded_date->format('M d, Y');
 
                                         echo '<tr id="tr_'.$file_ID.'">
-                                            <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p></td>
+                                            <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p></td>
                                             <td >'. $file_name .'</td>
                                             <td >'. $file_description .'</td>
                                             <td >'. $file_start_date .' - '. $file_due_date .'</td>
@@ -2839,6 +2843,7 @@
                                             $filetype = htmlentities($rowFile['filetype'] ?? '');
                                             $files = htmlentities($rowFile["files"] ?? '');
                                             $type = 'iframe';
+                                            $datafancybox = 'data-fancybox';
                                             if ($filetype == 1) {
                                                 $fileExtension = fileExtension($files);
                                                 $src = $fileExtension['src'];
@@ -2853,6 +2858,7 @@
                                             } else if ($filetype == 4) {
                                                 $file_extension = 'fa-strikethrough';
                                                 $target = '_blank';
+                                                $datafancybox = '';
                                             }
 
                                             $file_start_date = htmlentities($rowFile["start_date"] ?? '');
@@ -2881,7 +2887,7 @@
                                             }
 
                                             echo '<tr id="tr_'.$file_ID.'">
-                                                <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p></td>
+                                                <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p></td>
                                                 <td >'.$file_name.'</td>
                                                 <td >'.$file_description.'</td>
                                                 <td >'.$file_document_date.'</td>
@@ -2928,6 +2934,7 @@
                                             $filetype = htmlentities($rowFile['filetype'] ?? '');
                                             $files = htmlentities($rowFile["files"] ?? '');
                                             $type = 'iframe';
+                                            $datafancybox = 'data-fancybox';
                                             if ($filetype == 1) {
                                                 $fileExtension = fileExtension($files);
                                                 $src = $fileExtension['src'];
@@ -2942,6 +2949,7 @@
                                             } else if ($filetype == 4) {
                                                 $file_extension = 'fa-strikethrough';
                                                 $target = '_blank';
+                                                $datafancybox = '';
                                             }
 
                                             $file_start_date = htmlentities($rowFile["start_date"] ?? '');
@@ -2970,7 +2978,7 @@
                                             }
 
                                             echo '<tr id="tr_'.$file_ID.'">
-                                                <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p></td>
+                                                <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p></td>
                                                 <td >'.$file_name.'</td>
                                                 <td >'.$file_description.'</td>
                                                 <td >'.$file_document_date.'</td>
@@ -3017,6 +3025,7 @@
                                             $filetype = htmlentities($rowFile['filetype'] ?? '');
                                             $files = htmlentities($rowFile["files"] ?? '');
                                             $type = 'iframe';
+                                            $datafancybox = 'data-fancybox';
                                             if ($filetype == 1) {
                                                 $fileExtension = fileExtension($files);
                                                 $src = $fileExtension['src'];
@@ -3031,6 +3040,7 @@
                                             } else if ($filetype == 4) {
                                                 $file_extension = 'fa-strikethrough';
                                                 $target = '_blank';
+                                                $datafancybox = '';
                                             }
 
                                             $file_start_date = htmlentities($rowFile["start_date"] ?? '');
@@ -3059,7 +3069,7 @@
                                             }
 
                                             echo '<tr id="tr_'.$file_ID.'">
-                                                <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p></td>
+                                                <td><p style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p></td>
                                                 <td >'.$file_name.'</td>
                                                 <td >'.$file_description.'</td>
                                                 <td >'.$file_document_date.'</td>
@@ -3167,9 +3177,9 @@
                 
                 array_push($data_chart, $data_arr);
             }
-        }
 
-        echo json_encode($data_chart);
+            echo json_encode($data_chart);
+        }
     }
     if( isset($_GET['training']) ) {
         $trainings_id = $_GET['training'];
@@ -3778,6 +3788,7 @@
             $filetype = htmlentities($row['filetype'] ?? '');
             $files = htmlentities($row["files"] ?? '');
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if ($filetype == 1) {
                 $fileExtension = fileExtension($files);
                 $src = $fileExtension['src'];
@@ -3792,6 +3803,7 @@
             } else if ($filetype == 4) {
                 $file_extension = 'fa-strikethrough';
                 $target = '_blank';
+                $datafancybox = '';
             }
 
             $category = htmlentities($row['category'] ?? '');
@@ -3813,7 +3825,7 @@
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
             </div>
         </div>
         <div class="form-group">
@@ -3915,6 +3927,7 @@
 
                     $data_files = $rowData['files'];
                     $type = 'iframe';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($data_files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($data_files);
@@ -3930,8 +3943,9 @@
                         } else if ($filetype == 4) {
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
+                            $datafancybox = '';
                         }
-                        $files = '<p style="margin: 0;"><a data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
+                        $files = '<p style="margin: 0;"><a data-src="'.$data_files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
                     }
 
                     $data_uploaded_date = new DateTime($last_modified);
@@ -4039,6 +4053,7 @@
             if ($process == true) {
                 $data_files = $rowData['files'];
                 $type = 'iframe';
+                $datafancybox = 'data-fancybox';
                 if (!empty($data_files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($data_files);
@@ -4054,8 +4069,9 @@
                     } else if ($filetype == 4) {
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
+                        $datafancybox = '';
                     }
-                    $files = '<p style="margin: 0;"><a data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
+                    $files = '<p style="margin: 0;"><a data-src="'.$data_files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
                 }
 
                 $data_uploaded_date = $rowData['uploaded_date'];
@@ -4144,6 +4160,7 @@
                 $filetype = htmlentities($row['j_filetype'] ?? '');
                 $files = htmlentities($row["j_files"] ?? '');
                 $type = 'iframe';
+                $datafancybox = 'data-fancybox';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -4159,6 +4176,7 @@
                     } else if ($filetype == 4) {
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
+                        $datafancybox = '';
                     }
                 }
 
@@ -4167,7 +4185,7 @@
                     <td>'. htmlentities($row["j_title"] ?? '') .'</td>
                     <td>'. htmlentities($row["j_description"] ?? '') .'</td>
                     <td>'. htmlentities($row["t_job_description_id"] ?? '') .'</td>
-                    <td class="text-center"><p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p></td>';
+                    <td class="text-center"><p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p></td>';
 
                     if ( $row["j_status"] == 0 ) {
                         echo '<td class="text-center"><span class="label label-sm label-danger">Inactive</span></td>';
@@ -4201,6 +4219,7 @@
             $filetype = htmlentities($row['filetype'] ?? '');
             $files = htmlentities($row["files"] ?? '');
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($files)) {
                 if ($filetype == 1) {
                     $fileExtension = fileExtension($files);
@@ -4214,9 +4233,10 @@
                 } else if ($filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $files).'preview';
                 } else if ($filetype == 4) {
-                        $file_extension = 'fa-strikethrough';
-                        $target = '_blank';
-                    }
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
+                    $datafancybox = '';
+                }
             }
         }
 
@@ -4298,7 +4318,7 @@
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
             </div>
         </div>
         <div class="form-group">
@@ -4481,6 +4501,7 @@
                         $file_doc = $value['file_doc'];
                         $file_doc_temp = $value['file_doc'];
                         $type = 'iframe';
+                        $datafancybox = 'data-fancybox';
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($file_doc);
                             $src = $fileExtension['src'];
@@ -4495,12 +4516,13 @@
                         } else if ($filetype == 4) {
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
+                            $datafancybox = '';
                         }
 
                         if (!empty($file_doc)) {
                             echo '<tr>
                                 <td>'.$file_lang.'</td>
-                                <td class="text-center"><a href="'.$file_doc.'" data-src="'.$file_doc.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></td>
+                                <td class="text-center"><a href="'.$file_doc.'" data-src="'.$file_doc.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></td>
                             </tr>';
                         }
                     }
@@ -4563,6 +4585,7 @@
                     $filetype = htmlentities($rowData['filetype'] ?? '');
                     $files = htmlentities($rowData["files"] ?? '');
                     $type = 'iframe';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -4578,9 +4601,10 @@
                         } else if ($filetype == 4) {
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
+                            $datafancybox = '';
                         }
                     }
-                    $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
+                    $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
 
                     $countTraining = 0;
                     $selectTrainings = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings" );
@@ -4665,20 +4689,25 @@
 
                                 $files = $src.$url.rawurlencode($files).$embed;
 
-                                $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
+                                $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p>';
                             }
                         }
                     } else {
                         $files = $_POST['fileurl'];
                         $filesize = 0;
                         $type = 'iframe';
+                        $datafancybox = 'data-fancybox';
 
                         mysqli_query( $conn,"UPDATE tbl_hr_job_description SET files='". $files ."', filetype='". $filetype ."' WHERE ID='". $ID ."'" );
 
                         if ($filetype == 3) {
                             $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                        }else if ($filetype == 4) {
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
+                            $datafancybox = '';
                         }
-                        $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
+                        $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
                     }
 
                     if (!empty($files) AND $process == true) {
@@ -4697,6 +4726,7 @@
                     $filetype = htmlentities($rowData['filetype'] ?? '');
                     $files = htmlentities($rowData["files"] ?? '');
                     $type = 'iframe';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -4712,9 +4742,10 @@
                         } else if ($filetype == 4) {
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
+                            $datafancybox = '';
                         }
                     }
-                    $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
+                    $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
                 }
 
                 if ($process == true) {
@@ -5054,6 +5085,7 @@
                                             $file_doc = $value['file_doc'];
                                             $file_doc_temp = $value['file_doc'];
                                             $type = 'iframe';
+                                            $datafancybox = 'data-fancybox';
                                             if ($filetype == 1) {
                                                 $fileExtension = fileExtension($file_doc);
                                                 $src = $fileExtension['src'];
@@ -5068,6 +5100,7 @@
                                             } else if ($filetype == 4) {
                                                 $file_extension = 'fa-strikethrough';
                                                 $target = '_blank';
+                                                $datafancybox = '';
                                             }
 
                                             echo '<div class="mt-repeater-item row" data-repeater-item>
@@ -5083,7 +5116,7 @@
                                                     </select>
                                                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" value="'.$file_doc.'" />
                                                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" value="'.$file_doc.'" />
-                                                    <p class="'; echo !empty($file_doc) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$file_doc.'" data-src="'.$file_doc.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                    <p class="'; echo !empty($file_doc) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$file_doc.'" data-src="'.$file_doc.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <select class="form-control" name="language" required="">
@@ -6001,212 +6034,317 @@
     }
     if( isset($_GET['modalView_HR_Employee_TP']) ) {
         $id = $_GET['modalView_HR_Employee_TP'];
-        $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $id" );
+
+        $selectData = mysqli_query( $conn,"SELECT ID, user_id FROM tbl_hr_employee WHERE ID = $id" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
             $user_id = $row['user_id'];
-        }
 
-        echo '<input class="form-control" type="hidden" name="ID" value="'. $row['ID'] .'" />
-        <div class="tabbable tabbable-tabdrop">
-            <div class="table-scrollable">
-                <table class="table table-bordered table-hover" id="tableData_training">
-                    <thead>
-                        <tr>
-                            <th>Description</th>
-                            <th class="text-center">Date Completed</th>
-                            <th class="text-center">Due Date</th>
-                            <th class="text-center">Status</th>
-                            <th class="text-center">Record</th>
-                        </tr>
-                    </thead>
-                    <tbody>';
-                        $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = $id" );
-                        if ( mysqli_num_rows($selectUser) > 0 ) {
-                            $rowUser = mysqli_fetch_array($selectUser);
-                            $current_userID = $rowUser['ID'];
-                            $current_userEmployeeID = employeeID($current_userID);
-                            $current_userEmployerID = employerID($current_userID);
+            echo '<input class="form-control" type="hidden" name="ID" value="'. $row['ID'] .'" />
+            <div class="tabbable tabbable-tabdrop">
+                <div class="table-scrollable">
+                    <table class="table table-bordered table-hover" id="tableData_training">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th class="text-center">Date Completed</th>
+                                <th class="text-center">Due Date</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Record</th>
+                            </tr>
+                        </thead>
+                        <tbody>';
 
-                            $selectTrainings = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE deleted = 0 AND user_id = $current_userEmployerID ORDER BY title" );
-                            if ( mysqli_num_rows($selectTrainings) > 0 ) {
-                                while($rowTraining = mysqli_fetch_array($selectTrainings)) {
-                                    $training_ID = htmlentities($rowTraining['ID'] ?? '');
-                                    $title = htmlentities($rowTraining['title'] ?? '');
+                            $selectUser = mysqli_query( $conn,"
+                                SELECT
+                                u_ID,
+                                e_ID,
+                                e_user_id,
+                                e_first_name,
+                                e_last_name,
+                                e_email,
+                                e_job_description_id,
+                                j_title,
+                                t.ID AS t_ID,
+                                t.title AS t_title,
+                                t.job_description_id AS t_job_description_id,
+                                t.quiz_id AS t_quiz_id,
+                                q.quiz_id AS q_quiz_id,
+                                q.max_ID AS q_max_ID,
+                                q.result AS q_result,
+                                q.last_modified AS q_last_modified
+
+                                FROM (
+                                    SELECT
+                                    u.ID AS u_ID,
+                                    e.ID AS e_ID,
+                                    e.user_id AS e_user_id,
+                                    e.first_name AS e_first_name,
+                                    e.last_name AS e_last_name,
+                                    e.email AS e_email,
+                                    e.job_description_id AS e_job_description_id,
+                                    GROUP_CONCAT(j.title SEPARATOR ', ') AS j_title
+
+                                    FROM tbl_hr_employee AS e
+
+                                    LEFT JOIN (
+                                        SELECT
+                                        *
+                                        FROM tbl_hr_job_description
+                                        WHERE user_id = $user_id
+                                        AND status = 1
+                                    ) AS j
+                                    ON FIND_IN_SET(j.ID, REPLACE(e.job_description_id, ' ', '')) > 0
+
+                                    RIGHT JOIN (
+                                        SELECT
+                                        *
+                                        FROM tbl_user
+                                        WHERE is_verified = 1
+                                        AND is_active = 1
+                                    ) AS u
+                                    ON u.employee_id = e.ID
+
+                                    WHERE e.user_id = $user_id
+                                    AND e.suspended = 0 
+                                    AND e.status = 1 
+
+                                    GROUP BY e.ID
+                                ) r
+
+                                LEFT JOIN (
+                                    SELECT 
+                                    ID, 
+                                    user_id,
+                                    title, 
+                                    job_description_id, 
+                                    quiz_id 
+                                    FROM tbl_hr_trainings 
+                                    WHERE status = 1 
+                                    AND deleted = 0 
+                                ) AS t
+                                ON t.user_id = r.e_user_id
+
+                                LEFT JOIN (
+                                    SELECT MAX(ID) AS max_ID, user_id, quiz_id, result, start_time, end_time, signature, last_modified
+                                    FROM tbl_hr_quiz_result
+                                    WHERE result = 100
+                                    GROUP BY quiz_id, user_id
+                                ) AS q
+                                ON r.u_ID = q.user_id
+                                AND t.quiz_id = q.quiz_id
+
+                                WHERE e_ID = $id
+
+                                ORDER BY e_last_name, t_title
+                            " );
+                            if ( mysqli_num_rows($selectUser) > 0 ) {
+                                while($rowUser = mysqli_fetch_array($selectUser)) {
+                                    $t_ID = $rowUser['t_ID'];
+                                    $t_title = htmlentities($rowUser['t_title'] ?? '');
+                                    $q_result = $rowUser['q_result'];
+
+                                    $completed_date = $rowUser['q_last_modified'];
+                                    $completed_date = new DateTime($completed_date);
+                                    $completed_date_o = $completed_date->format('Y/m/d');
+                                    $completed_date = $completed_date->format('M d, Y');
                                     
-                                    $data_last_modified = $rowTraining['last_modified'];
-                                    $data_last_modified = new DateTime($data_last_modified);
-                                    $data_last_modified = $data_last_modified->format('M d, Y');
+                                    $due_date = date('Y-m-d', strtotime('+1 year', strtotime($completed_date)) );
+                                    $due_date = new DateTime($due_date);
+                                    $due_date_o = $due_date->format('Y/m/d');
+                                    $due_date = $due_date->format('M d, Y');
 
-                                    $found = null;
-                                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $current_userEmployeeID" );
-                                    if ( mysqli_num_rows($selectEmployee) > 0 ) {
-                                        $rowEmployee = mysqli_fetch_array($selectEmployee);
-                                        $array_row = explode(", ", $rowEmployee["job_description_id"]);
-                                        $array_rowTraining = explode(", ", $rowTraining["job_description_id"]);
-                                        foreach($array_row as $emp_JD) {
-                                            if (in_array($emp_JD,$array_rowTraining)) {
-                                                $found = true;
-                                            }
+                                    $current_date = date('M d, Y');
+                                    $current_date = new DateTime($current_date);
+                                    $current_date_o = $current_date->format('Y/m/d');
+                                    $current_date = $current_date->format('M d, Y');
+
+                                    if (!empty($rowUser['e_job_description_id']) AND !empty($rowUser['t_job_description_id'])) {
+                                        
+                                        $e_job_description_id = $rowUser['e_job_description_id'];
+                                        $t_job_description_id = $rowUser['t_job_description_id'];
+                                        $arr_jd_id_emp = explode(", ", $e_job_description_id);
+                                        $arr_jd_id_training = explode(", ", $t_job_description_id);
+                                        if (array_intersect($arr_jd_id_emp, $arr_jd_id_training)) {
+
+                                            echo '<tr id="tr_'.$t_ID.'">
+                                                <td >'. $t_title .'</td>
+                                                <td class="text-center">'; echo $q_result == 100 ? $completed_date:''; echo '</td>
+                                                <td class="text-center">'; echo $q_result == 100 ? $due_date:''; echo '</td>
+                                                <td class="text-center">'; 
+                                                    if ($q_result == 100) {
+                                                        if ($current_date_o >= $due_date_o) {
+                                                            echo '<span class="text-danger">Pass Due</span>';
+                                                        } else {
+                                                            echo '<span class="text-success">Completed</span>';
+                                                        }
+                                                    } else {
+                                                        echo 'Not Yet Started';
+                                                    }
+                                                echo '</td>
+                                                <td class="text-center">'; echo $q_result == 100 ? '<a href="pdf?id='.$t_ID.'" target="_blank" class="btn btn-circle btn-sm btn-success">View</a>':''; echo '</td>
+                                            </tr>';
                                         }
                                     }
 
-                                    $trainingStatus = "Not Yet Started";
-                                    $trainingResult = 0;
-                                    $completed_date = '';
-                                    $due_date = '';
-                                    $pdf_quiz = '';
-                                    $selectQuizResult = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_result WHERE user_id = $current_userID " );
-                                    if ( mysqli_num_rows($selectQuizResult) > 0 ) {
-                                        while($rowQuizResult = mysqli_fetch_array($selectQuizResult)) {
-                                            $trainingResultID = $rowQuizResult['ID'];
-                                            $trainingQuizID = $rowQuizResult['quiz_id'];
-
-                                            if (!empty($rowTraining['quiz_id'])) {
-                                                $array_quiz_id = explode(', ', $rowTraining['quiz_id']);
-                                                if (in_array($trainingQuizID, $array_quiz_id)) {
-                                                    $trainingResult = $rowQuizResult['result'];
-                                                    $pdf_quiz = $trainingResultID;
-
-                                                    if ($trainingResult == 100) { $trainingStatus = "Completed"; }
-                                                    else { $trainingStatus = "Not Yet Started"; }
-                                    
-                                                    $completed_date = $rowQuizResult['last_modified'];
-                                                    $completed_date = new DateTime($completed_date);
-                                                    $completed_date = $completed_date->format('M d, Y');
-                                                    
-                                                    $due_date = date('Y-m-d', strtotime('+1 year', strtotime($completed_date)) );
-                                                    $due_date = new DateTime($due_date);
-                                                    $due_date = $due_date->format('M d, Y');
-                                                }
-                                            }
-
-                                        }
-                                    }
-
-                                    if ( $found == true ) {
-                                        echo '<tr id="tr_'.$training_ID.'">
-                                            <td >'. $title .'</td>
-                                            <td class="text-center">'; echo $trainingResult == 100 ? $completed_date:''; echo '</td>
-                                            <td class="text-center">'; echo $trainingResult == 100 ? $due_date:''; echo '</td>
-                                            <td class="text-center">'.$trainingStatus.'</td>
-                                            <td class="text-center">'; echo $trainingResult == 100 ? '<a href="pdf?id='.$pdf_quiz.'" target="_blank" class="btn btn-circle btn-sm btn-success">View</a>':''; echo '</td>
-                                        </tr>';
-                                    }
                                 }
+                            } else {
+                                echo '<tr>
+                                    <td class="text-center" colspan="5">No Records</td>
+                                </tr>';
                             }
-                        }
 
-                    echo '</tbody>
-                </table>
-            </div>
-        </div>';
+                        echo '</tbody>
+                    </table>
+                </div>
+            </div>';
 
-        mysqli_close($conn);
+            mysqli_close($conn);
+        }
     }
     if( isset($_GET['modalView_HR_Trainings_TP']) ) {
         $id = $_GET['modalView_HR_Trainings_TP'];
 
-        $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE ID = $id" );
+        $selectData = mysqli_query( $conn,"SELECT ID, user_id FROM tbl_hr_trainings WHERE ID = $id" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
-            $user_id = htmlentities($row['user_id'] ?? '');
-            $type = htmlentities($row['type'] ?? '');
+            $row_ID = $row['ID'];
+            $user_id = $row['user_id'];
 
-            $files = $row['files'];
-            if (!empty($files)) {
-                $output_file = json_decode($files,true);
-            }
-        }
+            echo '<input class="form-control" type="hidden" name="ID" value="'. $row_ID .'" />
+            <div class="table-scrollable">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Last Name</th>
+                            <th>First Name</th>
+                            <th>Email</th>
+                            <th>Completed(Y/N)</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
 
-        echo '<input class="form-control" type="hidden" name="ID" value="'. $row['ID'] .'" />
-        <div class="table-scrollable">
-            <table class="table table-bordered table-hover">
-                <thead>
-                    <tr>
-                        <th>Last Name</th>
-                        <th>First Name</th>
-                        <th>Email</th>
-                        <th>Completed(Y/N)</th>
-                    </tr>
-                </thead>
-                <tbody>';
+                        $selectData = mysqli_query( $conn,"
+                            SELECT
+                            u_ID,
+                            e_ID,
+                            e_user_id,
+                            e_first_name,
+                            e_last_name,
+                            e_email,
+                            e_job_description_id,
+                            j_title,
+                            t.ID AS t_ID,
+                            t.title AS t_title,
+                            t.job_description_id AS t_job_description_id,
+                            t.quiz_id AS t_quiz_id,
+                            q.quiz_id AS q_quiz_id,
+                            q.max_ID AS q_max_ID,
+                            q.result AS q_result,
+                            q.last_modified AS q_last_modified
 
-                    $countTraining = 0;
-                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id = $user_id ORDER BY last_name" );
-                    if ( mysqli_num_rows($selectEmployee) > 0 ) {
-                        while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
-                            $found = null;
-                            $array_rowEmployee = explode(", ", $rowEmployee["job_description_id"]);
-                            $array_rowTraining = explode(", ", $row["job_description_id"]);
-                            foreach($array_rowEmployee as $emp_JD) {
-                                if (in_array($emp_JD,$array_rowTraining)) {
-                                    $found = true;
-                                }
-                            }
+                            FROM (
+                                SELECT
+                                u.ID AS u_ID,
+                                e.ID AS e_ID,
+                                e.user_id AS e_user_id,
+                                e.first_name AS e_first_name,
+                                e.last_name AS e_last_name,
+                                e.email AS e_email,
+                                e.job_description_id AS e_job_description_id,
+                                GROUP_CONCAT(j.title SEPARATOR ', ') AS j_title
 
-                            if ( $found == true ) {
-                                $employee_id = $rowEmployee["ID"];
+                                FROM tbl_hr_employee AS e
 
-                                $trainingStatus = "Not Yet Started";
-                                $trainingResult = 0;
-                                $completed_date = '';
-                                $due_date = '';
+                                LEFT JOIN (
+                                    SELECT
+                                    *
+                                    FROM tbl_hr_job_description
+                                    WHERE user_id = $user_id
+                                    AND status = 1
+                                ) AS j
+                                ON FIND_IN_SET(j.ID, REPLACE(e.job_description_id, ' ', '')) > 0
 
-                                $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = $employee_id" );
-                                if ( mysqli_num_rows($selectUser) > 0 ) {
-                                    $rowUser = mysqli_fetch_array($selectUser);
-                                    $employee_user_ID = $rowUser['ID'];
+                                RIGHT JOIN (
+                                    SELECT
+                                    *
+                                    FROM tbl_user
+                                    WHERE is_verified = 1
+                                    AND is_active = 1
+                                ) AS u
+                                ON u.employee_id = e.ID
 
-                                    $selectQuizResult = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_result WHERE user_id = $employee_user_ID " );
-                                    if ( mysqli_num_rows($selectQuizResult) > 0 ) {
-                                        while($rowQuizResult = mysqli_fetch_array($selectQuizResult)) {
-                                            $trainingResultID = $rowQuizResult['ID'];
-                                            $trainingQuizID = $rowQuizResult['quiz_id'];
+                                WHERE e.user_id = $user_id
+                                AND e.suspended = 0 
+                                AND e.status = 1 
 
-                                            if (!empty($row['quiz_id'])) {
-                                                $array_quiz_id = explode(', ', $row['quiz_id']);
-                                                if (in_array($trainingQuizID, $array_quiz_id)) {
-                                                    $trainingResult = $rowQuizResult['result'];
+                                GROUP BY e.ID
+                            ) r
 
-                                                    if ($trainingResult == 100) { $trainingStatus = "Completed"; }
-                                                    else { $trainingStatus = "Not Yet Started"; }
-                                    
-                                                    $completed_date = $rowQuizResult['last_modified'];
-                                                    $completed_date = new DateTime($completed_date);
-                                                    $completed_date = $completed_date->format('M d, Y');
-                                                    
-                                                    $due_date = date('Y-m-d', strtotime('+1 year', strtotime($completed_date)) );
-                                                    $due_date = new DateTime($due_date);
-                                                    $due_date = $due_date->format('M d, Y');
-                                                }
-                                            }
+                            LEFT JOIN (
+                                SELECT 
+                                ID, 
+                                user_id,
+                                title, 
+                                job_description_id, 
+                                quiz_id 
+                                FROM tbl_hr_trainings 
+                                WHERE status = 1 
+                                AND deleted = 0 
+                            ) AS t
+                            ON t.user_id = r.e_user_id
+
+                            LEFT JOIN (
+                                SELECT MAX(ID) AS max_ID, user_id, quiz_id, result, start_time, end_time, signature, last_modified
+                                FROM tbl_hr_quiz_result
+                                WHERE result = 100
+                                GROUP BY quiz_id, user_id
+                            ) AS q
+                            ON r.u_ID = q.user_id
+                            AND t.quiz_id = q.quiz_id
+
+                            WHERE t.ID = $id
+
+                            ORDER BY e_last_name, t_title
+                        " );
+                        if ( mysqli_num_rows($selectData) > 0 ) {
+                            while($rowData = mysqli_fetch_array($selectData)) {
+                                $q_completed = '<span class="label label-sm label-danger">NO</span>';
+                                if (!empty($rowData['q_quiz_id']) AND !empty($rowData['e_job_description_id']) AND !empty($rowData['t_job_description_id'])) {
+
+                                    $e_job_description_id = $rowData['e_job_description_id'];
+                                    $t_job_description_id = $rowData['t_job_description_id'];
+                                    $arr_jd_id_emp = explode(", ", $e_job_description_id);
+                                    $arr_jd_id_training = explode(", ", $t_job_description_id);
+
+                                    if (array_intersect($arr_jd_id_emp, $arr_jd_id_training)) {
+
+                                        if ($rowData['q_result'] == 100) {
+                                            $q_completed = '<span class="label label-sm label-success">YES</span>';
                                         }
+
+                                        echo '<tr>
+                                            <td>'. htmlentities($rowData["e_last_name"] ?? '') .'</td>
+                                            <td>'. htmlentities($rowData["e_first_name"] ?? '') .'</td>
+                                            <td>'. htmlentities($rowData["e_email"] ?? '') .'</td>
+                                            <td class="text-center">'.$q_completed.'</td>
+                                        </tr>';
                                     }
                                 }
-                                echo '<tr>
-                                    <td>'. htmlentities($rowEmployee["last_name"] ?? '') .'</td>
-                                    <td>'. htmlentities($rowEmployee["first_name"] ?? '') .'</td>
-                                    <td>'. htmlentities($rowEmployee["email"] ?? '') .'</td>
-                                    <td class="text-center">'; echo $trainingResult == 100 ? '<span class="label label-sm label-success">YES</span>':'<span class="label label-sm label-danger">NO</span>'; echo '</td>
-                                </tr>';
 
-                                $countTraining++;
                             }
+                        } else {
+                            echo '<tr>
+                                <td class="text-center text-default" colspan="4">No Records</td>
+                            </tr>';
                         }
+                        
+                    echo '</tbody>
+                </table>
+            </div>';
 
-                        if ( $countTraining < 1 ) {
-                            echo '<tr class="text-center text-default"><td colspan="5">Empty Record</td></tr>';
-                        }
-                    } else {
-                        echo '<tr class="text-center text-default"><td colspan="5">Empty Record</td></tr>';
-                    }
-                    
-                echo '</tbody>
-            </table>
-        </div>';
-
-        mysqli_close($conn);
+            mysqli_close($conn);
+        }
     }
     if( isset($_GET['modalView_HR_Employee_TP2']) ) {
         $id = $_GET['modalView_HR_Employee_TP2'];
@@ -6215,111 +6353,112 @@
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $id" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
+            $row_ID = $row['ID'];
             $user_id = $row['user_id'];
-        }
 
-        echo '<input class="form-control" type="hidden" name="ID" value="'. $row['ID'] .'" />
-        <div class="tabbable tabbable-tabdrop">
-            <div class="table-scrollable">
-                <table class="table table-bordered table-hover" id="tableData_training">
-                    <thead>
-                        <tr>
-                            <th>Description</th>
-                            <th class="text-center">Date Completed</th>
-                            <th class="text-center">Due Date</th>
-                            <th class="text-center">Status</th>
-                            <th class="text-center">Record</th>
-                        </tr>
-                    </thead>
-                    <tbody>';
-                        $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = $id" );
-                        if ( mysqli_num_rows($selectUser) > 0 ) {
-                            $rowUser = mysqli_fetch_array($selectUser);
-                            $current_userID = $rowUser['ID'];
-                            $current_userEmployeeID = employeeID($current_userID);
-                            $current_userEmployerID = employerID($current_userID);
+            echo '<input class="form-control" type="hidden" name="ID" value="'. $row_ID .'" />
+            <div class="tabbable tabbable-tabdrop">
+                <div class="table-scrollable">
+                    <table class="table table-bordered table-hover" id="tableData_training">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th class="text-center">Date Completed</th>
+                                <th class="text-center">Due Date</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Record</th>
+                            </tr>
+                        </thead>
+                        <tbody>';
+                            $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = $id" );
+                            if ( mysqli_num_rows($selectUser) > 0 ) {
+                                $rowUser = mysqli_fetch_array($selectUser);
+                                $current_userID = $rowUser['ID'];
+                                $current_userEmployeeID = employeeID($current_userID);
+                                $current_userEmployerID = employerID($current_userID);
 
-                            $selectTrainings = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE deleted = 0 AND user_id = $current_userEmployerID ORDER BY title" );
-                            if ( mysqli_num_rows($selectTrainings) > 0 ) {
-                                while($rowTraining = mysqli_fetch_array($selectTrainings)) {
-                                    $training_ID = htmlentities($rowTraining['ID'] ?? '');
-                                    $title = htmlentities($rowTraining['title'] ?? '');
-                                    
-                                    $data_last_modified = $rowTraining['last_modified'];
-                                    $data_last_modified = new DateTime($data_last_modified);
-                                    $data_last_modified = $data_last_modified->format('M d, Y');
+                                $selectTrainings = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE deleted = 0 AND user_id = $current_userEmployerID ORDER BY title" );
+                                if ( mysqli_num_rows($selectTrainings) > 0 ) {
+                                    while($rowTraining = mysqli_fetch_array($selectTrainings)) {
+                                        $training_ID = htmlentities($rowTraining['ID'] ?? '');
+                                        $title = htmlentities($rowTraining['title'] ?? '');
+                                        
+                                        $data_last_modified = $rowTraining['last_modified'];
+                                        $data_last_modified = new DateTime($data_last_modified);
+                                        $data_last_modified = $data_last_modified->format('M d, Y');
 
-                                    $found = null;
-                                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $current_userEmployeeID" );
-                                    if ( mysqli_num_rows($selectEmployee) > 0 ) {
-                                        $rowEmployee = mysqli_fetch_array($selectEmployee);
-                                        $array_row = explode(", ", $rowEmployee["job_description_id"]);
-                                        $array_rowTraining = explode(", ", $rowTraining["job_description_id"]);
-                                        foreach($array_row as $emp_JD) {
-                                            if (in_array($emp_JD,$array_rowTraining)) {
-                                                $found = true;
-                                            }
-                                        }
-                                    }
-
-                                    $trainingStatus = "Not Yet Started";
-                                    $trainingResult = 0;
-                                    $completed_date = '';
-                                    $due_date = '';
-                                    $pdf_quiz = '';
-                                    $selectQuizResult = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_result WHERE user_id = $current_userID " );
-                                    if ( mysqli_num_rows($selectQuizResult) > 0 ) {
-                                        while($rowQuizResult = mysqli_fetch_array($selectQuizResult)) {
-                                            $trainingResultID = $rowQuizResult['ID'];
-                                            $trainingQuizID = $rowQuizResult['quiz_id'];
-
-                                            if (!empty($rowTraining['quiz_id'])) {
-                                                $array_quiz_id = explode(', ', $rowTraining['quiz_id']);
-                                                if (in_array($trainingQuizID, $array_quiz_id)) {
-                                                    $trainingResult = $rowQuizResult['result'];
-                                                    $pdf_quiz = $trainingResultID;
-
-                                                    if ($trainingResult == 100) { $trainingStatus = "Completed"; }
-                                                    else { $trainingStatus = "Not Yet Started"; }
-                                    
-                                                    $completed_date = $rowQuizResult['last_modified'];
-                                                    $completed_date = new DateTime($completed_date);
-                                                    $completed_date = $completed_date->format('M d, Y');
-                                                    
-                                                    $due_date = date('Y-m-d', strtotime('+1 year', strtotime($completed_date)) );
-                                                    $due_date = new DateTime($due_date);
-                                                    $due_date = $due_date->format('M d, Y');
+                                        $found = null;
+                                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $current_userEmployeeID" );
+                                        if ( mysqli_num_rows($selectEmployee) > 0 ) {
+                                            $rowEmployee = mysqli_fetch_array($selectEmployee);
+                                            $array_row = explode(", ", $rowEmployee["job_description_id"]);
+                                            $array_rowTraining = explode(", ", $rowTraining["job_description_id"]);
+                                            foreach($array_row as $emp_JD) {
+                                                if (in_array($emp_JD,$array_rowTraining)) {
+                                                    $found = true;
                                                 }
                                             }
-
                                         }
-                                    }
 
-                                    if ($type == 1 AND $trainingResult == 100) { $found = true; }
-                                    else if ($type == 2 AND $trainingResult != 100) { $found = true; }
-                                    else if ($type == 3 AND $trainingResult == 100) { $found = true; }
-                                    else {
-                                        $found = false;
-                                    }
+                                        $trainingStatus = "Not Yet Started";
+                                        $trainingResult = 0;
+                                        $completed_date = '';
+                                        $due_date = '';
+                                        $pdf_quiz = '';
+                                        $selectQuizResult = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_result WHERE user_id = $current_userID " );
+                                        if ( mysqli_num_rows($selectQuizResult) > 0 ) {
+                                            while($rowQuizResult = mysqli_fetch_array($selectQuizResult)) {
+                                                $trainingResultID = $rowQuizResult['ID'];
+                                                $trainingQuizID = $rowQuizResult['quiz_id'];
 
-                                    if ( $found == true ) {
-                                        echo '<tr id="tr_'.$training_ID.'">
-                                            <td >'. $title .'</td>
-                                            <td class="text-center">'; echo $trainingResult == 100 ? $completed_date:''; echo '</td>
-                                            <td class="text-center">'; echo $trainingResult == 100 ? $due_date:''; echo '</td>
-                                            <td class="text-center">'.$trainingStatus.'</td>
-                                            <td class="text-center">'; echo $trainingResult == 100 ? '<a href="'.$base_url.'pdf?id='.$pdf_quiz.'" target="_blank" class="btn btn-circle btn-sm btn-success">View</a>':''; echo '</td>
-                                        </tr>';
+                                                if (!empty($rowTraining['quiz_id'])) {
+                                                    $array_quiz_id = explode(', ', $rowTraining['quiz_id']);
+                                                    if (in_array($trainingQuizID, $array_quiz_id)) {
+                                                        $trainingResult = $rowQuizResult['result'];
+                                                        $pdf_quiz = $trainingResultID;
+
+                                                        if ($trainingResult == 100) { $trainingStatus = "Completed"; }
+                                                        else { $trainingStatus = "Not Yet Started"; }
+                                        
+                                                        $completed_date = $rowQuizResult['last_modified'];
+                                                        $completed_date = new DateTime($completed_date);
+                                                        $completed_date = $completed_date->format('M d, Y');
+                                                        
+                                                        $due_date = date('Y-m-d', strtotime('+1 year', strtotime($completed_date)) );
+                                                        $due_date = new DateTime($due_date);
+                                                        $due_date = $due_date->format('M d, Y');
+                                                    }
+                                                }
+
+                                            }
+                                        }
+
+                                        if ($type == 1 AND $trainingResult == 100) { $found = true; }
+                                        else if ($type == 2 AND $trainingResult != 100) { $found = true; }
+                                        else if ($type == 3 AND $trainingResult == 100) { $found = true; }
+                                        else {
+                                            $found = false;
+                                        }
+
+                                        if ( $found == true ) {
+                                            echo '<tr id="tr_'.$training_ID.'">
+                                                <td >'. $title .'</td>
+                                                <td class="text-center">'; echo $trainingResult == 100 ? $completed_date:''; echo '</td>
+                                                <td class="text-center">'; echo $trainingResult == 100 ? $due_date:''; echo '</td>
+                                                <td class="text-center">'.$trainingStatus.'</td>
+                                                <td class="text-center">'; echo $trainingResult == 100 ? '<a href="'.$base_url.'pdf?id='.$pdf_quiz.'" target="_blank" class="btn btn-circle btn-sm btn-success">View</a>':''; echo '</td>
+                                            </tr>';
+                                        }
                                     }
                                 }
                             }
-                        }
-                    echo '</tbody>
-                </table>
-            </div>
-        </div>';
+                        echo '</tbody>
+                    </table>
+                </div>
+            </div>';
 
-        mysqli_close($conn);
+            mysqli_close($conn);
+        }
     }
 
     // Quiz Section
@@ -6745,6 +6884,7 @@
             $filetype = htmlentities($row['filetype'] ?? '');
             $files = htmlentities($row["files"] ?? '');
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($files)) {
                 if ($filetype == 1) {
                     $fileExtension = fileExtension($files);
@@ -6760,6 +6900,7 @@
                 } else if ($filetype == 4) {
                     $file_extension = 'fa-strikethrough';
                     $target = '_blank';
+                    $datafancybox = '';
                 }
             }
         }
@@ -6791,7 +6932,7 @@
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
             </div>
         </div>
         <div class="form-group">
@@ -6940,6 +7081,7 @@
                     $filetype = htmlentities($rowData['filetype'] ?? '');
                     $files = htmlentities($rowData["files"] ?? '');
                     $type = 'iframe';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -6955,9 +7097,10 @@
                         } else if ($filetype == 4) {
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
+                            $datafancybox = '';
                         }
                     }
-                    $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
+                    $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
 
                     $counterup_tbl = counterup_tbl('department');
                     $output = array(
@@ -7042,6 +7185,7 @@
                 $filetype = htmlentities($rowData['filetype'] ?? '');
                 $files = htmlentities($rowData["files"] ?? '');
                 $type = 'iframe';
+                $datafancybox = 'data-fancybox';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -7057,9 +7201,10 @@
                     } else if ($filetype == 4) {
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
+                        $datafancybox = '';
                     }
                 }
-                $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
+                $viewFile = '<p class="'; $viewFile .= !empty($files) ? '':'hide'; $viewFile .= '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
 
                 // $dept_id = $row["ID"];
                 $countDepartment = 0;
@@ -8160,7 +8305,7 @@
 
                                                                 echo '<input type="hidden" name="likelihood_file_temporary[]" value="'.$likelihood_file_arr[$index].'" />
                                                                 <input type="file" class="form-control '; echo !empty($likelihood_file_arr[$index]) ? 'hide':''; echo '" name="likelihood_file[]" />
-                                                                <p class="'; echo !empty($likelihood_file_arr[$index]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload</button></p>';
+                                                                <p class="'; echo !empty($likelihood_file_arr[$index]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload</button></p>';
                                                             } else {
                                                                 echo '<input type="hidden" name="likelihood_file_temporary[]" value="" />
                                                                 <input type="file" class="form-control margin-top-15 hide" name="likelihood_file[]" />
@@ -8255,7 +8400,7 @@
 
                                                             echo '<input type="hidden" name="likelihood_file_temporary_other[]" value="'.$likelihood_file_other[$index].'" />
                                                             <input type="file" class="form-control '; echo !empty($likelihood_file_other[$index]) ? 'hide':''; echo '" name="likelihood_file_other[]" />
-                                                            <p class="'; echo !empty($likelihood_file_other[$index]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload</button></p>';
+                                                            <p class="'; echo !empty($likelihood_file_other[$index]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload</button></p>';
                                                         } else {
                                                             echo '<input type="hidden" name="likelihood_file_temporary_other[]" value="" />
                                                             <input type="file" class="form-control margin-top-15 hide" name="likelihood_file_other[]" />
@@ -8410,7 +8555,7 @@
 
                                                             echo '<input type="hidden" name="consequence_file_temporary[]" value="'.$consequence_file_arr[$index].'" />
                                                             <input type="file" class="form-control '; echo !empty($consequence_file_arr[$index]) ? 'hide':''; echo '" name="consequence_file[]" />
-                                                            <p class="'; echo !empty($consequence_file_arr[$index]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload</button></p>';
+                                                            <p class="'; echo !empty($consequence_file_arr[$index]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload</button></p>';
                                                         } else {
                                                             echo '<input type="hidden" name="consequence_file_temporary[]" value="" />
                                                             <input type="file" class="form-control margin-top-15 hide" name="consequence_file[]" />
@@ -8492,7 +8637,7 @@
 
                                                             echo '<input type="hidden" name="consequence_file_temporary_other[]" value="'.$consequence_file_other[$index].'" />
                                                             <input type="file" class="form-control '; echo !empty($consequence_file_other[$index]) ? 'hide':''; echo '" name="consequence_file_other[]" />
-                                                            <p class="'; echo !empty($consequence_file_other[$index]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload</button></p>';
+                                                            <p class="'; echo !empty($consequence_file_other[$index]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload</button></p>';
                                                         } else {
                                                             echo '<input type="hidden" name="consequence_file_temporary_other[]" value="" />
                                                             <input type="file" class="form-control margin-top-15 hide" name="consequence_file_other[]" />
@@ -8769,8 +8914,8 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <input type="hidden" name="prepared_signature_default_temp" value="'.$empty_signature.'" />
-                                            <img class="img img-fluid sign signature_default" src="'.$empty_signature.'" />
+                                            <input type="hidden" name="prepared_signature_default_temp" value="'.$prepared_signature.'" />
+                                            <img class="img img-fluid sign signature_default" src="'.$prepared_signature.'" />
                                             <input type="file" class="form-control hide sign signature_upload" name="prepared_file" />
                                             <div class="hide sign signature_sign">
                                                 <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
@@ -8809,8 +8954,8 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <input type="hidden" name="reviewed_signature_default_temp" value="'.$empty_signature.'" />
-                                            <img class="img img-fluid sign signature_default" src="'.$empty_signature.'" />
+                                            <input type="hidden" name="reviewed_signature_default_temp" value="'.$reviewed_signature.'" />
+                                            <img class="img img-fluid sign signature_default" src="'.$reviewed_signature.'" />
                                             <input type="file" class="form-control hide sign signature_upload" name="reviewed_file" />
                                             <div class="hide sign signature_sign">
                                                 <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
@@ -8867,8 +9012,8 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <input type="hidden" name="approved_signature_default_temp" value="'.$empty_signature.'" />
-                                            <img class="img img-fluid sign signature_default" src="'.$empty_signature.'" />
+                                            <input type="hidden" name="approved_signature_default_temp" value="'.$approved_signature.'" />
+                                            <img class="img img-fluid sign signature_default" src="'.$approved_signature.'" />
                                             <input type="file" class="form-control hide sign signature_upload" name="approved_file" />
                                             <div class="hide sign signature_sign">
                                                 <input type="button" class="btn btn-danger btnClear" onclick="btnClear(this)" value="Clear" />
@@ -9107,7 +9252,7 @@
                                                             $file_extension = $fileExtension['file_extension'];
                                                             $url = $base_url.'uploads/ffva/';
 
-                                                            echo '<p class="'; echo !empty($likelihood_file_arr[$index]) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$src.$url.rawurlencode($likelihood_file_arr[$index]).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> </p>';
+                                                            echo '<p class="'; echo !empty($likelihood_file_arr[$index]) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$src.$url.rawurlencode($likelihood_file_arr[$index]).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> </p>';
                                                         }
                                                     
                                                     echo '</td>
@@ -9159,7 +9304,7 @@
                                                             $file_extension = $fileExtension['file_extension'];
                                                             $url = $base_url.'uploads/ffva/';
 
-                                                            echo '<p class="'; echo !empty($likelihood_file_other[$index]) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$src.$url.rawurlencode($likelihood_file_other[$index]).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
+                                                            echo '<p class="'; echo !empty($likelihood_file_other[$index]) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$src.$url.rawurlencode($likelihood_file_other[$index]).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p>';
                                                         }
 
                                                     echo '</td>
@@ -9257,7 +9402,7 @@
                                                             $file_extension = $fileExtension['file_extension'];
                                                             $url = $base_url.'uploads/ffva/';
 
-                                                            echo '<p class="'; echo !empty($consequence_file_arr[$index]) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$src.$url.rawurlencode($consequence_file_arr[$index]).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
+                                                            echo '<p class="'; echo !empty($consequence_file_arr[$index]) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$src.$url.rawurlencode($consequence_file_arr[$index]).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p>';
                                                         }
                                                     
                                                     echo '</td>
@@ -9309,7 +9454,7 @@
                                                             $file_extension = $fileExtension['file_extension'];
                                                             $url = $base_url.'uploads/ffva/';
 
-                                                            echo '<p class="'; echo !empty($consequence_file_other[$index]) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$src.$url.rawurlencode($consequence_file_other[$index]).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>';
+                                                            echo '<p class="'; echo !empty($consequence_file_other[$index]) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$src.$url.rawurlencode($consequence_file_other[$index]).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p>';
                                                         }
                                                     
                                                     echo '</td>
@@ -12097,7 +12242,7 @@
             $type = $fileExtension['type'];
             $file_extension = $fileExtension['file_extension'];
             $url = $base_url.'uploads/ffva/';
-            $file_url = '<a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link btn-sm">View</a><a href="#modalFile" class="btn btn-link btn-sm" data-toggle="modal" onclick="btnFile('.$ID.', '.$area.')">Upload</a>';
+            $file_url = '<a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link btn-sm">View</a><a href="#modalFile" class="btn btn-link btn-sm" data-toggle="modal" onclick="btnFile('.$ID.', '.$area.')">Upload</a>';
 
             $output = array(
                 "ID" => $ID,
@@ -12756,9 +12901,9 @@
 
             $document_other = htmlentities($row["document_other"] ?? '');
             $document_other_arr = explode(" | ", $document_other);
-            if (count($document_other_arr) <= 1 ) {
-                $document_other_arr = explode(", ", $document_other);
-            }
+            // if (count($document_other_arr) <= 1 ) {
+            //     $document_other_arr = explode(", ", $document_other);
+            // }
 
             $contact = htmlentities($row["contact"] ?? '');
             $material = htmlentities($row["material"] ?? '');
@@ -12890,8 +13035,52 @@
                 </li>
             </ul>
             <div class="tab-content margin-top-20">
-                <div class="tab-pane '; echo $page == 1 ? '':'active'; echo '" id="tabBasic_2">
-                    <div class="row">
+                <div class="tab-pane '; echo $page == 1 ? '':'active'; echo '" id="tabBasic_2">';
+
+                    $pictogram = 'cus_edit_basic';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($rowPictogram["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
+
+                    echo '<div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="control-label">Customer Name</label>
@@ -13227,8 +13416,52 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane" id="tabContact_2">
-                    <a href="#modalNewContact" data-toggle="modal" class="btn green" onclick="btnNew_Contact('.$user_id.', 2, \'btnNew_Contact\')">Add New Contact</a>
+                <div class="tab-pane" id="tabContact_2">';
+
+                    $pictogram = 'cus_edit_contact';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($rowPictogram["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
+
+                    echo '<a href="#modalNewContact" data-toggle="modal" class="btn green" onclick="btnNew_Contact('.$user_id.', 2, \'btnNew_Contact\')">Add New Contact</a>
                     <div class="table-scrollable">
                         <table class="table table-bordered table-hover" id="tableData_Contact_2">
                             <thead>
@@ -13293,6 +13526,50 @@
                     </div>
                 </div>
                 <div class="tab-pane '; echo $page == 1 ? 'active':''; echo '" id="tabDocuments_2">';
+
+                    $pictogram = 'cus_edit_docs';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($rowPictogram["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
+
                     if ($page == 2) {
                         echo '<div class="mt-checkbox-list">';
                             
@@ -13429,7 +13706,7 @@
                                                                 </select>
                                                                 <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                                 <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
-                                                                <p class="'; echo !empty($doc_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$doc_file.'" data-src="'.$doc_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info">View</a> | <button type="button" class="btn btn-sm red-haze uploadNew" onclick="uploadNew(this)">Upload</button></p>';
+                                                                <p class="'; echo !empty($doc_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$doc_file.'" data-src="'.$doc_file.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-sm btn-info">View</a> | <button type="button" class="btn btn-sm red-haze uploadNew" onclick="uploadNew(this)">Upload</button></p>';
                                                             } else {
                                                                 echo '<select class="form-control hide" name="document_filetype[]" onchange="changeType(this)" required>
                                                                     <option value="0">Select option</option>
@@ -13476,6 +13753,7 @@
 
                                                                 $type = 'iframe';
                                                                 $filetype = $rowTemplate["filetype"];
+                                                                $datafancybox = 'data-fancybox';
                                                                 if ($filetype == 1) {
                                                                     $fileExtension = fileExtension($temp_file);
                                                                     $src = $fileExtension['src'];
@@ -13490,10 +13768,11 @@
                                                                 } else if ($filetype == 4) {
                                                                     $file_extension = 'fa-strikethrough';
                                                                     $target = '_blank';
+                                                                    $datafancybox = '';
                                                                 }
 
                                                                 echo '<p style="margin: 0;">
-                                                                    <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
+                                                                    <a href="'.$temp_file.'" data-src="'.$temp_file.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
                                                                     <a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$req_id.', '.$temp_ID.', 2)">Upload</a>
                                                                 </p>';
                                                             } else {
@@ -13700,7 +13979,7 @@
                                                         </select>
                                                         <input class="form-control margin-top-15 fileUpload" type="file" name="document_other_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                         <input class="form-control margin-top-15 fileURL" type="url" name="document_other_fileurl[]" style="display: none;" placeholder="https://" />
-                                                        <p class="'; echo !empty($doc_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$doc_file.'" data-src="'.$doc_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info">View</a> | <button type="button" class="btn btn-sm red-haze uploadNew" onclick="uploadNew(this)">Upload</button></p>';
+                                                        <p class="'; echo !empty($doc_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$doc_file.'" data-src="'.$doc_file.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-sm btn-info">View</a> | <button type="button" class="btn btn-sm red-haze uploadNew" onclick="uploadNew(this)">Upload</button></p>';
                                                     } else {
                                                         echo '<select class="form-control hide" name="document_other_filetype[]" onchange="changeType(this)" required>
                                                             <option value="0">Select option</option>
@@ -13756,7 +14035,7 @@
                                                     //     }
 
                                                     //     echo '<p style="margin: 0;">
-                                                    //         <a href="'.$doc_file_template.'" data-src="'.$doc_file_template.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info">View</a> |
+                                                    //         <a href="'.$doc_file_template.'" data-src="'.$doc_file_template.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-sm btn-info">View</a> |
                                                     //         <a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$id.', '.$doc_id.', 2)">Upload</a>
                                                     //     </p>';
                                                     // } else {
@@ -13771,6 +14050,7 @@
 
                                                         $type = 'iframe';
                                                         $filetype = $rowTemplate["filetype"];
+                                                        $datafancybox = 'data-fancybox';
                                                         if ($filetype == 1) {
                                                             $fileExtension = fileExtension($temp_file);
                                                             $src = $fileExtension['src'];
@@ -13785,10 +14065,11 @@
                                                         } else if ($filetype == 4) {
                                                             $file_extension = 'fa-strikethrough';
                                                             $target = '_blank';
+                                                            $datafancybox = '';
                                                         }
 
                                                         echo '<p style="margin: 0;">
-                                                            <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
+                                                            <a href="'.$temp_file.'" data-src="'.$temp_file.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
                                                             <a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$doc_id.', '.$temp_ID.', 2)">Upload</a>
                                                         </p>';
                                                     } else {
@@ -13934,6 +14215,49 @@
                 </div>
                 <div class="tab-pane" id="tabProduct_2">';
 
+                    $pictogram = 'cus_edit_product';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($rowPictogram["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
+
                     if ($page == 2) { echo '<a href="#modalNewProduct" data-toggle="modal" class="btn green" onclick="btnNew_Product('.$user_id.', 2, \'modalNewProduct\')">Add New Product</a>'; }
                     
                     echo '<div class="table-scrollable">
@@ -13997,6 +14321,49 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tabService_2">';
+
+                    $pictogram = 'cus_edit_service';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($rowPictogram["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
 
                     if ($page == 2) { echo '<a href="#modalNewService" data-toggle="modal" class="btn green" onclick="btnNew_Service('.$user_id.', 2, \'modalNewService\')">Add New Service</a>'; }
                     
@@ -14062,8 +14429,52 @@
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane" id="tabAuditReview_2">
-                    <h4><strong>Audit</strong></h4>
+                <div class="tab-pane" id="tabAuditReview_2">';
+
+                    $pictogram = 'cus_edit_review';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($rowPictogram["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
+
+                    echo '<h4><strong>Audit</strong></h4>
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
@@ -14079,7 +14490,7 @@
 
                                     echo '<input type="hidden" name="audit_report_file_tmp" value="'.$audit_report_arr[0].'" />
                                     <input class="form-control '; echo !empty($audit_report_arr[0]) ? 'hide':''; echo '" type="file" name="audit_report_file" />
-                                    <p class="'; echo !empty($audit_report_arr[0]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($audit_report_arr[0]).$embed.'" data-src="'.$src.$url.rawurlencode($audit_report_arr[0]).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload</button></p>';
+                                    <p class="'; echo !empty($audit_report_arr[0]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($audit_report_arr[0]).$embed.'" data-src="'.$src.$url.rawurlencode($audit_report_arr[0]).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload</button></p>';
                                 } else {
                                     echo '<input type="hidden" name="audit_report_file_tmp" value="" />
                                     <input class="form-control" type="file" name="audit_report_file" />';
@@ -14132,7 +14543,7 @@
 
                                     echo '<input type="hidden" name="audit_certificate_file_tmp" value="'.$audit_certificate_arr[0].'" />
                                     <input class="form-control '; echo !empty($audit_certificate_arr[0]) ? 'hide':''; echo '" type="file" name="audit_certificate_file" />
-                                    <p class="'; echo !empty($audit_certificate_arr[0]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($audit_certificate_arr[0]).$embed.'" data-src="'.$src.$url.rawurlencode($audit_certificate_arr[0]).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload</button></p>';
+                                    <p class="'; echo !empty($audit_certificate_arr[0]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($audit_certificate_arr[0]).$embed.'" data-src="'.$src.$url.rawurlencode($audit_certificate_arr[0]).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload</button></p>';
                                 } else {
                                     echo '<input type="hidden" name="audit_certificate_file_tmp" value="" />
                                     <input class="form-control" type="file" name="audit_certificate_file" />';
@@ -14185,7 +14596,7 @@
 
                                     echo '<input type="hidden" name="audit_action_file_tmp" value="'.$audit_action_arr[0].'" />
                                     <input class="form-control '; echo !empty($audit_action_arr[0]) ? 'hide':''; echo '" type="file" name="audit_action_file" />
-                                    <p class="'; echo !empty($audit_action_arr[0]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($audit_action_arr[0]).$embed.'" data-src="'.$src.$url.rawurlencode($audit_action_arr[0]).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload</button></p>';
+                                    <p class="'; echo !empty($audit_action_arr[0]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($audit_action_arr[0]).$embed.'" data-src="'.$src.$url.rawurlencode($audit_action_arr[0]).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload</button></p>';
                                 } else {
                                     echo '<input type="hidden" name="audit_action_file_tmp" value="" />
                                     <input class="form-control" type="file" name="audit_action_file" />';
@@ -15639,7 +16050,7 @@
                                             </select>
                                             <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                             <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
-                                            <p class="'; echo !empty($doc_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$doc_file.'" data-src="'.$doc_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info">View</a> | <button type="button" class="btn btn-sm red-haze uploadNew" onclick="uploadNew(this)">Upload</button></p>';
+                                            <p class="'; echo !empty($doc_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$doc_file.'" data-src="'.$doc_file.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-sm btn-info">View</a> | <button type="button" class="btn btn-sm red-haze uploadNew" onclick="uploadNew(this)">Upload</button></p>';
                                         } else {
                                             echo '<select class="form-control hide" name="document_filetype[]" onchange="changeType(this)" required>
                                                 <option value="0">Select option</option>
@@ -15686,6 +16097,7 @@
 
                                             $type = 'iframe';
                                             $filetype = $rowTemplate["filetype"];
+                                            $datafancybox = 'data-fancybox';
                                             if ($filetype == 1) {
                                                 $fileExtension = fileExtension($temp_file);
                                                 $src = $fileExtension['src'];
@@ -15700,10 +16112,11 @@
                                             } else if ($filetype == 4) {
                                                 $file_extension = 'fa-strikethrough';
                                                 $target = '_blank';
+                                                $datafancybox = '';
                                             }
 
                                             echo '<p style="margin: 0;">
-                                                <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
+                                                <a href="'.$temp_file.'" data-src="'.$temp_file.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
                                                 <a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$req_id.', '.$temp_ID.', 2)">Upload</a>
                                             </p>';
                                         } else {
@@ -15944,6 +16357,7 @@
 
                                 $type = 'iframe';
                                 $filetype = $rowTemplate["filetype"];
+                                $datafancybox = 'data-fancybox';
                                 if ($filetype == 1) {
                                     $fileExtension = fileExtension($temp_file);
                                     $src = $fileExtension['src'];
@@ -15958,10 +16372,11 @@
                                 } else if ($filetype == 4) {
                                     $file_extension = 'fa-strikethrough';
                                     $target = '_blank';
+                                    $datafancybox = '';
                                 }
 
                                 echo '<p style="margin: 0;">
-                                    <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
+                                    <a href="'.$temp_file.'" data-src="'.$temp_file.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
                                     <a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$data_ID.', '.$temp_ID.', '.$modal.')">Upload</a>
                                 </p>';
                             } else {
@@ -16681,7 +17096,7 @@
                             ON d.name = r.ID
 
                             WHERE d.type = 0
-                            AND LENGTH(d.file) = 0
+                            AND IFNULL(d.file = '', TRUE)
                             AND d.user_id = $data_user_id
                             AND d.supplier_id = $data_ID
                         ) AS o
@@ -17650,7 +18065,7 @@
                             ON d.name = r.ID
 
                             WHERE d.type = 0
-                            AND LENGTH(d.file) = 0
+                            AND IFNULL(d.file = '', TRUE)
                             AND d.user_id = $data_user_id
                             AND d.supplier_id = $data_ID
                         ) AS o
@@ -18366,7 +18781,7 @@
                     <input type="hidden" name="material_spec_file_temp" value="'.$spec_file.'" />
                     <label class="control-label">Specification</label>
                     <input class="form-control '; echo !empty($spec_file) ? 'hide':''; echo '" type="file" name="material_spec_file" />
-                    <p class="'; echo !empty($spec_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($spec_file).$embed.'" data-src="'.$src.$url.rawurlencode($spec_file).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload New</button></p>
+                    <p class="'; echo !empty($spec_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($spec_file).$embed.'" data-src="'.$src.$url.rawurlencode($spec_file).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload New</button></p>
                 </div>
             </div>
             <div class="col-md-6">
@@ -18430,7 +18845,7 @@
                                     <input type="hidden" name="material_file_doc_temp" value="'.$material_file_doc.'" />
                                     <label class="control-label">File Document</label>
                                     <input class="form-control '; echo !empty($material_file_doc) ? 'hide':''; echo '" type="file" name="material_file_doc" />
-                                    <p class="'; echo !empty($material_file_doc) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($material_file_doc).$embed.'" data-src="'.$src.$url.rawurlencode($material_file_doc).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload New</button></p>
+                                    <p class="'; echo !empty($material_file_doc) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($material_file_doc).$embed.'" data-src="'.$src.$url.rawurlencode($material_file_doc).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload New</button></p>
                                 </div>
                             </div>
                             <div class="col-md-5">
@@ -18876,7 +19291,7 @@
                     <input type="hidden" name="service_spec_file_tmp" value="'.$spec_file.'" />
                     <label class="control-label">Specification</label>
                     <input class="form-control '; echo !empty($spec_file) ? 'hide':''; echo '" type="file" name="service_spec_file" />
-                    <p class="'; echo !empty($spec_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($spec_file).$embed.'" data-src="'.$src.$url.rawurlencode($spec_file).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload New</button></p>
+                    <p class="'; echo !empty($spec_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($spec_file).$embed.'" data-src="'.$src.$url.rawurlencode($spec_file).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload New</button></p>
                 </div>
             </div>
             <div class="col-md-6">
@@ -18922,7 +19337,7 @@
                                     <input type="hidden" name="service_file_doc_tmp" value="'.$service_file_doc.'" />
                                     <label class="control-label">File Document</label>
                                     <input class="form-control '; echo !empty($service_file_doc) ? 'hide':''; echo '" type="file" name="service_file_doc" />
-                                    <p class="'; echo !empty($service_file_doc) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($service_file_doc).$embed.'" data-src="'.$src.$url.rawurlencode($service_file_doc).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload New</button></p>
+                                    <p class="'; echo !empty($service_file_doc) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($service_file_doc).$embed.'" data-src="'.$src.$url.rawurlencode($service_file_doc).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload New</button></p>
                                 </div>
                             </div>
                             <div class="col-md-5">
@@ -19244,9 +19659,9 @@
             if (!empty($row["document_other"])) {
                 $document_other = $row["document_other"];
                 $document_other_arr = explode(" | ", $document_other);
-                if (count($document_other_arr) <= 1 ) {
-                    $document_other_arr = explode(", ", $document_other);
-                }
+                // if (count($document_other_arr) <= 1 ) {
+                //     $document_other_arr = explode(", ", $document_other);
+                // }
             }
 
             $regulatory = htmlentities($row["regulatory"] ?? '');
@@ -19397,21 +19812,65 @@
 
             echo '</ul>
             <div class="tab-content margin-top-20">
-                <div class="tab-pane '; echo $page == 2 ? '':'active'; echo '" id="tabBasic_2">
-                    <div class="row">
+                <div class="tab-pane '; echo $page == 2 ? '':'active'; echo '" id="tabBasic_2">';
+
+                    $pictogram = 'sup_edit_basic';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($rowPictogram["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
+
+                    echo '<div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label">Vendor Code</label>
+                                <input class="form-control" type="text" name="vendor_code" value="'.$row["vendor_code"].'" />';
+                                
+                            echo '</div>
+                        </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="control-label">Vendor Name</label>
                                 <input class="form-control '; echo $page == 2 ? 'hide':''; echo '" type="text" name="supplier_name" value="'.$row["name"].'" required />';
 
                                 if ($page == 2) { echo '<input class="form-control" type="text" value="'.$enterprise_name.'" readonly disabled />'; }
-                                
-                            echo '</div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Vendor Code</label>
-                                <input class="form-control" type="text" name="vendor_code" value="'.$row["vendor_code"].'" />';
                                 
                             echo '</div>
                         </div>
@@ -19436,25 +19895,6 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
-                                <label class="control-label">Country</label>
-                                <select class="form-control '; echo $page == 2 ? 'hide':''; echo '" name="supplier_countries" onchange="changeCountry(2, '.$id.')" required>
-                                    <option value="US" '; echo  $address_arr[0] == "US" ? 'SELECTED':''; echo '>United States of America</option>';
-                                    
-                                    $selectCountry = mysqli_query( $conn,"SELECT * FROM countries WHERE iso2 <> 'US'" );
-                                    while($rowCountry = mysqli_fetch_array($selectCountry)) {
-                                        echo '<option value="'.$rowCountry["iso2"].'" '; echo  $address_arr[0] == $rowCountry["iso2"] ? 'SELECTED':''; echo '>'.$rowCountry["name"].'</option>';
-                                    }
-
-                                echo '</select>';
-
-                                if ($page == 2) { echo '<input class="form-control" type="text" value="'.$enterprise_country.'" readonly />'; }
-
-                            echo '</div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
                                 <label class="control-label">Industry</label>
                                 <select class="form-control '; echo $page == 2 ? 'hide':''; echo '" name="supplier_industry" onchange="changeIndustry(this.value, 2, '.$id.')">
                                     <option value="">Select</option>';
@@ -19469,6 +19909,23 @@
                                 echo '</select>';
 
                                 if ($page == 2) { echo '<input class="form-control" type="text" value="'.$enterprise_industry.'" readonly />'; }
+
+                            echo '</div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label">Country</label>
+                                <select class="form-control '; echo $page == 2 ? 'hide':''; echo '" name="supplier_countries" onchange="changeCountry(2, '.$id.')" required>
+                                    <option value="US" '; echo  $address_arr[0] == "US" ? 'SELECTED':''; echo '>United States of America</option>';
+                                    
+                                    $selectCountry = mysqli_query( $conn,"SELECT * FROM countries WHERE iso2 <> 'US'" );
+                                    while($rowCountry = mysqli_fetch_array($selectCountry)) {
+                                        echo '<option value="'.$rowCountry["iso2"].'" '; echo  $address_arr[0] == $rowCountry["iso2"] ? 'SELECTED':''; echo '>'.$rowCountry["name"].'</option>';
+                                    }
+
+                                echo '</select>';
+
+                                if ($page == 2) { echo '<input class="form-control" type="text" value="'.$enterprise_country.'" readonly />'; }
 
                             echo '</div>
                         </div>
@@ -19499,8 +19956,6 @@
                                 
                             echo '</div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="control-label">Zip Code</label>
@@ -19516,7 +19971,7 @@
                                 <div class="input-group '; echo $page == 2 ? 'hide':''; echo '">
                                     <input class="form-control" type="email" name="supplier_email" value="'.$row["email"].'" required />
                                     <span class="input-group-btn">
-                                        <button class="btn purple-seance" type="button" onclick="btnSendInvite('.$id.')">Send Invite</button>
+                                        <button class="btn purple-seance" type="button" onclick="btnSendInvite('.$id.')" style="border: 0;">Send Invite</button>
                                     </span>
                                 </div>';
 
@@ -19542,8 +19997,6 @@
                                 
                             echo '</div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label class="control-label">Website</label>
@@ -19569,10 +20022,44 @@
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
+                                <label class="control-label">Status Date</label>
+                                <input class="form-control" type="date" name="date" value="'.$row["date"].'" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label">Organic Supplier?</label>
+                                <select class="form-control" name="organic" onchange="changeCountry(2, '.$id.')" '; echo $page == 1 ? '':'readonly'; echo '>
+                                    <option value="0" '; echo $row["organic"] == 0 ? 'SELECTED':''; echo '>No</option>
+                                    <option value="1" '; echo $row["organic"] == 1 ? 'SELECTED':''; echo '>Yes</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
                                 <label class="control-label">Receive Notification?</label>
                                 <select class="form-control" name="supplier_notification" '; echo $page == 1 ? '':'readonly'; echo '>
                                     <option value="0" '; echo $row["notification"] == 0 ? 'SELECTED':''; echo '>No</option>
                                     <option value="1" '; echo $row["notification"] == 1 ? 'SELECTED':''; echo '>Yes</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3 '; echo $user_id == 1211 ? '':'hide'; echo '">
+                            <div class="form-group">
+                                <label class="control-label">With NDA?</label>
+                                <select class="form-control" name="nda" '; echo $page == 1 ? '':''; echo '>
+                                    <option value="0" '; echo $row["nda"] == 0 ? 'SELECTED':''; echo '>No</option>
+                                    <option value="1" '; echo $row["nda"] == 1 ? 'SELECTED':''; echo '>Yes</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label">Risk Level</label>
+                                <select class="form-control" name="risk_level">
+                                    <option value="0" '; echo $row["risk_level"] == 0 ? 'SELECTED':''; echo '>Low</option>
+                                    <option value="1" '; echo $row["risk_level"] == 1 ? 'SELECTED':''; echo '>Medium</option>
+                                    <option value="3" '; echo $row["risk_level"] == 2 ? 'SELECTED':''; echo '>High</option>
                                 </select>
                             </div>
                         </div>
@@ -19588,26 +20075,6 @@
                                     <option value="7" '; echo $frequency == 7 ? 'SELECTED':''; echo '>Once Per Three Months (Quarterly)</option>
                                     <option value="8" '; echo $frequency == 8 ? 'SELECTED':''; echo '>Once Per Six Months (Bi-Annual)</option>
                                     <option value="5" '; echo $frequency == 5 ? 'SELECTED':''; echo '>Once Per Year</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Organic Supplier?</label>
-                                <select class="form-control" name="organic" onchange="changeCountry(2, '.$id.')" '; echo $page == 1 ? '':'readonly'; echo '>
-                                    <option value="0" '; echo $row["organic"] == 0 ? 'SELECTED':''; echo '>No</option>
-                                    <option value="1" '; echo $row["organic"] == 1 ? 'SELECTED':''; echo '>Yes</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3 '; echo $user_id == 1211 ? '':'hide'; echo '">
-                            <div class="form-group">
-                                <label class="control-label">With NDA?</label>
-                                <select class="form-control" name="nda" '; echo $page == 1 ? '':''; echo '>
-                                    <option value="0" '; echo $row["nda"] == 0 ? 'SELECTED':''; echo '>No</option>
-                                    <option value="1" '; echo $row["nda"] == 1 ? 'SELECTED':''; echo '>Yes</option>
                                 </select>
                             </div>
                         </div>
@@ -19691,8 +20158,6 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-3 bg-default '; echo $frequency == 0 ? '':'hide'; echo '">
                             <div class="form-group">
                                 <label class="control-label">Month</label>
@@ -19774,6 +20239,7 @@
                                             $files = $rowRegulatory["files"];
                                             $filetype = $rowRegulatory["filetype"];
                                             $type = 'iframe';
+                                            $datafancybox = 'data-fancybox';
                                             if (!empty($files)) {
                                                 if ($filetype == 1) {
                                                     $fileExtension = fileExtension($files);
@@ -19789,16 +20255,17 @@
                                                 } else if ($filetype == 4) {
                                                     $file_extension = 'fa-strikethrough';
                                                     $target = '_blank';
+                                                    $datafancybox = '';
                                                 }
-                                                $files = '<p style="margin: 0;"><a data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
+                                                $files = '<p style="margin: 0;"><a data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
                                             }
 
                                             echo '<tr id="tr_'.$regulatory_id.'">
-                                                <td>'.$rowRegulatory["name"].'</td>
-                                                <td>'.$rowRegulatory["number"].'</td>
+                                                <td>'.htmlentities($rowRegulatory["name"] ?? '').'</td>
+                                                <td>'.htmlentities($rowRegulatory["number"] ?? '').'</td>
                                                 <td class="text-center">'.$files.'</td>
-                                                <td class="text-center">'.$rowRegulatory["registration_date"].'</td>
-                                                <td class="text-center">'.$rowRegulatory["expiration_date"].'</td>
+                                                <td class="text-center">'.htmlentities($rowRegulatory["registration_date"] ?? '').'</td>
+                                                <td class="text-center">'.htmlentities($rowRegulatory["expiration_date"] ?? '').'</td>
                                                 <td class="text-center">
                                                     <input type="hidden" value="'.$regulatory_id.'" name="regulatory[]" />
                                                     <div class="btn-group btn-group-circle">
@@ -19815,8 +20282,52 @@
                         echo '</tbody>
                     </table>
                 </div>
-                <div class="tab-pane" id="tabContact_2">
-                    <a href="#modalNewContact" data-toggle="modal" class="btn green" onclick="btnNew_Contact('.$user_id.', 2, \'modalNewContact\')">Add New Contact</a>
+                <div class="tab-pane" id="tabContact_2">';
+
+                    $pictogram = 'sup_edit_contact';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($rowPictogram["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
+
+                    echo '<a href="#modalNewContact" data-toggle="modal" class="btn green" onclick="btnNew_Contact('.$user_id.', 2, \'modalNewContact\')">Add New Contact</a>
                     <div class="table-scrollable">
                         <table class="table table-bordered table-hover" id="tableData_Contact_2">
                             <thead>
@@ -19880,13 +20391,57 @@
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane '; echo $page == 2 ? 'active':''; echo '" id="tabDocuments_2">
-                    <div class="mt-checkbox-list">';
+                <div class="tab-pane '; echo $page == 2 ? 'active':''; echo '" id="tabDocuments_2">';
+
+                    $pictogram = 'sup_edit_docs';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($rowPictogram["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
+
+                    echo '<div class="mt-checkbox-list">';
                         
                         $selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE organic = 0 ORDER BY name" );
                         if ( mysqli_num_rows($selectRequirement2) > 0 ) {
                             while($rowReq = mysqli_fetch_array($selectRequirement2)) {
-                                echo '<label class="mt-checkbox mt-checkbox-outline"> '.$rowReq["name"].'
+                                echo '<label class="mt-checkbox mt-checkbox-outline"> '.htmlentities($rowReq["name"] ?? '').'
                                     <input type="checkbox" value="'.$rowReq["ID"].'" name="document[]"  onchange="checked_Requirement(this, 2, '.$id.', '; echo in_array($rowReq["ID"], $document_arr) ? '1' : '0'; echo ')" '; echo in_array($rowReq["ID"], $document_arr) ? 'checked' : ''; echo ' />
                                     <span></span>
                                 </label>';
@@ -19950,11 +20505,11 @@
                                                     $doc_id = $rowDocument["ID"];
                                                     $doc_file = $rowDocument["file"];
                                                     $doc_filetype = $rowDocument["filetype"];
-                                                    $doc_filename = $rowDocument["filename"];
-                                                    $doc_file_template = $rowDocument["template"];
-                                                    $doc_file_comment = $rowDocument["comment"];
-                                                    $doc_file_reviewed = $rowDocument["reviewed_by"];
-                                                    $doc_file_approved = $rowDocument["approved_by"];
+                                                    $doc_filename = htmlentities($rowDocument["filename"] ?? '');
+                                                    $doc_file_template = htmlentities($rowDocument["template"] ?? '');
+                                                    $doc_file_comment = htmlentities($rowDocument["comment"] ?? '');
+                                                    $doc_file_reviewed = htmlentities($rowDocument["reviewed_by"] ?? '');
+                                                    $doc_file_approved = htmlentities($rowDocument["approved_by"] ?? '');
 
                                                     $doc_file_date = $rowDocument["file_date"];
                                                     if (!empty($doc_file_date)) {
@@ -20015,7 +20570,7 @@
                                                                 </select>
                                                                 <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                                 <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
-                                                                <p class="'; echo !empty($doc_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$doc_file.'" data-src="'.$doc_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info">View</a> | <button type="button" class="btn btn-sm red-haze uploadNew" onclick="uploadNew(this)">Upload</button></p>';
+                                                                <p class="'; echo !empty($doc_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$doc_file.'" data-src="'.$doc_file.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-sm btn-info">View</a> | <button type="button" class="btn btn-sm red-haze uploadNew" onclick="uploadNew(this)">Upload</button></p>';
                                                             } else {
                                                                 echo '<select class="form-control hide" name="document_filetype[]" onchange="changeType(this)" required>
                                                                     <option value="0">Select option</option>
@@ -20062,6 +20617,7 @@
 
                                                                 $type = 'iframe';
                                                                 $filetype = $rowTemplate["filetype"];
+                                                                $datafancybox = 'data-fancybox';
                                                                 if ($filetype == 1) {
                                                                     $fileExtension = fileExtension($temp_file);
                                                                     $src = $fileExtension['src'];
@@ -20076,10 +20632,11 @@
                                                                 } else if ($filetype == 4) {
                                                                     $file_extension = 'fa-strikethrough';
                                                                     $target = '_blank';
+                                                                    $datafancybox = '';
                                                                 }
 
                                                                 echo '<p style="margin: 0;">
-                                                                    <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
+                                                                    <a href="'.$temp_file.'" data-src="'.$temp_file.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
                                                                     <a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$req_id.', '.$temp_ID.', 2)">Upload</a>
                                                                 </p>';
                                                             } else {
@@ -20104,12 +20661,12 @@
                                                             if ( mysqli_num_rows($selectComment) > 0 ) {
                                                                 echo '<ul>';
                                                                     while($rowComment = mysqli_fetch_array($selectComment)) {
-                                                                        $comment_text = $rowComment["comment"];
+                                                                        $comment_text = htmlentities($rowComment["comment"] ?? '');
 
                                                                         $comment_user = $rowComment["portal_user"];
-                                                                        $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $comment_user" );
+                                                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $comment_user" );
                                                                         $rowUser = mysqli_fetch_array($selectUser);
-                                                                        $comment_user_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                        $comment_user_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
                                                                         if (employerID($comment_user) == 34 AND $user_id != 34) {
                                                                             $comment_user_name = 'Compliance';
                                                                         }
@@ -20135,10 +20692,10 @@
                                                                                 <label class="control-label">Reviewed By</label>';
 
                                                                                 if ($doc_file_reviewed  > 0) {
-                                                                                    $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $doc_file_reviewed" );
+                                                                                    $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $doc_file_reviewed" );
                                                                                     if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                                         $rowUser = mysqli_fetch_array($selectUser);
-                                                                                        $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                                        $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
                                                                                         if (employerID($doc_file_reviewed) == 34 AND $user_id != 34) {
                                                                                             $rowUserName = 'Compliance';
                                                                                         }
@@ -20147,12 +20704,12 @@
                                                                                         <p style="margin: 0; font-weight: 700;">'.$rowUserName.'</p>';
                                                                                     }
                                                                                 } else {
-                                                                                    $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $current_userID" );
+                                                                                    $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $current_userID" );
                                                                                     if ( mysqli_num_rows($selectUser) > 0 ) {
 
                                                                                         $rowUser = mysqli_fetch_array($selectUser);
                                                                                         $rowUserID = $rowUser["ID"];
-                                                                                        $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                                        $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
                                                                                         if (employerID($current_userID) == 34 AND $user_id != 34) {
                                                                                             $rowUserName = 'Compliance';
                                                                                         }
@@ -20171,10 +20728,10 @@
                                                                                 <label class="control-label">Approved By</label>';
 
                                                                                 if ($doc_file_approved  > 0) {
-                                                                                    $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $doc_file_approved" );
+                                                                                    $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $doc_file_approved" );
                                                                                     if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                                         $rowUser = mysqli_fetch_array($selectUser);
-                                                                                        $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                                        $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
                                                                                         if (employerID($doc_file_approved) == 34 AND $user_id != 34) {
                                                                                             $rowUserName = 'Compliance';
                                                                                         }
@@ -20183,12 +20740,12 @@
                                                                                         <p style="margin: 0; font-weight: 700;">'.$rowUserName.'</p>';
                                                                                     }
                                                                                 } else {
-                                                                                    $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $current_userID" );
+                                                                                    $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $current_userID" );
                                                                                     if ( mysqli_num_rows($selectUser) > 0 ) {
 
                                                                                         $rowUser = mysqli_fetch_array($selectUser);
                                                                                         $rowUserID = $rowUser["ID"];
-                                                                                        $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                                        $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
                                                                                         if (employerID($current_userID) == 34 AND $user_id != 34) {
                                                                                             $rowUserName = 'Compliance';
                                                                                         }
@@ -20223,11 +20780,11 @@
                                             $doc_id = $rowDocument["ID"];
                                             $doc_file = $rowDocument["file"];
                                             $doc_filetype = $rowDocument["filetype"];
-                                            $doc_filename = $rowDocument["filename"];
-                                            $doc_file_template = $rowDocument["template"];
-                                            $doc_file_comment = $rowDocument["comment"];
-                                            $doc_file_reviewed = $rowDocument["reviewed_by"];
-                                            $doc_file_approved = $rowDocument["approved_by"];
+                                            $doc_filename = htmlentities($rowDocument["filename"] ?? '');
+                                            $doc_file_template = htmlentities($rowDocument["template"] ?? '');
+                                            $doc_file_comment = htmlentities($rowDocument["comment"] ?? '');
+                                            $doc_file_reviewed = htmlentities($rowDocument["reviewed_by"] ?? '');
+                                            $doc_file_approved = htmlentities($rowDocument["approved_by"] ?? '');
 
                                             $doc_file_date = $rowDocument["file_date"];
                                             if (!empty($doc_file_date)) {
@@ -20288,7 +20845,7 @@
                                                         </select>
                                                         <input class="form-control margin-top-15 fileUpload" type="file" name="document_other_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                         <input class="form-control margin-top-15 fileURL" type="url" name="document_other_fileurl[]" style="display: none;" placeholder="https://" />
-                                                        <p class="'; echo !empty($doc_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$doc_file.'" data-src="'.$doc_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info">View</a> | <button type="button" class="btn btn-sm red-haze uploadNew" onclick="uploadNew(this)">Upload</button></p>';
+                                                        <p class="'; echo !empty($doc_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$doc_file.'" data-src="'.$doc_file.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-sm btn-info">View</a> | <button type="button" class="btn btn-sm red-haze uploadNew" onclick="uploadNew(this)">Upload</button></p>';
                                                     } else {
                                                         echo '<select class="form-control hide" name="document_other_filetype[]" onchange="changeType(this)" required>
                                                             <option value="0">Select option</option>
@@ -20359,6 +20916,7 @@
 
                                                         $type = 'iframe';
                                                         $filetype = $rowTemplate["filetype"];
+                                                        $datafancybox = 'data-fancybox';
                                                         if ($filetype == 1) {
                                                             $fileExtension = fileExtension($temp_file);
                                                             $src = $fileExtension['src'];
@@ -20373,10 +20931,11 @@
                                                         } else if ($filetype == 4) {
                                                             $file_extension = 'fa-strikethrough';
                                                             $target = '_blank';
+                                                            $datafancybox = '';
                                                         }
 
                                                         echo '<p style="margin: 0;">
-                                                            <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
+                                                            <a href="'.$temp_file.'" data-src="'.$temp_file.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
                                                             <a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$doc_id.', '.$temp_ID.', 2)">Upload</a>
                                                         </p>';
                                                     } else {
@@ -20404,9 +20963,9 @@
                                                                 $comment_text = $rowComment["comment"];
 
                                                                 $comment_user = $rowComment["portal_user"];
-                                                                $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $comment_user" );
+                                                                $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $comment_user" );
                                                                 $rowUser = mysqli_fetch_array($selectUser);
-                                                                $comment_user_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                $comment_user_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
                                                                 if (employerID($comment_user) == 34 AND $user_id != 34) {
                                                                     $comment_user_name = 'Compliance';
                                                                 }
@@ -20432,10 +20991,10 @@
                                                                         <label class="control-label">Reviewed By</label>';
 
                                                                         if ($doc_file_reviewed  > 0) {
-                                                                            $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $doc_file_reviewed" );
+                                                                            $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $doc_file_reviewed" );
                                                                             if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                                 $rowUser = mysqli_fetch_array($selectUser);
-                                                                                $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                                $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
                                                                                 if (employerID($doc_file_reviewed) == 34 AND $user_id != 34) {
                                                                                     $rowUserName = 'Compliance';
                                                                                 }
@@ -20444,12 +21003,12 @@
                                                                                 <p style="margin: 0; font-weight: 700;">'.$rowUserName.'</p>';
                                                                             }
                                                                         } else {
-                                                                            $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $current_userID" );
+                                                                            $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $current_userID" );
                                                                             if ( mysqli_num_rows($selectUser) > 0 ) {
 
                                                                                 $rowUser = mysqli_fetch_array($selectUser);
                                                                                 $rowUserID = $rowUser["ID"];
-                                                                                $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                                $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
                                                                                 if (employerID($current_userID) == 34 AND $user_id != 34) {
                                                                                     $rowUserName = 'Compliance';
                                                                                 }
@@ -20468,10 +21027,10 @@
                                                                         <label class="control-label">Approved By</label>';
 
                                                                         if ($doc_file_approved  > 0) {
-                                                                            $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $doc_file_approved" );
+                                                                            $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $doc_file_approved" );
                                                                             if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                                 $rowUser = mysqli_fetch_array($selectUser);
-                                                                                $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                                $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
                                                                                 if (employerID($doc_file_approved) == 34 AND $user_id != 34) {
                                                                                     $rowUserName = 'Compliance';
                                                                                 }
@@ -20480,12 +21039,12 @@
                                                                                 <p style="margin: 0; font-weight: 700;">'.$rowUserName.'</p>';
                                                                             }
                                                                         } else {
-                                                                            $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $current_userID" );
+                                                                            $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $current_userID" );
                                                                             if ( mysqli_num_rows($selectUser) > 0 ) {
 
                                                                                 $rowUser = mysqli_fetch_array($selectUser);
                                                                                 $rowUserID = $rowUser["ID"];
-                                                                                $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                                $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
                                                                                 if (employerID($current_userID) == 34 AND $user_id != 34) {
                                                                                     $rowUserName = 'Compliance';
                                                                                 }
@@ -20523,6 +21082,49 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tabMaterials_2">';
+
+                    $pictogram = 'sup_edit_material';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($rowPictogram["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
                     
                     if ($page == 1) { echo '<a href="#modalNewMaterial" data-toggle="modal" class="btn green margin-bottom-15" onclick="btnNew_Material('.$user_id.', 2, \'modalNewMaterial\')">Add New Material</a>'; }
                     
@@ -20617,6 +21219,49 @@
                 </div>
                 <div class="tab-pane" id="tabService_2">';
 
+                    $pictogram = 'sup_edit_service';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($rowPictogram["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
+
                     if ($page == 1) { echo '<a href="#modalNewService" data-toggle="modal" class="btn green" onclick="btnNew_Service('.$user_id.', 2, \'modalNewService\')">Add New Service</a>'; }
                     
                     echo '<div class="table-scrollable">
@@ -20640,9 +21285,9 @@
                                         if ( mysqli_num_rows($selectService) > 0 ) {
                                             while($rowService = mysqli_fetch_array($selectService)) {
                                                 $service_mid = $rowService["ID"];
-                                                $service_name = $rowService["service_name"];
-                                                $service_id = $rowService["service_id"];
-                                                $service_description = $rowService["description"];
+                                                $service_name = htmlentities($rowService["service_name"] ?? '');
+                                                $service_id = htmlentities($rowService["service_id"] ?? '');
+                                                $service_description = htmlentities($rowService["description"] ?? '');
 
                                                 if ($page == 2) {
                                                     $selectDataCategory = mysqli_query( $conn,"SELECT * FROM tbl_service_category WHERE id=$service_name" );
@@ -20680,8 +21325,52 @@
                         </table>
                     </div>
                 </div>
-                <div class="tab-pane" id="tabAuditReview_2">
-                    <h4><strong>Audit</strong></h4>
+                <div class="tab-pane" id="tabAuditReview_2">';
+
+                    $pictogram = 'sup_edit_review';
+                    if ($user_id == 163) {
+                        echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                    } else {
+                        $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                        if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                            $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                            $files = '';
+                            $type = 'iframe';
+                            if (!empty($rowPictogram["files"])) {
+                                $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                $str_filename = '';
+
+                                foreach($arr_filename as $val_filename) {
+                                    $str_filename = $val_filename;
+                                }
+                                foreach($arr_filetype as $val_filetype) {
+                                    $str_filetype = $val_filetype;
+                                }
+
+                                $files = $rowPictogram["files"];
+                                if ($rowPictogram["filetype"] == 1) {
+                                    $fileExtension = fileExtension($files);
+                                    $src = $fileExtension['src'];
+                                    $embed = $fileExtension['embed'];
+                                    $type = $fileExtension['type'];
+                                    $file_extension = $fileExtension['file_extension'];
+                                    $url = $base_url.'uploads/pictogram/';
+
+                                    $files = $src.$url.rawurlencode($files).$embed;
+                                } else if ($rowPictogram["filetype"] == 3) {
+                                    $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                }
+                            }
+
+                            if (!empty($files)) {
+                                echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                            }
+                        }
+                    }
+
+                    echo '<h4><strong>Audit</strong></h4>
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
@@ -20704,7 +21393,7 @@
 
                                     echo '<input type="hidden" name="audit_report_file_tmp" value="'.$audit_report_arr[0].'" />
                                     <input class="form-control '; echo !empty($audit_report_arr[0]) ? 'hide':''; echo '" type="file" name="audit_report_file" />
-                                    <p class="'; echo !empty($audit_report_arr[0]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($audit_report_arr[0]).$embed.'" data-src="'.$src.$url.rawurlencode($audit_report_arr[0]).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload</button></p>';
+                                    <p class="'; echo !empty($audit_report_arr[0]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($audit_report_arr[0]).$embed.'" data-src="'.$src.$url.rawurlencode($audit_report_arr[0]).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload</button></p>';
                                 } else {
                                     echo '<input type="hidden" name="audit_report_file_tmp" value="" />
                                     <input class="form-control" type="file" name="audit_report_file" />';
@@ -20757,7 +21446,7 @@
 
                                     echo '<input type="hidden" name="audit_certificate_file_tmp" value="'.$audit_certificate_arr[0].'" />
                                     <input class="form-control '; echo !empty($audit_certificate_arr[0]) ? 'hide':''; echo '" type="file" name="audit_certificate_file" />
-                                    <p class="'; echo !empty($audit_certificate_arr[0]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($audit_certificate_arr[0]).$embed.'" data-src="'.$src.$url.rawurlencode($audit_certificate_arr[0]).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload</button></p>';
+                                    <p class="'; echo !empty($audit_certificate_arr[0]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($audit_certificate_arr[0]).$embed.'" data-src="'.$src.$url.rawurlencode($audit_certificate_arr[0]).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload</button></p>';
                                 } else {
                                     echo '<input type="hidden" name="audit_certificate_file_tmp" value="" />
                                     <input class="form-control" type="file" name="audit_certificate_file" />';
@@ -20810,7 +21499,7 @@
 
                                     echo '<input type="hidden" name="audit_action_file_tmp" value="'.$audit_action_arr[0].'" />
                                     <input class="form-control '; echo !empty($audit_action_arr[0]) ? 'hide':''; echo '" type="file" name="audit_action_file" />
-                                    <p class="'; echo !empty($audit_action_arr[0]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($audit_action_arr[0]).$embed.'" data-src="'.$src.$url.rawurlencode($audit_action_arr[0]).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload</button></p>';
+                                    <p class="'; echo !empty($audit_action_arr[0]) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($audit_action_arr[0]).$embed.'" data-src="'.$src.$url.rawurlencode($audit_action_arr[0]).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload</button></p>';
                                 } else {
                                     echo '<input type="hidden" name="audit_action_file_tmp" value="" />
                                     <input class="form-control" type="file" name="audit_action_file" />';
@@ -20935,9 +21624,9 @@
 
             $document_other = $row["document_other"];
             $document_other_arr = explode(" | ", $document_other);
-            if (count($document_other_arr) <= 1 ) {
-                $document_other_arr = explode(", ", $document_other);
-            }
+            // if (count($document_other_arr) <= 1 ) {
+            //     $document_other_arr = explode(", ", $document_other);
+            // }
 
             $contact = $row["contact"];
             $material = $row["material"];
@@ -20964,15 +21653,15 @@
             if ($page == 2) {
                 $selectUser = mysqli_query( $conn,'SELECT * FROM tbl_user WHERE ID="'. $user_account_id .'" ORDER BY ID LIMIT 1' );
                 $rowUser = mysqli_fetch_array($selectUser);
-                $name = $rowUser['first_name'] .' '. $rowUser['last_name'];
+                $name = htmlentities($rowUser['first_name'] ?? '') .' '. htmlentities($rowUser['last_name'] ?? '');
 
                 $selectCategory = mysqli_query( $conn,"SELECT * FROM tbl_supplier_category WHERE ID = $category" );
                 $rowCategory = mysqli_fetch_array($selectCategory);
-                $enterprise_category = $rowCategory["name"];
+                $enterprise_category = htmlentities($rowCategory["name"] ?? '');
 
                 $selectIndustry = mysqli_query( $conn,"SELECT * FROM tbl_supplier_industry WHERE ID = $industry" );
                 $rowIndustry = mysqli_fetch_array($selectIndustry);
-                $enterprise_industry = $rowIndustry["name"];
+                $enterprise_industry = htmlentities($rowIndustry["name"] ?? '');
 
                 $enterprise_name = "";
                 $enterprise_bldg = "";
@@ -21013,7 +21702,7 @@
             $selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
             if ( mysqli_num_rows($selectRequirement2) > 0 ) {
                 while($rowReq = mysqli_fetch_array($selectRequirement2)) {
-                    echo '<label class="mt-checkbox mt-checkbox-outline '; echo $current_client == 0 ? '':'hide'; echo '"> '.$rowReq["name"].'
+                    echo '<label class="mt-checkbox mt-checkbox-outline '; echo $current_client == 0 ? '':'hide'; echo '"> '.htmlentities($rowReq["name"] ?? '').'
                         <input type="checkbox" value="'.$rowReq["ID"].'" name="document[]"  onchange="checked_Requirement(this, 2, '.$id.', '; echo in_array($rowReq["ID"], $document_arr) ? '1' : '0'; echo ')" '; echo in_array($rowReq["ID"], $document_arr) ? 'checked' : ''; echo ' />
                         <span></span>
                     </label>';
@@ -21061,7 +21750,7 @@
                         $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
                         while($rowRequirement = mysqli_fetch_array($selectRequirement)) {
                             $req_id = $rowRequirement["ID"];
-                            $req_name = $rowRequirement["name"];
+                            $req_name = htmlentities($rowRequirement["name"] ?? '');
 
                             foreach ($document_arr as $value) {
                                 if ( $value == $req_id ) {
@@ -21071,11 +21760,11 @@
                                         $doc_id = $rowDocument["ID"];
                                         $doc_file = $rowDocument["file"];
                                         $doc_filetype = $rowDocument["filetype"];
-                                        $doc_filename = $rowDocument["filename"];
-                                        $doc_file_template = $rowDocument["template"];
-                                        $doc_file_comment = $rowDocument["comment"];
-                                        $doc_file_reviewed = $rowDocument["reviewed_by"];
-                                        $doc_file_approved = $rowDocument["approved_by"];
+                                        $doc_filename = htmlentities($rowDocument["filename"] ?? '');
+                                        $doc_file_template = htmlentities($rowDocument["template"] ?? '');
+                                        $doc_file_comment = htmlentities($rowDocument["comment"] ?? '');
+                                        $doc_file_reviewed = htmlentities($rowDocument["reviewed_by"] ?? '');
+                                        $doc_file_approved = htmlentities($rowDocument["approved_by"] ?? '');
 
                                         $doc_file_date = $rowDocument["file_date"];
                                         if (!empty($doc_file_date)) {
@@ -21136,7 +21825,7 @@
                                                     </select>
                                                     <input class="form-control margin-top-15 fileUpload" type="file" name="document_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                                     <input class="form-control margin-top-15 fileURL" type="url" name="document_fileurl[]" style="display: none;" placeholder="https://" />
-                                                    <p class="'; echo !empty($doc_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$doc_file.'" data-src="'.$doc_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info">View</a> | <button type="button" class="btn btn-sm red-haze uploadNew" onclick="uploadNew(this)">Upload</button></p>';
+                                                    <p class="'; echo !empty($doc_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$doc_file.'" data-src="'.$doc_file.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-sm btn-info">View</a> | <button type="button" class="btn btn-sm red-haze uploadNew" onclick="uploadNew(this)">Upload</button></p>';
                                                 } else {
                                                     echo '<select class="form-control hide" name="document_filetype[]" onchange="changeType(this)" required>
                                                         <option value="0">Select option</option>
@@ -21198,6 +21887,7 @@
 
                                                     $type = 'iframe';
                                                     $filetype = $rowTemplate["filetype"];
+                                                    $datafancybox = 'data-fancybox';
                                                     if ($filetype == 1) {
                                                         $fileExtension = fileExtension($temp_file);
                                                         $src = $fileExtension['src'];
@@ -21212,10 +21902,11 @@
                                                     } else if ($filetype == 4) {
                                                         $file_extension = 'fa-strikethrough';
                                                         $target = '_blank';
+                                                        $datafancybox = '';
                                                     }
 
                                                     echo '<p style="margin: 0;">
-                                                        <a href="'.$temp_file.'" data-src="'.$temp_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
+                                                        <a href="'.$temp_file.'" data-src="'.$temp_file.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
                                                         <a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$req_id.', '.$temp_ID.', 2)">Upload</a>
                                                     </p>';
                                                 } else {
@@ -21240,12 +21931,12 @@
                                                 if ( mysqli_num_rows($selectComment) > 0 ) {
                                                     echo '<ul>';
                                                         while($rowComment = mysqli_fetch_array($selectComment)) {
-                                                            $comment_text = $rowComment["comment"];
+                                                            $comment_text = htmlentities($rowComment["comment"] ?? '');
 
                                                             $comment_user = $rowComment["portal_user"];
                                                             $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $comment_user" );
                                                             $rowUser = mysqli_fetch_array($selectUser);
-                                                            $comment_user_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                            $comment_user_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
                                                             
                                                             $comment_last_modified = $rowComment["last_modified"];
                                                             $comment_last_modified = new DateTime($comment_last_modified);
@@ -21268,21 +21959,21 @@
                                                                     <label class="control-label">Reviewed By</label>';
 
                                                                     if ($doc_file_reviewed  > 0) {
-                                                                        $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $doc_file_reviewed" );
+                                                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $doc_file_reviewed" );
                                                                         if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                             $rowUser = mysqli_fetch_array($selectUser);
-                                                                            $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                            $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
 
                                                                             echo '<input type="hidden" class="form-control" name="document_reviewed[]" value="'.$doc_file_reviewed.'"/>
                                                                             <p style="margin: 0; font-weight: 700;">'.$rowUserName.'</p>';
                                                                         }
                                                                     } else {
-                                                                        $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $current_userID" );
+                                                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $current_userID" );
                                                                         if ( mysqli_num_rows($selectUser) > 0 ) {
 
                                                                             $rowUser = mysqli_fetch_array($selectUser);
                                                                             $rowUserID = $rowUser["ID"];
-                                                                            $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                            $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
 
                                                                             echo '<select class="form-control " name="document_reviewed[]">
                                                                                 <option value="0">Select</option>
@@ -21298,21 +21989,21 @@
                                                                     <label class="control-label">Approved By</label>';
 
                                                                     if ($doc_file_approved  > 0) {
-                                                                        $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $doc_file_approved" );
+                                                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $doc_file_approved" );
                                                                         if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                             $rowUser = mysqli_fetch_array($selectUser);
-                                                                            $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                            $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
 
                                                                             echo '<input type="hidden" class="form-control" name="document_approved[]" value="'.$doc_file_approved.'"/>
                                                                             <p style="margin: 0; font-weight: 700;">'.$rowUserName.'</p>';
                                                                         }
                                                                     } else {
-                                                                        $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $current_userID" );
+                                                                        $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $current_userID" );
                                                                         if ( mysqli_num_rows($selectUser) > 0 ) {
 
                                                                             $rowUser = mysqli_fetch_array($selectUser);
                                                                             $rowUserID = $rowUser["ID"];
-                                                                            $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                            $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
 
                                                                             echo '<select class="form-control " name="document_approved[]">
                                                                                 <option value="0">Select</option>
@@ -21344,11 +22035,11 @@
                                 $doc_id = $rowDocument["ID"];
                                 $doc_file = $rowDocument["file"];
                                 $doc_filetype = $rowDocument["filetype"];
-                                $doc_filename = $rowDocument["filename"];
-                                $doc_file_template = $rowDocument["template"];
-                                $doc_file_comment = $rowDocument["comment"];
-                                $doc_file_reviewed = $rowDocument["reviewed_by"];
-                                $doc_file_approved = $rowDocument["approved_by"];
+                                $doc_filename = htmlentities($rowDocument["filename"] ?? '');
+                                $doc_file_template = htmlentities($rowDocument["template"] ?? '');
+                                $doc_file_comment = htmlentities($rowDocument["comment"] ?? '');
+                                $doc_file_reviewed = htmlentities($rowDocument["reviewed_by"] ?? '');
+                                $doc_file_approved = htmlentities($rowDocument["approved_by"] ?? '');
 
                                 $doc_file_date = $rowDocument["file_date"];
                                 if (!empty($doc_file_date)) {
@@ -21409,7 +22100,7 @@
                                             </select>
                                             <input class="form-control margin-top-15 fileUpload" type="file" name="document_other_file[]" onchange="changeFile(this, this.value)" style="display: none;" />
                                             <input class="form-control margin-top-15 fileURL" type="url" name="document_other_fileurl[]" style="display: none;" placeholder="https://" />
-                                            <p class="'; echo !empty($doc_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$doc_file.'" data-src="'.$doc_file.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info">View</a> | <button type="button" class="btn btn-sm red-haze uploadNew" onclick="uploadNew(this)">Upload</button></p>';
+                                            <p class="'; echo !empty($doc_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$doc_file.'" data-src="'.$doc_file.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-sm btn-info">View</a> | <button type="button" class="btn btn-sm red-haze uploadNew" onclick="uploadNew(this)">Upload</button></p>';
                                         } else {
                                             echo '<select class="form-control hide" name="document_other_filetype[]" onchange="changeType(this)" required>
                                                 <option value="0">Select option</option>
@@ -21451,6 +22142,7 @@
                                         if (!empty($doc_file_template)) {
                                             $type = 'iframe';
                                             $filetype = $rowTemplate["filetype"];
+                                            $datafancybox = 'data-fancybox';
                                             if ($filetype == 1) {
                                                 $fileExtension = fileExtension($doc_file_template);
                                                 $src = $fileExtension['src'];
@@ -21465,10 +22157,11 @@
                                             } else if ($filetype == 4) {
                                                 $file_extension = 'fa-strikethrough';
                                                 $target = '_blank';
+                                                $datafancybox = '';
                                             }
 
                                             echo '<p style="margin: 0;">
-                                                <a href="'.$doc_file_template.'" data-src="'.$doc_file_template.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
+                                                <a href="'.$doc_file_template.'" data-src="'.$doc_file_template.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
                                                 <a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$id.', '.$doc_id.', 2)">Upload</a>
                                             </p>';
                                         } else {
@@ -21493,12 +22186,12 @@
                                         if ( mysqli_num_rows($selectComment) > 0 ) {
                                             echo '<ul>';
                                                 while($rowComment = mysqli_fetch_array($selectComment)) {
-                                                    $comment_text = $rowComment["comment"];
+                                                    $comment_text = htmlentities($rowComment["comment"] ?? '');
 
                                                     $comment_user = $rowComment["portal_user"];
                                                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $comment_user" );
                                                     $rowUser = mysqli_fetch_array($selectUser);
-                                                    $comment_user_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                    $comment_user_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
                                                     
                                                     $comment_last_modified = $rowComment["last_modified"];
                                                     $comment_last_modified = new DateTime($comment_last_modified);
@@ -21521,21 +22214,21 @@
                                                             <label class="control-label">Reviewed By</label>';
 
                                                             if ($doc_file_reviewed  > 0) {
-                                                                $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $doc_file_reviewed" );
+                                                                $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $doc_file_reviewed" );
                                                                 if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                     $rowUser = mysqli_fetch_array($selectUser);
-                                                                    $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                    $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
 
                                                                     echo '<input type="hidden" class="form-control" name="document_other_reviewed[]" value="'.$doc_file_reviewed.'"/>
                                                                     <p style="margin: 0; font-weight: 700;">'.$rowUserName.'</p>';
                                                                 }
                                                             } else {
-                                                                $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $current_userID" );
+                                                                $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $current_userID" );
                                                                 if ( mysqli_num_rows($selectUser) > 0 ) {
 
                                                                     $rowUser = mysqli_fetch_array($selectUser);
                                                                     $rowUserID = $rowUser["ID"];
-                                                                    $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                    $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
 
                                                                     echo '<select class="form-control " name="document_other_reviewed[]">
                                                                         <option value="0">Select</option>
@@ -21551,21 +22244,21 @@
                                                             <label class="control-label">Approved By</label>';
 
                                                             if ($doc_file_approved  > 0) {
-                                                                $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $doc_file_approved" );
+                                                                $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $doc_file_approved" );
                                                                 if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                     $rowUser = mysqli_fetch_array($selectUser);
-                                                                    $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                    $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
 
                                                                     echo '<input type="hidden" class="form-control" name="document_other_approved[]" value="'.$doc_file_approved.'"/>
                                                                     <p style="margin: 0; font-weight: 700;">'.$rowUserName.'</p>';
                                                                 }
                                                             } else {
-                                                                $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $current_userID" );
+                                                                $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_user WHERE ID = $current_userID" );
                                                                 if ( mysqli_num_rows($selectUser) > 0 ) {
 
                                                                     $rowUser = mysqli_fetch_array($selectUser);
                                                                     $rowUserID = $rowUser["ID"];
-                                                                    $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                    $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
 
                                                                     echo '<select class="form-control " name="document_other_approved[]">
                                                                         <option value="0">Select</option>
@@ -21644,9 +22337,9 @@
 
             $document_other = $row["document_other"];
             $document_other_arr = explode(" | ", $document_other);
-            if (count($document_other_arr) <= 1 ) {
-                $document_other_arr = explode(", ", $document_other);
-            }
+            // if (count($document_other_arr) <= 1 ) {
+            //     $document_other_arr = explode(", ", $document_other);
+            // }
 
             $contact = $row["contact"];
             $material = $row["material"];
@@ -21673,7 +22366,7 @@
             if ($page == 2) {
                 $selectUser = mysqli_query( $conn,'SELECT * FROM tbl_user WHERE ID="'. $user_account_id .'" ORDER BY ID LIMIT 1' );
                 $rowUser = mysqli_fetch_array($selectUser);
-                $name = $rowUser['first_name'] .' '. $rowUser['last_name'];
+                $name = htmlentities($rowUser['first_name'] ?? '') .' '. htmlentities($rowUser['last_name'] ?? '');
 
                 $selectCategory = mysqli_query( $conn,"SELECT * FROM tbl_supplier_category WHERE ID = $category" );
                 $rowCategory = mysqli_fetch_array($selectCategory);
@@ -21734,7 +22427,7 @@
                         $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
                         while($rowRequirement = mysqli_fetch_array($selectRequirement)) {
                             $req_id = $rowRequirement["ID"];
-                            $req_name = $rowRequirement["name"];
+                            $req_name = htmlentities($rowRequirement["name"] ?? '');
 
                             foreach ($document_arr as $value) {
                                 if ( $value == $req_id ) {
@@ -21744,11 +22437,11 @@
                                         $doc_id = $rowDocument["ID"];
                                         $doc_file = $rowDocument["file"];
                                         $doc_filetype = $rowDocument["filetype"];
-                                        $doc_filename = $rowDocument["filename"];
-                                        $doc_file_template = $rowDocument["template"];
-                                        $doc_file_comment = $rowDocument["comment"];
-                                        $doc_file_reviewed = $rowDocument["reviewed_by"];
-                                        $doc_file_approved = $rowDocument["approved_by"];
+                                        $doc_filename = htmlentities($rowDocument["filename"] ?? '');
+                                        $doc_file_template = htmlentities($rowDocument["template"] ?? '');
+                                        $doc_file_comment = htmlentities($rowDocument["comment"] ?? '');
+                                        $doc_file_reviewed = htmlentities($rowDocument["reviewed_by"] ?? '');
+                                        $doc_file_approved = htmlentities($rowDocument["approved_by"] ?? '');
 
                                         $doc_file_date = $rowDocument["file_date"];
                                         if (!empty($doc_file_date)) {
@@ -21797,7 +22490,7 @@
                                                         $doc_file = preg_replace('#[^/]*$#', '', $doc_file).'preview';
                                                     }
 
-                                                    echo '<a href="'.$doc_file.'" data-src="'.$doc_file.'" data-fancybox data-type="'.$type.'">'.$doc_filename.'</a>';
+                                                    echo '<a href="'.$doc_file.'" data-src="'.$doc_file.'" '.$datafancybox.' data-type="'.$type.'">'.$doc_filename.'</a>';
                                                 }
                                             echo '</td>
                                             <td class="text-center">'.$doc_file_date .' - '. $doc_file_due.'</td>
@@ -21817,11 +22510,11 @@
                                 $doc_id = $rowDocument["ID"];
                                 $doc_file = $rowDocument["file"];
                                 $doc_filetype = $rowDocument["filetype"];
-                                $doc_filename = $rowDocument["filename"];
-                                $doc_file_template = $rowDocument["template"];
-                                $doc_file_comment = $rowDocument["comment"];
-                                $doc_file_reviewed = $rowDocument["reviewed_by"];
-                                $doc_file_approved = $rowDocument["approved_by"];
+                                $doc_filename = htmlentities($rowDocument["filename"] ?? '');
+                                $doc_file_template = htmlentities($rowDocument["template"] ?? '');
+                                $doc_file_comment = htmlentities($rowDocument["comment"] ?? '');
+                                $doc_file_reviewed = htmlentities($rowDocument["reviewed_by"] ?? '');
+                                $doc_file_approved = htmlentities($rowDocument["approved_by"] ?? '');
 
                                 $doc_file_date = $rowDocument["file_date"];
                                 if (!empty($doc_file_date)) {
@@ -21870,7 +22563,7 @@
                                                 $doc_file = preg_replace('#[^/]*$#', '', $doc_file).'preview';
                                             }
 
-                                            echo '<a href="'.$doc_file.'" data-src="'.$doc_file.'" data-fancybox data-type="'.$type.'">'.$doc_filename.'</a>';
+                                            echo '<a href="'.$doc_file.'" data-src="'.$doc_file.'" '.$datafancybox.' data-type="'.$type.'">'.$doc_filename.'</a>';
                                         }
                                     echo '</td>
                                     <td class="text-center">'.$doc_file_date .' - '. $doc_file_due.'</td>
@@ -21916,19 +22609,19 @@
 
                 if ($c != "US") {
                     if (in_array($id, $country)) {
-                        echo '<label class="mt-checkbox mt-checkbox-outline"> '.$row["name"].'
+                        echo '<label class="mt-checkbox mt-checkbox-outline"> '.htmlentities($row["name"] ?? '').'
                             <input type="checkbox" value="'.$row["ID"].'" name="document[]" name="document[]" onchange="checked_Requirement(this, '.$m.', '.$s.', 0)" />
                             <span></span>
                         </label>';
                     }
                 }
                 if (in_array($id, $industry)) {
-                    echo '<label class="mt-checkbox mt-checkbox-outline"> '.$row["name"].'
+                    echo '<label class="mt-checkbox mt-checkbox-outline"> '.htmlentities($row["name"] ?? '').'
                         <input type="checkbox" value="'.$row["ID"].'" name="document[]" name="document[]" onchange="checked_Requirement(this, '.$m.', '.$s.', 0)" />
                         <span></span>
                     </label>';
                 } else if ($id == 0) {
-                    echo '<label class="mt-checkbox mt-checkbox-outline"> '.$row["name"].'
+                    echo '<label class="mt-checkbox mt-checkbox-outline"> '.htmlentities($row["name"] ?? '').'
                         <input type="checkbox" value="'.$row["ID"].'" name="document[]" name="document[]" onchange="checked_Requirement(this, '.$m.', '.$s.', 0)" />
                         <span></span>
                     </label>';
@@ -22003,7 +22696,7 @@
 
                 WHERE FIND_IN_SET(r.ID, REPLACE(REPLACE('".$s_document."', ' ', ''), '|',','  )  ) > 0" );
             while($rowRequirement = mysqli_fetch_array($selectRequirement)) {
-                array_push($requirement, $rowRequirement["r_name"]);
+                array_push($requirement, htmlentities($rowRequirement["r_name"] ?? ''));
             }
             if (!empty($s_document_other)) {
                 $document_other_arr = explode(" | ", $s_document_other);
@@ -22018,14 +22711,14 @@
 
 
             // Email Compose
-            $user = $rowData['s_name'];
-            $to = $rowData['s_email'];
+            $user = htmlentities($rowData['s_name'] ?? '');
+            $to = htmlentities($rowData['s_email'] ?? '');
 
-            $data_company = $rowData['u_first_name'].' '.$rowData['u_last_name'];
-            if (!empty($rowData['e_name'])) { $data_company = $rowData['e_name']; }
+            $data_company = htmlentities($rowData['u_first_name'] ?? '').' '.htmlentities($rowData['u_last_name'] ?? '');
+            if (!empty($rowData['e_name'])) { $data_company = htmlentities($rowData['e_name'] ?? ''); }
 
             $data_email = $rowData['u_email'];
-            if (!empty($rowData['e_email'])) { $data_email = $rowData['e_email']; }
+            if (!empty($rowData['e_email'])) { $data_email = htmlentities($rowData['e_email'] ?? ''); }
 
             if ($rowData['u_client'] == 1) {
                 $subject = 'Welcome to Cann OS!';
@@ -22117,8 +22810,8 @@
                     $selectContact = mysqli_query( $conn,"SELECT * FROM tbl_supplier_contact WHERE ID=$value" );
                     if ( mysqli_num_rows($selectContact) > 0 ) {
                         while($rowContact = mysqli_fetch_array($selectContact)) {
-                            $to = $rowContact["email"];
-                            $user = $rowContact["name"];
+                            $to = htmlentities($rowContact["email"] ?? '');
+                            $user = htmlentities($rowContact["name"] ?? '');
 
                             $body2_extra = 'Hi '.$user.',<br><br>';
                             if ($rowData['u_client'] == 1) { $body2_extra = ''; }
@@ -22178,6 +22871,8 @@
         $supplier_website = addslashes($_POST['supplier_website']);
         $supplier_status = $_POST['supplier_status'];
         // $supplier_notification = $_POST['supplier_notification'];
+        $date = $_POST['date'];
+        $risk_level = $_POST['risk_level'];
         $nda = $_POST['nda'];
         $organic = $_POST['organic'];
         $supplier_notification = 0;
@@ -22317,8 +23012,8 @@
         $audit_score = $_POST['audit_score'];
 
         if ($process == true) {
-            $sql = "INSERT INTO tbl_supplier (user_id, portal_user, page, name, vendor_code, address, phone, fax, email, website, category, industry, regulatory, contact, document, document_other, material, service, audit, audit_report, audit_certificate, audit_action, audit_filesize, audit_file_history, audit_score, reviewed_by, reviewed_date, reviewed_due, status, notification, nda, organic, frequency, frequency_custom, last_modified)
-            VALUES ('$user_id', '$portal_user', '1', '$supplier_name',  '$vendor_code','$supplier_address', '$supplier_phone', '$supplier_fax', '$supplier_email', '$supplier_website', '$supplier_category', '$supplier_industry', '$regulatory', '$contact', '$document_name', '$document_other_name', '$material', '$service', '$audit', '$audit_report', '$audit_certificate', '$audit_action', '$audit_filesize', '$audit_file_history', '$audit_score', '$reviewed_by', '$reviewed_date', '$reviewed_due', '$supplier_status', '$supplier_notification', '$nda', '$organic', '$supplier_frequency', '$supplier_frequency_custom', '$supplier_date')";
+            $sql = "INSERT INTO tbl_supplier (user_id, portal_user, page, name, vendor_code, address, phone, fax, email, website, category, industry, regulatory, contact, document, document_other, material, service, audit, audit_report, audit_certificate, audit_action, audit_filesize, audit_file_history, audit_score, reviewed_by, reviewed_date, reviewed_due, status, notification, date, risk_level, nda, organic, frequency, frequency_custom, last_modified)
+            VALUES ('$user_id', '$portal_user', '1', '$supplier_name',  '$vendor_code','$supplier_address', '$supplier_phone', '$supplier_fax', '$supplier_email', '$supplier_website', '$supplier_category', '$supplier_industry', '$regulatory', '$contact', '$document_name', '$document_other_name', '$material', '$service', '$audit', '$audit_report', '$audit_certificate', '$audit_action', '$audit_filesize', '$audit_file_history', '$audit_score', '$reviewed_by', '$reviewed_date', '$reviewed_due', '$supplier_status', '$supplier_notification', '$date', '$risk_level', '$nda', '$organic', '$supplier_frequency', '$supplier_frequency_custom', '$supplier_date')";
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
 
@@ -22328,7 +23023,7 @@
                     $data_ID = $rowData['ID'];
                     $data_page = $rowData['page'];
                     $data_user_id = $rowData["user_id"];
-                    $data_name = $rowData['name'];
+                    $data_name = htmlentities($rowData['name'] ?? '');
                     $data_document_other = $rowData['document_other'];
                     $data_reviewed_due = $rowData['reviewed_due'];
                     $data_status = $rowData["status"];
@@ -22351,12 +23046,12 @@
                             $selectContact = mysqli_query( $conn,"SELECT * FROM tbl_supplier_contact WHERE ID=$value" );
                             if ( mysqli_num_rows($selectContact) > 0 ) {
                                 $rowContact = mysqli_fetch_array($selectContact);
-                                $contact_name = $rowContact["name"];
-                                $contact_address = $rowContact["address"];
-                                $contact_email = $rowContact["email"];
-                                $contact_phone = $rowContact["phone"];
-                                $contact_cell = $rowContact["cell"];
-                                $contact_fax = $rowContact["fax"];
+                                $contact_name = htmlentities($rowContact["name"] ?? '');
+                                $contact_address = htmlentities($rowContact["address"] ?? '');
+                                $contact_email = htmlentities($rowContact["email"] ?? '');
+                                $contact_phone = htmlentities($rowContact["phone"] ?? '');
+                                $contact_cell = htmlentities($rowContact["cell"] ?? '');
+                                $contact_fax = htmlentities($rowContact["fax"] ?? '');
 
                                 $contact_info = '<ul class="list-inline">';
                                     if ($contact_email != "") { $contact_info .= '<li><a href="mailto:'.$contact_email.'" target="_blank" title="Email"><i class="fa fa-envelope"></i></a></li>'; }
@@ -22434,10 +23129,14 @@
                                     $tmp_docs = $_FILES['document_template']['tmp_name'][$i];
                                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                     $ext = strtolower(pathinfo($files_template, PATHINFO_EXTENSION));
+
+                                    $mime = mime_content_type($tmp_docs);
+                                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                                    
                                     $file_docs_template = $random.' - '.$files_template;
                                     $path_docs = $path.$file_docs;
 
-                                    if(!in_array($ext, $invalid_extensions)) {
+                                    if(!in_array($mime, $mime_array)) {
                                         move_uploaded_file($tmp_docs,$path_docs);
 
                                         $output = array (
@@ -22450,7 +23149,6 @@
                                     } else {
                                         $process = false;
                                     }
-
                                 }
                                 $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
@@ -22531,10 +23229,14 @@
                                     $tmp_docs = $_FILES['document_other_template']['tmp_name'][$i];
                                     $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                     $ext = strtolower(pathinfo($files, PATHINFO_EXTENSION));
+                                    
+                                    $mime = mime_content_type($tmp_docs);
+                                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                                    
                                     $file_docs_template = $random.' - '.$files_template;
                                     $path_docs = $path.$file_docs_template;
 
-                                    if(!in_array($ext, $invalid_extensions)) {
+                                    if(!in_array($mime, $mime_array)) {
                                         move_uploaded_file($tmp_docs,$path_docs);
 
                                         $output = array (
@@ -22613,7 +23315,7 @@
                                 ON d.name = r.ID
 
                                 WHERE d.type = 0
-                                AND LENGTH(d.file) = 0
+                                AND IFNULL(d.file = '', TRUE)
                                 AND d.user_id = $data_user_id
                                 AND d.supplier_id = $data_ID
                             ) AS o
@@ -22645,7 +23347,7 @@
                             $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
                             while($rowRequirement = mysqli_fetch_array($selectRequirement)) {
                                 $req_id = $rowRequirement["ID"];
-                                $req_name = $rowRequirement["name"];
+                                $req_name = htmlentities($rowRequirement["name"] ?? '');
 
                                 $document_arr = implode(" | ", $_POST["document"]);
                                 $document_arr = explode(" | ", $document_arr);
@@ -22721,7 +23423,7 @@
                         $data_category_id = $rowData['category'];
                         $selectCategory = mysqli_query( $conn,'SELECT * FROM tbl_supplier_category WHERE ID="'. $data_category_id .'" ORDER BY ID LIMIT 1' );
                         $rowCategory = mysqli_fetch_array($selectCategory);
-                        $data_category = $rowCategory['name'];
+                        $data_category = htmlentities($rowCategory['name'] ?? '');
 
                         if ($data_category_id == "3") {
 
@@ -22795,8 +23497,8 @@
                             $selectEnterprise = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE users_entities = $user_id" );
                             if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                                 $rowEnterprise = mysqli_fetch_array($selectEnterprise);
-                                $data_company = $rowEnterprise["businessname"];
-                                $data_email = $rowEnterprise["businessemailAddress"];
+                                $data_company = htmlentities($rowEnterprise["businessname"] ?? '');
+                                $data_email = htmlentities($rowEnterprise["businessemailAddress"] ?? '');
                             }
 
                             $to = $supplier_email;
@@ -22893,8 +23595,8 @@
                                     $selectContact = mysqli_query( $conn,"SELECT * FROM tbl_supplier_contact WHERE notification = 1 AND ID = $value" );
                                     if ( mysqli_num_rows($selectContact) > 0 ) {
                                         while($rowContact = mysqli_fetch_array($selectContact)) {
-                                            $contact_name = $rowContact["name"];
-                                            $contact_email = $rowContact["email"];
+                                            $contact_name = htmlentities($rowContact["name"] ?? '');
+                                            $contact_email = htmlentities($rowContact["email"] ?? '');
                             
                                             $to = $contact_email;
                                             $user = $contact_name;
@@ -23048,6 +23750,8 @@
         $supplier_website = addslashes($_POST['supplier_website']);
         $supplier_status = $_POST['supplier_status'];
         $supplier_notification = $_POST['supplier_notification'];
+        $date = $_POST['date'];
+        $risk_level = $_POST['risk_level'];
         $nda = $_POST['nda'];
         $organic = $_POST['organic'];
         $date = date('Y-m-d');
@@ -23209,13 +23913,13 @@
                 $docs_data = array (
                     'doc_ID'            =>  $rowDataTemp_Docs['ID'],
                     'doc_type'          =>  $rowDataTemp_Docs['type'],
-                    'doc_name'          =>  $rowDataTemp_Docs['name'],
-                    'doc_file'          =>  $rowDataTemp_Docs['file'],
-                    'doc_filename'      =>  $rowDataTemp_Docs['filename'],
+                    'doc_name'          =>  htmlentities($rowDataTemp_Docs['name'] ?? ''),
+                    'doc_file'          =>  htmlentities($rowDataTemp_Docs['file'] ?? ''),
+                    'doc_filename'      =>  htmlentities($rowDataTemp_Docs['filename'] ?? ''),
                     'doc_filedate'      =>  $rowDataTemp_Docs['file_date'],
                     'doc_filedue'       =>  $rowDataTemp_Docs['file_due'],
-                    'doc_reviewedby'    =>  $rowDataTemp_Docs['reviewed_by'],
-                    'doc_approvedby'    =>  $rowDataTemp_Docs['approved_by']
+                    'doc_reviewedby'    =>  htmlentities($rowDataTemp_Docs['reviewed_by'] ?? ''),
+                    'doc_approvedby'    =>  htmlentities($rowDataTemp_Docs['approved_by'] ?? '')
                 );
 
                 array_push($temp_docs, $docs_data);
@@ -23223,7 +23927,7 @@
         }
         $temp_document = json_encode($temp_docs);
 
-        mysqli_query( $conn,"UPDATE tbl_supplier set name='". $supplier_name ."', vendor_code='".$vendor_code."', address='". $supplier_address ."', phone='". $supplier_phone ."', fax='". $supplier_fax ."', email='". $supplier_email ."', website='". $supplier_website ."', category='". $supplier_category ."', industry='". $supplier_industry ."', regulatory='". $regulatory ."', contact='". $contact ."', document='". $document_name ."', document_other='". $document_other_name ."', material='". $material ."', service='". $service ."', audit='". $audit ."', audit_report='". $audit_report ."', audit_certificate='". $audit_certificate ."', audit_action='". $audit_action ."', audit_filesize='". $audit_filesize ."', audit_file_history='". $audit_file_history ."', audit_score='". $audit_score ."', reviewed_by='". $reviewed_by ."', reviewed_date='". $reviewed_date ."', reviewed_due='". $reviewed_due ."', status='". $supplier_status ."', notification='". $supplier_notification ."', nda='". $nda ."', organic='". $organic ."', frequency='". $supplier_frequency ."', frequency_custom='". $supplier_frequency_custom ."' WHERE ID='". $ID ."'" );
+        mysqli_query( $conn,"UPDATE tbl_supplier set name='". $supplier_name ."', vendor_code='".$vendor_code."', address='". $supplier_address ."', phone='". $supplier_phone ."', fax='". $supplier_fax ."', email='". $supplier_email ."', website='". $supplier_website ."', category='". $supplier_category ."', industry='". $supplier_industry ."', regulatory='". $regulatory ."', contact='". $contact ."', document='". $document_name ."', document_other='". $document_other_name ."', material='". $material ."', service='". $service ."', audit='". $audit ."', audit_report='". $audit_report ."', audit_certificate='". $audit_certificate ."', audit_action='". $audit_action ."', audit_filesize='". $audit_filesize ."', audit_file_history='". $audit_file_history ."', audit_score='". $audit_score ."', reviewed_by='". $reviewed_by ."', reviewed_date='". $reviewed_date ."', reviewed_due='". $reviewed_due ."', status='". $supplier_status ."', notification='". $supplier_notification ."', date='". $date ."', risk_level='". $risk_level ."', nda='". $nda ."', organic='". $organic ."', frequency='". $supplier_frequency ."', frequency_custom='". $supplier_frequency_custom ."' WHERE ID='". $ID ."'" );
         
         if (!mysqli_error($conn)) {
             $selectData = mysqli_query( $conn,'SELECT * FROM tbl_supplier WHERE ID="'. $ID .'" ORDER BY ID LIMIT 1' );
@@ -23232,7 +23936,7 @@
                 $data_ID = $rowData['ID'];
                 $data_page = $rowData['page'];
                 $data_user_id = $rowData["user_id"];
-                $data_name = $rowData['name'];
+                $data_name = htmlentities($rowData['name'] ?? '');
                 $data_document_other = $rowData['document_other'];
                 $data_reviewed_due = $rowData['reviewed_due'];
                 $data_status = $rowData["status"];
@@ -23255,12 +23959,12 @@
                         $selectContact = mysqli_query( $conn,"SELECT * FROM tbl_supplier_contact WHERE ID=$value" );
                         if ( mysqli_num_rows($selectContact) > 0 ) {
                             $rowContact = mysqli_fetch_array($selectContact);
-                            $contact_name = $rowContact["name"];
-                            $contact_address = $rowContact["address"];
-                            $contact_email = $rowContact["email"];
-                            $contact_phone = $rowContact["phone"];
-                            $contact_cell = $rowContact["cell"];
-                            $contact_fax = $rowContact["fax"];
+                            $contact_name = htmlentities($rowContact["name"] ?? '');
+                            $contact_address = htmlentities($rowContact["address"] ?? '');
+                            $contact_email = htmlentities($rowContact["email"] ?? '');
+                            $contact_phone = htmlentities($rowContact["phone"] ?? '');
+                            $contact_cell = htmlentities($rowContact["cell"] ?? '');
+                            $contact_fax = htmlentities($rowContact["fax"] ?? '');
 
                             $contact_info = '<ul class="list-inline">';
                                 if ($contact_email != "") { $contact_info .= '<li><a href="mailto:'.$contact_email.'" target="_blank" title="Email"><i class="fa fa-envelope"></i></a></li>'; }
@@ -23346,10 +24050,14 @@
                                 $tmp_docs = $_FILES['document_template']['tmp_name'][$i];
                                 $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
                                 $ext = strtolower(pathinfo($files_template, PATHINFO_EXTENSION));
+
+                                $mime = mime_content_type($tmp_docs);
+                                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                                
                                 $file_docs_template = $random.' - '.$files_template;
                                 $path_docs = $path.$file_docs_template;
 
-                                if(!in_array($ext, $invalid_extensions)) {
+                                if(!in_array($mime, $mime_array)) {
                                     move_uploaded_file($tmp_docs,$path_docs);
 
                                     $output = array (
@@ -23569,7 +24277,7 @@
                         ON d.name = r.ID
 
                         WHERE d.type = 0
-                        AND LENGTH(d.file) = 0
+                        AND IFNULL(d.file = '', TRUE)
                         AND d.user_id = $data_user_id
                         AND d.supplier_id = $data_ID
                     ) AS o
@@ -23601,7 +24309,7 @@
                     $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
                     while($rowRequirement = mysqli_fetch_array($selectRequirement)) {
                         $req_id = $rowRequirement["ID"];
-                        $req_name = $rowRequirement["name"];
+                        $req_name = htmlentities($rowRequirement["name"] ?? '');
 
                         $document_arr = implode(" | ", $_POST["document"]);
                         $document_arr = explode(" | ", $document_arr);
@@ -23677,7 +24385,7 @@
                 $data_category_id = $rowData['category'];
                 $selectCategory = mysqli_query( $conn,'SELECT * FROM tbl_supplier_category WHERE ID="'. $data_category_id .'" ORDER BY ID LIMIT 1' );
                 $rowCategory = mysqli_fetch_array($selectCategory);
-                $data_category = $rowCategory['name'];
+                $data_category = htmlentities($rowCategory['name'] ?? '');
 
                 if ($data_page == 1) {
                     if ($data_category_id == "3") {
@@ -23782,14 +24490,14 @@
                     $selectEnterprise = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE users_entities = $user_id" );
                     if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                         $rowEnterprise = mysqli_fetch_array($selectEnterprise);
-                        $data_company = $rowEnterprise["businessname"];
-                        $data_email = $rowEnterprise["businessemailAddress"];
+                        $data_company = htmlentities($rowEnterprise["businessname"] ?? '');
+                        $data_email = htmlentities($rowEnterprise["businessemailAddress"] ?? '');
                     }
 
                     $selectDataTemp_Docs_Portal_User = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $portal_user" );
                     if ( mysqli_num_rows($selectDataTemp_Docs_Portal_User) > 0 ) {
                         $rowDataTemp_Docs_Portal_User = mysqli_fetch_array($selectDataTemp_Docs_Portal_User);
-                        $portal_user_name = $rowDataTemp_Docs_Portal_User['first_name'] .' '. $rowDataTemp_Docs_Portal_User['last_name'];
+                        $portal_user_name = htmlentities($rowDataTemp_Docs_Portal_User['first_name'] ?? '') .' '. htmlentities($rowDataTemp_Docs_Portal_User['last_name'] ?? '');
                     }
 
                     $to = $supplier_email;
@@ -23817,14 +24525,14 @@
                                 $selectDataTemp_DocsReqName = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE ID = $user_change_name" );
                                 if ( mysqli_num_rows($selectDataTemp_DocsReqName) > 0 ) {
                                     $rowDataTemp_DocsReqName = mysqli_fetch_array($selectDataTemp_DocsReqName);
-                                    $user_change_name = $rowDataTemp_DocsReqName['name'];
+                                    $user_change_name = htmlentities($rowDataTemp_DocsReqName['name'] ?? '');
                                 }
                             }
 
                             $user_change_file = $rowDataTemp_Docs['file'];
-                            $user_change_filename = $rowDataTemp_Docs['filename'];
-                            $user_change_reviewed_by = $rowDataTemp_Docs['reviewed_by'];
-                            $user_change_approved_by = $rowDataTemp_Docs['approved_by'];
+                            $user_change_filename = htmlentities($rowDataTemp_Docs['filename'] ?? '');
+                            $user_change_reviewed_by = htmlentities($rowDataTemp_Docs['reviewed_by'] ?? '');
+                            $user_change_approved_by = htmlentities($rowDataTemp_Docs['approved_by'] ?? '');
 
                             if (!empty($user_change_file) AND $user_change_file != $doc_file) {
                                 $body .= '<li>'.$user_change_name.' was Complied by '.$portal_user_name.'</li>';
@@ -23945,8 +24653,8 @@
                             $selectContact = mysqli_query( $conn,"SELECT * FROM tbl_supplier_contact WHERE notification = 1 AND ID = $value" );
                             if ( mysqli_num_rows($selectContact) > 0 ) {
                                 while($rowContact = mysqli_fetch_array($selectContact)) {
-                                    $contact_name = $rowContact["name"];
-                                    $contact_email = $rowContact["email"];
+                                    $contact_name = htmlentities($rowContact["name"] ?? '');
+                                    $contact_email = htmlentities($rowContact["email"] ?? '');
 
                                     $to = $contact_email;
                                     $user = $contact_name;
@@ -23972,7 +24680,7 @@
                                                 $selectDataTemp_DocsReqName = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE ID = $user_change_name" );
                                                 if ( mysqli_num_rows($selectDataTemp_DocsReqName) > 0 ) {
                                                     $rowDataTemp_DocsReqName = mysqli_fetch_array($selectDataTemp_DocsReqName);
-                                                    $user_change_name = $rowDataTemp_DocsReqName['name'];
+                                                    $user_change_name = htmlentities($rowDataTemp_DocsReqName['name'] ?? '');
                                                 }
                                             }
 
@@ -24880,7 +25588,6 @@
                 }
             }
         }
-
     }
     if( isset($_POST['btnSave_ImportDL']) ) {
         if (!empty($_COOKIE['switchAccount'])) {
@@ -25059,6 +25766,7 @@
         $filetype = $row['filetype'];
         $files = $row["files"];
         $type = 'iframe';
+        $datafancybox = 'data-fancybox';
         if (!empty($files)) {
             if ($filetype == 1) {
                 $fileExtension = fileExtension($files);
@@ -25074,6 +25782,7 @@
             } else if ($filetype == 4) {
                 $file_extension = 'fa-strikethrough';
                 $target = '_blank';
+                $datafancybox = '';
             }
         }
 
@@ -25106,7 +25815,7 @@
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                    <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                    <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                 </div>
             </div>
             <div class="col-md-6">
@@ -25181,6 +25890,7 @@
                 $last_id = mysqli_insert_id($conn);
 
                 $type = 'iframe';
+                $datafancybox = 'data-fancybox';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -25196,8 +25906,9 @@
                     } else if ($filetype == 4) {
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
+                        $datafancybox = '';
                     }
-                    $files = '<p style="margin: 0;"><a data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
+                    $files = '<p style="margin: 0;"><a data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
                 }
 
                 $data = '<tr id="tr_'.$last_id.'">
@@ -25294,6 +26005,7 @@
             mysqli_query( $conn,"UPDATE tbl_supplier_regulatory set name='". $name ."', number='". $number ."', filesize='". $filesize ."', file_history='". $file_history ."', registration_date='". $registration_date ."', expiration_date='". $expiration_date ."' WHERE ID='". $ID ."'" );
 
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($files)) {
                 if ($filetype == 1) {
                     $fileExtension = fileExtension($files);
@@ -25309,8 +26021,9 @@
                 } else if ($filetype == 4) {
                     $file_extension = 'fa-strikethrough';
                     $target = '_blank';
+                    $datafancybox = '';
                 }
-                $files = '<p style="margin: 0;"><a data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
+                $files = '<p style="margin: 0;"><a data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a></p>';
             }
 
             $data = '<td>'.$name.'</td>
@@ -25881,7 +26594,7 @@
                     <input type="hidden" name="material_spec_file_temp" value="'.$spec_file.'" />
                     <label class="control-label">Specification</label>
                     <input class="form-control '; echo !empty($spec_file) ? 'hide':''; echo '" type="file" name="material_spec_file" />
-                    <p class="'; echo !empty($spec_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($spec_file).$embed.'" data-src="'.$src.$url.rawurlencode($spec_file).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNewOld" onclick="uploadNewOld(this)">Upload New</button></p>
+                    <p class="'; echo !empty($spec_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($spec_file).$embed.'" data-src="'.$src.$url.rawurlencode($spec_file).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNewOld" onclick="uploadNewOld(this)">Upload New</button></p>
                 </div>
             </div>
             <div class="col-md-6">
@@ -26001,7 +26714,7 @@
                                     <input type="hidden" name="material_file_doc_temp" value="'.$material_file_doc.'" />
                                     <label class="control-label">File Document</label>
                                     <input class="form-control '; echo !empty($material_file_doc) ? 'hide':''; echo '" type="file" name="material_file_doc" />
-                                    <p class="'; echo !empty($material_file_doc) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($material_file_doc).$embed.'" data-src="'.$src.$url.rawurlencode($material_file_doc).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNewOld" onclick="uploadNewOld(this)">Upload New</button></p>
+                                    <p class="'; echo !empty($material_file_doc) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($material_file_doc).$embed.'" data-src="'.$src.$url.rawurlencode($material_file_doc).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNewOld" onclick="uploadNewOld(this)">Upload New</button></p>
                                 </div>
                             </div>
                             <div class="col-md-5">
@@ -26044,7 +26757,7 @@
                                             <option value="'.$portal_user.'" '; echo $val_reviewer == $portal_user ? 'SELECTED':''; echo '>'.$name.'</option>
                                         </select>';
                                     } else {
-                                        $reviewer = $reviewer;
+                                        $reviewer = $val_reviewer;
                                         $selectUser = mysqli_query( $conn,"SELECT ID, first_name, last_name from tbl_user WHERE ID = $reviewer" );
                                         $rowUser = mysqli_fetch_array($selectUser);
                                         $name = htmlentities($rowUser["first_name"] ?? '').' '.htmlentities($rowUser["last_name"] ?? '');
@@ -26503,7 +27216,7 @@
                     <input type="hidden" name="service_spec_file_tmp" value="'.$spec_file.'" />
                     <label class="control-label">Specification</label>
                     <input class="form-control '; echo !empty($spec_file) ? 'hide':''; echo '" type="file" name="service_spec_file" />
-                    <p class="'; echo !empty($spec_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($spec_file).$embed.'" data-src="'.$src.$url.rawurlencode($spec_file).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                    <p class="'; echo !empty($spec_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($spec_file).$embed.'" data-src="'.$src.$url.rawurlencode($spec_file).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                 </div>
             </div>
             <div class="col-md-6">
@@ -26549,7 +27262,7 @@
                                     <input type="hidden" name="service_file_doc_tmp" value="'.$service_file_doc.'" />
                                     <label class="control-label">File Document</label>
                                     <input class="form-control '; echo !empty($service_file_doc) ? 'hide':''; echo '" type="file" name="service_file_doc" />
-                                    <p class="'; echo !empty($service_file_doc) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($service_file_doc).$embed.'" data-src="'.$src.$url.rawurlencode($service_file_doc).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                    <p class="'; echo !empty($service_file_doc) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($service_file_doc).$embed.'" data-src="'.$src.$url.rawurlencode($service_file_doc).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                 </div>
                             </div>
                             <div class="col-md-5">
@@ -26867,6 +27580,7 @@
             $view = '<a href="#modalTemplate" class="btn btn-link" data-toggle="modal" onclick="btnTemplate('.$ID.', 0)">Upload</a>';
             if (!empty($file_final)) {
                 $type = 'iframe';
+                $datafancybox = 'data-fancybox';
                 if ($filetype == 1) {
                     $fileExtension = fileExtension($file_final);
                     $src = $fileExtension['src'];
@@ -26881,9 +27595,10 @@
                 } else if ($filetype == 4) {
                     $file_extension = 'fa-strikethrough';
                     $target = '_blank';
+                    $datafancybox = '';
                 }
                 $view = '<p style="margin: 0;">
-                    <a href="'.$file_final.'" data-src="'.$file_final.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> |
+                    <a href="'.$file_final.'" data-src="'.$file_final.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> |
                     <a href="#modalTemplate" class="btn btn-link" data-toggle="modal" onclick="btnTemplate('.$ID.', '.$temp.')">Upload</a>
                 </p>';
             }
@@ -26978,6 +27693,7 @@
             
             if (!empty($file_final)) {
                 $type = 'iframe';
+                $datafancybox = 'data-fancybox';
                 if ($filetype == 1) {
                     $fileExtension = fileExtension($file_final);
                     $src = $fileExtension['src'];
@@ -26992,15 +27708,16 @@
                 } else if ($filetype == 4) {
                     $file_extension = 'fa-strikethrough';
                     $target = '_blank';
+                    $datafancybox = '';
                 }
 
                 $view = '<p style="margin: 0;">
-                    <a href="'.$file_final.'" data-src="'.$file_final.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> |
+                    <a href="'.$file_final.'" data-src="'.$file_final.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> |
                     <a href="#modalTemplate" class="btn btn-link" data-toggle="modal" onclick="btnTemplate('.$ID.', '.$temp.')">Upload</a>
                 </p>';
                 $view2 = '<input type="file" class="form-control hide" name="document_template[]">
                 <p style="margin: 0;">
-                    <a href="'.$file_final.'" data-src="'.$file_final.'" data-fancybox data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
+                    <a href="'.$file_final.'" data-src="'.$file_final.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-sm btn-info" target="'.$target.'">View</a> |
                     <a href="#modalTemplate2" class="btn btn-sm red-haze" data-toggle="modal" onclick="btnTemplate2('.$ID.', '.$temp.', '.$modal.')">Upload</a>
                 </p>';
             }
@@ -27299,7 +28016,7 @@
                     or you may upload your document here
                 </span>
                 <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="file" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$src.$url.$files.$embed.'" data-fancybox class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$src.$url.$files.$embed.'" '.$datafancybox.' class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
             </div>
         </div>
         <div class="form-group">
@@ -27403,7 +28120,7 @@
 
                         if (!empty($cv_src)) {
                             echo '<li>
-                                <a style="padding-left: 3rem;" href="javascript:;" data-src="'.$cv_src.'" data-fancybox data-type="'.$type.'"><i class="icon-paper-clip" style="margin-left: -2.5rem; margin-right: 0;"></i> Resume</a>
+                                <a style="padding-left: 3rem;" href="javascript:;" data-src="'.$cv_src.'" '.$datafancybox.' data-type="'.$type.'"><i class="icon-paper-clip" style="margin-left: -2.5rem; margin-right: 0;"></i> Resume</a>
                             </li>';
                         }
                         if (!empty($user_mobile)) {
@@ -27473,7 +28190,7 @@
 
                                     echo '<tr>
                                         <td>
-                                            <a class="pull-right" href="'.$file_src.'" data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" style="font-size: 25px;"><i class="fa '. $file_extension .'"></i></a>
+                                            <a class="pull-right" href="'.$file_src.'" data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" style="font-size: 25px;"><i class="fa '. $file_extension .'"></i></a>
                                             <div class="media-body">';
                                                 if (!empty($value['educ_degree'])) {
                                                     echo '<div class="media-heading"><b>'.$value['educ_degree'].'</b></div>';
@@ -29398,7 +30115,7 @@
 
                             if (!empty($form_file)) {
                                 echo '<input class="form-control '; echo !empty($form_file) ? 'hide':''; echo '" type="file" name="file" accept="image/*" />
-                                <p class="'; echo !empty($form_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$form_file.'" data-src="'.$form_file.'" data-fancybox class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>';
+                                <p class="'; echo !empty($form_file) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$form_file.'" data-src="'.$form_file.'" '.$datafancybox.' class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>';
                             } else {
                                 echo '<input type="file" class="form-control" name="file" accept="image/*" />';
                             }
@@ -31258,6 +31975,7 @@
             $filetype = htmlentities($row['filetype'] ?? '');
             $data_files = $row['files'];
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($data_files)) {
                 if ($filetype == 1) {
                     $fileExtension = fileExtension($data_files);
@@ -31273,6 +31991,7 @@
                 } else if ($filetype == 4) {
                     $file_extension = 'fa-strikethrough';
                     $target = '_blank';
+                    $datafancybox = '';
                 }
             }
         }
@@ -31444,7 +32163,7 @@
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                    <p class="'; echo !empty($data_files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$data_files.'" data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                    <p class="'; echo !empty($data_files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$data_files.'" data-src="'.$data_files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                 </div>
                 <div class="form-group">
                     <label class="ccontrol-label">Document Date</label>
@@ -31502,6 +32221,7 @@
                 $filetype = htmlentities($row['filetype'] ?? '');
                 $data_files = $row['files'];
                 $type = 'iframe';
+                $datafancybox = 'data-fancybox';
                 if (!empty($data_files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($data_files);
@@ -31522,11 +32242,15 @@
                         }
 
                         if ($FreeAccess != 1) {
-                            echo '<a href="'.$data_files.'" data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a>';
+                            echo '<a href="'.$data_files.'" data-src="'.$data_files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a>';
                         }
                     } else {
                         if ($filetype == 3) {
                             $data_files = preg_replace('#[^/]*$#', '', $data_files).'preview';
+                        } else if ($filetype == 4) {
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
+                            $datafancybox = '';
                         }
 
                         if ($FreeAccess == 1) { echo '<div style="height: 375px; overflow: hidden;">'; }
@@ -31534,7 +32258,7 @@
                         if ($FreeAccess == 1) { echo '</div>'; }
 
                         if ($FreeAccess != 1) {
-                            echo '<a href="'.$data_files.'" data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a>';
+                            echo '<a href="'.$data_files.'" data-src="'.$data_files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a>';
                         }
                     }
                 } else {
@@ -31861,7 +32585,7 @@
             }
         }
 
-        mysqli_query( $conn,"UPDATE tbl_eforms set portal_user='". $portal_user ."', department_id='". $department_id ."', record='". $record ."', assigned_to_id='". $assigned_to_id ."', description='". $description ."', filled_out='". $filled_out ."', filled_out_reason='". $filled_out_reason ."', signed='". $signed ."', signed_reason='". $signed_reason ."', frequency='". $frequency ."', frequency_other='". $frequency_other ."', compliance='". $compliance ."', compliance_reason='". $compliance_reason ."', verified_by='". $verified ."', notes='". $notes ."' WHERE ID='". $ID ."'" );
+        mysqli_query( $conn,"UPDATE tbl_eforms set portal_user='". $portal_user ."', department_id='". $department_id ."', record='". $record ."', assigned_to_id='". $assigned_to_id ."', description='". $description ."', files_date='". $files_date ."', filled_out='". $filled_out ."', filled_out_reason='". $filled_out_reason ."', signed='". $signed ."', signed_reason='". $signed_reason ."', frequency='". $frequency ."', frequency_other='". $frequency_other ."', compliance='". $compliance ."', compliance_reason='". $compliance_reason ."', verified_by='". $verified ."', notes='". $notes ."' WHERE ID='". $ID ."'" );
 
         $selectData = mysqli_query( $conn,'SELECT * FROM tbl_eforms WHERE ID="'. $ID .'" ORDER BY ID LIMIT 1' );
         if ( mysqli_num_rows($selectData) > 0 ) {
@@ -31986,6 +32710,7 @@
             $filetype = htmlentities($row['filetype'] ?? '');
             $data_files = $row['files'];
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($data_files)) {
                 if ($filetype == 1) {
                     $fileExtension = fileExtension($data_files);
@@ -32001,6 +32726,7 @@
                 } else if ($filetype == 4) {
                     $file_extension = 'fa-strikethrough';
                     $target = '_blank';
+                    $datafancybox = '';
                 }
             }
         }
@@ -32044,7 +32770,7 @@
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                    <p class="'; echo !empty($data_files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$data_files.'" data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                    <p class="'; echo !empty($data_files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$data_files.'" data-src="'.$data_files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                 </div>
             </div>
             <div class="col-md-3">
@@ -32087,6 +32813,7 @@
                 $filetype = htmlentities($row['filetype'] ?? '');
                 $data_files = $row['files'];
                 $type = 'iframe';
+                $datafancybox = 'data-fancybox';
                 if (!empty($data_files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($data_files);
@@ -32108,6 +32835,10 @@
                     } else {
                         if ($filetype == 3) {
                             $data_files = preg_replace('#[^/]*$#', '', $data_files).'preview';
+                        } else if ($filetype == 4) {
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
+                            $datafancybox = '';
                         }
 
                         if ($FreeAccess == 1) { echo '<div style="height: 375px; overflow: hidden;">'; }
@@ -32116,7 +32847,7 @@
                     }
 
                     if ($FreeAccess != 1) {
-                        echo '<a href="'.$data_files.'" data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a>';
+                        echo '<a href="'.$data_files.'" data-src="'.$data_files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a>';
                     }
                 } else {
                     echo 'Empty File';
@@ -32435,6 +33166,7 @@
             $filetype = htmlentities($row['filetype'] ?? '');
             $data_files = $row['files'];
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($data_files)) {
                 if ($filetype == 1) {
                     $fileExtension = fileExtension($data_files);
@@ -32450,6 +33182,7 @@
                 } else if ($filetype == 4) {
                     $file_extension = 'fa-strikethrough';
                     $target = '_blank';
+                    $datafancybox = '';
                 }
             }
         }
@@ -32509,7 +33242,7 @@
                     </select>
                     <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                     <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                    <p class="'; echo !empty($data_files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$data_files.'" data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                    <p class="'; echo !empty($data_files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$data_files.'" data-src="'.$data_files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                 </div>
             </div>
             <div class="col-md-3">
@@ -32552,6 +33285,7 @@
                 $filetype = htmlentities($row['filetype'] ?? '');
                 $data_files = $row['files'];
                 $type = 'iframe';
+                $datafancybox = 'data-fancybox';
                 if (!empty($data_files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($data_files);
@@ -32573,6 +33307,10 @@
                     } else {
                         if ($filetype == 3) {
                             $data_files = preg_replace('#[^/]*$#', '', $data_files).'preview';
+                        } else if ($filetype == 4) {
+                            $file_extension = 'fa-strikethrough';
+                            $target = '_blank';
+                            $datafancybox = '';
                         }
 
                         if ($FreeAccess == 1) { echo '<div style="height: 375px; overflow: hidden;">'; }
@@ -32581,7 +33319,7 @@
                     }
 
                     if ($FreeAccess != 1) {
-                        echo '<a href="'.$data_files.'" data-src="'.$data_files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a>';
+                        echo '<a href="'.$data_files.'" data-src="'.$data_files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a>';
                     }
                 } else {
                     echo 'Empty File';
@@ -32972,7 +33710,7 @@
 
                 while($row = mysqli_fetch_array($selectData)) {
                     $ID = $row['id'];
-                    $name = $row['area_category'];
+                    $name = htmlentities($row['area_category'] ?? '');
 
                     $result .= '<option value="'. $ID .'">'. $name .'</option>';
                 }
@@ -32996,13 +33734,13 @@
             $row = mysqli_fetch_array($selectData);
 
             $category_id = $row['category_id'];
-            $category_other = $row['category_other'];
+            $category_other = htmlentities($row['category_other'] ?? '');
 
             $area_id = $row['area_id'];
-            $area_other = $row['area_other'];
+            $area_other = htmlentities($row['area_other'] ?? '');
 
-            $description = $row['description'];
-            $location = $row['location'];
+            $description = htmlentities($row['description'] ?? '');
+            $location = htmlentities($row['location'] ?? '');
 
             $files = $row['files'];
             if (!empty($files)) {
@@ -33023,7 +33761,7 @@
                         $selectCategory = mysqli_query($conn,"SELECT * FROM tbl_service_category ORDER BY service_category ASC");
                         while($rowCat = mysqli_fetch_array($selectCategory)) {
                             $cat_id = $rowCat['id'];
-                            $cat_name = $rowCat['service_category'];
+                            $cat_name = htmlentities($rowCat['service_category'] ?? '');
 
                             echo '<option value="'. $cat_id .'" '; echo $category_id == $cat_id ? 'SELECTED':'';  echo '>'. $cat_name .'</option>';
                         }
@@ -33042,7 +33780,7 @@
                         $selectArea = mysqli_query($conn,"SELECT * FROM tbl_service_area ORDER BY area_category ASC");
                         while($rowArea = mysqli_fetch_array($selectArea)) {
                             $a_id = $rowArea['id'];
-                            $a_name = $rowArea['area_category'];
+                            $a_name = htmlentities($rowArea['area_category'] ?? '');
 
                             echo '<option value="'. $a_id .'" '; echo $area_id == $a_id ? 'SELECTED':'';  echo '>'. $a_name .'</option>';
                         }
@@ -33083,7 +33821,7 @@
                                 echo '<div class="mt-repeater-item row" data-repeater-item>
                                     <div class="col-md-10">
                                         <input class="form-control '; echo !empty($file) ? 'hide':''; echo '" type="file" name="file" />
-                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$src.$url.rawurlencode($file).$embed.'" data-fancybox="gallery" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$src.$url.rawurlencode($file).$embed.'" data-fancybox="gallery" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                     </div>
                                     <div class="col-md-2 text-right">
                                             <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
@@ -33187,25 +33925,25 @@
                 if ( mysqli_num_rows($selectData) > 0 ) {
                     $rowData = mysqli_fetch_array($selectData);
                     $data_ID = $rowData['ID'];
-                    $data_description = $rowData['description'];
-                    $data_location = $rowData['location'];
+                    $data_description = htmlentities($rowData['description'] ?? '');
+                    $data_location = htmlentities($rowData['location'] ?? '');
 
                     $data_category_id = $rowData['category_id'];
                     if ($data_category_id == "others") {
-                        $data_category = $rowData['category_other'];
+                        $data_category = htmlentities($rowData['category_other'] ?? '');
                     } else {
                         $selectCategory = mysqli_query( $conn,'SELECT * FROM tbl_service_category WHERE id="'. $data_category_id .'" ORDER BY ID LIMIT 1' );
                         $rowCategory = mysqli_fetch_array($selectCategory);
-                        $data_category = $rowCategory['service_category'];
+                        $data_category = htmlentities($rowCategory['service_category'] ?? '');
                     }
 
                     $data_area_id = $rowData['area_id'];
                     if ($data_area_id == "others") {
-                        $data_area = $rowData['area_other'];
+                        $data_area = htmlentities($rowData['area_other'] ?? '');
                     } else {
                         $selectArea = mysqli_query( $conn,'SELECT * FROM tbl_service_area WHERE id="'. $data_area_id .'" ORDER BY ID LIMIT 1' );
                         $rowArea = mysqli_fetch_array($selectArea);
-                        $data_area = $rowArea['area_category'];
+                        $data_area = htmlentities($rowArea['area_category'] ?? '');
                     }
 
                     $data_files = $rowData['files'];
@@ -33242,8 +33980,8 @@
         if ( mysqli_num_rows($selectData) > 0 ) {
             $rowData = mysqli_fetch_array($selectData);
             $data_ID = $rowData['ID'];
-            $data_description = $rowData['description'];
-            $data_location = $rowData['location'];
+            $data_description = htmlentities($rowData['description'] ?? '');
+            $data_location = htmlentities($rowData['location'] ?? '');
 
             $files = '';
             $arr_item = array();
@@ -33302,20 +34040,20 @@
 
                 $data_category_id = $rowData['category_id'];
                 if ($data_category_id == "others") {
-                    $data_category = $rowData['category_other'];
+                    $data_category = htmlentities($rowData['category_other'] ?? '');
                 } else {
                     $selectCategory = mysqli_query( $conn,'SELECT * FROM tbl_service_category WHERE id="'. $data_category_id .'" ORDER BY ID LIMIT 1' );
                     $rowCategory = mysqli_fetch_array($selectCategory);
-                    $data_category = $rowCategory['service_category'];
+                    $data_category = htmlentities($rowCategory['service_category'] ?? '');
                 }
 
                 $data_area_id = $rowData['area_id'];
                 if ($data_area_id == "others") {
-                    $data_area = $rowData['area_other'];
+                    $data_area = htmlentities($rowData['area_other'] ?? '');
                 } else {
                     $selectArea = mysqli_query( $conn,'SELECT * FROM tbl_service_area WHERE id="'. $data_area_id .'" ORDER BY ID LIMIT 1' );
                     $rowArea = mysqli_fetch_array($selectArea);
-                    $data_area = $rowArea['area_category'];
+                    $data_area = htmlentities($rowArea['area_category'] ?? '');
                 }
 
                 $data_files = $rowData['files'];
@@ -33421,7 +34159,7 @@
         <div class="form-group">
             <label class="col-md-3 control-label">Attached File</label>
             <div class="col-md-8">
-                <label control-label" style="padding-top: 7px;"><a data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'">'.$files.'</a></label>
+                <label control-label" style="padding-top: 7px;"><a data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'">'.$files.'</a></label>
             </div>
         </div>
         <div class="form-group" id="serviceDesiredDueDate">
@@ -33573,7 +34311,7 @@
                     $type = $fileExtension['type'];
                     $file_extension = $fileExtension['file_extension'];
                     $url = $base_url.'uploads/services/';
-                    $files = 'File: <a data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a>';
+                    $files = 'File: <a data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a>';
                 };
             }
 
@@ -33677,7 +34415,7 @@
                         $type = $fileExtension['type'];
                         $file_extension = $fileExtension['file_extension'];
                         $url = $base_url.'uploads/services/';
-                        $files = 'File: <a data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a>';
+                        $files = 'File: <a data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a>';
                     }
 
                     $counterup_tbl = counterup_tbl('supplier');
@@ -33799,7 +34537,7 @@
                 $type = $fileExtension['type'];
                 $file_extension = $fileExtension['file_extension'];
                 $url = $base_url.'uploads/services/';
-                $files = 'File: <a data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a>';
+                $files = 'File: <a data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a>';
             }
 
             $output = array(
@@ -33942,6 +34680,15 @@
         $id = $_GET['modalView_Products'];
         $allergen = array();
 
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_products WHERE ID = $id" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
@@ -33995,7 +34742,53 @@
             </ul>
             <div class="tab-content margin-top-20">
                 <div class="tab-pane active" id="tabBasic2">
-                    <h4><strong>Basic Details</strong></h4>
+                    <h4>
+                        <strong>Basic Details</strong>';
+
+                        $pictogram = 'prod_basic';
+                        if ($user_id == 163) {
+                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                        } else {
+                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                $files = '';
+                                $type = 'iframe';
+                                if (!empty($rowPictogram["files"])) {
+                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                    $str_filename = '';
+
+                                    foreach($arr_filename as $val_filename) {
+                                        $str_filename = $val_filename;
+                                    }
+                                    foreach($arr_filetype as $val_filetype) {
+                                        $str_filetype = $val_filetype;
+                                    }
+
+                                    $files = $rowPictogram["files"];
+                                    if ($rowPictogram["filetype"] == 1) {
+                                        $fileExtension = fileExtension($files);
+                                        $src = $fileExtension['src'];
+                                        $embed = $fileExtension['embed'];
+                                        $type = $fileExtension['type'];
+                                        $file_extension = $fileExtension['file_extension'];
+                                        $url = $base_url.'uploads/pictogram/';
+
+                                        $files = $src.$url.rawurlencode($files).$embed;
+                                    } else if ($rowPictogram["filetype"] == 3) {
+                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                    }
+                                }
+
+                                if (!empty($files)) {
+                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                }
+                            }
+                        }
+
+                    echo '</h4>
                     <div class="row margin-bottom-20">
                         <div class="col-md-6 productMain">
                             <p><strong>Main Product View</strong></p>
@@ -34337,7 +35130,53 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tabAllergens2">
-                    <h4><strong>Allergens</strong></h4>
+                    <h4>
+                        <strong>Allergens</strong>';
+
+                        $pictogram = 'prod_allergen';
+                        if ($user_id == 163) {
+                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                        } else {
+                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                $files = '';
+                                $type = 'iframe';
+                                if (!empty($rowPictogram["files"])) {
+                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                    $str_filename = '';
+
+                                    foreach($arr_filename as $val_filename) {
+                                        $str_filename = $val_filename;
+                                    }
+                                    foreach($arr_filetype as $val_filetype) {
+                                        $str_filetype = $val_filetype;
+                                    }
+
+                                    $files = $rowPictogram["files"];
+                                    if ($rowPictogram["filetype"] == 1) {
+                                        $fileExtension = fileExtension($files);
+                                        $src = $fileExtension['src'];
+                                        $embed = $fileExtension['embed'];
+                                        $type = $fileExtension['type'];
+                                        $file_extension = $fileExtension['file_extension'];
+                                        $url = $base_url.'uploads/pictogram/';
+
+                                        $files = $src.$url.rawurlencode($files).$embed;
+                                    } else if ($rowPictogram["filetype"] == 3) {
+                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                    }
+                                }
+
+                                if (!empty($files)) {
+                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                }
+                            }
+                        }
+
+                    echo '</h4>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -34405,7 +35244,53 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tabDimensions2">
-                    <h4><strong>Dimensions</strong></h4>
+                    <h4>
+                        <strong>Dimensions</strong>';
+
+                        $pictogram = 'prod_dimension';
+                        if ($user_id == 163) {
+                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                        } else {
+                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                $files = '';
+                                $type = 'iframe';
+                                if (!empty($rowPictogram["files"])) {
+                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                    $str_filename = '';
+
+                                    foreach($arr_filename as $val_filename) {
+                                        $str_filename = $val_filename;
+                                    }
+                                    foreach($arr_filetype as $val_filetype) {
+                                        $str_filetype = $val_filetype;
+                                    }
+
+                                    $files = $rowPictogram["files"];
+                                    if ($rowPictogram["filetype"] == 1) {
+                                        $fileExtension = fileExtension($files);
+                                        $src = $fileExtension['src'];
+                                        $embed = $fileExtension['embed'];
+                                        $type = $fileExtension['type'];
+                                        $file_extension = $fileExtension['file_extension'];
+                                        $url = $base_url.'uploads/pictogram/';
+
+                                        $files = $src.$url.rawurlencode($files).$embed;
+                                    } else if ($rowPictogram["filetype"] == 3) {
+                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                    }
+                                }
+
+                                if (!empty($files)) {
+                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                }
+                            }
+                        }
+
+                    echo '</h4>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -34450,7 +35335,53 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tabStorage2">
-                    <h4><strong>Storage</strong></h4>
+                    <h4>
+                        <strong>Storage</strong>';
+
+                        $pictogram = 'prod_storage';
+                        if ($user_id == 163) {
+                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                        } else {
+                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                $files = '';
+                                $type = 'iframe';
+                                if (!empty($rowPictogram["files"])) {
+                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                    $str_filename = '';
+
+                                    foreach($arr_filename as $val_filename) {
+                                        $str_filename = $val_filename;
+                                    }
+                                    foreach($arr_filetype as $val_filetype) {
+                                        $str_filetype = $val_filetype;
+                                    }
+
+                                    $files = $rowPictogram["files"];
+                                    if ($rowPictogram["filetype"] == 1) {
+                                        $fileExtension = fileExtension($files);
+                                        $src = $fileExtension['src'];
+                                        $embed = $fileExtension['embed'];
+                                        $type = $fileExtension['type'];
+                                        $file_extension = $fileExtension['file_extension'];
+                                        $url = $base_url.'uploads/pictogram/';
+
+                                        $files = $src.$url.rawurlencode($files).$embed;
+                                    } else if ($rowPictogram["filetype"] == 3) {
+                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                    }
+                                }
+
+                                if (!empty($files)) {
+                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                }
+                            }
+                        }
+
+                    echo '</h4>
                     <div class="row">
                         <div class="col-md-3">
                             <div class="form-group">
@@ -34522,7 +35453,53 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tabManufacturing2">
-                    <h4><strong>Manufacturing Details</strong></h4>
+                    <h4>
+                        <strong>Manufacturing Details</strong>';
+
+                        $pictogram = 'prod_manuf';
+                        if ($user_id == 163) {
+                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                        } else {
+                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                $files = '';
+                                $type = 'iframe';
+                                if (!empty($rowPictogram["files"])) {
+                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                    $str_filename = '';
+
+                                    foreach($arr_filename as $val_filename) {
+                                        $str_filename = $val_filename;
+                                    }
+                                    foreach($arr_filetype as $val_filetype) {
+                                        $str_filetype = $val_filetype;
+                                    }
+
+                                    $files = $rowPictogram["files"];
+                                    if ($rowPictogram["filetype"] == 1) {
+                                        $fileExtension = fileExtension($files);
+                                        $src = $fileExtension['src'];
+                                        $embed = $fileExtension['embed'];
+                                        $type = $fileExtension['type'];
+                                        $file_extension = $fileExtension['file_extension'];
+                                        $url = $base_url.'uploads/pictogram/';
+
+                                        $files = $src.$url.rawurlencode($files).$embed;
+                                    } else if ($rowPictogram["filetype"] == 3) {
+                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                    }
+                                }
+
+                                if (!empty($files)) {
+                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                }
+                            }
+                        }
+
+                    echo '</h4>
                     <div class="row '.(!in_array($row['category'], [27,28,29,30]) ? '' : 'hide').'" data-manufacturing-details="default">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -34688,7 +35665,53 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tabProductDescription2">
-                    <h4><strong>Product Description, including Important Food Safety Characteristics</strong></h4>
+                    <h4>
+                        <strong>Product Description, including Important Food Safety Characteristics</strong>';
+
+                        $pictogram = 'prod_desc';
+                        if ($user_id == 163) {
+                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                        } else {
+                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                $files = '';
+                                $type = 'iframe';
+                                if (!empty($rowPictogram["files"])) {
+                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                    $str_filename = '';
+
+                                    foreach($arr_filename as $val_filename) {
+                                        $str_filename = $val_filename;
+                                    }
+                                    foreach($arr_filetype as $val_filetype) {
+                                        $str_filetype = $val_filetype;
+                                    }
+
+                                    $files = $rowPictogram["files"];
+                                    if ($rowPictogram["filetype"] == 1) {
+                                        $fileExtension = fileExtension($files);
+                                        $src = $fileExtension['src'];
+                                        $embed = $fileExtension['embed'];
+                                        $type = $fileExtension['type'];
+                                        $file_extension = $fileExtension['file_extension'];
+                                        $url = $base_url.'uploads/pictogram/';
+
+                                        $files = $src.$url.rawurlencode($files).$embed;
+                                    } else if ($rowPictogram["filetype"] == 3) {
+                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                    }
+                                }
+
+                                if (!empty($files)) {
+                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                }
+                            }
+                        }
+
+                    echo '</h4>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
@@ -34759,7 +35782,53 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tabExercises2">
-                    <h4><strong>Exercises</strong></h4>
+                    <h4>
+                        <strong>Exercises</strong>';
+
+                        $pictogram = 'prod_exercise';
+                        if ($user_id == 163) {
+                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                        } else {
+                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                $files = '';
+                                $type = 'iframe';
+                                if (!empty($rowPictogram["files"])) {
+                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                    $str_filename = '';
+
+                                    foreach($arr_filename as $val_filename) {
+                                        $str_filename = $val_filename;
+                                    }
+                                    foreach($arr_filetype as $val_filetype) {
+                                        $str_filetype = $val_filetype;
+                                    }
+
+                                    $files = $rowPictogram["files"];
+                                    if ($rowPictogram["filetype"] == 1) {
+                                        $fileExtension = fileExtension($files);
+                                        $src = $fileExtension['src'];
+                                        $embed = $fileExtension['embed'];
+                                        $type = $fileExtension['type'];
+                                        $file_extension = $fileExtension['file_extension'];
+                                        $url = $base_url.'uploads/pictogram/';
+
+                                        $files = $src.$url.rawurlencode($files).$embed;
+                                    } else if ($rowPictogram["filetype"] == 3) {
+                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                    }
+                                }
+
+                                if (!empty($files)) {
+                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                }
+                            }
+                        }
+
+                    echo '</h4>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -34776,7 +35845,53 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tabDocuments2">
-                    <h4><strong>Documents</strong></h4>';
+                    <h4>
+                        <strong>Documents</strong>';
+
+                        $pictogram = 'prod_docs';
+                        if ($user_id == 163) {
+                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                        } else {
+                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                $files = '';
+                                $type = 'iframe';
+                                if (!empty($rowPictogram["files"])) {
+                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                    $str_filename = '';
+
+                                    foreach($arr_filename as $val_filename) {
+                                        $str_filename = $val_filename;
+                                    }
+                                    foreach($arr_filetype as $val_filetype) {
+                                        $str_filetype = $val_filetype;
+                                    }
+
+                                    $files = $rowPictogram["files"];
+                                    if ($rowPictogram["filetype"] == 1) {
+                                        $fileExtension = fileExtension($files);
+                                        $src = $fileExtension['src'];
+                                        $embed = $fileExtension['embed'];
+                                        $type = $fileExtension['type'];
+                                        $file_extension = $fileExtension['file_extension'];
+                                        $url = $base_url.'uploads/pictogram/';
+
+                                        $files = $src.$url.rawurlencode($files).$embed;
+                                    } else if ($rowPictogram["filetype"] == 3) {
+                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                    }
+                                }
+
+                                if (!empty($files)) {
+                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                }
+                            }
+                        }
+
+                    echo '</h4>';
                     
                     $url = $base_url.'uploads/products/';
 
@@ -34791,7 +35906,7 @@
                             <div class="form-group">
                                 <label class="control-label">Product Specification</label>
                                 <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="specifcation" />
-                                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -34828,7 +35943,7 @@
                             <div class="form-group">
                                 <label class="control-label">Packaging Artwork</label>
                                 <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="artwork" />
-                                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -34865,7 +35980,7 @@
                             <div class="form-group">
                                 <label class="control-label">Food Safety Plan/HACCP</label>
                                 <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="haccp" />
-                                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -34902,7 +36017,7 @@
                             <div class="form-group">
                                 <label class="control-label">Label</label>
                                 <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="label" />
-                                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -34939,7 +36054,7 @@
                             <div class="form-group">
                                 <label class="control-label">Formulation</label>
                                 <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="formulation" />
-                                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -35041,7 +36156,7 @@
                                                 <input type="hidden" name="docs_tmp" value="'.$value['docs_file'].'" />
                                                 <label class="control-label">Document</label>
                                                 <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="docs_file" />
-                                                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
@@ -37088,7 +38203,7 @@
             <label class="col-md-3 control-label">Select File</label>
             <div class="col-md-8">
                 <input class="form-control '; echo !empty($file_upload) ? 'hide':''; echo '" type="file" name="file" />
-                <p class="'; echo !empty($file_upload) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_url.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload New</button></p>
+                <p class="'; echo !empty($file_upload) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_url.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload New</button></p>
             </div>
         </div>
         <div class="form-group selInstruction '; echo $type_id == 0 ? 'hide':''; echo '" id="selURL">
@@ -37101,7 +38216,7 @@
             <label class="col-md-3 control-label">Select Icon</label>
             <div class="col-md-8">
                 <input class="form-control '; echo !empty($icon) ? 'hide':''; echo '" type="file" name="icon" />
-                <p class="'; echo !empty($icon) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$icon_url.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload New</button></p>
+                <p class="'; echo !empty($icon) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$icon_url.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload New</button></p>
             </div>
         </div>';
 
@@ -38076,7 +39191,7 @@
                                                     <div class="col-xs-10">
                                                         <input type="hidden" name="observation_file_temp" value="'.$value.'" />
                                                         <input class="form-control '; echo !empty($file) ? 'hide':''; echo '" type="file" name="observation_file" />
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                                     </div>
                                                     <div class="col-xs-2">
                                                         <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
@@ -38147,7 +39262,7 @@
                                                     <div class="col-xs-10">
                                                         <input type="hidden" name="root_cause_file_temp" value="'.$value.'" />
                                                         <input class="form-control '; echo !empty($file) ? 'hide':''; echo '" type="file" name="root_cause_file" />
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                                     </div>
                                                     <div class="col-xs-2">
                                                         <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
@@ -38234,7 +39349,7 @@
                                                     <div class="col-xs-10">
                                                         <input type="hidden" name="corrective_file_temp" value="'.$value.'" />
                                                         <input class="form-control '; echo !empty($file) ? 'hide':''; echo '" type="file" name="corrective_file" />
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                                     </div>
                                                     <div class="col-xs-2">
                                                         <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
@@ -38321,7 +39436,7 @@
                                                     <div class="col-xs-10">
                                                         <input type="hidden" name="implementation_file_temp" value="'.$value.'" />
                                                         <input class="form-control '; echo !empty($file) ? 'hide':''; echo '" type="file" name="implementation_file" />
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                                     </div>
                                                     <div class="col-xs-2">
                                                         <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
@@ -38397,7 +39512,7 @@
                                                     <div class="col-xs-10">
                                                         <input type="hidden" name="preventive_file_temp" value="'.$value.'" />
                                                         <input class="form-control '; echo !empty($file) ? 'hide':''; echo '" type="file" name="preventive_file" />
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                                     </div>
                                                     <div class="col-xs-2">
                                                         <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
@@ -38473,7 +39588,7 @@
                                                     <div class="col-xs-10">
                                                         <input type="hidden" name="evaluation_file_temp" value="'.$value.'" />
                                                         <input class="form-control '; echo !empty($file) ? 'hide':''; echo '" type="file" name="evaluation_file" />
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                                     </div>
                                                     <div class="col-xs-2">
                                                         <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
@@ -38544,7 +39659,7 @@
                                                     <div class="col-xs-10">
                                                         <input type="hidden" name="comment_file_temp" value="'.$value.'" />
                                                         <input class="form-control '; echo !empty($file) ? 'hide':''; echo '" type="file" name="comment_file" />
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                                     </div>
                                                     <div class="col-xs-2">
                                                         <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
@@ -38627,7 +39742,7 @@
                                                     <div class="col-xs-10">
                                                         <input type="hidden" name="training_file_temp" value="'.$value.'" />
                                                         <input class="form-control '; echo !empty($file) ? 'hide':''; echo '" type="file" name="training_file" />
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                                     </div>
                                                     <div class="col-xs-2">
                                                         <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
@@ -39028,7 +40143,7 @@
                                                     <div class="col-xs-10">
                                                         <input type="hidden" name="observation_file_temp" value="'.$value.'" />
                                                         <input class="form-control '; echo !empty($file) ? 'hide':''; echo '" type="file" name="observation_file" />
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                                     </div>
                                                     <div class="col-xs-2">
                                                         <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
@@ -39089,7 +40204,7 @@
                                                     <div class="col-xs-10">
                                                         <input type="hidden" name="root_cause_file_temp" value="'.$value.'" />
                                                         <input class="form-control '; echo !empty($file) ? 'hide':''; echo '" type="file" name="root_cause_file" />
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                                     </div>
                                                     <div class="col-xs-2">
                                                         <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
@@ -39166,7 +40281,7 @@
                                                     <div class="col-xs-10">
                                                         <input type="hidden" name="corrective_file_temp" value="'.$value.'" />
                                                         <input class="form-control '; echo !empty($file) ? 'hide':''; echo '" type="file" name="corrective_file" />
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                                     </div>
                                                     <div class="col-xs-2">
                                                         <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
@@ -39243,7 +40358,7 @@
                                                     <div class="col-xs-10">
                                                         <input type="hidden" name="implementation_file_temp" value="'.$value.'" />
                                                         <input class="form-control '; echo !empty($file) ? 'hide':''; echo '" type="file" name="implementation_file" />
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                                     </div>
                                                     <div class="col-xs-2">
                                                         <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
@@ -39309,7 +40424,7 @@
                                                     <div class="col-xs-10">
                                                         <input type="hidden" name="preventive_file_temp" value="'.$value.'" />
                                                         <input class="form-control '; echo !empty($file) ? 'hide':''; echo '" type="file" name="preventive_file" />
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                                     </div>
                                                     <div class="col-xs-2">
                                                         <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
@@ -39375,7 +40490,7 @@
                                                     <div class="col-xs-10">
                                                         <input type="hidden" name="evaluation_file_temp" value="'.$value.'" />
                                                         <input class="form-control '; echo !empty($file) ? 'hide':''; echo '" type="file" name="evaluation_file" />
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                                     </div>
                                                     <div class="col-xs-2">
                                                         <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
@@ -39436,7 +40551,7 @@
                                                     <div class="col-xs-10">
                                                         <input type="hidden" name="comment_file_temp" value="'.$value.'" />
                                                         <input class="form-control '; echo !empty($file) ? 'hide':''; echo '" type="file" name="comment_file" />
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                                     </div>
                                                     <div class="col-xs-2">
                                                         <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
@@ -39509,7 +40624,7 @@
                                                     <div class="col-xs-10">
                                                         <input type="hidden" name="training_file_temp" value="'.$value.'" />
                                                         <input class="form-control '; echo !empty($file) ? 'hide':''; echo '" type="file" name="training_file" />
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                                     </div>
                                                     <div class="col-xs-2">
                                                         <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
@@ -40437,7 +41552,7 @@
 
                                                 echo '<div class="mt-repeater-item row" data-repeater-item>
                                                     <div class="col-xs-12">
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p>
                                                     </div>
                                                 </div>';
                                             }
@@ -40482,7 +41597,7 @@
 
                                                 echo '<div class="mt-repeater-item row" data-repeater-item>
                                                     <div class="col-xs-12">
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p>
                                                     </div>
                                                 </div>';
                                             }
@@ -40543,7 +41658,7 @@
 
                                                 echo '<div class="mt-repeater-item row" data-repeater-item>
                                                     <div class="col-xs-12">
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p>
                                                     </div>
                                                 </div>';
                                             }
@@ -40604,7 +41719,7 @@
 
                                                 echo '<div class="mt-repeater-item row" data-repeater-item>
                                                     <div class="col-xs-12">
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p>
                                                     </div>
                                                 </div>';
                                             }
@@ -40654,7 +41769,7 @@
 
                                                 echo '<div class="mt-repeater-item row" data-repeater-item>
                                                     <div class="col-xs-12">
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p>
                                                     </div>
                                                 </div>';
                                             }
@@ -40704,7 +41819,7 @@
 
                                                 echo '<div class="mt-repeater-item row" data-repeater-item>
                                                     <div class="col-xs-12">
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p>
                                                     </div>
                                                 </div>';
                                             }
@@ -40749,7 +41864,7 @@
 
                                                 echo '<div class="mt-repeater-item row" data-repeater-item>
                                                     <div class="col-xs-12">
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p>
                                                     </div>
                                                 </div>';
                                             }
@@ -40806,7 +41921,7 @@
 
                                                 echo '<div class="mt-repeater-item row" data-repeater-item>
                                                     <div class="col-xs-12">
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p>
                                                     </div>
                                                 </div>';
                                             }
@@ -41159,7 +42274,7 @@
 
                                                 echo '<div class="mt-repeater-item row" data-repeater-item>
                                                     <div class="col-xs-12">
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p>
                                                     </div>
                                                 </div>';
                                             }
@@ -41204,7 +42319,7 @@
 
                                                 echo '<div class="mt-repeater-item row" data-repeater-item>
                                                     <div class="col-xs-12">
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p>
                                                     </div>
                                                 </div>';
                                             }
@@ -41265,7 +42380,7 @@
 
                                                 echo '<div class="mt-repeater-item row" data-repeater-item>
                                                     <div class="col-xs-12">
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p>
                                                     </div>
                                                 </div>';
                                             }
@@ -41326,7 +42441,7 @@
 
                                                 echo '<div class="mt-repeater-item row" data-repeater-item>
                                                     <div class="col-xs-12">
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p>
                                                     </div>
                                                 </div>';
                                             }
@@ -41376,7 +42491,7 @@
 
                                                 echo '<div class="mt-repeater-item row" data-repeater-item>
                                                     <div class="col-xs-12">
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p>
                                                     </div>
                                                 </div>';
                                             }
@@ -41426,7 +42541,7 @@
 
                                                 echo '<div class="mt-repeater-item row" data-repeater-item>
                                                     <div class="col-xs-12">
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p>
                                                     </div>
                                                 </div>';
                                             }
@@ -41471,7 +42586,7 @@
 
                                                 echo '<div class="mt-repeater-item row" data-repeater-item>
                                                     <div class="col-xs-12">
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.''.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p>
                                                     </div>
                                                 </div>';
                                             }
@@ -41528,7 +42643,7 @@
 
                                                 echo '<div class="mt-repeater-item row" data-repeater-item>
                                                     <div class="col-xs-12">
-                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a></p>
+                                                        <p class="'; echo !empty($file) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$file_src.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a></p>
                                                     </div>
                                                 </div>';
                                             }
@@ -45127,7 +46242,7 @@
                 }
             }
         } else if ($type == 4) {
-            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND user_id = $ID AND LENGTH(files) = 0 ORDER BY title" );
+            $selectData = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND user_id = $ID AND IFNULL(file = '', TRUE) ORDER BY title" );
             if ( mysqli_num_rows($selectData) > 0 ) {
                 $counter = 1;
                 while($rowData = mysqli_fetch_array($selectData)) {
@@ -46494,7 +47609,7 @@
                             foreach ($output_file as $key => $value) {
                                 $file_doc = $value['file_doc'];
                                 $type = 'iframe';
-
+                                $datafancybox = 'data-fancybox';
                                 $filetype = 1;
                                 if (!empty($value['file_type'])) { $filetype = $value['file_type']; }
                                 if ($filetype == 1) {
@@ -46512,6 +47627,7 @@
                                 } else if ($filetype == 4) {
                                     $file_extension = 'fa-strikethrough';
                                     $target = '_blank';
+                                    $datafancybox = '';
                                 }
 
 
@@ -46527,7 +47643,7 @@
                                     } else {
                                         echo '<iframe src="'.$file_doc.'" style="width: 100%; height: 400px;"></iframe>';
                                     }
-                                    echo '<a data-src="'.$file_doc.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a>';
+                                    echo '<a data-src="'.$file_doc.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a>';
 
                                 echo '</div>';
                             }
@@ -46883,11 +47999,11 @@
                         <td class="text-center">';
                             if ($user_id == 1 || $user_id == 19 || $user_id == 163) {
                                 $data .= '<div class="btn-group btn-group-circle">
-                                    <a href="'.$src.$url.rawurlencode($data_file).$embed.'" data-src="'.$src.$url.rawurlencode($data_file).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-outline dark btn-sm">View</a>
+                                    <a href="'.$src.$url.rawurlencode($data_file).$embed.'" data-src="'.$src.$url.rawurlencode($data_file).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-outline dark btn-sm">View</a>
                                     <a href="javascript:;" class="btn btn-danger btn-sm" onclick="btnDelete('.$data_ID.')">Delete</a>
                                 </div>';
                             } else {
-                                $data .= '<a href="'.$src.$url.rawurlencode($data_file).$embed.'" data-src="'.$src.$url.rawurlencode($data_file).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-outline dark btn-sm">View</a>';
+                                $data .= '<a href="'.$src.$url.rawurlencode($data_file).$embed.'" data-src="'.$src.$url.rawurlencode($data_file).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-outline dark btn-sm">View</a>';
                             }
                         $data .= '</td>
                     </tr>';
@@ -47480,7 +48596,7 @@
                     
                     $data = '<div class="col-md-2 margin-bottom-15" id="div_'.$data_ID.'">
                         <a href="javascript:;" class="btn btn-danger" onclick="btnDelete('.$data_ID.')" style="position: absolute; z-index: 2;"><i class="fa fa-trash"></i></a>
-                        <a data-src="'.$src.$url.rawurlencode($data_file).$embed.'" data-fancybox data-type="'.$type.'" class="modalView">
+                        <a data-src="'.$src.$url.rawurlencode($data_file).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="modalView">
                             <img src="uploads/bgBlue.png" class="img-thumbnail" />
                             <div class="cover">
                                 <h3 class="font-white">'.$data_name.'</h3>
@@ -47587,7 +48703,7 @@
                     
                     $data = '<div class="col-md-2 margin-bottom-15" id="div_'.$data_ID.'">
                         <a href="javascript:;" class="btn btn-danger" onclick="btnDelete('.$data_ID.')" style="position: absolute; z-index: 2;"><i class="fa fa-trash"></i></a>
-                        <a data-src="'.$src.$url.rawurlencode($data_file).$embed.'" data-fancybox data-type="'.$type.'" class="modalView">
+                        <a data-src="'.$src.$url.rawurlencode($data_file).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="modalView">
                             <img src="uploads/bgBlue.png" class="img-thumbnail" />
                             <div class="cover">
                                 <h3 class="font-white">'.$data_name.'</h3>
@@ -47812,7 +48928,7 @@
                                                     <li><a href="javascript:;" class="btnDelete" data-id="'. $item_ID .'" onclick="btnDelete('. $item_ID .')">Delete</a></li>
                                                     <li><a href="#modalReport" class="btnReport" data-id="'. $item_ID .'" data-toggle="modal" onclick="btnReport('. $item_ID .')">Report</a></li>';
                                             
-                                                    if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477 OR $portal_user == 1486) {
+                                                    if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477 OR $portal_user == 1486 OR $portal_user == 1556 OR $portal_user == 1557) {
                                                         $output .= '<li><a href="#modalClone" data-toggle="modal" onclick="btnClone('. $item_ID .')">Clone</a></li>';
                                                     }
 
@@ -48128,6 +49244,7 @@
             $library_parent_id = $row["l_parent_id"];
             $library_child = $row["l_child_id"];
             $reason = $row["l_reason"];
+            $l_description = $row["l_description"];
 
             $review = 0;
             $review_sum = $row["review_sum"];
@@ -48208,13 +49325,13 @@
                                 } else {
                                     $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
                                     if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                        $row = mysqli_fetch_array($selectPictogram);
+                                        $rowPictogram = mysqli_fetch_array($selectPictogram);
 
                                         $files = '';
                                         $type = 'iframe';
-                                        if (!empty($row["files"])) {
-                                            $arr_filename = explode(' | ', $row["files"]);
-                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                        if (!empty($rowPictogram["files"])) {
+                                            $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                            $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
                                             $str_filename = '';
 
                                             foreach($arr_filename as $val_filename) {
@@ -48224,8 +49341,8 @@
                                                 $str_filetype = $val_filetype;
                                             }
 
-                                            $files = $row["files"];
-                                            if ($row["filetype"] == 1) {
+                                            $files = $rowPictogram["files"];
+                                            if ($rowPictogram["filetype"] == 1) {
                                                 $fileExtension = fileExtension($files);
                                                 $src = $fileExtension['src'];
                                                 $embed = $fileExtension['embed'];
@@ -48234,13 +49351,13 @@
                                                 $url = $base_url.'uploads/pictogram/';
 
                                                 $files = $src.$url.rawurlencode($files).$embed;
-                                            } else if ($row["filetype"] == 3) {
+                                            } else if ($rowPictogram["filetype"] == 3) {
                                                 $files = preg_replace('#[^/]*$#', '', $files).'preview';
                                             }
                                         }
 
                                         if (!empty($files)) {
-                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'"></div>';
                                         }
                                     }
                                 }
@@ -48272,16 +49389,241 @@
                                     <ul class="dropdown-menu pull-right">';
                                         
                                         if ($library_parent_id > 0) {
-                                            echo '<li><a href="#modalEdit_SubItem" class="btnEdit_SubItem" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnEdit_SubItem('. $library_ID .')">Edit</a></li>';
+                                            echo '<li class="pictogram-align-between">
+                                                <a href="#modalEdit_SubItem" class="btnEdit_SubItem" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnEdit_SubItem('. $library_ID .')">Edit</a>';
+
+                                                $pictogram = 'cd_action_item_sub';
+                                                if ($user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($rowPictogram["files"])) {
+                                                            $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                            $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $rowPictogram["files"];
+                                                            if ($rowPictogram["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($rowPictogram["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            echo '</li>';
                                         } else {
-                                            echo '<li><a href="#modalEdit" class="btnEdit" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnEdit('. $library_ID .')">Edit</a></li>';
+                                            echo '<li class="pictogram-align-between">
+                                                <a href="#modalEdit" class="btnEdit" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnEdit('. $library_ID .')">Edit</a>';
+
+                                                $pictogram = 'cd_action_item';
+                                                if ($user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($rowPictogram["files"])) {
+                                                            $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                            $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $rowPictogram["files"];
+                                                            if ($rowPictogram["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($rowPictogram["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            echo '</li>';
                                         }
                                         
-                                        echo '<li><a href="javascript:;" class="btnDelete" data-id="'. $library_ID .'" onclick="btnDelete('. $library_ID .')">Delete</a></li>
-                                        <li><a href="#modalReport" class="btnReport" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnReport('. $library_ID .')">Report</a></li>';
+                                        echo '<li class="pictogram-align-between">
+                                            <a href="javascript:;" class="btnDelete" data-id="'. $library_ID .'" onclick="btnDelete('. $library_ID .')">Delete</a>';
+
+                                            $pictogram = 'cd_action_delete';
+                                            if ($user_id == 163) {
+                                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                            } else {
+                                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                                    $files = '';
+                                                    $type = 'iframe';
+                                                    if (!empty($rowPictogram["files"])) {
+                                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                                        $str_filename = '';
+
+                                                        foreach($arr_filename as $val_filename) {
+                                                            $str_filename = $val_filename;
+                                                        }
+                                                        foreach($arr_filetype as $val_filetype) {
+                                                            $str_filetype = $val_filetype;
+                                                        }
+
+                                                        $files = $rowPictogram["files"];
+                                                        if ($rowPictogram["filetype"] == 1) {
+                                                            $fileExtension = fileExtension($files);
+                                                            $src = $fileExtension['src'];
+                                                            $embed = $fileExtension['embed'];
+                                                            $type = $fileExtension['type'];
+                                                            $file_extension = $fileExtension['file_extension'];
+                                                            $url = $base_url.'uploads/pictogram/';
+
+                                                            $files = $src.$url.rawurlencode($files).$embed;
+                                                        } else if ($rowPictogram["filetype"] == 3) {
+                                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                        }
+                                                    }
+
+                                                    if (!empty($files)) {
+                                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                    }
+                                                }
+                                            }
+                                        echo '</li>
+                                        <li class="pictogram-align-between">
+                                            <a href="#modalReport" class="btnReport" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnReport('. $library_ID .')">Report</a>';
+
+                                            $pictogram = 'cd_action_report';
+                                            if ($user_id == 163) {
+                                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                            } else {
+                                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                                    $files = '';
+                                                    $type = 'iframe';
+                                                    if (!empty($rowPictogram["files"])) {
+                                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                                        $str_filename = '';
+
+                                                        foreach($arr_filename as $val_filename) {
+                                                            $str_filename = $val_filename;
+                                                        }
+                                                        foreach($arr_filetype as $val_filetype) {
+                                                            $str_filetype = $val_filetype;
+                                                        }
+
+                                                        $files = $rowPictogram["files"];
+                                                        if ($rowPictogram["filetype"] == 1) {
+                                                            $fileExtension = fileExtension($files);
+                                                            $src = $fileExtension['src'];
+                                                            $embed = $fileExtension['embed'];
+                                                            $type = $fileExtension['type'];
+                                                            $file_extension = $fileExtension['file_extension'];
+                                                            $url = $base_url.'uploads/pictogram/';
+
+                                                            $files = $src.$url.rawurlencode($files).$embed;
+                                                        } else if ($rowPictogram["filetype"] == 3) {
+                                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                        }
+                                                    }
+
+                                                    if (!empty($files)) {
+                                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                    }
+                                                }
+                                            }
+                                        echo '</li>';
                                         
-                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477 OR $portal_user == 1486) {
-                                            echo '<li><a href="#modalClone" data-toggle="modal" onclick="btnClone('. $library_ID .')">Clone</a></li>';
+                                        if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $user_id == 163 OR $current_userEmployerID == 27 OR $current_userID == 475 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1360 OR $portal_user == 1365 OR $portal_user == 1366 OR $portal_user == 1453 OR $portal_user == 1469 OR $portal_user == 1471 OR $portal_user == 1477 OR $portal_user == 1486 OR $portal_user == 1556 OR $portal_user == 1557) {
+                                            echo '<li class="pictogram-align-between">
+                                                <a href="#modalClone" data-toggle="modal" onclick="btnClone('. $library_ID .')">Clone</a>';
+
+                                                $pictogram = 'cd_action_clone';
+                                                if ($user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($rowPictogram["files"])) {
+                                                            $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                            $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $rowPictogram["files"];
+                                                            if ($rowPictogram["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($rowPictogram["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            echo '</li>';
                                         }
                                         
                                         if ($current_userID == 1 OR $current_userEmployerID == 34) {
@@ -48291,20 +49633,425 @@
                                         echo '<li class="divider"> </li>';
 
                                         if ($current_client == 0) {
-                                            echo '<li><a href="#modalAttached" class="btnAttached" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnAttached('. $library_ID .')">Attach File</a></li>';
+                                            echo '<li class="pictogram-align-between">
+                                                <a href="#modalAttached" class="btnAttached" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnAttached('. $library_ID .')">Attach File</a>';
+
+                                                $pictogram = 'cd_action_file';
+                                                if ($user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($rowPictogram["files"])) {
+                                                            $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                            $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $rowPictogram["files"];
+                                                            if ($rowPictogram["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($rowPictogram["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            echo '</li>';
                                         }
                                         
-                                        echo '<li><a href="#modalCompliance" class="btnCompliance" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnCompliance('. $library_ID .')">Add Compliance</a></li>
-                                        <li><a href="#modalComment" class="btnComment" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnComment('. $library_ID .')">Add Comment</a></li>
-                                        <li><a href="javascript:;" onclick="btnAnnualReviewTemplate('. $library_ID .')">Add Annual Review Template</a></li>
+                                        echo '<li class="pictogram-align-between">
+                                            <a href="#modalCompliance" class="btnCompliance" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnCompliance('. $library_ID .')">Add Compliance</a>';
+
+                                            $pictogram = 'cd_action_compliance';
+                                            if ($user_id == 163) {
+                                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                            } else {
+                                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                                    $files = '';
+                                                    $type = 'iframe';
+                                                    if (!empty($rowPictogram["files"])) {
+                                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                                        $str_filename = '';
+
+                                                        foreach($arr_filename as $val_filename) {
+                                                            $str_filename = $val_filename;
+                                                        }
+                                                        foreach($arr_filetype as $val_filetype) {
+                                                            $str_filetype = $val_filetype;
+                                                        }
+
+                                                        $files = $rowPictogram["files"];
+                                                        if ($rowPictogram["filetype"] == 1) {
+                                                            $fileExtension = fileExtension($files);
+                                                            $src = $fileExtension['src'];
+                                                            $embed = $fileExtension['embed'];
+                                                            $type = $fileExtension['type'];
+                                                            $file_extension = $fileExtension['file_extension'];
+                                                            $url = $base_url.'uploads/pictogram/';
+
+                                                            $files = $src.$url.rawurlencode($files).$embed;
+                                                        } else if ($rowPictogram["filetype"] == 3) {
+                                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                        }
+                                                    }
+
+                                                    if (!empty($files)) {
+                                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                    }
+                                                }
+                                            }
+                                        echo '</li>
+                                        <li class="pictogram-align-between">
+                                            <a href="#modalComment" class="btnComment" data-id="'. $library_ID .'" data-toggle="modal" onclick="btnComment('. $library_ID .')">Add Comment</a>';
+
+                                            $pictogram = 'cd_action_comment';
+                                            if ($user_id == 163) {
+                                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                            } else {
+                                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                                    $files = '';
+                                                    $type = 'iframe';
+                                                    if (!empty($rowPictogram["files"])) {
+                                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                                        $str_filename = '';
+
+                                                        foreach($arr_filename as $val_filename) {
+                                                            $str_filename = $val_filename;
+                                                        }
+                                                        foreach($arr_filetype as $val_filetype) {
+                                                            $str_filetype = $val_filetype;
+                                                        }
+
+                                                        $files = $rowPictogram["files"];
+                                                        if ($rowPictogram["filetype"] == 1) {
+                                                            $fileExtension = fileExtension($files);
+                                                            $src = $fileExtension['src'];
+                                                            $embed = $fileExtension['embed'];
+                                                            $type = $fileExtension['type'];
+                                                            $file_extension = $fileExtension['file_extension'];
+                                                            $url = $base_url.'uploads/pictogram/';
+
+                                                            $files = $src.$url.rawurlencode($files).$embed;
+                                                        } else if ($rowPictogram["filetype"] == 3) {
+                                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                        }
+                                                    }
+
+                                                    if (!empty($files)) {
+                                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                    }
+                                                }
+                                            }
+                                        echo '</li>
+                                        <li class="pictogram-align-between">
+                                            <a href="javascript:;" onclick="btnAnnualReviewTemplate('. $library_ID .')">Add Annual Review Template</a>';
+
+                                            $pictogram = 'cd_action_annual';
+                                            if ($user_id == 163) {
+                                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                            } else {
+                                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                                    $files = '';
+                                                    $type = 'iframe';
+                                                    if (!empty($rowPictogram["files"])) {
+                                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                                        $str_filename = '';
+
+                                                        foreach($arr_filename as $val_filename) {
+                                                            $str_filename = $val_filename;
+                                                        }
+                                                        foreach($arr_filetype as $val_filetype) {
+                                                            $str_filetype = $val_filetype;
+                                                        }
+
+                                                        $files = $rowPictogram["files"];
+                                                        if ($rowPictogram["filetype"] == 1) {
+                                                            $fileExtension = fileExtension($files);
+                                                            $src = $fileExtension['src'];
+                                                            $embed = $fileExtension['embed'];
+                                                            $type = $fileExtension['type'];
+                                                            $file_extension = $fileExtension['file_extension'];
+                                                            $url = $base_url.'uploads/pictogram/';
+
+                                                            $files = $src.$url.rawurlencode($files).$embed;
+                                                        } else if ($rowPictogram["filetype"] == 3) {
+                                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                        }
+                                                    }
+
+                                                    if (!empty($files)) {
+                                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                    }
+                                                }
+                                            }
+                                        echo '</li>
 
                                         <li class="divider"> </li>
                                         
-                                        <li><a href="#modalSubItem" class="btnSubItem" data-id="'. $library_ID .'" data-type="1" data-toggle="modal" onclick="btnSubItem('. $library_ID .', 1)">Add Programs</a></li>
-                                        <li><a href="#modalSubItem" class="btnSubItem" data-id="'. $library_ID .'" data-type="2" data-toggle="modal" onclick="btnSubItem('. $library_ID .', 2)">Add Policy</a></li>
-                                        <li><a href="#modalSubItem" class="btnSubItem" data-id="'. $library_ID .'" data-type="3" data-toggle="modal" onclick="btnSubItem('. $library_ID .', 3)">Add Procedure</a></li>
-                                        <li><a href="#modalSubItem" class="btnSubItem" data-id="'. $library_ID .'" data-type="5" data-toggle="modal" onclick="btnSubItem('. $library_ID .', 5)">Add Form</a></li>
-                                        <li><a href="#modalSubItem" class="btnSubItem" data-id="'. $library_ID .'" data-type="4" data-toggle="modal" onclick="btnSubItem('. $library_ID .', 4)">Add Training</a></li>
+                                        <li class="pictogram-align-between">
+                                            <a href="#modalSubItem" class="btnSubItem" data-id="'. $library_ID .'" data-type="1" data-toggle="modal" onclick="btnSubItem('. $library_ID .', 1)">Add Programs</a>';
+
+                                            $pictogram = 'cd_action_programs';
+                                            if ($user_id == 163) {
+                                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                            } else {
+                                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                                    $files = '';
+                                                    $type = 'iframe';
+                                                    if (!empty($rowPictogram["files"])) {
+                                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                                        $str_filename = '';
+
+                                                        foreach($arr_filename as $val_filename) {
+                                                            $str_filename = $val_filename;
+                                                        }
+                                                        foreach($arr_filetype as $val_filetype) {
+                                                            $str_filetype = $val_filetype;
+                                                        }
+
+                                                        $files = $rowPictogram["files"];
+                                                        if ($rowPictogram["filetype"] == 1) {
+                                                            $fileExtension = fileExtension($files);
+                                                            $src = $fileExtension['src'];
+                                                            $embed = $fileExtension['embed'];
+                                                            $type = $fileExtension['type'];
+                                                            $file_extension = $fileExtension['file_extension'];
+                                                            $url = $base_url.'uploads/pictogram/';
+
+                                                            $files = $src.$url.rawurlencode($files).$embed;
+                                                        } else if ($rowPictogram["filetype"] == 3) {
+                                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                        }
+                                                    }
+
+                                                    if (!empty($files)) {
+                                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                    }
+                                                }
+                                            }
+                                        echo '</li>
+                                        <li class="pictogram-align-between">
+                                            <a href="#modalSubItem" class="btnSubItem" data-id="'. $library_ID .'" data-type="2" data-toggle="modal" onclick="btnSubItem('. $library_ID .', 2)">Add Policy</a>';
+
+                                            $pictogram = 'cd_action_policy';
+                                            if ($user_id == 163) {
+                                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                            } else {
+                                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                                    $files = '';
+                                                    $type = 'iframe';
+                                                    if (!empty($rowPictogram["files"])) {
+                                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                                        $str_filename = '';
+
+                                                        foreach($arr_filename as $val_filename) {
+                                                            $str_filename = $val_filename;
+                                                        }
+                                                        foreach($arr_filetype as $val_filetype) {
+                                                            $str_filetype = $val_filetype;
+                                                        }
+
+                                                        $files = $rowPictogram["files"];
+                                                        if ($rowPictogram["filetype"] == 1) {
+                                                            $fileExtension = fileExtension($files);
+                                                            $src = $fileExtension['src'];
+                                                            $embed = $fileExtension['embed'];
+                                                            $type = $fileExtension['type'];
+                                                            $file_extension = $fileExtension['file_extension'];
+                                                            $url = $base_url.'uploads/pictogram/';
+
+                                                            $files = $src.$url.rawurlencode($files).$embed;
+                                                        } else if ($rowPictogram["filetype"] == 3) {
+                                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                        }
+                                                    }
+
+                                                    if (!empty($files)) {
+                                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                    }
+                                                }
+                                            }
+                                        echo '</li>
+                                        <li class="pictogram-align-between">
+                                            <a href="#modalSubItem" class="btnSubItem" data-id="'. $library_ID .'" data-type="3" data-toggle="modal" onclick="btnSubItem('. $library_ID .', 3)">Add Procedure</a>';
+
+                                            $pictogram = 'cd_action_procedure';
+                                            if ($user_id == 163) {
+                                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                            } else {
+                                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                                    $files = '';
+                                                    $type = 'iframe';
+                                                    if (!empty($rowPictogram["files"])) {
+                                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                                        $str_filename = '';
+
+                                                        foreach($arr_filename as $val_filename) {
+                                                            $str_filename = $val_filename;
+                                                        }
+                                                        foreach($arr_filetype as $val_filetype) {
+                                                            $str_filetype = $val_filetype;
+                                                        }
+
+                                                        $files = $rowPictogram["files"];
+                                                        if ($rowPictogram["filetype"] == 1) {
+                                                            $fileExtension = fileExtension($files);
+                                                            $src = $fileExtension['src'];
+                                                            $embed = $fileExtension['embed'];
+                                                            $type = $fileExtension['type'];
+                                                            $file_extension = $fileExtension['file_extension'];
+                                                            $url = $base_url.'uploads/pictogram/';
+
+                                                            $files = $src.$url.rawurlencode($files).$embed;
+                                                        } else if ($rowPictogram["filetype"] == 3) {
+                                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                        }
+                                                    }
+
+                                                    if (!empty($files)) {
+                                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                    }
+                                                }
+                                            }
+                                        echo '</li>
+                                        <li class="pictogram-align-between">
+                                            <a href="#modalSubItem" class="btnSubItem" data-id="'. $library_ID .'" data-type="5" data-toggle="modal" onclick="btnSubItem('. $library_ID .', 5)">Add Form</a>';
+
+                                            $pictogram = 'cd_action_form';
+                                            if ($user_id == 163) {
+                                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                            } else {
+                                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                                    $files = '';
+                                                    $type = 'iframe';
+                                                    if (!empty($rowPictogram["files"])) {
+                                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                                        $str_filename = '';
+
+                                                        foreach($arr_filename as $val_filename) {
+                                                            $str_filename = $val_filename;
+                                                        }
+                                                        foreach($arr_filetype as $val_filetype) {
+                                                            $str_filetype = $val_filetype;
+                                                        }
+
+                                                        $files = $rowPictogram["files"];
+                                                        if ($rowPictogram["filetype"] == 1) {
+                                                            $fileExtension = fileExtension($files);
+                                                            $src = $fileExtension['src'];
+                                                            $embed = $fileExtension['embed'];
+                                                            $type = $fileExtension['type'];
+                                                            $file_extension = $fileExtension['file_extension'];
+                                                            $url = $base_url.'uploads/pictogram/';
+
+                                                            $files = $src.$url.rawurlencode($files).$embed;
+                                                        } else if ($rowPictogram["filetype"] == 3) {
+                                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                        }
+                                                    }
+
+                                                    if (!empty($files)) {
+                                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                    }
+                                                }
+                                            }
+                                        echo '</li>
+                                        <li class="pictogram-align-between">
+                                            <a href="#modalSubItem" class="btnSubItem" data-id="'. $library_ID .'" data-type="4" data-toggle="modal" onclick="btnSubItem('. $library_ID .', 4)">Add Training</a>';
+
+                                            $pictogram = 'cd_action_training';
+                                            if ($user_id == 163) {
+                                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                            } else {
+                                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                                    $files = '';
+                                                    $type = 'iframe';
+                                                    if (!empty($rowPictogram["files"])) {
+                                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                                        $str_filename = '';
+
+                                                        foreach($arr_filename as $val_filename) {
+                                                            $str_filename = $val_filename;
+                                                        }
+                                                        foreach($arr_filetype as $val_filetype) {
+                                                            $str_filetype = $val_filetype;
+                                                        }
+
+                                                        $files = $rowPictogram["files"];
+                                                        if ($rowPictogram["filetype"] == 1) {
+                                                            $fileExtension = fileExtension($files);
+                                                            $src = $fileExtension['src'];
+                                                            $embed = $fileExtension['embed'];
+                                                            $type = $fileExtension['type'];
+                                                            $file_extension = $fileExtension['file_extension'];
+                                                            $url = $base_url.'uploads/pictogram/';
+
+                                                            $files = $src.$url.rawurlencode($files).$embed;
+                                                        } else if ($rowPictogram["filetype"] == 3) {
+                                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                        }
+                                                    }
+
+                                                    if (!empty($files)) {
+                                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                    }
+                                                }
+                                            }
+                                        echo '</li>
                                     </ul>
                                 </div>
                             </div>
@@ -48360,12 +50107,17 @@
                                 </ul>
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="tabDescription_'. $library_ID .'" style="padding: 0 15px;">
-                                        '. $row["l_description"];
+                                        '. $l_description;
 
                                         $user_array_list = array(1, 464);
                                         if (!empty($row["l_description_tmp"]) AND in_array($user_id, $user_array_list)) {
                                             $arr_tmp = json_decode($row["l_description_tmp"],true);
-                                            if (isset(end($arr_tmp)['status']) AND end($arr_tmp)['status'] != 4) {
+
+                                            $last_array = end($arr_tmp); // Assuming $your_arrays contains your list of arrays
+                                            $key_to_check = 'status';
+
+                                            if (isset($last_array['status']) AND $last_array['status'] != 4) {
+                                            // if (isset(end($arr_tmp)['status']) AND end($arr_tmp)['status'] != 4) {
                                                echo '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$library_ID.')">here</a> to view</span>';
                                             }
                                         }
@@ -48393,6 +50145,7 @@
                                                     $type = 'iframe';
                                                     $target = '';
                                                     $file_extension = 'fa-youtube-play';
+                                                    $datafancybox = 'data-fancybox';
                                                     if (!empty($rowFiles["files"])) {
                                                         $arr_filename = explode(' | ', $rowFiles["files"]);
                                                         $arr_filetype = explode(' | ', $rowFiles["filetype"]);
@@ -48421,6 +50174,7 @@
                                                         } else if ($str_filetype == 4) {
                                                             $file_extension = 'fa-strikethrough';
                                                             $target = '_blank';
+                                                            $datafancybox = '';
                                                         }
                                                     }
 
@@ -48448,7 +50202,7 @@
                                                                 <div class="mt-action-row">
                                                                     <div class="mt-action-info">
                                                                         <div class="mt-action-icon">
-                                                                            <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                                                            <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                                                         </div>
                                                                         <div class="mt-action-details" style="vertical-align: middle;">
                                                                             <span class="mt-action-author">'. htmlentities($file_name ?? '');
@@ -48807,6 +50561,7 @@
                                                             $files = $rowComplinace["files"];
                                                             $type = 'iframe';
                                                             $file_extension = 'fa-youtube-play';
+                                                            $datafancybox = 'data-fancybox';
                                                             if (!empty($files)) {
                                                                 if ($filetype == 1) {
                                                                     $fileExtension = fileExtension($files);
@@ -48823,8 +50578,9 @@
                                                                 } else if ($filetype == 4) {
                                                                     $file_extension = 'fa-strikethrough';
                                                                     $target = '_blank';
+                                                                    $datafancybox = '';
                                                                 }
-                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
+                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
                                                             }
 
                                                             $displayLibrary = false;
@@ -48882,6 +50638,7 @@
                                                                             $files = $rowComplinaceItem["files"];
                                                                             $type = 'iframe';
                                                                             $file_extension = 'fa-youtube-play';
+                                                                            $datafancybox = 'data-fancybox';
                                                                             if (!empty($files)) {
                                                                                 if ($filetype == 1) {
                                                                                     $fileExtension = fileExtension($files);
@@ -48898,8 +50655,9 @@
                                                                                 } else if ($filetype == 4) {
                                                                                     $file_extension = 'fa-strikethrough';
                                                                                     $target = '_blank';
+                                                                                    $datafancybox = '';
                                                                                 }
-                                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
+                                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
                                                                             }
 
                                                                             $compliance_type = $rowComplinaceItem["type"];
@@ -49029,6 +50787,7 @@
                                                             $files = '';
                                                             $type = 'iframe';
                                                             $file_extension = 'fa-youtube-play';
+                                                            $datafancybox = 'data-fancybox';
                                                             if (!empty($rowReview["files"])) {
                                                                 $arr_filename = explode(' | ', $rowReview["files"]);
                                                                 $arr_filetype = explode(' | ', $rowReview["filetype"]);
@@ -49054,8 +50813,12 @@
                                                                 } else if ($str_filetype == 3) {
                                                                     $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                                     $file_extension = 'fa-google';
+                                                                } else if ($str_filetype == 4) {
+                                                                    $file_extension = 'fa-strikethrough';
+                                                                    $target = '_blank';
+                                                                    $datafancybox = '';
                                                                 }
-                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
+                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
                                                             }
 
                                                             $displayLibrary = false;
@@ -49133,6 +50896,7 @@
                                                                             $files = '';
                                                                             $type = 'iframe';
                                                                             $file_extension = 'fa-youtube-play';
+                                                                            $datafancybox = 'data-fancybox';
                                                                             if (!empty($rowReferences["files"])) {
                                                                                 $arr_filename = explode(' | ', $rowReviewItem["files"]);
                                                                                 $arr_filetype = explode(' | ', $rowReviewItem["filetype"]);
@@ -49158,8 +50922,12 @@
                                                                                 } else if ($str_filetype == 3) {
                                                                                     $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                                                     $file_extension = 'fa-google';
+                                                                                } else if ($str_filetype == 4) {
+                                                                                    $file_extension = 'fa-strikethrough';
+                                                                                    $target = '_blank';
+                                                                                    $datafancybox = '';
                                                                                 }
-                                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
+                                                                                $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
                                                                             }
 
                                                                             $displayLibrary = false;
@@ -49251,6 +51019,7 @@
                                                                                             $files = '';
                                                                                             $type = 'iframe';
                                                                                             $file_extension = 'fa-youtube-play';
+                                                                                            $datafancybox = 'data-fancybox';
                                                                                             if (!empty($rowReferences["files"])) {
                                                                                                 $arr_filename = explode(' | ', $rowReviewItem["files"]);
                                                                                                 $arr_filetype = explode(' | ', $rowReviewItem["filetype"]);
@@ -49276,6 +51045,10 @@
                                                                                                 } else if ($str_filetype == 3) {
                                                                                                     $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                                                                     $file_extension = 'fa-google';
+                                                                                                } else if ($str_filetype == 4) {
+                                                                                                    $file_extension = 'fa-strikethrough';
+                                                                                                    $target = '_blank';
+                                                                                                    $datafancybox = '';
                                                                                                 }
                                                                                             }
 
@@ -49360,6 +51133,7 @@
                                                     $files = '';
                                                     $type = 'iframe';
                                                     $file_extension = 'fa-youtube-play';
+                                                    $datafancybox = 'data-fancybox';
                                                     if (!empty($rowTemplate["files"])) {
                                                         $arr_filename = explode(' | ', $rowTemplate["files"]);
                                                         $arr_filetype = explode(' | ', $rowTemplate["filetype"]);
@@ -49385,6 +51159,10 @@
                                                         } else if ($str_filetype == 3) {
                                                             $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                             $file_extension = 'fa-google';
+                                                        } else if ($str_filetype == 4) {
+                                                            $file_extension = 'fa-strikethrough';
+                                                            $target = '_blank';
+                                                            $datafancybox = '';
                                                         }
                                                     }
 
@@ -49409,7 +51187,7 @@
                                                                 <div class="mt-action-row">
                                                                     <div class="mt-action-info">
                                                                         <div class="mt-action-icon">
-                                                                            <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                                                            <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                                                         </div>
                                                                         <div class="mt-action-details" style="vertical-align: middle;">
                                                                             <p class="mt-action-desc">
@@ -49459,6 +51237,7 @@
                                                         $files = '';
                                                         $type = 'iframe';
                                                         $file_extension = 'fa-youtube-play';
+                                                        $datafancybox = 'data-fancybox';
                                                         if (!empty($rowReferences["files"])) {
                                                             $arr_filename = explode(' | ', $rowReferences["files"]);
                                                             $arr_filetype = explode(' | ', $rowReferences["filetype"]);
@@ -49484,6 +51263,10 @@
                                                             } else if ($str_filetype == 3) {
                                                                 $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                                 $file_extension = 'fa-google';
+                                                            } else if ($str_filetype == 4) {
+                                                                $file_extension = 'fa-strikethrough';
+                                                                $target = '_blank';
+                                                                $datafancybox = '';
                                                             }
                                                         }
 
@@ -49508,7 +51291,7 @@
                                                                     <div class="mt-action-row">
                                                                         <div class="mt-action-info">
                                                                             <div class="mt-action-icon">
-                                                                                <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                                                                <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                                                             </div>
                                                                             <div class="mt-action-details" style="vertical-align: middle;">
                                                                                 <p class="mt-action-desc">
@@ -49586,9 +51369,9 @@
                                                                             <div class="mt-action-icon">';
 
                                                                                 if ($video_type == 0) {
-                                                                                    echo '<a href="'.$src.$url.rawurlencode($video_files).$embed.'" data-src="'.$src.$url.rawurlencode($video_files).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i></a>';
+                                                                                    echo '<a href="'.$src.$url.rawurlencode($video_files).$embed.'" data-src="'.$src.$url.rawurlencode($video_files).$embed.'" '.$datafancybox.' data-type="'.$type.'"><i class="fa '. $file_extension .'"></i></a>';
                                                                                 } else {
-                                                                                    echo '<a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><i class="fa fa-youtube"></i></a>';
+                                                                                    echo '<a href="'.$video_url.'" data-src="'.$video_url.'" '.$datafancybox.'><i class="fa fa-youtube"></i></a>';
                                                                                 }
                                                                                 
                                                                             echo '</div>
@@ -49687,7 +51470,7 @@
                                                                     <div class="mt-action-icon">';
 
                                                                         if (!empty($task_files)) {
-                                                                            echo '<a href="'.$src.$url.rawurlencode($task_files).$embed.'" data-src="'.$src.$url.rawurlencode($task_files).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i></a>';
+                                                                            echo '<a href="'.$src.$url.rawurlencode($task_files).$embed.'" data-src="'.$src.$url.rawurlencode($task_files).$embed.'" '.$datafancybox.' data-type="'.$type.'"><i class="fa '. $file_extension .'"></i></a>';
                                                                         } else {
                                                                             echo '<i class="fa fa-file-code-o" style="visibility: hidden;"></i>';
                                                                         }
@@ -49795,6 +51578,7 @@
             $library_name = $row["l_name"];
             $library_child = $row["l_child_id"];
             $reason = $row["l_reason"];
+            $l_description = $row["l_description"];
 
             $review = 0;
             $review_sum = $row["review_sum"];
@@ -49886,7 +51670,7 @@
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="tabDescription_'. $library_ID .'" style="padding: 0 15px;">
-                                '. $row["l_description"];
+                                '. $l_description;
 
                                 $user_array_list = array(1, 464);
                                 if (!empty($row["l_description_tmp"]) AND in_array($user_id, $user_array_list)) {
@@ -49924,6 +51708,7 @@
                                             $type = 'iframe';
                                             $target = '';
                                             $file_extension = 'fa-youtube-play';
+                                            $datafancybox = 'data-fancybox';
                                             if (!empty($rowFiles["files"])) {
                                                 $arr_filename = explode(' | ', $rowFiles["files"]);
                                                 $arr_filetype = explode(' | ', $rowFiles["filetype"]);
@@ -49952,6 +51737,7 @@
                                                 } else if ($str_filetype == 4) {
                                                     $file_extension = 'fa-strikethrough';
                                                     $target = '_blank';
+                                                    $datafancybox = '';
                                                 }
                                             }
 
@@ -49967,7 +51753,7 @@
                                                     <div class="mt-action-row">
                                                         <div class="mt-action-info">
                                                             <div class="mt-action-icon">
-                                                                <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                                                <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                                             </div>
                                                             <div class="mt-action-details" style="vertical-align: middle;">
                                                                 <span class="mt-action-author">'. htmlentities($file_name ?? '');
@@ -50333,6 +52119,7 @@
                                                     $files = $rowComplinace["files"];
                                                     $type = 'iframe';
                                                     $file_extension = 'fa-youtube-play';
+                                                    $datafancybox = 'data-fancybox';
                                                     if (!empty($files)) {
                                                         if ($filetype == 1) {
                                                             $fileExtension = fileExtension($files);
@@ -50349,8 +52136,9 @@
                                                         } else if ($filetype == 4) {
                                                             $file_extension = 'fa-strikethrough';
                                                             $target = '_blank';
+                                                            $datafancybox = '';
                                                         }
-                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
+                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
                                                     }
 
                                                     echo '<tr id="tr_'. $compliance_ID .'">
@@ -50395,6 +52183,7 @@
                                                                     $files = $rowComplinaceItem["files"];
                                                                     $type = 'iframe';
                                                                     $file_extension = 'fa-youtube-play';
+                                                                    $datafancybox = 'data-fancybox';
                                                                     if (!empty($files)) {
                                                                         if ($filetype == 1) {
                                                                             $fileExtension = fileExtension($files);
@@ -50411,8 +52200,9 @@
                                                                         } else if ($filetype == 4) {
                                                                             $file_extension = 'fa-strikethrough';
                                                                             $target = '_blank';
+                                                                            $datafancybox = '';
                                                                         }
-                                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
+                                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
                                                                     }
 
                                                                     $compliance_type = $rowComplinaceItem["type"];
@@ -50533,6 +52323,7 @@
                                                     $files = '';
                                                     $type = 'iframe';
                                                     $file_extension = 'fa-youtube-play';
+                                                    $datafancybox = 'data-fancybox';
                                                     if (!empty($rowReview["files"])) {
                                                         $arr_filename = explode(' | ', $rowReview["files"]);
                                                         $arr_filetype = explode(' | ', $rowReview["filetype"]);
@@ -50558,8 +52349,12 @@
                                                         } else if ($str_filetype == 3) {
                                                             $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                             $file_extension = 'fa-google';
+                                                        } else if ($str_filetype == 4) {
+                                                            $file_extension = 'fa-strikethrough';
+                                                            $target = '_blank';
+                                                            $datafancybox = '';
                                                         }
-                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
+                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'">View</a>';
                                                     }
 
                                                     echo '<tr id="tr_'.$review_ID.'">
@@ -50624,6 +52419,7 @@
                                                                     $files = '';
                                                                     $type = 'iframe';
                                                                     $file_extension = 'fa-youtube-play';
+                                                                    $datafancybox = 'data-fancybox';
                                                                     if (!empty($rowReferences["files"])) {
                                                                         $arr_filename = explode(' | ', $rowReviewItem["files"]);
                                                                         $arr_filetype = explode(' | ', $rowReviewItem["filetype"]);
@@ -50649,8 +52445,12 @@
                                                                         } else if ($str_filetype == 3) {
                                                                             $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                                             $file_extension = 'fa-google';
+                                                                        } else if ($str_filetype == 4) {
+                                                                            $file_extension = 'fa-strikethrough';
+                                                                            $target = '_blank';
+                                                                            $datafancybox = '';
                                                                         }
-                                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
+                                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'">View</a>';
                                                                     }
 
                                                                     echo '<tr id="tr_'. $review_ID .'" class="child_'.$review_parent_id.'">
@@ -50729,6 +52529,7 @@
                                                                                     $files = '';
                                                                                     $type = 'iframe';
                                                                                     $file_extension = 'fa-youtube-play';
+                                                                                    $datafancybox = 'data-fancybox';
                                                                                     if (!empty($rowReferences["files"])) {
                                                                                         $arr_filename = explode(' | ', $rowReviewItem["files"]);
                                                                                         $arr_filetype = explode(' | ', $rowReviewItem["filetype"]);
@@ -50754,8 +52555,12 @@
                                                                                         } else if ($str_filetype == 3) {
                                                                                             $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                                                             $file_extension = 'fa-google';
+                                                                                        } else if ($str_filetype == 4) {
+                                                                                            $file_extension = 'fa-strikethrough';
+                                                                                            $target = '_blank';
+                                                                                            $datafancybox = '';
                                                                                         }
-                                                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'">View</a>';
+                                                                                        $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'">View</a>';
                                                                                     }
 
                                                                                     echo '<tr id="tr_'. $review_ID .'" class="child_'.$review_parent_id.' child_action_'.$review_parent_id_action.'">
@@ -50826,6 +52631,7 @@
                                             $files = '';
                                             $type = 'iframe';
                                             $file_extension = 'fa-youtube-play';
+                                            $datafancybox = 'data-fancybox';
                                             if (!empty($rowTemplate["files"])) {
                                                 $arr_filename = explode(' | ', $rowTemplate["files"]);
                                                 $arr_filetype = explode(' | ', $rowTemplate["filetype"]);
@@ -50851,6 +52657,10 @@
                                                 } else if ($str_filetype == 3) {
                                                     $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                     $file_extension = 'fa-google';
+                                                } else if ($str_filetype == 4) {
+                                                    $file_extension = 'fa-strikethrough';
+                                                    $target = '_blank';
+                                                    $datafancybox = '';
                                                 }
                                             }
 
@@ -50863,7 +52673,7 @@
                                                     <div class="mt-action-row">
                                                         <div class="mt-action-info">
                                                             <div class="mt-action-icon">
-                                                                <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                                                <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                                             </div>
                                                             <div class="mt-action-details" style="vertical-align: middle;">
                                                                 <p class="mt-action-desc">
@@ -50916,6 +52726,7 @@
                                                 $files = '';
                                                 $type = 'iframe';
                                                 $file_extension = 'fa-youtube-play';
+                                                $datafancybox = 'data-fancybox';
                                                 if (!empty($rowReferences["files"])) {
                                                     $arr_filename = explode(' | ', $rowReferences["files"]);
                                                     $arr_filetype = explode(' | ', $rowReferences["filetype"]);
@@ -50941,6 +52752,10 @@
                                                     } else if ($str_filetype == 3) {
                                                         $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
                                                         $file_extension = 'fa-google';
+                                                    } else if ($str_filetype == 4) {
+                                                        $file_extension = 'fa-strikethrough';
+                                                        $target = '_blank';
+                                                        $datafancybox = '';
                                                     }
                                                 }
 
@@ -50953,7 +52768,7 @@
                                                         <div class="mt-action-row">
                                                             <div class="mt-action-info">
                                                                 <div class="mt-action-icon">
-                                                                    <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                                                    <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                                                 </div>
                                                                 <div class="mt-action-details" style="vertical-align: middle;">
                                                                     <p class="mt-action-desc">
@@ -51022,9 +52837,9 @@
                                                                 <div class="mt-action-icon">';
 
                                                                     if ($video_type == 0) {
-                                                                        echo '<a href="'.$src.$url.rawurlencode($video_files).$embed.'" data-src="'.$src.$url.rawurlencode($video_files).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i></a>';
+                                                                        echo '<a href="'.$src.$url.rawurlencode($video_files).$embed.'" data-src="'.$src.$url.rawurlencode($video_files).$embed.'" '.$datafancybox.' data-type="'.$type.'"><i class="fa '. $file_extension .'"></i></a>';
                                                                     } else {
-                                                                        echo '<a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><i class="fa fa-youtube"></i></a>';
+                                                                        echo '<a href="'.$video_url.'" data-src="'.$video_url.'" '.$datafancybox.'><i class="fa fa-youtube"></i></a>';
                                                                     }
                                                                     
                                                                 echo '</div>
@@ -51122,7 +52937,7 @@
                                                             <div class="mt-action-icon">';
 
                                                                 if (!empty($task_files)) {
-                                                                    echo '<a href="'.$src.$url.rawurlencode($task_files).$embed.'" data-src="'.$src.$url.rawurlencode($task_files).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i></a>';
+                                                                    echo '<a href="'.$src.$url.rawurlencode($task_files).$embed.'" data-src="'.$src.$url.rawurlencode($task_files).$embed.'" '.$datafancybox.' data-type="'.$type.'"><i class="fa '. $file_extension .'"></i></a>';
                                                                 } else {
                                                                     echo '<i class="fa fa-file-code-o" style="visibility: hidden;"></i>';
                                                                 }
@@ -51375,7 +53190,7 @@
                                 $file_extension = $fileExtension['file_extension'];
                                 $url = $base_url.'uploads/library/';
 
-                                $output .= '<li id="'. $file_ID .'" data-jstree=\'{"type":"file"}\' data-type="file"><a data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-ftype="'.$type.'">'. $file_name .'</a></li>';
+                                $output .= '<li id="'. $file_ID .'" data-jstree=\'{"type":"file"}\' data-type="file"><a data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-ftype="'.$type.'">'. $file_name .'</a></li>';
                             }
                             $output .= '</ul>';
                         }
@@ -51476,7 +53291,7 @@
                                                 $file_extension = $fileExtension['file_extension'];
                                                 $url = $base_url.'uploads/library/';
 
-                                                echo '<li id="'. $file_ID .'" data-jstree=\'{"type":"file"}\' data-type="file"><a data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-ftype="'.$type.'">'. $file_name .'</a></li>';
+                                                echo '<li id="'. $file_ID .'" data-jstree=\'{"type":"file"}\' data-type="file"><a data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-ftype="'.$type.'">'. $file_name .'</a></li>';
                                             }
                                             echo '</ul>';
                                         }
@@ -51507,7 +53322,7 @@
                                 $file_extension = $fileExtension['file_extension'];
                                 $url = $base_url.'uploads/library/';
 
-                                echo '<li id="'. $file_ID .'" data-jstree=\'{"type":"file"}\' data-type="file"><a data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-ftype="'.$type.'">'. $file_name .'</a></li>';
+                                echo '<li id="'. $file_ID .'" data-jstree=\'{"type":"file"}\' data-type="file"><a data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-ftype="'.$type.'">'. $file_name .'</a></li>';
                             }
                             echo '</ul>';
                         }
@@ -52362,9 +54177,9 @@
             l.description_tmp AS l_description_tmp,
             l.description_comment AS l_description_comment,
             ur.ID AS u_reviewer_ID,
-            CASE WHEN LENGTH(ur.first_name) = 0 AND LENGTH(ur.last_name) = 0 THEN '---' ELSE CONCAT(ur.first_name, ' ', ur.last_name) END AS u_reviewer,
+            CASE WHEN IFNULL(ur.first_name = '', TRUE) AND IFNULL(ur.last_name = '', TRUE) THEN '---' ELSE CONCAT(ur.first_name, ' ', ur.last_name) END AS u_reviewer,
             ua.ID AS u_approver_ID,
-            CASE WHEN LENGTH(ua.first_name) = 0 AND LENGTH(ua.last_name) = 0 THEN '---' ELSE CONCAT(ua.first_name, ' ', ua.last_name) END AS u_approver
+            CASE WHEN IFNULL(ua.first_name = '', TRUE) AND IFNULL(ua.last_name = '', TRUE) THEN '---' ELSE CONCAT(ua.first_name, ' ', ua.last_name) END AS u_approver
             FROM tbl_library AS l
 
             LEFT JOIN (
@@ -53895,6 +55710,7 @@
 
             $files = '';
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($row["files"])) {
                 $arr_filename = explode(' | ', $row["files"]);
                 $arr_filetype = explode(' | ', $row["filetype"]);
@@ -53922,6 +55738,7 @@
                 } else if ($str_filetype == 4) {
                     $file_extension = 'fa-strikethrough';
                     $target = '_blank';
+                    $datafancybox = '';
                 }
             }
         }
@@ -53939,7 +55756,7 @@
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
             </div>
         </div>
         <div class="form-group">
@@ -54159,6 +55976,7 @@
                         $type = 'iframe';
                         $target = '';
                         $file_extension = 'fa-youtube-play';
+                        $datafancybox = 'data-fancybox';
                         if (!empty($files)) {
                             if ($filetype == 1) {
                                 $fileExtension = fileExtension($files);
@@ -54175,6 +55993,7 @@
                             } else if ($str_filetype == 4) {
                                 $file_extension = 'fa-strikethrough';
                                 $target = '_blank';
+                                $datafancybox = '';
                             }
                         }
 
@@ -54183,7 +56002,7 @@
                                 <div class="mt-action-row">
                                     <div class="mt-action-info">
                                         <div class="mt-action-icon">
-                                            <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                            <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                         </div>
                                         <div class="mt-action-details" style="vertical-align: middle;">
                                             <span class="mt-action-author">'.stripcslashes(htmlentities($file_name)).'</span>
@@ -54302,6 +56121,7 @@
                     $type = 'iframe';
                     $target = '';
                     $file_extension = 'fa-file-image-o';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -54318,6 +56138,7 @@
                         } else if ($str_filetype == 4) {
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
+                            $datafancybox = '';
                         }
                     }
 
@@ -54325,7 +56146,7 @@
                         <div class="mt-action-row">
                             <div class="mt-action-info">
                                 <div class="mt-action-icon">
-                                    <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                    <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                 </div>
                                 <div class="mt-action-details" style="vertical-align: middle;">
                                     <span class="mt-action-author">'.stripcslashes(htmlentities($file_name)).'</span>
@@ -54402,6 +56223,24 @@
     if( isset($_GET['modalComment']) ) {
         $id = $_GET['modalComment'];
 
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
+        $client_team = 'In-house';
+        if ($user_id != 34) {
+            $selectData = mysqli_query( $conn,"SELECT businessname FROM tblEnterpiseDetails WHERE users_entities = $user_id" );
+            if ( mysqli_num_rows($selectData) > 0 ) {
+                $rowData = mysqli_fetch_array($selectData);
+                $client_team = htmlentities($rowData["businessname"] ?? '');
+            }
+        }
+
         echo '<input class="form-control" type="hidden" name="parent_id" value="'. $id .'" />
         <div class="form-group">
             <label class="col-md-3 control-label">Title</label>
@@ -54420,8 +56259,8 @@
             <div class="col-md-8">
                 <select class="form-control" name="team" required>
                     <option value="">Select Team</option>
-                    <option value="1">In-house Team</option>
-                    <option value="2">Consultare Team</option>
+                    <option value="1">'.$client_team.' Team</option>
+                    <option value="2">Consultare Inc Group Compliance Team</option>
                 </select>
             </div>
         </div>';
@@ -54751,6 +56590,7 @@
             $filetype = $row['filetype'];
             $files = $row["files"];
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($files)) {
                 if ($filetype == 1) {
                     $fileExtension = fileExtension($files);
@@ -54766,6 +56606,7 @@
                 } else if ($filetype == 4) {
                     $file_extension = 'fa-strikethrough';
                     $target = '_blank';
+                    $datafancybox = '';
                 }
             }
         }
@@ -54851,7 +56692,7 @@
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
             </div>
         </div>';
 
@@ -54913,6 +56754,7 @@
             $filetype = $row['filetype'];
             $files = $row["files"];
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($files)) {
                 if ($filetype == 1) {
                     $fileExtension = fileExtension($files);
@@ -54928,6 +56770,7 @@
                 } else if ($filetype == 4) {
                     $file_extension = 'fa-strikethrough';
                     $target = '_blank';
+                    $datafancybox = '';
                 }
             }
         }
@@ -54955,7 +56798,7 @@
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link" target="'.$target.'">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
             </div>
         </div>
         <div class="form-group">
@@ -55279,6 +57122,7 @@
                     $files = $rowData["files"];
                     $type = 'iframe';
                     $file_extension = 'fa-youtube-play';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -55295,8 +57139,9 @@
                         } else if ($filetype == 4) {
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
+                            $datafancybox = '';
                         }
-                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
+                        $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
                     }
 
                     $selectLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE deleted = 0 AND ID = $parent_id" );
@@ -55478,6 +57323,7 @@
                 $files = $rowData["files"];
                 $type = 'iframe';
                 $file_extension = 'fa-youtube-play';
+                $datafancybox = 'data-fancybox';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -55494,8 +57340,9 @@
                     } else if ($filetype == 4) {
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
+                        $datafancybox = '';
                     }
-                    $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
+                    $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.'data-type="'.$type.'" target="'.$target.'">View</a>';
                 }
 
                 $output = array(
@@ -55652,6 +57499,7 @@
                     $files = $rowData["files"];
                     $type = 'iframe';
                     $file_extension = 'fa-youtube-play';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -55668,8 +57516,9 @@
                         } else if ($filetype == 4) {
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
+                            $datafancybox = '';
                         }
-                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
+                        $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
                     }
 
                     $compliance_last_modified = $rowData["last_modified"];
@@ -55810,6 +57659,7 @@
                 $files = $rowData["files"];
                 $type = 'iframe';
                 $file_extension = 'fa-youtube-play';
+                $datafancybox = 'data-fancybox';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -55826,8 +57676,9 @@
                     } else if ($filetype == 4) {
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
+                        $datafancybox = '';
                     }
-                    $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
+                    $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
                 }
 
                 $compliance_last_modified = $rowData["last_modified"];
@@ -55978,6 +57829,7 @@
 
             $files = '';
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($row["files"])) {
                 $arr_filename = explode(' | ', $row["files"]);
                 $arr_filetype = explode(' | ', $row["filetype"]);
@@ -56002,6 +57854,10 @@
                     $files = $src.$url.rawurlencode($str_filename).$embed;
                 } else if ($str_filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
+                } else if ($str_filetype == 4) {
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
+                    $datafancybox = '';
                 }
             }
         }
@@ -56033,7 +57889,7 @@
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
            </div>
         </div>
         <div class="form-group">
@@ -56113,6 +57969,7 @@
 
             $files = '';
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($row["files"])) {
                 $arr_filename = explode(' | ', $row["files"]);
                 $arr_filetype = explode(' | ', $row["filetype"]);
@@ -56137,6 +57994,10 @@
                     $files = $src.$url.rawurlencode($str_filename).$embed;
                 } else if ($str_filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
+                } else if ($str_filetype == 4) {
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
+                    $datafancybox = '';
                 }
             }
         }
@@ -56172,7 +58033,7 @@
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
             </div>
         </div>
         <div class="form-group">
@@ -56258,6 +58119,7 @@
 
             $files = '';
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($row["files"])) {
                 $arr_filename = explode(' | ', $row["files"]);
                 $arr_filetype = explode(' | ', $row["filetype"]);
@@ -56282,6 +58144,10 @@
                     $files = $src.$url.rawurlencode($str_filename).$embed;
                 } else if ($str_filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
+                } else if ($str_filetype == 4) {
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
+                    $datafancybox = '';
                 }
             }
         }
@@ -56322,7 +58188,7 @@
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
             </div>
         </div>
         <div class="form-group">
@@ -56480,6 +58346,7 @@
                     $files = $rowReview["files"];
                     $type = 'iframe';
                     $file_extension = 'fa-youtube-play';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -56496,8 +58363,9 @@
                         } else if ($filetype == 4) {
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
+                            $datafancybox = '';
                         }
-                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
+                        $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
                     }
 
                     $output = array(
@@ -56584,6 +58452,7 @@
             if ($process == true) {
                 $type = 'iframe';
                 $file_extension = 'fa-youtube-play';
+                $datafancybox = 'data-fancybox';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -56600,8 +58469,9 @@
                     } else if ($filetype == 4) {
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
+                        $datafancybox = '';
                     }
-                    $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
+                    $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
                 }
 
                 $output = array(
@@ -56768,6 +58638,7 @@
                     $files = $rowReview["files"];
                     $type = 'iframe';
                     $file_extension = 'fa-youtube-play';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -56784,8 +58655,9 @@
                         } else if ($filetype == 4) {
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
+                            $datafancybox = '';
                         }
-                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
+                        $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
                     }
 
                     $output = array(
@@ -56902,6 +58774,7 @@
             if ($process == true) {
                 $type = 'iframe';
                 $file_extension = 'fa-youtube-play';
+                $datafancybox = 'data-fancybox';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -56918,8 +58791,9 @@
                     } else if ($filetype == 4) {
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
+                        $datafancybox = '';
                     }
-                    $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
+                    $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
                 }
 
                 $output = array(
@@ -57048,6 +58922,7 @@
                     $files = $rowReview["files"];
                     $type = 'iframe';
                     $file_extension = 'fa-youtube-play';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -57064,8 +58939,9 @@
                         } else if ($filetype == 4) {
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
+                            $datafancybox = '';
                         }
-                        $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
+                        $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
                     }
 
                     $output = array(
@@ -57192,6 +59068,7 @@
             if ($process == true) {
                 $type = 'iframe';
                 $file_extension = 'fa-youtube-play';
+                $datafancybox = 'data-fancybox';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -57208,8 +59085,9 @@
                     } else if ($filetype == 4) {
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
+                        $datafancybox = '';
                     }
-                    $files = '<a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'">View</a>';
+                    $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
                 }
 
                 $output = array(
@@ -57272,6 +59150,7 @@
 
             $files = '';
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($row["files"])) {
                 $arr_filename = explode(' | ', $row["files"]);
                 $arr_filetype = explode(' | ', $row["filetype"]);
@@ -57296,6 +59175,10 @@
                     $files = $src.$url.rawurlencode($str_filename).$embed;
                 } else if ($str_filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
+                } else if ($str_filetype == 4) {
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
+                    $datafancybox = '';
                 }
             }
         }
@@ -57312,7 +59195,7 @@
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
             </div>
         </div>
         <div class="form-group">
@@ -57450,6 +59333,7 @@
                     $files = $rowData["files"];
                     $type = 'iframe';
                     $file_extension = 'fa-youtube-play';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -57466,6 +59350,7 @@
                         } else if ($filetype == 4) {
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
+                            $datafancybox = '';
                         }
                     }
 
@@ -57474,7 +59359,7 @@
                             <div class="mt-action-row">
                                 <div class="mt-action-info">
                                     <div class="mt-action-icon">
-                                        <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                        <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                     </div>
                                     <div class="mt-action-details" style="vertical-align: middle;">
                                         <p class="mt-action-desc">
@@ -57582,6 +59467,7 @@
             if ($process == true) {
                 $type = 'iframe';
                 $file_extension = 'fa-youtube-play';
+                $datafancybox = 'data-fancybox';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -57598,6 +59484,7 @@
                     } else if ($filetype == 4) {
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
+                        $datafancybox = '';
                     }
                 }
 
@@ -57605,7 +59492,7 @@
                     <div class="mt-action-row">
                         <div class="mt-action-info">
                             <div class="mt-action-icon">
-                                <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                             </div>
                             <div class="mt-action-details" style="vertical-align: middle;">
                                 <p class="mt-action-desc">
@@ -57678,6 +59565,7 @@
 
             $files = '';
             $type = 'iframe';
+            $datafancybox = 'data-fancybox';
             if (!empty($row["files"])) {
                 $arr_filename = explode(' | ', $row["files"]);
                 $arr_filetype = explode(' | ', $row["filetype"]);
@@ -57702,6 +59590,10 @@
                     $files = $src.$url.rawurlencode($str_filename).$embed;
                 } else if ($str_filetype == 3) {
                     $files = preg_replace('#[^/]*$#', '', $str_filename).'preview';
+                } else if ($str_filetype == 4) {
+                    $file_extension = 'fa-strikethrough';
+                    $target = '_blank';
+                    $datafancybox = '';
                 }
             }
         }
@@ -57719,7 +59611,7 @@
                 </select>
                 <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
                 <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
             </div>
         </div>
         <div class="form-group">
@@ -57859,6 +59751,7 @@
                     $files = $rowData["files"];
                     $type = 'iframe';
                     $file_extension = 'fa-youtube-play';
+                    $datafancybox = 'data-fancybox';
                     if (!empty($files)) {
                         if ($filetype == 1) {
                             $fileExtension = fileExtension($files);
@@ -57875,6 +59768,7 @@
                         } else if ($filetype == 4) {
                             $file_extension = 'fa-strikethrough';
                             $target = '_blank';
+                            $datafancybox = '';
                         }
                     }
 
@@ -57883,7 +59777,7 @@
                             <div class="mt-action-row">
                                 <div class="mt-action-info">
                                     <div class="mt-action-icon">
-                                        <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                        <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                                     </div>
                                     <div class="mt-action-details" style="vertical-align: middle;">
                                         <p class="mt-action-desc">
@@ -57991,6 +59885,7 @@
             if ($process == true) {
                 $type = 'iframe';
                 $file_extension = 'fa-youtube-play';
+                $datafancybox = 'data-fancybox';
                 if (!empty($files)) {
                     if ($filetype == 1) {
                         $fileExtension = fileExtension($files);
@@ -58007,6 +59902,7 @@
                     } else if ($filetype == 4) {
                         $file_extension = 'fa-strikethrough';
                         $target = '_blank';
+                        $datafancybox = '';
                     }
                 }
 
@@ -58014,7 +59910,7 @@
                     <div class="mt-action-row">
                         <div class="mt-action-info">
                             <div class="mt-action-icon">
-                                <a href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
+                                <a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'"><i class="fa fa-fw '. $file_extension .'"></i></a>
                             </div>
                             <div class="mt-action-details" style="vertical-align: middle;">
                                 <p class="mt-action-desc">
@@ -58123,7 +60019,7 @@
             <label class="col-md-3 control-label">Select File</label>
             <div class="col-md-8">
                 <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="file" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNewOld(this)">Upload New</button></p>
             </div>
         </div>
         <div class="form-group selVideo '; echo $type_id == 1 ? '':'hide'; echo '" id="selURL_2">
@@ -58264,7 +60160,7 @@
                     $type = $fileExtension['type'];
                     $file_extension = $fileExtension['file_extension'];
                     $url = $base_url.'uploads/library/';
-                    $files = '<a data-src="'.$src.$url.rawurlencode($data_files).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i></a>';
+                    $files = '<a data-src="'.$src.$url.rawurlencode($data_files).$embed.'" '.$datafancybox.' data-type="'.$type.'"><i class="fa '. $file_extension .'"></i></a>';
 
                     $data_last_modified = $rowData['last_modified'];
                     $data_last_modified = new DateTime($data_last_modified);
@@ -58353,7 +60249,7 @@
                 $type = $fileExtension['type'];
                 $file_extension = $fileExtension['file_extension'];
                 $url = $base_url.'uploads/library/';
-                $files = '<a data-src="'.$src.$url.rawurlencode($data_files).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i></a>';
+                $files = '<a data-src="'.$src.$url.rawurlencode($data_files).$embed.'" '.$datafancybox.' data-type="'.$type.'"><i class="fa '. $file_extension .'"></i></a>';
 
                 $data_last_modified = $rowData['last_modified'];
                 $data_last_modified = new DateTime($data_last_modified);
@@ -58588,7 +60484,7 @@
             <label class="col-md-3 control-label">Image/file</label>
             <div class="col-md-8">
                 <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="file" />
-                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$files.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                 <small><i class="text-primary">( Sample/Supporting files )</i></small>
             </div>
         </div>
@@ -58800,7 +60696,7 @@
                         $type = $fileExtension['type'];
                         $file_extension = $fileExtension['file_extension'];
                         $url = $base_url.'uploads/task/';
-                        $files = '<a data-src="'.$src.$url.rawurlencode($data_files).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i></a>';
+                        $files = '<a data-src="'.$src.$url.rawurlencode($data_files).$embed.'" '.$datafancybox.' data-type="'.$type.'"><i class="fa '. $file_extension .'"></i></a>';
                     }
 
                     $data_start_date = $start_date;
@@ -58965,7 +60861,7 @@
                     $type = $fileExtension['type'];
                     $file_extension = $fileExtension['file_extension'];
                     $url = $base_url.'uploads/task/';
-                    $files = '<a data-src="'.$src.$url.rawurlencode($data_files).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i></a>';
+                    $files = '<a data-src="'.$src.$url.rawurlencode($data_files).$embed.'" '.$datafancybox.' data-type="'.$type.'"><i class="fa '. $file_extension .'"></i></a>';
                 }
 
                 $data_start_date = $start_date;
@@ -59194,7 +61090,7 @@
                 <select class="form-control mt-multiselect btn btn-default" name="user" required>
                     <option value="">Select</option>';
 
-                    if ($portal_user == 1 OR $portal_user == 2 OR $portal_user == 19 OR $portal_user == 163 OR $current_userEmployerID == 27 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1486) {
+                    if ($portal_user == 1 OR $portal_user == 2 OR $portal_user == 19 OR $portal_user == 163 OR $current_userEmployerID == 27 OR $user_id == 464 OR $portal_user == 481 OR $portal_user == 1486 OR $portal_user == 1556 OR $portal_user == 1557) {
                         $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = 0 AND is_verified = 1 AND is_active = 1" );
                         if ($current_client == 1) { $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE employee_id = 0 AND is_verified = 1 AND is_active = 1 AND client = 1" ); }
 
@@ -59391,7 +61287,7 @@
                         $type = $fileExtension['type'];
                         $file_extension = $fileExtension['file_extension'];
                         $url = $base_url.'uploads/library/';
-                        $files = '<a data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'">'.$files_name.'</a>';
+                        $files = '<a data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'">'.$files_name.'</a>';
                     }
                 }
 
@@ -59471,7 +61367,8 @@
                 </thead>
                 <tbody>';
 
-                    $resultItem = mysqli_query( $conn,"SELECT
+                    $resultItem = mysqli_query( $conn,"
+                        SELECT
                         mainID, parentID, childID, parentCollab, parentName, libType,
                         com_Total,
 
@@ -59640,7 +61537,8 @@
                         ) AS f2
                         ON r.f_ID = f2.ID
 
-                        ORDER BY parentName" );
+                        ORDER BY parentName
+                    " );
                     if ( mysqli_num_rows($resultItem) > 0 ) {
                         while($rowItem = mysqli_fetch_array($resultItem)) {
                             $item_ID = $rowItem["mainID"];
@@ -59672,6 +61570,7 @@
                             $filetype = $rowItem['f_filetype'];
                             $files = $rowItem["f_files"];
                             $type = 'iframe';
+                            $datafancybox = 'data-fancybox';
                             if ($filetype == 1) {
                                 $fileExtension = fileExtension($files);
                                 $src = $fileExtension['src'];
@@ -59680,16 +61579,20 @@
                                 $file_extension = $fileExtension['file_extension'];
                                 $url = $base_url.'uploads/library/';
 
-                                $files = '<a data-src="'.$src.$url.rawurlencode($files).$embed.'" data-fancybox data-type="'.$type.'">'.$files_name.'</a>';
+                                $files = $src.$url.rawurlencode($files).$embed;
                             } else if ($filetype == 3) {
-                                $files = '<a data-src="'.preg_replace('#[^/]*$#', '', $files).'preview" data-fancybox data-type="'.$type.'">'.$files_name.'</a>';
+                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
                             } else if ($filetype == 4) {
-                                $files = '<a data-src="'.preg_replace('#[^/]*$#', '', $files).'" data-fancybox data-type="'.$type.'">'.$files_name.'</a>';
+                                $file_extension = 'fa-strikethrough';
+                                $target = '_blank';
+                                $datafancybox = '';
                             }
+                            $files = '<a href="'.$files.'" data-src="'.$files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">'.$files_name.'</a>';
 
                             $t_files = $rowItem["t_files"];
                             $t_filetype = $rowItem['t_filetype'];
                             $type = 'iframe';
+                            $datafancybox = 'data-fancybox';
                             if ($t_filetype == 1) {
                                 if (!empty($t_files)) {
                                     $fileExtension = fileExtension($t_files);
@@ -59699,10 +61602,17 @@
                                     $file_extension = $fileExtension['file_extension'];
                                     $url = $base_url.'uploads/library/';
 
-                                    $t_files = '<a data-src="'.$src.$url.rawurlencode($t_files).$embed.'" data-fancybox data-type="'.$type.'">View</a>';
+                                    $t_files = $src.$url.rawurlencode($t_files).$embed;
+                                    $t_files = '<a href="'.$t_files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
                                 }
                             } else if ($t_filetype == 3) {
-                                $t_files = '<a data-src="'.preg_replace('#[^/]*$#', '', $t_files).'preview" data-fancybox data-type="'.$type.'">View</a>';
+                                $t_files = preg_replace('#[^/]*$#', '', $t_files).'preview';
+                                $t_files = '<a href="'.$t_files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
+                            } else if ($t_filetype == 4) {
+                                $file_extension = 'fa-strikethrough';
+                                $target = '_blank';
+                                $datafancybox = '';
+                                $t_files = '<a href="'.$t_files.'" '.$datafancybox.' data-type="'.$type.'" target="'.$target.'">View</a>';
                             }
 
                             $name = $rowItem["parentName"];
@@ -60078,7 +61988,7 @@
 
                 $data .= '<tr>
                     <td><a href="'.$base_url.'dashboard?d='.$dashboard_ID.'" target="_blank">'.$dashboard_name.'</a></td>
-                    <td><a href="'.$src.$url.rawurlencode($file_files).$embed.'" data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-fancybox data-type="'.$type.'">'.$file_name.'</a></td>
+                    <td><a href="'.$src.$url.rawurlencode($file_files).$embed.'" data-src="'.$src.$url.rawurlencode($file_files).$embed.'" '.$datafancybox.' data-type="'.$type.'">'.$file_name.'</a></td>
                     <td class="text-center">'.$file_last_modified.'</td>
                     <td class="text-center">'.$file_due_date.'</td>
                 </tr>';
@@ -60106,7 +62016,7 @@
             if ($ID > 0) {
                 $sql_extra = '';
                 if ($types == 2) {
-                    $sql_extra = ' AND (expiry_date IS NULL OR LENGTH(expiry_date) = 0 OR DATE(expiry_date) < CURDATE())';
+                    $sql_extra = " AND (expiry_date IS NULL OR IFNULL(expiry_date = '', TRUE) OR DATE(expiry_date) < CURDATE()) ";
                 } else if ($types == 3) {
                     $sql_extra = ' AND expiry_date IS NOT NULL
                     AND LENGTH(expiry_date) > 0
@@ -60131,7 +62041,7 @@
             } else {
                 $sql_extra = '';
                 if ($types == 2) {
-                    $sql_extra = ' AND (DocumentDueDate IS NULL OR LENGTH(DocumentDueDate) = 0 OR DATE(DocumentDueDate) < CURDATE())';
+                    $sql_extra = " AND (DocumentDueDate IS NULL OR IFNULL(DocumentDueDate = '', TRUE) OR DATE(DocumentDueDate) < CURDATE()) ";
                 } else if ($types == 3) {
                     $sql_extra = ' AND DocumentDueDate IS NOT NULL
                     AND LENGTH(DocumentDueDate) > 0
@@ -60177,7 +62087,7 @@
                     $date_end = $date_end->format('M d, Y');
 
                     echo '<tr>
-                        <td><a href="'.$file.'" data-src="'.$file.'" data-fancybox data-type="'.$type.'">'.$name.'</a></td>
+                        <td><a href="'.$file.'" data-src="'.$file.'" '.$datafancybox.' data-type="'.$type.'">'.$name.'</a></td>
                         <td class="text-center">'.$date_start.'</td>
                         <td class="text-center">'.$date_end.'</td>
                     </tr>';
@@ -60187,7 +62097,7 @@
             if ($ID == 1) {
                 $sql_extra = '';
                 if ($types == 2) {
-                    $sql_extra = ' AND (Expiration_Date_Type_Accreditation IS NULL OR LENGTH(Expiration_Date_Type_Accreditation) = 0 OR DATE(Expiration_Date_Type_Accreditation) < CURDATE())';
+                    $sql_extra = " AND (Expiration_Date_Type_Accreditation IS NULL OR IFNULL(Expiration_Date_Type_Accreditation = '', TRUE) OR DATE(Expiration_Date_Type_Accreditation) < CURDATE()) ";
                 } else if ($types == 3) {
                     $sql_extra = ' AND Expiration_Date_Type_Accreditation IS NOT NULL
                     AND LENGTH(Expiration_Date_Type_Accreditation) > 0
@@ -60209,7 +62119,7 @@
             } else if ($ID == 2) {
                 $sql_extra = '';
                 if ($types == 2) {
-                    $sql_extra = ' AND (Expiration_Date_Certification IS NULL OR LENGTH(Expiration_Date_Certification) = 0 OR DATE(Expiration_Date_Certification) < CURDATE())';
+                    $sql_extra = " AND (Expiration_Date_Certification IS NULL OR IFNULL(Expiration_Date_Certification = '', TRUE) OR DATE(Expiration_Date_Certification) < CURDATE()) ";
                 } else if ($types == 3) {
                     $sql_extra = ' AND Expiration_Date_Certification IS NOT NULL
                     AND LENGTH(Expiration_Date_Certification) > 0
@@ -60231,7 +62141,7 @@
             } else if ($ID == 3) {
                 $sql_extra = '';
                 if ($types == 2) {
-                    $sql_extra = ' AND (Expiration_Date IS NULL OR LENGTH(Expiration_Date) = 0 OR DATE(Expiration_Date) < CURDATE())';
+                    $sql_extra = " AND (Expiration_Date IS NULL OR IFNULL(Expiration_Date = '', TRUE) OR DATE(Expiration_Date) < CURDATE()) ";
                 } else if ($types == 3) {
                     $sql_extra = ' AND Expiration_Date IS NOT NULL
                     AND LENGTH(Expiration_Date) > 0
@@ -60253,7 +62163,7 @@
             } else if ($ID == 4) {
                 $sql_extra = '';
                 if ($types == 2) {
-                    $sql_extra = ' AND (expiry_date IS NULL OR LENGTH(expiry_date) = 0 OR DATE(expiry_date) < CURDATE())';
+                    $sql_extra = " AND (expiry_date IS NULL OR IFNULL(expiry_date = '', TRUE) OR DATE(expiry_date) < CURDATE()) ";
                 } else if ($types == 3) {
                     $sql_extra = ' AND expiry_date IS NOT NULL
                     AND LENGTH(expiry_date) > 0
@@ -60300,7 +62210,7 @@
                     $date_end = $date_end->format('M d, Y');
 
                     echo '<tr>
-                        <td><a href="'.$file.'" data-src="'.$file.'" data-fancybox data-type="'.$type.'">'.$name.'</a></td>
+                        <td><a href="'.$file.'" data-src="'.$file.'" '.$datafancybox.' data-type="'.$type.'">'.$name.'</a></td>
                         <td class="text-center">'.$date_start.'</td>
                         <td class="text-center">'.$date_end.'</td>
                     </tr>';

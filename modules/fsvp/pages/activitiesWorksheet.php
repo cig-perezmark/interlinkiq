@@ -50,7 +50,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
                 <h4 class="modal-title">
-                    <span data-edit-span>Edit </span>
+                    <span data-edit-span style="display:none;">Edit </span>
                     FSVP Activity(ies) Worksheet
                 </h4>
             </div>

@@ -460,11 +460,6 @@
                 fancyBoxes();
             });
 
-            function uploadNew(e) {
-                $(e).parent().hide();
-                $(e).parent().prev('.form-control').removeClass('hide');
-            }
-
             $(".formUsers").on('submit',(function(e) {
                 e.preventDefault();
 

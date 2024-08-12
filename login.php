@@ -51,7 +51,7 @@
         background-repeat: no-repeat;*/
       }.bg-body:after {
         content: '';
-        background: url(uploads/login/bg/iiiq_wave.png);
+        background: url(uploads/login/bg/iiq_wave.png);
         background-size: cover;
         position: absolute;
         width: 100%;

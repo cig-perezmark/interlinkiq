@@ -73,11 +73,11 @@
                                                 while($row = mysqli_fetch_array($resultQuery)){ ?>
                                                 <tr>
                                                     <td><?php echo $i++; ?></td>
-                                                    <td><?php echo $row['Types_Of_Crisis']; ?></td>
-                                                    <td><?php echo $row['disaster_name']; ?></td>
-                                                    <td><?php echo $row['Crisis_Preparedness']; ?></td>
-                                                    <td><?php echo $row['first_name']; ?> <?php echo $row['last_name']; ?></td>
-                                                    <td><?php echo $row['Meeting_Location']; ?></td>
+                                                    <td><?php echo htmlentities($row['Types_Of_Crisis'] ?? ''); ?></td>
+                                                    <td><?php echo htmlentities($row['disaster_name'] ?? ''); ?></td>
+                                                    <td><?php echo htmlentities($row['Crisis_Preparedness'] ?? ''); ?></td>
+                                                    <td><?php echo htmlentities($row['first_name'] ?? ''); ?> <?php echo $row['last_name']; ?></td>
+                                                    <td><?php echo htmlentities($row['Meeting_Location'] ?? ''); ?></td>
                                                     <td></td>
                                                 </tr>
                                                 <?php } ?>
@@ -112,7 +112,7 @@
                                                 $resultQuery = mysqli_query($conn, $queries);
                                                  
                                                 while($row = mysqli_fetch_array($resultQuery)){ ?>
-                                                    <option value="<?php echo $row['crisis_incidents_id']; ?>"><?php echo $row['disaster_name']; ?></option>
+                                                    <option value="<?php echo $row['crisis_incidents_id']; ?>"><?php echo htmlentities($row['disaster_name'] ?? ''); ?></option>
                                                 <?php } ?>
                                                 </select>
                                               </div>
@@ -142,7 +142,7 @@
                                                 $resultQuery = mysqli_query($conn, $queries);
                                                  
                                                 while($row = mysqli_fetch_array($resultQuery)){ ?>
-                                                    <option value="<?php echo $row['ID']; ?>"><?php echo $row['first_name']; ?> <?php echo $row['last_name']; ?></option>
+                                                    <option value="<?php echo $row['ID']; ?>"><?php echo htmlentities($row['first_name'] ?? '')'; ?> <?php echo htmlentities($row['last_name'] ?? ''); ?></option>
                                                 <?php } ?>
                                                 </select>
                                               </div>

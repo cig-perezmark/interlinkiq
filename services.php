@@ -91,32 +91,40 @@
                                                 </thead>
                                                 <tbody>
                                                     <?php
-                                                        $result = mysqli_query( $conn,"SELECT * FROM tbl_service WHERE is_deleted=0 AND user_id=$switch_user_id" );
+                                                        $result = mysqli_query( $conn,"
+                                                            SELECT 
+                                                            s.ID AS s_ID,
+                                                            s.description AS s_description,
+                                                            s.location AS s_location,
+                                                            CASE WHEN s.category_id > 0 THEN c.service_category ELSE s.category_other END AS c_category,
+                                                            CASE WHEN s.area_id > 0 THEN a.area_category ELSE s.area_other END AS a_category
+                                                            FROM tbl_service AS s
+
+                                                            LEFT JOIN (
+                                                                SELECT
+                                                                *
+                                                                FROM tbl_service_category
+                                                            ) AS c
+                                                            ON s.category_id = c.id
+
+                                                            LEFT JOIN (
+                                                                SELECT
+                                                                *
+                                                                FROM tbl_service_area
+                                                            ) AS a
+                                                            ON s.area_id = a.id
+
+                                                            WHERE s.is_deleted = 0
+                                                            AND user_id = $switch_user_id
+                                                        " );
                                                         if ( mysqli_num_rows($result) > 0 ) {
                                                             while($row = mysqli_fetch_array($result)) {
-                                                                $ID = $row['ID'];
-                                                                $description = $row['description'];
-                                                                $location = $row['location'];
-
-                                                                $category_id = $row['category_id'];
-                                                                if ($category_id == "others") {
-                                                                    $category = $row['category_other'];
-                                                                } else {
-                                                                    $selectCategory = mysqli_query( $conn,'SELECT * FROM tbl_service_category WHERE id="'. $category_id .'" ORDER BY ID LIMIT 1' );
-                                                                    $rowCategory = mysqli_fetch_array($selectCategory);
-                                                                    $category = $rowCategory['service_category'];
-                                                                }
-
-                                                                $area_id = $row['area_id'];
-                                                                if (empty($area_id) OR $area_id == "others") {
-                                                                    $area = $row['area_other'];
-                                                                } else {
-                                                                    $selectArea = mysqli_query( $conn,'SELECT * FROM tbl_service_area WHERE id="'. $area_id .'" ORDER BY ID LIMIT 1' );
-                                                                    $rowArea = mysqli_fetch_array($selectArea);
-                                                                    $area = $rowArea['area_category'];
-                                                                }
-
-                                                                $file_files = $row["files"];
+                                                                $ID = $row['s_ID'];
+                                                                $description = htmlentities($row['s_description'] ?? '');
+                                                                $location = htmlentities($row['s_location'] ?? '');
+                                                                $category = htmlentities($row['c_category'] ?? '');
+                                                                $area = htmlentities($row['a_category'] ?? '');
+                                                                $file_files = htmlentities($row["files"] ?? '');
 
                                                                 echo '<tr id="tr_'. $ID .'">
                                                                     <td>'. $category .'</td>
@@ -160,7 +168,7 @@
                                                             $result = mysqli_query($conn,"SELECT * FROM tbl_service_category ORDER BY service_category ASC");
                                                             while($row = mysqli_fetch_array($result)) {
                                                                 $ID = $row['id'];
-                                                                $name = $row['service_category'];
+                                                                $name = htmlentities($row['service_category'] ?? '');
                                                                 echo '<option value="'. $ID .'">'. $name .'</option>';
                                                             }
                                                         ?>
@@ -392,10 +400,6 @@
                 } 
             }
 
-            function uploadNew(e) {
-                $(e).parent().hide();
-                $(e).parent().prev('.form-control').removeClass('hide');
-            }
             function btnEdit(id) {
                 $.ajax({
                     type: "GET",

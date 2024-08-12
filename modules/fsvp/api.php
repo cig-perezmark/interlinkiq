@@ -1211,24 +1211,25 @@ if(isset($_GET['newActivityWorksheet'])) {
         }
 
         $conn->begin_transaction();
-
-        $isValid = $conn->execute("SELECT IF(COUNT(*) = 1, 'true', 'false') AS isValid
-            FROM tbl_fsvp_importers 
-            WHERE supplier_id = ?
-                AND id = ?
-                AND fsvpqi_id = ?
-                AND user_id = ? 
-                AND deleted_at IS NULL", 
-            $supplierId, $importerId, $fsvpqiId, $user_id
-        )->fetchAssoc()['isValid'] == 'true';
-
-        if(!$isValid) {
-            throw new Exception('Incorrect details.');
-        }
-
-        if(isset($_POST['editawid']) && !empty($_POST['editawid'])) {
+        
+         if(isset($_POST['editawid']) && !empty($_POST['editawid'])) {
             updateAWData($conn, $_POST, $portal_user, $_POST['editawid'], $importerId, $fsvpqiId, $supplierId);
-        } else {
+        } 
+        else {
+             $isValid = $conn->execute("SELECT IF(COUNT(*) = 1, 'true', 'false') AS isValid
+                FROM tbl_fsvp_importers 
+                WHERE supplier_id = ?
+                    AND id = ?
+                    AND fsvpqi_id = ?
+                    AND user_id = ? 
+                    AND deleted_at IS NULL", 
+                $supplierId, $importerId, $fsvpqiId, $user_id
+            )->fetchAssoc()['isValid'] == 'true';
+    
+            if(!$isValid) {
+                throw new Exception('Incorrect details.');
+            }
+            
             $sql = "INSERT INTO tbl_fsvp_activities_worksheets (
                     user_id,
                     portal_user,
@@ -1318,6 +1319,7 @@ if(isset($_GET['activitiesWorksheetsInitialData'])) {
         -- conditions
         WHERE aw.user_id = ?
             AND aw.deleted_at IS NULL
+            AND ipr.deleted_at IS NULL
             
         -- other clauses
         GROUP BY aw.id
@@ -1381,6 +1383,7 @@ if(isset($_GET['fetchProductsBySupplierAndImporter'])) {
                 AND ipr.supplier_id = ?
                 AND iby.user_id = ?
                 AND iby.deleted_at IS NULL
+                AND ipr.deleted_at IS NULL
             GROUP BY iby.importer_id
         ", $importerId, $supplierId, $user_id)->fetchAssoc();
 

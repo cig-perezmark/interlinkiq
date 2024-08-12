@@ -90,9 +90,9 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>
     				                              	<tr>
     				                              		<td>
-    				                              		    <?php echo $row['management_plan_area']; ?>
-    				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo $row['management_plan_area']; ?>">
-    				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo $row['management_plan_category']; ?>">
+    				                              		    <?php echo htmlentities($row['management_plan_area'] ?? ''); ?>
+    				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo htmlentities($row['management_plan_area'] ?? ''); ?>">
+    				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo htmlentities($row['management_plan_category'] ?? ''); ?>">
     				                              		</td>
     				                              		<td width="50%">
     				                              			<textarea class="form-control" name="management_plan_area_answer[]" required></textarea>
@@ -116,8 +116,8 @@
 						                              	<tr>
     				                              		<td>
     				                              		    <?php echo $row['management_plan_area']; ?>
-    				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo $row['management_plan_area']; ?>">
-    				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo $row['management_plan_category']; ?>">
+    				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo htmlentities($row['management_plan_area'] ?? ''); ?>">
+    				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo htmlentities($row['management_plan_category'] ?? ''); ?>">
     				                              		</td>
     				                              		<td width="50%">
     				                              			<textarea class="form-control" name="management_plan_area_answer[]" required></textarea>
@@ -140,9 +140,9 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>		
 					                              	<tr>
     				                              		<td>
-    				                              		    <?php echo $row['management_plan_area']; ?>
-    				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo $row['management_plan_area']; ?>">
-    				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo $row['management_plan_category']; ?>">
+    				                              		    <?php echo htmlentities($row['management_plan_area'] ?? ''); ?>
+    				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo htmlentities($row['management_plan_area'] ?? ''); ?>">
+    				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo htmlentities($row['management_plan_category'] ?? ''); ?>">
     				                              		</td>
     				                              		<td width="50%">
     				                              			<textarea class="form-control" name="management_plan_area_answer[]" required></textarea>
@@ -165,9 +165,9 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>			
 					                              	<tr>
     				                              		<td>
-    				                              		    <?php echo $row['management_plan_area']; ?>
-    				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo $row['management_plan_area']; ?>">
-    				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo $row['management_plan_category']; ?>">
+    				                              		    <?php echo htmlentities($row['management_plan_area'] ?? ''); ?>
+    				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo htmlentities($row['management_plan_area'] ?? ''); ?>">
+    				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo htmlentities($row['management_plan_category'] ?? ''); ?>">
     				                              		</td>
     				                              		<td width="50%">
     				                              			<textarea class="form-control" name="management_plan_area_answer[]" required></textarea>
@@ -190,9 +190,9 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>			
         			                              	<tr>
         				                              		<td>
-        				                              		    <?php echo $row['management_plan_area']; ?>
-        				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo $row['management_plan_area']; ?>">
-        				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo $row['management_plan_category']; ?>">
+        				                              		    <?php echo htmlentities($row['management_plan_area'] ?? ''); ?>
+        				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo htmlentities($row['management_plan_area'] ?? ''); ?>">
+        				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo htmlentities($row['management_plan_category'] ?? ''); ?>">
         				                              		</td>
         				                              		<td width="50%">
         				                              			<textarea class="form-control" name="management_plan_area_answer[]" required></textarea>
@@ -215,9 +215,9 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>			
     				                              	<tr>
     				                              		<td>
-    				                              		    <?php echo $row['management_plan_area']; ?>
-    				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo $row['management_plan_area']; ?>">
-    				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo $row['management_plan_category']; ?>">
+    				                              		    <?php echo htmlentities($row['management_plan_area'] ?? ''); ?>
+    				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo htmlentities($row['management_plan_area'] ?? ''); ?>">
+    				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo htmlentities($row['management_plan_category'] ?? ''); ?>">
     				                              		</td>
     				                              		<td width="50%">
     				                              			<textarea class="form-control" name="management_plan_area_answer[]" required></textarea>
@@ -240,9 +240,9 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>		
     				                              	<tr>
     				                              		<td>
-    				                              		    <?php echo $row['management_plan_area']; ?>
-    				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo $row['management_plan_area']; ?>">
-    				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo $row['management_plan_category']; ?>">
+    				                              		    <?php echo htmlentities($row['management_plan_area'] ?? ''); ?>
+    				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo htmlentities($row['management_plan_area'] ?? ''); ?>">
+    				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo htmlentities($row['management_plan_category'] ?? ''); ?>">
     				                              		</td>
     				                              		<td width="50%">
     				                              			<textarea class="form-control" name="management_plan_area_answer[]" required></textarea>
@@ -265,9 +265,9 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>		
     				                              	<tr>
     				                              		<td>
-    				                              		    <?php echo $row['management_plan_area']; ?>
-    				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo $row['management_plan_area']; ?>">
-    				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo $row['management_plan_category']; ?>">
+    				                              		    <?php echo htmlentities($row['management_plan_area'] ?? ''); ?>
+    				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo htmlentities($row['management_plan_area'] ?? ''); ?>">
+    				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo htmlentities($row['management_plan_category'] ?? ''); ?>">
     				                              		</td>
     				                              		<td width="50%">
     				                              			<textarea class="form-control" name="management_plan_area_answer[]" required></textarea>
@@ -290,9 +290,9 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>		
     				                              	<tr>
     				                              		<td>
-    				                              		    <?php echo $row['management_plan_area']; ?>
-    				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo $row['management_plan_area']; ?>">
-    				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo $row['management_plan_category']; ?>">
+    				                              		    <?php echo htmlentities($row['management_plan_area'] ?? ''); ?>
+    				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo htmlentities($row['management_plan_area'] ?? ''); ?>">
+    				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo htmlentities($row['management_plan_category'] ?? ''); ?>">
     				                              		</td>
     				                              		<td width="50%">
     				                              			<textarea class="form-control" name="management_plan_area_answer[]" required></textarea>
@@ -315,9 +315,9 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>		
     				                              	<tr>
     				                              		<td>
-    				                              		    <?php echo $row['management_plan_area']; ?>
-    				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo $row['management_plan_area']; ?>">
-    				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo $row['management_plan_category']; ?>">
+    				                              		    <?php echo htmlentities($row['management_plan_area'] ?? ''); ?>
+    				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo htmlentities($row['management_plan_area'] ?? ''); ?>">
+    				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo htmlentities($row['management_plan_category'] ?? ''); ?>">
     				                              		</td>
     				                              		<td width="50%">
     				                              			<textarea class="form-control" name="management_plan_area_answer[]" required></textarea>
@@ -340,9 +340,9 @@
                                                     while($row = mysqli_fetch_array($resultQuery)){ ?>		
     				                              	<tr>
     				                              		<td>
-    				                              		    <?php echo $row['management_plan_area']; ?>
-    				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo $row['management_plan_area']; ?>">
-    				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo $row['management_plan_category']; ?>">
+    				                              		    <?php echo htmlentities($row['management_plan_area'] ?? ''); ?>
+    				                              		    <input type="hidden" name="management_plan_area_filled[]" value="<?php echo htmlentities($row['management_plan_area'] ?? ''); ?>">
+    				                              		    <input type="hidden" name="management_plan_area_category[]" value="<?php echo htmlentities($row['management_plan_category'] ?? ''); ?>">
     				                              		</td>
     				                              		<td width="50%">
     				                              			<textarea class="form-control" name="management_plan_area_answer[]" required></textarea>
@@ -417,15 +417,15 @@
                                                                 <?php echo $i++; ?>
                                                             </td>
                                                             <td>CRISIS MANAGEMENT PLAN</td>
-                                                             <td><?php echo $row['Verified_by']; ?></td>
+                                                             <td><?php echo htmlentities($row['Verified_by'] ?? ''); ?></td>
                                                             <td>
                                                                 <?php echo date_format($vdate,"Y/m/d"); ?>
                                                             </td>
-                                                            <td><?php echo $row['Approved_by']; ?></td>
+                                                            <td><?php echo htmlentities($row['Approved_by'] ?? ''); ?></td>
                                                             <td>
                                                                 <?php echo date_format($adate,"Y/m/d"); ?>
                                                             </td>
-                                                            <td><a href="crisis_annual_review_print.php?view=<?php echo $row['Plan_code']; ?>" class="btn blue btn-outline">View</a></td>
+                                                            <td><a href="crisis_annual_review_print.php?view=<?php echo htmlentities($row['Plan_code'] ?? ''); ?>" class="btn blue btn-outline">View</a></td>
                                                         </tr>
                                                         <?php } ?>
                                                     </tbody>

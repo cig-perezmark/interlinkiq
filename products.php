@@ -260,7 +260,25 @@
     #productsTable td {
         vertical-align: middle !important;
     }
+
+
+    #productsChartdiv {
+            width: 100%;
+            height: 500px;
+            /* background-color: #f0f0f0;  */
+        }
+
 </style>
+
+
+                    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+                    <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+                    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+                    <script src="https://cdn.amcharts.com/lib/5/plugins/legend.js"></script>
+                    <script src="https://cdn.amcharts.com/lib/5/radar.js"></script>
+
 
                     <div class="row">
                         <div class="col-md-12">
@@ -320,6 +338,17 @@
                                             </ul>
                                         </div>
                                     </div>
+
+                                    <ul class="nav nav-tabs">
+                                        <li class="active">
+                                            <a href="#tab_products" data-toggle="tab">Products</a>
+                                        </li>
+                                        <li>
+                                            <a href="#tab_products_analytics" data-toggle="tab">Analytics</a>
+                                        </li>									
+                                    </ul>
+
+
                                 </div>
                                 <div class="portlet-body">
                                     <!-- BEGIN: Actions -->
@@ -381,6 +410,9 @@
                                         ?>
                                     </div>
                                     <!-- END: Actions -->
+
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="tab_products">
                                     <table class="table table-bordered table-hover" id="productsTable">
                                         <thead>
                                             <tr>
@@ -393,9 +425,27 @@
                                         <tbody></tbody>
                                     </table>
                                 </div>
-                            </div>
-                            <!-- END BORDERED TABLE PORTLET-->
+
+                            <!-- Nelmar Products Analytics -->                                   									
+                                        <div class="tab-pane" id="tab_products_analytics">                       
+										    <div class="row widget-row">                       
+                                                <div class="col-md-12">                                     
+												    <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">   
+													    <h3 class="d-flex justify-content-center">Products</h3>   
+														    <div class="widget-thumb-wrap">                                       
+																<div id="productsChartdiv" style="width: 100%; height: 500px;">																		
+															</div>                                        
+														</div>
+													</div>     
+												</div> 
+											</div>
+
+										</div>																							
+									</div>
+                                </div>                 
+                            </div>  <!-- END BORDERED TABLE PORTLET-->
                         </div>
+
 
                         <!-- MODAL AREA-->
                         <div class="modal fade" id="modalNew" tabindex="-1" role="basic" aria-hidden="true">
@@ -2123,14 +2173,297 @@
                                 </div>
                             </div>
                         </div>
-                                     
-                    </div><!-- END CONTENT BODY -->
+
+
+        		 <!--Nelmar Products Analytics Modal -->                                              
+                 <div id="modalChart" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title">Product Name</h4>
+                                    </div>
+                                    <div class="modal-body">                                                                            
+                                        <div class="row">  
+                                                                       
+                                        <div class="col-md-12">                                                 
+                                                <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-1">   
+                                                    <h3 class="d-flex justify-content-center">Documents</h3>   
+                                                    <div class="widget-thumb-wrap">                                                                                              
+                                                        <div id="documentsChartDiv" style="height: 400px;"></div>                                                              
+                                                    </div>
+                                                </div>
+                                            </div>  
+
+
+                                            <div class="col-md-12">                                                 
+                                                <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-1">   
+                                                    <h3 class="d-flex justify-content-center">Compliance</h3>   
+                                                    <div class="widget-thumb-wrap">                                                                                              
+                                                        <div id="complianceChartDiv" style="height: 400px;"></div>                                                              
+                                                    </div>
+                                                </div>
+                                            </div> 
+
+                                            <div class="col-md-12">                                                 
+                                                <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-1">   
+                                                    <h3 class="d-flex justify-content-center">Share to Marketplace</h3>   
+                                                    <div class="widget-thumb-wrap">                                                                                              
+                                                        <div id="radioChartDiv" style="height: 400px;"></div>                                                              
+                                                    </div>
+                                                </div>
+                                            </div>  
+                                            
+
+
+                                            <div class="col-md-12">                                                 
+                                                <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-1">   
+                                                    <h3 class="d-flex justify-content-center">Product Category</h3>   
+                                                    <div class="widget-thumb-wrap">                                       
+                                                        
+                                                        <div id="categoryChartDiv" style="height: 400px;"></div>                                                              
+                                                    </div>
+                                                </div>
+                                            </div>  
+                                            <div class="col-md-12">                                     
+                                                <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-1">   
+                                                    <h3 class="d-flex justify-content-center">Intended Use</h3>   
+                                                    <div class="widget-thumb-wrap">                                       
+                                                        
+                                                        <div id="intendedChartDiv" style="height: 400px;"></div>                                                              
+                                                    </div>
+                                                </div>
+                                            </div>                                                     
+                                            <div class="col-md-12"> 
+                                                <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-1">                                         
+                                                    <h3 class="d-flex justify-content-center">Product Claims</h3>
+                                                    <div class="widget-thumb-wrap">
+                                                       
+                                                        <div id="claimsChartDiv" style="height: 400px;"></div>                                                                 
+                                                    </div>
+                                                </div>                                 
+                                            </div>
+                                        </div>  
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline dark" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                   </div><!-- END CONTENT BODY -->
 
         <?php include_once ('footer.php'); ?>
         
         <script src="assets/global/plugins/bootstrap-tabdrop/js/bootstrap-tabdrop.js" type="text/javascript"></script>
         <script src="assets/global/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js" type="text/javascript"></script>
+        <script src="AnalyticsIQ/products.js"></script>
+
         <script type="text/javascript">
+
+
+    // Product Modal Analytics
+
+        $(document).on('click', '.btnChart', function() {
+            var productId = $(this).data('id');
+
+            console.log("Button clicked. Product ID:", productId);
+
+            $.ajax({
+                url: 'AnalyticsIQ/products_data.php', // Replace with your PHP file path
+                type: 'POST',
+                data: { id: productId },
+                dataType: 'json',
+                success: function(response) {
+                    console.log("AJAX success. Response received:", response);
+
+                    // Set the modal title to the product name
+                    document.querySelector("#modalChart .modal-title").innerText = "Product Name: " + response.product_name;
+
+                    // Function to handle chart creation and disposal
+                    function createChart(chartDivId, responseData, seriesName, colors) {
+                        var chartDiv = document.getElementById(chartDivId);
+
+                        if (!chartDiv) {
+                            console.error("Chart div not found:", chartDivId);
+                            return;
+                        }
+
+                        // Dispose existing chart if any
+                        if (chartDiv._chartRoot) {
+                            console.log("Disposing existing chart for:", chartDivId);
+                            chartDiv._chartRoot.dispose();
+                            chartDiv._chartRoot = null;
+                        }
+
+                        // Clear chart container
+                        chartDiv.innerHTML = '';
+
+                        // Check if there's any data to display
+                        if (Object.keys(responseData).length === 0) {
+                            console.log("No data available for:", chartDivId);
+                            chartDiv.innerHTML = '<p>No data available for this chart</p>';
+                            return;
+                        }
+
+                        console.log("Creating new chart for:", chartDivId);
+
+                        // Create a new Root
+                        var root = am5.Root.new(chartDivId);
+                        chartDiv._chartRoot = root;
+
+                        var chart = root.container.children.push(am5xy.XYChart.new(root, {
+                            panX: false,
+                            panY: false,
+                            wheelX: "none",
+                            wheelY: "none",
+                            pinchZoomX: false
+                        }));
+
+                        var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
+                            categoryField: "category",
+                            renderer: am5xy.AxisRendererX.new(root, { minGridDistance: 30 })
+                        }));
+
+                        var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+                            renderer: am5xy.AxisRendererY.new(root, {})
+                        }));
+
+                        var series = chart.series.push(am5xy.ColumnSeries.new(root, {
+                            name: seriesName,
+                            xAxis: xAxis,
+                            yAxis: yAxis,
+                            valueYField: "value",
+                            categoryXField: "category"
+                        }));
+
+                        var data = Object.keys(responseData).map(function(key, index) {
+                            return { 
+                                category: key, 
+                                value: responseData[key], 
+                                color: colors[index % colors.length]  // Ensure a valid color is always used
+                            };
+                        });
+
+                        console.log("Setting chart data:", data);
+
+                        xAxis.data.setAll(data);
+                        series.data.setAll(data);
+
+                        series.columns.template.setAll({
+                            tooltipText: "{category}: {valueY}",
+                            tooltipY: 0,
+                            strokeOpacity: 0
+                        });
+
+                        series.columns.template.adapters.add("fill", function(fill, target) {
+                            return am5.color(target.dataItem.dataContext.color);
+                        });
+
+                        series.appear(1000);
+                        chart.appear(1000, 100);
+                    }
+
+                    // Render Category Chart
+                    createChart("categoryChartDiv", response.category_counts, "Category Count", ["rgba(54, 162, 235, 1)"]);
+
+                    // Render Intended Chart
+                    createChart("intendedChartDiv", response.intended_counts, "Intended Count", ["rgba(75, 192, 192, 1)"]);
+
+                    // Render Claims Chart
+                    createChart("claimsChartDiv", response.claim_counts, "Claim Count", ["rgba(255, 206, 86, 1)"]);
+
+                    // Bar Chart for Documents with different colors for each
+                    createChart("documentsChartDiv", {
+                        'Total Documents': response.total_documents,
+                        'Specification': response.specifcation ? 1 : 0,
+                        'Artwork': response.artwork ? 1 : 0,
+                        'HACCP': response.haccp ? 1 : 0,
+                        'Label': response.label ? 1 : 0,
+                        'Formulation': response.formulation ? 1 : 0
+                    }, "Documents", ["#14948e", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40"]);
+
+                    // Pie Chart for Radio Fields with compliance colors
+                    function createPieChart(chartDivId, data) {
+            var chartDiv = document.getElementById(chartDivId);
+            if (!chartDiv) {
+                console.error("Chart div not found:", chartDivId);
+                return;
+            }
+
+            // Dispose of the existing chart if it exists
+            if (chartDiv._chartRoot) {
+                chartDiv._chartRoot.dispose();
+                chartDiv._chartRoot = null;
+            }
+
+            // Clear the div's inner HTML
+            chartDiv.innerHTML = '';
+
+            // Create the root element for the chart
+            var root = am5.Root.new(chartDivId);
+            chartDiv._chartRoot = root;
+
+            // Create the pie chart
+            var chart = root.container.children.push(am5percent.PieChart.new(root, {
+                layout: root.verticalLayout
+            }));
+
+            // Create the pie series
+            var series = chart.series.push(am5percent.PieSeries.new(root, {
+                valueField: "value",
+                categoryField: "category",
+                fillField: "color" // Directly use the color from the data
+            }));
+
+            // Set the label format
+            series.labels.template.setAll({
+                text: "{category}: {value}"
+            });
+
+            // Map data to chart
+            series.data.setAll(data);
+
+            // Animate the chart appearance
+            series.appear(1000, 100);
+        }
+
+        // Data preparation with explicit color assignment
+        var complianceData = [
+            { category: 'Specification Yes', value: response.specifcation_radio === 'Yes' ? 1 : 0, color: am5.color('#35dc79') },
+            { category: 'Artwork Yes', value: response.artwork_radio === 'Yes' ? 1 : 0, color: am5.color('#60e496') },
+            { category: 'HACCP Yes', value: response.haccp_radio === 'Yes' ? 1 : 0, color: am5.color('#4be087') },
+            { category: 'Label Yes', value: response.label_radio === 'Yes' ? 1 : 0, color: am5.color('#35dc79') },
+            { category: 'Formulation Yes', value: response.formulation_radio === 'Yes' ? 1 : 0, color: am5.color('#25d36c') },
+            { category: 'Specification No', value: response.specifcation_radio === 'No' ? 1 : 0, color: am5.color('#f09399') },
+            { category: 'Artwork No', value: response.artwork_radio === 'No' ? 1 : 0, color: am5.color('#ed7d84') },
+            { category: 'HACCP No', value: response.haccp_radio === 'No' ? 1 : 0, color: am5.color('#ea666f') },
+            { category: 'Label No', value: response.label_radio === 'No' ? 1 : 0, color: am5.color('#e7505a') },
+            { category: 'Formulation No', value: response.formulation_radio === 'No' ? 1 : 0, color: am5.color('#e43a45') }
+        ];
+
+        createPieChart("radioChartDiv", complianceData);
+
+        // Donut Chart for Compliance with direct color assignment
+        var compliancePercentageData = [
+            { category: 'Compliance', value: response.compliance_percentage, color: am5.color('#35dc79') },
+            { category: 'Non-Compliance', value: response.non_compliance_percentage, color: am5.color('#e7505a') }
+        ];
+
+        createPieChart("complianceChartDiv", compliancePercentageData);                
+                },
+                
+                error: function(xhr, status, error) {
+                    console.error("AJAX error:", status, error);
+                }
+
+            });
+        });
+
+//End of Product Modal Analytics
+
+
+
             var productDT;
             $(document).ready(function(){
                 fancyBoxes();
@@ -2441,6 +2774,11 @@
                                     `
                                         <div class="btn-group btn-group-circle" style="position: unset;">
                                             <a href="#modalView" data-toggle="modal" data-id="${d.id}" class="btn btn-outline dark btn-sm btnView" onclick="btnView(${d.id}, ${d.source})">View</a>
+                                            
+                                            <!-- Button to Show Chart -->
+                                            <a href="#modalChart" class="btn btn-info btn-sm btnChart" data-toggle="modal" data-id="${d.id}">
+                                            <i class="fas fa-chart-line"></i></a>
+
                                             <a href="javascript:;" class="btn btn-outlinex red btn-sm btnDelete" data-id="${d.id}" onclick="btnDelete(${d.id})">Delete</a>
                                         </div>
                                     `,

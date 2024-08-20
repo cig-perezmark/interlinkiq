@@ -16,7 +16,7 @@ $payroll_employee = mysqli_query($payroll_connection,"SELECT * FROM payee INNER 
 foreach($payroll_employee as $employee_row){
     echo $bi_pay = $employee_row['pay_rate'] / 2; echo "/";
     echo $payee_id = $employee_row['payeeid']; echo '<br>';
-    $update_sql = mysqli_query($payroll_connection,"UPDATE pay SET pay_rate = '$bi_pay' WHERE payeeid = '$payee_id' AND paiddate = '2024-07-24'" );
+    $update_sql = mysqli_query($payroll_connection,"UPDATE pay SET pay_rate = '$bi_pay' WHERE payeeid = '$payee_id' AND paiddate = '2024-08-08'" );
 }
 
 

@@ -470,18 +470,18 @@
                                                             $table_counter = 1;
                                                             while($row = mysqli_fetch_array($result)) {
                                                                 $s_ID = $row["s_ID"];
-                                                                $s_name = $row["s_name"];
+                                                                $s_name = htmlentities($row["s_name"] ?? '');
                                                                 $s_reviewed_due = $row["s_reviewed_due"];
 
-                                                                $s_category = $row["s_category"];
-                                                                $c_name = $row["c_name"];
+                                                                $s_category = htmlentities($row["s_category"] ?? '');
+                                                                $c_name = htmlentities($row["c_name"] ?? '');
 
-                                                                $cn_name = $row["cn_name"];
-                                                                $cn_address = $row["cn_address"];
-                                                                $cn_email = $row["cn_email"];
-                                                                $cn_phone = $row["cn_phone"];
-                                                                $cn_cell = $row["cn_cell"];
-                                                                $cn_fax = $row["cn_fax"];
+                                                                $cn_name = htmlentities($row["cn_name"] ?? '');
+                                                                $cn_address = htmlentities($row["cn_address"] ?? '');
+                                                                $cn_email = htmlentities($row["cn_email"] ?? '');
+                                                                $cn_phone = htmlentities($row["cn_phone"] ?? '');
+                                                                $cn_cell = htmlentities($row["cn_cell"] ?? '');
+                                                                $cn_fax = htmlentities($row["cn_fax"] ?? '');
 
                                                                 $compliance = 0;
                                                                 $d_compliance = $row["d_compliance"];
@@ -797,18 +797,18 @@
                                                             $table_counter = 1;
                                                             while($row = mysqli_fetch_array($result)) {
                                                                 $s_ID = $row["s_ID"];
-                                                                $s_name = $row["s_e_name"];
+                                                                $s_name = htmlentities($row["s_e_name"] ?? '');
                                                                 $s_reviewed_due = $row["s_reviewed_due"];
 
-                                                                $s_category = $row["s_category"];
-                                                                $c_name = $row["c_name"];
+                                                                $s_category = htmlentities($row["s_category"] ?? '');
+                                                                $c_name = htmlentities($row["c_name"] ?? '');
 
-                                                                $cn_name = $row["cn_name"];
-                                                                $cn_address = $row["cn_address"];
-                                                                $cn_email = $row["cn_email"];
-                                                                $cn_phone = $row["cn_phone"];
-                                                                $cn_cell = $row["cn_cell"];
-                                                                $cn_fax = $row["cn_fax"];
+                                                                $cn_name = htmlentities($row["cn_name"] ?? '');
+                                                                $cn_address = htmlentities($row["cn_address"] ?? '');
+                                                                $cn_email = htmlentities($row["cn_email"] ?? '');
+                                                                $cn_phone = htmlentities($row["cn_phone"] ?? '');
+                                                                $cn_cell = htmlentities($row["cn_cell"] ?? '');
+                                                                $cn_fax = htmlentities($row["cn_fax"] ?? '');
 
                                                                 $compliance = 0;
                                                                 $d_compliance = $row["d_compliance"];
@@ -957,7 +957,7 @@
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 while($row = mysqli_fetch_array($result)) {
                                                                     $ID = $row["ID"];
-                                                                    $name = $row["name"];
+                                                                    $name = htmlentities($row["name"] ?? '');
     
                                                                     echo '<tr id="tr_'.$ID.'">
                                                                         <td>'.$name.'</td>
@@ -1152,7 +1152,7 @@
                                                                             $selectCategory = mysqli_query( $conn,"SELECT * FROM tbl_supplier_category WHERE deleted = 0 AND FIND_IN_SET($current_client, REPLACE(client, ' ', '')) ORDER BY name" );
                                                                             if ( mysqli_num_rows($selectCategory) > 0 ) {
                                                                                 while($row = mysqli_fetch_array($selectCategory)) {
-                                                                                    echo '<option value="'.$row["ID"].'">'.$row["name"].'</option>';
+                                                                                    echo '<option value="'.$row["ID"].'">'.htmlentities($row["name"] ?? '').'</option>';
                                                                                 }
                                                                             }
                                                                         ?>
@@ -1168,7 +1168,7 @@
                                                                             $selectIndustry = mysqli_query( $conn,"SELECT * FROM tbl_supplier_industry WHERE deleted = 0 AND FIND_IN_SET($current_client, REPLACE(client, ' ', '')) ORDER BY name" );
                                                                             if ( mysqli_num_rows($selectIndustry) > 0 ) {
                                                                                 while($row = mysqli_fetch_array($selectIndustry)) {
-                                                                                    echo '<option value="'.$row["ID"].'">'.$row["name"].'</option>';
+                                                                                    echo '<option value="'.$row["ID"].'">'.htmlentities($row["name"] ?? '').'</option>';
                                                                                 }
                                                                             }
                                                                         ?>
@@ -1184,7 +1184,7 @@
                                                                         <?php
                                                                             $selectCountry = mysqli_query( $conn,"SELECT * FROM countries WHERE iso2 <> 'US'" );
                                                                             while($rowCountry = mysqli_fetch_array($selectCountry)) {
-                                                                                echo '<option value="'.$rowCountry["iso2"].'">'.$rowCountry["name"].'</option>';
+                                                                                echo '<option value="'.$rowCountry["iso2"].'">'.htmlentities($rowCountry["name"] ?? '').'</option>';
                                                                             }
                                                                         ?>
                                                                     </select>
@@ -1546,7 +1546,7 @@
                                                                 $selectRequirement2 = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
                                                                 if ( mysqli_num_rows($selectRequirement2) > 0 ) {
                                                                     while($row = mysqli_fetch_array($selectRequirement2)) {
-                                                                        echo '<label class="mt-checkbox mt-checkbox-outline"> '.$row["name"].'
+                                                                        echo '<label class="mt-checkbox mt-checkbox-outline"> '.htmlentities($row["name"] ?? '').'
                                                                             <input type="checkbox" value="'.$row["ID"].'" name="document[]"  onchange="checked_Requirement(this, 2, 0, 0)" />
                                                                             <span></span>
                                                                         </label>';
@@ -1887,7 +1887,7 @@
                                                                                     if ( mysqli_num_rows($selectDepartment) > 0 ) {
                                                                                         while($rowDepartment = mysqli_fetch_array($selectDepartment)) {
                                                                                             $dept_ID = $rowDepartment["ID"];
-                                                                                            $dept_title = $rowDepartment["title"];
+                                                                                            $dept_title = htmlentities($rowDepartment["title"] ?? '');
 
                                                                                             echo '<option value="'.$dept_ID.'">'.$dept_title.'</option>';
                                                                                         }
@@ -1905,8 +1905,8 @@
                                                                                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                                                         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                                                             $emp_ID = $rowEmployee["ID"];
-                                                                                            $emp_name = $rowEmployee["first_name"] .' '. $rowEmployee["last_name"];
-                                                                                            $emp_email = $rowEmployee["email"];
+                                                                                            $emp_name = htmlentities($rowEmployee["first_name"] ?? '') .' '. htmlentities($rowEmployee["last_name"] ?? '');
+                                                                                            $emp_email = htmlentities($rowEmployee["email"] ?? '');
 
                                                                                             $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE is_verified = 1 AND is_active = 1 AND email = '".$emp_email."' ORDER BY first_name");
                                                                                             if ( mysqli_num_rows($selectUser) > 0 ) {

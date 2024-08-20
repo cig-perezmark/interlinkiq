@@ -22730,17 +22730,14 @@
                 Cann OS Team<br>
                 BeGreen Legal';
             } else {
-                $subject = $data_company.' Customer Invitation via InterlinkIQ.com';
+                $subject = $data_company.' Customer Invitation';
                 $body_extra = 'Hi '.$user.',<br><br>';
+                $body = 'Your supplier, '.$data_company.', invites you to <a href="'.$base_url.$client_url.'" target="_blank">'.$client_name.'</a> to connect and share documents to comply with Supplier Approval Program Requirements.<br><br>
 
-                $body = 'Your customer '.$data_company.', invites you to <a href="'.$base_url.'" target="_blank">InterlinkIQ.com</a> to connect and share documents to comply with Supplier Approval Program Requirements.<br><br>
+                Should you need assistance, kindly call 202-982-3002 or email <a href="mailto:csuccess@consultareinc.com">csuccess@consultareinc.com</a><br><br>
 
-                Follow the video link for the instructional video Customer Requirements Management Module - <a href="https://youtu.be/9XklXwGBr7E" target="_blank">https://youtu.be/9XklXwGBr7E</a><br><br>
-
-                Should you need assistance, kindly call 202-982-3002 or email '.$data_email.'<br><br>
-
-                InterlinkIQ.com Team<br>
-                Consultare Inc.';
+                Customer Success Team<br>
+                Consultare Inc. Group';
             }
             php_mailer_1($to, $user, $subject, $body_extra.$body, $data_email, $data_company);
 
@@ -55812,52 +55809,51 @@
         $selectData = mysqli_query( $conn,'SELECT * FROM tbl_library_file WHERE ID="'. $id .'"' );
         $rowData = mysqli_fetch_array($selectData);
         $data_library_id = $rowData['library_id'];
-        $data_name = $rowData['name'];
+        $data_name = htmlentities($rowData['name'] ?? '');
         
         // Update History Data
         actionHistory($data_library_id, 3, 1, $id);
 
-
         // EMAIL NOTIFICATION
         // Requester
-        $selectUserReq = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $portal_user" );
+        $selectUserReq = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $portal_user" );
         if ( mysqli_num_rows($selectUserReq) > 0 ) {
             $rowUserReq = mysqli_fetch_array($selectUserReq);
-            $user_name_req = $rowUserReq['first_name'] .' '. $rowUserReq['last_name'];
+            $sender_name = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+            $sender_email = $rowUserReq['email'];
+            $sender[$sender_email] = $sender_name;
         }
 
         // Employer (Receiver)
-        $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $user_id" );
+        $selectUser = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $user_id" );
         if ( mysqli_num_rows($selectUser) > 0 ) {
             $rowUser = mysqli_fetch_array($selectUser);
-            $user_name = $rowUser['first_name'] .' '. $rowUser['last_name'];
-            $user_email = $rowUser['email'];
+            $recipients_name = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+            $recipients_email = $rowUser['email'];
+            $recipients[$recipients_email] = $recipients_name;
         }
-
-        $to = $user_email;
-        $user = $user_name;
+        
+        $subject = 'Compliance Dashboard File Tab - Delete Request';
         if ($_COOKIE['client'] == 1) {
-            $subject = 'Delete Request for Dashboard Item';
-            $body = 'Hi '.$user.',<br><br>
+            $body = 'Hi '.$recipients_name.',<br><br>
 
-            '.$user_name_req.' is requesting to delete <b>'.$data_name.'</b>. The reason is '.$reason.'.<br><br>
+            '.$sender_name.' is requesting to delete <b>'.$data_name.'</b>. The reason is '.$reason.'.<br><br>
 
             Please click the button below to view the item<br><br>
 
-            <a href="'. $base_url .'dashboard?d='. $data_library_id .'&s='.$s.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a><br><br>
+            <a href="'. $base_url .'dashboard?d='. $data_library_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a><br><br>
 
             Cann OS Team';
         } else {
-            $subject = 'Delete Request for Dashboard File Item';
-            $body = 'Hi '.$user.',<br><br>
+            $body = 'Hi '.$recipients_name.',<br><br>
 
-            '.$user_name_req.' is requesting to delete <b>'.$data_name.'</b> dashboard file item. The reason is '.$reason.'.<br><br>
+            '.$sender_name.' is requesting to delete <b>'.$data_name.'</b> dashboard file item. The reason is '.$reason.'.<br><br>
 
             Please click the button below to view the item<br><br>
 
-            <a href="'. $base_url .'dashboard?d='. $data_library_id .'&s='.$s.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+            <a href="'. $base_url .'dashboard?d='. $data_library_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
         }
-        $mail = php_mailer($to, $user, $subject, $body);
+        php_mailer_dynamic($sender, $recipients, $subject, $body);
     }
     if( isset($_POST['btnSave_Attached']) ) {
         if (!empty($_COOKIE['switchAccount'])) {
@@ -58204,6 +58200,17 @@
         $id = $_GET['btnDelete_Review'];
         $current_userID = $_COOKIE['ID'];
         $reason = addslashes($_GET['reason']);
+        $s = 0;
+
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
 
         $message = array();
         array_push($message, $current_userID);
@@ -58215,13 +58222,51 @@
         $selectData = mysqli_query( $conn,'SELECT * FROM tbl_library_review WHERE ID="'. $id .'"' );
         $rowData = mysqli_fetch_array($selectData);
         $data_library_id = $rowData['library_id'];
+        $data_name = htmlentities($rowData['action_items'] ?? '');
             
         // Update History Data
         actionHistory($data_library_id, 3, 4, $id);
+
+        // EMAIL NOTIFICATION
+        // Requester
+        $selectUserReq = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $portal_user" );
+        if ( mysqli_num_rows($selectUserReq) > 0 ) {
+            $rowUserReq = mysqli_fetch_array($selectUserReq);
+            $sender_name = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+            $sender_email = $rowUserReq['email'];
+            $sender[$sender_email] = $sender_name;
+        }
+
+        // Employer (Receiver)
+        $selectUser = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $user_id" );
+        if ( mysqli_num_rows($selectUser) > 0 ) {
+            $rowUser = mysqli_fetch_array($selectUser);
+            $recipients_name = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+            $recipients_email = $rowUser['email'];
+            $recipients[$recipients_email] = $recipients_name;
+        }
+        
+        $subject = 'Compliance Dashboard Annual Review Tab - Item Deleted';
+        $body = 'Hi '.$recipients_name.',<br><br>
+
+        Please note that '.$sender_name.' deleted <b>'.$data_name.'</b>. The reason is '.$reason.'.<br><br>
+
+        <a href="'. $base_url .'dashboard?d='. $data_library_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+        php_mailer_dynamic($sender, $recipients, $subject, $body);
     }
     if( isset($_GET['btnAccept_Review']) ) {
         $id = $_GET['btnAccept_Review'];
         $current_userID = $_COOKIE['ID'];
+        $s = 0;
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
 
         mysqli_query( $conn,"UPDATE tbl_library_review SET remark = '1', remark_user = '". $current_userID ."' WHERE ID='". $id ."'" );
 
@@ -58231,11 +58276,48 @@
 
         // Update History Data
         actionHistory($data_library_id, 4, 4, $id);
+
+        // EMAIL NOTIFICATION
+        // Requester
+        $selectUserReq = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $portal_user" );
+        if ( mysqli_num_rows($selectUserReq) > 0 ) {
+            $rowUserReq = mysqli_fetch_array($selectUserReq);
+            $sender_name = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+            $sender_email = $rowUserReq['email'];
+            $sender[$sender_email] = $sender_name;
+        }
+
+        // Employer (Receiver)
+        $selectUser = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $user_id" );
+        if ( mysqli_num_rows($selectUser) > 0 ) {
+            $rowUser = mysqli_fetch_array($selectUser);
+            $recipients_name = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+            $recipients_email = $rowUser['email'];
+            $recipients[$recipients_email] = $recipients_name;
+        }
+        
+        $subject = 'Compliance Dashboard Annual Review Tab - Accepted';
+        $body = 'Hi '.$recipients_name.',<br><br>
+
+        Please note that '.$sender_name.' accepted the observation.<br><br>
+
+        <a href="'. $base_url .'dashboard?d='. $data_library_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+        php_mailer_dynamic($sender, $recipients, $subject, $body);
     }
     if( isset($_GET['btnReject_Review']) ) {
         $id = $_GET['btnReject_Review'];
         $current_userID = $_COOKIE['ID'];
         $reason = addslashes($_GET['reason']);
+        $s = 0;
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
 
         mysqli_query( $conn,"UPDATE tbl_library_review SET remark = '".$reason."', remark_user = '". $current_userID ."' WHERE ID='". $id ."'" );
 
@@ -58245,6 +58327,33 @@
 
         // Update History Data
         actionHistory($data_library_id, 5, 4, $id);
+
+        // EMAIL NOTIFICATION
+        // Requester
+        $selectUserReq = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $portal_user" );
+        if ( mysqli_num_rows($selectUserReq) > 0 ) {
+            $rowUserReq = mysqli_fetch_array($selectUserReq);
+            $sender_name = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+            $sender_email = $rowUserReq['email'];
+            $sender[$sender_email] = $sender_name;
+        }
+
+        // Employer (Receiver)
+        $selectUser = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $user_id" );
+        if ( mysqli_num_rows($selectUser) > 0 ) {
+            $rowUser = mysqli_fetch_array($selectUser);
+            $recipients_name = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+            $recipients_email = $rowUser['email'];
+            $recipients[$recipients_email] = $recipients_name;
+        }
+        
+        $subject = 'Compliance Dashboard Annual Review Tab - Rejected';
+        $body = 'Hi '.$recipients_name.',<br><br>
+
+        Please note that '.$sender_name.' rejected the observation. The reason is '.$reason.'<br><br>
+
+        <a href="'. $base_url .'dashboard?d='. $data_library_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+        php_mailer_dynamic($sender, $recipients, $subject, $body);
     }
     if( isset($_POST['btnSave_Review']) ) {
         if (!empty($_COOKIE['switchAccount'])) {
@@ -58535,9 +58644,11 @@
         }
     }
     if( isset($_POST['btnSaveAction_Review']) ) {
+        $s = 0;
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
@@ -58673,10 +58784,38 @@
                         'last_modified' => $review_last_modified,
                         'files' => $files
                     );
-                    echo json_encode($output);
 
                     // Update History Data
                     actionHistory($library_id, 1, 4, $review_ID);
+
+                    // EMAIL NOTIFICATION
+                    // Requester
+                    $selectUserReq = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $portal_user" );
+                    if ( mysqli_num_rows($selectUserReq) > 0 ) {
+                        $rowUserReq = mysqli_fetch_array($selectUserReq);
+                        $sender_name = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+                        $sender_email = $rowUserReq['email'];
+                        $sender[$sender_email] = $sender_name;
+                    }
+
+                    // Employer (Receiver)
+                    $selectUser = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $user_id" );
+                    if ( mysqli_num_rows($selectUser) > 0 ) {
+                        $rowUser = mysqli_fetch_array($selectUser);
+                        $recipients_name = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+                        $recipients_email = $rowUser['email'];
+                        $recipients[$recipients_email] = $recipients_name;
+                    }
+                    
+                    $subject = 'Compliance Dashboard Annual Review Tab';
+                    $body = 'Hi '.$recipients_name.',<br><br>
+
+                    Please note that '.$sender_name.' added observation for your review.<br><br>
+
+                    <a href="'. $base_url .'dashboard?d='. $data_library_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+                    php_mailer_dynamic($sender, $recipients, $subject, $body);
+
+                    echo json_encode($output);
                 }
             }
             mysqli_close($conn);
@@ -58819,9 +58958,11 @@
         }
     }
     if( isset($_POST['btnSaveMore_Review']) ) {
+        $s = 0;
         if (!empty($_COOKIE['switchAccount'])) {
             $portal_user = $_COOKIE['ID'];
             $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
         }
         else {
             $portal_user = $_COOKIE['ID'];
@@ -58957,10 +59098,38 @@
                         'last_modified' => $review_last_modified,
                         'files' => $files
                     );
-                    echo json_encode($output);
 
                     // Update History Data
                     actionHistory($library_id, 1, 4, $review_ID);
+
+                    // EMAIL NOTIFICATION
+                    // Requester
+                    $selectUserReq = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $portal_user" );
+                    if ( mysqli_num_rows($selectUserReq) > 0 ) {
+                        $rowUserReq = mysqli_fetch_array($selectUserReq);
+                        $sender_name = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+                        $sender_email = $rowUserReq['email'];
+                        $sender[$sender_email] = $sender_name;
+                    }
+
+                    // Employer (Receiver)
+                    $selectUser = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $user_id" );
+                    if ( mysqli_num_rows($selectUser) > 0 ) {
+                        $rowUser = mysqli_fetch_array($selectUser);
+                        $recipients_name = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+                        $recipients_email = $rowUser['email'];
+                        $recipients[$recipients_email] = $recipients_name;
+                    }
+                    
+                    $subject = 'Compliance Dashboard Annual Review Tab';
+                    $body = 'Hi '.$recipients_name.',<br><br>
+
+                    Please note that '.$sender_name.' added observation for your review.<br><br>
+
+                    <a href="'. $base_url .'dashboard?d='. $library_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+                    php_mailer_dynamic($sender, $recipients, $subject, $body);
+
+                    echo json_encode($output);
                 }
             }
             mysqli_close($conn);
@@ -59211,6 +59380,17 @@
         $id = $_GET['btnDelete_Template'];
         $current_userID = $_COOKIE['ID'];
         $reason = addslashes($_GET['reason']);
+        $s = 0;
+
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
 
         $message = array();
         array_push($message, $current_userID);
@@ -59222,9 +59402,37 @@
         $selectData = mysqli_query( $conn,'SELECT * FROM tbl_library_template WHERE ID="'. $id .'"' );
         $rowData = mysqli_fetch_array($selectData);
         $data_library_id = $rowData['library_id'];
+        $data_name = htmlentities($rowData['description'] ?? '');
             
         // Update History Data
         actionHistory($data_library_id, 3, 5, $id);
+
+        // EMAIL NOTIFICATION
+        // Requester
+        $selectUserReq = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $portal_user" );
+        if ( mysqli_num_rows($selectUserReq) > 0 ) {
+            $rowUserReq = mysqli_fetch_array($selectUserReq);
+            $sender_name = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+            $sender_email = $rowUserReq['email'];
+            $sender[$sender_email] = $sender_name;
+        }
+
+        // Employer (Receiver)
+        $selectUser = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $user_id" );
+        if ( mysqli_num_rows($selectUser) > 0 ) {
+            $rowUser = mysqli_fetch_array($selectUser);
+            $recipients_name = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+            $recipients_email = $rowUser['email'];
+            $recipients[$recipients_email] = $recipients_name;
+        }
+        
+        $subject = 'Compliance Dashboard Template Tab - Item Deleted';
+        $body = 'Hi '.$recipients_name.',<br><br>
+
+        Please note that '.$sender_name.' deleted <b>'.$data_name.'</b>. The reason is '.$reason.'.<br><br>
+
+        <a href="'. $base_url .'dashboard?d='. $data_library_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+        php_mailer_dynamic($sender, $recipients, $subject, $body);
     }
     if( isset($_POST['btnSave_Template']) ) {
         if (!empty($_COOKIE['switchAccount'])) {
@@ -59627,6 +59835,17 @@
         $id = $_GET['btnDelete_Ref'];
         $current_userID = $_COOKIE['ID'];
         $reason = addslashes($_GET['reason']);
+        $s = 0;
+
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
 
         $message = array();
         array_push($message, $current_userID);
@@ -59638,9 +59857,37 @@
         $selectData = mysqli_query( $conn,'SELECT * FROM tbl_library_references WHERE ID="'. $id .'"' );
         $rowData = mysqli_fetch_array($selectData);
         $data_library_id = $rowData['library_id'];
+        $data_name = htmlentities($rowData['description'] ?? '');
             
         // Update History Data
         actionHistory($data_library_id, 3, 6, $id);
+
+        // EMAIL NOTIFICATION
+        // Requester
+        $selectUserReq = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $portal_user" );
+        if ( mysqli_num_rows($selectUserReq) > 0 ) {
+            $rowUserReq = mysqli_fetch_array($selectUserReq);
+            $sender_name = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+            $sender_email = $rowUserReq['email'];
+            $sender[$sender_email] = $sender_name;
+        }
+
+        // Employer (Receiver)
+        $selectUser = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $user_id" );
+        if ( mysqli_num_rows($selectUser) > 0 ) {
+            $rowUser = mysqli_fetch_array($selectUser);
+            $recipients_name = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+            $recipients_email = $rowUser['email'];
+            $recipients[$recipients_email] = $recipients_name;
+        }
+        
+        $subject = 'Compliance Dashboard Reference Tab - Item Deleted';
+        $body = 'Hi '.$recipients_name.',<br><br>
+
+        Please note that '.$sender_name.' deleted <b>'.$data_name.'</b>. The reason is '.$reason.'.<br><br>
+
+        <a href="'. $base_url .'dashboard?d='. $data_library_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+        php_mailer_dynamic($sender, $recipients, $subject, $body);
     }
     if( isset($_POST['btnSave_Ref']) ) {
         if (!empty($_COOKIE['switchAccount'])) {
@@ -60035,6 +60282,17 @@
         $id = $_GET['btnDelete_Video'];
         $current_userID = $_COOKIE['ID'];
         $reason = addslashes($_GET['reason']);
+        $s = 0;
+
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
 
         $message = array();
         array_push($message, $current_userID);
@@ -60046,9 +60304,37 @@
         $selectData = mysqli_query( $conn,'SELECT * FROM tbl_library_video WHERE ID="'. $id .'"' );
         $rowData = mysqli_fetch_array($selectData);
         $data_library_id = $rowData['library_id'];
+        $data_name = htmlentities($rowData['description'] ?? '');
             
         // Update History Data
         actionHistory($data_library_id, 3, 7, $id);
+
+        // EMAIL NOTIFICATION
+        // Requester
+        $selectUserReq = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $portal_user" );
+        if ( mysqli_num_rows($selectUserReq) > 0 ) {
+            $rowUserReq = mysqli_fetch_array($selectUserReq);
+            $sender_name = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+            $sender_email = $rowUserReq['email'];
+            $sender[$sender_email] = $sender_name;
+        }
+
+        // Employer (Receiver)
+        $selectUser = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $user_id" );
+        if ( mysqli_num_rows($selectUser) > 0 ) {
+            $rowUser = mysqli_fetch_array($selectUser);
+            $recipients_name = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+            $recipients_email = $rowUser['email'];
+            $recipients[$recipients_email] = $recipients_name;
+        }
+        
+        $subject = 'Compliance Dashboard Video Tab - Item Deleted';
+        $body = 'Hi '.$recipients_name.',<br><br>
+
+        Please note that '.$sender_name.' deleted <b>'.$data_name.'</b>. The reason is '.$reason.'.<br><br>
+
+        <a href="'. $base_url .'dashboard?d='. $data_library_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+        php_mailer_dynamic($sender, $recipients, $subject, $body);
     }
     if( isset($_POST['btnSave_Video']) ) {
         if (!empty($_COOKIE['switchAccount'])) {
@@ -60555,6 +60841,18 @@
         $id = $_GET['btnDelete_Task'];
         $current_userID = $_COOKIE['ID'];
         $reason = addslashes($_GET['reason']);
+        $s = 0;
+
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+            $s = 1;
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
 
         $message = array();
         array_push($message, $current_userID);
@@ -60566,9 +60864,37 @@
         $selectData = mysqli_query( $conn,'SELECT * FROM tbl_MyProject_Services WHERE MyPro_id="'. $id .'"' );
         $rowData = mysqli_fetch_array($selectData);
         $data_library_id = $rowData['library_id'];
+        $data_name = htmlentities($rowData['description'] ?? '');
             
         // Update History Data
         // actionHistory($data_library_id, 3, 8, $id);
+
+        // EMAIL NOTIFICATION
+        // Requester
+        $selectUserReq = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $portal_user" );
+        if ( mysqli_num_rows($selectUserReq) > 0 ) {
+            $rowUserReq = mysqli_fetch_array($selectUserReq);
+            $sender_name = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+            $sender_email = $rowUserReq['email'];
+            $sender[$sender_email] = $sender_name;
+        }
+
+        // Employer (Receiver)
+        $selectUser = mysqli_query( $conn,"SELECT first_name, last_name, email FROM tbl_user WHERE ID = $user_id" );
+        if ( mysqli_num_rows($selectUser) > 0 ) {
+            $rowUser = mysqli_fetch_array($selectUser);
+            $recipients_name = htmlentities($rowUserReq['first_name'] ?? '') .' '. htmlentities($rowUserReq['last_name'] ?? '');
+            $recipients_email = $rowUser['email'];
+            $recipients[$recipients_email] = $recipients_name;
+        }
+        
+        $subject = 'Compliance Dashboard Task Tab - Item Deleted';
+        $body = 'Hi '.$recipients_name.',<br><br>
+
+        Please note that '.$sender_name.' deleted <b>'.$data_name.'</b>. The reason is '.$reason.'.<br><br>
+
+        <a href="'. $base_url .'dashboard?d='. $data_library_id .'&s='.$s.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">View</a>';
+        php_mailer_dynamic($sender, $recipients, $subject, $body);
     }
     if( isset($_POST['btnSave_Task']) ) {
         $current_userID = $_COOKIE['ID'];

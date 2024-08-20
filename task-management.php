@@ -593,7 +593,7 @@
                                                 <th>Services</th>
                                                 <th class="text-center" style="width: 80px;">Files</th>
                                                 <th class="text-center" style="width: 130px;">Date Requested</th>
-                                                <th class="text-center" style="width: 130px;">Action</th>
+                                                <th class="text-center" style="width: 125px;">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -1267,6 +1267,284 @@
                                     </table>
                                 </div>
                             </div>
+
+                            <div class="portlet light portlet-fit">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <span class="caption-subject font-dark bold uppercase">Corrective Action and Preventive Action Management</span>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <table class="table table-bordered table-hover tableData">
+                                        <thead>
+                                            <tr>
+                                                <th>Date Created</th>
+                                                <th>CAPA ID</th>
+
+                                                <?php echo $current_client == 0 ? '<th>CAPA Reference No.</th>':''; ?>
+                                                
+                                                <th>Observed By</th>
+                                                <th>Reported By</th>
+
+                                                <?php echo $current_client == 1 ? '<th>Personnel Involved':''; ?>
+                                                
+                                                <th>Department Involved</th>
+                                                <th>Description of Issue</th>
+                                                <th class="text-center" style="width: 125px;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                                $selectCamOpen = mysqli_query( $conn,"SELECT * FROM tbl_cam WHERE status = 0 AND user_id = $switch_user_id ORDER BY ID DESC" );
+                                                if ( mysqli_num_rows($selectCamOpen) > 0 ) {
+                                                    while ($rowOpen= mysqli_fetch_array($selectCamOpen)) {
+                                                        $cam_ID = $rowOpen['ID'];
+                                                        $cam_reference = htmlentities($rowOpen['reference'] ?? '');
+                                                        $cam_date = $rowOpen['date'];
+                                                        $cam_observed_by = htmlentities($rowOpen['observed_by'] ?? '');
+                                                        $cam_reported_by = htmlentities($rowOpen['reported_by'] ?? '');
+                                                        $cam_description = htmlentities($rowOpen['description'] ?? '');
+
+                                                        $cam_department_id = $rowOpen['department_id'];
+                                                        $cam_department_other = htmlentities($rowOpen['department_other'] ?? '');
+                                                        $data_department_id = array();
+                                                        if (!empty($cam_department_id)) {
+                                                            $array_department_id = explode(", ", $cam_department_id);
+
+                                                            $selectDepartment = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_department WHERE status = 1 AND user_id = $switch_user_id ORDER BY title" );
+                                                            if ( mysqli_num_rows($selectDepartment) > 0 ) {
+                                                                while ($rowDept = mysqli_fetch_array($selectDepartment)) {
+                                                                    if (in_array($rowDept["ID"], $array_department_id)) {
+                                                                        array_push($data_department_id, htmlentities($rowDept["title"] ??''));
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            if (in_array(0, $array_department_id)) {
+                                                                array_push($data_department_id, stripcslashes($cam_department_other));
+                                                            }
+                                                        }
+                                                        $data_department_id = implode(", ",$data_department_id);
+
+                                                        $cam_employee_id = $rowOpen['employee_id'];
+                                                        $data_employee_id = array();
+                                                        if (!empty($cam_employee_id)) {
+                                                            $array_employee_id = explode(", ", $cam_employee_id);
+                                                            $selectEmployee = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $switch_user_id ORDER BY first_name" );
+                                                            if ( mysqli_num_rows($selectEmployee) > 0 ) {
+                                                                while ($rowEmployee = mysqli_fetch_array($selectEmployee)) {
+                                                                    if (in_array($rowEmployee["ID"], $array_employee_id)) {
+                                                                        array_push($data_employee_id, htmlentities($rowEmployee["first_name"] ?? '').' '.htmlentities($rowEmployee["last_name"] ?? ''));
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        $data_employee_id = implode(", ",$data_employee_id);
+
+                                                        echo '<tr id="tr_'.$cam_ID.'">
+                                                            <td>'.$cam_date.'</td>
+                                                            <td>'.$cam_ID.'</td>';
+
+                                                            if ($current_client == 0) { echo '<td>'.$cam_reference.'</td>'; }
+                                                            
+                                                            echo '<td>'.$cam_observed_by.'</td>
+                                                            <td>'.$cam_reported_by.'</td>';
+
+                                                            if ($current_client == 1) { echo '<td>'.$data_employee_id.'</td>'; }
+                                                            
+                                                            echo '<td>'.$data_department_id.'</td>
+                                                            <td>'.$cam_description.'</td>
+                                                            <td class="text-center">
+                                                                <div class="btn-group btn-group-circle">
+                                                                    <a href="'.$base_url.'pdf_c?id='.$cam_ID.'&t=1" target="_blank" class="btn btn-info btn-sm">PDF</a>
+                                                                    <a href="javascript:;" class="btn btn-danger btn-sm" onclick="btnClose('. $cam_ID .')">Close</a>
+                                                                </div>
+                                                            </td>
+                                                        </tr>';
+                                                    }
+                                                }
+                                                
+                                                $selectComplaintOpen = mysqli_query( $conn,"SELECT * FROM tbl_complaint_records WHERE deleted = 0 AND capam = 1 AND status = 0 AND care_ownedby = $switch_user_id ORDER BY care_id DESC" );
+                                                if ( mysqli_num_rows($selectComplaintOpen) > 0 ) {
+                                                    while ($rowOpen= mysqli_fetch_array($selectComplaintOpen)) {
+                                                        $cam_ID = htmlentities($rowOpen['care_id'] ?? '');
+                                                        $cam_reference = htmlentities($rowOpen['reference'] ?? '');
+                                                        $cam_observed_by = htmlentities($rowOpen['observed_by'] ?? '');
+                                                        $cam_reported_by = htmlentities($rowOpen['reported_by'] ?? '');
+                                                        $cam_description = htmlentities($rowOpen['nature_complaint'] ?? '');
+                                                        
+                                                        $data_department_id = array();
+                                                        $cam_person_handlingn = htmlentities($rowOpen['person_handling'] ?? '');
+                                                        if ($cam_person_handlingn > 0) {
+                                                            $selectEmp = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID = $cam_person_handlingn" );
+                                                            if ( mysqli_num_rows($selectEmp) > 0 ) {
+                                                                $rowEmp= mysqli_fetch_array($selectEmp);
+                                                                $cam_department_id = $rowEmp['department_id'];
+                                                                
+                                                                $array_department_id = explode(", ", $cam_department_id);
+                                                                $selectDepartment = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_department WHERE status = 1 AND user_id = $switch_user_id ORDER BY title" );
+                                                                if ( mysqli_num_rows($selectDepartment) > 0 ) {
+                                                                    while ($rowDept = mysqli_fetch_array($selectDepartment)) {
+                                                                        if (in_array($rowDept["ID"], $array_department_id)) {
+                                                                            array_push($data_department_id, htmlentities($rowDept["title"] ?? ''));
+                                                                        }
+                                                                    }
+                                                                }
+
+                                                                if (in_array(0, $array_department_id)) {
+                                                                    array_push($data_department_id, stripcslashes($cam_department_other));
+                                                                }
+                                                            }
+                                                        }
+                                                        $data_department_id = implode(", ",$data_department_id);
+                                                        
+                                                        $cam_date = $rowOpen['care_date'];
+                                                        $cam_date = new DateTime($cam_date);
+                                                        $cam_date = $cam_date->format('Y-m-d');
+
+                                                        $cam_employee_id = $rowOpen['person_handling'];
+                                                        $data_employee_id = array();
+                                                        if (!empty($cam_employee_id)) {
+                                                            $array_employee_id = explode(", ", $cam_employee_id);
+                                                            $selectEmployee = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $switch_user_id ORDER BY first_name" );
+                                                            if ( mysqli_num_rows($selectEmployee) > 0 ) {
+                                                                while ($rowEmployee = mysqli_fetch_array($selectEmployee)) {
+                                                                    if (in_array($rowEmployee["ID"], $array_employee_id)) {
+                                                                        array_push($data_employee_id, htmlentities($rowEmployee["first_name"] ?? '').' '.htmlentities($rowEmployee["last_name"] ?? ''));
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        $data_employee_id = implode(", ",$data_employee_id);
+
+                                                        echo '<tr id="tr_cc_'.$cam_ID.'">
+                                                            <td>'.$cam_date.'</td>
+                                                            <td>'.$cam_ID.'</td>';
+
+                                                            if ($current_client == 0) { echo '<td>'.$cam_reference.'</td>'; }
+                                                            
+                                                            echo '<td>'.$cam_observed_by.'</td>
+                                                            <td>'.$cam_reported_by.'</td>';
+
+                                                            if ($current_client == 1) { echo '<td>'.$data_employee_id.'</td>'; }
+                                                            
+                                                            echo '<td>'.$data_department_id.'</td>
+                                                            <td>'.$cam_description.'</td>
+                                                            <td class="text-center">
+                                                                <div class="btn-group btn-group-circle">
+                                                                    <a href="'.$base_url.'pdf_c?id='.$cam_ID.'&t=2" target="_blank" class="btn btn-info btn-sm">PDF</a>
+                                                                    <a href="javascript:;" class="btn btn-danger btn-sm" onclick="btnClose2('. $cam_ID .')">Close</a>
+                                                                </div>
+                                                            </td>
+                                                        </tr>';
+                                                    }
+                                                }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <div class="portlet light portlet-fit">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        <span class="caption-subject font-dark bold uppercase">MyPro</span>
+                                    </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <table class="table table-bordered table-hover tableData">
+                                        <thead>
+                                            <tr>
+                                                <th>Task</th>
+                                                <th>From</th>
+                                                <th>Account</th>
+                                                <th>Status</th>
+                                                <th>Action Item</th>
+                                                <th class="text-center">Start Date</th>
+                                                <th class="text-center">Due Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                                $selectData = mysqli_query( $conn,"
+                                                    SELECT 
+                                                    m.CAI_id AS m_ID,
+                                                    m.Parent_MyPro_PK AS m_parent_id,
+                                                    u.first_name AS u_first_name,
+                                                    u.last_name AS u_last_name,
+                                                    m.CAI_filename AS m_title,
+                                                    m.CAI_description AS m_description,
+                                                    m.CAI_Accounts AS m_accounts,
+                                                    m.CIA_progress AS m_status,
+                                                    a.Action_Items_name As a_name,
+                                                    m.CAI_Action_date AS m_date_start,
+                                                    m.CAI_Action_due_date AS m_date_end
+                                                    
+                                                    FROM tbl_MyProject_Services_Childs_action_Items AS m
+                                                    
+                                                    LEFT JOIN (
+                                                    	SELECT
+                                                        *
+                                                        FROM tbl_user
+                                                    ) AS u
+                                                    ON m.CAI_User_PK = u.ID
+                                                    
+                                                    LEFT JOIN (
+                                                    	SELECT
+                                                        *
+                                                        FROM tbl_MyProject_Services_Action_Items
+                                                    ) AS a
+                                                    ON m.CAI_Action_taken = a.Action_Items_id
+                                                    
+                                                    WHERE m.is_deleted = 0
+                                                    AND m.CIA_progress < 2
+                                                    AND m.CAI_Assign_to = $current_userEmployeeID
+                                                " );
+                                                if ( mysqli_num_rows($selectData) > 0 ) {
+                                                    while ($rowData= mysqli_fetch_array($selectData)) {
+                                                        $m_ID = $rowData['m_ID'];
+                                                        $m_parent_id = $rowData['m_parent_id'];
+                                                        $u_first_name = htmlentities($rowData['u_first_name'] ?? '');
+                                                        $u_last_name = htmlentities($rowData['u_last_name'] ?? '');
+                                                        $m_title = htmlentities($rowData['m_title'] ?? '');
+                                                        $m_description = htmlentities($rowData['m_description'] ?? '');
+                                                        $m_accounts = htmlentities($rowData['m_accounts'] ?? '');
+                                                        $a_name = htmlentities($rowData['a_name'] ?? '');
+                                                        
+                                                        $m_status = $rowData['m_status'];
+                                                        if ($m_status == 0) {
+                                                            $m_status = 'Pending';
+                                                        } else if ($m_status == 1) {
+                                                            $m_status = 'Inprogress';
+                                                        }
+                                                        
+                                                        $m_date_start = $rowData['m_date_start'];
+                                                        $m_date_start = new DateTime($m_date_start);
+                                                        $m_date_start = $m_date_start->format('Y-m-d');
+                                                        
+                                                        $m_date_end = $rowData['m_date_end'];
+                                                        $m_date_end = new DateTime($m_date_end);
+                                                        $m_date_end = $m_date_end->format('Y-m-d');
+                                                        
+                                                        echo '<tr>
+                                                            <td>
+                                                                <a href="#modalGet_child2b" data-toggle="modal" onclick="onclick_2('.$m_ID.')"><strong>'.$m_title.'</strong></a><br>
+                                                                '.$m_description.'
+                                                            </td>
+                                                            <td>'.$u_first_name.' '.$u_last_name.'</td>
+                                                            <td>'.$m_accounts.'</td>
+                                                            <td>'.$m_status.'</td>
+                                                            <td>'.$a_name.'</td>
+                                                            <td class="text-center">'.$m_date_start.'</td>
+                                                            <td class="text-center">'.$m_date_end.'</td>
+                                                        </tr>';
+                                                    }
+                                                }
+                                            ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                             <!-- END BORDERED TABLE PORTLET-->
                         </div>
 
@@ -1357,6 +1635,25 @@
                                         <div class="modal-body"></div>
                                         <div class="modal-footer">
                                            <input class="btn btn-info" type="submit" name="btnSave_status" id="btnSave_status" value="Save" >
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!--MyPro Section-->
+                        <div class="modal fade" id="modalGet_child2b" tabindex="-1" role="basic" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <form method="post" class="form-horizontal modalForm modalGet_child2b">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                            <h4 class="modal-title">New Action Item</h4>
+                                        </div>
+                                        <div class="modal-body"></div>
+                                        <div class="modal-footer">
+                                            <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
+                                            <button type="submit" class="btn green ladda-button" name="btnSubmit_2b" id="btnSubmit_2b" data-style="zoom-out"><span class="ladda-label">Submit</span></button>
                                         </div>
                                     </form>
                                 </div>
@@ -1692,6 +1989,94 @@
                     }
                 });
             }));
+            
+            // CAPAM and Customer Complaint Section
+            function btnClose(id) {
+                swal({
+                    title: "Are you sure?",
+                    text: "Your item will be closed!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, confirm!",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "function.php?modalStatus_CAM="+id+"&s=1",
+                        dataType: "html",
+                        success: function(response){
+                            alert('Close');
+                        }
+                    });
+                    swal("Done!", "This item has been moved to Close", "success");
+                });
+            }
+            function btnClose2(id) {
+                swal({
+                    title: "Are you sure?",
+                    text: "Your item will be closed!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, confirm!",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "function.php?modalStatus_CAM2="+id+"&s=1",
+                        dataType: "html",
+                        success: function(response){
+                            alert('Close');
+                        }
+                    });
+                    swal("Done!", "This item has been deleted.", "success");
+                });
+            }
+            
+            // MyPro Section
+            function onclick_2(id) {
+                $.ajax({
+                    type: "GET",
+                    url: "mypro_function/mypro_action.php?getId_2b="+id,
+                    dataType: "html",
+                    success: function(data){
+                        $("#modalGet_child2b .modal-body").html(data);
+                        $(".modalForm").validate();
+                        selectMulti();
+                    }
+                });
+            }
+            $(".modalGet_child2b").on('submit',(function(e) {
+                e.preventDefault();
+                formObj = $(this);
+                if (!formObj.validate().form()) return false;
+                    
+                var formData = new FormData(this);
+                formData.append('btnSubmit_2b',true);
+        
+                var l = Ladda.create(document.querySelector('#btnSubmit_2b'));
+                l.start();
+        
+                $.ajax({
+                    url: "mypro_function/mypro_action.php",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData:false,
+                    cache: false,
+                    success: function(response) {
+                        if ($.trim(response)) {
+                            msg = "Sucessfully Save!";
+                        } else {
+                            msg = "Error!"
+                        }
+                        l.stop();
+                        bootstrapGrowl(msg);
+                    }
+                });
+            }));
+            
         </script>
     </body>
 </html>

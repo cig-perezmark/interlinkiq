@@ -90,3 +90,5 @@ wp-*
 .htaccess
 .vscode
 function-*.php
+
+testing-bash-script/

@@ -164,9 +164,9 @@ $builderTabs = [
                     </li>
                 <?php endforeach; ?>
                 <?php if (isset($haccpResource)) : ?>
-                    <li>
+                    <!-- <li>
                         <a href="#process_monitoring_forms" data-toggle="tab"> Process Monitoring Forms </a>
-                    </li>
+                    </li> -->
                     <li>
                         <a href="#haccptasks" data-toggle="tab"> Tasks <span class="badge badge-danger" data-tasksbadge="0">0</span> </a>
                     </li>
@@ -182,9 +182,9 @@ $builderTabs = [
             </li>
         <?php endforeach; ?>
         <?php if (isset($haccpResource)) : ?>
-            <li class="hbtabwide">
+            <!-- <li class="hbtabwide">
                 <a href="#process_monitoring_forms" data-toggle="tab"> Process Monitoring Forms </a>
-            </li>
+            </li> -->
             <li class="hbtabwide">
                 <a href="#haccptasks" data-toggle="tab"> Tasks <span class="badge badge-danger" data-tasksbadge="0">0</span> </a>
             </li>
@@ -692,7 +692,34 @@ $builderTabs = [
     <div data-section="ppc" class="tab-pane" id="process_preventive_control">
         <div class="haccpTableContainer">
             <table id="hbPPC">
-                <thead></thead>
+                <thead>
+                    <tr>
+                        <th rowspan="2" style="width: 10%;">
+                            <div style="display:flex; align-items:center;flex-direction:column; justify-content:space-between;gap:3rem;">
+                                <span>Process Step / CCP </span>
+                                <label class="stepSelector">
+                                    Find:
+                                    <select class="">
+                                        <option selected disabled>None</option>
+                                    </select>
+                                </label>
+                            </div>
+                        </th>
+                        <th rowspan="2" style="width: 12%;">Critical Limits</th>
+                        <th colspan="4" style="width: 42%;">Monitoring Procedures</th>
+                        <th rowspan="2" style="width: 12%;">Corrective Actions</th>
+                        <th style="width: 12%;" rowspan="2">
+                            Verification
+                        </th>
+                        <th style="width: 12%;" rowspan="2">Record-keeping</th>
+                    </tr>
+                    <tr>
+                        <th style="width: 15%;">What</th>
+                        <th style="width: 15%;">How</th>
+                        <th style="width: 15%;">Frequency</th>
+                        <th style="width: 15%;">Who</th>
+                    </tr>
+                </thead>
                 <tbody class="haccp-builder-table-body"></tbody>
             </table>
         </div>

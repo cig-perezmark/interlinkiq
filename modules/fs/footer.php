@@ -15,8 +15,8 @@
 <script src="modules/fs/js/table_controls/main.js"></script>
 <script src="modules/fs/js/table_controls/hazardAnalysis.js"></script>
 <script src="modules/fs/js/table_controls/ccpDetermination.js"></script>
-<script src="modules/fs/js/table_controls/clmca.js"></script>
-<script src="modules/fs/js/table_controls/vrk.js"></script>
+<script src="modules/fs/js/table_controls/processNarrative.js"></script>
+<script src="modules/fs/js/table_controls/processPreventiveControls.js"></script>
 
 <!-- diagram scripts -->
 <script src="modules/fs/js/jsflow/console.js"></script>
@@ -31,11 +31,11 @@
 <script src="modules/fs/js/index.js"></script>
 
 <script>
-document.querySelector('select[name="facility"]').dispatchEvent(new Event('change'));
+    document.querySelector('select[name="facility"]').dispatchEvent(new Event('change'));
 
-$('.dev-esign').eSign();
-$('.vfd-esign').eSign();
-selectMulti();
+    $('.dev-esign').eSign();
+    $('.vfd-esign').eSign();
+    selectMulti();
 </script>
 
 </body>

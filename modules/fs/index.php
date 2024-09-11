@@ -5,7 +5,7 @@ include_once __DIR__ . '/../../header.php';
 include_once __DIR__ . '/init.php';
 
 if ($_SERVER['SERVER_NAME'] == 'dev.local') {
-    $pageUrl = 'http://dev.local/interlink/food-safety-plan';
+    $pageUrl = 'https://dev.local/interlink/food-safety-plan';
 }
 
 ?>

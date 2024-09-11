@@ -16,6 +16,20 @@ $pageUrl .= "/$site";
 
 if (isset($_POST['search-product']) && !empty($_POST['search-product'])) {
     $allProducts = [];
+    $allergensPool = [
+        'Milk',
+        'Egg',
+        'Fish (e.g., bass, flounder, cod)',
+        'Crustacean shellfish (e.g., crab, lobster, shrimp)',
+        'Tree nuts (e.g., almonds, walnuts, peca)',
+        'Peanuts',
+        'Wheat',
+        'Soybeans',
+        'Sesame',
+        'none',
+        'other',
+    ];
+
     $search = mysqli_real_escape_string($conn, $_POST['search-product']);
     $result = $conn->query("SELECT 
         p.ID AS id,
@@ -23,6 +37,9 @@ if (isset($_POST['search-product']) && !empty($_POST['search-product'])) {
         p.code,
         p.name,
         p.description,
+        p.ingredients,
+        p.allergen,
+        p.allergen_other,
         c.name AS category
         FROM tbl_products AS p
         LEFT JOIN tbl_products_category AS c ON p.category = c.ID
@@ -30,9 +47,22 @@ if (isset($_POST['search-product']) && !empty($_POST['search-product'])) {
     $totalResult = $result->num_rows;
     if ($totalResult > 0) {
         while ($row = $result->fetch_assoc()) {
+            $al = explode(', ', $row['allergen']);
+            $row['allergens'] = [];
+
+            foreach ($al as $a)
+                $row['allergens'][] = $allergensPool[$a];
+
+            if (!empty($row['allergen_other']))
+                $row['allergen'] .= ', ' . $row['allergen_other'];
+
             $img = explode(',', $row['image'])[0];
             $img = empty($img) ? null : '//interlinkiq.com/uploads/products/' . $img;
             $row['image'] = !empty($img) ? $img : "https://via.placeholder.com/120x90/EFEFEF/AAAAAA.png?text=No+Image";
+
+            unset($row['allergen'], $row['allergen_other']);
+
+            $row['allergens'] = implode(', ', $row['allergens']);
             $allProducts[] = $row;
         }
     }

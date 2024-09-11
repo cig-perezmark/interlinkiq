@@ -38,7 +38,7 @@ $builderTabs = [
     ],
     [
         'title' => 'Food Allergen Preventive Controls',
-        'link' => 'process_preventive_control'
+        'link' => 'food_allergen_preventive_controls'
     ],
     [
         'title' => 'Sanitation Preventive Controls',
@@ -194,11 +194,13 @@ $builderTabs = [
         <?php endif; ?>
     </ul>
 </div>
-<h4 class="bold" id="builder-title">Raw Product List </h4>
+<div>
+    <h4 class="bold" id="builder-title">Raw Product List </h4>
+</div>
 <div class="tab-content">
     <div class="tab-pane active" id="product_information">
         <div class="row">
-            <div class="col-md-9">
+            <div class="col-md-12">
                 <div class="form-group row">
                     <label class="col-md-12 control-label">Select new product </label>
                     <div class="col-md-9">
@@ -207,9 +209,12 @@ $builderTabs = [
                         </select>
                     </div>
                     <div class="col-md-3">
-                        <input type="hidden" id="selectedProductId">
-                        <button type="button" class="btn btn-primary btn-block addProductBtn" onclick="addProductBtnClick()" disabled>
-                            <i class="fa fa-plus"></i> Add product</button>
+                        <div>
+                            <input type="hidden" id="selectedProductId">
+                            <button type="button" class="btn btn-primary btn-blockx addProductBtn" onclick="addProductBtnClick()" disabled>
+                                <i class="fa fa-plus"></i> Add product
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <h4 style="padding-top: 0;"><strong>Product(s)</strong></h4>
@@ -218,6 +223,12 @@ $builderTabs = [
                 </div>
                 <div class="table-responsive">
                     <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width: 18%;">Product Name</th>
+                                <th style="width: 12%;"></th>
+                            </tr>
+                        </thead>
                         <tbody id="addedProductsList">
                             <?php
                             if (isset($haccpResource) && count($haccpResource['products'])) {
@@ -229,7 +240,7 @@ $builderTabs = [
                                         $img = empty($img) ? null : '//interlinkiq.com/uploads/products/' . $img;
                                         $img = !empty($img) ? $img : "https://via.placeholder.com/120x90/EFEFEF/AAAAAA.png?text=No+Image";
                                         echo '<tr>
-                                                <td style="width: 88%">
+                                                <td style="width: 58%">
                                                     <div class="d-flex-center">
                                                         <img src="' . $img . '" alt="Product Image" style="width: 8rem; margin-right: 1rem">
                                                         <div>
@@ -249,7 +260,7 @@ $builderTabs = [
                             }
 
                             if (isset($haccpResource) && count($haccpResource['products']) == 0) {
-                                echo '<tr class="no-products"><td>No product(s) added.</td></tr>';
+                                echo '<tr class="no-products"><td colspan="7">No product(s) added.</td></tr>';
                             }
                             ?>
                         </tbody>
@@ -722,6 +733,76 @@ $builderTabs = [
                 </thead>
                 <tbody class="haccp-builder-table-body"></tbody>
             </table>
+        </div>
+    </div>
+    <div data-section="fapc" class="tab-pane" id="food_allergen_preventive_controls">
+        <div class="tabbable tabbable-tabdrop tabbable-custom">
+            <ul class="nav nav-tabs builder-toc-navs tabs-reversed  ">
+                <li class="hbtabwide active">
+                    <a href="#food_allergen_ingredient_analysis" data-toggle="tab"> Food Allergen Ingredient Analysis </a>
+                </li>
+                <li class="hbtabwide">
+                    <a href="#allergen_verification_listing" data-toggle="tab"> Allergen Verification Listing </a>
+                </li>
+                <li class="hbtabwide">
+                    <a href="#allergen_scheduling_cleaning_implications" data-toggle="tab"> Allergen Scheduling and Cleaning Implications </a>
+                </li>
+                <li class="hbtabwide">
+                    <a href="#allergen_preventive_controls" data-toggle="tab"> Allergen Preventive Controls </a>
+                </li>
+            </ul>
+        </div>
+        <div class="tab-content">
+            <div data-section="faia" class="tab-pane active" id="food_allergen_ingredient_analysis">
+                <div class="haccpTableContainer">
+                    <table id="hbPPCx">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" style="width: 10%;">
+                                    <div style="display:flex; align-items:center;flex-direction:column; justify-content:space-between;gap:3rem;">
+                                        <span>Process Step / CCP </span>
+                                        <label class="stepSelector">
+                                            Find:
+                                            <select class="">
+                                                <option selected disabled>None</option>
+                                            </select>
+                                        </label>
+                                    </div>
+                                </th>
+                                <th rowspan="2" style="width: 12%;">Critical Limits</th>
+                                <th colspan="4" style="width: 42%;">Monitoring Procedures</th>
+                                <th rowspan="2" style="width: 12%;">Corrective Actions</th>
+                                <th style="width: 12%;" rowspan="2">
+                                    Verification
+                                </th>
+                                <th style="width: 12%;" rowspan="2">Record-keeping</th>
+                            </tr>
+                            <tr>
+                                <th style="width: 15%;">What</th>
+                                <th style="width: 15%;">How</th>
+                                <th style="width: 15%;">Frequency</th>
+                                <th style="width: 15%;">Who</th>
+                            </tr>
+                        </thead>
+                        <tbody class="haccp-builder-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div data-section="avl" class="tab-pane" id="allergen_verification_listing">
+                <div class="haccpTableContainer">
+                    2
+                </div>
+            </div>
+            <div data-section="asci" class="tab-pane" id="allergen_scheduling_cleaning_implications">
+                <div class="haccpTableContainer">
+                    3
+                </div>
+            </div>
+            <div data-section="apc" class="tab-pane" id="allergen_preventive_controls">
+                <div class="haccpTableContainer">
+                    4
+                </div>
+            </div>
         </div>
     </div>
 

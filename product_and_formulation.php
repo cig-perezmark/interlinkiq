@@ -10,6 +10,8 @@
     $breadcrumbs .= '<li><span>'. $title .'</span></li>';
 
     include_once ('header.php'); 
+    include_once ('database_afia_forms.php'); 
+    include_once ('database_forms.php'); 
 ?>
 <style>
    .has-error {

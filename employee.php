@@ -334,7 +334,7 @@
                                                                 2 => 'Food Defense',
                                                                 3 => 'Food Safety'
                                                             );
-                                                            $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID <> 1240 AND ID <> 1241 AND suspended = 0 AND status = 1 AND user_id = $switch_user_id ORDER BY last_name " );
+                                                            $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID <> 1240 AND ID <> 1241 AND suspended = 0 AND status = 1 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id ORDER BY last_name " );
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 $table_counter = 1;
                                                                 while($row = mysqli_fetch_array($result)) {
@@ -462,7 +462,7 @@
                                                     </thead>
                                                     <tbody>
                                                         <?php
-                                                            $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 0 AND user_id = $switch_user_id ORDER BY last_name " );
+                                                            $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id ORDER BY last_name " );
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 $table_counter = 1;
                                                                 while($row = mysqli_fetch_array($result)) {
@@ -585,7 +585,7 @@
                                                     </thead>
                                                     <tbody>
                                                         <?php
-                                                            $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 1 AND user_id = $switch_user_id ORDER BY last_name " );
+                                                            $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 1 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id ORDER BY last_name " );
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 $table_counter = 1;
                                                                 while($row = mysqli_fetch_array($result)) {
@@ -704,21 +704,21 @@
                                                                 <td>Full-time</td>
                                                                 <td class="text-center">';
 
-                                                                    $selectFTA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FTA FROM tbl_hr_employee WHERE type_id = 1 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id" );
+                                                                    $selectFTA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FTA FROM tbl_hr_employee WHERE type_id = 1 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                     $rowFTA = mysqli_fetch_array($selectFTA);
                                                                     echo htmlentities($rowFTA["TOTAL_FTA"] ?? '');
 
                                                                 echo '</td>
                                                                 <td class="text-center">';
 
-                                                                    $selectFTI = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FTI FROM tbl_hr_employee WHERE type_id = 1 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id" );
+                                                                    $selectFTI = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FTI FROM tbl_hr_employee WHERE type_id = 1 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                     $rowFTI = mysqli_fetch_array($selectFTI);
                                                                     echo htmlentities($rowFTI["TOTAL_FTI"] ?? '');
 
                                                                 echo '</td>
                                                                 <td class="text-center">';
 
-                                                                    $selectFTS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FTS FROM tbl_hr_employee WHERE type_id = 1 AND suspended = 1 AND user_id = $switch_user_id" );
+                                                                    $selectFTS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FTS FROM tbl_hr_employee WHERE type_id = 1 AND suspended = 1 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                     $rowFTS = mysqli_fetch_array($selectFTS);
                                                                     echo htmlentities($rowFTS["TOTAL_FTS"] ?? '');
 
@@ -728,21 +728,21 @@
                                                                 echo $_COOKIE['client'] == 1 ? '<td>Part-Time</td>':'<td>Part-Time Project</td>';
                                                                 echo '<td class="text-center">';
 
-                                                                    $selectPTA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_PTA FROM tbl_hr_employee WHERE type_id = 2 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id" );
+                                                                    $selectPTA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_PTA FROM tbl_hr_employee WHERE type_id = 2 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                     $rowPTA = mysqli_fetch_array($selectPTA);
                                                                     echo htmlentities($rowPTA["TOTAL_PTA"] ?? '');
 
                                                                 echo '</td>
                                                                 <td class="text-center">';
 
-                                                                    $selectPTI = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_PTI FROM tbl_hr_employee WHERE type_id = 2 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id" );
+                                                                    $selectPTI = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_PTI FROM tbl_hr_employee WHERE type_id = 2 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                     $rowPTI = mysqli_fetch_array($selectPTI);
                                                                     echo htmlentities($rowPTI["TOTAL_PTI"] ?? '');
 
                                                                 echo '</td>
                                                                 <td class="text-center">';
 
-                                                                    $selectPTS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_PTS FROM tbl_hr_employee WHERE type_id = 2 AND suspended = 1 AND user_id = $switch_user_id" );
+                                                                    $selectPTS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_PTS FROM tbl_hr_employee WHERE type_id = 2 AND suspended = 1 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                     $rowPTS = mysqli_fetch_array($selectPTS);
                                                                     echo htmlentities($rowPTS["TOTAL_PTS"] ?? '');
 
@@ -754,21 +754,21 @@
                                                                     <td>OJT</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectOJTA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_OJTA FROM tbl_hr_employee WHERE type_id = 3 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id" );
+                                                                            $selectOJTA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_OJTA FROM tbl_hr_employee WHERE type_id = 3 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowOJTA = mysqli_fetch_array($selectOJTA);
                                                                             echo htmlentities($rowOJTA["TOTAL_OJTA"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectOJTI = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_OJTI FROM tbl_hr_employee WHERE type_id = 3 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id" );
+                                                                            $selectOJTI = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_OJTI FROM tbl_hr_employee WHERE type_id = 3 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowOJTI = mysqli_fetch_array($selectOJTI);
                                                                             echo htmlentities($rowOJTI["TOTAL_OJTI"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectOJTS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_OJTS FROM tbl_hr_employee WHERE type_id = 3 AND suspended = 1 AND user_id = $switch_user_id" );
+                                                                            $selectOJTS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_OJTS FROM tbl_hr_employee WHERE type_id = 3 AND suspended = 1 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowOJTS = mysqli_fetch_array($selectOJTS);
                                                                             echo htmlentities($rowOJTS["TOTAL_OJTS"] ?? '');
 
@@ -778,21 +778,21 @@
                                                                     <td>Freelance</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectFA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FA FROM tbl_hr_employee WHERE type_id = 4 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id" );
+                                                                            $selectFA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FA FROM tbl_hr_employee WHERE type_id = 4 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowFA = mysqli_fetch_array($selectFA);
                                                                             echo htmlentities($rowFA["TOTAL_FA"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectFI = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FI FROM tbl_hr_employee WHERE type_id = 4 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id" );
+                                                                            $selectFI = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FI FROM tbl_hr_employee WHERE type_id = 4 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowFI = mysqli_fetch_array($selectFI);
                                                                             echo htmlentities($rowFI["TOTAL_FI"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectFS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FS FROM tbl_hr_employee WHERE type_id = 4 AND suspended = 1 AND user_id = $switch_user_id" );
+                                                                            $selectFS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FS FROM tbl_hr_employee WHERE type_id = 4 AND suspended = 1 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowFS = mysqli_fetch_array($selectFS);
                                                                             echo htmlentities($rowFS["TOTAL_FS"] ?? '');
 
@@ -802,21 +802,21 @@
                                                                     <td>Part-Time Apprentice</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectIA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IA FROM tbl_hr_employee WHERE type_id = 5 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id" );
+                                                                            $selectIA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IA FROM tbl_hr_employee WHERE type_id = 5 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowIA = mysqli_fetch_array($selectIA);
                                                                             echo htmlentities($rowIA["TOTAL_IA"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectII = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_II FROM tbl_hr_employee WHERE type_id = 5 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id" );
+                                                                            $selectII = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_II FROM tbl_hr_employee WHERE type_id = 5 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowII = mysqli_fetch_array($selectII);
                                                                             echo htmlentities($rowII["TOTAL_II"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectIS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IS FROM tbl_hr_employee WHERE type_id = 5 AND suspended = 1 AND user_id = $switch_user_id" );
+                                                                            $selectIS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IS FROM tbl_hr_employee WHERE type_id = 5 AND suspended = 1 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowIS = mysqli_fetch_array($selectIS);
                                                                             echo htmlentities($rowIS["TOTAL_IS"] ?? '');
 
@@ -826,21 +826,21 @@
                                                                     <td>Trainee</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectIA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IA FROM tbl_hr_employee WHERE type_id = 6 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id" );
+                                                                            $selectIA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IA FROM tbl_hr_employee WHERE type_id = 6 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowIA = mysqli_fetch_array($selectIA);
                                                                             echo htmlentities($rowIA["TOTAL_IA"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectII = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_II FROM tbl_hr_employee WHERE type_id = 6 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id" );
+                                                                            $selectII = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_II FROM tbl_hr_employee WHERE type_id = 6 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowII = mysqli_fetch_array($selectII);
                                                                             echo htmlentities($rowII["TOTAL_II"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectIS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IS FROM tbl_hr_employee WHERE type_id = 6 AND suspended = 1 AND user_id = $switch_user_id" );
+                                                                            $selectIS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IS FROM tbl_hr_employee WHERE type_id = 6 AND suspended = 1 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowIS = mysqli_fetch_array($selectIS);
                                                                             echo htmlentities($rowIS["TOTAL_IS"] ?? '');
 
@@ -850,21 +850,21 @@
                                                                     <td>Consultant</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectIA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IA FROM tbl_hr_employee WHERE type_id = 7 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id" );
+                                                                            $selectIA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IA FROM tbl_hr_employee WHERE type_id = 7 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowIA = mysqli_fetch_array($selectIA);
                                                                             echo htmlentities($rowIA["TOTAL_IA"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectII = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_II FROM tbl_hr_employee WHERE type_id = 7 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id" );
+                                                                            $selectII = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_II FROM tbl_hr_employee WHERE type_id = 7 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowII = mysqli_fetch_array($selectII);
                                                                             echo htmlentities($rowII["TOTAL_II"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectIS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IS FROM tbl_hr_employee WHERE type_id = 7 AND suspended = 1 AND user_id = $switch_user_id" );
+                                                                            $selectIS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IS FROM tbl_hr_employee WHERE type_id = 7 AND suspended = 1 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowIS = mysqli_fetch_array($selectIS);
                                                                             echo htmlentities($rowIS["TOTAL_IS"] ?? '');
 
@@ -875,21 +875,21 @@
                                                                     <td>Contractor</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectOJTA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_OJTA FROM tbl_hr_employee WHERE type_id = 8 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id" );
+                                                                            $selectOJTA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_OJTA FROM tbl_hr_employee WHERE type_id = 8 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowOJTA = mysqli_fetch_array($selectOJTA);
                                                                             echo htmlentities($rowOJTA["TOTAL_OJTA"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectOJTI = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_OJTI FROM tbl_hr_employee WHERE type_id = 8 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id" );
+                                                                            $selectOJTI = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_OJTI FROM tbl_hr_employee WHERE type_id = 8 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowOJTI = mysqli_fetch_array($selectOJTI);
                                                                             echo htmlentities($rowOJTI["TOTAL_OJTI"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectOJTS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_OJTS FROM tbl_hr_employee WHERE type_id = 8 AND suspended = 1 AND user_id = $switch_user_id" );
+                                                                            $selectOJTS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_OJTS FROM tbl_hr_employee WHERE type_id = 8 AND suspended = 1 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowOJTS = mysqli_fetch_array($selectOJTS);
                                                                             echo htmlentities($rowOJTS["TOTAL_OJTS"] ?? '');
 
@@ -899,21 +899,21 @@
                                                                     <td>Salaried</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectFA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FA FROM tbl_hr_employee WHERE type_id = 9 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id" );
+                                                                            $selectFA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FA FROM tbl_hr_employee WHERE type_id = 9 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowFA = mysqli_fetch_array($selectFA);
                                                                             echo htmlentities($rowFA["TOTAL_FA"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectFI = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FI FROM tbl_hr_employee WHERE type_id = 9 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id" );
+                                                                            $selectFI = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FI FROM tbl_hr_employee WHERE type_id = 9 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowFI = mysqli_fetch_array($selectFI);
                                                                             echo htmlentities($rowFI["TOTAL_FI"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectFS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FS FROM tbl_hr_employee WHERE type_id = 9 AND suspended = 1 AND user_id = $switch_user_id" );
+                                                                            $selectFS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_FS FROM tbl_hr_employee WHERE type_id = 9 AND suspended = 1 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowFS = mysqli_fetch_array($selectFS);
                                                                             echo htmlentities($rowFS["TOTAL_FS"] ?? '');
 
@@ -923,21 +923,21 @@
                                                                     <td>Seasonal</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectIA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IA FROM tbl_hr_employee WHERE type_id = 10 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id" );
+                                                                            $selectIA = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IA FROM tbl_hr_employee WHERE type_id = 10 AND status = 1 AND suspended = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowIA = mysqli_fetch_array($selectIA);
                                                                             echo htmlentities($rowIA["TOTAL_IA"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectII = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_II FROM tbl_hr_employee WHERE type_id = 10 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id" );
+                                                                            $selectII = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_II FROM tbl_hr_employee WHERE type_id = 10 AND status = 0 AND suspended = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowII = mysqli_fetch_array($selectII);
                                                                             echo htmlentities($rowII["TOTAL_II"] ?? '');
 
                                                                     echo '</td>
                                                                     <td class="text-center">';
 
-                                                                            $selectIS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IS FROM tbl_hr_employee WHERE type_id = 10 AND suspended = 1 AND user_id = $switch_user_id" );
+                                                                            $selectIS = mysqli_query( $conn,"SELECT COUNT(ID) AS TOTAL_IS FROM tbl_hr_employee WHERE type_id = 10 AND suspended = 1 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                             $rowIS = mysqli_fetch_array($selectIS);
                                                                             echo htmlentities($rowIS["TOTAL_IS"] ?? '');
 

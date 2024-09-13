@@ -513,7 +513,7 @@
     }
 
     // Load HTML content
-    $dompdf->loadHtml($html, 'UTF-8'); 
+    $dompdf->loadHtml($html, 'LIBXML_NOERROR'); 
 
     // (Optional) Setup the paper size and orientation 
     $dompdf->setPaper('A4', 'landscape'); 

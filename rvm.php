@@ -164,14 +164,14 @@
                                                     <tbody>
                                                         <tr>
                                                             <?php
-                                                                $result = mysqli_query( $conn,"SELECT ID, name FROM tbl_eforms_department ORDER BY name" );
+                                                                $result = mysqli_query( $conn,"SELECT ID, name FROM tbl_eforms_department WHERE facility_switch = $facility_switch_user_id ORDER BY name" );
                                                                 if ( mysqli_num_rows($result) > 0 ) {
                                                                     while($row = mysqli_fetch_array($result)) {
                                                                         $ID = htmlentities($row['ID'] ?? '');
                                                                         $name = htmlentities($row['name'] ?? '');
                                                                         $records = 0;
 
-                                                                        $selectEForm = mysqli_query( $conn,'SELECT ID FROM tbl_eforms WHERE user_id="'.$switch_user_id.'" AND department_id="'. $ID .'"' );
+                                                                        $selectEForm = mysqli_query( $conn,"SELECT ID FROM tbl_eforms WHERE user_id = $switch_user_id AND department_id = $ID AND facility_switch = $facility_switch_user_id" );
                                                                         if ( mysqli_num_rows($selectEForm) > 0 ) {
                                                                             while($row = mysqli_fetch_array($selectEForm)) {
                                                                                 $records++;
@@ -211,16 +211,6 @@
                                                         <li>
                                                             <a data-toggle="modal" href="<?php echo $FreeAccess == false ? '#modalNew':'#modalService'; ?>" >Add New RVM</a>
                                                         </li>
-                                                        <li class="divider"> </li>
-                                                        <li>
-                                                            <a href="javascript:;">Option 2</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="javascript:;">Option 3</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="javascript:;">Option 4</a>
-                                                        </li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -238,7 +228,7 @@
                                                     </thead>
                                                     <tbody>
                                                         <?php
-                                                            $result = mysqli_query( $conn,"SELECT ID, record, files_date, verified_by FROM tbl_eforms WHERE user_id=$switch_user_id ORDER BY files_date DESC" );
+                                                            $result = mysqli_query( $conn,"SELECT ID, record, files_date, verified_by FROM tbl_eforms WHERE user_id = $switch_user_id AND facility_switch = $facility_switch_user_id ORDER BY files_date DESC" );
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 while($row = mysqli_fetch_array($result)) {
                                                                     $ID = htmlentities($row['ID'] ?? '');
@@ -273,10 +263,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
-
-                            
                             <div class="tab-pane" id="rvm_analytics">
                                 <div class="widget-row">  
                                     <div class="col-md-12">
@@ -348,8 +334,6 @@
                             </div>
                         </div>
 
-
-
                         <!-- MODAL SERVICE -->
                         <div class="modal fade" id="modalNew" tabindex="-1" role="basic" aria-hidden="true">
                             <div class="modal-dialog modal-lg">
@@ -367,7 +351,7 @@
                                                         <select class="form-control select2" name="department_id" onchange="changeDepartment(this, 1)" style="width: 100%;" required>
                                                             <option value="">Select</option>
                                                             <?php
-                                                                $result = mysqli_query($conn,"SELECT ID, name FROM tbl_eforms_department WHERE user_id = $switch_user_id ORDER BY name");
+                                                                $result = mysqli_query($conn,"SELECT ID, name FROM tbl_eforms_department WHERE user_id = $switch_user_id AND facility_switch = $facility_switch_user_id ORDER BY name");
                                                                 while($row = mysqli_fetch_array($result)) {
                                                                     $ID = htmlentities($row['ID'] ?? '');
                                                                     $name = htmlentities($row['name'] ?? '');
@@ -390,7 +374,7 @@
                                                         <label class="control-label">Assigned To</label>
                                                         <select class="form-control mt-multiselect btn btn-default" name="assigned_to_id[]" multiple="multiple" required>
                                                             <?php
-                                                                $selectEmployee = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_hr_employee WHERE status = 1 AND user_id=$switch_user_id" );
+                                                                $selectEmployee = mysqli_query( $conn,"SELECT ID, first_name, last_name FROM tbl_hr_employee WHERE status = 1 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                                         $rowEmployeeID = $rowEmployee["ID"];

@@ -350,6 +350,7 @@
                                                                 WHERE s1.page = 2
                                                                 AND s1.is_deleted = 0 
                                                                 AND s1.user_id = $switch_user_id
+                                                                AND s1.facility_switch = $facility_switch_user_id
                                                                 $sql_s1
                                                                 
                                                                 UNION ALL
@@ -401,6 +402,7 @@
                                                                 WHERE s2.page = 2
                                                                 AND s2.is_deleted = 0 
                                                                 AND s2.user_id = $switch_user_id
+                                                                AND s2.facility_switch = $facility_switch_user_id
                                                                 $sql_s2
                                                             )
                                                             SELECT
@@ -505,7 +507,8 @@
                                                                         $material_result = array();
                                                                         $material_arr = explode(", ", $material);
                                                                         foreach ($material_arr as $value) {
-                                                                            $selectMaterial = mysqli_query( $conn,"SELECT
+                                                                            $selectMaterial = mysqli_query( $conn,"
+                                                                                SELECT
                                                                                 c.service_category AS c_service_category
                                                                                 FROM tbl_supplier_service AS s
 
@@ -515,7 +518,8 @@
                                                                                     FROM tbl_service_category
                                                                                 ) AS c
                                                                                 ON s.service_name = c.id
-                                                                                WHERE s.ID = $value" );
+                                                                                WHERE s.ID = $value
+                                                                            " );
                                                                             $rowMaterial = mysqli_fetch_array($selectMaterial);
                                                                             array_push($material_result, $rowMaterial['c_service_category']);
                                                                         }
@@ -527,7 +531,8 @@
                                                                         $material_result = array();
                                                                         $material_arr = explode(", ", $material);
                                                                         foreach ($material_arr as $value) {
-                                                                            $selectMaterial = mysqli_query( $conn,"SELECT
+                                                                            $selectMaterial = mysqli_query( $conn,"
+                                                                                SELECT
                                                                                 p.name AS p_name
                                                                                 FROM tbl_supplier_material  AS m
 
@@ -537,7 +542,8 @@
                                                                                     FROM tbl_products
                                                                                 ) AS p
                                                                                 ON m.material_name = p.ID
-                                                                                WHERE m.ID = $value" );
+                                                                                WHERE m.ID = $value
+                                                                            " );
                                                                             $rowMaterial = mysqli_fetch_array($selectMaterial);
                                                                             array_push($material_result, $rowMaterial['p_name']);
                                                                         }
@@ -665,6 +671,7 @@
 															    WHERE s1.page = 1
 															    AND s1.is_deleted = 0 
 															    AND s1.email = '".$current_userEmail."'
+                                                                AND s1.facility_switch = $facility_switch_user_id
 															    $sql_s1
 															    
 															    UNION ALL
@@ -718,6 +725,7 @@
 															    WHERE s2.page = 1
 															    AND s2.is_deleted = 0 
 															    AND s2.email = '".$current_userEmail."'
+                                                                AND s2.facility_switch = $facility_switch_user_id
 															    $sql_s2
 															)
 															SELECT
@@ -1875,51 +1883,51 @@
                                                         </div>
                                                     </div>
                                                     <?php if ($current_userEmployeeID == 0 AND $current_userID <> 115) { ?>
-                                                            <div class="tab-pane" id="tabPortal_1">
-                                                                <h4><strong>Portal</strong></h4>
-                                                                <div class="row">
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Department</label>
-                                                                            <select class="form-control mt-multiselect department_id" name="department_id[]" onchange="changeDepartment(this, 1)" multiple="multiple">
-                                                                                <?php
-                                                                                    $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $switch_user_id ORDER BY title");
-                                                                                    if ( mysqli_num_rows($selectDepartment) > 0 ) {
-                                                                                        while($rowDepartment = mysqli_fetch_array($selectDepartment)) {
-                                                                                            $dept_ID = $rowDepartment["ID"];
-                                                                                            $dept_title = htmlentities($rowDepartment["title"] ?? '');
+                                                        <div class="tab-pane" id="tabPortal_1">
+                                                            <h4><strong>Portal</strong></h4>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Department</label>
+                                                                        <select class="form-control mt-multiselect department_id" name="department_id[]" onchange="changeDepartment(this, 1)" multiple="multiple">
+                                                                            <?php
+                                                                                $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id ORDER BY title");
+                                                                                if ( mysqli_num_rows($selectDepartment) > 0 ) {
+                                                                                    while($rowDepartment = mysqli_fetch_array($selectDepartment)) {
+                                                                                        $dept_ID = $rowDepartment["ID"];
+                                                                                        $dept_title = htmlentities($rowDepartment["title"] ?? '');
 
-                                                                                            echo '<option value="'.$dept_ID.'">'.$dept_title.'</option>';
-                                                                                        }
+                                                                                        echo '<option value="'.$dept_ID.'">'.$dept_title.'</option>';
                                                                                     }
-                                                                                ?>
-                                                                            </select>
-                                                                        </div>
+                                                                                }
+                                                                            ?>
+                                                                        </select>
                                                                     </div>
-                                                                    <div class="col-md-6">
-                                                                        <div class="form-group">
-                                                                            <label class="control-label">Employee</label>
-                                                                            <select class="form-control mt-multiselect employee_id" name="employee_id[]" multiple="multiple">
-                                                                                <?php
-                                                                                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $switch_user_id ORDER BY first_name");
-                                                                                    if ( mysqli_num_rows($selectEmployee) > 0 ) {
-                                                                                        while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
-                                                                                            $emp_ID = $rowEmployee["ID"];
-                                                                                            $emp_name = htmlentities($rowEmployee["first_name"] ?? '') .' '. htmlentities($rowEmployee["last_name"] ?? '');
-                                                                                            $emp_email = htmlentities($rowEmployee["email"] ?? '');
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label class="control-label">Employee</label>
+                                                                        <select class="form-control mt-multiselect employee_id" name="employee_id[]" multiple="multiple">
+                                                                            <?php
+                                                                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id ORDER BY first_name");
+                                                                                if ( mysqli_num_rows($selectEmployee) > 0 ) {
+                                                                                    while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
+                                                                                        $emp_ID = $rowEmployee["ID"];
+                                                                                        $emp_name = htmlentities($rowEmployee["first_name"] ?? '') .' '. htmlentities($rowEmployee["last_name"] ?? '');
+                                                                                        $emp_email = htmlentities($rowEmployee["email"] ?? '');
 
-                                                                                            $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE is_verified = 1 AND is_active = 1 AND email = '".$emp_email."' ORDER BY first_name");
-                                                                                            if ( mysqli_num_rows($selectUser) > 0 ) {
-                                                                                                echo '<option value="'.$emp_ID.'">'.$emp_name.'</option>';
-                                                                                            }
+                                                                                        $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE is_verified = 1 AND is_active = 1 AND email = '".$emp_email."' ORDER BY first_name");
+                                                                                        if ( mysqli_num_rows($selectUser) > 0 ) {
+                                                                                            echo '<option value="'.$emp_ID.'">'.$emp_name.'</option>';
                                                                                         }
                                                                                     }
-                                                                                ?>
-                                                                            </select>
-                                                                        </div>
+                                                                                }
+                                                                            ?>
+                                                                        </select>
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                        </div>
                                                     <?php } ?>
 
                                                 </div>

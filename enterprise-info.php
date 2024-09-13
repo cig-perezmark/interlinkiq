@@ -594,6 +594,19 @@
                                                                     <?php } ?>
                                                                 </div>
                                                                 <br>
+                                                                <?php
+                                                                    echo '<div class="row margin-bottom-15 '; echo $row['enterpriseOperation']=='Yes' ? '':'hide'; echo '">
+                                                                        <div class="col-md-4">
+                                                                            <label>Enable Facility Switch?</label>
+                                                                        </div>
+                                                                        <div class="col-md-2">
+                                                                            <select class="form-control" name="facility_switch" >
+                                                                                <option value="0" '; echo $row['facility_switch'] == 0 ? 'SELECTED':''; echo '>No</option>
+                                                                                <option value="1" '; echo $row['facility_switch'] == 1 ? 'SELECTED':''; echo '>Yes</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>';
+                                                                ?>
                                                                 <div class="row">
                                                                     <div class="col-md-4">
                                                                         <label>Does the enterprise have employees?</label>

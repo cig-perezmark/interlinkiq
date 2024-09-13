@@ -113,14 +113,14 @@
                                             <tbody>
                                                 <tr>
                                                     <?php
-                                                        $result = mysqli_query( $conn,"SELECT ID, name FROM tbl_hr_trainings_type ORDER BY name" );
+                                                        $result = mysqli_query( $conn,"SELECT ID, name FROM tbl_hr_trainings_type WHERE facility_switch = $facility_switch_user_id ORDER BY name" );
                                                         if ( mysqli_num_rows($result) > 0 ) {
                                                             while($row = mysqli_fetch_array($result)) {
                                                                 $ID = htmlentities($row['ID'] ?? '');
                                                                 $name = htmlentities($row['name'] ?? '');
                                                                 $records = 0;
 
-                                                                $selectTrainings = mysqli_query( $conn,'SELECT ID FROM tbl_hr_trainings WHERE deleted = 0 AND user_id="'.$switch_user_id.'" AND type="'. $ID .'"' );
+                                                                $selectTrainings = mysqli_query( $conn,"SELECT ID FROM tbl_hr_trainings WHERE deleted = 0 AND user_id = $switch_user_id AND type = $ID AND facility_switch = $facility_switch_user_id" );
                                                                 if ( mysqli_num_rows($selectTrainings) > 0 ) {
                                                                     while($row = mysqli_fetch_array($selectTrainings)) {
                                                                         $records++;

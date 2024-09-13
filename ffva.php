@@ -130,11 +130,8 @@
                                 </div>
 
                                 <div class="portlet-body">
-
                                     <div class="tab-content">
-
                                         <div class="tab-pane active" id="tabSupplier">
-
                                             <?php
                                                 if ($current_userID == 481 || $current_userEmployeeID == 0 || isset($_COOKIE['switchAccount'])) { 
                                                     echo '<div class="btn-group btn-group-circle pull-right margin-bottom-15">
@@ -180,7 +177,7 @@
 
                                                     <?php
                                                         // $resultSupplier = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE type = 1 AND updated = 0 AND user_id = $switch_user_id" );
-                                                        $resultSupplier = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE archived = 0 AND deleted = 0 AND type = 1 AND updated = 0 AND user_id = $switch_user_id" );
+                                                        $resultSupplier = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE archived = 0 AND deleted = 0 AND type = 1 AND updated = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                         if ( mysqli_num_rows($resultSupplier) > 0 ) {
 
                                                             while($rowSupplier = mysqli_fetch_array($resultSupplier)) {
@@ -450,7 +447,7 @@
                                                 </thead>
                                                 <tbody>
                                                     <?php
-                                                        $resultSupplier = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE archived = 0 AND deleted = 0 AND type = 2 AND updated = 0 AND user_id = $switch_user_id" );
+                                                        $resultSupplier = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE archived = 0 AND deleted = 0 AND type = 2 AND updated = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                         if ( mysqli_num_rows($resultSupplier) > 0 ) {
                                                             while($rowSupplier = mysqli_fetch_array($resultSupplier)) {
                                                                 $supplier_user_id = $rowSupplier["user_id"];
@@ -551,351 +548,177 @@
                                                                 $selectConsequence = mysqli_query( $conn,"SELECT * FROM tbl_ffva_consequence" );
                                                                 if ( mysqli_num_rows($selectConsequence) > 0 ) {
                                                                     while($rowConsequence = mysqli_fetch_array($selectConsequence)) {
-
                                                                         $sum += $consequence_rate_arr[$index];
-
                                                                         $index++;
-
                                                                         $count++;
-
                                                                     }
-
                                                                 }
-
-
 
                                                                 if (!empty($rowSupplier["consequence_element_other"])) {
-
                                                                     $consequence_element_other = explode(' | ', $rowSupplier["consequence_element_other"]);
-
                                                                     $consequence_rate_other = explode(', ', $rowSupplier["consequence_rate_other"]);
 
-
-
                                                                     $index = 0;
-
                                                                     foreach ($consequence_element_other as $value) {
-
                                                                         $sum += $consequence_rate_other[$index];
-
                                                                         $index++;
-
                                                                         $count++;
-
                                                                     }
-
                                                                 }
-
-
 
                                                                 $total_consequence = $sum / $count;
 
 
-
-
-
                                                                 // Matrix
-
                                                                 $plot_x = 1;
-
                                                                 $plot_y = 1;
-
-
-
                                                                 if (round($total_likelihood) > 0) { $plot_x = round($total_likelihood); }
-
                                                                 if (round($total_consequence) > 0) { $plot_y = round($total_consequence); }
-
-
-
                                                                 if ($plot_x == 1 && $plot_y == 1) { $vulnerability = 1; }
-
                                                                 else if ($plot_x == 1 && $plot_y == 2) { $vulnerability = 1; }
-
                                                                 else if ($plot_x == 1 && $plot_y == 3) { $vulnerability = 1; }
-
                                                                 else if ($plot_x == 1 && $plot_y == 4) { $vulnerability = 2; }
-
                                                                 else if ($plot_x == 1 && $plot_y == 5) { $vulnerability = 2; }
-
                                                                 else if ($plot_x == 2 && $plot_y == 1) { $vulnerability = 1; }
-
                                                                 else if ($plot_x == 2 && $plot_y == 2) { $vulnerability = 1; }
-
                                                                 else if ($plot_x == 2 && $plot_y == 3) { $vulnerability = 2; }
-
                                                                 else if ($plot_x == 2 && $plot_y == 4) { $vulnerability = 2; }
-
                                                                 else if ($plot_x == 2 && $plot_y == 5) { $vulnerability = 3; }
-
                                                                 else if ($plot_x == 3 && $plot_y == 1) { $vulnerability = 2; }
-
                                                                 else if ($plot_x == 3 && $plot_y == 2) { $vulnerability = 2; }
-
                                                                 else if ($plot_x == 3 && $plot_y == 3) { $vulnerability = 2; }
-
                                                                 else if ($plot_x == 3 && $plot_y == 4) { $vulnerability = 3; }
-
                                                                 else if ($plot_x == 3 && $plot_y == 5) { $vulnerability = 3; }
-
                                                                 else if ($plot_x == 4 && $plot_y == 1) { $vulnerability = 2; }
-
                                                                 else if ($plot_x == 4 && $plot_y == 2) { $vulnerability = 2; }
-
                                                                 else if ($plot_x == 4 && $plot_y == 3) { $vulnerability = 3; }
-
                                                                 else if ($plot_x == 4 && $plot_y == 4) { $vulnerability = 3; }
-
                                                                 else if ($plot_x == 4 && $plot_y == 5) { $vulnerability = 3; }
-
                                                                 else if ($plot_x == 5 && $plot_y == 1) { $vulnerability = 3; }
-
                                                                 else if ($plot_x == 5 && $plot_y == 2) { $vulnerability = 3; }
-
                                                                 else if ($plot_x == 5 && $plot_y == 3) { $vulnerability = 3; }
-
                                                                 else if ($plot_x == 5 && $plot_y == 4) { $vulnerability = 3; }
-
                                                                 else if ($plot_x == 5 && $plot_y == 5) { $vulnerability = 3; }
-
                                                                 else { $vulnerability = 0; }
 
-
-
                                                                 if ($vulnerability == 1) { $vulnerability_result = '<span class="font-green-jungle bold">Low Risk</span>'; }
-
                                                                 else if ($vulnerability == 2) { $vulnerability_result = '<span class="font-yellow-gold bold">Medium Risk</span>'; }
-
                                                                 else if ($vulnerability == 3) { $vulnerability_result = '<span class="font-red-thunderbird bold">High Risk</span>'; }
-
                                                                 else { $vulnerability_result = ""; }
-
                                                                 
-
                                                                 $file_files = $rowSupplier["files"];
-
                                                                 if(!empty($file_files)) {
-
                                                                     $fileExtension = fileExtension($file_files);
-
                                                                     $src = $fileExtension['src'];
-
                                                                     $embed = $fileExtension['embed'];
-
                                                                     $type = $fileExtension['type'];
-
                                                                     $file_extension = $fileExtension['file_extension'];
-
                                                                     $url = $base_url.'uploads/ffva/';
-
                                                                 }
 
-
-
                                                                 echo '<tr id="tr_'.$supplier_id.'">
-
                                                                     <td>'.$supplier_id.'</td>
-
                                                                     <td>'.$supplier_product.'</td>';
 
-
-
                                                                     if ($current_userEmployerID == 34 OR $current_userEmployerID == 1) {
-
                                                                         echo '<td class="text-center int_review_status">';
-
                                                                             if (!empty($int_review_assigned_name)) {  echo $int_review_assigned_name .'<br>'; }
-
                                                                             echo '<a href="#modalViewInt" class="btn btn-link btn-sm" data-toggle="modal" onClick="btnInt('.$supplier_id.', 1, 2)">View</a>';
 
-
-
                                                                             if($int_review_status == 1) { echo '<span class="label label-sm label-success">Accepted</span>'; }
-
                                                                             else if ($int_review_status == 2) { echo '<span class="label label-sm label-danger">Rejected</span><br><small>Reason: <i>'.$int_review_comment.'</i></small>'; }
-
                                                                         echo '</td>
-
                                                                         <td class="text-center int_verify_status">';
-
                                                                             if (!empty($int_verify_assigned_name)) {  echo $int_verify_assigned_name .'<br>'; }
-
                                                                             // if ($current_userEmployeeID == 0) { echo '<a href="#modalViewInt" class="btn btn-link btn-sm" data-toggle="modal" onClick="btnInt('.$supplier_id.', 2, 2)">View</a>'; }
-
                                                                             if ($int_review_status == 1) { echo '<a href="#modalViewInt" class="btn btn-link btn-sm" data-toggle="modal" onClick="btnInt('.$supplier_id.', 2, 2)">View</a>'; }
-
                                                                             
-
                                                                             if($int_verify_status == 1) { echo '<span class="label label-sm label-success">Accepted</span>'; }
-
                                                                             else if ($int_verify_status == 2) { echo '<span class="label label-sm label-danger">Rejected</span><br><small>Reason: <i>'.$int_verify_comment.'</i></small>'; }
-
                                                                         echo '</td>';
-
                                                                     }
-
                                                                     
-
                                                                     if ($FreeAccess != 1) {
-
                                                                         echo '<td class="text-center">';
-
                                                                             if(!empty($file_files)) { echo '<a data-src="'.$src.$url.rawurlencode($file_files).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link btn-sm">View</a>'; } 
 
-
-
                                                                             if ($supplier_reviewed_by == $current_userID) {
-
                                                                                 echo '<a href="#modalFile" class="btn btn-link btn-sm" data-toggle="modal" onclick="btnFile('.$supplier_id.', 1)">Upload</a>';
-
                                                                             } else if ($supplier_approved_by == $current_userID) {
-
                                                                                 echo '<a href="#modalFile" class="btn btn-link btn-sm" data-toggle="modal" onclick="btnFile('.$supplier_id.', 2)">Upload</a>';
-
                                                                             }
-
                                                                         echo '</td>';
-
                                                                     }
 
-
-
                                                                     echo '<td class="text-center">'.$vulnerability_result.'</td>
-
                                                                     <td class="text-center">'.$data_last_modified.'</td>
-
                                                                     <td class="text-center">'.$due_date.'</td>
-
                                                                     <td class="text-center">'.$status.'</td>
-
                                                                     <td class="text-center">';
-
                                                                         if (isset($_COOKIE['switchAccount']) || $current_userEmployeeID == 0 || $current_userID == 481) {
-
                                                                             echo '<div class="btn-group btn-group-circle">
-
                                                                                 <a href="pdf_ffva?id='.$supplier_id.'&signed=1" class="btn btn-outline dark btn-sm" target="_blank" title="PDF"><i class="fa fa-fw fa-file-pdf-o"></i></a>
-
                                                                                 <a href="pdf_ffva_excel?id='.$supplier_id.'&signed=1" class="btn green-jungle btn-sm" target="_blank" title="Excel"><i class="fa fa-fw fa-file-excel-o"></i></a>
-
                                                                                 <a href="#modalView" class="btn dark btn-sm hide" data-toggle="modal" onclick="btnView('.$supplier_id.')" title="View"><i class="fa fa-fw fa-search"></i></a>
-
                                                                                 <a href="#modalEdit" class="btn btn-success btn-sm" data-toggle="modal" onclick="btnEdit('.$supplier_id.')" title="Edit"><i class="fa fa-fw fa-pencil"></i></a>
-
                                                                                 <a href="javascript:;" class="btn btn-danger btn-sm" data-toggle="modal" onclick="btnDelete('.$supplier_id.', 1)" title="Delete"><i class="fa fa-fw fa-trash"></i></a>
-
                                                                                 <a href="javascript:;" class="btn btn-info btn-sm" data-toggle="modal" onclick="btnArchive('.$supplier_id.', 1)" title="Archive"><i class="fa fa-fw fa-file-archive-o"></i></a>';
 
-
-
                                                                                 if ($supplier_reviewed_by == $current_userID) {
-
                                                                                     echo '<a href="#modalSign" class="btn btn-danger btn-sm" data-toggle="modal" onclick="btnSign('.$supplier_id.', 1)"><i class="fa fa-fw fa-edit"></i></a>';
-
                                                                                 } else if ($supplier_approved_by == $current_userID) {
-
                                                                                     echo '<a href="#modalSign" class="btn btn-danger btn-sm" data-toggle="modal" onclick="btnSign('.$supplier_id.', 2)"><i class="fa fa-fw fa-edit"></i></a>';
-
                                                                                 }
 
-
-
                                                                             echo '</div>';
-
                                                                         } else {
-
                                                                             echo '<a href="pdf_ffva?id='.$supplier_id.'" class="btn btn-outline dark btn-sm" target="_blank" title="PDF"><i class="fa fa-fw fa-file-pdf-o"></i></a>';
-
                                                                         }
-
                                                                     echo '</td>
-
                                                                 </tr>';
-
                                                             }
-
                                                         }
-
                                                     ?>
-
                                                 </tbody>
-
                                             </table>
-
                                         </div>
-
                                         <div class="tab-pane <?php echo $FreeAccess == false ? '':'hide'; ?>" id="tabReferences">
-
                                             <h4><strong>Likelihood Questionnaire</strong></h4>
-
                                             <div class="table-scrollable">
-
                                                 <table class="table table-bordered table-hover" id="tableDataRef_1">
-
                                                     <thead>
-
                                                         <tr>
-
                                                             <th style="width: 250px;">Elements</th>
-
                                                             <th>References</th>
-
                                                         </tr>
-
                                                     </thead>
-
                                                     <tbody>
 
                                                         <?php
-
                                                             $resultRefLikelihood = mysqli_query( $conn,"SELECT * FROM tbl_ffva_likelihood" );
-
                                                             if ( mysqli_num_rows($resultRefLikelihood) > 0 ) {
-
                                                                 while($rowRefLikelihood = mysqli_fetch_array($resultRefLikelihood)) {
-
                                                                     $ref_likelihood_id = $rowRefLikelihood["ID"];
-
                                                                     $ref_likelihood_element = $rowRefLikelihood["element"];
 
-
-
                                                                     $content = '';
-
                                                                     $resultReferences = mysqli_query( $conn,"SELECT * FROM tbl_ffva_reference WHERE user_id = $switch_user_id AND type = 1 AND element = $ref_likelihood_id" );
-
                                                                     if ( mysqli_num_rows($resultReferences) > 0 ) {
-
                                                                         $rowReferences = mysqli_fetch_array($resultReferences);
-
                                                                         $content = $rowReferences["content"];
-
                                                                     }
 
-
-
                                                                     echo '<tr class="tr_'.$ref_likelihood_id.'">
-
                                                                         <td>'.$ref_likelihood_element.'</td>
-
                                                                         <td>'.nl2br($content).'
-
                                                                             <a href="#modalRef" class="btn btn-link btn-sm" data-toggle="modal" onclick="btnRef('.$ref_likelihood_id.', 1)"><i class="fa fa-pencil"></i> [edit]</a>
-
                                                                         </td>
-
                                                                     </tr>';
-
                                                                 }
-
                                                             }
-
                                                         ?>
-
                                                     </tbody>
-
                                                 </table>
-
                                             </div><br><br>
 
 
@@ -1375,133 +1198,71 @@
                                         <div class="tab-pane" id="tabKatva">
 
                                             <?php
-
                                                 if ($current_userEmployeeID == 0 || $current_userID == 481 || isset($_COOKIE['switchAccount'])) {
-
                                                     echo '<a href="'; echo $FreeAccess == false ? '#modalNewKatva':'#modalService';  echo '" class="btn btn-success btn-circle pull-right margin-bottom-15" data-toggle="modal" onclick="btnNewKatva(1)">Add New KATVA</a>';
-
                                                 }
-
                                             ?>
 
                                             
 
                                             <div class="table-scrollable" style="border: 0;">
-
                                                 <table class="table table-bordered table-hover" id="tableDataKatva">
-
                                                     <thead>
-
                                                         <tr>
-
                                                             <th>ID#</th>
-
                                                             <th>Product</th>
-
                                                             <th>Facility Name</th>
-
                                                             <th>Address</th>
-
                                                             <th style="width: 90px;" class="text-center">Status</th>
-
                                                             <?php
-
                                                                 if ($FreeAccess != 1) {
-
                                                                     echo '<th style="width: 165px;"></th>';
-
                                                                 }
-
                                                             ?>
-
                                                         </tr>
-
                                                     </thead>
-
                                                     <tbody>
-
                                                         <?php
-
-                                                            $resultKatva = mysqli_query( $conn,"SELECT * FROM tbl_ffva_katva WHERE deleted = 0 AND user_id = $switch_user_id" );
-
+                                                            $resultKatva = mysqli_query( $conn,"SELECT * FROM tbl_ffva_katva WHERE deleted = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                             if ( mysqli_num_rows($resultKatva) > 0 ) {
-
                                                                 while($rowKatva = mysqli_fetch_array($resultKatva)) {
-
                                                                     $katva_ID = $rowKatva["ID"];
-
                                                                     $katva_product = htmlentities($rowKatva["product"] ?? '');
-
                                                                     $katva_facility = htmlentities($rowKatva["facility"] ?? '');
-
                                                                     $katva_address = htmlentities($rowKatva["address"] ?? '');
 
-
-
                                                                     $status = 'Pending';
-
                                                                     $katva_approved_signature = $rowKatva["approved_signature"];
-
                                                                     if (!empty($katva_approved_signature)) { $status = 'Completed'; }
 
-
-
                                                                     echo '<tr id="tr_'.$katva_ID.'">
-
                                                                         <td>'.$katva_ID.'</td>
-
                                                                         <td>'.$katva_product.'</td>
-
                                                                         <td>'.$katva_facility.'</td>
-
                                                                         <td>'.$katva_address.'</td>
-
                                                                         <td>'.$status.'</td>';
 
-
-
                                                                         if ($FreeAccess != 1) {
-
                                                                             echo '<td class="text-center">
-
                                                                                 <div class="btn-group btn-group-circle">
-
                                                                                     <a href="pdf_katva?id='.$katva_ID.'" class="btn btn-outline btn-circle dark btn-sm" target="_blank">PDF</a>
-
                                                                                     <a href="#modalViewKatva" class="btn btn-outline btn-success btn-sm" data-toggle="modal" onclick="btnViewKatva('.$katva_ID.')">Edit</a>
-
                                                                                     <a href="javascript:;" class="btn dark btn-sm" onclick="btnDeleteKatva('.$katva_ID.')">Delete</a>
-
                                                                                 </div>
-
                                                                             </td>';
-
                                                                         }
-
                                                                         
-
                                                                    echo ' </tr>';
-
                                                                 }
-
                                                             }
-
                                                         ?>
-
                                                     </tbody>
-
                                                 </table>
-
                                             </div>
-
                                         </div>
-
                                     </div>
-
                                 </div>
-
                             </div>
-
                         </div>
 
                         <div class="modal fade" id="modalHistory" tabindex="-1" role="dialog" aria-hidden="true">

@@ -141,7 +141,8 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>';
-                                                        $selectEmployee = mysqli_query( $conn,"SELECT
+                                                        $selectEmployee = mysqli_query( $conn,"
+                                                            SELECT
                                                             e.ID AS e_ID,
                                                             e.user_id AS e_user_id,
                                                             e.portal_user AS e_portal_user,
@@ -163,8 +164,10 @@
                                                             WHERE e.suspended = 0
                                                             AND e.status = 1
                                                             AND e.user_id = $switch_user_id
+                                                            AND e.facility_switch = $facility_switch_user_id
 
-                                                            ORDER BY e.last_name" );
+                                                            ORDER BY e.last_name
+                                                        " );
                                                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                             while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                                 $employee_ID = htmlentities($rowEmployee['e_ID'] ?? '');
@@ -184,7 +187,8 @@
                                                                 }
                                                                 $position = implode(', ', $position);
 
-                                                                $resultTraining = mysqli_query( $conn,"SELECT
+                                                                $resultTraining = mysqli_query( $conn,"
+                                                                    SELECT
                                                                     SUM(CASE WHEN q_result = 100 AND FREQ_D > CURRENT_DATE() THEN 1 ELSE 0 END) AS C,
                                                                     SUM(CASE WHEN q_result = 100 AND FREQ_D < CURRENT_DATE() THEN 1 ELSE 0 END) AS E,
                                                                     SUM(CASE WHEN q_result !=  100 THEN 1 ELSE 0 END) AS NC
@@ -224,7 +228,9 @@
                                                                         WHERE t.status = 1
                                                                         AND t.deleted = 0
                                                                         AND t.user_id = $switch_user_id
-                                                                    ) AS r" );
+                                                                        AND t.facility_switch = $facility_switch_user_id
+                                                                    ) AS r
+                                                                " );
                                                                 if ( mysqli_num_rows($resultTraining) > 0 ) {
                                                                     $rowTraining = mysqli_fetch_array($resultTraining);
                                                                     $training_C = htmlentities($rowTraining['C'] ?? '');
@@ -282,7 +288,7 @@
                                                             <th>Position</th>';
 
                                                             $arr_training = array();
-                                                            $selectTraining = mysqli_query( $conn,"SELECT ID, title, job_description_id, quiz_id FROM tbl_hr_trainings WHERE status = 1 AND deleted = 0 AND user_id = $switch_user_id ORDER BY title" );
+                                                            $selectTraining = mysqli_query( $conn,"SELECT ID, title, job_description_id, quiz_id FROM tbl_hr_trainings WHERE status = 1 AND deleted = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
                                                             if ( mysqli_num_rows($selectTraining) > 0 ) {
                                                                 while($rowTraining = mysqli_fetch_array($selectTraining)) {
                                                                     $output = array (
@@ -334,6 +340,7 @@
                                                                     *
                                                                     FROM tbl_hr_job_description
                                                                     WHERE user_id = $switch_user_id
+                                                                    AND facility_switch = $facility_switch_user_id
                                                                     AND status = 1
                                                                 ) AS j
                                                                 ON FIND_IN_SET(j.ID, REPLACE(e.job_description_id, ' ', '')) > 0
@@ -348,6 +355,7 @@
                                                                 ON u.employee_id = e.ID
 
                                                                 WHERE e.user_id = $switch_user_id
+                                                                AND e.facility_switch = $facility_switch_user_id
                                                                 AND e.suspended = 0 
                                                                 AND e.status = 1 
 
@@ -363,6 +371,7 @@
                                                                 quiz_id 
                                                                 FROM tbl_hr_trainings 
                                                                 WHERE status = 1 
+                                                                AND facility_switch = $facility_switch_user_id
                                                                 AND deleted = 0 
                                                             ) AS t
                                                             ON t.user_id = r.e_user_id

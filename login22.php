@@ -102,10 +102,6 @@
           margin: 15px;
         }
       }
-
-      form {
-        background: #fff;
-      }
     </style>
 
     <!-- Custom styles for this template -->
@@ -198,19 +194,14 @@
                   <button class="btn btn-outline-secondary viewPW" type="button"><i class="fa fa-eye text-light-blue"></i></button>
                 </div>
 
-                <div class="d-grid gap-2 mt-5 pb-2">
+                <div class="d-grid gap-2 my-5">
                   <button class="btn btn-primary btn-light-blue btn-lg" type="submit">Login</button>
                 </div>
 
-                <ul class="list-inline" style="justify-content: space-between; display: flex;">
-                  <li class="list-inline-item">
-                    <a href="javascript:;" class="text-dark" onclick="btnForgot()">Forgot Password?</a>
-                  </li>
-                  <li class="list-inline-item">
-                    Dont have account yet? 
-                    <a href="javascript:;" class="text-dark" onclick="btnCreate()">Create here</a>
-                  </li>
-                </ul>
+                <p class=" my-5">
+                  Dont have account yet? 
+                  <a href="javascript:;" class="text-dark" onclick="btnCreate()">Create here</a>
+                </p>
               </form>
 
               <!-- Register -->
@@ -256,88 +247,14 @@
                   <button class="btn btn-outline-secondary viewPW" type="button"><i class="fa fa-eye text-light-blue"></i></button>
                 </div>
 
-                <div class="d-grid gap-2 mt-5 pb-2">
+                <div class="d-grid gap-2 my-5">
                   <button class="btn btn-primary btn-light-blue btn-lg" type="submit">Sign Up</button>
                 </div>
 
-                <ul class="list-inline" style="justify-content: space-between; display: flex;">
-                  <li class="list-inline-item">
-                    <a href="javascript:;" class="text-dark" onclick="btnForgot()">Forgot Password?</a>
-                  </li>
-                  <li class="list-inline-item">
-                    Already have an account? 
-                    <a href="javascript:;" class="text-dark" onclick="btnBack()">Click here</a>
-                  </li>
-                </ul>
-              </form>
-
-              <!-- Forgot Password -->
-              <form method="POST" class="form formForgot" style="display: none;">
-                <h2 class="text-blue mt-5" style="font-weight: 800;">Forgot Password</h1>
-                <p class="text-light-blue mb-5">Please enter your email address</p>
-
-                <div class="alert_msg text-white"></div>
-                <div class="form-floating mb-3">
-                  <input type="email" class="form-control" id="email2" name="email" placeholder="Email Address" required />
-                  <label for="email2">Email Address</label>
-                </div>
-
-                <div class="d-grid gap-2 mt-5 pb-2">
-                  <button class="btn btn-primary btn-light-blue btn-lg" type="submit">Submit</button>
-                </div>
-
-                <ul class="list-inline" style="justify-content: space-between; display: flex;">
-                  <li class="list-inline-item">
-                    <a href="javascript:;" class="text-dark" onclick="btnBack()">Login</a>
-                  </li>
-                  <li class="list-inline-item">
-                    Dont have account yet? 
-                    <a href="javascript:;" class="text-dark" onclick="btnCreate()">Create here</a>
-                  </li>
-                </ul>
-              </form>
-
-              <!-- Reset Password -->
-              <form method="POST" class="form formReset" style="display: none;">
-                <h2 class="text-blue mt-5" style="font-weight: 800;">Reset Password</h1>
-                <p class="text-light-blue mb-5">Check your email and enter the details below</p>
-
-                <div class="alert_msg text-white"></div>
-                <input class="form-control" type="hidden" name="ID" value="<?php echo $ID; ?>" />
-                <div class="form-floating mb-3">
-                  <input type="text" class="form-control" id="code" name="code" placeholder="Verification Code" required />
-                  <label for="code">Verification Code</label>
-                </div>
-
-                <div class="input-group mb-3">
-                  <div class="form-floating">
-                    <input type="password" class="form-control" id="npassword" name="npassword" placeholder="New Password" required />
-                    <label for="npassword">New Password</label>
-                  </div>
-                  <button class="btn btn-outline-secondary viewPW" type="button"><i class="fa fa-eye text-light-blue"></i></button>
-                </div>
-
-                <div class="input-group mb-3">
-                  <div class="form-floating">
-                    <input type="password" class="form-control" id="cnpassword" name="cnpassword" placeholder="Confirm New Password" required />
-                    <label for="cnpassword">Confirm New Password</label>
-                  </div>
-                  <button class="btn btn-outline-secondary viewPW" type="button"><i class="fa fa-eye text-light-blue"></i></button>
-                </div>
-
-                <div class="d-grid gap-2 mt-5 pb-2">
-                  <button class="btn btn-primary btn-light-blue btn-lg" type="submit">Submit</button>
-                </div>
-
-                <ul class="list-inline" style="justify-content: space-between; display: flex;">
-                  <li class="list-inline-item">
-                    <a href="javascript:;" class="text-dark" onclick="btnBack()">Login</a>
-                  </li>
-                  <li class="list-inline-item">
-                    Dont have account yet? 
-                    <a href="javascript:;" class="text-dark" onclick="btnCreate()">Create here</a>
-                  </li>
-                </ul>
+                <p class=" my-5">
+                  Already have an account? 
+                  <a href="javascript:;" class="text-dark" onclick="btnBack()">Create here</a>
+                </p>
               </form>
               
             </div>
@@ -382,19 +299,12 @@
           }
       });
 
-      <?php if ( !empty( $_GET['i'] ) AND !empty( $_GET['p'] ) AND $_GET['p'] == 1 ) { ?> ResetPassword(); <?php } ?>
+      function btnCreate() {
+        $(".formSignIn").hide(),$(".formSignUp").show();
+      }
 
       function btnBack() {
-        $(".formSignIn").show(),$(".formSignUp").hide(),$(".formForgot").hide(),$(".formReset").hide();
-      }
-      function btnCreate() {
-        $(".formSignIn").hide(),$(".formSignUp").show(),$(".formForgot").hide(),$(".formReset").hide();
-      }
-      function btnForgot() {
-        $(".formSignIn").hide(),$(".formSignUp").hide(),$(".formForgot").show(),$(".formReset").hide();
-      }
-      function ResetPassword() {
-        $(".formSignIn").hide(),$(".formSignUp").hide(),$(".formForgot").hide(),$(".formReset").show();
+        $(".formSignIn").show(),$(".formSignUp").hide();
       }
 
       $(".formSignIn").on('submit',(function(e) {
@@ -470,73 +380,6 @@
               $('.formSignUp .alert_msg').html(data);
             }
           }
-        });
-      }));
-      $(".formForgot").on('submit',(function(e) {
-        e.preventDefault();
-
-        formObj = $(this);
-        if (!formObj.validate().form()) return false;
-
-        var formData = new FormData(this);
-        formData.append('btnForgot',true);
-        formData.append('client',0);
-
-        $.ajax({
-          url: "function.php",
-          type: "POST",
-          data: formData,
-          contentType: false,
-          processData:false,
-          cache: false,
-          success: function(response) {
-            var obj = jQuery.parseJSON(response);
-            if (obj.exist == true) {
-              var data = '<div class="alert alert-success">';
-              data += obj.message;
-              data += '</div>';
-            } else {
-              var data = '<div class="alert alert-danger">';
-              data += obj.message;
-              data += '</div>';
-            }
-            $('.formForgot .alert_msg').html(data);
-          }        
-        });
-      }));
-      $(".formReset").on('submit',(function(e) {
-        e.preventDefault();
-
-        formObj = $(this);
-        if (!formObj.validate().form()) return false;
-
-        var formData = new FormData(this);
-        formData.append('btnResetPassword',true);
-        formData.append('client',0);
-
-        $.ajax({
-          url: "function.php",
-          type: "POST",
-          data: formData,
-          contentType: false,
-          processData:false,
-          cache: false,
-          success: function(response) {
-            var obj = jQuery.parseJSON(response);
-            if (obj.exist == true) {
-              var data = '<div class="alert alert-success">';
-              data += obj.message;
-              data += '</div>';
-
-              btnBack();
-              $('.formSignIn .alert_msg').html(data);
-            } else {
-              var data = '<div class="alert alert-danger">';
-              data += obj.message;
-              data += '</div>';
-              $('.formReset .alert_msg').html(data);
-            }
-          }        
         });
       }));
     </script>

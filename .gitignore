@@ -92,3 +92,4 @@ wp-*
 function-*.php
 
 testing-bash-script/
+dompdf-x/

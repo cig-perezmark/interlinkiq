@@ -50,7 +50,7 @@ function employerID($ID) {
 if (isset($_POST['key'])) {
 	$response = "";
 
-	if ($_POST['key'] == 'ids') {
+	if ($_POST['key'] == 'idss') {
 	    $view_id = $_POST['view_id'];
 		$sql = $conn->query("SELECT *,tbl_MyProject_Services_History.user_id as owner FROM tbl_MyProject_Services_History left join tbl_MyProject_Services_Action_Items on Action_Items_id = Action_taken
          left join tbl_hr_employee on Assign_to_history = ID left join tbl_user on employee_id = tbl_hr_employee.ID where MyPro_PK = $view_id");
@@ -206,6 +206,150 @@ if (isset($_POST['key'])) {
             	<tbody>
             </table>
 			';
+		}
+	}
+
+	if ($_POST['key'] == 'ids') {
+        $current_userEmployeeID = $_COOKIE['employee_id'];
+	    $view_id = $_POST['view_id'];
+		$sql = $conn->query("
+		    SELECT 
+            h.History_id AS h_ID,
+            h.filename AS h_name,
+            h.description AS h_description,
+            h.files AS h_file,
+            h.h_accounts AS h_account,
+            h.Action_date AS h_date,
+            a.Action_Items_name AS a_action,
+            u.first_name AS u_first_name,
+            e.first_name AS e_first_name,
+            COUNT(i.Services_History_PK) AS i_count,
+            SUM(i.completed) AS i_completed
+            
+            FROM tbl_MyProject_Services_History As h
+            
+            LEFT JOIN (
+                SELECT
+                *
+                FROM tbl_MyProject_Services_Action_Items
+            ) AS a
+            ON h.Action_taken = a.Action_Items_id
+            
+            LEFT JOIN (
+                SELECT
+                ID,
+                first_name
+                FROM tbl_user
+            ) AS u
+            ON h.user_id = u.ID
+            
+            LEFT JOIN (
+                SELECT
+                ID,
+                first_name
+                FROM tbl_hr_employee
+            ) AS e
+            ON h.Assign_to_history = e.ID
+            
+            LEFT JOIN (
+                SELECT
+                Services_History_PK,
+                CASE WHEN CIA_progress = 2 THEN 1 ELSE 0 END AS completed
+                FROM tbl_MyProject_Services_Childs_action_Items
+                WHERE CAI_Assign_to = $current_userEmployeeID
+            ) AS i
+            ON h.History_id = i.Services_History_PK
+            
+            WHERE h.MyPro_PK = $view_id
+            
+            GROUP BY h.History_id
+        ");
+		while($data1 = $sql->fetch_array()) {
+            $h_ID = $data1['h_ID'];
+            $h_name = htmlentities($data1['h_name'] ?? '');
+            $h_description = htmlentities($data1['h_description'] ?? '');
+            $h_account = htmlentities($data1['h_account'] ?? '');
+            $h_date = $data1['h_date'];
+            $a_action = htmlentities($data1['a_action'] ?? '');
+            $u_first_name = $data1['u_first_name'];
+            $e_first_name = $data1['e_first_name'];
+            
+            $response .= '<div id="center_'.$h_ID.'"></div>
+            <div class="panel-group accordion " id="accordion'.$h_ID.'" style="width:100%;">
+                <div class="panel panel">
+                    <div class="panel-heading" style="background-color:#F5F5F5;color:black;padding: 5px 15px !important;" >
+                        <div class="row">
+                            <div class="col-md-9">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion'.$h_ID.'" href="#'.$h_ID.'"> 
+                                    <table class="table table-resposive"  style="font-size:13px;margin-bottom: 0px !important;">
+                                        <tbody>
+                                            <tr onclick="view_more('.$h_ID.')" id="parents_'.$h_ID.'">
+                                                <th class="child_1" width="80px">'.$h_ID.'</th>
+                                                <th class="child_1">From: '.$u_first_name.'</th>
+                                                <th class="child_1">'.$h_name.'</th>
+                                                <th class="child_1" style="width:20%;">';
+                                                    $stringProduct = strip_tags($h_description); 
+                                                    if(strlen($stringProduct) > 76) {
+                                                        $stringCut = substr($stringProduct,0,76);
+                                                        $endPoint = strrpos($stringCut,' ');
+                                                        $stringProduct = $endPoint?substr($stringCut,0,$endPoint):substr($stringCut,0);
+                                                        $stringProduct .='&nbsp;<a style="font-size:12px;" href="#modalGet_more_detail" data-toggle="modal" onclick="get_moreDetails('.$h_ID.')"><i style="color:black;">See more...</i></a>';
+                                                    }
+                                                    $response .= $stringProduct;
+                                                $response .= '</th>
+                                                <th class="child_1">Account: '.$h_account.'</th>
+                                                <th class="child_1">Assigned to: '.$e_first_name.'</th>
+                                                <th class="child_1">'.$a_action.'</th>
+                                                <th class="child_1">Due Date: '.date("Y-m-d", strtotime($h_date)).'</th>
+                                                <th class="child_1" width="5%">';
+                                                    if (!empty($data1['h_file'])) {
+                                            		    $files_p = $data1["h_file"];
+                                                        $fileExtension = fileExtension($files_p);
+                                                		$src = $fileExtension['src'];
+                                                		$embed = $fileExtension['embed'];
+                                                		$type = $fileExtension['type'];
+                                                		$file_extension = $fileExtension['file_extension'];
+                                                        $url = $base_url.'../MyPro_Folder_Files/';
+                                                        
+                                                        $response .= '<a style="color:;" data-src="'.$src.$url.rawurlencode($files_p).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">
+                                                            <i class="icon-doc" style="font-size:18px;color:;margin-left:12px;"></i>
+                                                            <span class="badge" style="background-color:blue;margin-left:-7px;"><b style="font-size:14px;">1</b></span>
+                                                        </a>';
+                                                    } else {
+                                                        $response .= '<a style="color:;" href="javascript:;" class="btn btn-link">
+                                                            <i class="icon-doc" style="font-size:18px;color:;margin-left:12px;"></i>
+                                                            <span class="badge" style="background-color:red;margin-left:-7px;"><b style="font-size:14px;">0</b></span>
+                                                        </a>';
+                                                    }
+                                                $response .= '</th>
+                                                <th></th>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </a>
+                            </div>
+                            <div class="col-md-3">';
+                            
+                                if($data1['i_count'] >= $data1['i_completed'] AND $data1['i_completed'] > 0){
+                                    $ptc = round(($data1['i_completed'] / $data1['i_count']) * 100, 2);
+                                }
+                                
+                                $response .= '<a style="font-size:14px;" class="btn dark btn-xs btn-outline" onclick="get_myTask('.$current_userEmployeeID.','.$h_ID.')">My Task('.$data1['i_count'].')</a>
+                                <a style="font-size:14px;"  class="btn dark btn-xs btn-outline">Compliance('.$ptc.'%)</a>
+                                <a style="font-size:14px;" href="#modalGetHistoryb" data-toggle="modal" class="btn blue btn-xs btn-outline" onclick="btnNew_History('.$h_ID.','.$h_ID.')">Add</a>
+                                <a style="font-size:14px;" href="#modalGet_parent" data-toggle="modal" class="btn red btn-xs btn-outline" onclick="onclick_parent('.$h_ID.')">Edit</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="'.$h_ID.'" class="panel-collapse collapse" >
+                        <div class="panel-body" style="max-width: 84vw;max-height: 65vh;overflow: scroll;" >
+                            <table class="" id="main_'.$h_ID.'" style=" width: 100%;font-size:12px;">
+                                <tbody id="data_child'.$h_ID.'" ><tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>';
 		}
 	}
 	

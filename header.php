@@ -362,7 +362,7 @@ License: You must have a valid license purchased only from themeforest(the above
 
     <!-- Summernote CSS - CDN Link -->
     <link href="//cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-    <link href="//cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    <!--<link href="//cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">-->
     <!-- //Summernote CSS - CDN Link -->
 
     <link rel="shortcut icon" href="assets/img/interlink icon.png" />
@@ -373,435 +373,460 @@ License: You must have a valid license purchased only from themeforest(the above
     <link rel="stylesheet" href="Chat_Bot/assets/style.css">
     <!--end chat bot-->
     <style type="text/css">
-    <?php if (isset($_COOKIE['switchAccount'])) {
-        $switch_user_id=$_COOKIE['switchAccount'];
-
-        $selectUserSwitch=mysqli_query($conn, "SELECT * from tbl_user WHERE ID = $switch_user_id");
-
-        if (mysqli_num_rows($selectUserSwitch) > 0) {
-            $rowUserSwitch=mysqli_fetch_array($selectUserSwitch);
-            $current_userEmail=htmlentities($rowUserSwitch['email']);
-        }
-    }
-
-    else {
-        $switch_user_id=$current_userEmployerID;
-    }
-
-
-    // $selectCustomer = mysqli_query( $conn,"SELECT * from tbl_supplier WHERE page = 2 AND status = 1 AND is_deleted = 0 AND email = '".$current_userEmail."'" );
-    // if ( mysqli_num_rows($selectCustomer) > 0 ) {
-    $selectMenuAccess=mysqli_query($conn, "SELECT * FROM tbl_menu WHERE module = 1 AND type = 0 AND deleted = 0 AND url = '".$site."'");
-
-    if (mysqli_num_rows($selectMenuAccess) > 0) {
-        $rowMenu=mysqli_fetch_array($selectMenuAccess);
-        $menu_ID=$rowMenu['ID'];
-
-        $countRunning=0;
-        $selectMenuSubs=mysqli_query($conn, "SELECT * FROM tbl_menu_subscription WHERE deleted = 0 AND menu_id = $menu_ID AND user_id = $switch_user_id");
-
-        if (mysqli_num_rows($selectMenuSubs) > 0) {
-            while($rowMenuSub=mysqli_fetch_array($selectMenuSubs)) {
-                $sub_date_start=$rowMenuSub["date_start"];
-                $sub_date_start=new DateTime($sub_date_start);
-                $sub_date_start_o=$sub_date_start->format('Y/m/d');
-                $sub_date_start=$sub_date_start->format('M d, Y');
-
-                $sub_date_end=$rowMenuSub["date_end"];
-                $sub_date_end=new DateTime($sub_date_end);
-                $sub_date_end_o=$sub_date_end->format('Y/m/d');
-                $sub_date_end=$sub_date_end->format('M d, Y');
-
-                if ($sub_date_start_o <=$current_dateNow_o && $sub_date_end_o >=$current_dateNow_o) {
-                    $countRunning++;
+        <?php 
+            if (isset($_COOKIE['switchAccount'])) {
+                $switch_user_id = $_COOKIE['switchAccount'];
+        
+                $selectUserSwitch=mysqli_query($conn, "SELECT * from tbl_user WHERE ID = $switch_user_id");
+                if (mysqli_num_rows($selectUserSwitch) > 0) {
+                    $rowUserSwitch = mysqli_fetch_array($selectUserSwitch);
+                    $current_userEmail = htmlentities($rowUserSwitch['email']);
                 }
             }
-
-            if ($countRunning > 0) {
-                $FreeAccess=0;
+            else { $switch_user_id = $current_userEmployerID; }
+        
+            $facility_switch_user_id = 0;
+            if (isset($_COOKIE['facilityswitchAccount'])) {
+                $facility_switch_user_id = $_COOKIE['facilityswitchAccount'];
+            } else {
+                if ($current_userEmployeeID > 0) {
+                    $selectEmployeeFacility = mysqli_query( $conn,"SELECT facility_switch FROM tbl_hr_employee WHERE facility_switch > 0 AND ID = $current_userEmployeeID" );
+                    if ( mysqli_num_rows($selectEmployeeFacility) > 0 ) {
+                        $rowEmployeeFacility = mysqli_fetch_array($selectEmployeeFacility);
+                        $facility_switch_user_id = $rowEmployeeFacility["facility_switch"];
+                    }
+                } else {
+                    $selectSupplierFacility = mysqli_query( $conn,"SELECT facility_switch FROM tbl_supplier WHERE facility_switch > 0 AND email = '".$current_userEmail."'" );
+                    if ( mysqli_num_rows($selectSupplierFacility) > 0 ) {
+                        $rowSupplierFacility = mysqli_fetch_array($selectSupplierFacility);
+                        $facility_switch_user_id = $rowSupplierFacility["facility_switch"];
+                    }
+                }
+    
+                if ($facility_switch_user_id > 0) {
+                    setcookie('facilityswitchAccount', $id, time() + (86400 * 1), "/");  // 86400 = 1 day
+                }
             }
+        
+        
+            // $selectCustomer = mysqli_query( $conn,"SELECT * from tbl_supplier WHERE page = 2 AND status = 1 AND is_deleted = 0 AND email = '".$current_userEmail."'" );
+            // if ( mysqli_num_rows($selectCustomer) > 0 ) {
+            $selectMenuAccess=mysqli_query($conn, "SELECT * FROM tbl_menu WHERE module = 1 AND type = 0 AND deleted = 0 AND url = '".$site."'");
+        
+            if (mysqli_num_rows($selectMenuAccess) > 0) {
+                $rowMenu=mysqli_fetch_array($selectMenuAccess);
+                $menu_ID=$rowMenu['ID'];
+        
+                $countRunning=0;
+                $selectMenuSubs=mysqli_query($conn, "SELECT * FROM tbl_menu_subscription WHERE deleted = 0 AND menu_id = $menu_ID AND user_id = $switch_user_id");
+        
+                if (mysqli_num_rows($selectMenuSubs) > 0) {
+                    while($rowMenuSub=mysqli_fetch_array($selectMenuSubs)) {
+                        $sub_date_start=$rowMenuSub["date_start"];
+                        $sub_date_start=new DateTime($sub_date_start);
+                        $sub_date_start_o=$sub_date_start->format('Y/m/d');
+                        $sub_date_start=$sub_date_start->format('M d, Y');
+        
+                        $sub_date_end=$rowMenuSub["date_end"];
+                        $sub_date_end=new DateTime($sub_date_end);
+                        $sub_date_end_o=$sub_date_end->format('Y/m/d');
+                        $sub_date_end=$sub_date_end->format('M d, Y');
+        
+                        if ($sub_date_start_o <=$current_dateNow_o && $sub_date_end_o >=$current_dateNow_o) {
+                            $countRunning++;
+                        }
+                    }
+        
+                    if ($countRunning > 0) {
+                        $FreeAccess=0;
+                    }
+                }
+            }
+        
+            // } else {
+            //     if ($switch_user_id == 34) { $FreeAccess = false; }
+            // }
+        
+            $selectSettings=mysqli_query($conn, "SELECT * FROM tbl_settings WHERE reset=1 AND user_id=$switch_user_id ");
+        
+            if (mysqli_num_rows($selectSettings) > 0) {
+                while($rowSettings=mysqli_fetch_array($selectSettings)) {
+                    $background=$rowSettings["background"];
+                    $array_background=explode(', ', $background);
+        
+                    $bgHeader=$array_background[0];
+                    $bgHeaderLogo=$array_background[1];
+                    $bgSidebar=$array_background[2];
+                    $bgBody=$array_background[3];
+                }
+        
+                echo '.page-header.navbar .page-logo { background: '. $bgHeaderLogo .'; }';
+                echo '.page-header.navbar .page-top { background: '. $bgHeader .'; }';
+                echo 'body, .page-sidebar, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover { background: '. $bgSidebar .'; }';
+                echo '.page-container-bg-solid .page-content { background: '. $bgBody .'; }';
+            }
+    
+        ?>
+        body {
+            top: unset !important;
         }
-    }
-
-    // } else {
-    //     if ($switch_user_id == 34) { $FreeAccess = false; }
-    // }
-
-    $selectSettings=mysqli_query($conn, "SELECT * FROM tbl_settings WHERE reset=1 AND user_id=$switch_user_id ");
-
-    if (mysqli_num_rows($selectSettings) > 0) {
-        while($rowSettings=mysqli_fetch_array($selectSettings)) {
-            $background=$rowSettings["background"];
-            $array_background=explode(', ', $background);
-
-            $bgHeader=$array_background[0];
-            $bgHeaderLogo=$array_background[1];
-            $bgSidebar=$array_background[2];
-            $bgBody=$array_background[3];
+    
+        body>div.skiptranslate {
+            display: none;
         }
-
-        echo '.page-header.navbar .page-logo { background: '. $bgHeaderLogo .'; }';
-        echo '.page-header.navbar .page-top { background: '. $bgHeader .'; }';
-        echo 'body, .page-sidebar, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover { background: '. $bgSidebar .'; }';
-        echo '.page-container-bg-solid .page-content { background: '. $bgBody .'; }';
-    }
-
-    ?>body {
-        top: unset !important;
-    }
-
-    body>div.skiptranslate {
-        display: none;
-    }
-
-    #google_translate_element select {
-        background: #f6edfd;
-        color: #383ffa;
-        border: none;
-        border-radius: 3px;
-        padding: 6px 8px
-    }
-
-    .goog-logo-link {
-        display: none !important;
-    }
-
-    .goog-te-gadget {
-        color: transparent !important;
-    }
-
-    .goog-te-banner-frame {
-        display: none !important;
-    }
-
-    #goog-gt-tt,
-    .goog-te-balloon-frame {
-        display: none !important;
-    }
-
-    .goog-text-highlight {
-        background: none !important;
-        box-shadow: none !important;
-    }
-
-    #google_translate_element select {
-        background: transparent;
-        color: #000;
-    }
-
-    #googleTranslate {
-        display: flex;
-        align-items: center;
-    }
-
-    #googleTranslate .notranslate>div,
-    #googleTranslate .notranslate>div>ul {
-        width: auto;
-    }
-
-    .goog-te-gadget-icon {
-        display: none;
-    }
-
-
-    /*OFFCANVAS*/
-    .offcanvas-backdrop {
-        background: #000;
-        opacity: 0.5;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        z-index: 9999;
-    }
-
-    .offcanvas-backdrop.show {
-        position: fixed;
-    }
-
-    .offcanvas,
-    .offcanvas-lg,
-    .offcanvas-md,
-    .offcanvas-sm,
-    .offcanvas-xl,
-    .offcanvas-xxl {
-        --bs-offcanvas-zindex: 10050;
-        --bs-offcanvas-width: 400px;
-        --bs-offcanvas-height: 30vh;
-        --bs-offcanvas-padding-x: 1rem;
-        --bs-offcanvas-padding-y: 1rem;
-        --bs-offcanvas-color: ;
-        --bs-offcanvas-bg: #fff;
-        --bs-offcanvas-border-width: 1px;
-        --bs-offcanvas-border-color: var(--bs-border-color-translucent);
-        --bs-offcanvas-box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-    }
-
-    .offcanvas {
-        position: fixed;
-        bottom: 0;
-        z-index: var(--bs-offcanvas-zindex);
-        display: flex;
-        flex-direction: column;
-        max-width: 100%;
-        color: var(--bs-offcanvas-color);
-        visibility: hidden;
-        background-color: var(--bs-offcanvas-bg);
-        background-clip: padding-box;
-        outline: 0;
-        transition: transform .3s ease-in-out;
-    }
-
-    .offcanvas.offcanvas-end {
-        top: 0;
-        right: 0;
-        width: var(--bs-offcanvas-width);
-        border-left: var(--bs-offcanvas-border-width) solid var(--bs-offcanvas-border-color);
-        transform: translateX(100%);
-    }
-
-    .offcanvas.hiding,
-    .offcanvas.show,
-    .offcanvas.showing {
-        visibility: visible;
-    }
-
-    .offcanvas.show:not(.hiding),
-    .offcanvas.showing {
-        transform: none;
-    }
-
-    .offcanvas-header {
-        padding: var(--bs-offcanvas-padding-y) var(--bs-offcanvas-padding-x);
-    }
-
-    .offcanvas-body {
-        flex-grow: 1;
-        padding: var(--bs-offcanvas-padding-y) var(--bs-offcanvas-padding-x);
-        overflow-y: auto;
-    }
-
-    .d-flex {
-        display: flex !important;
-    }
-
-    .position-relative {
-        position: relative !important;
-    }
-
-    .position-absolute {
-        position: absolute !important;
-    }
-
-    .flex-shrink-0 {
-        flex-shrink: 0 !important;
-    }
-
-    .flex-grow-1 {
-        flex-grow: 1 !important;
-    }
-
-    .align-items-center {
-        align-items: center !important;
-    }
-
-    .justify-content-between {
-        justify-content: space-between !important;
-    }
-
-    .p-1 {
-        padding: .25rem !important;
-    }
-
-    .p-2 {
-        padding: .5rem !important;
-    }
-
-    .mb-1 {
-        margin-bottom: .25rem !important;
-    }
-
-    .mt-2 {
-        margin-top: .5rem !important;
-    }
-
-    .ms-3 {
-        margin-left: 1rem !important;
-    }
-
-    .mb-0 {
-        margin-top: 0 !important;
-        margin-bottom: 0 !important;
-    }
-
-    .top-0 {
-        top: 0 !important;
-    }
-
-    .bottom-0 {
-        bottom: 0 !important;
-    }
-
-    .start-0 {
-        left: 0 !important;
-    }
-
-    .end-0 {
-        right: 0 !important;
-    }
-
-    .excerpt:hover {
-        background: #f3f3f3;
-    }
-
-    .excerpt p {
-        /*display: block;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                */
-        display: -webkit-box;
-        -webkit-line-clamp: 1;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    /*MODAL CHAT*/
-    .overflow-auto {
-        overflow: auto !important;
-    }
-
-    .flex-column-reverse {
-        flex-direction: column-reverse !important;
-    }
-
-    .rounded-circle {
-        border-radius: 50% !important;
-    }
-
-    #sendMessage2 .border {
-        border-color: #E1E5EC !important;
-    }
-
-    #sendMessage2 .modal-body .secMessage>div {
-        background: #ccc;
-        display: table;
-        margin-right: auto;
-        margin-left: unset;
-        border-radius: 10px !important;
-        --bs-bg-opacity: 1;
-        background-color: #E1E5EC !important;
-    }
-
-    #sendMessage2 .modal-body .secContainer.secReceiver .secMessage {
-        margin-left: 1rem;
-    }
-
-    #sendMessage2 .modal-body .secContainer.secSender {
-        flex-direction: row-reverse;
-    }
-
-    #sendMessage2 .modal-body .secContainer.secSender .secMessage {
-        margin-right: 1rem;
-    }
-
-    #sendMessage2 .modal-body .secContainer.secSender .secMessage>div {
-        margin-right: unset;
-        margin-left: auto;
-        color: #fff;
-        background-color: #32C5D2 !important;
-    }
-
-    /*SPEAKUP*/
-    .speakupList>li a {
-        display: block !important;
-        white-space: nowrap !important;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    #tableData_Speakup thead th:first-child {
-        width: unset !important;
-    }
-
-    /*STICKY NOTES*/
-    #stickyNote .offcanvas-body .userResult:hover a {
-        display: block !important;
-    }
-
-    .line-clamp {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    /* MULTI SELECT*/
-    .multiselect-container {
-        z-index: 9999;
-    }
-
-
-    /*Header Top Menu*/
-    .listModule ul ul {
-        max-height: 50rem;
-        overflow: auto;
-    }
-
-    .listModule ul ul li:not(.divider) {
-        display: inline-block;
-        margin: 9px;
-        width: 70px;
-        height: 70px;
-        text-align: center;
-    }
-
-    .listModule ul ul li.divider {
-        display: block;
-        position: relative;
-        overflow: visible;
-    }
-
-    .listModule ul ul li.divider span {
-        position: absolute;
-        top: -1rem;
-        background: #fff;
-        padding: 0 5px;
-        font-weight: 600;
-        color: #666666;
-    }
-
-    .listModule ul ul li>a {
-        padding: 0 !important;
-    }
-
-    .listModule ul ul li>a img {
-        width: 100%;
-        border-radius: 50% !important;
-    }
-
-    .pictogram {
-        background-image: url(uploads/pictogram/interlinkIQ.png);
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: contain;
-        width: 60px;
-        height: 60px;
-    }
-
-    .pictogram-align {
-        display: flex !important;
-        align-items: center;
-    }
-    .pictogram-align-between {
-        display: flex !important;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    body.is-loading * {
-        cursor: progress !important;
-    }
+    
+        #google_translate_element select {
+            background: #f6edfd;
+            color: #383ffa;
+            border: none;
+            border-radius: 3px;
+            padding: 6px 8px
+        }
+    
+        .goog-logo-link {
+            display: none !important;
+        }
+    
+        .goog-te-gadget {
+            color: transparent !important;
+        }
+    
+        .goog-te-banner-frame {
+            display: none !important;
+        }
+    
+        #goog-gt-tt,
+        .goog-te-balloon-frame {
+            display: none !important;
+        }
+    
+        .goog-text-highlight {
+            background: none !important;
+            box-shadow: none !important;
+        }
+    
+        #google_translate_element select {
+            background: transparent;
+            color: #000;
+        }
+    
+        #googleTranslate {
+            display: flex;
+            align-items: center;
+        }
+    
+        #googleTranslate .notranslate>div,
+        #googleTranslate .notranslate>div>ul {
+            width: auto;
+        }
+    
+        .goog-te-gadget-icon {
+            display: none;
+        }
+    
+    
+        /*OFFCANVAS*/
+        .offcanvas-backdrop {
+            background: #000;
+            opacity: 0.5;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 9999;
+        }
+    
+        .offcanvas-backdrop.show {
+            position: fixed;
+        }
+    
+        .offcanvas,
+        .offcanvas-lg,
+        .offcanvas-md,
+        .offcanvas-sm,
+        .offcanvas-xl,
+        .offcanvas-xxl {
+            --bs-offcanvas-zindex: 10050;
+            --bs-offcanvas-width: 400px;
+            --bs-offcanvas-height: 30vh;
+            --bs-offcanvas-padding-x: 1rem;
+            --bs-offcanvas-padding-y: 1rem;
+            --bs-offcanvas-color: ;
+            --bs-offcanvas-bg: #fff;
+            --bs-offcanvas-border-width: 1px;
+            --bs-offcanvas-border-color: var(--bs-border-color-translucent);
+            --bs-offcanvas-box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+    
+        .offcanvas {
+            position: fixed;
+            bottom: 0;
+            z-index: var(--bs-offcanvas-zindex);
+            display: flex;
+            flex-direction: column;
+            max-width: 100%;
+            color: var(--bs-offcanvas-color);
+            visibility: hidden;
+            background-color: var(--bs-offcanvas-bg);
+            background-clip: padding-box;
+            outline: 0;
+            transition: transform .3s ease-in-out;
+        }
+    
+        .offcanvas.offcanvas-end {
+            top: 0;
+            right: 0;
+            width: var(--bs-offcanvas-width);
+            border-left: var(--bs-offcanvas-border-width) solid var(--bs-offcanvas-border-color);
+            transform: translateX(100%);
+        }
+    
+        .offcanvas.hiding,
+        .offcanvas.show,
+        .offcanvas.showing {
+            visibility: visible;
+        }
+    
+        .offcanvas.show:not(.hiding),
+        .offcanvas.showing {
+            transform: none;
+        }
+    
+        .offcanvas-header {
+            padding: var(--bs-offcanvas-padding-y) var(--bs-offcanvas-padding-x);
+        }
+    
+        .offcanvas-body {
+            flex-grow: 1;
+            padding: var(--bs-offcanvas-padding-y) var(--bs-offcanvas-padding-x);
+            overflow-y: auto;
+        }
+    
+        .d-flex {
+            display: flex !important;
+        }
+    
+        .position-relative {
+            position: relative !important;
+        }
+    
+        .position-absolute {
+            position: absolute !important;
+        }
+    
+        .flex-shrink-0 {
+            flex-shrink: 0 !important;
+        }
+    
+        .flex-grow-1 {
+            flex-grow: 1 !important;
+        }
+    
+        .align-items-center {
+            align-items: center !important;
+        }
+    
+        .justify-content-between {
+            justify-content: space-between !important;
+        }
+    
+        .p-1 {
+            padding: .25rem !important;
+        }
+    
+        .p-2 {
+            padding: .5rem !important;
+        }
+    
+        .mb-1 {
+            margin-bottom: .25rem !important;
+        }
+    
+        .mt-2 {
+            margin-top: .5rem !important;
+        }
+    
+        .ms-3 {
+            margin-left: 1rem !important;
+        }
+    
+        .mb-0 {
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+        }
+    
+        .top-0 {
+            top: 0 !important;
+        }
+    
+        .bottom-0 {
+            bottom: 0 !important;
+        }
+    
+        .start-0 {
+            left: 0 !important;
+        }
+    
+        .end-0 {
+            right: 0 !important;
+        }
+    
+        .excerpt:hover {
+            background: #f3f3f3;
+        }
+    
+        .excerpt p {
+            /*display: block;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    */
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    
+        /*MODAL CHAT*/
+        .overflow-auto {
+            overflow: auto !important;
+        }
+    
+        .flex-column-reverse {
+            flex-direction: column-reverse !important;
+        }
+    
+        .rounded-circle {
+            border-radius: 50% !important;
+        }
+    
+        #sendMessage2 .border {
+            border-color: #E1E5EC !important;
+        }
+    
+        #sendMessage2 .modal-body .secMessage>div {
+            background: #ccc;
+            display: table;
+            margin-right: auto;
+            margin-left: unset;
+            border-radius: 10px !important;
+            --bs-bg-opacity: 1;
+            background-color: #E1E5EC !important;
+        }
+    
+        #sendMessage2 .modal-body .secContainer.secReceiver .secMessage {
+            margin-left: 1rem;
+        }
+    
+        #sendMessage2 .modal-body .secContainer.secSender {
+            flex-direction: row-reverse;
+        }
+    
+        #sendMessage2 .modal-body .secContainer.secSender .secMessage {
+            margin-right: 1rem;
+        }
+    
+        #sendMessage2 .modal-body .secContainer.secSender .secMessage>div {
+            margin-right: unset;
+            margin-left: auto;
+            color: #fff;
+            background-color: #32C5D2 !important;
+        }
+    
+        /*SPEAKUP*/
+        .speakupList>li a {
+            display: block !important;
+            white-space: nowrap !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    
+        #tableData_Speakup thead th:first-child {
+            width: unset !important;
+        }
+    
+        /*STICKY NOTES*/
+        #stickyNote .offcanvas-body .userResult:hover a {
+            display: block !important;
+        }
+    
+        .line-clamp {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    
+        /* MULTI SELECT*/
+        .multiselect-container {
+            z-index: 9999;
+        }
+    
+    
+        /*Header Top Menu*/
+        .listModule ul ul {
+            max-height: 50rem;
+            overflow: auto;
+        }
+    
+        .listModule ul ul li:not(.divider) {
+            display: inline-block;
+            margin: 9px;
+            width: 70px;
+            height: 70px;
+            text-align: center;
+        }
+    
+        .listModule ul ul li.divider {
+            display: block;
+            position: relative;
+            overflow: visible;
+        }
+    
+        .listModule ul ul li.divider span {
+            position: absolute;
+            top: -1rem;
+            background: #fff;
+            padding: 0 5px;
+            font-weight: 600;
+            color: #666666;
+        }
+    
+        .listModule ul ul li>a {
+            padding: 0 !important;
+        }
+    
+        .listModule ul ul li>a img {
+            width: 100%;
+            border-radius: 50% !important;
+        }
+    
+        .pictogram {
+            background-image: url(uploads/pictogram/interlinkIQ.png);
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+            width: 60px;
+            height: 60px;
+        }
+    
+        .pictogram-align {
+            display: flex !important;
+            align-items: center;
+        }
+        .pictogram-align-between {
+            display: flex !important;
+            align-items: center;
+            justify-content: space-between;
+        }
+    
+        body.is-loading * {
+            cursor: progress !important;
+        }
+        
+        .fa, .far, .fas {
+            font: normal normal normal 14px / 1 FontAwesome;
+        }
     </style>
 </head>
 <!-- END HEAD -->
@@ -2174,37 +2199,76 @@ License: You must have a valid license purchased only from themeforest(the above
                             </li>
                         </ul>
                     </li>
-
+                    
                     <?php
-                            // if ($current_userEmployeeID == 0 OR isset($_COOKIE['switchAccount'])) {
-                            $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseOperation = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
-                    <li class="nav-item hide <?php echo $site === "facility-info" ? "active open start" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('enterprise-info-subscription', $current_userEmployerID, $current_userEmployeeID); } ?>" id="menuFacility">
-                        <a href="javascript:;" class="nav-link nav-toggle">
-                            <i class="icon-layers"></i>
-                            <span class="title">Facility</span>
-                            <span class="selected"></span>
-                            <span class="arrow <?php echo $site === "facility-info" ? "open" : ""; ?>"></span>
-                        </a>
-                        <ul class="sub-menu">
-                            <?php
-                                        $queryFacility = mysqli_query( $conn,"SELECT * FROM tblFacilityDetails where users_entities = $switch_user_id " );
-                                        if ( mysqli_num_rows($queryFacility) > 0 ) {
-                                            while($rowFacility = mysqli_fetch_array($queryFacility)) {
-                                                echo '<li class="nav-item">
-                                                    <a href="facility-info?facility_id='.$rowFacility['facility_id'].'" class="nav-link ">
-                                                        <i class="fa fa-minus" style="font-size: 10px;"></i>
-                                                        <span class="title">'.htmlentities($rowFacility['facility_category']).'</span>
-                                                    </a>
-                                                </li>';
-                                            }
+                        $queryFacility = mysqli_query( $conn,"
+                            SELECT 
+                            e.enterp_id AS e_id,
+                            e.facility_switch AS e_facility_switch,
+                            f.facility_id AS f_id,
+                            f.facility_category AS f_category
+                            FROM tblEnterpiseDetails AS e
+                            
+                            LEFT JOIN (
+                            	SELECT
+                                *
+                                FROM tblFacilityDetails
+                            ) AS f
+                            ON e.users_entities = f.users_entities
+                            
+                            WHERE e.users_entities = $switch_user_id
+                            AND e.enterpriseOperation = 'YES'
+                        " );
+                        if ( mysqli_num_rows($queryFacility) > 0 ) {
+                            echo '<li class="nav-item hide '; echo $site === "facility-info" ? "active open start" : ""; if (!empty($current_userEmployeeID) OR $current_userEmployeeID > 0) { echo menu('enterprise-info-subscription', $current_userEmployerID, $current_userEmployeeID); } echo '" id="menuFacility">
+                                <a href="javascript:;" class="nav-link nav-toggle">
+                                    <i class="icon-layers"></i>
+                                    <span class="title">Facility</span>
+                                    <span class="selected"></span>
+                                    <span class="arrow '; echo $site === "facility-info" ? "open" : ""; echo '"></span>
+                                </a>
+                                <ul class="sub-menu">';
+                                    $e_facility_switch_arr = array();
+                                    while($rowFacility = mysqli_fetch_array($queryFacility)) {
+                                        if (!in_array($rowFacility['e_id'], $e_facility_switch_arr) AND $rowFacility['e_facility_switch'] == 1) {
+                                            array_push($e_facility_switch_arr, $rowFacility['e_id']);
+                                            echo '<li class="nav-item">
+                                                <a href="javascript:;" class="nav-link" onclick="btnFacilitySwitch(0)">
+                                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                    <span class="title">Switch to Main Account</span>
+                                                </a>
+                                            </li>';
                                         }
-                                    ?>
-                        </ul>
-                    </li>
-                    <?php 
-                            }
-                            // }
-                        ?>
+                                        
+                                        if ($rowFacility['e_facility_switch'] == 1) {
+                                            echo '<li class="nav-item">
+                                                <a href="javascript:;" class="nav-link nav-toggle">
+                                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                    <span class="title">'.htmlentities($rowFacility['f_category']).'</span>
+                                                    <span class="arrow"></span>
+                                                </a>
+                                                <ul class="sub-menu">
+                                                    <li class="nav-item ">
+                                                        <a href="javascript:;" class="nav-link" onclick="btnFacilitySwitch('.$rowFacility['f_id'].')">Switch Account</a>
+                                                    </li>
+                                                    <li class="nav-item ">
+                                                        <a href="facility-info?facility_id='.$rowFacility['f_id'].'" class="nav-link ">View Details</a>
+                                                    </li>
+                                                </ul>
+                                            </li>';
+                                        } else {
+                                            echo '<li class="nav-item">
+                                                <a href="facility-info?facility_id='.$rowFacility['f_id'].'" class="nav-link ">
+                                                    <i class="fa fa-minus" style="font-size: 10px;"></i>
+                                                    <span class="title">'.htmlentities($rowFacility['f_category']).'</span>
+                                                </a>
+                                            </li>';
+                                        }
+                                    }
+                                echo '</ul>
+                            </li>';
+                        }
+                    ?>
 
                     <?php $query = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE enterpriseEmployees = 'Yes' AND users_entities = $switch_user_id " ); if ( mysqli_num_rows($query) > 0 ) { ?>
                     <li class="nav-item hide <?php echo $site === "employee" || $site === "job-description" || $site === "trainings" || $site === "department" || $site === "quiz" || $site === "training-requirements" ? "active open start" : ""; ?>" id="menuHR">

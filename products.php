@@ -4,6 +4,11 @@
     $breadcrumbs = '';
     $sub_breadcrumbs = '';
     
+    $facility_switch_user_id2 = 0;
+    if (isset($_COOKIE['facilityswitchAccount'])) {
+        $facility_switch_user_id2 = $_COOKIE['facilityswitchAccount'];
+    }
+    
     if(isset($_GET['fetchProducts'])) {
         
         include_once __DIR__ .'/database_iiq.php';
@@ -136,7 +141,9 @@
                 ) AS c
                 ON p.category = c.ID
                 
-                WHERE p.deleted = 0 AND p.user_id = $switch_user_id
+                WHERE p.deleted = 0 
+                AND p.user_id = $switch_user_id
+                AND facility_switch = $facility_switch_user_id2
 
                 $sql_custom
              ) r

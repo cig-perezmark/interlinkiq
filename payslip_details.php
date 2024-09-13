@@ -67,7 +67,7 @@
                             $adjustment_deduction = $row['adjustment'];
                         }
                         $bi_pay = $row_employee['pay_rate'] / 2;
-                        $total_gross_pay = $row['pay_rate'] + $row['royaltee'] + $row['comission'] + $row['incentives'] + $adjustment_deduction + $row['other_fees'];
+                        $total_gross_pay = $row['pay_rate'] + $row['royaltee'] + $row['comission'] + $row['incentives'] + $adjustment_deduction + $row['other_fees'] +  $row['bunos'];
                         $process_fee = $row['transfer_fee'];
                     ?>
                     <!-- List of apps in tbl_app_store table -->
@@ -240,6 +240,19 @@
                                             </td>
                                         </tr>
                                         <tr>
+                                            <td colspan="2" >
+                                                Bunos
+                                            </td>
+                                            <td style="text-align:center" id="adjustment">
+                                                <?= "$" ?><?= $row['bunos'] ?>
+                                            </td>
+                                            <td colspan="2">
+                                            </td>
+                                            <td >
+                                                
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <td colspan="4" ></td>
                                         </tr>
                                         <tr>
@@ -272,9 +285,10 @@
                                                         $year_comission += $year_gross_rows['comission'];
                                                         $year_referal += $year_gross_rows['royaltee'];
                                                         $year_other_fees += $year_gross_rows['other_fees'];
+                                                        $year_bunos_fees += $year_gross_rows['bunos'];
                                                         
                                                     }
-                                                    echo "$"; echo $year_amount+$year_incentives+$year_comission+$year_referal+$year_other_fees;echo'<br>';
+                                                    echo "$"; echo $year_amount+$year_incentives+$year_comission+$year_referal+$year_other_fees+$year_bunos_fees;echo'<br>';
                                                 ?>
                                                 <br>
                                                 <?= "Notes:" ?><?php

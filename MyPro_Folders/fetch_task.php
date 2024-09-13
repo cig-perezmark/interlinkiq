@@ -899,7 +899,7 @@ if( isset($_GET['modal_filter_status']) ) {
                                 </td>
                                 <td><?= $row['CAI_filename']; ?></td>
                                 <td><?= $row['CAI_description']; ?></td>
-                                <td><?= $row['CAI_Action_date']; ?></td>
+                                <td><?= $row['CAI_Action_due_date']; ?></td>
                             </tr>
                     <?php }
                  ?>

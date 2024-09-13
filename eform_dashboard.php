@@ -177,7 +177,7 @@
                                                                                         </div>
                                                                                         <div class="col-xs-4">
                                                                                             <a class="task-trash" onclick="myfunction1('<?= $switch_user_id ?>', '<?= $enterp_logo ?>')" target="_blank" href="https://interlinkiq.com/e-forms/Welcome/index/<?= $switch_user_id ?>/<?= $_COOKIE['ID'] ?>/<?= $eforms_row['afl_form_code'] ?>/view_records/<?= $eforms_row['PK_id'] ?>">
-                                                                                                <i class="fa icon-docs"></i>
+                                                                                                <i class="fa fa-file"></i>
                                                                                             </a>
                                                                                         </div>
                                                                                         <div class="col-xs-4">

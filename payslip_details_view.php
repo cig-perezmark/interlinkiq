@@ -68,7 +68,7 @@
                             $adjustment_deduction = $row['adjustment'];
                         }
                         $bi_pay = $row_employee['pay_rate'] / 2;
-                        $total_gross_pay = $row['pay_rate'] + $row['royaltee'] + $row['comission'] + $row['incentives'] + $adjustment_deduction + $row['other_fees'];
+                        $total_gross_pay = $row['pay_rate'] + $row['royaltee'] + $row['comission'] + $row['incentives'] + $adjustment_deduction + $row['other_fees'] +  $row['bunos'];
                         $freelance_gross_pay = $row['hourly_rate'] * $row['total_hours'];
                     ?>
                     <!-- List of apps in tbl_app_store table -->
@@ -250,6 +250,19 @@
                                         </tr>
                                         <tr>
                                             <td colspan="2" >
+                                                Bunos
+                                            </td>
+                                            <td style="text-align:center" id="adjustment">
+                                                <?= "$" ?><?= $row['bunos'] ?>
+                                            </td>
+                                            <td colspan="2">
+                                            </td>
+                                            <td >
+                                                
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" >
                                                 Total Hours
                                             </td>
                                             <td style="text-align:center" id="adjustment">
@@ -269,7 +282,7 @@
                                                 Total Earnings
                                             </td>
                                             <td style="text-align:center">
-                                               <?= "$" ?><?= ($row['hourly_rate'] != 0) ? $freelance_gross_pay : $gross_pay ?>
+                                               <?= "$" ?><?= ($row['hourly_rate'] != 0) ? $freelance_gross_pay : $total_gross_pay ?>
                                             </td>
                                             <td colspan="2" style="text-align:center" >
                                                 Total Deduction
@@ -294,9 +307,9 @@
                                                         $year_comission += $year_gross_rows['comission'];
                                                         $year_referal += $year_gross_rows['royaltee'];
                                                         $year_other_fees += $year_gross_rows['other_fees'];
-                                                        
+                                                        $year_bunos_fess += $year_gross_rows['bunos'];
                                                     }
-                                                    echo "$"; echo $year_amount+$year_incentives+$year_comission+$year_referal+$year_other_fees;echo'<br>';
+                                                    echo "$"; echo $year_amount+$year_incentives+$year_comission+$year_referal+$year_other_fees+$year_bunos_fess;echo'<br>';
                                                 ?>
                                                 <br>
                                                 <?= "Notes:" ?>

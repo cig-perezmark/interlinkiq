@@ -10,8 +10,17 @@
     $arnel_signature_spi = 'data:image/png;base64,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';
     $arnel_signature_spi .= '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';
     $local_date = date('Y-m-d');
+
+    date_default_timezone_set("America/Chicago");
+    $local_time = date("h:i:sa");
+
     $target = '';
     $datafancybox = 'data-fancybox';
+
+    $facility_switch_user_id = 0;
+    if (isset($_COOKIE['facilityswitchAccount'])) {
+        $facility_switch_user_id = $_COOKIE['facilityswitchAccount'];
+    }
 
     // PHP MAILER FUNCTION
     use PHPMailer\PHPMailer\PHPMailer;
@@ -695,6 +704,69 @@
         );
         echo json_encode($output);
     }
+    if( isset($_POST['btnForgot']) ) {
+        $email = $_POST['email'];
+        $random = rand(1000,1000000);
+        $exist = false;
+
+        $selectEmail = mysqli_query( $conn,"
+            SELECT
+            u.ID AS u_ID,
+            u.email AS u_email,
+            u.first_name AS u_first_name,
+            u.last_name AS u_last_name,
+            u.client AS u_client,
+            c.url AS c_url,
+            c.name AS c_name,
+            c.email AS c_email
+            FROM tbl_user AS u
+
+            LEFT JOIN (
+                SELECT
+                *
+                FROM tbl_user_client
+            ) AS c
+            ON u.client = c.ID
+
+            WHERE u.is_active = 1
+            AND u.email = '".$email."'
+        " );
+        if ( mysqli_num_rows($selectEmail) > 0 ) {
+            while($rowUser = mysqli_fetch_array($selectEmail)) {
+                $ID = $rowUser['u_ID'];
+
+                mysqli_query( $conn,"UPDATE tbl_user set verification_code = $random WHERE ID = $ID" );
+
+                $client_url = 'login';
+                if ($rowUser['u_client'] > 0) {
+                    $client_url = $rowUser['c_url'];
+                }
+
+                $to = $rowUser['u_email'];
+                $user = htmlentities($rowUser['u_first_name'] ?? '') .' '. htmlentities($rowUser['u_last_name'] ?? '');
+                $subject = 'Reset your password';
+                $body = 'Hi '.$user.',<br><br>
+
+                We received a request that you want to update your password. You can do this by selecting the button below. You will be asked to enter your verification code, and then you can update your password.<br><br>
+
+                Your verification code is <b>'.$random.'</b>.<br><br>
+
+                <a href="'.$base_url.$client_url.'?p=1&i='.$ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">Update Password</a>';
+
+                php_mailer($to, $user, $subject, $body);
+
+                $message = 'Please check your email to reset your password.';
+                $exist = true;
+            }
+        } else {
+            $message = 'Email Address does not exist. Please try again!';
+        }
+        $output = array(
+            'exist' => $exist,
+            'message' => $message
+        );
+        echo json_encode($output);
+    }
     if( isset($_POST['btnReset']) ) {
         $email = $_POST['email'];
         $random = rand(1000,1000000);
@@ -740,24 +812,52 @@
         $exist = false;
         $message = 'Verification Code is Incorrect. Please try again! If you need some help, please click <a href="#modalService" data-toggle="modal"><strong>here</strong></a>';
 
-        $selectUser = mysqli_query( $conn,'SELECT * FROM tbl_user WHERE verification_code IS NOT NULL AND is_active = 1 AND ID="'. $ID .'"' );
+        $selectUser = mysqli_query( $conn,"
+            SELECT
+            u.ID AS u_ID,
+            u.email AS u_email,
+            u.first_name AS u_first_name,
+            u.last_name AS u_last_name,
+            u.verification_code AS u_verification_code,
+            u.client AS u_client,
+            c.url AS c_url,
+            c.name AS c_name,
+            c.email AS c_email
+            FROM tbl_user AS u
+
+            LEFT JOIN (
+                SELECT
+                *
+                FROM tbl_user_client
+            ) AS c
+            ON u.client = c.ID
+
+            WHERE u.is_active = 1
+            AND u.verification_code IS NOT NULL
+            AND u.ID = $ID
+        " );
         if ( mysqli_num_rows($selectUser) > 0 ) {
             while($rowUser = mysqli_fetch_array($selectUser)) {
-                $verification_code = $rowUser['verification_code'];
+                $verification_code = $rowUser['u_verification_code'];
 
                 if ($verification_code == $code) {
-                    mysqli_query( $conn,"UPDATE tbl_user set password='". $password_hash ."' WHERE ID='". $ID ."'" );
+                    mysqli_query( $conn,"UPDATE tbl_user set password = '". $password_hash ."' WHERE ID=$ID" );
 
-                    $to = $rowUser['email'];
-                    $user = $rowUser['first_name'] .' '. $rowUser['last_name'];
+                    $client_url = 'login';
+                    if ($rowUser['u_client'] > 0) {
+                        $client_url = $rowUser['c_url'];
+                    }
+
+                    $to = $rowUser['u_email'];
+                    $user = htmlentities($rowUser['u_first_name'] ?? '') .' '. htmlentities($rowUser['u_last_name'] ?? '');
                     $subject = 'Password Updated!';
                     $body = 'Hi '.$user.',<br><br>
 
                     Please login your account using your new password!<br><br>
 
-                    <a href="'. $base_url .'login" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">Login Here</a>';
+                    <a href="'.$base_url.$client_url.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">Login Here</a>';
 
-                    $mail = php_mailer($to, $user, $subject, $body);
+                    // php_mailer($to, $user, $subject, $body);
 
                     $exist = true;
                     $message = 'Password Updated! Kindly login with your updated details.';
@@ -1283,6 +1383,9 @@
 
         unset($_COOKIE['switchAccount']);
         setcookie('switchAccount', '', time() - 3600, '/'); // empty value and old timestamp
+
+        unset($_COOKIE['facilityswitchAccount']);
+        setcookie('facilityswitchAccount', '', time() - 3600, '/'); // empty value and old timestamp
         
         unset($_COOKIE['employee_id']);
         setcookie('employee_id', '', time() - 3600, '/'); // empty value and old timestamp
@@ -1490,12 +1593,12 @@
             <div class="col-md-8">
                 <select class="form-control mt-multiselect btn btn-default" name="assigned_to_id[]" multiple="multiple">';
 
-                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id=$user_id" );
+                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id" );
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                             $rowEmployeeID = $rowEmployee["ID"];
-                            $rowEmployeeFName = $rowEmployee["first_name"];
-                            $rowEmployeeLName = $rowEmployee["last_name"];
+                            $rowEmployeeFName = htmlentities($rowEmployee["first_name"] ?? '');
+                            $rowEmployeeLName = htmlentities($rowEmployee["last_name"] ?? '');
                             $rowEmployeeSelected = "";
 
                             // Base on Current Page
@@ -1530,8 +1633,8 @@
                         if ( mysqli_num_rows($selectEmployeeSwitch) > 0 ) {
                             while($rowEmployeeSwitch = mysqli_fetch_array($selectEmployeeSwitch)) {
                                 $rowEmployeeIDSwitch = $rowEmployeeSwitch["ID"];
-                                $rowEmployeeFNameSwitch = $rowEmployeeSwitch["first_name"];
-                                $rowEmployeeLNameSwitch = $rowEmployeeSwitch["last_name"];
+                                $rowEmployeeFNameSwitch = htmlentities($rowEmployeeSwitch["first_name"] ?? '');
+                                $rowEmployeeLNameSwitch = htmlentities($rowEmployeeSwitch["last_name"] ?? '');
                                 $rowEmployeeSelectedSwitch = "";
 
                                 // Base on Current Page
@@ -1621,6 +1724,25 @@
                     }
                 }
             }
+        }
+
+        // Reset Facility Switch every switch account
+        if (isset($_COOKIE['facilityswitchAccount'])) {
+            unset($_COOKIE['facilityswitchAccount']);
+            setcookie('facilityswitchAccount', '', time() - 3600, '/'); // empty value and old timestamp
+        }
+    }
+    if( isset($_GET['modalFacilitySwitch']) ) {
+        $id = $_GET['modalFacilitySwitch'];
+        $current_userID = $_COOKIE['ID'];
+        $current_userEmployeeID = employeeID($current_userID);
+        $current_userEmployerID = employerID($current_userID);
+
+        if ($id == 0) {
+            unset($_COOKIE['facilityswitchAccount']);
+            setcookie('facilityswitchAccount', '', time() - 3600, '/'); // empty value and old timestamp
+        } else {
+            setcookie('facilityswitchAccount', $id, time() + (86400 * 1), "/");  // 86400 = 1 day
         }
     }
 
@@ -2231,13 +2353,14 @@
                     <option value="1">Full-time</option>';
 
                     echo $current_client == 1 ? '<option value="2">Part-Time</option>':'<option value="2">Part-Time Project</option>';
-                    if ($current_client = 0) {
+                    if ($current_client == 0) {
                         echo 'option value="3">OJT</option>
                         <option value="4">Freelance</option>
                         <option value="5">Part-Time Apprentice</option>
                         <option value="6">Trainee</option>
-                        <option value="7">Consultant</option>';
-                    } else if ($current_client = 1) {
+                        <option value="7">Consultant</option>
+                        <option value="8">Contractor</option>';
+                    } else if ($current_client == 1) {
                         echo '<option value="8">Contractor</option>
                         <option value="9">Salaried</option>
                         <option value="10">Seasonal</option>';
@@ -2438,7 +2561,8 @@
                                     <option value="4" '; if ($row['type_id'] == 4) { echo 'selected'; } echo '>Freelance</option>
                                     <option value="5" '; if ($row['type_id'] == 5) { echo 'selected'; } echo '>Part-Time Apprentice</option>
                                     <option value="6" '; if ($row['type_id'] == 6) { echo 'selected'; } echo '>Trainee</option>
-                                    <option value="7" '; if ($row['type_id'] == 7) { echo 'selected'; } echo '>Consultant</option>';
+                                    <option value="7" '; if ($row['type_id'] == 7) { echo 'selected'; } echo '>Consultant</option>
+                                    <option value="8" '; if ($row['type_id'] == 8) { echo 'selected'; } echo '>Contractor</option>';
                                 } else if ($current_client == 1) {
                                     echo '<option value="8" '; if ($row['type_id'] == 8) { echo 'selected'; } echo '>Contractor</option>
                                     <option value="9" '; if ($row['type_id'] == 9) { echo 'selected'; } echo '>Salaried</option>
@@ -2478,7 +2602,7 @@
                             <select class="form-control mt-multiselect btn btn-default" name="department_id[]" multiple="multiple">';
 
                                 $array_Dept = explode(", ", $row["department_id"]);
-                                $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $user_id ORDER BY title" );
+                                $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
                                 if ( mysqli_num_rows($selectDepartment) > 0 ) {
                                     while($rowDepartment = mysqli_fetch_array($selectDepartment)) {
                                         if (in_array($rowDepartment["ID"], $array_Dept)) {
@@ -2500,7 +2624,7 @@
                             <select class="form-control mt-multiselect btn btn-default" name="job_description_id[]" multiple="multiple">';
 
                                 $array_Job = explode(", ", $row["job_description_id"]);
-                                $resultJob = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE status = 1 AND user_id = $user_id ORDER BY title" );
+                                $resultJob = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
                                 if ( mysqli_num_rows($resultJob) > 0 ) {
                                     while($rowJob = mysqli_fetch_array($resultJob)) {
                                         if (in_array($rowJob["ID"], $array_Job)) {
@@ -2521,7 +2645,7 @@
                         <div class="col-md-8">
                             <select class="form-control mt-multiselect btn btn-default" name="alternate">';
 
-                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id = $user_id AND ID != $id ORDER BY first_name" );
+                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id = $user_id AND ID != $id AND facility_switch = $facility_switch_user_id ORDER BY first_name" );
                                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                     echo '<option value="">Select</option>';
                                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
@@ -2543,7 +2667,7 @@
                         <div class="col-md-8">
                             <select class="form-control mt-multiselect btn btn-default" name="reporting_to_id">';
 
-                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id = $user_id AND ID != $id ORDER BY first_name" );
+                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id = $user_id AND ID != $id AND facility_switch = $facility_switch_user_id ORDER BY first_name" );
                                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                     echo '<option value="">Select</option>';
                                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
@@ -3097,7 +3221,8 @@
     if( isset($_GET['modalView_HR_Employee_Chart']) ) {
         $ID = $_GET['modalView_HR_Employee_Chart'];
 
-        $selectData = mysqli_query( $conn,"SELECT 
+        $selectData = mysqli_query( $conn,"
+            SELECT 
             jd1.ID AS jd1_ID,
             jd1.title AS jd1_title,
             jd1.reporting_to_id AS jd1_reporting_to_id,
@@ -3118,6 +3243,7 @@
                 FROM tbl_hr_job_description
                 WHERE status = 1
                 AND user_id = $ID
+                AND facility_switch = $facility_switch_user_id
             ) AS jd2
             ON FIND_IN_SET(jd2.ID, REPLACE(jd1.reporting_to_id, ' ', '')) > 0
 
@@ -3127,6 +3253,7 @@
                 FROM tbl_hr_employee
                 WHERE suspended = 0
                 AND user_id = $ID
+                AND facility_switch = $facility_switch_user_id
                 AND status = 1
             ) AS e
             ON FIND_IN_SET(jd1.ID, REPLACE(e.job_description_id, ' ', '')) > 0
@@ -3137,12 +3264,15 @@
                 FROM tbl_hr_employee
                 WHERE suspended = 0
                 AND user_id = $ID
+                AND facility_switch = $facility_switch_user_id
                 AND status = 1
             ) AS e2
             ON e.reporting_to_id = e2.ID
 
             WHERE jd1.status = 1
-            AND jd1.user_id = $ID" );
+            AND jd1.user_id = $ID
+            AND jd1.facility_switch = $facility_switch_user_id
+        " );
         if ( mysqli_num_rows($selectData) > 0 ) {
 
             $data_chart = array();
@@ -3252,7 +3382,7 @@
                         $subject = 'You are invited!';
                         $body = 'Hi '. $data_first_name .',<br><br>
 
-                        Your employer, '.$data_company.', invites you to join <a href="'.$base_url.$client_url.'?r=1&i='.$ID.'" target="_blank">InterlinkIQ.com</a> to connect with your assigned duties, work, and tasks.
+                        '.$data_company.', invites you to join <a href="'.$base_url.$client_url.'?r=1&i='.$ID.'" target="_blank">InterlinkIQ.com</a> to connect with your assigned duties, work, and tasks.
                         If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.$client_url.'?r=1&i='.$ID.'" target="_blank">'.$base_url.$client_url.'?r=1&i='.$ID.'</a><br><br>
 
                         Should you need assistance, kindly call 202-982-3002 or email <a href="mailto:'.$client_email.'" target="_blank">'.$client_email.'</a><br><br>
@@ -3263,8 +3393,8 @@
                         $subject = 'Welcome to '.$client_name.'!';
                         $body = 'Hi '. $data_first_name .',<br><br>
 
-                        Your employer, '.$data_company.', invites you to join <a href="'. $base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">'.$client_name.'</a> to connect with your assigned duties, work, and tasks. 
-                        If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">'.$base_url.$client_url.'?r=1&i='.$last_id.'</a><br><br>
+                        '.$data_company.', invites you to join <a href="'. $base_url.$client_url.'?r=1&i='.$ID.'" target="_blank">'.$client_name.'</a> to connect with your assigned duties, work, and tasks. 
+                        If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.$client_url.'?r=1&i='.$ID.'" target="_blank">'.$base_url.$client_url.'?r=1&i='.$ID.'</a><br><br>
 
                         Should you need assistance, kindly call 202-982-3002 or email <a href="mailto:'.$client_email.'" target="_blank">'.$client_email.'</a><br><br>
 
@@ -3327,8 +3457,8 @@
         }
 
         if ($exist == false) {
-            $sql = "INSERT INTO tbl_hr_employee (user_id, portal_user, first_name, last_name, email, client, type_id, id_number, keys_assigned, alarm_code, date_hired, department_id, job_description_id, reporting_to_id, last_modified)
-            VALUES ('$user_id', '$portal_user', '$first_name', '$last_name', '$email', '$client', '$type_id', '$id_number', '$keys_assigned', '$alarm_code', '$date_hired', '$department_id', '$job_description_id', '$reporting_to_id', '$last_modified')";
+            $sql = "INSERT INTO tbl_hr_employee (user_id, portal_user, facility_switch, first_name, last_name, email, client, type_id, id_number, keys_assigned, alarm_code, date_hired, department_id, job_description_id, reporting_to_id, last_modified)
+            VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '$first_name', '$last_name', '$email', '$client', '$type_id', '$id_number', '$keys_assigned', '$alarm_code', '$date_hired', '$department_id', '$job_description_id', '$reporting_to_id', '$last_modified')";
             
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
@@ -3390,13 +3520,13 @@
                         Consultare Inc. Group<br>
                         <a href="www.InterlinkIQ.com" target="_blank">www.InterlinkIQ.com</a>';
                         
-                        php_mailer_1($to, $user, $subject, $body, $from, $name);
+                        // php_mailer_1($to, $user, $subject, $body, $from, $name);
                     } else {
                         if ($client_ID == 0) {
                             $subject = 'You are invited!';
                             $body = 'Hi '. $data_first_name .',<br><br>
 
-                            Your employer, '.$data_company.', invites you to join <a href="'.$base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">InterlinkIQ.com</a> to connect with your assigned duties, work, and tasks.
+                            '.$data_company.', invites you to join <a href="'.$base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">InterlinkIQ.com</a> to connect with your assigned duties, work, and tasks.
                             If you experience difficulties opening the website, kindly use this link instead <a href="'.$base_url.$client_url.'?r=1&i='.$last_id.'" target="_blank">'.$base_url.$client_url.'?r=1&i='.$last_id.'</a><br><br>
 
                             Should you need assistance, kindly call 202-982-3002 or email <a href="mailto:'.$client_email.'" target="_blank">'.$client_email.'</a><br><br>
@@ -3417,7 +3547,7 @@
                             '.$client_name.' Team';
                         }
 
-                        php_mailer($to, $user, $subject, $body);
+                        // php_mailer($to, $user, $subject, $body);
                     }
 
                     if ($_COOKIE['client'] == 1) {
@@ -3912,8 +4042,8 @@
             array_push($arr_item, $output);
             $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
-            $sql = "INSERT INTO tbl_hr_file (user_id, portal_user, employee_id, category, files, filetype, filename, filesize, file_history, description, start_date, due_date, uploaded_date, non_expiry)
-            VALUES ('$user_id', '$portal_user', '$ID', '$category', '$files', '$filetype', '$filename', '$filesize', '$file_history', '$description', '$date_start', '$date_end', '$local_date', '$non_expiry')";
+            $sql = "INSERT INTO tbl_hr_file (user_id, portal_user, facility_switch, employee_id, category, files, filetype, filename, filesize, file_history, description, start_date, due_date, uploaded_date, non_expiry)
+            VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '$ID', '$category', '$files', '$filetype', '$filename', '$filesize', '$file_history', '$description', '$date_start', '$date_end', '$local_date', '$non_expiry')";
             
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
@@ -4145,12 +4275,14 @@
                 FROM tbl_hr_trainings
                 WHERE status = 1
                 AND user_id = $user_id
+                AND facility_switch = $facility_switch_user_id
                 AND deleted = 0
             ) AS t 
             ON FIND_IN_SET(j.ID, REPLACE(t.job_description_id, ' ', ''))
             WHERE j.status = $status
             AND FIND_IN_SET($id, REPLACE(j.department_id, ' ', ''))
             AND j.user_id = $user_id
+            AND j.facility_switch = $facility_switch_user_id
             GROUP BY j.ID
 
             ORDER BY j.title" );
@@ -4261,7 +4393,7 @@
                 <select class="form-control mt-multiselect btn btn-default" name="department_id[]" multiple="multiple">';
 
                     $array_Dept = explode(", ", $row["department_id"]);
-                    $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $user_id ORDER BY title" );
+                    $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
                     if ( mysqli_num_rows($selectDepartment) > 0 ) {
                         while($rowDepartment = mysqli_fetch_array($selectDepartment)) {
                             if (in_array($rowDepartment["ID"], $array_Dept)) {
@@ -4283,7 +4415,7 @@
                 <select class="form-control mt-multiselect btn btn-default" name="reporting_to_id">';
 
                     $array_Job = explode(", ", $row["reporting_to_id"]);
-                    $resultJob = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE status = 1 AND user_id = $user_id ORDER BY title" );
+                    $resultJob = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
                     if ( mysqli_num_rows($resultJob) > 0 ) {
                         echo '<option value="">Select</option>';
                         while($rowJob = mysqli_fetch_array($resultJob)) {
@@ -4356,7 +4488,7 @@
                                     </thead>
                                     <tbody>';
                                         
-                                        $selectTrainings = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE status = 1 AND deleted = 0 AND user_id = $user_id ORDER BY title" );
+                                        $selectTrainings = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE status = 1 AND deleted = 0 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
                                         if ( mysqli_num_rows($selectTrainings) > 0 ) {
                                             $countTraining = 0;
                                             $counting = 1;
@@ -4439,7 +4571,7 @@
                                     </thead>
                                     <tbody>';
 
-                                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id AND job_description_id IN ($ID) ORDER BY first_name" );
+                                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id AND job_description_id IN ($ID) AND facility_switch = $facility_switch_user_id ORDER BY first_name" );
                                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                             $counting = 1;
                                             while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
@@ -4568,8 +4700,8 @@
             array_push($arr_item, $output);
             $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
-            $sql = "INSERT INTO tbl_hr_job_description (user_id, title, description, department_id, files, filetype, filesize, file_history)
-            VALUES ('$ID', '$title', '$description', '$department_id', '$files', '$filetype', '$filesize', '$file_history')";
+            $sql = "INSERT INTO tbl_hr_job_description (user_id, facility_switch, title, description, department_id, files, filetype, filesize, file_history)
+            VALUES ('$ID', '$facility_switch_user_id', '$title', '$description', '$department_id', '$files', '$filetype', '$filesize', '$file_history')";
         
             if (mysqli_query($conn, $sql)) {
 
@@ -4777,7 +4909,6 @@
                 }
             }
         }
-
     }
 
 
@@ -4798,14 +4929,14 @@
                 <select class="form-control" name="type" onchange="selectType(this)">
                     <option value="">Select</option>';
 
-                    $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings_type ORDER BY name" );
+                    $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings_type WHERE facility_switch = $facility_switch_user_id ORDER BY name" );
                     if ( mysqli_num_rows($result) > 0 ) {
                         while($row = mysqli_fetch_array($result)) {
                             $ID = $row['ID'];
                             $name = $row['name'];
                             $records = 0;
 
-                            $selectTrainings = mysqli_query( $conn,'SELECT * FROM tbl_hr_trainings WHERE deleted = 0 AND user_id="'.$user_id.'" AND type="'. $ID .'"' );
+                            $selectTrainings = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE deleted = 0 AND user_id = $user_id AND type = $ID AND facility_switch = $facility_switch_user_id" );
                             if ( mysqli_num_rows($selectTrainings) > 0 ) {
                                 while($row = mysqli_fetch_array($selectTrainings)) {
                                     $records++;
@@ -4840,7 +4971,7 @@
             <div class="col-md-8">
                 <select class="form-control mt-multiselect btn btn-default" name="job_description_id[]" multiple="multiple" required>';
 
-                    $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE status = 1 and user_id = $user_id ORDER BY title" );
+                    $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
                     if ( mysqli_num_rows($result) > 0 ) {
                         while($row = mysqli_fetch_array($result)) {
                             echo '<option value="'. $row["ID"] .'">'. htmlentities($row["title"] ?? '') .'</option>';
@@ -4902,7 +5033,7 @@
             <div class="col-md-8">
                 <select class="form-control mt-multiselect btn btn-default" name="quiz_id[]" multiple="multiple">';
 
-                    $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_set WHERE status = 1 and user_id = $user_id ORDER BY title" );
+                    $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_set WHERE status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
                     if ( mysqli_num_rows($result) > 0 ) {
                         while($row = mysqli_fetch_array($result)) {
                             echo '<option value="'. $row["ID"] .'">'. htmlentities($row["title"] ?? '') .'</option>';
@@ -4975,14 +5106,14 @@
                             <select class="form-control" name="type" onchange="selectType(this)">
                                 <option value="">Select</option>';
 
-                                $resultType = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings_type ORDER BY name" );
+                                $resultType = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings_type WHERE facility_switch = $facility_switch_user_id ORDER BY name" );
                                 if ( mysqli_num_rows($resultType) > 0 ) {
                                     while($rowType = mysqli_fetch_array($resultType)) {
                                         $ID = htmlentities($rowType['ID'] ?? '');
                                         $name = htmlentities($rowType['name'] ?? '');
                                         $records = 0;
 
-                                        $selectTrainings = mysqli_query( $conn,'SELECT * FROM tbl_hr_trainings WHERE deleted = 0 AND user_id="'.$user_id.'" AND type="'. $ID .'"' );
+                                        $selectTrainings = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE deleted = 0 AND user_id = $user_id AND type = $ID AND facility_switch = $facility_switch_user_id" );
                                         if ( mysqli_num_rows($selectTrainings) > 0 ) {
                                             while($rowTrainings = mysqli_fetch_array($selectTrainings)) {
                                                 $records++;
@@ -5018,7 +5149,7 @@
                             <select class="form-control mt-multiselect btn btn-default" name="job_description_id[]" multiple="multiple">';
                                 
                                 $array_jd = explode(", ", $row["job_description_id"]);
-                                $resultJD = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE status = 1 and user_id = $user_id ORDER BY title" );
+                                $resultJD = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
                                 if ( mysqli_num_rows($resultJD) > 0 ) {
                                     while($rowJD = mysqli_fetch_array($resultJD)) {
                                         if (in_array($rowJD["ID"], $array_jd)) {
@@ -5167,7 +5298,7 @@
                             <select class="form-control mt-multiselect btn btn-default" name="quiz_id[]" multiple="multiple">';
                                 
                                 $array_quiz = explode(", ", $row["quiz_id"]);
-                                $resultQuiz = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_set WHERE deleted = 0 AND status = 1 and user_id = $user_id ORDER BY title" );
+                                $resultQuiz = mysqli_query( $conn,"SELECT * FROM tbl_hr_quiz_set WHERE deleted = 0 AND status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
                                 if ( mysqli_num_rows($resultQuiz) > 0 ) {
                                     while($rowQuiz = mysqli_fetch_array($resultQuiz)) {
                                         if (in_array($rowQuiz["ID"], $array_quiz)) {
@@ -5243,6 +5374,7 @@
                                         WHERE e.suspended = 0
                                         AND e.status = 1
                                         AND e.user_id = $user_id
+                                        AND e.facility_switch = $facility_switch_user_id
                                         AND u.ID IS NOT NULL
                                         ORDER BY e.first_name" );
                                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
@@ -5380,6 +5512,7 @@
 
                     WHERE e.suspended = 0
                     AND e.status = 1
+                    AND e.facility_switch = $facility_switch_user_id
                     AND u.ID IS NOT NULL
                 ) AS e1
                 ON e1.e_user_id = t.user_id
@@ -5402,6 +5535,7 @@
                 WHERE t.deleted = 0
                 AND t.type = $id
                 AND t.user_id = $user_id
+                AND t.facility_switch = $facility_switch_user_id
 
                 GROUP BY e1.u_ID
                 , t.ID
@@ -5528,6 +5662,7 @@
 
                     WHERE e.suspended = 0
                     AND e.status = 1
+                    AND e.facility_switch = $facility_switch_user_id
                     AND u.ID IS NOT NULL
                 ) AS e1
                 ON e1.e_user_id = t.user_id
@@ -5549,6 +5684,7 @@
 
                 WHERE t.deleted = 0
                 AND t.user_id = $user_id
+                AND t.facility_switch = $facility_switch_user_id
 
                 GROUP BY e1.u_ID
                 , t.ID
@@ -5635,8 +5771,8 @@
         if ($type == "other") {
             $type_other = $_POST['type_other'];
 
-            $sql = "INSERT INTO tbl_hr_trainings_type (user_id, portal_user, name)
-            VALUES ('$user_id', '$portal_user', '$type_other')";
+            $sql = "INSERT INTO tbl_hr_trainings_type (user_id, portal_user, facility_switch name)
+            VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '$type_other')";
             if (mysqli_query($conn, $sql)) {
                 $type = mysqli_insert_id($conn);
             }
@@ -5685,7 +5821,7 @@
                 if ($process == true) {
                     $output = array (
                         'type'  =>  $filetype,
-                        'name' =>  $files,
+                        'name' =>  $file_docs,
                         'size' =>  $filesize,
                         'date' =>  $local_date
                     );
@@ -5704,8 +5840,8 @@
         $file_docs = json_encode($arr_file);
 
         if ($process == true) {
-            $sql = "INSERT INTO tbl_hr_trainings (user_id, portal_user, type, title, description, job_description_id, frequency, files, file_history, quiz_id)
-            VALUES ('$user_id', '$portal_user', '$type', '$title', '$description', '$job_description_id', '$frequency', '$file_docs', '$file_history', '$quiz_id')";
+            $sql = "INSERT INTO tbl_hr_trainings (user_id, portal_user, facility_switch, type, title, description, job_description_id, frequency, files, file_history, quiz_id)
+            VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '$type', '$title', '$description', '$job_description_id', '$frequency', '$file_docs', '$file_history', '$quiz_id')";
             
             if (mysqli_query($conn, $sql)) {
 
@@ -5730,7 +5866,7 @@
                     $countTraining = 0;
                     $countApproved = 0;
                     $countEmployee = 0;
-                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee" );
+                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE facility_switch = $facility_switch_user_id" );
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                             $found = null;
@@ -5878,7 +6014,7 @@
                         if (!empty($file_docs) AND $process == true) {
                             $output = array (
                                 'type'  =>  $filetype,
-                                'name' =>  $files,
+                                'name' =>  $file_docs,
                                 'size' =>  $filesize,
                                 'date' =>  $local_date
                             );
@@ -5914,7 +6050,7 @@
                 $countTraining = 0;
                 $countApproved = 0;
                 $countEmployee = 0;
-                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee" );
+                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE facility_switch = $facility_switch_user_id" );
                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                         $found = null;
@@ -6962,7 +7098,7 @@
                             <tbody>';
 
                                 $ID = $row["ID"];
-                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND FIND_IN_SET($ID, REPLACE(department_id, ' ', '')) ORDER BY last_name" );
+                                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND FIND_IN_SET($ID, REPLACE(department_id, ' ', '')) AND facility_switch = $facility_switch_user_id ORDER BY last_name" );
                                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                     $table_counter = 1;
                                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
@@ -7066,8 +7202,8 @@
             array_push($arr_item, $output);
             $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
-            $sql = "INSERT INTO tbl_hr_department (user_id, title, description, files, filetype, filesize, file_history, capacity)
-            VALUES ('$ID', '$title', '$description', '$files', '$filetype', '$filesize', '$file_history', '$capacity')";
+            $sql = "INSERT INTO tbl_hr_department (user_id, facility_switch, title, description, files, filetype, filesize, file_history, capacity)
+            VALUES ('$ID', '$facility_switch_user_id', '$title', '$description', '$files', '$filetype', '$filesize', '$file_history', '$capacity')";
 
             if (mysqli_query($conn, $sql)) {
 
@@ -7902,7 +8038,7 @@
                                 <select class="form-control mt-multiselect" name="reviewed_by">
                                     <option value="">Select Reviewer</option>';
 
-                                    $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1" );
+                                    $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
                                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                             $employee_id = $rowEmployee['ID'];
@@ -7955,7 +8091,7 @@
                                 <select class="form-control mt-multiselect" name="approved_by">
                                     <option value="">Select Approver</option>';
 
-                                    $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1" );
+                                    $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
                                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                             $employee_id = $rowEmployee['ID'];
@@ -8970,7 +9106,7 @@
                                         echo '<select class="form-control mt-multiselect" name="reviewed_by">
                                             <option value="">Select Reviewer</option>';
 
-                                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1" );
+                                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
                                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                     $employee_id = $rowEmployee['ID'];
@@ -9028,7 +9164,7 @@
                                         echo '<select class="form-control mt-multiselect" name="approved_by">
                                             <option value="">Select Approver</option>';
 
-                                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1" );
+                                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
                                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                     $employee_id = $rowEmployee['ID'];
@@ -9747,7 +9883,7 @@
                 </thead>
                 <tbody>';
 
-                        $resultSupplier = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE type = $id AND updated = 1" );
+                        $resultSupplier = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE type = $id AND updated = 1 AND facility_switch = $facility_switch_user_id" );
                         if ( mysqli_num_rows($resultSupplier) > 0 ) {
                             while($rowSupplier = mysqli_fetch_array($resultSupplier)) {
                                 $supplier_user_id = $rowSupplier["user_id"];
@@ -9817,7 +9953,7 @@
             $user_id = employerID($portal_user);
         }
 
-        $resultSupplier = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE archived = 1 AND deleted = 0 AND type = $id AND updated = 0 AND user_id = $user_id" );
+        $resultSupplier = mysqli_query( $conn,"SELECT * FROM tbl_ffva WHERE archived = 1 AND deleted = 0 AND type = $id AND updated = 0 AND user_id = $user_id AND facility_switch = $facility_switch_user_id" );
         if ( mysqli_num_rows($resultSupplier) > 0 ) {
             while($rowSupplier = mysqli_fetch_array($resultSupplier)) {
                 $supplier_user_id = $rowSupplier["user_id"];
@@ -10429,7 +10565,7 @@
                         <select class="form-control mt-multiselect" name="reviewed_by">
                             <option value="">Select Reviewer</option>';
 
-                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1" );
+                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                     $employee_id = $rowEmployee['ID'];
@@ -10472,7 +10608,7 @@
                         <select class="form-control mt-multiselect" name="approved_by">
                             <option value="">Select Reviewer</option>';
 
-                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1" );
+                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                     $employee_id = $rowEmployee['ID'];
@@ -10714,7 +10850,7 @@
                         <select class="form-control mt-multiselect" name="reviewed_by">
                             <option value="">Select Reviewer</option>';
 
-                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1" );
+                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                     $employee_id = $rowEmployee['ID'];
@@ -10762,7 +10898,7 @@
                         <select class="form-control mt-multiselect" name="approved_by">
                             <option value="">Select Reviewer</option>';
 
-                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1" );
+                            $selectEmployee = mysqli_query( $conn,"SELECT * from tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                     $employee_id = $rowEmployee['ID'];
@@ -10826,8 +10962,8 @@
             $new_product = htmlentities($row["product"] ?? '') .' Draft';
 
             // CLONING
-            $sql = "INSERT INTO tbl_ffva (user_id, portal_user, type, files, company, website, headquarters, telephone, email, person, product, assessment, category_id, category_other, industry_id, industry_other, code, likelihood_answer, likelihood_comment, likelihood_file, likelihood_rate, likelihood_element_other, likelihood_question_other, likelihood_answer_other, likelihood_comment_other, likelihood_file_other, likelihood_rate_other, likelihood_comment_summary, likelihood_note, consequence_answer, consequence_comment, consequence_file, consequence_rate, consequence_element_other, consequence_question_other, consequence_answer_other, consequence_comment_other, consequence_file_other, consequence_rate_other, consequence_comment_summary, consequence_note, prevention, prevention_other, detection, detection_other, mitigation, mitigation_other, prepared_by, prepared_signature, prepared_position, prepared_date, last_modified)
-            SELECT user_id, portal_user, type, files, company, website, headquarters, telephone, email, person, product, assessment, category_id, category_other, industry_id, industry_other, code, likelihood_answer, likelihood_comment, likelihood_file, likelihood_rate, likelihood_element_other, likelihood_question_other, likelihood_answer_other, likelihood_comment_other, likelihood_file_other, likelihood_rate_other, likelihood_comment_summary, likelihood_note, consequence_answer, consequence_comment, consequence_file, consequence_rate, consequence_element_other, consequence_question_other, consequence_answer_other, consequence_comment_other, consequence_file_other, consequence_rate_other, consequence_comment_summary, consequence_note, prevention, prevention_other, detection, detection_other, mitigation, mitigation_other, prepared_by, prepared_signature, prepared_position, prepared_date, '$last_modified'
+            $sql = "INSERT INTO tbl_ffva (user_id, portal_user, facility_switch, type, files, company, website, headquarters, telephone, email, person, product, assessment, category_id, category_other, industry_id, industry_other, code, likelihood_answer, likelihood_comment, likelihood_file, likelihood_rate, likelihood_element_other, likelihood_question_other, likelihood_answer_other, likelihood_comment_other, likelihood_file_other, likelihood_rate_other, likelihood_comment_summary, likelihood_note, consequence_answer, consequence_comment, consequence_file, consequence_rate, consequence_element_other, consequence_question_other, consequence_answer_other, consequence_comment_other, consequence_file_other, consequence_rate_other, consequence_comment_summary, consequence_note, prevention, prevention_other, detection, detection_other, mitigation, mitigation_other, prepared_by, prepared_signature, prepared_position, prepared_date, last_modified)
+            SELECT user_id, portal_user, facility_switch, type, files, company, website, headquarters, telephone, email, person, product, assessment, category_id, category_other, industry_id, industry_other, code, likelihood_answer, likelihood_comment, likelihood_file, likelihood_rate, likelihood_element_other, likelihood_question_other, likelihood_answer_other, likelihood_comment_other, likelihood_file_other, likelihood_rate_other, likelihood_comment_summary, likelihood_note, consequence_answer, consequence_comment, consequence_file, consequence_rate, consequence_element_other, consequence_question_other, consequence_answer_other, consequence_comment_other, consequence_file_other, consequence_rate_other, consequence_comment_summary, consequence_note, prevention, prevention_other, detection, detection_other, mitigation, mitigation_other, prepared_by, prepared_signature, prepared_position, prepared_date, '$last_modified'
             FROM tbl_ffva
             WHERE ID = $new_ID";
 
@@ -11317,8 +11453,8 @@
                 }
             }
 
-            $sql = "INSERT INTO tbl_ffva (user_id, portal_user, type, company, website, headquarters, telephone, email, person, product, assessment, category_id, category_other, industry_id, industry_other, code, notification, likelihood_answer, likelihood_comment, likelihood_file, likelihood_rate, likelihood_element_other, likelihood_question_other, likelihood_answer_other, likelihood_comment_other, likelihood_file_other, likelihood_rate_other, likelihood_comment_summary, likelihood_note, consequence_answer, consequence_comment, consequence_file, consequence_rate, consequence_element_other, consequence_question_other, consequence_answer_other, consequence_comment_other, consequence_file_other, consequence_rate_other, consequence_comment_summary, consequence_note, prevention, prevention_other, detection, detection_other, mitigation, mitigation_other, prepared_by, prepared_signature, prepared_position, prepared_date, reviewed_by, reviewed_signature, reviewed_position, reviewed_date, approved_by, approved_signature, approved_position, approved_date, last_modified, file_history)
-            VALUES ('$user_id', '$portal_user', '$tab', '$company', '$website', '$headquarters', '$telephone', '$email', '$person', '$product', '$assessment', '$category', '$category_other', '$industry', '$industry_other', '$code', '$notification', '$likelihood_answer', '$likelihood_comment', '$likelihood_file_arr', '$likelihood_rate', '$likelihood_element_other', '$likelihood_question_other', '$likelihood_answer_other', '$likelihood_comment_other', '$likelihood_file_other_arr', '$likelihood_rate_other', '$likelihood_comment_summary', '$likelihood_note', '$consequence_answer', '$consequence_comment', '$consequence_file_arr', '$consequence_rate','$consequence_element_other', '$consequence_question_other', '$consequence_answer_other', '$consequence_comment_other', '$consequence_file_other_arr', '$consequence_rate_other', '$consequence_comment_summary', '$consequence_note', '$prevention', '$prevention_other', '$detection', '$detection_other', '$mitigation', '$mitigation_other', '$prepared_by', '$prepared_signature', '$prepared_position', '$prepared_date', '$reviewed_by', '$reviewed_signature', '$reviewed_position', '$reviewed_date', '$approved_by', '$approved_signature', '$approved_position', '$approved_date', '$last_modified', '$file_history')";
+            $sql = "INSERT INTO tbl_ffva (user_id, portal_user, facility_switch, type, company, website, headquarters, telephone, email, person, product, assessment, category_id, category_other, industry_id, industry_other, code, notification, likelihood_answer, likelihood_comment, likelihood_file, likelihood_rate, likelihood_element_other, likelihood_question_other, likelihood_answer_other, likelihood_comment_other, likelihood_file_other, likelihood_rate_other, likelihood_comment_summary, likelihood_note, consequence_answer, consequence_comment, consequence_file, consequence_rate, consequence_element_other, consequence_question_other, consequence_answer_other, consequence_comment_other, consequence_file_other, consequence_rate_other, consequence_comment_summary, consequence_note, prevention, prevention_other, detection, detection_other, mitigation, mitigation_other, prepared_by, prepared_signature, prepared_position, prepared_date, reviewed_by, reviewed_signature, reviewed_position, reviewed_date, approved_by, approved_signature, approved_position, approved_date, last_modified, file_history)
+            VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '$tab', '$company', '$website', '$headquarters', '$telephone', '$email', '$person', '$product', '$assessment', '$category', '$category_other', '$industry', '$industry_other', '$code', '$notification', '$likelihood_answer', '$likelihood_comment', '$likelihood_file_arr', '$likelihood_rate', '$likelihood_element_other', '$likelihood_question_other', '$likelihood_answer_other', '$likelihood_comment_other', '$likelihood_file_other_arr', '$likelihood_rate_other', '$likelihood_comment_summary', '$likelihood_note', '$consequence_answer', '$consequence_comment', '$consequence_file_arr', '$consequence_rate','$consequence_element_other', '$consequence_question_other', '$consequence_answer_other', '$consequence_comment_other', '$consequence_file_other_arr', '$consequence_rate_other', '$consequence_comment_summary', '$consequence_note', '$prevention', '$prevention_other', '$detection', '$detection_other', '$mitigation', '$mitigation_other', '$prepared_by', '$prepared_signature', '$prepared_position', '$prepared_date', '$reviewed_by', '$reviewed_signature', '$reviewed_position', '$reviewed_date', '$approved_by', '$approved_signature', '$approved_position', '$approved_date', '$last_modified', '$file_history')";
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
 
@@ -11532,11 +11668,11 @@
                                 <a href="'. $base_url .'ffva?v='.$last_id.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
                                 <a href="'. $base_url .'pdf_ffva?id='.$last_id.'&signed=1" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #e73d4a; border-color: #e73d4a; display: inline-block;">PDF</a>';
                     
-                                if ($countSend > 0) {
-                                    php_mailer_2($to, $user, $subject, $body, $from, $sender);
-                                } else {
+                                // if ($countSend > 0) {
+                                //     php_mailer_2($to, $user, $subject, $body, $from, $sender);
+                                // } else {
                                     php_mailer_1($to, $user, $subject, $body, $from, $sender);
-                                }
+                                // }
                             }
                         }
                     }
@@ -11904,8 +12040,8 @@
                 }
             }
 
-            $sql = "INSERT INTO tbl_ffva (user_id, portal_user, type, company, website, headquarters, telephone, email, person, product, assessment, category_id, category_other, industry_id, industry_other, code, notification, likelihood_answer, likelihood_comment, likelihood_file, likelihood_rate, likelihood_element_other, likelihood_question_other, likelihood_answer_other, likelihood_comment_other, likelihood_file_other, likelihood_rate_other, likelihood_comment_summary, likelihood_note, consequence_answer, consequence_comment, consequence_file, consequence_rate, consequence_element_other, consequence_question_other, consequence_answer_other, consequence_comment_other, consequence_file_other, consequence_rate_other, consequence_comment_summary, consequence_note, prevention, prevention_other, detection, detection_other, mitigation, mitigation_other, prepared_by, prepared_signature, prepared_position, prepared_date, reviewed_by, reviewed_signature, reviewed_position, reviewed_date, approved_by, approved_signature, approved_position, approved_date, last_modified)
-            VALUES ('$user_id', '$portal_user', '$tab', '$company', '$website', '$headquarters', '$telephone', '$email', '$person', '$product', '$assessment', '$category', '$category_other', '$industry', '$industry_other', '$code', '$notification', '$likelihood_answer', '$likelihood_comment', '$likelihood_file_arr', '$likelihood_rate', '$likelihood_element_other', '$likelihood_question_other', '$likelihood_answer_other', '$likelihood_comment_other', '$likelihood_file_other_arr', '$likelihood_rate_other', '$likelihood_comment_summary', '$likelihood_note', '$consequence_answer', '$consequence_comment', '$consequence_file_arr', '$consequence_rate','$consequence_element_other', '$consequence_question_other', '$consequence_answer_other', '$consequence_comment_other', '$consequence_file_other_arr', '$consequence_rate_other', '$consequence_comment_summary', '$consequence_note', '$prevention', '$prevention_other', '$detection', '$detection_other', '$mitigation', '$mitigation_other', '$prepared_by', '$prepared_signature', '$prepared_position', '$prepared_date', '$reviewed_by', '$reviewed_signature', '$reviewed_position', '$reviewed_date', '$approved_by', '$approved_signature', '$approved_position', '$approved_date', '$last_modified')";
+            $sql = "INSERT INTO tbl_ffva (user_id, portal_user, facility_switch, type, company, website, headquarters, telephone, email, person, product, assessment, category_id, category_other, industry_id, industry_other, code, notification, likelihood_answer, likelihood_comment, likelihood_file, likelihood_rate, likelihood_element_other, likelihood_question_other, likelihood_answer_other, likelihood_comment_other, likelihood_file_other, likelihood_rate_other, likelihood_comment_summary, likelihood_note, consequence_answer, consequence_comment, consequence_file, consequence_rate, consequence_element_other, consequence_question_other, consequence_answer_other, consequence_comment_other, consequence_file_other, consequence_rate_other, consequence_comment_summary, consequence_note, prevention, prevention_other, detection, detection_other, mitigation, mitigation_other, prepared_by, prepared_signature, prepared_position, prepared_date, reviewed_by, reviewed_signature, reviewed_position, reviewed_date, approved_by, approved_signature, approved_position, approved_date, last_modified)
+            VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '$tab', '$company', '$website', '$headquarters', '$telephone', '$email', '$person', '$product', '$assessment', '$category', '$category_other', '$industry', '$industry_other', '$code', '$notification', '$likelihood_answer', '$likelihood_comment', '$likelihood_file_arr', '$likelihood_rate', '$likelihood_element_other', '$likelihood_question_other', '$likelihood_answer_other', '$likelihood_comment_other', '$likelihood_file_other_arr', '$likelihood_rate_other', '$likelihood_comment_summary', '$likelihood_note', '$consequence_answer', '$consequence_comment', '$consequence_file_arr', '$consequence_rate','$consequence_element_other', '$consequence_question_other', '$consequence_answer_other', '$consequence_comment_other', '$consequence_file_other_arr', '$consequence_rate_other', '$consequence_comment_summary', '$consequence_note', '$prevention', '$prevention_other', '$detection', '$detection_other', '$mitigation', '$mitigation_other', '$prepared_by', '$prepared_signature', '$prepared_position', '$prepared_date', '$reviewed_by', '$reviewed_signature', '$reviewed_position', '$reviewed_date', '$approved_by', '$approved_signature', '$approved_position', '$approved_date', '$last_modified')";
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
 
@@ -12134,11 +12270,11 @@
                                 <a href="'. $base_url .'ffva?v='.$last_id.'&c='.$client_ID.'" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #27a4b0; border-color: #208992; display: inline-block;">FFVA</a>
                                 <a href="'. $base_url .'pdf_ffva?id='.$last_id.'&signed=1" target="_blank" style="font-weight: 600; padding: 10px 20px!important; text-decoration: none; color: #fff; background-color: #e73d4a; border-color: #e73d4a; display: inline-block;">PDF</a>';
                     
-                                if ($countSend > 0) {
-                                    php_mailer_2($to, $user, $subject, $body, $from, $sender);
-                                } else {
+                                // if ($countSend > 0) {
+                                //     php_mailer_2($to, $user, $subject, $body, $from, $sender);
+                                // } else {
                                     php_mailer_1($to, $user, $subject, $body, $from, $sender);
-                                }
+                                // }
                             }
                         }
                     }
@@ -12677,8 +12813,8 @@
             }
         }
 
-        $sql = "INSERT INTO tbl_ffva_katva (user_id, portal_user, product, facility, address, step, description, vulnerability_id, vulnerability_text, explanation_id, explanation_option, explanation_comment, actionable, mitigation, prepared_by, prepared_signature, prepared_date, reviewed_by, reviewed_signature, reviewed_date, approved_by, approved_signature, approved_date, last_modified)
-        VALUES ('$user_id', '$portal_user', '$product', '$facility', '$address', '$katva_step', '$katva_description', '$katva_vulnerability', '$katva_vulnerability_text', '$katva_explanation', '$katva_explanation_option', '$katva_explanation_comment', '$katva_actionable', '$katva_mitigation', '$prepared_by', '$prepared_signature', '$prepared_date', '$reviewed_by', '$reviewed_signature', '$reviewed_date', '$approved_by', '$approved_signature', '$approved_date', '$last_modified')";
+        $sql = "INSERT INTO tbl_ffva_katva (user_id, portal_user, facility_switch, product, facility, address, step, description, vulnerability_id, vulnerability_text, explanation_id, explanation_option, explanation_comment, actionable, mitigation, prepared_by, prepared_signature, prepared_date, reviewed_by, reviewed_signature, reviewed_date, approved_by, approved_signature, approved_date, last_modified)
+        VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '$product', '$facility', '$address', '$katva_step', '$katva_description', '$katva_vulnerability', '$katva_vulnerability_text', '$katva_explanation', '$katva_explanation_option', '$katva_explanation_comment', '$katva_actionable', '$katva_mitigation', '$prepared_by', '$prepared_signature', '$prepared_date', '$reviewed_by', '$reviewed_signature', '$reviewed_date', '$approved_by', '$approved_signature', '$approved_date', '$last_modified')";
         if (mysqli_query($conn, $sql)) {
             $last_id = mysqli_insert_id($conn);
 
@@ -12938,7 +13074,7 @@
             if ($page == 1) {
                 $selectUser = mysqli_query( $conn,'SELECT * FROM tbl_user WHERE ID="'. $user_account_id .'" ORDER BY ID LIMIT 1' );
                 $rowUser = mysqli_fetch_array($selectUser);
-                $name = $rowUser['first_name'] .' '. $rowUser['last_name'];
+                $name = htmlentities($rowUser['first_name'] ?? '') .' '. htmlentities($rowUser['last_name'] ?? '');
                 $enterprise_name = "";
 
                 $selectCategory = mysqli_query( $conn,"SELECT * FROM tbl_supplier_category WHERE ID = $category" );
@@ -12960,21 +13096,21 @@
                 $selectEnterprise = mysqli_query( $conn,"SELECT * FROM tblEnterpiseDetails WHERE users_entities = $user_account_id" );
                 if ( mysqli_num_rows($selectEnterprise) > 0 ) {
                     $rowEnterprise = mysqli_fetch_array($selectEnterprise);
-                    $enterprise_name = $rowEnterprise["businessname"];
-                    $enterprise_bldg = $rowEnterprise["Bldg"];
-                    $enterprise_city = $rowEnterprise["city"];
-                    $enterprise_state = $rowEnterprise["States"];
-                    $enterprise_zip = $rowEnterprise["ZipCode"];
+                    $enterprise_name = htmlentities($rowEnterprise["businessname"] ?? '');
+                    $enterprise_bldg = htmlentities($rowEnterprise["Bldg"] ?? '');
+                    $enterprise_city = htmlentities($rowEnterprise["city"] ?? '');
+                    $enterprise_state = htmlentities($rowEnterprise["States"] ?? '');
+                    $enterprise_zip = htmlentities($rowEnterprise["ZipCode"] ?? '');
 
                     $enterprise_country = $rowEnterprise["country"];
                     $selectCountry = mysqli_query( $conn,"SELECT * FROM countries WHERE id = $enterprise_country" );
                     $rowCountry =mysqli_fetch_array($selectCountry);
                     $enterprise_country = $rowCountry["name"];
 
-                    $enterprise_email = $rowEnterprise["businessemailAddress"];
-                    $enterprise_phone = $rowEnterprise["businesstelephone"];
-                    $enterprise_fax = $rowEnterprise["businessfax"];
-                    $enterprise_website = $rowEnterprise["businesswebsite"];
+                    $enterprise_email = htmlentities($rowEnterprise["businessemailAddress"] ?? '');
+                    $enterprise_phone = htmlentities($rowEnterprise["businesstelephone"] ?? '');
+                    $enterprise_fax = htmlentities($rowEnterprise["businessfax"] ?? '');
+                    $enterprise_website = htmlentities($rowEnterprise["businesswebsite"] ?? '');
                 }
             }
         }
@@ -14673,11 +14809,11 @@
                                 <label class="control-label">Department</label>
                                 <select class="form-control mt-multiselect department_id" name="department_id[]" onchange="changeDepartment(this, 2)" multiple="multiple">';
                                     
-                                    $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $user_id ORDER BY title");
+                                    $selectDepartment = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY title");
                                     if ( mysqli_num_rows($selectDepartment) > 0 ) {
                                         while($rowDepartment = mysqli_fetch_array($selectDepartment)) {
                                             $dept_ID = $rowDepartment["ID"];
-                                            $dept_title = $rowDepartment["title"];
+                                            $dept_title = htmlentities($rowDepartment["title"] ?? '');
 
                                             if (!empty($department_id)) {
                                                 echo '<option value="'.$dept_ID.'" '; echo in_array($dept_ID, $department_id_arr) ? 'SELECTED' : ''; echo '>'.$dept_title.'</option>';
@@ -14697,12 +14833,12 @@
                                     
                                     if (!empty($department_id)) {
                                         foreach ($department_id_arr as $value) {
-                                            $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND department_id = $value AND user_id = $user_id ORDER BY first_name");
+                                            $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND department_id = $value AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY first_name");
                                             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                     $emp_ID = $rowEmployee["ID"];
-                                                    $emp_name = $rowEmployee["first_name"] .' '. $rowEmployee["last_name"];
-                                                    $emp_email = $rowEmployee["email"];
+                                                    $emp_name = htmlentities($rowEmployee["first_name"] ?? '') .' '. htmlentities($rowEmployee["last_name"] ?? '');
+                                                    $emp_email = htmlentities($rowEmployee["email"] ?? '');
 
                                                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE is_verified = 1 AND is_active = 1 AND email = '".$emp_email."' ORDER BY first_name");
                                                     if ( mysqli_num_rows($selectUser) > 0 ) {
@@ -14717,12 +14853,12 @@
                                             }
                                         }
                                     } else {
-                                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id ORDER BY first_name");
+                                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY first_name");
                                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                                             while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                                 $emp_ID = $rowEmployee["ID"];
-                                                $emp_name = $rowEmployee["first_name"] .' '. $rowEmployee["last_name"];
-                                                $emp_email = $rowEmployee["email"];
+                                                $emp_name = htmlentities($rowEmployee["first_name"] ?? '') .' '. htmlentities($rowEmployee["last_name"] ?? '');
+                                                $emp_email = htmlentities($rowEmployee["email"] ?? '');
 
                                                 $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE is_verified = 1 AND is_active = 1 AND email = '".$emp_email."' ORDER BY first_name");
                                                 if ( mysqli_num_rows($selectUser) > 0 ) {
@@ -15750,7 +15886,8 @@
             $user_id = employerID($portal_user);
         }
 
-        $selectData = mysqli_query( $conn,"WITH RECURSIVE cte (s_ID, s_name, s_employee_id, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
+        $selectData = mysqli_query( $conn,"
+            WITH RECURSIVE cte (s_ID, s_name, s_employee_id, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
             (
                 SELECT
                 s1.ID AS s_ID,
@@ -15793,6 +15930,7 @@
                 WHERE s1.page = $id
                 AND s1.is_deleted = 0 
                 AND s1.user_id = $user_id
+                AND s1.facility_switch = $facility_switch_user_id
                 
                 UNION ALL
                 
@@ -15837,6 +15975,7 @@
                 WHERE s2.page = $id
                 AND s2.is_deleted = 0 
                 AND s2.user_id = $user_id
+                AND s2.facility_switch = $facility_switch_user_id
             )
             SELECT 
             s_ID, 
@@ -15848,11 +15987,12 @@
 
             GROUP BY s_ID
 
-            ORDER BY s_name" );
+            ORDER BY s_name
+        " );
         if ( mysqli_num_rows($selectData) > 0 ) {
             while($row = mysqli_fetch_array($selectData)) {
                 $ID = $row["s_ID"];
-                $name = $row["s_name"];
+                $name = htmlentities($row["s_name"] ?? '');
 
                 $compliance = 0;
                 $d_compliance = $row["d_compliance"];
@@ -15863,7 +16003,8 @@
                 $employee_id = $row["s_employee_id"];
                 if (!empty($employee_id)) { $employee_id_arr = explode(", ", $employee_id); }
 
-                $selectEmployee = mysqli_query( $conn,"SELECT
+                $selectEmployee = mysqli_query( $conn,"
+                    SELECT
                     e.ID AS e_ID,
                     e.first_name AS e_first_name,
                     e.last_name AS e_last_name
@@ -15881,12 +16022,14 @@
                     WHERE e.suspended = 0 
                     AND e.status = 1 
                     AND e.user_id = $user_id
-                    AND FIND_IN_SET(e.ID, REPLACE('".$employee_id."', ' ', '')  ) > 0
+                    AND e.facility_switch = $facility_switch_user_id
+                    AND FIND_IN_SET(e.ID, REPLACE('$employee_id', ' ', '')  ) > 0
 
-                    ORDER BY e.first_name");
+                    ORDER BY e.first_name
+                ");
                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
-                        $emp_name = $rowEmployee["e_first_name"] .' '. $rowEmployee["e_last_name"];
+                        $emp_name = htmlentities($rowEmployee["e_first_name"] ?? '') .' '. htmlentities($rowEmployee["e_last_name"] ?? '');
                         array_push($employee_arr, $emp_name);
                     }
                 }
@@ -15916,19 +16059,19 @@
 
                 if ($c != "US") {
                     if (in_array($id, $country)) {
-                        echo '<label class="mt-checkbox mt-checkbox-outline"> '.$row["name"].'
+                        echo '<label class="mt-checkbox mt-checkbox-outline"> '.htmlentities($row["name"] ?? '').'
                             <input type="checkbox" value="'.$row["ID"].'" name="document[]" onchange="checked_Requirement(this, 1, 0, 0)" />
                             <span></span>
                         </label>';
                     }
                 }
                 if (in_array($id, $industry)) {
-                    echo '<label class="mt-checkbox mt-checkbox-outline"> '.$row["name"].'
+                    echo '<label class="mt-checkbox mt-checkbox-outline"> '.htmlentities($row["name"] ?? '').'
                         <input type="checkbox" value="'.$row["ID"].'" name="document[]" onchange="checked_Requirement(this, 1, 0, 0)" />
                         <span></span>
                     </label>';
                 } else if ($id == 0) {
-                    echo '<label class="mt-checkbox mt-checkbox-outline"> '.$row["name"].'
+                    echo '<label class="mt-checkbox mt-checkbox-outline"> '.htmlentities($row["name"] ?? '').'
                         <input type="checkbox" value="'.$row["ID"].'" name="document[]" onchange="checked_Requirement(this, 1, 0, 0)" />
                         <span></span>
                     </label>';
@@ -15975,7 +16118,7 @@
                 $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE ID = $id" );
                 while($rowRequirement = mysqli_fetch_array($selectRequirement)) {
                     $req_id = $rowRequirement["ID"];
-                    $req_name = $rowRequirement["name"];
+                    $req_name = htmlentities($rowRequirement["name"] ?? '');
 
                     foreach ($document_arr as $value) {
                         if ( $value == $req_id ) {
@@ -15983,11 +16126,11 @@
                             if ( mysqli_num_rows($selectDocument) > 0 ) {
                                 $rowDocument = mysqli_fetch_array($selectDocument);
                                 $doc_id = $rowDocument["ID"];
-                                $doc_file = $rowDocument["file"];
+                                $doc_file = htmlentities($rowDocument["file"] ?? '');
                                 $doc_filetype = $rowDocument["filetype"];
-                                $doc_filename = $rowDocument["filename"];
-                                $doc_file_template = $rowDocument["template"];
-                                $doc_file_comment = $rowDocument["comment"];
+                                $doc_filename = htmlentities($rowDocument["filename"] ?? '');
+                                $doc_file_template = htmlentities($rowDocument["template"] ?? '');
+                                $doc_file_comment = htmlentities($rowDocument["comment"] ?? '');
                                 $doc_file_reviewed = $rowDocument["reviewed_by"];
                                 $doc_file_approved = $rowDocument["approved_by"];
 
@@ -16141,12 +16284,12 @@
                                         if ( mysqli_num_rows($selectComment) > 0 ) {
                                             echo '<ul>';
                                                 while($rowComment = mysqli_fetch_array($selectComment)) {
-                                                    $comment_text = $rowComment["comment"];
+                                                    $comment_text = htmlentities($rowComment["comment"] ?? '');
 
                                                     $comment_user = $rowComment["portal_user"];
                                                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $comment_user" );
                                                     $rowUser = mysqli_fetch_array($selectUser);
-                                                    $comment_user_name = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                    $comment_user_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
                                                     
                                                     $comment_last_modified = $rowComment["last_modified"];
                                                     $comment_last_modified = new DateTime($comment_last_modified);
@@ -16172,7 +16315,7 @@
                                                                 $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $doc_file_reviewed" );
                                                                 if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                     $rowUser = mysqli_fetch_array($selectUser);
-                                                                    $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                    $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
 
                                                                     echo '<input type="hidden" class="form-control" name="document_reviewed[]" value="'.$doc_file_reviewed.'"/>
                                                                     <p style="margin: 0; font-weight: 700;">'.$rowUserName.'</p>';
@@ -16184,7 +16327,7 @@
 
                                                                         $rowUser = mysqli_fetch_array($selectUser);
                                                                         $rowUserID = $rowUser["ID"];
-                                                                        $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                        $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
 
                                                                         echo '<select class="form-control " name="document_reviewed[]">
                                                                             <option value="0">Select</option>
@@ -16207,7 +16350,7 @@
                                                                 $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $doc_file_approved" );
                                                                 if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                     $rowUser = mysqli_fetch_array($selectUser);
-                                                                    $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                    $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
 
                                                                     echo '<input type="hidden" class="form-control" name="document_approved[]" value="'.$doc_file_approved.'"/>
                                                                     <p style="margin: 0; font-weight: 700;">'.$rowUserName.'</p>';
@@ -16219,7 +16362,7 @@
 
                                                                         $rowUser = mysqli_fetch_array($selectUser);
                                                                         $rowUserID = $rowUser["ID"];
-                                                                        $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                        $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
 
                                                                         echo '<select class="form-control " name="document_approved[]">
                                                                             <option value="0">Select</option>
@@ -16246,7 +16389,7 @@
                                                             $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $doc_file_reviewed" );
                                                             if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                 $rowUser = mysqli_fetch_array($selectUser);
-                                                                $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
 
                                                                 echo '<input type="hidden" class="form-control" name="document_reviewed[]" value="'.$doc_file_reviewed.'"/>
                                                                 <p style="margin: 0; font-weight: 700;">'.$rowUserName.'</p>';
@@ -16257,7 +16400,7 @@
 
                                                                 $rowUser = mysqli_fetch_array($selectUser);
                                                                 $rowUserID = $rowUser["ID"];
-                                                                $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
 
                                                                 echo '<select class="form-control " name="document_reviewed[]">
                                                                     <option value="0">Select</option>
@@ -16276,7 +16419,7 @@
                                                             $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $doc_file_approved" );
                                                             if ( mysqli_num_rows($selectUser) > 0 ) {
                                                                 $rowUser = mysqli_fetch_array($selectUser);
-                                                                $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
 
                                                                 echo '<input type="hidden" class="form-control" name="document_approved[]" value="'.$doc_file_approved.'"/>
                                                                 <p style="margin: 0; font-weight: 700;">'.$rowUserName.'</p>';
@@ -16287,7 +16430,7 @@
 
                                                                 $rowUser = mysqli_fetch_array($selectUser);
                                                                 $rowUserID = $rowUser["ID"];
-                                                                $rowUserName = $rowUser["first_name"] .' '. $rowUser["last_name"];
+                                                                $rowUserName = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
 
                                                                 echo '<select class="form-control " name="document_approved[]">
                                                                     <option value="0">Select</option>
@@ -16315,7 +16458,7 @@
             if ( mysqli_num_rows($selectRequirement) > 0 ) {
                 while($row = mysqli_fetch_array($selectRequirement)) {
                     $data_ID = $row["ID"];
-                    $data_name = $row["name"];
+                    $data_name = htmlentities($row["name"] ?? '');
                     
                     echo '<tr class="tr_'.$data_ID.'">
                         <td rowspan="2">
@@ -16423,12 +16566,12 @@
             $department_id = implode(", ", $_POST['department_id']);
             $department_id_arr = explode(", ", $department_id);
             foreach ($department_id_arr as $value) {
-                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND department_id = $value AND user_id = $current_userEmployerID ORDER BY first_name" );
+                $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND department_id = $value AND user_id = $current_userEmployerID AND facility_switch = $facility_switch_user_id ORDER BY first_name" );
                 if ( mysqli_num_rows($selectEmployee) > 0 ) {
                     while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                         $emp_ID = $rowEmployee["ID"];
-                        $emp_name = $rowEmployee["first_name"] .' '. $rowEmployee["last_name"];
-                        $emp_email = $rowEmployee["email"];
+                        $emp_name = htmlentities($rowEmployee["first_name"] ?? '') .' '. htmlentities($rowEmployee["last_name"] ?? '');
+                        $emp_email = htmlentities($rowEmployee["email"] ?? '');
 
                         $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE is_verified = 1 AND is_active = 1 AND email = '".$emp_email."' ORDER BY first_name");
                         if ( mysqli_num_rows($selectUser) > 0 ) {
@@ -16438,12 +16581,12 @@
                 }
             }
         } else {
-            $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $current_userEmployerID ORDER BY first_name" );
+            $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE suspended = 0 AND status = 1 AND user_id = $current_userEmployerID AND facility_switch = $facility_switch_user_id ORDER BY first_name" );
             if ( mysqli_num_rows($selectEmployee) > 0 ) {
                 while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                     $emp_ID = $rowEmployee["ID"];
-                    $emp_name = $rowEmployee["first_name"] .' '. $rowEmployee["last_name"];
-                    $emp_email = $rowEmployee["email"];
+                    $emp_name = htmlentities($rowEmployee["first_name"] ?? '') .' '. htmlentities($rowEmployee["last_name"] ?? '');
+                    $emp_email = htmlentities($rowEmployee["email"] ?? '');
 
                     $selectUser = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE is_verified = 1 AND is_active = 1 AND email = '".$emp_email."' ORDER BY first_name");
                     if ( mysqli_num_rows($selectUser) > 0 ) {
@@ -16816,8 +16959,8 @@
         if (!empty($_POST['employee_id'])) { $employee_id = implode(", ",$_POST['employee_id']); }
 
         if ($process == true) {
-            $sql = "INSERT INTO tbl_supplier (user_id, portal_user, page, name, address, phone, fax, email, website, category, industry, contact, document, document_other, material, service, audit, audit_report, audit_certificate, audit_action, reviewed_by, reviewed_date, reviewed_due, department_id, employee_id, status, notification, nda, frequency, frequency_custom, facility, last_modified)
-            VALUES ('$user_id', '$portal_user', '2', '$name', '$address', '$phone', '$fax', '$email', '$website', '$category', '$industry', '$contact', '$document_name', '$document_other_name', '$material', '$service', '$audit', '$audit_report', '$audit_certificate', '$audit_action', '$reviewed_by', '$reviewed_date', '$reviewed_due', '$department_id', '$employee_id', '$status', '$notification', '$nda', '$supplier_frequency', '$supplier_frequency_custom', '$facility', '$date')";
+            $sql = "INSERT INTO tbl_supplier (user_id, portal_user, facility_switch, page, name, address, phone, fax, email, website, category, industry, contact, document, document_other, material, service, audit, audit_report, audit_certificate, audit_action, reviewed_by, reviewed_date, reviewed_due, department_id, employee_id, status, notification, nda, frequency, frequency_custom, facility, last_modified)
+            VALUES ('$user_id', '$portal_user', $facility_switch_user_id', '2', '$name', '$address', '$phone', '$fax', '$email', '$website', '$category', '$industry', '$contact', '$document_name', '$document_other_name', '$material', '$service', '$audit', '$audit_report', '$audit_certificate', '$audit_action', '$reviewed_by', '$reviewed_date', '$reviewed_due', '$department_id', '$employee_id', '$status', '$notification', '$nda', '$supplier_frequency', '$supplier_frequency_custom', '$facility', '$date')";
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
 
@@ -16827,7 +16970,7 @@
                     $data_ID = $rowData['ID'];
                     $data_page = $rowData['page'];
                     $data_user_id = $rowData["user_id"];
-                    $data_name = $rowData['name'];
+                    $data_name = htmlentities($rowData['name'] ?? '');
                     $data_document_other = $rowData['document_other'];
                     $data_reviewed_due = $rowData['reviewed_due'];
                     $data_status = $rowData["status"];
@@ -16848,12 +16991,12 @@
                             $selectContact = mysqli_query( $conn,"SELECT * FROM tbl_supplier_contact WHERE ID=$value" );
                             if ( mysqli_num_rows($selectContact) > 0 ) {
                                 $rowContact = mysqli_fetch_array($selectContact);
-                                $contact_name = $rowContact["name"];
-                                $contact_address = $rowContact["address"];
-                                $contact_email = $rowContact["email"];
-                                $contact_phone = $rowContact["phone"];
-                                $contact_cell = $rowContact["cell"];
-                                $contact_fax = $rowContact["fax"];
+                                $contact_name = htmlentities($rowContact["name"] ?? '');
+                                $contact_address = htmlentities($rowContact["address"] ?? '');
+                                $contact_email = htmlentities($rowContact["email"] ?? '');
+                                $contact_phone = htmlentities($rowContact["phone"] ?? '');
+                                $contact_cell = htmlentities($rowContact["cell"] ?? '');
+                                $contact_fax = htmlentities($rowContact["fax"] ?? '');
 
                                 $contact_info = '<ul class="list-inline">';
                                     if ($contact_email != "") { $contact_info .= '<li><a href="mailto:'.$contact_email.'" target="_blank" title="Email"><i class="fa fa-envelope"></i></a></li>'; }
@@ -17071,7 +17214,8 @@
                     $requirement = array();
                     $requirement_email = "";
                     // $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement" );
-                    $selectRequirement = mysqli_query( $conn,"SELECT
+                    $selectRequirement = mysqli_query( $conn,"
+                        SELECT
                         d_ID,
                         d_name,
                         d_file,
@@ -17108,7 +17252,8 @@
                         ) AS s
                         ON FIND_IN_SET(o.r_ID, REPLACE(REPLACE(s.document, ' ', ''), '|',','  )  ) > 0
 
-                        WHERE s.ID = $data_ID" );
+                        WHERE s.ID = $data_ID
+                    " );
                     while($rowRequirement = mysqli_fetch_array($selectRequirement)) {
                         array_push($requirement, $rowRequirement["r_name"]);
 
@@ -17128,7 +17273,7 @@
                         $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
                         while($rowRequirement = mysqli_fetch_array($selectRequirement)) {
                             $req_id = $rowRequirement["ID"];
-                            $req_name = $rowRequirement["name"];
+                            $req_name = htmlentities($rowRequirement["name"] ?? '');
 
                             $document_arr = implode(" | ", $_POST["document"]);
                             $document_arr = explode(" | ", $document_arr);
@@ -17383,8 +17528,8 @@
                                 $selectContact = mysqli_query( $conn,"SELECT * FROM tbl_supplier_contact WHERE notification = 1 AND ID = $value" );
                                 if ( mysqli_num_rows($selectContact) > 0 ) {
                                     while($rowContact = mysqli_fetch_array($selectContact)) {
-                                        $contact_name = $rowContact["name"];
-                                        $contact_email = $rowContact["email"];
+                                        $contact_name = htmlentities($rowContact["name"] ?? '');
+                                        $contact_email = htmlentities($rowContact["email"] ?? '');
                             
                                         $to = $contact_email;
                                         $user = $contact_name;
@@ -17743,12 +17888,12 @@
                             $selectContact = mysqli_query( $conn,"SELECT * FROM tbl_supplier_contact WHERE ID=$value" );
                             if ( mysqli_num_rows($selectContact) > 0 ) {
                                 $rowContact = mysqli_fetch_array($selectContact);
-                                $contact_name = $rowContact["name"];
-                                $contact_address = $rowContact["address"];
-                                $contact_email = $rowContact["email"];
-                                $contact_phone = $rowContact["phone"];
-                                $contact_cell = $rowContact["cell"];
-                                $contact_fax = $rowContact["fax"];
+                                $contact_name = htmlentities($rowContact["name"] ?? '');
+                                $contact_address = htmlentities($rowContact["address"] ?? '');
+                                $contact_email = htmlentities($rowContact["email"] ?? '');
+                                $contact_phone = htmlentities($rowContact["phone"] ?? '');
+                                $contact_cell = htmlentities($rowContact["cell"] ?? '');
+                                $contact_fax = htmlentities($rowContact["fax"] ?? '');
 
                                 $contact_info = '<ul class="list-inline">';
                                     if ($contact_email != "") { $contact_info .= '<li><a href="mailto:'.$contact_email.'" target="_blank" title="Email"><i class="fa fa-envelope"></i></a></li>'; }
@@ -18097,7 +18242,7 @@
                         $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement ORDER BY name" );
                         while($rowRequirement = mysqli_fetch_array($selectRequirement)) {
                             $req_id = $rowRequirement["ID"];
-                            $req_name = $rowRequirement["name"];
+                            $req_name = htmlentities($rowRequirement["name"] ?? '');
 
                             $document_arr = implode(" | ", $_POST["document"]);
                             $document_arr = explode(" | ", $document_arr);
@@ -18184,7 +18329,7 @@
                                     $selectMaterial = mysqli_query( $conn,"SELECT * FROM tbl_supplier_service WHERE ID=$value" );
                                     if ( mysqli_num_rows($selectMaterial) > 0 ) {
                                         while($rowMaterial = mysqli_fetch_array($selectMaterial)) {
-                                            $material_ID = $rowMaterial['service_name'];
+                                            $material_ID = htmlentities($rowMaterial['service_name'] ?? '');
 
                                             $selectDataCategory = mysqli_query( $conn,"SELECT * FROM tbl_service_category WHERE id=$material_ID" );
                                             $rowDataCategory = mysqli_fetch_array($selectDataCategory);
@@ -18313,12 +18458,12 @@
                                     $selectDataTemp_DocsReqName = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement WHERE ID = $user_change_name" );
                                     if ( mysqli_num_rows($selectDataTemp_DocsReqName) > 0 ) {
                                         $rowDataTemp_DocsReqName = mysqli_fetch_array($selectDataTemp_DocsReqName);
-                                        $user_change_name = $rowDataTemp_DocsReqName['name'];
+                                        $user_change_name = htmlentities($rowDataTemp_DocsReqName['name'] ?? '');
                                     }
                                 }
 
                                 $user_change_file = $rowDataTemp_Docs['file'];
-                                $user_change_filename = $rowDataTemp_Docs['filename'];
+                                $user_change_filename = htmlentities($rowDataTemp_Docs['filename'] ?? '');
                                 $user_change_reviewed_by = $rowDataTemp_Docs['reviewed_by'];
                                 $user_change_approved_by = $rowDataTemp_Docs['approved_by'];
 
@@ -18330,7 +18475,7 @@
                                     $selectDataTemp_Docs_Reviewed = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $user_change_reviewed_by" );
                                     if ( mysqli_num_rows($selectDataTemp_Docs_Reviewed) > 0 ) {
                                         $rowDataTemp_Docs_Reviewed = mysqli_fetch_array($selectDataTemp_Docs_Reviewed);
-                                        $reviewed_user_name = $rowDataTemp_Docs_Reviewed['first_name'] .' '. $rowDataTemp_Docs_Reviewed['last_name'];
+                                        $reviewed_user_name = htmlentities($rowDataTemp_Docs_Reviewed['first_name'] ?? '') .' '. htmlentities($rowDataTemp_Docs_Reviewed['last_name'] ?? '');
 
                                         $body .= '<li>'.$user_change_name.' was Reviewed by '.$reviewed_user_name.'</li>';
                                         $has_changes++;
@@ -18340,7 +18485,7 @@
                                     $selectDataTemp_Docs_Approved = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $user_change_approved_by" );
                                     if ( mysqli_num_rows($selectDataTemp_Docs_Approved) > 0 ) {
                                         $rowDataTemp_Docs_Approved = mysqli_fetch_array($selectDataTemp_Docs_Approved);
-                                        $approved_user_name = $rowDataTemp_Docs_Approved['first_name'] .' '. $rowDataTemp_Docs_Approved['last_name'];
+                                        $approved_user_name = htmlentities($rowDataTemp_Docs_Approved['first_name'] ?? '') .' '. htmlentities($rowDataTemp_Docs_Approved['last_name'] ?? '');
 
                                         $body .= '<li>'.$user_change_name.' was Reviewed by '.$approved_user_name.'</li>';
                                         $has_changes++;
@@ -18432,8 +18577,8 @@
                                 $selectContact = mysqli_query( $conn,"SELECT * FROM tbl_supplier_contact WHERE notification = 1 AND ID = $value" );
                                 if ( mysqli_num_rows($selectContact) > 0 ) {
                                     while($rowContact = mysqli_fetch_array($selectContact)) {
-                                        $contact_name = $rowContact["name"];
-                                        $contact_email = $rowContact["email"];
+                                        $contact_name = htmlentities($rowContact["name"] ?? '');
+                                        $contact_email = htmlentities($rowContact["email"] ?? '');
 
                                         $to = $contact_email;
                                         $user = $contact_name;
@@ -18464,7 +18609,7 @@
                                                 }
 
                                                 $user_change_file = $rowDataTemp_Docs['file'];
-                                                $user_change_filename = $rowDataTemp_Docs['filename'];
+                                                $user_change_filename = htmlentities($rowDataTemp_Docs['filename'] ?? '');
                                                 $user_change_reviewed_by = $rowDataTemp_Docs['reviewed_by'];
                                                 $user_change_approved_by = $rowDataTemp_Docs['approved_by'];
 
@@ -18476,7 +18621,7 @@
                                                     $selectDataTemp_Docs_Reviewed = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $user_change_reviewed_by" );
                                                     if ( mysqli_num_rows($selectDataTemp_Docs_Reviewed) > 0 ) {
                                                         $rowDataTemp_Docs_Reviewed = mysqli_fetch_array($selectDataTemp_Docs_Reviewed);
-                                                        $reviewed_user_name = $rowDataTemp_Docs_Reviewed['first_name'] .' '. $rowDataTemp_Docs_Reviewed['last_name'];
+                                                        $reviewed_user_name = htmlentities($rowDataTemp_Docs_Reviewed['first_name'] ?? '') .' '. htmlentities($rowDataTemp_Docs_Reviewed['last_name'] ?? '');
 
                                                         $body .= '<li>'.$user_change_name.' was Reviewed by '.$reviewed_user_name.'</li>';
                                                         $has_changes++;
@@ -18486,7 +18631,7 @@
                                                     $selectDataTemp_Docs_Approved = mysqli_query( $conn,"SELECT * FROM tbl_user WHERE ID = $user_change_approved_by" );
                                                     if ( mysqli_num_rows($selectDataTemp_Docs_Approved) > 0 ) {
                                                         $rowDataTemp_Docs_Approved = mysqli_fetch_array($selectDataTemp_Docs_Approved);
-                                                        $approved_user_name = $rowDataTemp_Docs_Approved['first_name'] .' '. $rowDataTemp_Docs_Approved['last_name'];
+                                                        $approved_user_name = htmlentities($rowDataTemp_Docs_Approved['first_name'] ?? '') .' '. htmlentities($rowDataTemp_Docs_Approved['last_name'] ?? '');
 
                                                         $body .= '<li>'.$user_change_name.' was Reviewed by '.$approved_user_name.'</li>';
                                                         $has_changes++;
@@ -18611,7 +18756,7 @@
                         if ( mysqli_num_rows($selectProduct) > 0 ) {
                             while($rowProduct = mysqli_fetch_array($selectProduct)) {
                                 $data_id = $rowProduct['ID'];
-                                $data_name = $rowProduct['name'];
+                                $data_name = htmlentities($rowProduct['name'] ?? '');
 
                                 echo '<option value="'.$data_id.'">'.$data_name.'</option>';
                             }
@@ -18705,7 +18850,7 @@
         $selectData = mysqli_query( $conn,"SELECT * from tbl_supplier_material WHERE ID = $id" );
         $row = mysqli_fetch_array($selectData);
         $data_user_id = $row['user_id'];
-        $data_material_name = $row['material_name'];
+        $data_material_name = htmlentities($row['material_name'] ?? '');
 
         $spec_file = $row['spec_file'];
         $src = 'https://view.officeapps.live.com/op/embed.aspx?src=';
@@ -18756,7 +18901,7 @@
                         if ( mysqli_num_rows($selectProduct) > 0 ) {
                             while($rowProduct = mysqli_fetch_array($selectProduct)) {
                                 $data_id = $rowProduct['ID'];
-                                $data_name = $rowProduct['name'];
+                                $data_name = htmlentities($rowProduct['name'] ?? '');
 
                                 echo '<option value="'.$data_id.'" '; echo $data_material_name == $data_id ? 'SELECTED':''; echo '>'.$data_name.'</option>';
                             }
@@ -18771,7 +18916,7 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="control-label">Comments / Notes</label>
-                    <textarea class="form-control" name="material_notes">'.$row['notes'].'</textarea>
+                    <textarea class="form-control" name="material_notes">'.htmlentities($row['notes'] ?? '').'</textarea>
                 </div>
             </div>
         </div>
@@ -23009,8 +23154,8 @@
         $audit_score = $_POST['audit_score'];
 
         if ($process == true) {
-            $sql = "INSERT INTO tbl_supplier (user_id, portal_user, page, name, vendor_code, address, phone, fax, email, website, category, industry, regulatory, contact, document, document_other, material, service, audit, audit_report, audit_certificate, audit_action, audit_filesize, audit_file_history, audit_score, reviewed_by, reviewed_date, reviewed_due, status, notification, date, risk_level, nda, organic, frequency, frequency_custom, last_modified)
-            VALUES ('$user_id', '$portal_user', '1', '$supplier_name',  '$vendor_code','$supplier_address', '$supplier_phone', '$supplier_fax', '$supplier_email', '$supplier_website', '$supplier_category', '$supplier_industry', '$regulatory', '$contact', '$document_name', '$document_other_name', '$material', '$service', '$audit', '$audit_report', '$audit_certificate', '$audit_action', '$audit_filesize', '$audit_file_history', '$audit_score', '$reviewed_by', '$reviewed_date', '$reviewed_due', '$supplier_status', '$supplier_notification', '$date', '$risk_level', '$nda', '$organic', '$supplier_frequency', '$supplier_frequency_custom', '$supplier_date')";
+            $sql = "INSERT INTO tbl_supplier (user_id, portal_user, facility_switch, page, name, vendor_code, address, phone, fax, email, website, category, industry, regulatory, contact, document, document_other, material, service, audit, audit_report, audit_certificate, audit_action, audit_filesize, audit_file_history, audit_score, reviewed_by, reviewed_date, reviewed_due, status, notification, date, risk_level, nda, organic, frequency, frequency_custom, last_modified)
+            VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '1', '$supplier_name',  '$vendor_code','$supplier_address', '$supplier_phone', '$supplier_fax', '$supplier_email', '$supplier_website', '$supplier_category', '$supplier_industry', '$regulatory', '$contact', '$document_name', '$document_other_name', '$material', '$service', '$audit', '$audit_report', '$audit_certificate', '$audit_action', '$audit_filesize', '$audit_file_history', '$audit_score', '$reviewed_by', '$reviewed_date', '$reviewed_due', '$supplier_status', '$supplier_notification', '$date', '$risk_level', '$nda', '$organic', '$supplier_frequency', '$supplier_frequency_custom', '$supplier_date')";
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
 
@@ -23029,8 +23174,10 @@
                         0 => 'Pending',
                         1 => 'Approved',
                         2 => 'Non Approved',
-                        3 => 'Emergency Use Only',
-                        4 => 'Do Not Use'
+                        3 => 'Emergency Used Only / Spot Purchasing',
+                        4 => 'Do Not Use',
+                        5 => 'Active',
+                        6 => 'Inactive'
                     );
 
                     $contact_name = '';
@@ -23287,7 +23434,8 @@
                         $requirement = array();
                         $requirement_email = "";
                         // $selectRequirement = mysqli_query( $conn,"SELECT * FROM tbl_supplier_requirement" );
-                        $selectRequirement = mysqli_query( $conn,"SELECT
+                        $selectRequirement = mysqli_query( $conn,"
+                            SELECT
                             d_ID,
                             d_name,
                             d_file,
@@ -23324,7 +23472,8 @@
                             ) AS s
                             ON FIND_IN_SET(o.r_ID, REPLACE(REPLACE(s.document, ' ', ''), '|',','  )  ) > 0
 
-                            WHERE s.ID = $data_ID" );
+                            WHERE s.ID = $data_ID
+                        " );
                         while($rowRequirement = mysqli_fetch_array($selectRequirement)) {
                             array_push($requirement, $rowRequirement["r_name"]);
 
@@ -23469,6 +23618,7 @@
                         array_push($address_array, htmlentities($address_arr[3] ?? ''));
                         array_push($address_array, $address_arr[0]);
                         array_push($address_array, $address_arr[4]);
+                        $address_arr_country = $address_arr[0];
                         $address_arr = implode(", ", $address_array);
 
                         $counterup_tbl = counterup_tbl('supplier');
@@ -23479,6 +23629,7 @@
                             "category" => htmlentities($data_category ?? ''),
                             "material" => htmlentities($data_material ?? ''),
                             "address" => $address_arr,
+                            "country" => $address_arr_country,
                             "contact_name" => htmlentities($contact_name ?? ''),
                             "contact_address" => htmlentities($contact_address ?? ''),
                             "contact_info" => $contact_info,
@@ -23942,8 +24093,10 @@
                     0 => 'Pending',
                     1 => 'Approved',
                     2 => 'Non Approved',
-                    3 => 'Emergency Use Only',
-                    4 => 'Do Not Use'
+                    3 => 'Emergency Used Only / Spot Purchasing',
+                    4 => 'Do Not Use',
+                    5 => 'Active',
+                    6 => 'Inactive'
                 );
 
                 $contact_name = '';
@@ -24462,6 +24615,7 @@
                 array_push($address_array, htmlentities($address_arr[3] ?? ''));
                 array_push($address_array, $address_arr[0]);
                 array_push($address_array, $address_arr[4]);
+                $address_arr_country = $address_arr[0];
                 $address_arr = implode(", ", $address_array);
 
                 $counterup_tbl = counterup_tbl('supplier');
@@ -24472,6 +24626,7 @@
                     "category" => htmlentities($data_category ?? ''),
                     "material" => htmlentities($data_material ?? ''),
                     "address" => $address_arr,
+                    "country" => $address_arr_country,
                     "contact_name" => htmlentities($contact_name ?? ''),
                     "contact_address" => htmlentities($contact_address ?? ''),
                     "contact_info" => $contact_info,
@@ -24885,8 +25040,10 @@
                     0 => 'Pending',
                     1 => 'Approved',
                     2 => 'Non Approved',
-                    3 => 'Emergency Use Only',
-                    4 => 'Do Not Use'
+                    3 => 'Emergency Used Only / Spot Purchasing',
+                    4 => 'Do Not Use',
+                    5 => 'Active',
+                    6 => 'Inactive'
                 );
 
                 // Document Section
@@ -26860,59 +27017,61 @@
         }
 
         $material_other_arr = array();
-        for ($i=0; $i < count($_POST['material_other']); $i++) {
-            $material_file_name = $_POST['material_other'][$i]['material_file_name'];
-            $material_file_from = '';
-            $material_file_to = '';
-            $material_file_daterange = $_POST['material_other'][$i]['material_file_daterange'];
-            if (!empty($material_file_daterange)) {
-                $material_file_daterange = explode(' - ', $material_file_daterange);
-                $material_file_from = $material_file_daterange[0];
-                $material_file_to = $material_file_daterange[1];
-            }
-
-            $material_file_doc = $_FILES['material_other']['name'][$i];
-            $material_file_doc_final = implode('*', $material_file_doc);
-
-            if (!empty($material_file_doc_final)) {
-                $spec_filesize_other = implode('*', $_FILES['material_other']['size'][$i]);
-                $material_file_doc_tmp = implode('*', $_FILES['material_other']['tmp_name'][$i]);
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($material_file_doc_final, PATHINFO_EXTENSION));
-
-                $mime = mime_content_type($material_file_doc_tmp);
-                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                
-                $material_file_doc_final = $random.' - '.$material_file_doc_final;
-                $material_file_doc_path = $path.$material_file_doc_final;
-
-                if(!in_array($mime, $mime_array)) {
-                    move_uploaded_file($material_file_doc_tmp, $material_file_doc_path);
-
-                    $filesize += $spec_filesize_other;
-
-                    $output = array (
-                        'type'  =>  0,
-                        'name' =>  $material_file_doc_final,
-                        'size' =>  $spec_filesize_other,
-                        'date' =>  $local_date
-                    );
-                    array_push($arr_item, $output);
-                } else {
-                    $process = false;
+        if (count($_POST['material_other']) > 0) {
+            for ($i=0; $i < count($_POST['material_other']); $i++) {
+                $material_file_name = $_POST['material_other'][$i]['material_file_name'];
+                $material_file_from = '';
+                $material_file_to = '';
+                $material_file_daterange = $_POST['material_other'][$i]['material_file_daterange'];
+                if (!empty($material_file_daterange)) {
+                    $material_file_daterange = explode(' - ', $material_file_daterange);
+                    $material_file_from = $material_file_daterange[0];
+                    $material_file_to = $material_file_daterange[1];
                 }
-            }
 
-            if (!empty($material_file_doc_final) AND !empty($material_file_from) AND !empty($material_file_to)) {
-                $material_other_data = array (
-                    'name' => $material_file_name,
-                    'material_file_doc' => $material_file_doc_final,
-                    'from' => $material_file_from,
-                    'to' => $material_file_to,
-                    'reviewer' => 0,
-                    'approver' => 0
-                );
-                array_push( $material_other_arr, $material_other_data );
+                $material_file_doc = $_FILES['material_other']['name'][$i];
+                $material_file_doc_final = implode('*', $material_file_doc);
+
+                if (!empty($material_file_doc_final)) {
+                    $spec_filesize_other = implode('*', $_FILES['material_other']['size'][$i]);
+                    $material_file_doc_tmp = implode('*', $_FILES['material_other']['tmp_name'][$i]);
+                    $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                    $ext = strtolower(pathinfo($material_file_doc_final, PATHINFO_EXTENSION));
+
+                    $mime = mime_content_type($material_file_doc_tmp);
+                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                    
+                    $material_file_doc_final = $random.' - '.$material_file_doc_final;
+                    $material_file_doc_path = $path.$material_file_doc_final;
+
+                    if(!in_array($mime, $mime_array)) {
+                        move_uploaded_file($material_file_doc_tmp, $material_file_doc_path);
+
+                        $filesize += $spec_filesize_other;
+
+                        $output = array (
+                            'type'  =>  0,
+                            'name' =>  $material_file_doc_final,
+                            'size' =>  $spec_filesize_other,
+                            'date' =>  $local_date
+                        );
+                        array_push($arr_item, $output);
+                    } else {
+                        $process = false;
+                    }
+                }
+
+                if (!empty($material_file_doc_final) AND !empty($material_file_from) AND !empty($material_file_to)) {
+                    $material_other_data = array (
+                        'name' => $material_file_name,
+                        'material_file_doc' => $material_file_doc_final,
+                        'from' => $material_file_from,
+                        'to' => $material_file_to,
+                        'reviewer' => 0,
+                        'approver' => 0
+                    );
+                    array_push( $material_other_arr, $material_other_data );
+                }
             }
         }
         $material_other = json_encode($material_other_arr);
@@ -27004,61 +27163,63 @@
         }
 
         $material_other_arr = array();
-        for ($i=0; $i < count($_POST['material_other']); $i++) {
-            $material_file_name = $_POST['material_other'][$i]['material_file_name'];
-            $material_file_reviewer = $_POST['material_other'][$i]['reviewer'];
-            $material_file_approver = $_POST['material_other'][$i]['approver'];
+        if (count($_POST['material_other']) > 0) {
+            for ($i=0; $i < count($_POST['material_other']); $i++) {
+                $material_file_name = $_POST['material_other'][$i]['material_file_name'];
+                $material_file_reviewer = $_POST['material_other'][$i]['reviewer'];
+                $material_file_approver = $_POST['material_other'][$i]['approver'];
 
-            $material_file_from = '';
-            $material_file_to = '';
-            $material_file_daterange = $_POST['material_other'][$i]['material_file_daterange'];
-            if (!empty($material_file_daterange)) {
-                $material_file_daterange = explode(' - ', $material_file_daterange);
-                $material_file_from = $material_file_daterange[0];
-                $material_file_to = $material_file_daterange[1];
-            }
-
-            $material_file_doc_final = $_POST['material_other'][$i]['material_file_doc_temp'];
-            $material_file_doc = $_FILES['material_other']['name'][$i];
-            $material_file_doc = implode('*', $material_file_doc);
-            if (!empty($material_file_doc)) {
-                $spec_filesize_other = implode('*', $_FILES['material_other']['size'][$i]);
-                $material_file_doc_tmp = implode('*', $_FILES['material_other']['tmp_name'][$i]);
-                $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
-                $ext = strtolower(pathinfo($material_file_doc, PATHINFO_EXTENSION));
-
-                $mime = mime_content_type($material_file_doc_tmp);
-                $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
-                
-                $material_file_doc_final = $random.' - '.$material_file_doc;
-                $material_file_doc_path = $path.$material_file_doc_final;
-
-                if(!in_array($mime, $mime_array)) {
-                    move_uploaded_file($material_file_doc_tmp, $material_file_doc_path);
-
-                    $filesize += $spec_filesize_other;
-
-                    $output = array (
-                        'type'  =>  0,
-                        'name' =>  $material_file_doc_final,
-                        'size' =>  $spec_filesize_other,
-                        'date' =>  $local_date
-                    );
-                    array_push($arr_item, $output);
-                } else {
-                    $process = false;
+                $material_file_from = '';
+                $material_file_to = '';
+                $material_file_daterange = $_POST['material_other'][$i]['material_file_daterange'];
+                if (!empty($material_file_daterange)) {
+                    $material_file_daterange = explode(' - ', $material_file_daterange);
+                    $material_file_from = $material_file_daterange[0];
+                    $material_file_to = $material_file_daterange[1];
                 }
-            }
 
-            $material_other_data = array (
-                'name' => $material_file_name,
-                'material_file_doc' =>$material_file_doc_final,
-                'from' =>$material_file_from,
-                'to' =>$material_file_to,
-                'reviewer' =>$material_file_reviewer,
-                'approver' =>$material_file_approver
-            );
-            array_push( $material_other_arr, $material_other_data );
+                $material_file_doc_final = $_POST['material_other'][$i]['material_file_doc_temp'];
+                $material_file_doc = $_FILES['material_other']['name'][$i];
+                $material_file_doc = implode('*', $material_file_doc);
+                if (!empty($material_file_doc)) {
+                    $spec_filesize_other = implode('*', $_FILES['material_other']['size'][$i]);
+                    $material_file_doc_tmp = implode('*', $_FILES['material_other']['tmp_name'][$i]);
+                    $invalid_extensions = array('php', 'php3', 'php4', 'php5', 'phtml', 'cgi', 'pl', 'sh', 'py', 'rb', 'exe', 'dll');
+                    $ext = strtolower(pathinfo($material_file_doc, PATHINFO_EXTENSION));
+
+                    $mime = mime_content_type($material_file_doc_tmp);
+                    $mime_array = array('text/x-php', 'text/plain', 'text/plain', 'text/css', 'text/html', 'text/javascript', 'application/json', 'application/x-httpd-php', 'application/rtf', 'application/x-sh', 'font/ttf', 'font/woff', 'font/woff2', 'application/xhtml+xml', 'application/xml', 'text/xml', 'application/atom+xml', 'application/vnd.mozilla.xul+xml');
+                    
+                    $material_file_doc_final = $random.' - '.$material_file_doc;
+                    $material_file_doc_path = $path.$material_file_doc_final;
+
+                    if(!in_array($mime, $mime_array)) {
+                        move_uploaded_file($material_file_doc_tmp, $material_file_doc_path);
+
+                        $filesize += $spec_filesize_other;
+
+                        $output = array (
+                            'type'  =>  0,
+                            'name' =>  $material_file_doc_final,
+                            'size' =>  $spec_filesize_other,
+                            'date' =>  $local_date
+                        );
+                        array_push($arr_item, $output);
+                    } else {
+                        $process = false;
+                    }
+                }
+
+                $material_other_data = array (
+                    'name' => $material_file_name,
+                    'material_file_doc' =>$material_file_doc_final,
+                    'from' =>$material_file_from,
+                    'to' =>$material_file_to,
+                    'reviewer' =>$material_file_reviewer,
+                    'approver' =>$material_file_approver
+                );
+                array_push( $material_other_arr, $material_other_data );
+            }
         }
         $material_other = json_encode($material_other_arr);
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
@@ -32001,7 +32162,7 @@
                     <select class="form-control select2" name="department_id" onchange="changeDepartment(this, 2)" style="width: 100%;" required>
                         <option value="">Select</option>';
 
-                            $resultDepartment = mysqli_query($conn,"SELECT * FROM tbl_eforms_department WHERE user_id = $user_id ORDER BY name");
+                            $resultDepartment = mysqli_query($conn,"SELECT * FROM tbl_eforms_department WHERE user_id = $user_id AND facility_switch = $facility_switch_user_id ORDER BY name");
                             while($rowDept = mysqli_fetch_array($resultDepartment)) {
                                 $ID = htmlentities($rowDept['ID'] ?? '');
                                 $name = htmlentities($rowDept['name'] ?? '');
@@ -32025,7 +32186,7 @@
                     <label class="control-label">Assigned To</label>
                     <select class="form-control mt-multiselect btn btn-default" name="assigned_to_id[]" multiple="multiple" >';
 
-                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id=$user_id" );
+                        $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE status = 1 AND user_id = $user_id AND facility_switch = $facility_switch_user_id" );
                         if ( mysqli_num_rows($selectEmployee) > 0 ) {
                             while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                                 $rowEmployeeID = htmlentities($rowEmployee["ID"] ?? '');
@@ -32322,7 +32483,7 @@
             $user_id = employerID($portal_user);
         }
 
-        $selectData = mysqli_query( $conn,"SELECT * FROM tbl_eforms WHERE user_id=$user_id AND department_id = $id ORDER BY files_date DESC" );
+        $selectData = mysqli_query( $conn,"SELECT * FROM tbl_eforms WHERE user_id = $user_id AND department_id = $id AND facility_switch = $facility_switch_user_id ORDER BY files_date DESC" );
         if ( mysqli_num_rows($selectData) > 0 ) {
             while($row = mysqli_fetch_array($selectData)) {
                 $ID = htmlentities($row['ID'] ?? '');
@@ -32357,7 +32518,7 @@
         $id = employerID($id);
         $FreeAccess = $_GET['freeaccess'];
 
-        $result = mysqli_query( $conn,"SELECT * FROM tbl_eforms WHERE user_id=$id ORDER BY files_date DESC" );
+        $result = mysqli_query( $conn,"SELECT * FROM tbl_eforms WHERE user_id = $id AND facility_switch = $facility_switch_user_id ORDER BY files_date DESC" );
         if ( mysqli_num_rows($result) > 0 ) {
             while($row = mysqli_fetch_array($result)) {
                 $ID = htmlentities($row['ID'] ?? '');
@@ -32401,8 +32562,8 @@
         if ($department_id == "other") {
             $department_id_other = $_POST['department_id_other'];
 
-            $sql = "INSERT INTO tbl_eforms_department (user_id, portal_user, name)
-            VALUES ('$user_id', '$portal_user', '$department_id_other')";
+            $sql = "INSERT INTO tbl_eforms_department (user_id, portal_user, facility_switch, name)
+            VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '$department_id_other')";
             if (mysqli_query($conn, $sql)) {
                 $department_id = mysqli_insert_id($conn);
             }
@@ -32467,8 +32628,8 @@
                 }
             }
 
-            $sql = "INSERT INTO tbl_eforms (user_id, portal_user, department_id, record, assigned_to_id, description, filled_out, filled_out_reason, signed, signed_reason, compliance, compliance_reason, frequency, frequency_other, files, filetype, filesize, file_history, files_date, verified_by, notes)
-            VALUES ('$user_id', '$portal_user', '$department_id', '$record', '$assigned_to_id', '$description', '$filled_out', '$filled_out_reason', '$signed', '$signed_reason', '$compliance', '$compliance_reason', '$frequency', '$frequency_other', '$files', '$filetype', '$filesize', '$file_history', '$files_date', '$verified', '$notes')";
+            $sql = "INSERT INTO tbl_eforms (user_id, portal_user, facility_switch, department_id, record, assigned_to_id, description, filled_out, filled_out_reason, signed, signed_reason, compliance, compliance_reason, frequency, frequency_other, files, filetype, filesize, file_history, files_date, verified_by, notes)
+            VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '$department_id', '$record', '$assigned_to_id', '$description', '$filled_out', '$filled_out_reason', '$signed', '$signed_reason', '$compliance', '$compliance_reason', '$frequency', '$frequency_other', '$files', '$filetype', '$filesize', '$file_history', '$files_date', '$verified', '$notes')";
             
             if (mysqli_query($conn, $sql)) {
                 $last_id = mysqli_insert_id($conn);
@@ -32540,8 +32701,8 @@
         if ($department_id == "other") {
             $department_id_other = $_POST['department_id_other'];
 
-            $sql = "INSERT INTO tbl_eforms_department (user_id, portal_user, name)
-            VALUES ('$user_id', '$portal_user', '$department_id_other')";
+            $sql = "INSERT INTO tbl_eforms_department (user_id, portal_user, facility_switch, name)
+            VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '$department_id_other')";
             if (mysqli_query($conn, $sql)) {
                 $department_id = mysqli_insert_id($conn);
             }
@@ -32631,7 +32792,6 @@
                     mysqli_query( $conn,"UPDATE tbl_eforms SET files='". $files ."', filetype='". $filetype ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
                 }
             }
-
 
             if ($process == true) {
                 if (!empty($assigned_to_id)) {
@@ -34485,13 +34645,13 @@
         $assigned_to_id = '';
         if (!empty($_POST['assigned_to_id'])) {
             $assigned_to_id = implode(", ",$_POST['assigned_to_id']);
-            mysqli_query( $conn,"UPDATE tbl_services set assigned_to_id='". $assigned_to_id ."', last_modified='". $last_modified ."' WHERE ID='". $ID ."'" );
+            mysqli_query( $conn,"UPDATE tbl_services set assigned_to_id='". $assigned_to_id ."' WHERE ID='". $ID ."'" );
         }
 
         $type = '';
         if (!empty($_POST['type'])) {
             $type = $_POST['type'];
-            mysqli_query( $conn,"UPDATE tbl_services set type='". $type ."', last_modified='". $last_modified ."' WHERE ID='". $ID ."'" );
+            mysqli_query( $conn,"UPDATE tbl_services set type='". $type ."' WHERE ID='". $ID ."'" );
         }
 
         $selectData = mysqli_query( $conn,"SELECT * FROM tbl_services WHERE ID = $ID" );
@@ -34578,7 +34738,7 @@
                             '.nl2br($description).'<br><br>
 
                             <strong>New Comment/Question:</strong><br>
-                            '.nl2br($comment).'
+                            '.nl2br(stripcslashes($comment)).'
                         </div>
 
                         Please review the comment at your earliest convenience and provide a comprehensive response or solution. Your timely and effective communication is key to resolving the client\'s concerns and ensuring their satisfaction with our services.<br><br>
@@ -34695,1471 +34855,1422 @@
             $image_angle = "https://via.placeholder.com/120x90/EFEFEF/AAAAAA.png?text=No+Image";
 
             $allergen = explode(", ", $row["allergen"]);
-        }
 
-        echo '<div class="tabbable tabbable-tabdrop">
-            <input class="form-control" type="hidden" name="ID" value="'. $row['ID'] .'" />
-            <ul class="nav nav-tabs">
-                <li class="active">
-                    <a href="#tabBasic2" data-toggle="tab">Basic Details</a>
-                </li>
-                <li>
-                    <a href="#tabProductDescription2" data-toggle="tab">Product Characteristics</a>
-                </li>
-                <li>
-                    <a href="#tabAllergens2" data-toggle="tab">Allergens</a>
-                </li>
-                <li>
-                    <a href="#tabDimensions2" data-toggle="tab">Dimensions</a>
-                </li>
-                <li>
-                    <a href="#tabStorage2" data-toggle="tab">Storage & Distribution</a>
-                </li>
-                <li>
-                    <a href="#tabManufacturing2" data-toggle="tab">Manufacturing Details</a>
-                </li>
-                <li>
-                    <a href="#tabExercises2" data-toggle="tab">Exercises</a>
-                </li>
-                <li>
-                    <a href="#tabDocuments2" data-toggle="tab">Documents</a>
-                </li>
-                <li>
-                    <a href="#tabLabs2" data-toggle="tab">Labs</a>
-                </li>
-                <li class="hide">
-                    <a href="#tabLabel2" data-toggle="tab">Label</a>
-                </li>
-                <li class="hide">
-                    <a href="#tabFormulation2" data-toggle="tab">Formulation</a>
-                </li>
-                <li class="hide">
-                    <a href="#modalService" data-toggle="modal">FFVA</a>
-                </li>
-            </ul>
-            <div class="tab-content margin-top-20">
-                <div class="tab-pane active" id="tabBasic2">
-                    <h4>
-                        <strong>Basic Details</strong>';
+            echo '<div class="tabbable tabbable-tabdrop">
+                <input class="form-control" type="hidden" name="ID" value="'. $row['ID'] .'" />
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#tabBasic2" data-toggle="tab">Basic Details</a>
+                    </li>
+                    <li>
+                        <a href="#tabProductDescription2" data-toggle="tab">Product Characteristics</a>
+                    </li>
+                    <li>
+                        <a href="#tabAllergens2" data-toggle="tab">Allergens</a>
+                    </li>
+                    <li>
+                        <a href="#tabDimensions2" data-toggle="tab">Dimensions</a>
+                    </li>
+                    <li>
+                        <a href="#tabStorage2" data-toggle="tab">Storage & Distribution</a>
+                    </li>
+                    <li>
+                        <a href="#tabManufacturing2" data-toggle="tab">Manufacturing Details</a>
+                    </li>
+                    <li>
+                        <a href="#tabExercises2" data-toggle="tab">Exercises</a>
+                    </li>
+                    <li>
+                        <a href="#tabDocuments2" data-toggle="tab">Documents</a>
+                    </li>
+                    <li>
+                        <a href="#tabLabs2" data-toggle="tab">Labs</a>
+                    </li>
+                    <li class="hide">
+                        <a href="#tabLabel2" data-toggle="tab">Label</a>
+                    </li>
+                    <li class="hide">
+                        <a href="#tabFormulation2" data-toggle="tab">Formulation</a>
+                    </li>
+                    <li class="hide">
+                        <a href="#modalService" data-toggle="modal">FFVA</a>
+                    </li>
+                </ul>
+                <div class="tab-content margin-top-20">
+                    <div class="tab-pane active" id="tabBasic2">
+                        <h4>
+                            <strong>Basic Details</strong>';
 
-                        $pictogram = 'prod_basic';
-                        if ($user_id == 163) {
-                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                        } else {
-                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                $rowPictogram = mysqli_fetch_array($selectPictogram);
+                            $pictogram = 'prod_basic';
+                            if ($user_id == 163) {
+                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                            } else {
+                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
 
-                                $files = '';
-                                $type = 'iframe';
-                                if (!empty($rowPictogram["files"])) {
-                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
-                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
-                                    $str_filename = '';
+                                    $files = '';
+                                    $type = 'iframe';
+                                    if (!empty($rowPictogram["files"])) {
+                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                        $str_filename = '';
 
-                                    foreach($arr_filename as $val_filename) {
-                                        $str_filename = $val_filename;
+                                        foreach($arr_filename as $val_filename) {
+                                            $str_filename = $val_filename;
+                                        }
+                                        foreach($arr_filetype as $val_filetype) {
+                                            $str_filetype = $val_filetype;
+                                        }
+
+                                        $files = $rowPictogram["files"];
+                                        if ($rowPictogram["filetype"] == 1) {
+                                            $fileExtension = fileExtension($files);
+                                            $src = $fileExtension['src'];
+                                            $embed = $fileExtension['embed'];
+                                            $type = $fileExtension['type'];
+                                            $file_extension = $fileExtension['file_extension'];
+                                            $url = $base_url.'uploads/pictogram/';
+
+                                            $files = $src.$url.rawurlencode($files).$embed;
+                                        } else if ($rowPictogram["filetype"] == 3) {
+                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                        }
                                     }
-                                    foreach($arr_filetype as $val_filetype) {
-                                        $str_filetype = $val_filetype;
+
+                                    if (!empty($files)) {
+                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
                                     }
-
-                                    $files = $rowPictogram["files"];
-                                    if ($rowPictogram["filetype"] == 1) {
-                                        $fileExtension = fileExtension($files);
-                                        $src = $fileExtension['src'];
-                                        $embed = $fileExtension['embed'];
-                                        $type = $fileExtension['type'];
-                                        $file_extension = $fileExtension['file_extension'];
-                                        $url = $base_url.'uploads/pictogram/';
-
-                                        $files = $src.$url.rawurlencode($files).$embed;
-                                    } else if ($rowPictogram["filetype"] == 3) {
-                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                    }
-                                }
-
-                                if (!empty($files)) {
-                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
                                 }
                             }
-                        }
 
-                    echo '</h4>
-                    <div class="row margin-bottom-20">
-                        <div class="col-md-6 productMain">
-                            <p><strong>Main Product View</strong></p>
-                            <div class="fileinput fileinput-new" data-provides="fileinput">
-                                <div class="fileinput-new thumbnail">';
+                        echo '</h4>
+                        <div class="row margin-bottom-20">
+                            <div class="col-md-6 productMain">
+                                <p><strong>Main Product View</strong></p>
+                                <div class="fileinput fileinput-new" data-provides="fileinput">
+                                    <div class="fileinput-new thumbnail">';
 
-                                    if (!empty($data_image_array[0])) {
-                                        echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[0] .'" class="img-responsive" alt="Avatar" />';
-                                    } else {
-                                        echo '<img src="'. $image_main .'" class="img-responsive" alt="Avatar" />';
+                                        if (!empty($data_image_array[0])) {
+                                            echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[0] .'" class="img-responsive" alt="Avatar" />';
+                                        } else {
+                                            echo '<img src="'. $image_main .'" class="img-responsive" alt="Avatar" />';
+                                        }
+
+                                    echo '</div>
+                                    <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                    <div>
+                                        <span class="btn default btn-file btn-xs">
+                                            <span class="fileinput-new"> Select image </span>
+                                            <span class="fileinput-exists"> Change </span>
+                                            <input class="form-control" type="file" name="image_main" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                        </span>
+                                        <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 productAngle">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <p><strong>Top View</strong></p>
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-new thumbnail">';
+
+                                                if (!empty($data_image_array[1])) {
+                                                    echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[1] .'" class="img-responsive" alt="Avatar" />';
+                                                } else {
+                                                    echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
+                                                }
+
+                                            echo '</div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                            <div>
+                                                <span class="btn default btn-file btn-xs">
+                                                    <span class="fileinput-new"> Select image </span>
+                                                    <span class="fileinput-exists"> Change </span>
+                                                    <input class="form-control" type="file" name="image_top" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                </span>
+                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <p><strong>Front View</strong></p>
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-new thumbnail">';
+
+                                                if (!empty($data_image_array[2])) {
+                                                    echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[2] .'" class="img-responsive" alt="Avatar" />';
+                                                } else {
+                                                    echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
+                                                }
+
+                                            echo '</div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                            <div>
+                                                <span class="btn default btn-file btn-xs">
+                                                    <span class="fileinput-new"> Select image </span>
+                                                    <span class="fileinput-exists"> Change </span>
+                                                    <input class="form-control" type="file" name="image_front" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                </span>
+                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <p><strong>Left View</strong></p>
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-new thumbnail">';
+
+                                                if (!empty($data_image_array[3])) {
+                                                    echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[3] .'" class="img-responsive" alt="Avatar" />';
+                                                } else {
+                                                    echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
+                                                }
+
+                                            echo '</div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                            <div>
+                                                <span class="btn default btn-file btn-xs">
+                                                    <span class="fileinput-new"> Select image </span>
+                                                    <span class="fileinput-exists"> Change </span>
+                                                    <input class="form-control" type="file" name="image_left" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                </span>
+                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row margin-top-20">
+                                    <div class="col-sm-4">
+                                        <p><strong>Bottom View</strong></p>
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-new thumbnail">';
+
+                                                if (!empty($data_image_array[4])) {
+                                                    echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[4] .'" class="img-responsive" alt="Avatar" />';
+                                                } else {
+                                                    echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
+                                                }
+
+                                            echo '</div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                            <div>
+                                                <span class="btn default btn-file btn-xs">
+                                                    <span class="fileinput-new"> Select image </span>
+                                                    <span class="fileinput-exists"> Change </span>
+                                                    <input class="form-control" type="file" name="image_bottom" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                </span>
+                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <p><strong>Back View</strong></p>
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-new thumbnail">';
+
+                                                if (!empty($data_image_array[5])) {
+                                                    echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[5] .'" class="img-responsive" alt="Avatar" />';
+                                                } else {
+                                                    echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
+                                                }
+
+                                            echo '</div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                            <div>
+                                                <span class="btn default btn-file btn-xs">
+                                                    <span class="fileinput-new"> Select image </span>
+                                                    <span class="fileinput-exists"> Change </span>
+                                                    <input class="form-control" type="file" name="image_back" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                </span>
+                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <p><strong>Right View</strong></p>
+                                        <div class="fileinput fileinput-new" data-provides="fileinput">
+                                            <div class="fileinput-new thumbnail">';
+
+                                                if (!empty($data_image_array[6])) {
+                                                    echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[6] .'" class="img-responsive" alt="Avatar" />';
+                                                } else {
+                                                    echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
+                                                }
+
+                                            echo '</div>
+                                            <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                            <div>
+                                                <span class="btn default btn-file btn-xs">
+                                                    <span class="fileinput-new"> Select image </span>
+                                                    <span class="fileinput-exists"> Change </span>
+                                                    <input class="form-control" type="file" name="image_right" accept="image/png,image/PNG,image/jpg,image/jpeg" />
+                                                </span>
+                                                <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row margin-top-20">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="control-label">Labeling Instructions</label>
+                                    <textarea class="form-control" name="labeling_instructions" row="3" placeholder="Add labeling instructions">'. htmlentities($row['labeling_instructions'] ?? '') .'</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Product Code</label>
+                                    <input class="form-control" type="text" name="code" value="'. htmlentities($row['code'] ?? '') .'" placeholder="Enter product code" />
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-group">
+                                    <label class="control-label">Product Name</label>
+                                    <input class="form-control" type="text" name="name" value="'. htmlentities($row['name'] ?? '') .'" required placeholder="Enter product name" />
+                                </div>
+                            </div>';
+
+                            $supplierData = $conn->query("SELECT ID,name,vendor_code FROM tbl_supplier WHERE page = 2 AND user_id=".$row['user_id'] . "  AND is_deleted = 0 ORDER BY name ASC");
+                            $supplierInfo = [];
+                            if($supplierData->num_rows) while($sr = $supplierData->fetch_assoc()) {
+                                $supplierInfo[] = $sr;
+                            }
+
+                            echo '<div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Vendor Code</label>
+                                    <select class="form-control" name="vendor_code" disabled title="Automatically set when selecting a vendor name">
+                                        <option value="" selected disabled>--Select--</option>';
+                                        foreach($supplierInfo as $s) echo '<option value="'.$s['ID'].'" '.($s['ID'] == $row['vendor_name'] || $s['ID'] == $row['vendor_code'] ? 'selected' : '' ).'>'.(isset($s['vendor_code']) ? $s['vendor_code'] : 'No vendor code').'</option>';
+                                        echo '
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Vendor Name</label>
+                                    <select class="form-control" name="vendor_name" id="supplierNameSelectEdit">
+                                        <option value="" selected disabled>--Select--</option>';
+                                        foreach($supplierInfo as $s) echo '<option value="'.$s['ID'].'">'.$s['name'].'</option>';
+                                        echo '
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Product Category</label>
+                                    <select class="form-control" name="category" required onchange="evaluateManufacturingDetails(event)">
+                                        <option value="" selected disabled>--Select category--</option>';
+
+                                        $selectProductCategory = mysqli_query( $conn,"SELECT * FROM tbl_products_category ORDER BY name" );
+                                        if ( mysqli_num_rows($selectProductCategory) > 0 ) {
+                                            while($rowPC = mysqli_fetch_array($selectProductCategory)) {
+                                                $pc_ID = $rowPC['ID'];
+                                                $pc_name = $rowPC['name'];
+
+                                                if ($row['category'] == $pc_ID) {
+                                                    echo '<option value="'. $pc_ID .'" SELECTED>'. $pc_name .'</option>';
+                                                } else {
+                                                    echo '<option value="'. $pc_ID .'">'. $pc_name .'</option>';
+                                                }
+                                                
+                                            }
+                                        }
+
+                                    echo '</select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">(Specify if other)</label>
+                                    <input class="form-control" type="text" name="category_other" value="'. ($row['category_other'] ?? '') .'" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Description</label>
+                                    <textarea class="form-control" name="description" required>'. ($row['description'] ?? '') .'</textarea>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Ingredient List</label>
+                                    <textarea class="form-control" name="ingredient" required>'. ($row['ingredient'] ?? '') .'</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4><strong>Packaging Details</strong></h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Primary/Unit</label>
+                                    <input class="form-control" type="text" name="packaging_1" value="'.($row['packaging_1'] ?? '').'" placeholder="Enter primary/unit packaging" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Secondary/Case</label>
+                                    <input class="form-control" type="text" name="packaging_2" value="'.($row['packaging_2'] ?? '').'" placeholder="Enter secondary/case packaging"  />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Tertiary/Master Pack</label>
+                                    <input class="form-control" type="text" name="packaging_3" value="'.($row['packaging_3'] ?? '').'" placeholder="Enter tertiary/master pack packaging" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Packaging Temperature</label>
+                                    <input class="form-control" type="text" name="packaging_temperature" placeholder="Enter packaging temperature" value="'.($row['packaging_temperature'] ?? '').'" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Intended Use</label>
+                                    <select class="form-control" name="intended">
+                                        <option value="0" selected disabled>--Select intended use--</option>';
+
+                                        $selectIntended = mysqli_query( $conn,"SELECT * FROM tbl_products_intended WHERE deleted = 0 ORDER BY name" );
+                                        if ( mysqli_num_rows($selectIntended) > 0 ) {
+                                            while($rowIntended = mysqli_fetch_array($selectIntended)) {
+                                                $intended_ID = $rowIntended["ID"];
+                                                $intended_name = $rowIntended["name"];
+
+                                                echo '<option value="'.$intended_ID.'" '; echo $row['intended'] == $intended_ID ? 'SELECTED':''; echo '>'.$intended_name.'</option>';
+                                            }
+                                        }
+
+                                    echo '</select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label">Intended Consumers</label>
+                                    <input class="form-control" type="text" name="intended_consumers" placeholder="Enter intended consumers" value="'.($row['intended_consumers'] ?? '').'" />
+                                </div>
+                                <div class="form-group">
+                                    <label>Product Claims</label>
+                                    <div class="mt-checkbox-list" style="column-count: 3;">';
+
+                                        $claims_array = explode(", ", $row["claims"]);
+                                        $selectClaims = mysqli_query( $conn,"SELECT * FROM tbl_products_claims WHERE deleted = 0 ORDER BY name" );
+                                        if ( mysqli_num_rows($selectClaims) > 0 ) {
+                                            while($rowClaims = mysqli_fetch_array($selectClaims)) {
+                                                $claims_ID = $rowClaims["ID"];
+                                                $claims_name = $rowClaims["name"];
+
+                                                echo '<label class="mt-checkbox mt-checkbox-outline"> '.$claims_name.'
+                                                    <input type="checkbox" value="'.$claims_ID.'" name="claims[]" '; echo in_array($claims_ID, $claims_array) ? 'checked' : ''; echo '>
+                                                    <span></span>
+                                                </label>';
+                                            }
+                                        }
+
+                                    echo '</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row hide">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="control-label">Packaging Material List</label>
+                                    <textarea class="form-control" name="material">'. ($row['material'] ?? '') .'</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabAllergens2">
+                        <h4>
+                            <strong>Allergens</strong>';
+
+                            $pictogram = 'prod_allergen';
+                            if ($user_id == 163) {
+                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                            } else {
+                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                    $files = '';
+                                    $type = 'iframe';
+                                    if (!empty($rowPictogram["files"])) {
+                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                        $str_filename = '';
+
+                                        foreach($arr_filename as $val_filename) {
+                                            $str_filename = $val_filename;
+                                        }
+                                        foreach($arr_filetype as $val_filetype) {
+                                            $str_filetype = $val_filetype;
+                                        }
+
+                                        $files = $rowPictogram["files"];
+                                        if ($rowPictogram["filetype"] == 1) {
+                                            $fileExtension = fileExtension($files);
+                                            $src = $fileExtension['src'];
+                                            $embed = $fileExtension['embed'];
+                                            $type = $fileExtension['type'];
+                                            $file_extension = $fileExtension['file_extension'];
+                                            $url = $base_url.'uploads/pictogram/';
+
+                                            $files = $src.$url.rawurlencode($files).$embed;
+                                        } else if ($rowPictogram["filetype"] == 3) {
+                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                        }
                                     }
 
-                                echo '</div>
-                                <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                <div>
-                                    <span class="btn default btn-file btn-xs">
-                                        <span class="fileinput-new"> Select image </span>
-                                        <span class="fileinput-exists"> Change </span>
-                                        <input class="form-control" type="file" name="image_main" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                    </span>
-                                    <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 productAngle">
-                            <div class="row">
-                                <div class="col-sm-4">
-                                    <p><strong>Top View</strong></p>
-                                    <div class="fileinput fileinput-new" data-provides="fileinput">
-                                        <div class="fileinput-new thumbnail">';
+                                    if (!empty($files)) {
+                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                    }
+                                }
+                            }
 
-                                            if (!empty($data_image_array[1])) {
-                                                echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[1] .'" class="img-responsive" alt="Avatar" />';
-                                            } else {
-                                                echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
-                                            }
-
-                                        echo '</div>
-                                        <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                        <div>
-                                            <span class="btn default btn-file btn-xs">
-                                                <span class="fileinput-new"> Select image </span>
-                                                <span class="fileinput-exists"> Change </span>
-                                                <input class="form-control" type="file" name="image_top" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                            </span>
-                                            <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-4">
-                                    <p><strong>Front View</strong></p>
-                                    <div class="fileinput fileinput-new" data-provides="fileinput">
-                                        <div class="fileinput-new thumbnail">';
-
-                                            if (!empty($data_image_array[2])) {
-                                                echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[2] .'" class="img-responsive" alt="Avatar" />';
-                                            } else {
-                                                echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
-                                            }
-
-                                        echo '</div>
-                                        <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                        <div>
-                                            <span class="btn default btn-file btn-xs">
-                                                <span class="fileinput-new"> Select image </span>
-                                                <span class="fileinput-exists"> Change </span>
-                                                <input class="form-control" type="file" name="image_front" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                            </span>
-                                            <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-4">
-                                    <p><strong>Left View</strong></p>
-                                    <div class="fileinput fileinput-new" data-provides="fileinput">
-                                        <div class="fileinput-new thumbnail">';
-
-                                            if (!empty($data_image_array[3])) {
-                                                echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[3] .'" class="img-responsive" alt="Avatar" />';
-                                            } else {
-                                                echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
-                                            }
-
-                                        echo '</div>
-                                        <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                        <div>
-                                            <span class="btn default btn-file btn-xs">
-                                                <span class="fileinput-new"> Select image </span>
-                                                <span class="fileinput-exists"> Change </span>
-                                                <input class="form-control" type="file" name="image_left" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                            </span>
-                                            <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                        </div>
+                        echo '</h4>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="mt-checkbox-list">
+                                        <label class="mt-checkbox mt-checkbox-outline"> Milk
+                                            <input type="checkbox" value="1" name="allergen[]" '; echo in_array(1, $allergen) ? 'checked' : ''; echo '/>
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-checkbox mt-checkbox-outline"> Eggs
+                                            <input type="checkbox" value="2" name="allergen[]" '; echo in_array(2, $allergen) ? 'checked' : ''; echo '/>
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-checkbox mt-checkbox-outline"> Fish (e.g., bass, flounder, cod)
+                                            <input type="checkbox" value="3" name="allergen[]" '; echo in_array(3, $allergen) ? 'checked' : ''; echo '/>
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-checkbox mt-checkbox-outline"> Crustacean shellfish (e.g., crab, lobster, shrimp)
+                                            <input type="checkbox" value="4" name="allergen[]" '; echo in_array(4, $allergen) ? 'checked' : ''; echo '/>
+                                            <span></span>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row margin-top-20">
-                                <div class="col-sm-4">
-                                    <p><strong>Bottom View</strong></p>
-                                    <div class="fileinput fileinput-new" data-provides="fileinput">
-                                        <div class="fileinput-new thumbnail">';
-
-                                            if (!empty($data_image_array[4])) {
-                                                echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[4] .'" class="img-responsive" alt="Avatar" />';
-                                            } else {
-                                                echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
-                                            }
-
-                                        echo '</div>
-                                        <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                        <div>
-                                            <span class="btn default btn-file btn-xs">
-                                                <span class="fileinput-new"> Select image </span>
-                                                <span class="fileinput-exists"> Change </span>
-                                                <input class="form-control" type="file" name="image_bottom" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                            </span>
-                                            <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                        </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="mt-checkbox-list">
+                                        <label class="mt-checkbox mt-checkbox-outline"> Tree nuts (e.g., almonds, walnuts, pecans)
+                                            <input type="checkbox" value="5" name="allergen[]" '; echo in_array(5, $allergen) ? 'checked' : ''; echo '/>
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-checkbox mt-checkbox-outline"> Peanuts
+                                            <input type="checkbox" value="6" name="allergen[]" '; echo in_array(6, $allergen) ? 'checked' : ''; echo '/>
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-checkbox mt-checkbox-outline"> Wheat
+                                            <input type="checkbox" value="7" name="allergen[]" '; echo in_array(7, $allergen) ? 'checked' : ''; echo '/>
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-checkbox mt-checkbox-outline"> Soybeans
+                                            <input type="checkbox" value="8" name="allergen[]" '; echo in_array(8, $allergen) ? 'checked' : ''; echo '/>
+                                            <span></span>
+                                        </label>
                                     </div>
                                 </div>
-                                <div class="col-sm-4">
-                                    <p><strong>Back View</strong></p>
-                                    <div class="fileinput fileinput-new" data-provides="fileinput">
-                                        <div class="fileinput-new thumbnail">';
-
-                                            if (!empty($data_image_array[5])) {
-                                                echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[5] .'" class="img-responsive" alt="Avatar" />';
-                                            } else {
-                                                echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
-                                            }
-
-                                        echo '</div>
-                                        <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                        <div>
-                                            <span class="btn default btn-file btn-xs">
-                                                <span class="fileinput-new"> Select image </span>
-                                                <span class="fileinput-exists"> Change </span>
-                                                <input class="form-control" type="file" name="image_back" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                            </span>
-                                            <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                        </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="mt-checkbox-list">
+                                        <label class="mt-checkbox mt-checkbox-outline"> Sesame
+                                            <input type="checkbox" value="9" name="allergen[]" '; echo in_array(9, $allergen) ? 'checked' : ''; echo '/>
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-checkbox mt-checkbox-outline"> None
+                                            <input type="checkbox" value="10" name="allergen[]" '; echo in_array(10, $allergen) ? 'checked' : ''; echo '/>
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-checkbox mt-checkbox-outline"> Other
+                                            <input type="checkbox" value="11" name="allergen[]" '; echo in_array(11, $allergen) ? 'checked' : ''; echo '/>
+                                            <span></span>
+                                        </label>
                                     </div>
-                                </div>
-                                <div class="col-sm-4">
-                                    <p><strong>Right View</strong></p>
-                                    <div class="fileinput fileinput-new" data-provides="fileinput">
-                                        <div class="fileinput-new thumbnail">';
-
-                                            if (!empty($data_image_array[6])) {
-                                                echo '<img src="'. $base_url .'uploads/products/'. $data_image_array[6] .'" class="img-responsive" alt="Avatar" />';
-                                            } else {
-                                                echo '<img src="'. $image_angle .'" class="img-responsive" alt="Avatar" />';
-                                            }
-
-                                        echo '</div>
-                                        <div class="fileinput-preview fileinput-exists thumbnail"></div>
-                                        <div>
-                                            <span class="btn default btn-file btn-xs">
-                                                <span class="fileinput-new"> Select image </span>
-                                                <span class="fileinput-exists"> Change </span>
-                                                <input class="form-control" type="file" name="image_right" accept="image/png,image/PNG,image/jpg,image/jpeg" />
-                                            </span>
-                                            <a href="javascript:;" class="btn default fileinput-exists btn-xs" data-dismiss="fileinput"> Remove </a>
-                                        </div>
-                                    </div>
+                                    <input class="form-control" type="text" name="allergen_other" placeholder="(Specify if Other)" value="'.$row['allergen_other'].'" />
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div class="tab-pane" id="tabDimensions2">
+                        <h4>
+                            <strong>Dimensions</strong>';
 
-                    <div class="row margin-top-20">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="control-label">Labeling Instructions</label>
-                                <textarea class="form-control" name="labeling_instructions" row="3" placeholder="Add labeling instructions">'. ($row['labeling_instructions'] ?? '') .'</textarea>
+                            $pictogram = 'prod_dimension';
+                            if ($user_id == 163) {
+                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                            } else {
+                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                    $files = '';
+                                    $type = 'iframe';
+                                    if (!empty($rowPictogram["files"])) {
+                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                        $str_filename = '';
+
+                                        foreach($arr_filename as $val_filename) {
+                                            $str_filename = $val_filename;
+                                        }
+                                        foreach($arr_filetype as $val_filetype) {
+                                            $str_filetype = $val_filetype;
+                                        }
+
+                                        $files = $rowPictogram["files"];
+                                        if ($rowPictogram["filetype"] == 1) {
+                                            $fileExtension = fileExtension($files);
+                                            $src = $fileExtension['src'];
+                                            $embed = $fileExtension['embed'];
+                                            $type = $fileExtension['type'];
+                                            $file_extension = $fileExtension['file_extension'];
+                                            $url = $base_url.'uploads/pictogram/';
+
+                                            $files = $src.$url.rawurlencode($files).$embed;
+                                        } else if ($rowPictogram["filetype"] == 3) {
+                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                        }
+                                    }
+
+                                    if (!empty($files)) {
+                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                    }
+                                }
+                            }
+
+                        echo '</h4>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Unit Dimension/s</label>
+                                    <input class="form-control" type="text" name="unit" value="'. ($row['unit'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Box Dimension/s</label>
+                                    <input class="form-control" type="text" name="boxes" value="'. ($row['boxes'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Pallet Dimension/s</label>
+                                    <input class="form-control" type="text" name="pallet" value="'. ($row['pallet'] ?? '') .'" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4><strong>Count</strong></h4>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">How many units per carton/box?</label>
+                                    <input class="form-control" type="text" name="count_unit_box" value="'. ($row['count_unit_box'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">How many units per pallet?</label>
+                                    <input class="form-control" type="text" name="count_unit_pallet" value="'. ($row['count_unit_pallet'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">How many carton/box per pallet?</label>
+                                    <input class="form-control" type="text" name="count_unit_carton" value="'. ($row['count_unit_carton'] ?? '') .'" />
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div class="tab-pane" id="tabStorage2">
+                        <h4>
+                            <strong>Storage</strong>';
 
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Product Code</label>
-                                <input class="form-control" type="text" name="code" value="'. ($row['code'] ?? '') .'" placeholder="Enter product code" />
+                            $pictogram = 'prod_storage';
+                            if ($user_id == 163) {
+                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                            } else {
+                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                    $files = '';
+                                    $type = 'iframe';
+                                    if (!empty($rowPictogram["files"])) {
+                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                        $str_filename = '';
+
+                                        foreach($arr_filename as $val_filename) {
+                                            $str_filename = $val_filename;
+                                        }
+                                        foreach($arr_filetype as $val_filetype) {
+                                            $str_filetype = $val_filetype;
+                                        }
+
+                                        $files = $rowPictogram["files"];
+                                        if ($rowPictogram["filetype"] == 1) {
+                                            $fileExtension = fileExtension($files);
+                                            $src = $fileExtension['src'];
+                                            $embed = $fileExtension['embed'];
+                                            $type = $fileExtension['type'];
+                                            $file_extension = $fileExtension['file_extension'];
+                                            $url = $base_url.'uploads/pictogram/';
+
+                                            $files = $src.$url.rawurlencode($files).$embed;
+                                        } else if ($rowPictogram["filetype"] == 3) {
+                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                        }
+                                    }
+
+                                    if (!empty($files)) {
+                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                    }
+                                }
+                            }
+
+                        echo '</h4>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Shelf Life</label>
+                                    <input class="form-control" type="text" name="shelf" value="'. ($row['shelf'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Storage and Handling Requirement</label>
+                                    <input class="form-control" type="text" name="storage" value="'. ($row['storage'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Storage/Warehouse</label>
+                                    <input class="form-control" type="text" name="warehouse" value="'. ($row['warehouse'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">UPC Code</label>
+                                    <input class="form-control" type="text" name="upc" value="'. ($row['upc'] ?? '').'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">GTIN Number</label>
+                                    <input class="form-control" type="text" name="gtin" value="'. ($row['gtin'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Lead Time</label>
+                                    <input class="form-control" type="text" name="lead" value="'. ($row['lead_time'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Minimum Order Quantity</label>
+                                    <input class="form-control" type="text" name="moq" value="'. ($row['moq'] ?? '').'" />
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-9">
-                            <div class="form-group">
-                                <label class="control-label">Product Name</label>
-                                <input class="form-control" type="text" name="name" value="'. ($row['name'] ?? '') .'" required placeholder="Enter product name" />
+
+                        <h4><strong>Distribution</strong></h4>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label>Type of Distribution</label>
+                                    <div class="mt-radio-inline">
+                                        <label class="mt-radio mt-radio-outline">
+                                            <input type="radio" name="export" value="0" '; echo $row['export']==0 ? 'checked':''; echo '> Local
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-radio mt-radio-outline">
+                                            <input type="radio" name="export" value="1" '; echo $row['export']==1 ? 'checked':''; echo '> International
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="control-label">Specify the country</label>
+                                    <textarea class="form-control" name="countries">'. ($row['countries'] ?? '') .'</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabManufacturing2">
+                        <h4>
+                            <strong>Manufacturing Details</strong>';
+
+                            $pictogram = 'prod_manuf';
+                            if ($user_id == 163) {
+                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                            } else {
+                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                    $files = '';
+                                    $type = 'iframe';
+                                    if (!empty($rowPictogram["files"])) {
+                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                        $str_filename = '';
+
+                                        foreach($arr_filename as $val_filename) {
+                                            $str_filename = $val_filename;
+                                        }
+                                        foreach($arr_filetype as $val_filetype) {
+                                            $str_filetype = $val_filetype;
+                                        }
+
+                                        $files = $rowPictogram["files"];
+                                        if ($rowPictogram["filetype"] == 1) {
+                                            $fileExtension = fileExtension($files);
+                                            $src = $fileExtension['src'];
+                                            $embed = $fileExtension['embed'];
+                                            $type = $fileExtension['type'];
+                                            $file_extension = $fileExtension['file_extension'];
+                                            $url = $base_url.'uploads/pictogram/';
+
+                                            $files = $src.$url.rawurlencode($files).$embed;
+                                        } else if ($rowPictogram["filetype"] == 3) {
+                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                        }
+                                    }
+
+                                    if (!empty($files)) {
+                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                    }
+                                }
+                            }
+
+                        echo '</h4>
+                        <div class="row '.(!in_array($row['category'], [27,28,29,30]) ? '' : 'hide').'" data-manufacturing-details="default">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Manufactured by</label>
+                                    <input class="form-control" type="text" name="manufactured_by" value="'. ($row['manufactured_by'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Manufactured for</label>
+                                    <input class="form-control" type="text" name="manufactured_for" value="'. ($row['manufactured_for'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Distributed by</label>
+                                    <input class="form-control" type="text" name="distributed_by" value="'. ($row['distributed_by'] ?? '') .'" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row '.(in_array($row['category'], [27,28]) ? '' : 'hide').'" data-manufacturing-details="[27,28]">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Enterprise Name</label>
+                                    <!-- mb = *manufactured/distributed* -->
+                                    <input class="form-control" type="text" name="mb_enterprise_name" value="'. ($row['mb_enterprise_name'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Lot Code</label>
+                                    <input class="form-control" type="text" name="mb_lot_code" value="'. ($row['mb_lot_code'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Manufactured Date</label>
+                                    <input class="form-control" type="date" name="mb_manufactured_date" value="'. ($row['mb_manufactured_date'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Expiry Date</label>
+                                    <input class="form-control" type="date" name="mb_expiry_date" value="'. ($row['mb_expiry_date'] ?? '') .'" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row '.(in_array($row['category'], [29]) ? '' : 'hide').'" data-manufacturing-details="[29]">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Supplier Name</label>
+                                    <input class="form-control" type="text" name="traded_supplier_name" value="'. ($row['traded_supplier_name'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Supplied for</label>
+                                    <input class="form-control" type="text" name="traded_supplied_for" value="'. ($row['traded_supplied_for'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Supplier-issued Lot Code</label>
+                                    <input class="form-control" type="text" name="traded_supplied_lot_code" value="'. ($row['traded_supplied_lot_code'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Manufactured Date</label>
+                                    <input class="form-control" type="date" name="traded_manufactured_date" value="'. ($row['traded_manufactured_date'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Expiry Date</label>
+                                    <input class="form-control" type="date" name="traded_expiry_date" value="'. ($row['traded_expiry_date'] ?? '') .'" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row '.(in_array($row['category'], [30]) ? '' : 'hide').'" data-manufacturing-details="[30]">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Manufactured by</label>
+                                    <input class="form-control" type="text" name="branded_manufactured_by" value="'. ($row['branded_manufactured_by'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Manufactured for</label>
+                                    <input class="form-control" type="text" name="branded_manufactured_for" value="'. ($row['branded_manufactured_for'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Manufactured Date</label>
+                                    <input class="form-control" type="date" name="branded_manufactured_date" value="'. ($row['branded_manufactured_date'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Expiry Date</label>
+                                    <input class="form-control" type="date" name="branded_expiry_date" value="'. ($row['branded_expiry_date'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Lot Code assigned by Manufacturer</label>
+                                    <input class="form-control" type="text" name="branded_lot_code_by_manufacturer" value="'. ($row['branded_lot_code_by_manufacturer'] ?? '') .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Lot code assigned by Enterprise</label>
+                                    <input class="form-control" type="text" name="branded_lot_code_by_enterprise" value="'. ($row['branded_lot_code_by_enterprise'] ?? '') .'" />
+                                </div>
+                            </div>
+                        </div>
+                        <h4><strong>Receiving Details</strong></h4>
+                        <div class="row">';
+
+                            $countriesArr = [];
+                            $countriesResult = $conn->query("SELECT iso2,name FROM countries");
+                            if($countriesResult->num_rows) while($r = $countriesResult->fetch_assoc()) {
+                                $countriesArr[] = $r;
+                            }
+
+                            echo '<div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Country of Purchase</label>
+                                    <select class="form-control" name="country_of_purchase">
+                                        <option value="" selected disabled>--Select--</option>';
+                                        foreach($countriesArr as $c) {
+                                            echo '<option value="'.$c['iso2'].'" '.($row['country_of_purchase'] == $c['iso2'] ? 'selected' : '').'>'.$c['name'].'</option>';
+                                        }
+                                    echo '</select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Country of Origin</label>
+                                    <select class="form-control" name="country_of_origin">
+                                        <option value="" selected disabled>--Select--</option>';
+                                        foreach($countriesArr as $c) {
+                                            echo '<option value="'.$c['iso2'].'" '.($row['country_of_origin'] == $c['iso2'] ? 'selected' : '').'>'.$c['name'].'</option>';
+                                        }
+
+                                    echo '</select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Delivered from</label>
+                                    <select class="form-control" name="delivered_from">
+                                        <option value="" selected disabled>--Select--</option>';
+                                        
+                                        foreach($countriesArr as $c) {
+                                            echo '<option value="'.$c['iso2'].'" '.($row['delivered_from'] == $c['iso2'] ? 'selected' : '').'>'.$c['name'].'</option>';
+                                        }
+
+                                    echo '</select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabProductDescription2">
+                        <h4>
+                            <strong>Product Description, including Important Food Safety Characteristics</strong>';
+
+                            $pictogram = 'prod_desc';
+                            if ($user_id == 163) {
+                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                            } else {
+                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                    $files = '';
+                                    $type = 'iframe';
+                                    if (!empty($rowPictogram["files"])) {
+                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                        $str_filename = '';
+
+                                        foreach($arr_filename as $val_filename) {
+                                            $str_filename = $val_filename;
+                                        }
+                                        foreach($arr_filetype as $val_filetype) {
+                                            $str_filetype = $val_filetype;
+                                        }
+
+                                        $files = $rowPictogram["files"];
+                                        if ($rowPictogram["filetype"] == 1) {
+                                            $fileExtension = fileExtension($files);
+                                            $src = $fileExtension['src'];
+                                            $embed = $fileExtension['embed'];
+                                            $type = $fileExtension['type'];
+                                            $file_extension = $fileExtension['file_extension'];
+                                            $url = $base_url.'uploads/pictogram/';
+
+                                            $files = $src.$url.rawurlencode($files).$embed;
+                                        } else if ($rowPictogram["filetype"] == 3) {
+                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                        }
+                                    }
+
+                                    if (!empty($files)) {
+                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                    }
+                                }
+                            }
+
+                        echo '</h4>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Organoleptic/Sensory Characteristics</label>
+                                    <div class="chars-container">';
+                                        $data = json_decode($row['physical_characteristics']) ?? null;
+                                        if(isset($data) && is_array($data)) foreach($data as $v) {
+                                            echo '<div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
+                                                <input type="text" name="physical_chars[]" class="form-control" style="flex-grow:1;" placeholder="e.g. Color, Flavor, Texture, Form" value="'.$v.'" />
+                                                <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
+                                            </div>';
+                                        } else {
+                                            echo '<div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
+                                                <input type="text" name="physical_chars[]" class="form-control" style="flex-grow:1;" placeholder="e.g. Color, Flavor, Texture, Form" />
+                                                <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
+                                            </div>';
+                                        }
+                                    echo '</div>
+                                    <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="physical_chars[]" data-placeholder="e.g. Color, Flavor, Texture, Form" onclick="addMoreChars(this)">
+                                        <i class="fa fa-plus"></i> Add more
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Physico - Chemical Characteristics</label>
+                                    <div class="chars-container">';
+                                        $data = json_decode($row['physico_chemical_characteristics']) ?? null;
+                                        if(isset($data) && is_array($data)) foreach($data as $v) {
+                                            echo '<div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
+                                                <input type="text" name="physico_chem_char[]" class="form-control" style="flex-grow:1;" placeholder="e.g. Moisture/Fat/Ash%, Brix, etc." value="'.$v.'" />
+                                                <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
+                                            </div>';
+                                        } else {
+                                            echo '<div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
+                                                <input type="text" name="physico_chem_char[]" class="form-control" style="flex-grow:1;" placeholder="e.g. Moisture/Fat/Ash%, Brix, etc." />
+                                                <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
+                                            </div>';
+                                        }
+                                    echo '</div>
+                                    <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="physico_chem_char[]" data-placeholder="e.g. Moisture/Fat/Ash%, Brix, etc." onclick="addMoreChars(this)">
+                                        <i class="fa fa-plus"></i> Add more
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Microbiological Characteristics</label>
+                                    <div class="chars-container">';
+                                        $data = json_decode($row['microbiological_characteristics']) ?? null;
+                                        if(isset($data) && is_array($data)) foreach($data as $v) {
+                                            echo '<div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
+                                                <input type="text" name="microbial_char[]" class="form-control" style="flex-grow:1;" placeholder="e.g. E.coli, Salmonella, Coliform, APC/TPC, Y&M, Listeria" value="'.$v.'" />
+                                                <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
+                                            </div>';
+                                        } else {
+                                            echo '<div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
+                                                <input type="text" name="microbial_char[]" class="form-control" style="flex-grow:1;" placeholder="e.g. E.coli, Salmonella, Coliform, APC/TPC, Y&M, Listeria" />
+                                                <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
+                                            </div>';
+                                        }
+                                    echo '</div>
+                                    <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="microbial_char[]" data-placeholder="e.g. E.coli, Salmonella, Coliform, APC/TPC, Y&M, Listeria" onclick="addMoreChars(this)">
+                                        <i class="fa fa-plus"></i> Add more
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabExercises2">
+                        <h4>
+                            <strong>Exercises</strong>';
+
+                            $pictogram = 'prod_exercise';
+                            if ($user_id == 163) {
+                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                            } else {
+                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                    $files = '';
+                                    $type = 'iframe';
+                                    if (!empty($rowPictogram["files"])) {
+                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                        $str_filename = '';
+
+                                        foreach($arr_filename as $val_filename) {
+                                            $str_filename = $val_filename;
+                                        }
+                                        foreach($arr_filetype as $val_filetype) {
+                                            $str_filetype = $val_filetype;
+                                        }
+
+                                        $files = $rowPictogram["files"];
+                                        if ($rowPictogram["filetype"] == 1) {
+                                            $fileExtension = fileExtension($files);
+                                            $src = $fileExtension['src'];
+                                            $embed = $fileExtension['embed'];
+                                            $type = $fileExtension['type'];
+                                            $file_extension = $fileExtension['file_extension'];
+                                            $url = $base_url.'uploads/pictogram/';
+
+                                            $files = $src.$url.rawurlencode($files).$embed;
+                                        } else if ($rowPictogram["filetype"] == 3) {
+                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                        }
+                                    }
+
+                                    if (!empty($files)) {
+                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                    }
+                                }
+                            }
+
+                        echo '</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Mock Recall Exercise</label>
+                                    <input class="form-control" type="date" name="mock_recall" value="'. $row['mock_recall'] .'" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Product Trace Exercise</label>
+                                    <input class="form-control" type="date" name="product_trace" value="'. $row['product_trace'] .'" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tabDocuments2">
+                        <h4>
+                            <strong>Documents</strong>';
+
+                            $pictogram = 'prod_docs';
+                            if ($user_id == 163) {
+                                echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                            } else {
+                                $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                    $rowPictogram = mysqli_fetch_array($selectPictogram);
+
+                                    $files = '';
+                                    $type = 'iframe';
+                                    if (!empty($rowPictogram["files"])) {
+                                        $arr_filename = explode(' | ', $rowPictogram["files"]);
+                                        $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
+                                        $str_filename = '';
+
+                                        foreach($arr_filename as $val_filename) {
+                                            $str_filename = $val_filename;
+                                        }
+                                        foreach($arr_filetype as $val_filetype) {
+                                            $str_filetype = $val_filetype;
+                                        }
+
+                                        $files = $rowPictogram["files"];
+                                        if ($rowPictogram["filetype"] == 1) {
+                                            $fileExtension = fileExtension($files);
+                                            $src = $fileExtension['src'];
+                                            $embed = $fileExtension['embed'];
+                                            $type = $fileExtension['type'];
+                                            $file_extension = $fileExtension['file_extension'];
+                                            $url = $base_url.'uploads/pictogram/';
+
+                                            $files = $src.$url.rawurlencode($files).$embed;
+                                        } else if ($rowPictogram["filetype"] == 3) {
+                                            $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                        }
+                                    }
+
+                                    if (!empty($files)) {
+                                        echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                    }
+                                }
+                            }
+
+                        echo '</h4>';
+                        
+                        $url = $base_url.'uploads/products/';
+
+                        $files = $row["specifcation"];
+                        $fileExtension = fileExtension($files);
+                        $src = $fileExtension['src'];
+                        $embed = $fileExtension['embed'];
+                        $type = $fileExtension['type'];
+                        $file_extension = $fileExtension['file_extension'];
+                        echo '<div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Product Specification</label>
+                                    <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="specifcation" />
+                                    <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Due Date</label>
+                                    <input class="form-control" type="date" name="specifcation_date" value="'.$row['specifcation_date'].'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Share to Marketplace?</label>
+                                    <div class="mt-radio-inline">
+                                        <label class="mt-radio mt-radio-outline"> No
+                                            <input type="radio" value="0" name="specifcation_radio" '; echo $row['specifcation_radio']==0 ? 'checked':''; echo ' />
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-radio mt-radio-outline"> Yes
+                                            <input type="radio" value="1" name="specifcation_radio" '; echo $row['specifcation_radio']==1 ? 'checked':''; echo ' />
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>';
 
-                        $supplierData = $conn->query("SELECT ID,name,vendor_code FROM tbl_supplier WHERE page = 2 AND user_id=".$row['user_id'] . "  AND is_deleted = 0 ORDER BY name ASC");
-                        $supplierInfo = [];
-                        if($supplierData->num_rows) while($sr = $supplierData->fetch_assoc()) {
-                            $supplierInfo[] = $sr;
-                        }
-
-                        echo '<div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Vendor Code</label>
-                                <select class="form-control" name="vendor_code" disabled title="Automatically set when selecting a vendor name">
-                                    <option value="" selected disabled>--Select--</option>';
-                                    foreach($supplierInfo as $s) echo '<option value="'.$s['ID'].'" '.($s['ID'] == $row['vendor_name'] || $s['ID'] == $row['vendor_code'] ? 'selected' : '' ).'>'.(isset($s['vendor_code']) ? $s['vendor_code'] : 'No vendor code').'</option>';
-                                    echo '
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Vendor Name</label>
-                                <select class="form-control" name="vendor_name" id="supplierNameSelectEdit">
-                                    <option value="" selected disabled>--Select--</option>';
-                                    foreach($supplierInfo as $s) echo '<option value="'.$s['ID'].'">'.$s['name'].'</option>';
-                                    echo '
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Product Category</label>
-                                <select class="form-control" name="category" required onchange="evaluateManufacturingDetails(event)">
-                                    <option value="" selected disabled>--Select category--</option>';
-
-                                    $selectProductCategory = mysqli_query( $conn,"SELECT * FROM tbl_products_category ORDER BY name" );
-                                    if ( mysqli_num_rows($selectProductCategory) > 0 ) {
-                                        while($rowPC = mysqli_fetch_array($selectProductCategory)) {
-                                            $pc_ID = $rowPC['ID'];
-                                            $pc_name = $rowPC['name'];
-
-                                            if ($row['category'] == $pc_ID) {
-                                                echo '<option value="'. $pc_ID .'" SELECTED>'. $pc_name .'</option>';
-                                            } else {
-                                                echo '<option value="'. $pc_ID .'">'. $pc_name .'</option>';
-                                            }
-                                            
-                                        }
-                                    }
-
-                                echo '</select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">(Specify if other)</label>
-                                <input class="form-control" type="text" name="category_other" value="'. ($row['category_other'] ?? '') .'" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">Description</label>
-                                <textarea class="form-control" name="description" required>'. ($row['description'] ?? '') .'</textarea>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">Ingredient List</label>
-                                <textarea class="form-control" name="ingredient" required>'. ($row['ingredient'] ?? '') .'</textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <h4><strong>Packaging Details</strong></h4>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">Primary/Unit</label>
-                                <input class="form-control" type="text" name="packaging_1" value="'.($row['packaging_1'] ?? '').'" placeholder="Enter primary/unit packaging" />
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label">Secondary/Case</label>
-                                <input class="form-control" type="text" name="packaging_2" value="'.($row['packaging_2'] ?? '').'" placeholder="Enter secondary/case packaging"  />
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label">Tertiary/Master Pack</label>
-                                <input class="form-control" type="text" name="packaging_3" value="'.($row['packaging_3'] ?? '').'" placeholder="Enter tertiary/master pack packaging" />
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label">Packaging Temperature</label>
-                                <input class="form-control" type="text" name="packaging_temperature" placeholder="Enter packaging temperature" value="'.($row['packaging_temperature'] ?? '').'" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">Intended Use</label>
-                                <select class="form-control" name="intended">
-                                    <option value="0" selected disabled>--Select intended use--</option>';
-
-                                    $selectIntended = mysqli_query( $conn,"SELECT * FROM tbl_products_intended WHERE deleted = 0 ORDER BY name" );
-                                    if ( mysqli_num_rows($selectIntended) > 0 ) {
-                                        while($rowIntended = mysqli_fetch_array($selectIntended)) {
-                                            $intended_ID = $rowIntended["ID"];
-                                            $intended_name = $rowIntended["name"];
-
-                                            echo '<option value="'.$intended_ID.'" '; echo $row['intended'] == $intended_ID ? 'SELECTED':''; echo '>'.$intended_name.'</option>';
-                                        }
-                                    }
-
-                                echo '</select>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label">Intended Consumers</label>
-                                <input class="form-control" type="text" name="intended_consumers" placeholder="Enter intended consumers" value="'.($row['intended_consumers'] ?? '').'" />
-                            </div>
-                            <div class="form-group">
-                                <label>Product Claims</label>
-                                <div class="mt-checkbox-list" style="column-count: 3;">';
-
-                                    $claims_array = explode(", ", $row["claims"]);
-                                    $selectClaims = mysqli_query( $conn,"SELECT * FROM tbl_products_claims WHERE deleted = 0 ORDER BY name" );
-                                    if ( mysqli_num_rows($selectClaims) > 0 ) {
-                                        while($rowClaims = mysqli_fetch_array($selectClaims)) {
-                                            $claims_ID = $rowClaims["ID"];
-                                            $claims_name = $rowClaims["name"];
-
-                                            echo '<label class="mt-checkbox mt-checkbox-outline"> '.$claims_name.'
-                                                <input type="checkbox" value="'.$claims_ID.'" name="claims[]" '; echo in_array($claims_ID, $claims_array) ? 'checked' : ''; echo '>
-                                                <span></span>
-                                            </label>';
-                                        }
-                                    }
-
-                                echo '</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row hide">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label class="control-label">Packaging Material List</label>
-                                <textarea class="form-control" name="material">'. ($row['material'] ?? '') .'</textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane" id="tabAllergens2">
-                    <h4>
-                        <strong>Allergens</strong>';
-
-                        $pictogram = 'prod_allergen';
-                        if ($user_id == 163) {
-                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                        } else {
-                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                $rowPictogram = mysqli_fetch_array($selectPictogram);
-
-                                $files = '';
-                                $type = 'iframe';
-                                if (!empty($rowPictogram["files"])) {
-                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
-                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
-                                    $str_filename = '';
-
-                                    foreach($arr_filename as $val_filename) {
-                                        $str_filename = $val_filename;
-                                    }
-                                    foreach($arr_filetype as $val_filetype) {
-                                        $str_filetype = $val_filetype;
-                                    }
-
-                                    $files = $rowPictogram["files"];
-                                    if ($rowPictogram["filetype"] == 1) {
-                                        $fileExtension = fileExtension($files);
-                                        $src = $fileExtension['src'];
-                                        $embed = $fileExtension['embed'];
-                                        $type = $fileExtension['type'];
-                                        $file_extension = $fileExtension['file_extension'];
-                                        $url = $base_url.'uploads/pictogram/';
-
-                                        $files = $src.$url.rawurlencode($files).$embed;
-                                    } else if ($rowPictogram["filetype"] == 3) {
-                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                    }
-                                }
-
-                                if (!empty($files)) {
-                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                }
-                            }
-                        }
-
-                    echo '</h4>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <div class="mt-checkbox-list">
-                                    <label class="mt-checkbox mt-checkbox-outline"> Milk
-                                        <input type="checkbox" value="1" name="allergen[]" '; echo in_array(1, $allergen) ? 'checked' : ''; echo '/>
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-checkbox mt-checkbox-outline"> Eggs
-                                        <input type="checkbox" value="2" name="allergen[]" '; echo in_array(2, $allergen) ? 'checked' : ''; echo '/>
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-checkbox mt-checkbox-outline"> Fish (e.g., bass, flounder, cod)
-                                        <input type="checkbox" value="3" name="allergen[]" '; echo in_array(3, $allergen) ? 'checked' : ''; echo '/>
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-checkbox mt-checkbox-outline"> Crustacean shellfish (e.g., crab, lobster, shrimp)
-                                        <input type="checkbox" value="4" name="allergen[]" '; echo in_array(4, $allergen) ? 'checked' : ''; echo '/>
-                                        <span></span>
-                                    </label>
+                        $files = $row["artwork"];
+                        $fileExtension = fileExtension($files);
+                        $src = $fileExtension['src'];
+                        $embed = $fileExtension['embed'];
+                        $type = $fileExtension['type'];
+                        $file_extension = $fileExtension['file_extension'];
+                        echo '<div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Packaging Artwork</label>
+                                    <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="artwork" />
+                                    <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <div class="mt-checkbox-list">
-                                    <label class="mt-checkbox mt-checkbox-outline"> Tree nuts (e.g., almonds, walnuts, pecans)
-                                        <input type="checkbox" value="5" name="allergen[]" '; echo in_array(5, $allergen) ? 'checked' : ''; echo '/>
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-checkbox mt-checkbox-outline"> Peanuts
-                                        <input type="checkbox" value="6" name="allergen[]" '; echo in_array(6, $allergen) ? 'checked' : ''; echo '/>
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-checkbox mt-checkbox-outline"> Wheat
-                                        <input type="checkbox" value="7" name="allergen[]" '; echo in_array(7, $allergen) ? 'checked' : ''; echo '/>
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-checkbox mt-checkbox-outline"> Soybeans
-                                        <input type="checkbox" value="8" name="allergen[]" '; echo in_array(8, $allergen) ? 'checked' : ''; echo '/>
-                                        <span></span>
-                                    </label>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Due Date</label>
+                                    <input class="form-control" type="date" name="artwork_date" value="'.$row['artwork_date'].'" />
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <div class="mt-checkbox-list">
-                                    <label class="mt-checkbox mt-checkbox-outline"> Sesame
-                                        <input type="checkbox" value="9" name="allergen[]" '; echo in_array(9, $allergen) ? 'checked' : ''; echo '/>
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-checkbox mt-checkbox-outline"> None
-                                        <input type="checkbox" value="10" name="allergen[]" '; echo in_array(10, $allergen) ? 'checked' : ''; echo '/>
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-checkbox mt-checkbox-outline"> Other
-                                        <input type="checkbox" value="11" name="allergen[]" '; echo in_array(11, $allergen) ? 'checked' : ''; echo '/>
-                                        <span></span>
-                                    </label>
-                                </div>
-                                <input class="form-control" type="text" name="allergen_other" placeholder="(Specify if Other)" value="'.$row['allergen_other'].'" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane" id="tabDimensions2">
-                    <h4>
-                        <strong>Dimensions</strong>';
-
-                        $pictogram = 'prod_dimension';
-                        if ($user_id == 163) {
-                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                        } else {
-                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                $rowPictogram = mysqli_fetch_array($selectPictogram);
-
-                                $files = '';
-                                $type = 'iframe';
-                                if (!empty($rowPictogram["files"])) {
-                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
-                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
-                                    $str_filename = '';
-
-                                    foreach($arr_filename as $val_filename) {
-                                        $str_filename = $val_filename;
-                                    }
-                                    foreach($arr_filetype as $val_filetype) {
-                                        $str_filetype = $val_filetype;
-                                    }
-
-                                    $files = $rowPictogram["files"];
-                                    if ($rowPictogram["filetype"] == 1) {
-                                        $fileExtension = fileExtension($files);
-                                        $src = $fileExtension['src'];
-                                        $embed = $fileExtension['embed'];
-                                        $type = $fileExtension['type'];
-                                        $file_extension = $fileExtension['file_extension'];
-                                        $url = $base_url.'uploads/pictogram/';
-
-                                        $files = $src.$url.rawurlencode($files).$embed;
-                                    } else if ($rowPictogram["filetype"] == 3) {
-                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                    }
-                                }
-
-                                if (!empty($files)) {
-                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                }
-                            }
-                        }
-
-                    echo '</h4>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Unit Dimension/s</label>
-                                <input class="form-control" type="text" name="unit" value="'. ($row['unit'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Box Dimension/s</label>
-                                <input class="form-control" type="text" name="boxes" value="'. ($row['boxes'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Pallet Dimension/s</label>
-                                <input class="form-control" type="text" name="pallet" value="'. ($row['pallet'] ?? '') .'" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <h4><strong>Count</strong></h4>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">How many units per carton/box?</label>
-                                <input class="form-control" type="text" name="count_unit_box" value="'. ($row['count_unit_box'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">How many units per pallet?</label>
-                                <input class="form-control" type="text" name="count_unit_pallet" value="'. ($row['count_unit_pallet'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">How many carton/box per pallet?</label>
-                                <input class="form-control" type="text" name="count_unit_carton" value="'. ($row['count_unit_carton'] ?? '') .'" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane" id="tabStorage2">
-                    <h4>
-                        <strong>Storage</strong>';
-
-                        $pictogram = 'prod_storage';
-                        if ($user_id == 163) {
-                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                        } else {
-                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                $rowPictogram = mysqli_fetch_array($selectPictogram);
-
-                                $files = '';
-                                $type = 'iframe';
-                                if (!empty($rowPictogram["files"])) {
-                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
-                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
-                                    $str_filename = '';
-
-                                    foreach($arr_filename as $val_filename) {
-                                        $str_filename = $val_filename;
-                                    }
-                                    foreach($arr_filetype as $val_filetype) {
-                                        $str_filetype = $val_filetype;
-                                    }
-
-                                    $files = $rowPictogram["files"];
-                                    if ($rowPictogram["filetype"] == 1) {
-                                        $fileExtension = fileExtension($files);
-                                        $src = $fileExtension['src'];
-                                        $embed = $fileExtension['embed'];
-                                        $type = $fileExtension['type'];
-                                        $file_extension = $fileExtension['file_extension'];
-                                        $url = $base_url.'uploads/pictogram/';
-
-                                        $files = $src.$url.rawurlencode($files).$embed;
-                                    } else if ($rowPictogram["filetype"] == 3) {
-                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                    }
-                                }
-
-                                if (!empty($files)) {
-                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                }
-                            }
-                        }
-
-                    echo '</h4>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Shelf Life</label>
-                                <input class="form-control" type="text" name="shelf" value="'. ($row['shelf'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">Storage and Handling Requirement</label>
-                                <input class="form-control" type="text" name="storage" value="'. ($row['storage'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Storage/Warehouse</label>
-                                <input class="form-control" type="text" name="warehouse" value="'. ($row['warehouse'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">UPC Code</label>
-                                <input class="form-control" type="text" name="upc" value="'. ($row['upc'] ?? '').'" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">GTIN Number</label>
-                                <input class="form-control" type="text" name="gtin" value="'. ($row['gtin'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Lead Time</label>
-                                <input class="form-control" type="text" name="lead" value="'. ($row['lead_time'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Minimum Order Quantity</label>
-                                <input class="form-control" type="text" name="moq" value="'. ($row['moq'] ?? '').'" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <h4><strong>Distribution</strong></h4>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label>Type of Distribution</label>
-                                <div class="mt-radio-inline">
-                                    <label class="mt-radio mt-radio-outline">
-                                        <input type="radio" name="export" value="0" '; echo $row['export']==0 ? 'checked':''; echo '> Local
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-radio mt-radio-outline">
-                                        <input type="radio" name="export" value="1" '; echo $row['export']==1 ? 'checked':''; echo '> International
-                                        <span></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="form-group">
-                                <label class="control-label">Specify the country</label>
-                                <textarea class="form-control" name="countries">'. ($row['countries'] ?? '') .'</textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane" id="tabManufacturing2">
-                    <h4>
-                        <strong>Manufacturing Details</strong>';
-
-                        $pictogram = 'prod_manuf';
-                        if ($user_id == 163) {
-                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                        } else {
-                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                $rowPictogram = mysqli_fetch_array($selectPictogram);
-
-                                $files = '';
-                                $type = 'iframe';
-                                if (!empty($rowPictogram["files"])) {
-                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
-                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
-                                    $str_filename = '';
-
-                                    foreach($arr_filename as $val_filename) {
-                                        $str_filename = $val_filename;
-                                    }
-                                    foreach($arr_filetype as $val_filetype) {
-                                        $str_filetype = $val_filetype;
-                                    }
-
-                                    $files = $rowPictogram["files"];
-                                    if ($rowPictogram["filetype"] == 1) {
-                                        $fileExtension = fileExtension($files);
-                                        $src = $fileExtension['src'];
-                                        $embed = $fileExtension['embed'];
-                                        $type = $fileExtension['type'];
-                                        $file_extension = $fileExtension['file_extension'];
-                                        $url = $base_url.'uploads/pictogram/';
-
-                                        $files = $src.$url.rawurlencode($files).$embed;
-                                    } else if ($rowPictogram["filetype"] == 3) {
-                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                    }
-                                }
-
-                                if (!empty($files)) {
-                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                }
-                            }
-                        }
-
-                    echo '</h4>
-                    <div class="row '.(!in_array($row['category'], [27,28,29,30]) ? '' : 'hide').'" data-manufacturing-details="default">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Manufactured by</label>
-                                <input class="form-control" type="text" name="manufactured_by" value="'. ($row['manufactured_by'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Manufactured for</label>
-                                <input class="form-control" type="text" name="manufactured_for" value="'. ($row['manufactured_for'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Distributed by</label>
-                                <input class="form-control" type="text" name="distributed_by" value="'. ($row['distributed_by'] ?? '') .'" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row '.(in_array($row['category'], [27,28]) ? '' : 'hide').'" data-manufacturing-details="[27,28]">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Enterprise Name</label>
-                                <!-- mb = *manufactured/distributed* -->
-                                <input class="form-control" type="text" name="mb_enterprise_name" value="'. ($row['mb_enterprise_name'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Lot Code</label>
-                                <input class="form-control" type="text" name="mb_lot_code" value="'. ($row['mb_lot_code'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Manufactured Date</label>
-                                <input class="form-control" type="date" name="mb_manufactured_date" value="'. ($row['mb_manufactured_date'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Expiry Date</label>
-                                <input class="form-control" type="date" name="mb_expiry_date" value="'. ($row['mb_expiry_date'] ?? '') .'" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row '.(in_array($row['category'], [29]) ? '' : 'hide').'" data-manufacturing-details="[29]">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Supplier Name</label>
-                                <input class="form-control" type="text" name="traded_supplier_name" value="'. ($row['traded_supplier_name'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Supplied for</label>
-                                <input class="form-control" type="text" name="traded_supplied_for" value="'. ($row['traded_supplied_for'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Supplier-issued Lot Code</label>
-                                <input class="form-control" type="text" name="traded_supplied_lot_code" value="'. ($row['traded_supplied_lot_code'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Manufactured Date</label>
-                                <input class="form-control" type="date" name="traded_manufactured_date" value="'. ($row['traded_manufactured_date'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Expiry Date</label>
-                                <input class="form-control" type="date" name="traded_expiry_date" value="'. ($row['traded_expiry_date'] ?? '') .'" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row '.(in_array($row['category'], [30]) ? '' : 'hide').'" data-manufacturing-details="[30]">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Manufactured by</label>
-                                <input class="form-control" type="text" name="branded_manufactured_by" value="'. ($row['branded_manufactured_by'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Manufactured for</label>
-                                <input class="form-control" type="text" name="branded_manufactured_for" value="'. ($row['branded_manufactured_for'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Manufactured Date</label>
-                                <input class="form-control" type="date" name="branded_manufactured_date" value="'. ($row['branded_manufactured_date'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Expiry Date</label>
-                                <input class="form-control" type="date" name="branded_expiry_date" value="'. ($row['branded_expiry_date'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Lot Code assigned by Manufacturer</label>
-                                <input class="form-control" type="text" name="branded_lot_code_by_manufacturer" value="'. ($row['branded_lot_code_by_manufacturer'] ?? '') .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Lot code assigned by Enterprise</label>
-                                <input class="form-control" type="text" name="branded_lot_code_by_enterprise" value="'. ($row['branded_lot_code_by_enterprise'] ?? '') .'" />
-                            </div>
-                        </div>
-                    </div>
-                    <h4><strong>Receiving Details</strong></h4>
-                    <div class="row">';
-
-                        $countriesArr = [];
-                        $countriesResult = $conn->query("SELECT iso2,name FROM countries");
-                        if($countriesResult->num_rows) while($r = $countriesResult->fetch_assoc()) {
-                            $countriesArr[] = $r;
-                        }
-
-                        echo '<div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Country of Purchase</label>
-                                <select class="form-control" name="country_of_purchase">
-                                    <option value="" selected disabled>--Select--</option>';
-                                    foreach($countriesArr as $c) {
-                                        echo '<option value="'.$c['iso2'].'" '.($row['country_of_purchase'] == $c['iso2'] ? 'selected' : '').'>'.$c['name'].'</option>';
-                                    }
-                                echo '</select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Country of Origin</label>
-                                <select class="form-control" name="country_of_origin">
-                                    <option value="" selected disabled>--Select--</option>';
-                                    foreach($countriesArr as $c) {
-                                        echo '<option value="'.$c['iso2'].'" '.($row['country_of_origin'] == $c['iso2'] ? 'selected' : '').'>'.$c['name'].'</option>';
-                                    }
-
-                                echo '</select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Delivered from</label>
-                                <select class="form-control" name="delivered_from">
-                                    <option value="" selected disabled>--Select--</option>';
-                                    
-                                    foreach($countriesArr as $c) {
-                                        echo '<option value="'.$c['iso2'].'" '.($row['delivered_from'] == $c['iso2'] ? 'selected' : '').'>'.$c['name'].'</option>';
-                                    }
-
-                                echo '</select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane" id="tabProductDescription2">
-                    <h4>
-                        <strong>Product Description, including Important Food Safety Characteristics</strong>';
-
-                        $pictogram = 'prod_desc';
-                        if ($user_id == 163) {
-                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                        } else {
-                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                $rowPictogram = mysqli_fetch_array($selectPictogram);
-
-                                $files = '';
-                                $type = 'iframe';
-                                if (!empty($rowPictogram["files"])) {
-                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
-                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
-                                    $str_filename = '';
-
-                                    foreach($arr_filename as $val_filename) {
-                                        $str_filename = $val_filename;
-                                    }
-                                    foreach($arr_filetype as $val_filetype) {
-                                        $str_filetype = $val_filetype;
-                                    }
-
-                                    $files = $rowPictogram["files"];
-                                    if ($rowPictogram["filetype"] == 1) {
-                                        $fileExtension = fileExtension($files);
-                                        $src = $fileExtension['src'];
-                                        $embed = $fileExtension['embed'];
-                                        $type = $fileExtension['type'];
-                                        $file_extension = $fileExtension['file_extension'];
-                                        $url = $base_url.'uploads/pictogram/';
-
-                                        $files = $src.$url.rawurlencode($files).$embed;
-                                    } else if ($rowPictogram["filetype"] == 3) {
-                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                    }
-                                }
-
-                                if (!empty($files)) {
-                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                }
-                            }
-                        }
-
-                    echo '</h4>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Organoleptic/Sensory Characteristics</label>
-                                <div class="chars-container">';
-                                    $data = json_decode($row['physical_characteristics']) ?? null;
-                                    if(isset($data) && is_array($data)) foreach($data as $v) {
-                                        echo '<div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
-                                            <input type="text" name="physical_chars[]" class="form-control" style="flex-grow:1;" placeholder="e.g. Color, Flavor, Texture, Form" value="'.$v.'" />
-                                            <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
-                                        </div>';
-                                    } else {
-                                        echo '<div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
-                                            <input type="text" name="physical_chars[]" class="form-control" style="flex-grow:1;" placeholder="e.g. Color, Flavor, Texture, Form" />
-                                            <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
-                                        </div>';
-                                    }
-                                echo '</div>
-                                <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="physical_chars[]" data-placeholder="e.g. Color, Flavor, Texture, Form" onclick="addMoreChars(this)">
-                                    <i class="fa fa-plus"></i> Add more
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Physico - Chemical Characteristics</label>
-                                <div class="chars-container">';
-                                    $data = json_decode($row['physico_chemical_characteristics']) ?? null;
-                                    if(isset($data) && is_array($data)) foreach($data as $v) {
-                                        echo '<div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
-                                            <input type="text" name="physico_chem_char[]" class="form-control" style="flex-grow:1;" placeholder="e.g. Moisture/Fat/Ash%, Brix, etc." value="'.$v.'" />
-                                            <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
-                                        </div>';
-                                    } else {
-                                        echo '<div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
-                                            <input type="text" name="physico_chem_char[]" class="form-control" style="flex-grow:1;" placeholder="e.g. Moisture/Fat/Ash%, Brix, etc." />
-                                            <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
-                                        </div>';
-                                    }
-                                echo '</div>
-                                <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="physico_chem_char[]" data-placeholder="e.g. Moisture/Fat/Ash%, Brix, etc." onclick="addMoreChars(this)">
-                                    <i class="fa fa-plus"></i> Add more
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Microbiological Characteristics</label>
-                                <div class="chars-container">';
-                                    $data = json_decode($row['microbiological_characteristics']) ?? null;
-                                    if(isset($data) && is_array($data)) foreach($data as $v) {
-                                        echo '<div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
-                                            <input type="text" name="microbial_char[]" class="form-control" style="flex-grow:1;" placeholder="e.g. E.coli, Salmonella, Coliform, APC/TPC, Y&M, Listeria" value="'.$v.'" />
-                                            <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
-                                        </div>';
-                                    } else {
-                                        echo '<div class="chars-template margin-bottom-10" style="display:flex; align-items:center; gap:1rem;">
-                                            <input type="text" name="microbial_char[]" class="form-control" style="flex-grow:1;" placeholder="e.g. E.coli, Salmonella, Coliform, APC/TPC, Y&M, Listeria" />
-                                            <button type="button" class="btn btn-danger" onclick="deleteChar(this)"><i class="fa fa-close"></i></button>
-                                        </div>';
-                                    }
-                                echo '</div>
-                                <button type="button" class="btn btn-sm btn-link margin-top-10" data-name="microbial_char[]" data-placeholder="e.g. E.coli, Salmonella, Coliform, APC/TPC, Y&M, Listeria" onclick="addMoreChars(this)">
-                                    <i class="fa fa-plus"></i> Add more
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane" id="tabExercises2">
-                    <h4>
-                        <strong>Exercises</strong>';
-
-                        $pictogram = 'prod_exercise';
-                        if ($user_id == 163) {
-                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                        } else {
-                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                $rowPictogram = mysqli_fetch_array($selectPictogram);
-
-                                $files = '';
-                                $type = 'iframe';
-                                if (!empty($rowPictogram["files"])) {
-                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
-                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
-                                    $str_filename = '';
-
-                                    foreach($arr_filename as $val_filename) {
-                                        $str_filename = $val_filename;
-                                    }
-                                    foreach($arr_filetype as $val_filetype) {
-                                        $str_filetype = $val_filetype;
-                                    }
-
-                                    $files = $rowPictogram["files"];
-                                    if ($rowPictogram["filetype"] == 1) {
-                                        $fileExtension = fileExtension($files);
-                                        $src = $fileExtension['src'];
-                                        $embed = $fileExtension['embed'];
-                                        $type = $fileExtension['type'];
-                                        $file_extension = $fileExtension['file_extension'];
-                                        $url = $base_url.'uploads/pictogram/';
-
-                                        $files = $src.$url.rawurlencode($files).$embed;
-                                    } else if ($rowPictogram["filetype"] == 3) {
-                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                    }
-                                }
-
-                                if (!empty($files)) {
-                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                }
-                            }
-                        }
-
-                    echo '</h4>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">Mock Recall Exercise</label>
-                                <input class="form-control" type="date" name="mock_recall" value="'. $row['mock_recall'] .'" />
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">Product Trace Exercise</label>
-                                <input class="form-control" type="date" name="product_trace" value="'. $row['product_trace'] .'" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane" id="tabDocuments2">
-                    <h4>
-                        <strong>Documents</strong>';
-
-                        $pictogram = 'prod_docs';
-                        if ($user_id == 163) {
-                            echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
-                        } else {
-                            $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
-                            if ( mysqli_num_rows($selectPictogram) > 0 ) {
-                                $rowPictogram = mysqli_fetch_array($selectPictogram);
-
-                                $files = '';
-                                $type = 'iframe';
-                                if (!empty($rowPictogram["files"])) {
-                                    $arr_filename = explode(' | ', $rowPictogram["files"]);
-                                    $arr_filetype = explode(' | ', $rowPictogram["filetype"]);
-                                    $str_filename = '';
-
-                                    foreach($arr_filename as $val_filename) {
-                                        $str_filename = $val_filename;
-                                    }
-                                    foreach($arr_filetype as $val_filetype) {
-                                        $str_filetype = $val_filetype;
-                                    }
-
-                                    $files = $rowPictogram["files"];
-                                    if ($rowPictogram["filetype"] == 1) {
-                                        $fileExtension = fileExtension($files);
-                                        $src = $fileExtension['src'];
-                                        $embed = $fileExtension['embed'];
-                                        $type = $fileExtension['type'];
-                                        $file_extension = $fileExtension['file_extension'];
-                                        $url = $base_url.'uploads/pictogram/';
-
-                                        $files = $src.$url.rawurlencode($files).$embed;
-                                    } else if ($rowPictogram["filetype"] == 3) {
-                                        $files = preg_replace('#[^/]*$#', '', $files).'preview';
-                                    }
-                                }
-
-                                if (!empty($files)) {
-                                    echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
-                                }
-                            }
-                        }
-
-                    echo '</h4>';
-                    
-                    $url = $base_url.'uploads/products/';
-
-                    $files = $row["specifcation"];
-                    $fileExtension = fileExtension($files);
-                    $src = $fileExtension['src'];
-                    $embed = $fileExtension['embed'];
-                    $type = $fileExtension['type'];
-                    $file_extension = $fileExtension['file_extension'];
-                    echo '<div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">Product Specification</label>
-                                <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="specifcation" />
-                                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Due Date</label>
-                                <input class="form-control" type="date" name="specifcation_date" value="'.$row['specifcation_date'].'" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Share to Marketplace?</label>
-                                <div class="mt-radio-inline">
-                                    <label class="mt-radio mt-radio-outline"> No
-                                        <input type="radio" value="0" name="specifcation_radio" '; echo $row['specifcation_radio']==0 ? 'checked':''; echo ' />
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-radio mt-radio-outline"> Yes
-                                        <input type="radio" value="1" name="specifcation_radio" '; echo $row['specifcation_radio']==1 ? 'checked':''; echo ' />
-                                        <span></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>';
-
-                    $files = $row["artwork"];
-                    $fileExtension = fileExtension($files);
-                    $src = $fileExtension['src'];
-                    $embed = $fileExtension['embed'];
-                    $type = $fileExtension['type'];
-                    $file_extension = $fileExtension['file_extension'];
-                    echo '<div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">Packaging Artwork</label>
-                                <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="artwork" />
-                                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Due Date</label>
-                                <input class="form-control" type="date" name="artwork_date" value="'.$row['artwork_date'].'" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Share to Marketplace?</label>
-                                <div class="mt-radio-inline">
-                                    <label class="mt-radio mt-radio-outline"> No
-                                        <input type="radio" value="0" name="artwork_radio" '; echo $row['artwork_radio']==0 ? 'checked':''; echo ' />
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-radio mt-radio-outline"> Yes
-                                        <input type="radio" value="1" name="artwork_radio" '; echo $row['artwork_radio']==1 ? 'checked':''; echo ' />
-                                        <span></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>';
-
-                    $files = $row["haccp"];
-                    $fileExtension = fileExtension($files);
-                    $src = $fileExtension['src'];
-                    $embed = $fileExtension['embed'];
-                    $type = $fileExtension['type'];
-                    $file_extension = $fileExtension['file_extension'];
-                    echo '<div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">Food Safety Plan/HACCP</label>
-                                <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="haccp" />
-                                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Due Date</label>
-                                <input class="form-control" type="date" name="haccp_date" value="'.$row['haccp_date'].'" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Share to Marketplace?</label>
-                                <div class="mt-radio-inline">
-                                    <label class="mt-radio mt-radio-outline"> No
-                                        <input type="radio" value="0" name="haccp_radio" '; echo $row['haccp_radio']==0 ? 'checked':''; echo ' />
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-radio mt-radio-outline"> Yes
-                                        <input type="radio" value="1" name="haccp_radio" '; echo $row['haccp_radio']==1 ? 'checked':''; echo ' />
-                                        <span></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>';
-
-                    $files = $row["label"];
-                    $fileExtension = fileExtension($files);
-                    $src = $fileExtension['src'];
-                    $embed = $fileExtension['embed'];
-                    $type = $fileExtension['type'];
-                    $file_extension = $fileExtension['file_extension'];
-                    echo '<div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">Label</label>
-                                <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="label" />
-                                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Due Date</label>
-                                <input class="form-control" type="date" name="label_date" value="'.$row['label_date'].'" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Share to Marketplace?</label>
-                                <div class="mt-radio-inline">
-                                    <label class="mt-radio mt-radio-outline"> No
-                                        <input type="radio" value="0" name="label_radio" '; echo $row['label_radio']==0 ? 'checked':''; echo ' />
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-radio mt-radio-outline"> Yes
-                                        <input type="radio" value="1" name="label_radio" '; echo $row['label_radio']==1 ? 'checked':''; echo ' />
-                                        <span></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>';
-
-                    $files = $row["formulation"];
-                    $fileExtension = fileExtension($files);
-                    $src = $fileExtension['src'];
-                    $embed = $fileExtension['embed'];
-                    $type = $fileExtension['type'];
-                    $file_extension = $fileExtension['file_extension'];
-                    echo '<div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="control-label">Formulation</label>
-                                <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="formulation" />
-                                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Due Date</label>
-                                <input class="form-control" type="date" name="formulation_date" value="'.$row['formulation_date'].'" />
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label class="control-label">Share to Marketplace?</label>
-                                <div class="mt-radio-inline">
-                                    <label class="mt-radio mt-radio-outline"> No
-                                        <input type="radio" value="0" name="formulation_radio" '; echo $row['formulation_radio']==0 ? 'checked':''; echo ' />
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-radio mt-radio-outline"> Yes
-                                        <input type="radio" value="1" name="formulation_radio" '; echo $row['formulation_radio']==1 ? 'checked':''; echo ' />
-                                        <span></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>';
-
-                    echo '<div class="mt-repeater mt-repeater-docs">
-                        <div data-repeater-list="docs">';
-
-                            $docs = $row['docs'];
-                            if (!empty($docs)) {
-                                $output_docs = json_decode($docs,true);
-                                $count_docs = count($output_docs);
-                                if ($count_docs == 0) { $count_docs = 1; }
-                            }
-
-                            $docs_date_data = $row['docs_date'];
-                            if (!empty($docs_date_data)) {
-                                $docs_date = json_decode($docs_date_data,true);
-
-                                if ($docs_date == NULL) { $docs_date_data = ''; }
-                            }
-
-                            if (!empty($output_docs)) {
-                                echo '<div class="mt-repeater-item mt-repeater-item-hide row" data-repeater-item>
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            <label class="control-label">Document Name</label>
-                                            <input class="form-control" type="text" name="docs_label" />
-                                        </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Share to Marketplace?</label>
+                                    <div class="mt-radio-inline">
+                                        <label class="mt-radio mt-radio-outline"> No
+                                            <input type="radio" value="0" name="artwork_radio" '; echo $row['artwork_radio']==0 ? 'checked':''; echo ' />
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-radio mt-radio-outline"> Yes
+                                            <input type="radio" value="1" name="artwork_radio" '; echo $row['artwork_radio']==1 ? 'checked':''; echo ' />
+                                            <span></span>
+                                        </label>
                                     </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            <label class="control-label">Document</label>
-                                            <input class="form-control" type="file" name="docs_file" />
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            <label class="control-label">Date</label>
-                                            <input class="form-control" type="date" name="docs_date" />
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            <label class="control-label">Share to Marketplace?</label>
-                                            <div class="mt-radio-inline" style="position: relative;">
-                                                <label class="mt-radio mt-radio-outline"> No
-                                                    <input type="radio" value="0" name="docs_radio" checked />
-                                                    <span></span>
-                                                </label>
-                                                <label class="mt-radio mt-radio-outline"> Yes
-                                                    <input type="radio" value="1" name="docs_radio" />
-                                                    <span></span>
-                                                </label>
-                                                <a href="javascript:;" data-repeater-delete class="btn btn-danger" style="position: absolute; right: 0; top: 0;"><i class="fa fa-close"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>';
+                                </div>
+                            </div>
+                        </div>';
 
-                                foreach ($output_docs as $key => $value) {
+                        $files = $row["haccp"];
+                        $fileExtension = fileExtension($files);
+                        $src = $fileExtension['src'];
+                        $embed = $fileExtension['embed'];
+                        $type = $fileExtension['type'];
+                        $file_extension = $fileExtension['file_extension'];
+                        echo '<div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Food Safety Plan/HACCP</label>
+                                    <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="haccp" />
+                                    <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Due Date</label>
+                                    <input class="form-control" type="date" name="haccp_date" value="'.$row['haccp_date'].'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Share to Marketplace?</label>
+                                    <div class="mt-radio-inline">
+                                        <label class="mt-radio mt-radio-outline"> No
+                                            <input type="radio" value="0" name="haccp_radio" '; echo $row['haccp_radio']==0 ? 'checked':''; echo ' />
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-radio mt-radio-outline"> Yes
+                                            <input type="radio" value="1" name="haccp_radio" '; echo $row['haccp_radio']==1 ? 'checked':''; echo ' />
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>';
 
-                                    $files = $value['docs_file'];
-                                    $fileExtension = fileExtension($files);
-                                    $src = $fileExtension['src'];
-                                    $embed = $fileExtension['embed'];
-                                    $type = $fileExtension['type'];
-                                    $file_extension = $fileExtension['file_extension'];
+                        $files = $row["label"];
+                        $fileExtension = fileExtension($files);
+                        $src = $fileExtension['src'];
+                        $embed = $fileExtension['embed'];
+                        $type = $fileExtension['type'];
+                        $file_extension = $fileExtension['file_extension'];
+                        echo '<div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Label</label>
+                                    <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="label" />
+                                    <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Due Date</label>
+                                    <input class="form-control" type="date" name="label_date" value="'.$row['label_date'].'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Share to Marketplace?</label>
+                                    <div class="mt-radio-inline">
+                                        <label class="mt-radio mt-radio-outline"> No
+                                            <input type="radio" value="0" name="label_radio" '; echo $row['label_radio']==0 ? 'checked':''; echo ' />
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-radio mt-radio-outline"> Yes
+                                            <input type="radio" value="1" name="label_radio" '; echo $row['label_radio']==1 ? 'checked':''; echo ' />
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>';
 
-                                    echo '<div class="mt-repeater-item row" data-repeater-item>
+                        $files = $row["formulation"];
+                        $fileExtension = fileExtension($files);
+                        $src = $fileExtension['src'];
+                        $embed = $fileExtension['embed'];
+                        $type = $fileExtension['type'];
+                        $file_extension = $fileExtension['file_extension'];
+                        echo '<div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">Formulation</label>
+                                    <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="formulation" />
+                                    <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Due Date</label>
+                                    <input class="form-control" type="date" name="formulation_date" value="'.$row['formulation_date'].'" />
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Share to Marketplace?</label>
+                                    <div class="mt-radio-inline">
+                                        <label class="mt-radio mt-radio-outline"> No
+                                            <input type="radio" value="0" name="formulation_radio" '; echo $row['formulation_radio']==0 ? 'checked':''; echo ' />
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-radio mt-radio-outline"> Yes
+                                            <input type="radio" value="1" name="formulation_radio" '; echo $row['formulation_radio']==1 ? 'checked':''; echo ' />
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>';
+
+                        echo '<div class="mt-repeater mt-repeater-docs">
+                            <div data-repeater-list="docs">';
+
+                                $docs = $row['docs'];
+                                if (!empty($docs)) {
+                                    $output_docs = json_decode($docs,true);
+                                    $count_docs = count($output_docs);
+                                    if ($count_docs == 0) { $count_docs = 1; }
+                                }
+
+                                $docs_date_data = $row['docs_date'];
+                                if (!empty($docs_date_data)) {
+                                    $docs_date = json_decode($docs_date_data,true);
+
+                                    if ($docs_date == NULL) { $docs_date_data = ''; }
+                                }
+
+                                if (!empty($output_docs)) {
+                                    echo '<div class="mt-repeater-item mt-repeater-item-hide row" data-repeater-item>
                                         <div class="col-lg-3">
                                             <div class="form-group">
                                                 <label class="control-label">Document Name</label>
-                                                <input class="form-control" type="text" name="docs_label" value="'. $value['docs_label'] .'" />
+                                                <input class="form-control" type="text" name="docs_label" />
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
                                             <div class="form-group">
-                                                <input type="hidden" name="docs_tmp" value="'.$value['docs_file'].'" />
                                                 <label class="control-label">Document</label>
-                                                <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="docs_file" />
-                                                <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                <input class="form-control" type="file" name="docs_file" />
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
                                             <div class="form-group">
                                                 <label class="control-label">Date</label>
-                                                <input class="form-control" type="date" name="docs_date" value="'; echo !empty($value['docs_date']) ? $value['docs_date']:''; echo '"/>
+                                                <input class="form-control" type="date" name="docs_date" />
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
@@ -36167,11 +36278,98 @@
                                                 <label class="control-label">Share to Marketplace?</label>
                                                 <div class="mt-radio-inline" style="position: relative;">
                                                     <label class="mt-radio mt-radio-outline"> No
-                                                        <input type="radio" value="0" name="docs_radio" '; echo $value['docs_radio']==0 ? 'checked':''; echo ' />
+                                                        <input type="radio" value="0" name="docs_radio" checked />
                                                         <span></span>
                                                     </label>
                                                     <label class="mt-radio mt-radio-outline"> Yes
-                                                        <input type="radio" value="1" name="docs_radio" '; echo $value['docs_radio']==1 ? 'checked':''; echo ' />
+                                                        <input type="radio" value="1" name="docs_radio" />
+                                                        <span></span>
+                                                    </label>
+                                                    <a href="javascript:;" data-repeater-delete class="btn btn-danger" style="position: absolute; right: 0; top: 0;"><i class="fa fa-close"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>';
+
+                                    foreach ($output_docs as $key => $value) {
+
+                                        $files = $value['docs_file'];
+                                        $fileExtension = fileExtension($files);
+                                        $src = $fileExtension['src'];
+                                        $embed = $fileExtension['embed'];
+                                        $type = $fileExtension['type'];
+                                        $file_extension = $fileExtension['file_extension'];
+
+                                        echo '<div class="mt-repeater-item row" data-repeater-item>
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label class="control-label">Document Name</label>
+                                                    <input class="form-control" type="text" name="docs_label" value="'. $value['docs_label'] .'" />
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <input type="hidden" name="docs_tmp" value="'.$value['docs_file'].'" />
+                                                    <label class="control-label">Document</label>
+                                                    <input class="form-control '; echo !empty($files) ? 'hide':''; echo '" type="file" name="docs_file" />
+                                                    <p class="'; echo !empty($files) ? '':'hide'; echo '" style="margin: 0;"><a href="'.$src.$url.rawurlencode($files).$embed.'" data-src="'.$src.$url.rawurlencode($files).$embed.'" '.$datafancybox.' data-type="'.$type.'" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label class="control-label">Date</label>
+                                                    <input class="form-control" type="date" name="docs_date" value="'; echo !empty($value['docs_date']) ? $value['docs_date']:''; echo '"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <div class="form-group">
+                                                    <label class="control-label">Share to Marketplace?</label>
+                                                    <div class="mt-radio-inline" style="position: relative;">
+                                                        <label class="mt-radio mt-radio-outline"> No
+                                                            <input type="radio" value="0" name="docs_radio" '; echo $value['docs_radio']==0 ? 'checked':''; echo ' />
+                                                            <span></span>
+                                                        </label>
+                                                        <label class="mt-radio mt-radio-outline"> Yes
+                                                            <input type="radio" value="1" name="docs_radio" '; echo $value['docs_radio']==1 ? 'checked':''; echo ' />
+                                                            <span></span>
+                                                        </label>
+                                                        <a href="javascript:;" data-repeater-delete class="btn btn-danger" style="position: absolute; right: 0; top: 0;"><i class="fa fa-close"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>';
+                                    }
+                                } else {
+                                    echo '
+                                    <div class="mt-repeater-item row" data-repeater-item>
+                                        <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <label class="control-label">Document Name</label>
+                                                <input class="form-control" type="text" name="docs_label" />
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <label class="control-label">Document</label>
+                                                <input class="form-control" type="file" name="docs_file" />
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <label class="control-label">Date</label>
+                                                <input class="form-control" type="date" name="docs_date" />
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <label class="control-label">Share to Marketplace?</label>
+                                                <div class="mt-radio-inline" style="position: relative;">
+                                                    <label class="mt-radio mt-radio-outline"> No
+                                                        <input type="radio" value="0" name="docs_radio" checked />
+                                                        <span></span>
+                                                    </label>
+                                                    <label class="mt-radio mt-radio-outline"> Yes
+                                                        <input type="radio" value="1" name="docs_radio" />
                                                         <span></span>
                                                     </label>
                                                     <a href="javascript:;" data-repeater-delete class="btn btn-danger" style="position: absolute; right: 0; top: 0;"><i class="fa fa-close"></i></a>
@@ -36180,268 +36378,230 @@
                                         </div>
                                     </div>';
                                 }
-                            } else {
-                                echo '
-                                <div class="mt-repeater-item row" data-repeater-item>
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            <label class="control-label">Document Name</label>
-                                            <input class="form-control" type="text" name="docs_label" />
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            <label class="control-label">Document</label>
-                                            <input class="form-control" type="file" name="docs_file" />
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            <label class="control-label">Date</label>
-                                            <input class="form-control" type="date" name="docs_date" />
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                        <div class="form-group">
-                                            <label class="control-label">Share to Marketplace?</label>
-                                            <div class="mt-radio-inline" style="position: relative;">
-                                                <label class="mt-radio mt-radio-outline"> No
-                                                    <input type="radio" value="0" name="docs_radio" checked />
-                                                    <span></span>
-                                                </label>
-                                                <label class="mt-radio mt-radio-outline"> Yes
-                                                    <input type="radio" value="1" name="docs_radio" />
-                                                    <span></span>
-                                                </label>
-                                                <a href="javascript:;" data-repeater-delete class="btn btn-danger" style="position: absolute; right: 0; top: 0;"><i class="fa fa-close"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>';
-                            }
-                            
-                        echo '</div>
-                        <a href="javascript:;" data-repeater-create class="btn btn-success mt-repeater-add btnEducation"><i class="fa fa-plus"></i> Add more Document</a>
-                    </div>';
+                                
+                            echo '</div>
+                            <a href="javascript:;" data-repeater-create class="btn btn-success mt-repeater-add btnEducation"><i class="fa fa-plus"></i> Add more Document</a>
+                        </div>';
 
-                    echo '<div class="row hidden">
-                        <div class="col-md-8">
-                            <div class="form-group">
-                                <label class="control-label">Certificate of Origin</label>
-                                <input class="form-control '; echo !empty($row['origin']) ? 'hide':''; echo '" type="file" name="origin" />
-                                <p class="'; echo !empty($row['origin']) ? '':'hide'; echo '" style="margin: 0;"><a href="uploads/products/'.rawurlencode($row['origin']).'" target="_blank" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                        echo '<div class="row hidden">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="control-label">Certificate of Origin</label>
+                                    <input class="form-control '; echo !empty($row['origin']) ? 'hide':''; echo '" type="file" name="origin" />
+                                    <p class="'; echo !empty($row['origin']) ? '':'hide'; echo '" style="margin: 0;"><a href="uploads/products/'.rawurlencode($row['origin']).'" target="_blank" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Share to Marketplace?</label>
-                                <div class="mt-radio-inline">
-                                    <label class="mt-radio mt-radio-outline"> No
-                                        <input type="radio" value="0" name="origin_radio" '; echo $row['origin_radio']==0 ? 'checked':''; echo ' checked />
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-radio mt-radio-outline"> Yes
-                                        <input type="radio" value="1" name="origin_radio" '; echo $row['origin_radio']==1 ? 'checked':''; echo ' />
-                                        <span></span>
-                                    </label>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Share to Marketplace?</label>
+                                    <div class="mt-radio-inline">
+                                        <label class="mt-radio mt-radio-outline"> No
+                                            <input type="radio" value="0" name="origin_radio" '; echo $row['origin_radio']==0 ? 'checked':''; echo ' checked />
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-radio mt-radio-outline"> Yes
+                                            <input type="radio" value="1" name="origin_radio" '; echo $row['origin_radio']==1 ? 'checked':''; echo ' />
+                                            <span></span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row hidden">
-                        <div class="col-md-8">
-                            <div class="form-group">
-                                <label class="control-label">Finish Product Recall Procedures</label>
-                                <input class="form-control '; echo !empty($row['procedures']) ? 'hide':''; echo '" type="file" name="procedures" />
-                                <p class="'; echo !empty($row['procedures']) ? '':'hide'; echo '" style="margin: 0;"><a href="uploads/products/'.rawurlencode($row['procedures']).'" target="_blank" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                        <div class="row hidden">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="control-label">Finish Product Recall Procedures</label>
+                                    <input class="form-control '; echo !empty($row['procedures']) ? 'hide':''; echo '" type="file" name="procedures" />
+                                    <p class="'; echo !empty($row['procedures']) ? '':'hide'; echo '" style="margin: 0;"><a href="uploads/products/'.rawurlencode($row['procedures']).'" target="_blank" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Share to Marketplace?</label>
-                                <div class="mt-radio-inline">
-                                    <label class="mt-radio mt-radio-outline"> No
-                                        <input type="radio" value="0" name="procedures_radio" '; echo $row['procedures_radio']==0 ? 'checked':''; echo ' checked />
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-radio mt-radio-outline"> Yes
-                                        <input type="radio" value="1" name="procedures_radio" '; echo $row['procedures_radio']==1 ? 'checked':''; echo ' />
-                                        <span></span>
-                                    </label>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Share to Marketplace?</label>
+                                    <div class="mt-radio-inline">
+                                        <label class="mt-radio mt-radio-outline"> No
+                                            <input type="radio" value="0" name="procedures_radio" '; echo $row['procedures_radio']==0 ? 'checked':''; echo ' checked />
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-radio mt-radio-outline"> Yes
+                                            <input type="radio" value="1" name="procedures_radio" '; echo $row['procedures_radio']==1 ? 'checked':''; echo ' />
+                                            <span></span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="row hidden">
-                        <div class="col-md-8">
-                            <div class="form-group">
-                                <label class="control-label">Certificate of Analysis</label>
-                                <input class="form-control '; echo !empty($row['analysis']) ? 'hide':''; echo '" type="file" name="analysis" />
-                                <p class="'; echo !empty($row['analysis']) ? '':'hide'; echo '" style="margin: 0;"><a href="uploads/products/'.rawurlencode($row['analysis']).'" target="_blank" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                        <div class="row hidden">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="control-label">Certificate of Analysis</label>
+                                    <input class="form-control '; echo !empty($row['analysis']) ? 'hide':''; echo '" type="file" name="analysis" />
+                                    <p class="'; echo !empty($row['analysis']) ? '':'hide'; echo '" style="margin: 0;"><a href="uploads/products/'.rawurlencode($row['analysis']).'" target="_blank" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Share to Marketplace?</label>
-                                <div class="mt-radio-inline">
-                                    <label class="mt-radio mt-radio-outline"> No
-                                        <input type="radio" value="0" name="analysis_radio" '; echo $row['analysis_radio']==0 ? 'checked':''; echo ' checked />
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-radio mt-radio-outline"> Yes
-                                        <input type="radio" value="1" name="analysis_radio" '; echo $row['analysis_radio']==1 ? 'checked':''; echo ' />
-                                        <span></span>
-                                    </label>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Share to Marketplace?</label>
+                                    <div class="mt-radio-inline">
+                                        <label class="mt-radio mt-radio-outline"> No
+                                            <input type="radio" value="0" name="analysis_radio" '; echo $row['analysis_radio']==0 ? 'checked':''; echo ' checked />
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-radio mt-radio-outline"> Yes
+                                            <input type="radio" value="1" name="analysis_radio" '; echo $row['analysis_radio']==1 ? 'checked':''; echo ' />
+                                            <span></span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row hidden">
-                        <div class="col-md-8">
-                            <div class="form-group">
-                                <label class="control-label">Safety Data Sheet</label>
-                                <input class="form-control '; echo !empty($row['sheet']) ? 'hide':''; echo '" type="file" name="sheet" />
-                                <p class="'; echo !empty($row['sheet']) ? '':'hide'; echo '" style="margin: 0;"><a href="uploads/products/'.rawurlencode($row['sheet']).'" target="_blank" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                        <div class="row hidden">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="control-label">Safety Data Sheet</label>
+                                    <input class="form-control '; echo !empty($row['sheet']) ? 'hide':''; echo '" type="file" name="sheet" />
+                                    <p class="'; echo !empty($row['sheet']) ? '':'hide'; echo '" style="margin: 0;"><a href="uploads/products/'.rawurlencode($row['sheet']).'" target="_blank" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Share to Marketplace?</label>
-                                <div class="mt-radio-inline">
-                                    <label class="mt-radio mt-radio-outline"> No
-                                        <input type="radio" value="0" name="sheet_radio" '; echo $row['sheet_radio']==0 ? 'checked':''; echo ' checked />
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-radio mt-radio-outline"> Yes
-                                        <input type="radio" value="1" name="sheet_radio" '; echo $row['sheet_radio']==1 ? 'checked':''; echo ' />
-                                        <span></span>
-                                    </label>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Share to Marketplace?</label>
+                                    <div class="mt-radio-inline">
+                                        <label class="mt-radio mt-radio-outline"> No
+                                            <input type="radio" value="0" name="sheet_radio" '; echo $row['sheet_radio']==0 ? 'checked':''; echo ' checked />
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-radio mt-radio-outline"> Yes
+                                            <input type="radio" value="1" name="sheet_radio" '; echo $row['sheet_radio']==1 ? 'checked':''; echo ' />
+                                            <span></span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="row hidden">
-                        <div class="col-md-8">
-                            <div class="form-group">
-                                <label class="control-label">Certificate of Guarantee</label>
-                                <input class="form-control '; echo !empty($row['guarantee']) ? 'hide':''; echo '" type="file" name="guarantee" />
-                                <p class="'; echo !empty($row['guarantee']) ? '':'hide'; echo '" style="margin: 0;"><a href="uploads/products/'.rawurlencode($row['guarantee']).'" target="_blank" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                        <div class="row hidden">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="control-label">Certificate of Guarantee</label>
+                                    <input class="form-control '; echo !empty($row['guarantee']) ? 'hide':''; echo '" type="file" name="guarantee" />
+                                    <p class="'; echo !empty($row['guarantee']) ? '':'hide'; echo '" style="margin: 0;"><a href="uploads/products/'.rawurlencode($row['guarantee']).'" target="_blank" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Share to Marketplace?</label>
+                                    <div class="mt-radio-inline">
+                                        <label class="mt-radio mt-radio-outline"> No
+                                            <input type="radio" value="0" name="guarantee_radio" '; echo $row['guarantee_radio']==0 ? 'checked':''; echo ' checked />
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-radio mt-radio-outline"> Yes
+                                            <input type="radio" value="1" name="guarantee_radio" '; echo $row['guarantee_radio']==1 ? 'checked':''; echo ' />
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Share to Marketplace?</label>
-                                <div class="mt-radio-inline">
-                                    <label class="mt-radio mt-radio-outline"> No
-                                        <input type="radio" value="0" name="guarantee_radio" '; echo $row['guarantee_radio']==0 ? 'checked':''; echo ' checked />
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-radio mt-radio-outline"> Yes
-                                        <input type="radio" value="1" name="guarantee_radio" '; echo $row['guarantee_radio']==1 ? 'checked':''; echo ' />
-                                        <span></span>
-                                    </label>
+                        <div class="row hidden">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="control-label">Certificate of Conformance</label>
+                                    <input class="form-control '; echo !empty($row['conformance']) ? 'hide':''; echo '" type="file" name="conformance" />
+                                    <p class="'; echo !empty($row['conformance']) ? '':'hide'; echo '" style="margin: 0;"><a href="uploads/products/'.rawurlencode($row['conformance']).'" target="_blank" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Share to Marketplace?</label>
+                                    <div class="mt-radio-inline">
+                                        <label class="mt-radio mt-radio-outline"> No
+                                            <input type="radio" value="0" name="conformance_radio" '; echo $row['conformance_radio']==0 ? 'checked':''; echo ' checked />
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-radio mt-radio-outline"> Yes
+                                            <input type="radio" value="1" name="conformance_radio" '; echo $row['conformance_radio']==1 ? 'checked':''; echo ' />
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row hidden">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="control-label">Product Liability Insurance</label>
+                                    <input class="form-control '; echo !empty($row['insurance']) ? 'hide':''; echo '" type="file" name="insurance" />
+                                    <p class="'; echo !empty($row['insurance']) ? '':'hide'; echo '" style="margin: 0;"><a href="uploads/products/'.rawurlencode($row['insurance']).'" target="_blank" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Share to Marketplace?</label>
+                                    <div class="mt-radio-inline">
+                                        <label class="mt-radio mt-radio-outline"> No
+                                            <input type="radio" value="0" name="insurance_radio" '; echo $row['insurance_radio']==0 ? 'checked':''; echo ' checked />
+                                            <span></span>
+                                        </label>
+                                        <label class="mt-radio mt-radio-outline"> Yes
+                                            <input type="radio" value="1" name="insurance_radio" '; echo $row['insurance_radio']==1 ? 'checked':''; echo ' />
+                                            <span></span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row hidden">
-                        <div class="col-md-8">
-                            <div class="form-group">
-                                <label class="control-label">Certificate of Conformance</label>
-                                <input class="form-control '; echo !empty($row['conformance']) ? 'hide':''; echo '" type="file" name="conformance" />
-                                <p class="'; echo !empty($row['conformance']) ? '':'hide'; echo '" style="margin: 0;"><a href="uploads/products/'.rawurlencode($row['conformance']).'" target="_blank" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Share to Marketplace?</label>
-                                <div class="mt-radio-inline">
-                                    <label class="mt-radio mt-radio-outline"> No
-                                        <input type="radio" value="0" name="conformance_radio" '; echo $row['conformance_radio']==0 ? 'checked':''; echo ' checked />
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-radio mt-radio-outline"> Yes
-                                        <input type="radio" value="1" name="conformance_radio" '; echo $row['conformance_radio']==1 ? 'checked':''; echo ' />
-                                        <span></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row hidden">
-                        <div class="col-md-8">
-                            <div class="form-group">
-                                <label class="control-label">Product Liability Insurance</label>
-                                <input class="form-control '; echo !empty($row['insurance']) ? 'hide':''; echo '" type="file" name="insurance" />
-                                <p class="'; echo !empty($row['insurance']) ? '':'hide'; echo '" style="margin: 0;"><a href="uploads/products/'.rawurlencode($row['insurance']).'" target="_blank" class="btn btn-link">View</a> | <button type="button" class="btn btn-link uploadNew" onclick="uploadNew(this)">Upload New</button></p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Share to Marketplace?</label>
-                                <div class="mt-radio-inline">
-                                    <label class="mt-radio mt-radio-outline"> No
-                                        <input type="radio" value="0" name="insurance_radio" '; echo $row['insurance_radio']==0 ? 'checked':''; echo ' checked />
-                                        <span></span>
-                                    </label>
-                                    <label class="mt-radio mt-radio-outline"> Yes
-                                        <input type="radio" value="1" name="insurance_radio" '; echo $row['insurance_radio']==1 ? 'checked':''; echo ' />
-                                        <span></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane" id="tabLabs2">
-                    <a href="#modalNewLab" data-toggle="modal" class="btn green" onclick="btnNew_Lab(2)">Add New Lab</a>
-                    <div class="table-scrollable">
-                        <table class="table table-bordered table-hover" id="tableLab_2">
-                            <thead>
-                                <tr>
-                                    <th>Lot #</th>
-                                    <th>Lab</th>
-                                    <th>Analysis</th>
-                                    <th>Method</th>
-                                    <th>Sample Size</th>
-                                    <th>Unit</th>
-                                    <th class="text-center">Date Sent for Lab</th>
-                                    <th class="text-center">Date Received</th>
-                                    <th class="text-center">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>';
+                    <div class="tab-pane" id="tabLabs2">
+                        <a href="#modalNewLab" data-toggle="modal" class="btn green" onclick="btnNew_Lab(2)">Add New Lab</a>
+                        <div class="table-scrollable">
+                            <table class="table table-bordered table-hover" id="tableLab_2">
+                                <thead>
+                                    <tr>
+                                        <th>Lot #</th>
+                                        <th>Lab</th>
+                                        <th>Analysis</th>
+                                        <th>Method</th>
+                                        <th>Sample Size</th>
+                                        <th>Unit</th>
+                                        <th class="text-center">Date Sent for Lab</th>
+                                        <th class="text-center">Date Received</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>';
 
-                                $selectLabs = mysqli_query( $conn,"SELECT * FROM tbl_products_lab WHERE deleted = 0 AND product_id = $id" );
-                                if ( mysqli_num_rows($selectLabs) > 0 ) {
-                                    while($rowLabs = mysqli_fetch_array($selectLabs)) {
-                                        echo '<tr id="tr_'.$rowLabs["ID"].'">
-                                            <td>'.htmlentities($rowLabs["lot"]).'</td>
-                                            <td>'.htmlentities($rowLabs["lab"]).'</td>
-                                            <td>'.htmlentities($rowLabs["analysis"]).'</td>
-                                            <td>'.htmlentities($rowLabs["method"]).'</td>
-                                            <td>'.htmlentities($rowLabs["sample_size"]).'</td>
-                                            <td>'.htmlentities($rowLabs["unit"]).'</td>
-                                            <td class="text-center">'.$rowLabs["date_sent"].'</td>
-                                            <td class="text-center">'.$rowLabs["date_received"].'</td>
-                                            <td class="text-center">
-                                                <input type="hidden" name="labs[]" value="'.$rowLabs["ID"].'" />
-                                                <div class="btn-group btn-group-circle">
-                                                    <a href="#modalEditLab" data-toggle="modal" class="btn btn-outline dark btn-sm" onclick="btnEdit_Lab('.$rowLabs["ID"].', 2)">Edit</a>
-                                                    <a href="javascript:;" class="btn btn-outlinex red btn-sm" onclick="btnRemove_Lab('.$rowLabs["ID"].', this)">Delete</a>
-                                                </div>
-                                            </td>
-                                        </tr>';
+                                    $selectLabs = mysqli_query( $conn,"SELECT * FROM tbl_products_lab WHERE deleted = 0 AND product_id = $id" );
+                                    if ( mysqli_num_rows($selectLabs) > 0 ) {
+                                        while($rowLabs = mysqli_fetch_array($selectLabs)) {
+                                            echo '<tr id="tr_'.$rowLabs["ID"].'">
+                                                <td>'.htmlentities($rowLabs["lot"]).'</td>
+                                                <td>'.htmlentities($rowLabs["lab"]).'</td>
+                                                <td>'.htmlentities($rowLabs["analysis"]).'</td>
+                                                <td>'.htmlentities($rowLabs["method"]).'</td>
+                                                <td>'.htmlentities($rowLabs["sample_size"]).'</td>
+                                                <td>'.htmlentities($rowLabs["unit"]).'</td>
+                                                <td class="text-center">'.$rowLabs["date_sent"].'</td>
+                                                <td class="text-center">'.$rowLabs["date_received"].'</td>
+                                                <td class="text-center">
+                                                    <input type="hidden" name="labs[]" value="'.$rowLabs["ID"].'" />
+                                                    <div class="btn-group btn-group-circle">
+                                                        <a href="#modalEditLab" data-toggle="modal" class="btn btn-outline dark btn-sm" onclick="btnEdit_Lab('.$rowLabs["ID"].', 2)">Edit</a>
+                                                        <a href="javascript:;" class="btn btn-outlinex red btn-sm" onclick="btnRemove_Lab('.$rowLabs["ID"].', this)">Delete</a>
+                                                    </div>
+                                                </td>
+                                            </tr>';
+                                        }
                                     }
-                                }
-                            echo '</tbody>
-                        </table>
+                                echo '</tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>';
+            </div>';
+        }
 
         mysqli_close($conn);
     }
@@ -46396,6 +46556,11 @@
             $user_id = employerID($portal_user);
         }
 
+        $facility_switch_user_id = 0;
+        if (isset($_COOKIE['facilityswitchAccount'])) {
+            $facility_switch_user_id = $_COOKIE['facilityswitchAccount'];
+        }
+
         $statusActive = 0;
         $statusSuspended = 0;
         $statusInactive = 0;
@@ -46407,7 +46572,7 @@
         $statusTotal = 0;
 
         if ($page === "department") {
-            $selectedDepartmentCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND user_id = $user_id" );
+            $selectedDepartmentCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND user_id = $user_id AND facility_switch = $facility_switch_user_id" );
             if ( mysqli_num_rows($selectedDepartmentCounter) > 0 ) {
                 while($rowDepartmentCounter = mysqli_fetch_array($selectedDepartmentCounter)) {
                     $files = $rowDepartmentCounter["files"];
@@ -46422,7 +46587,7 @@
 
                     $HasEmployee = false;
                     // $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE trainings_id_status <> '' " );
-                    $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1" );
+                    $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
                     if ( mysqli_num_rows($selectEmployeeCounter) > 0 ) {
                         $countDepartmentChecking = 0;
                         while($rowEmployeeCounter = mysqli_fetch_array($selectEmployeeCounter)) {
@@ -46441,7 +46606,7 @@
                 }
             }
         } else if ($page === "trainings") {
-            $selectTrainingCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE deleted = 0 AND user_id = $user_id" );
+            $selectTrainingCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_trainings WHERE deleted = 0 AND user_id = $user_id AND facility_switch = $facility_switch_user_id" );
             if ( mysqli_num_rows($selectTrainingCounter) > 0 ) {
                 while($rowTrainingCounter = mysqli_fetch_array($selectTrainingCounter)) {
                     $files = $rowTrainingCounter["files"];
@@ -46477,7 +46642,7 @@
                         $statusFiles++;
                     }
 
-                    $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE trainings_id_status > 0 " );
+                    $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE trainings_id_status > 0 AND facility_switch = $facility_switch_user_id" );
                     if ( mysqli_num_rows($selectEmployeeCounter) > 0 ) {
                         $countRequiredTrainingChecking = 0;
                         while($rowEmployeeCounter = mysqli_fetch_array($selectEmployeeCounter)) {
@@ -46501,7 +46666,7 @@
                 }
             }
         } else if ($page === "job-description") {
-            $selectJDCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE user_id = $user_id" );
+            $selectJDCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_job_description WHERE user_id = $user_id AND facility_switch = $facility_switch_user_id" );
             if ( mysqli_num_rows($selectJDCounter) > 0 ) {
                 while($rowJDCounter = mysqli_fetch_array($selectJDCounter)) {
                     $status = $rowJDCounter["status"];
@@ -46527,7 +46692,7 @@
                     // TOTAL JOB DESC. W/NO EMPLOYEE
                     $HasEmployee = false;
                     // $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE trainings_id_status <> '' " );
-                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1" );
+                    $selectEmployee = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE user_id = $user_id AND suspended = 0 AND status = 1 AND facility_switch = $facility_switch_user_id" );
                     if ( mysqli_num_rows($selectEmployee) > 0 ) {
                         while($rowEmployee = mysqli_fetch_array($selectEmployee)) {
                             $rowEmployeeJD = $rowEmployee['job_description_id'];
@@ -46545,7 +46710,7 @@
                 }
             }
         } else if ($page === "employee") {
-            $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID <> 1240 AND ID <> 1241 AND user_id = $user_id" );
+            $selectEmployeeCounter = mysqli_query( $conn,"SELECT * FROM tbl_hr_employee WHERE ID <> 1240 AND ID <> 1241 AND user_id = $user_id AND facility_switch = $facility_switch_user_id" );
             if ( mysqli_num_rows($selectEmployeeCounter) > 0 ) {
                 while($rowEmployeeCounter = mysqli_fetch_array($selectEmployeeCounter)) {
                     $suspended = $rowEmployeeCounter["suspended"];
@@ -49093,6 +49258,7 @@
     function commentNotification($target_id, $parent_id, $subject, $from, $sender, $data_names, $team, $comment_comment, $data_user_id, $s) {
         global $conn;
         global $base_url;
+        global $client_ID;
 
         // Send to the Collabrator Account Account
         $selectData = mysqli_query( $conn,'SELECT * FROM tbl_library WHERE ID = "'.$parent_id.'" ORDER BY ID LIMIT 1' );
@@ -49217,7 +49383,10 @@
             l.reviewer AS l_reviewer,
             l.approver AS l_approver,
             COUNT(r.r_ID) AS review_total,
-            COALESCE(SUM(r.r_compliant), 0) AS review_sum
+            COALESCE(SUM(r.r_compliant), 0) AS review_sum,
+            d.ID AS d_ID,
+            d.status AS d_status,
+            d.description AS d_description
             FROM tbl_library AS l
 
             LEFT JOIN (
@@ -49230,6 +49399,21 @@
                 AND is_deleted = 0
             ) AS r
             ON l.ID = r.r_library_id
+
+            LEFT JOIN (
+                SELECT
+                ID,
+                library_id,
+                status,
+                description
+                FROM tbl_library_description
+                WHERE ID IN (
+                    SELECT MAX(ID) 
+                    FROM tbl_library_description
+                    WHERE library_id = $id
+                )
+            ) AS d
+            ON l.ID = d.library_id
 
             WHERE l.deleted = 0
             AND l.ID = $id
@@ -50106,18 +50290,13 @@
                                     <div class="tab-pane active" id="tabDescription_'. $library_ID .'" style="padding: 0 15px;">
                                         '. $l_description;
 
-                                        $user_array_list = array(1, 464);
-                                        if (!empty($row["l_description_tmp"]) AND in_array($user_id, $user_array_list)) {
-                                            $arr_tmp = json_decode($row["l_description_tmp"],true);
-
-                                            $last_array = end($arr_tmp); // Assuming $your_arrays contains your list of arrays
-                                            $key_to_check = 'status';
-
-                                            if (isset($last_array['status']) AND $last_array['status'] != 4) {
-                                            // if (isset(end($arr_tmp)['status']) AND end($arr_tmp)['status'] != 4) {
-                                               echo '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$library_ID.')">here</a> to view</span>';
-                                            }
+                                        if (!empty($row["d_description"]) AND $row["d_status"] != 3) {
+                                            echo '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$library_ID.')">here</a> to view</span>';
                                         }
+
+                                        echo '<p>
+                                            <a href="#modalHistory" class="btn btn-danger btn-sm" data-toggle="modal" onclick="btnHistory('.$library_ID.')">History</a>
+                                        </p>';
 
                                     echo '</div>
                                     <div class="tab-pane" id="tabFiles_'. $library_ID .'">
@@ -51539,7 +51718,8 @@
         $current_userEmployerID = employerID($portal_user);
         $current_userID = $_COOKIE['ID'];
 
-        $selectData = mysqli_query( $conn,"SELECT
+        $selectData = mysqli_query( $conn,"
+            SELECT
             l.ID AS l_ID,
             l.parent_id AS l_parent_id,
             l.child_id AS l_child_id,
@@ -51553,7 +51733,10 @@
             l.reviewer AS l_reviewer,
             l.approver AS l_approver,
             COUNT(r.r_ID) AS review_total,
-            COALESCE(SUM(r.r_compliant), 0) AS review_sum
+            COALESCE(SUM(r.r_compliant), 0) AS review_sum,
+            d.ID AS d_ID,
+            d.status AS d_status,
+            d.description AS d_description
             FROM tbl_library AS l
 
             LEFT JOIN (
@@ -51567,8 +51750,24 @@
             ) AS r
             ON l.ID = r.r_library_id
 
+            LEFT JOIN (
+                SELECT
+                ID,
+                library_id,
+                status,
+                description
+                FROM tbl_library_description
+                WHERE ID IN (
+                    SELECT MAX(ID) 
+                    FROM tbl_library_description
+                    WHERE library_id = $id
+                )
+            ) AS d
+            ON l.ID = d.library_id
+
             WHERE l.deleted = 0
-            AND l.ID = $id" );
+            AND l.ID = $id
+        " );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
             $library_ID = $row["l_ID"];
@@ -51669,13 +51868,13 @@
                             <div class="tab-pane active" id="tabDescription_'. $library_ID .'" style="padding: 0 15px;">
                                 '. $l_description;
 
-                                $user_array_list = array(1, 464);
-                                if (!empty($row["l_description_tmp"]) AND in_array($user_id, $user_array_list)) {
-                                    $arr_tmp = json_decode($row["l_description_tmp"],true);
-                                    if (isset(end($arr_tmp)['status']) AND end($arr_tmp)['status'] != 4) {
-                                       echo '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$library_ID.')">here</a> to view</span>';
-                                    }
+                                if (!empty($row["d_description"]) AND $row["d_description"] != 3) {
+                                    echo '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$library_ID.')">here</a> to view</span>';
                                 }
+
+                                echo '<p>
+                                    <a href="#modalHistory" class="btn btn-danger btn-sm" data-toggle="modal" onclick="btnHistory('.$library_ID.')">History</a>
+                                </p>';
                             
                             echo '</div>
                             <div class="tab-pane" id="tabFiles_'. $library_ID .'">
@@ -53908,7 +54107,7 @@
         $current_userEmployerID = $user_id;
         $result = array();
 
-        $hasLibrary = mysqli_query( $conn,"SELECT ID FROM tbl_library WHERE user_id = $user_id" );
+        $hasLibrary = mysqli_query( $conn,"SELECT ID FROM tbl_library WHERE user_id = $user_id AND facility_switch = $facility_switch_user_id" );
         if ( mysqli_num_rows($hasLibrary) > 0 ) {
             $selectLibrary = mysqli_query( $conn,"
                 SELECT 
@@ -53924,6 +54123,7 @@
 
                 WHERE deleted = 0
                 AND user_id = $user_id
+                AND facility_switch = $facility_switch_user_id
                 AND parent_id = 0
 
                 UNION ALL
@@ -53941,9 +54141,10 @@
 
                 WHERE deleted = 0
                 AND user_id = $user_id
+                AND facility_switch = $facility_switch_user_id
                 AND parent_id > 0
                 AND parent_id IN (
-                    SELECT DISTINCT ID FROM tbl_library WHERE deleted = 0 AND user_id = $user_id
+                    SELECT DISTINCT ID FROM tbl_library WHERE deleted = 0 AND user_id = $user_id AND facility_switch = $facility_switch_user_id
                 )
             " );
 
@@ -54171,12 +54372,14 @@
 
         $selectData = mysqli_query( $conn,"
             SELECT 
-            l.description_tmp AS l_description_tmp,
             l.description_comment AS l_description_comment,
             ur.ID AS u_reviewer_ID,
-            CASE WHEN IFNULL(ur.first_name = '', TRUE) AND IFNULL(ur.last_name = '', TRUE) THEN '---' ELSE CONCAT(ur.first_name, ' ', ur.last_name) END AS u_reviewer,
+            CASE WHEN LENGTH(ur.first_name) = 0 AND LENGTH(ur.last_name) = 0 THEN '---' ELSE CONCAT(ur.first_name, ' ', ur.last_name) END AS u_reviewer,
             ua.ID AS u_approver_ID,
-            CASE WHEN IFNULL(ua.first_name = '', TRUE) AND IFNULL(ua.last_name = '', TRUE) THEN '---' ELSE CONCAT(ua.first_name, ' ', ua.last_name) END AS u_approver
+            CASE WHEN LENGTH(ua.first_name) = 0 AND LENGTH(ua.last_name) = 0 THEN '---' ELSE CONCAT(ua.first_name, ' ', ua.last_name) END AS u_approver,
+            d.ID AS d_ID,
+            d.status AS d_status,
+            d.description AS d_description
             FROM tbl_library AS l
 
             LEFT JOIN (
@@ -54193,24 +54396,37 @@
             ) AS ua
             ON l.approver = ua.ID
 
+            LEFT JOIN (
+                SELECT
+                ID,
+                library_id,
+                status,
+                description
+                FROM tbl_library_description
+                WHERE ID IN (
+                    SELECT MAX(ID) 
+                    FROM tbl_library_description
+                    WHERE library_id = $ID
+                )
+            ) AS d
+            ON l.ID = d.library_id
+
             WHERE l.ID = $ID
         " );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
             $u_reviewer = htmlentities($row["u_reviewer"] ?? '');
             $u_approver = htmlentities($row["u_approver"] ?? '');
+            $l_description = $row["d_description"];
 
-            $arr_tmp = json_decode($row["l_description_tmp"],true);
-            $l_description = end($arr_tmp)['description'];
-
+            $d_status = $row["d_status"];
             $status_array = array (
                 0 => 'For Review',
-                1 => 'Pending Review',
+                1 => 'For Revision (if applicable)',
                 2 => 'For Approval',
-                3 => 'Pending Approval',
-                4 => 'Approved'
+                3 => 'Approved'
             );
-            $l_status = $status_array[end($arr_tmp)['status']];
+            $l_status = $status_array[$d_status];
 
             $l_description_comment = 'No comment!';
             if (!empty($row["l_description_comment"])) {
@@ -54219,19 +54435,51 @@
                     $l_description_comment = '<ul style="margin:0; padding-left: 2rem;">';
                         foreach ($comment_arr as $key => $value) {
                             $comm_user_id = $value['user_id'];
-                            $selectData = mysqli_query( $conn,"SELECT first_name, last_name FROM tbl_user WHERE ID = $comm_user_id" );
+                            $selectData = mysqli_query( $conn,"
+                                SELECT
+                                u.first_name,
+                                u.last_name,
+                                GROUP_CONCAT(j.title SEPARATOR ', ') AS j_title
+
+                                FROM tbl_user AS u
+
+                                LEFT JOIN (
+                                    SELECT
+                                    *
+                                    FROM tbl_hr_employee
+                                ) AS e
+                                ON u.employee_id = e.ID
+
+                                LEFT JOIN (
+                                    SELECT
+                                    *
+                                    FROM tbl_hr_job_description
+                                ) AS j
+                                ON FIND_IN_SET(j.ID, REPLACE(e.job_description_id, ' ', '')) > 0
+
+                                WHERE u.ID = $comm_user_id
+                            " );
                             if ( mysqli_num_rows($selectData) > 0 ) {
-                                $row = mysqli_fetch_array($selectData);
-                                $comm_name = htmlentities($row["first_name"] ?? '') .' '. htmlentities($row["last_name"] ?? '');
+                                $rowUser = mysqli_fetch_array($selectData);
+                                $comm_name = htmlentities($rowUser["first_name"] ?? '') .' '. htmlentities($rowUser["last_name"] ?? '');
+                                $comm_jd = htmlentities($rowUser["j_title"] ?? '');
+                            }
+
+                            if (!empty($comm_jd)) {
+                                $comm_jd = ' <i>('.$comm_jd.')</i>';
                             }
 
                             $comm_date = '';
+                            $comm_time = '';
+                            if (!empty($value['time'])) {
+                                $comm_time = ' @ '.$value['time'];
+                            }
                             if (!empty($value['date'])) {
-                                $comm_date = ' <i>('.$value['date'].')</i>';
+                                $comm_date = '<small>'.$value['date'].$comm_time.'</small><br>';
                             }
 
                             $l_description_comment .= '<li>
-                                <small><b>'.$comm_name.'</b>'.$comm_date.'</small><br>
+                                <small><b>'.$comm_name.$comm_jd.'</b></small><br>'.$comm_date.'
                                 '.htmlentities($value['comment'] ?? '').'
                             </li>';
                         }
@@ -54241,19 +54489,18 @@
 
             echo '<input type="hidden" name="ID" value="'.$ID.'" />
             <div class="row">
-                <div class="col-md-9">
-                    '.$l_description.'
+                <div class="col-md-12">
+                    '.stripcslashes($l_description).'
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-12">
                     <b>Status:</b> ';
 
                     if ($portal_user == $row["u_reviewer_ID"] OR $portal_user == $row["u_approver_ID"]) {
                         echo '<select class="form-controlx" onchange="changeStatus('.$ID.', this)">
-                            <option value="0" '; echo end($arr_tmp)['status'] == 0 ? 'SELECTED':''; echo '>For Review</option>
-                            <option value="1" '; echo end($arr_tmp)['status'] == 1 ? 'SELECTED':''; echo '>Pending Review</option>
-                            <option value="2" '; echo end($arr_tmp)['status'] == 2 ? 'SELECTED':''; echo '>For Approval</option>
-                            <option value="3" '; echo end($arr_tmp)['status'] == 3 ? 'SELECTED':''; echo '>Pending Approval</option>
-                            <option value="4" '; echo end($arr_tmp)['status'] == 4 ? 'SELECTED':''; echo '>Approved</option>
+                            <option value="0" '; echo $d_status == 0 ? 'SELECTED':''; echo '>For Review</option>
+                            <option value="1" '; echo $d_status == 1 ? 'SELECTED':''; echo '>For Revision (if applicable)</option>
+                            <option value="2" '; echo $d_status == 2 ? 'SELECTED':''; echo '>For Approval</option>
+                            <option value="3" '; echo $d_status == 3 ? 'SELECTED':''; echo '>Approved</option>
                         </select>';
                     } else {
                         echo $l_status;
@@ -54285,28 +54532,62 @@
             $user_id = employerID($portal_user);
         }
 
-        $selectData = mysqli_query( $conn,"SELECT description, description_tmp, reviewer, approver FROM tbl_library WHERE ID = $ID" );
+        $selectData = mysqli_query( $conn,"
+            SELECT 
+            l.description AS l_description, 
+            l.description_tmp AS l_description_tmp, 
+            l.reviewer AS l_reviewer, 
+            l.approver AS l_approver,
+            d.ID AS d_ID,
+            d.portal_user AS d_portal_user,
+            d.status AS d_status,
+            d.description AS d_description
+            FROM tbl_library AS l
+
+            LEFT JOIN (
+                SELECT
+                ID,
+                portal_user,
+                library_id,
+                status,
+                description
+                FROM tbl_library_description
+                WHERE ID IN (
+                    SELECT MAX(ID) 
+                    FROM tbl_library_description
+                    WHERE library_id = $ID
+                )
+            ) AS d
+            ON l.ID = d.library_id
+
+            WHERE l.ID = $ID
+        " );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
-            $jsonArray = $row["description_tmp"];
-            $phpArray = json_decode($jsonArray, true);
-            $lastDescription = end($phpArray)['description'];
-            $phpArray[key($phpArray)]['status'] = $v;
 
-            $jsonArray = json_encode($phpArray, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
-            mysqli_query( $conn,"UPDATE tbl_library set description_tmp='". $jsonArray ."' WHERE ID = $ID" );
+            $sql_review = "";
+            if ($row["l_reviewer"] == $portal_user) {
+                $sql_review = " , reviewed = $portal_user ";
+            }
+            $sql_approve = "";
+            if ($row["l_approver"] == $portal_user) {
+                $sql_approve = " , approved = $portal_user ";
+            }
+            $d_ID = $row["d_ID"];
+            mysqli_query( $conn,"UPDATE tbl_library_description SET status = $v, date = '$local_date' $sql_review $sql_approve WHERE ID = $d_ID" );
 
-            if ($v == 4) {
+            $lastDescription = addslashes($row["d_description"]);
+            if ($v == 3) {
                 mysqli_query( $conn,"UPDATE tbl_library SET description = '".$lastDescription."' WHERE ID = $ID" );
             } else {
                 $revise = '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$ID.')">here</a> to view</span>';
-                $lastDescription = $row["description"].$revise;
+                $lastDescription = addslashes($row["l_description"]).$revise;
             }
 
             $user_id_arr = array();
-            array_push($user_id_arr, end($phpArray)['editor']);
-            if ($row["reviewer"] > 0) { array_push($user_id_arr, $row["reviewer"]); }
-            if ($row["approver"] > 0) { array_push($user_id_arr, $row["approver"]); }
+            array_push($user_id_arr, $row["d_portal_user"]);
+            if ($row["l_reviewer"] > 0) { array_push($user_id_arr, $row["l_reviewer"]); }
+            if ($row["l_approver"] > 0) { array_push($user_id_arr, $row["l_approver"]); }
             $user_id_arr = array_diff($user_id_arr, [$portal_user]);
 
             if (count($user_id_arr) > 0) {
@@ -54328,10 +54609,9 @@
 
                 $status_array = array (
                     0 => 'For Review',
-                    1 => 'Pending Review',
+                    1 => 'For Revision (if applicable)',
                     2 => 'For Approval',
-                    3 => 'Pending Approval',
-                    4 => 'Approved'
+                    3 => 'Approved'
                 );
 
                 $subject = 'Compliance Dashboard Description - Status - '. $local_date;
@@ -54442,23 +54722,54 @@
         $current_client = 0;
         if (isset($_COOKIE['client'])) { $current_client = $_COOKIE['client']; }
 
-        $selectData = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID = $id" );
+        $selectData = mysqli_query( $conn,"
+            SELECT 
+            l.type AS l_type,
+            l.name AS l_name,
+            l.reviewer AS l_reviewer,
+            l.approver AS l_approver,
+            l.description AS l_description,
+            l.due_date AS l_due_date,
+            d.ID AS d_ID,
+            d.status AS d_status,
+            d.description AS d_description
+            FROM tbl_library AS l
+
+            LEFT JOIN (
+                SELECT
+                ID,
+                library_id,
+                status,
+                description
+                FROM tbl_library_description
+                WHERE ID IN (
+                    SELECT MAX(ID) 
+                    FROM tbl_library_description
+                    WHERE library_id = $id
+                )
+            ) AS d
+            ON l.ID = d.library_id
+
+            WHERE l.ID = $id
+        " );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
-            $library_name = $row["name"];
+            $library_name = $row["l_name"];
             $array_name_id = explode(", ", $library_name);
-        }
-
-        $description = htmlentities($row['description'] ?? '');
-        $user_array_list = array(1, 464);
-        if (!empty($row["description_tmp"]) AND in_array($user_id, $user_array_list)) {
-            $arr_tmp = json_decode($row["description_tmp"],true);
-            if (isset(end($arr_tmp)['status']) AND end($arr_tmp)['status'] != 4) {
-                $description = htmlentities(end($arr_tmp)['description'] ?? '');
+            if (count($array_name_id) < 4) {
+                $array_name_id[0] = '';
+                $array_name_id[1] = '';
+                $array_name_id[2] = '';
+                $array_name_id[3] = '';
             }
         }
 
-        echo '<input class="form-control" type="hidden" name="ID" value="'. $row['ID'] .'" />
+        $description = stripcslashes($row['l_description']);
+        if (!empty($row["d_description"]) AND $row["d_status"] != 3) {
+            $description = stripcslashes($row['d_description']);
+        }
+
+        echo '<input class="form-control" type="hidden" name="ID" value="'.$id.'" />
         <div class="form-group">
             <label class="col-md-3 control-label">Business Type</label>
             <div class="col-md-8">';
@@ -54468,7 +54779,7 @@
                     if ( mysqli_num_rows($resultType) > 0 ) {
                         while($rowType = mysqli_fetch_array($resultType)) {
                             $type_ID = $rowType["ID"];
-                            $type_name = $rowType["name"];
+                            $type_name = htmlentities($rowType["name"] ?? '');
                         }
                     }
                     echo '<input type="hidden" class="hide" name="type" value="16" />
@@ -54481,13 +54792,9 @@
                         if ( mysqli_num_rows($resultType) > 0 ) {
                             while($rowType = mysqli_fetch_array($resultType)) {
                                 $type_ID = $rowType["ID"];
-                                $type_name = $rowType["name"];
+                                $type_name = htmlentities($rowType["name"] ?? '');
 
-                                if ($array_name_id[0] == $type_ID) {
-                                    echo '<option value="'.$type_ID.'" SELECTED>'.$type_name.'</option>';
-                                } else {
-                                    echo '<option value="'.$type_ID.'">'.$type_name.'</option>';
-                                }
+                                echo '<option value="'.$type_ID.'" '; echo $array_name_id[0] == $type_ID ? 'SELECTED':''; echo '>'.$type_name.'</option>';
                             }
                         }
 
@@ -54509,13 +54816,9 @@
                     if ( mysqli_num_rows($resultCategory) > 0 ) {
                         while($rowCategory = mysqli_fetch_array($resultCategory)) {
                             $category_ID = $rowCategory["ID"];
-                            $category_name = $rowCategory["name"];
+                            $category_name = htmlentities($rowCategory["name"] ?? '');
 
-                            if ($array_name_id[1] == $category_ID) {
-                                echo '<option value="'.$category_ID.'" SELECTED>'.$category_name.'</option>';
-                            } else {
-                                echo '<option value="'.$category_ID.'">'.$category_name.'</option>';
-                            }
+                            echo '<option value="'.$category_ID.'" '; echo $array_name_id[1] == $category_ID ? 'SELECTED':''; echo '>'.$category_name.'</option>';
                         }
                     }
                     
@@ -54534,13 +54837,9 @@
                     if ( mysqli_num_rows($resultScope) > 0 ) {
                         while($rowScope = mysqli_fetch_array($resultScope)) {
                             $scope_ID = $rowScope["ID"];
-                            $scope_name = $rowScope["name"];
+                            $scope_name = htmlentities($rowScope["name"] ?? '');
 
-                            if ($array_name_id[2] == $scope_ID) {
-                                echo '<option value="'.$scope_ID.'" SELECTED>'.$scope_name.'</option>';
-                            } else {
-                                echo '<option value="'.$scope_ID.'">'.$scope_name.'</option>';
-                            }
+                            echo '<option value="'.$scope_ID.'" '; echo $array_name_id[2] == $scope_ID ? 'SELECTED':''; echo '>'.$scope_name.'</option>';
                         }
                     }
                     
@@ -54560,13 +54859,9 @@
                     if ( mysqli_num_rows($resultModule) > 0 ) {
                         while($rowModule = mysqli_fetch_array($resultModule)) {
                             $module_ID = $rowModule["ID"];
-                            $module_name = $rowModule["name"];
+                            $module_name = htmlentities($rowModule["name"] ?? '');
 
-                            if ($array_name_id[3] == $module_ID) {
-                                echo '<option value="'.$module_ID.'" SELECTED>'.$module_name.'</option>';
-                            } else {
-                                echo '<option value="'.$module_ID.'">'.$module_name.'</option>';
-                            }
+                            echo '<option value="'.$module_ID.'" '; echo $array_name_id[3] == $module_ID ? 'SELECTED':''; echo '>'.$module_name.'</option>';
                         }
                     }
                     
@@ -54575,13 +54870,14 @@
                 <input type="text" class="form-control hide module_others" name="module_others" placeholder="Enter Module / Section Name" style="margin-top: 15px;" />
             </div>
         </div>
-        <div class="form-group '; echo $user_id == 464 OR $user_id == 1 ? '':'hide'; echo '">
+        <div class="form-group">
             <label class="col-md-3 control-label">Reviewer</label>
             <div class="col-md-8">
-                <input type="hidden" name="reviewer_tmp" value="'.$row["reviewer"].'" />
+                <input type="hidden" name="reviewer_tmp" value="'.$row["l_reviewer"].'" />
                 <select class="form-control mt-multiselect" name="reviewer">
                     <option value="0">Select</option>';
-                    $selectEmployeee = mysqli_query( $conn,"SELECT 
+                    $selectEmployeee = mysqli_query( $conn,"
+                        SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
                         e.first_name AS e_first_name,
@@ -54598,26 +54894,29 @@
                         WHERE e.suspended = 0 
                         AND e.status = 1 
                         AND e.user_id = $user_id 
+                        AND e.facility_switch = $facility_switch_user_id
 
-                        ORDER BY e.first_name" );
+                        ORDER BY e.first_name
+                    " );
                     if ( mysqli_num_rows($selectEmployeee) > 0 ) {
                         while($rowEmployee = mysqli_fetch_array($selectEmployeee)) {
                             $emp_ID = $rowEmployee["u_ID"];
-                            $emp_name = $rowEmployee["e_first_name"] .' '. $rowEmployee["e_last_name"];
+                            $emp_name = htmlentities($rowEmployee["e_first_name"] ?? '') .' '. htmlentities($rowEmployee["e_last_name"] ?? '');
 
-                            echo '<option value="'.$emp_ID.'" '; echo $row["reviewer"] == $emp_ID ? 'selected':''; echo '>'.$emp_name.'</option>';
+                            echo '<option value="'.$emp_ID.'" '; echo $row["l_reviewer"] == $emp_ID ? 'selected':''; echo '>'.$emp_name.'</option>';
                         }
                     }
                 echo '</select>
             </div>
         </div>
-        <div class="form-group '; echo $user_id == 464 OR $user_id == 1 ? '':'hide'; echo '">
+        <div class="form-group">
             <label class="col-md-3 control-label">Approver</label>
             <div class="col-md-8">
-                <input type="hidden" name="approver_tmp" value="'.$row["approver"].'" />
+                <input type="hidden" name="approver_tmp" value="'.$row["l_approver"].'" />
                 <select class="form-control mt-multiselect" name="approver">
                     <option value="0">Select</option>';
-                    $selectEmployeee = mysqli_query( $conn,"SELECT 
+                    $selectEmployeee = mysqli_query( $conn,"
+                        SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
                         e.first_name AS e_first_name,
@@ -54634,14 +54933,16 @@
                         WHERE e.suspended = 0 
                         AND e.status = 1 
                         AND e.user_id = $user_id 
+                        AND e.facility_switch = $facility_switch_user_id
 
-                        ORDER BY e.first_name" );
+                        ORDER BY e.first_name
+                    " );
                     if ( mysqli_num_rows($selectEmployeee) > 0 ) {
                         while($rowEmployee = mysqli_fetch_array($selectEmployeee)) {
                             $emp_ID = $rowEmployee["u_ID"];
-                            $emp_name = $rowEmployee["e_first_name"] .' '. $rowEmployee["e_last_name"];
+                            $emp_name = htmlentities($rowEmployee["e_first_name"] ?? '') .' '. htmlentities($rowEmployee["e_last_name"] ?? '');
 
-                            echo '<option value="'.$emp_ID.'" '; echo $row["approver"] == $emp_ID ? 'selected':''; echo '>'.$emp_name.'</option>';
+                            echo '<option value="'.$emp_ID.'" '; echo $row["l_approver"] == $emp_ID ? 'selected':''; echo '>'.$emp_name.'</option>';
                         }
                     }
                 echo '</select>
@@ -54650,9 +54951,59 @@
         <div class="form-group">
             <label class="col-md-3 control-label">Description</label>
             <div class="col-md-8">
-                <input type="hidden" name="description_tmp" value="'.htmlentities($row['description'] ?? '').'">
+                <input type="hidden" name="description_tmp" value="'.htmlentities($row['l_description'] ?? '').'">
                 <textarea class="form-control summernote" name="description" onkeyup="description_count(\'Edit\')">'.$description.'</textarea>
-                <span class="words_count label label-sm label-info hide"><span class="textcount">'.strlen($row['description']).'</span></span>
+                <span class="words_count label label-sm label-info hide"><span class="textcount">'.strlen($row['l_description']).'</span></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label">Description of Changes</label>
+            <div class="col-md-8">
+                <input class="form-control" type="text" name="changes" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label">Enable Annual Review?</label>
+            <div class="col-md-8">
+                <select class="form-control" name="enable_annual" onchange="changedAnnual(this.value)">
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+        </div>
+        <div class="enable_annual hide">
+            <div class="form-group">
+                <label class="col-md-3 control-label">Requirements</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control tagsinput" id="requirements" name="requirements" data-role="tagsinput" required />
+                    <span class="form-text text-muted">Enter multiple requirements separated by comma</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label">Compliance Action Items</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control tagsinput" id="action_items" name="action_items" data-role="tagsinput" required />
+                    <span class="form-text text-muted">Enter multiple action items separated by comma</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label">Upload Document</label>
+                <div class="col-md-8">
+                    <select class="form-control" name="filetype" onchange="changeType(this)" required>
+                        <option value="0">Select option</option>
+                        <option value="1">Manual Upload</option>
+                        <option value="3">Google Drive URL</option>
+                        <option value="4">Sharepoint URL</option>
+                    </select>
+                    <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
+                    <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label">Annual Review Date</label>
+                <div class="col-md-8">
+                    <input class="form-control" type="date" name="annual_due" value="'.$local_date.'" required />
+                </div>
             </div>
         </div>';
 
@@ -54680,12 +55031,13 @@
                 <input class="form-control" type="text" name="name" required />
             </div>
         </div>
-        <div class="form-group '; echo $user_id == 1 OR $user_id == 464 ? '':'hide'; echo '">
+        <div class="form-group">
             <label class="col-md-3 control-label">Reviewer</label>
             <div class="col-md-8">
                 <select class="form-control mt-multiselect" name="reviewer">
                     <option value="0">Select</option>';
-                    $selectEmployeee = mysqli_query( $conn,"SELECT 
+                    $selectEmployeee = mysqli_query( $conn,"
+                        SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
                         e.first_name AS e_first_name,
@@ -54702,8 +55054,10 @@
                         WHERE e.suspended = 0 
                         AND e.status = 1 
                         AND e.user_id = $user_id 
+                        AND e.facility_switch = $facility_switch_user_id
 
-                        ORDER BY e.first_name" );
+                        ORDER BY e.first_name
+                    " );
                     if ( mysqli_num_rows($selectEmployeee) > 0 ) {
                         while($rowEmployee = mysqli_fetch_array($selectEmployeee)) {
                             $emp_ID = $rowEmployee["u_ID"];
@@ -54715,12 +55069,13 @@
                 echo '</select>
             </div>
         </div>
-        <div class="form-group '; echo $user_id == 1 OR $user_id == 464 ? '':'hide'; echo '">
+        <div class="form-group">
             <label class="col-md-3 control-label">Approver</label>
             <div class="col-md-8">
                 <select class="form-control mt-multiselect" name="approver">
                     <option value="0">Select</option>';
-                    $selectEmployeee = mysqli_query( $conn,"SELECT 
+                    $selectEmployeee = mysqli_query( $conn,"
+                        SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
                         e.first_name AS e_first_name,
@@ -54737,8 +55092,10 @@
                         WHERE e.suspended = 0 
                         AND e.status = 1 
                         AND e.user_id = $user_id 
+                        AND e.facility_switch = $facility_switch_user_id
 
-                        ORDER BY e.first_name" );
+                        ORDER BY e.first_name
+                    " );
                     if ( mysqli_num_rows($selectEmployeee) > 0 ) {
                         while($rowEmployee = mysqli_fetch_array($selectEmployeee)) {
                             $emp_ID = $rowEmployee["u_ID"];
@@ -54757,9 +55114,59 @@
             </div>
         </div>
         <div class="form-group">
+            <label class="col-md-3 control-label">Description of Changes</label>
+            <div class="col-md-8">
+                <input class="form-control" type="text" name="changes" />
+            </div>
+        </div>
+        <div class="form-group">
             <label class="col-md-3 control-label">Due Date</label>
             <div class="col-md-8">
                 <input class="form-control" type="date" name="due_date" value="'.$today.'" required />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label">Enable Annual Review?</label>
+            <div class="col-md-8">
+                <select class="form-control" name="enable_annual" onchange="changedAnnual(this.value)">
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+        </div>
+        <div class="enable_annual hide">
+            <div class="form-group">
+                <label class="col-md-3 control-label">Requirements</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control tagsinput" id="requirements" name="requirements" data-role="tagsinput" required />
+                    <span class="form-text text-muted">Enter multiple requirements separated by comma</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label">Compliance Action Items</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control tagsinput" id="action_items" name="action_items" data-role="tagsinput" required />
+                    <span class="form-text text-muted">Enter multiple action items separated by comma</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label">Upload Document</label>
+                <div class="col-md-8">
+                    <select class="form-control" name="filetype" onchange="changeType(this)" required>
+                        <option value="0">Select option</option>
+                        <option value="1">Manual Upload</option>
+                        <option value="3">Google Drive URL</option>
+                        <option value="4">Sharepoint URL</option>
+                    </select>
+                    <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
+                    <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label">Annual Review Date</label>
+                <div class="col-md-8">
+                    <input class="form-control" type="date" name="annual_due" value="'.$local_date.'" required />
+                </div>
             </div>
         </div>';
     }
@@ -54776,46 +55183,72 @@
             $user_id = employerID($portal_user);
         }
 
-        $selectData = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID = $id" );
+        $selectData = mysqli_query( $conn,"
+            SELECT 
+            l.type AS l_type,
+            l.name AS l_name,
+            l.reviewer AS l_reviewer,
+            l.approver AS l_approver,
+            l.description AS l_description,
+            l.due_date AS l_due_date,
+            d.ID AS d_ID,
+            d.status AS d_status,
+            d.description AS d_description
+            FROM tbl_library AS l
+
+            LEFT JOIN (
+                SELECT
+                ID,
+                library_id,
+                status,
+                description
+                FROM tbl_library_description
+                WHERE ID IN (
+                    SELECT MAX(ID) 
+                    FROM tbl_library_description
+                    WHERE library_id = $id
+                )
+            ) AS d
+            ON l.ID = d.library_id
+
+            WHERE l.ID = $id
+        " );
         if ( mysqli_num_rows($selectData) > 0 ) {
             $row = mysqli_fetch_array($selectData);
         }
 
-        $description = htmlentities($row['description'] ?? '');
-        $user_array_list = array(5, 1, 464);
-        if (!empty($row["description_tmp"]) AND in_array($user_id, $user_array_list)) {
-            $arr_tmp = json_decode($row["description_tmp"],true);
-            if (isset(end($arr_tmp)['status']) AND end($arr_tmp)['status'] != 4) {
-                $description = htmlentities(end($arr_tmp)['description'] ?? '');
-            }
+        $description = stripcslashes($row['l_description']);
+        if (!empty($row["d_description"]) AND $row["d_status"] != 3) {
+            $description = stripcslashes($row['d_description']);
         }
 
-        echo '<input class="form-control" type="hidden" name="parent_id" value="'. $id .'" />
+        echo '<input class="form-control" type="hidden" name="parent_id" value="'.$id.'" />
         <div class="form-group">
             <label class="col-md-3 control-label">Item Type</label>
             <div class="col-md-8">
                 <select class="form-control" name="type" required>
-                    <option value="1" '; echo $row['type'] === "1" ? "SELECTED" : ""; echo '>Program</option>
-                    <option value="2" '; echo $row['type'] === "2" ? "SELECTED" : ""; echo '>Policy</option>
-                    <option value="3" '; echo $row['type'] === "3" ? "SELECTED" : ""; echo '>Procedure</option>
-                    <option value="4" '; echo $row['type'] === "4" ? "SELECTED" : ""; echo '>Training</option>
-                    <option value="5" '; echo $row['type'] === "5" ? "SELECTED" : ""; echo '>Form</option>
+                    <option value="1" '; echo $row['l_type'] === "1" ? "SELECTED" : ""; echo '>Program</option>
+                    <option value="2" '; echo $row['l_type'] === "2" ? "SELECTED" : ""; echo '>Policy</option>
+                    <option value="3" '; echo $row['l_type'] === "3" ? "SELECTED" : ""; echo '>Procedure</option>
+                    <option value="4" '; echo $row['l_type'] === "4" ? "SELECTED" : ""; echo '>Training</option>
+                    <option value="5" '; echo $row['l_type'] === "5" ? "SELECTED" : ""; echo '>Form</option>
                 </select>
             </div>
         </div>
         <div class="form-group">
             <label class="col-md-3 control-label">Item Name</label>
             <div class="col-md-8">
-                <input class="form-control" type="text" name="name" value="'. $row['name'] .'" required />
+                <input class="form-control" type="text" name="name" value="'. $row['l_name'] .'" required />
             </div>
         </div>
-        <div class="form-group '; echo $user_id == 1 OR $user_id == 464 ? '':'hide'; echo '">
+        <div class="form-group">
             <label class="col-md-3 control-label">Reviewer</label>
             <div class="col-md-8">
-                <input type="hidden" name="reviewer_tmp" value="'.$row["reviewer"].'" />
+                <input type="hidden" name="reviewer_tmp" value="'.$row["l_reviewer"].'" />
                 <select class="form-control mt-multiselect" name="reviewer">
                     <option value="0">Select</option>';
-                    $selectEmployeee = mysqli_query( $conn,"SELECT 
+                    $selectEmployeee = mysqli_query( $conn,"
+                        SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
                         e.first_name AS e_first_name,
@@ -54832,26 +55265,29 @@
                         WHERE e.suspended = 0 
                         AND e.status = 1 
                         AND e.user_id = $user_id 
+                        AND e.facility_switch = $facility_switch_user_id
 
-                        ORDER BY e.first_name" );
+                        ORDER BY e.first_name
+                    " );
                     if ( mysqli_num_rows($selectEmployeee) > 0 ) {
                         while($rowEmployee = mysqli_fetch_array($selectEmployeee)) {
                             $emp_ID = $rowEmployee["u_ID"];
                             $emp_name = $rowEmployee["e_first_name"] .' '. $rowEmployee["e_last_name"];
 
-                            echo '<option value="'.$emp_ID.'" '; echo $row["reviewer"] == $emp_ID ? 'selected':''; echo '>'.$emp_name.'</option>';
+                            echo '<option value="'.$emp_ID.'" '; echo $row["l_reviewer"] == $emp_ID ? 'selected':''; echo '>'.$emp_name.'</option>';
                         }
                     }
                 echo '</select>
             </div>
         </div>
-        <div class="form-group '; echo $user_id == 1 OR $user_id == 464 ? '':'hide'; echo '">
+        <div class="form-group">
             <label class="col-md-3 control-label">Approver</label>
             <div class="col-md-8">
-                <input type="hidden" name="approver_tmp" value="'.$row["approver"].'" />
+                <input type="hidden" name="approver_tmp" value="'.$row["l_approver"].'" />
                 <select class="form-control mt-multiselect" name="approver">
                     <option value="0">Select</option>';
-                    $selectEmployeee = mysqli_query( $conn,"SELECT 
+                    $selectEmployeee = mysqli_query( $conn,"
+                        SELECT 
                         u.ID AS u_ID,
                         e.ID AS e_ID,
                         e.first_name AS e_first_name,
@@ -54868,14 +55304,16 @@
                         WHERE e.suspended = 0 
                         AND e.status = 1 
                         AND e.user_id = $user_id 
+                        AND e.facility_switch = $facility_switch_user_id
 
-                        ORDER BY e.first_name" );
+                        ORDER BY e.first_name
+                    " );
                     if ( mysqli_num_rows($selectEmployeee) > 0 ) {
                         while($rowEmployee = mysqli_fetch_array($selectEmployeee)) {
                             $emp_ID = $rowEmployee["u_ID"];
                             $emp_name = $rowEmployee["e_first_name"] .' '. $rowEmployee["e_last_name"];
 
-                            echo '<option value="'.$emp_ID.'" '; echo $row["approver"] == $emp_ID ? 'selected':''; echo '>'.$emp_name.'</option>';
+                            echo '<option value="'.$emp_ID.'" '; echo $row["l_approver"] == $emp_ID ? 'selected':''; echo '>'.$emp_name.'</option>';
                         }
                     }
                 echo '</select>
@@ -54884,14 +55322,64 @@
         <div class="form-group">
             <label class="col-md-3 control-label">Item Description</label>
             <div class="col-md-8">
-                <input type="hidden" name="description_tmp" value="'.htmlentities($row['description'] ?? '').'">
+                <input type="hidden" name="description_tmp" value="'.htmlentities($row['l_description'] ?? '').'">
                 <textarea class="form-control summernote" name="description" onkeyup="description_count(\'Edit\')">'.$description.'</textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label">Description of Changes</label>
+            <div class="col-md-8">
+                <input class="form-control" type="text" name="changes" />
             </div>
         </div>
         <div class="form-group">
             <label class="col-md-3 control-label">Due Date</label>
             <div class="col-md-8">
-                <input class="form-control" type="date" name="due_date" value="'. date("Y-m-d", strtotime($row['due_date'])) .'" required />
+                <input class="form-control" type="date" name="due_date" value="'. date("Y-m-d", strtotime($row['l_due_date'])) .'" required />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-md-3 control-label">Enable Annual Review?</label>
+            <div class="col-md-8">
+                <select class="form-control" name="enable_annual" onchange="changedAnnual(this.value)">
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+        </div>
+        <div class="enable_annual hide">
+            <div class="form-group">
+                <label class="col-md-3 control-label">Requirements</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control tagsinput" id="requirements" name="requirements" data-role="tagsinput" required />
+                    <span class="form-text text-muted">Enter multiple requirements separated by comma</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label">Compliance Action Items</label>
+                <div class="col-md-8">
+                    <input type="text" class="form-control tagsinput" id="action_items" name="action_items" data-role="tagsinput" required />
+                    <span class="form-text text-muted">Enter multiple action items separated by comma</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label">Upload Document</label>
+                <div class="col-md-8">
+                    <select class="form-control" name="filetype" onchange="changeType(this)" required>
+                        <option value="0">Select option</option>
+                        <option value="1">Manual Upload</option>
+                        <option value="3">Google Drive URL</option>
+                        <option value="4">Sharepoint URL</option>
+                    </select>
+                    <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
+                    <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-3 control-label">Annual Review Date</label>
+                <div class="col-md-8">
+                    <input class="form-control" type="date" name="annual_due" value="'.$local_date.'" required />
+                </div>
             </div>
         </div>';
 
@@ -55015,12 +55503,15 @@
             $user_id = employerID($portal_user);
         }
 
+        $free_access = 0;
         $hasLibrary = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE user_id = $user_id" );
         if ( mysqli_num_rows($hasLibrary) == 0 ) {
             $user_id = 163;
+            $free_access = 1;
         }
 
         $description = addslashes($_POST['description']);
+        $changes = addslashes($_POST['changes']);
 
         $reviewer = 0;
         if (!empty($_POST['reviewer'])) {
@@ -55070,12 +55561,48 @@
         array_push($name_id, $module);
         $name_id = implode(", ",$name_id);
 
-        $sql = "INSERT INTO tbl_library (user_id, portal_user, name, description, reviewer, approver, due_date, last_modified)
-        VALUES ('$user_id', '$portal_user', '$name_id', '$description', '$reviewer', '$approver', '$due_date', '$last_modified')";
+        $sql = "INSERT INTO tbl_library (user_id, portal_user, facility_switch, name, description, free_access, reviewer, approver, due_date, last_modified)
+        VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '$name_id', '$description', '$free_access', '$reviewer', '$approver', '$due_date', '$last_modified')";
         
         if (mysqli_query($conn, $sql)) {
-
             $last_id = mysqli_insert_id($conn);
+
+            // Insert Annual Review if YES
+            if ($_POST['enable_annual'] == 1) {
+                $action_items = addslashes($_POST['action_items']);
+                $requirements = addslashes($_POST['requirements']);
+                $annual_due = $_POST['annual_due'];
+                $filetype = $_POST['filetype'];
+                if ($filetype == 1) {
+                    $files = $_FILES['file']['name'];
+                    if (!empty($files)) {
+                        $fileValidation = fileValidation(0, 'file', 'library/');
+                        $files = $fileValidation['files'];
+                        $filesize = $fileValidation['size'];
+                        $process = $fileValidation['valid'];
+                    }
+                } else {
+                    $files = $_POST['fileurl'];
+                    $filesize = 0;
+                }
+
+                $outputAnnual = array (
+                    'type' =>  $filetype,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $outputAnnual);
+                $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
+
+                $sqlAnnual = "INSERT INTO tbl_library_review (user_id, library_id, action_items, requirements, files, filetype, filesize, file_history, last_modified)
+                VALUES ('$portal_user', '$last_id', '$action_items', '$requirements', '$files', '$filetype', '$filesize', '$file_history', '$annual_due')";
+                mysqli_query($conn, $sqlAnnual);
+            }
+
+            $sql_description = "INSERT INTO tbl_library_description (user_id, portal_user, library_id, description, changes, date)
+            VALUES ('$user_id', '$portal_user', '$last_id', '$description', '$changes', '$local_date')";
+            mysqli_query($conn, $sql_description);
 
             $selectData = mysqli_query( $conn,'SELECT * FROM tbl_library WHERE user_id="'. $user_id .'" AND ID="'. $last_id .'" ORDER BY ID LIMIT 1' );
             if ( mysqli_num_rows($selectData) > 0 ) {
@@ -55186,31 +55713,50 @@
             mysqli_query( $conn,"UPDATE tbl_library SET approver = $approver WHERE ID = $ID" );
         }
 
+        // Insert Annual Review if YES
+        if ($_POST['enable_annual'] == 1) {
+            $action_items = addslashes($_POST['action_items']);
+            $requirements = addslashes($_POST['requirements']);
+            $annual_due = $_POST['annual_due'];
+            $filetype = $_POST['filetype'];
+            if ($filetype == 1) {
+                $files = $_FILES['file']['name'];
+                if (!empty($files)) {
+                    $fileValidation = fileValidation(0, 'file', 'library/');
+                    $files = $fileValidation['files'];
+                    $filesize = $fileValidation['size'];
+                    $process = $fileValidation['valid'];
+                }
+            } else {
+                $files = $_POST['fileurl'];
+                $filesize = 0;
+            }
+
+            $outputAnnual = array (
+                'type' =>  $filetype,
+                'name' =>  $files,
+                'size' =>  $filesize,
+                'date' =>  $local_date
+            );
+            array_push($arr_item, $outputAnnual);
+            $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
+
+            $sqlAnnual = "INSERT INTO tbl_library_review (user_id, library_id, action_items, requirements, files, filetype, filesize, file_history, last_modified)
+            VALUES ('$portal_user', '$ID', '$action_items', '$requirements', '$files', '$filetype', '$filesize', '$file_history', '$annual_due')";
+            mysqli_query($conn, $sqlAnnual);
+        }
+
         $revise = '';
         $description = addslashes($_POST['description']);
         $description_tmp = addslashes($_POST['description_tmp']);
-        if ($user_id == 1 OR $user_id == 464) {
+        $changes = addslashes($_POST['changes']);
+        // if ($user_id == 1 OR $user_id == 464) {
             if ($description <> $description_tmp) {
-                $arr_tmp = array();
-                $selectDesc = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID=$ID" );
-                $rowDesc = mysqli_fetch_array($selectDesc);
-                if (!empty($rowDesc["description_tmp"])) {
-                    $arr_tmp = json_decode($rowDesc["description_tmp"],true);
-                }
-
-                $desc_tmp = array (
-                    'editor' =>  $portal_user,
-                    'status' =>  0,
-                    'reviewed' =>  0,
-                    'approved' =>  0,
-                    'description' =>  addslashes($description)
-                );
-
-                array_push($arr_tmp, $desc_tmp);
-                $description = json_encode($arr_tmp, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
                 $revise = '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$ID.')">here</a> to view</span>';
 
-                mysqli_query( $conn,"UPDATE tbl_library SET description_tmp = '".$description."' WHERE ID = $ID" );
+                $sql_description = "INSERT INTO tbl_library_description (user_id, portal_user, library_id, description, changes, date)
+                VALUES ('$user_id', '$portal_user', '$ID', '$description', '$changes', '$local_date')";
+                mysqli_query($conn, $sql_description);
 
                 // Notify Reviewer and Approver
                 if (!empty($_POST['reviewer']) OR !empty($_POST['approver'])) {
@@ -55247,10 +55793,10 @@
                     php_mailer_dynamic($sender, $recipients, $subject, $body);
                 }
             }
-        } else {
-            mysqli_query( $conn,"UPDATE tbl_library SET description = '".$description."' WHERE ID = $ID" );
-            $description_tmp = $description;
-        }
+        // } else {
+        //     mysqli_query( $conn,"UPDATE tbl_library SET description = '".$description."' WHERE ID = $ID" );
+        //     $description_tmp = $description;
+        // }
         
         if (!mysqli_error($conn)) {
             $data_name = array();
@@ -55314,6 +55860,7 @@
         $type = $_POST['type'];
         $name = addslashes($_POST['name']);
         $description = addslashes($_POST['description']);
+        $changes = addslashes($_POST['changes']);
         $due_date = $_POST['due_date'];
         $last_modified = date('Y-m-d');
         
@@ -55327,8 +55874,8 @@
             $approver = $_POST['approver'];
         }
 
-        $sql = "INSERT INTO tbl_library (user_id, portal_user, parent_id, type, free_access, name, description, reviewer, approver, due_date, last_modified)
-        VALUES ('$user_id', '$portal_user', '$parent_id', '$type', '$free_access', '$name', '$description', '$reviewer', '$approver', '$due_date', '$last_modified')";
+        $sql = "INSERT INTO tbl_library (user_id, portal_user, facility_switch, parent_id, type, free_access, name, description, reviewer, approver, due_date, last_modified)
+        VALUES ('$user_id', '$portal_user', '$facility_switch_user_id', '$parent_id', '$type', '$free_access', '$name', '$description', '$reviewer', '$approver', '$due_date', '$last_modified')";
         
         //->>>>>>>  START Brandon Auto service log for creating subitem <<<<<<<<-
         
@@ -55368,6 +55915,43 @@
         
         if (mysqli_query($conn, $sql)) {
             $last_id = mysqli_insert_id($conn);
+
+            // Insert Annual Review if YES
+            if ($_POST['enable_annual'] == 1) {
+                $action_items = addslashes($_POST['action_items']);
+                $requirements = addslashes($_POST['requirements']);
+                $annual_due = $_POST['annual_due'];
+                $filetype = $_POST['filetype'];
+                if ($filetype == 1) {
+                    $files = $_FILES['file']['name'];
+                    if (!empty($files)) {
+                        $fileValidation = fileValidation(0, 'file', 'library/');
+                        $files = $fileValidation['files'];
+                        $filesize = $fileValidation['size'];
+                        $process = $fileValidation['valid'];
+                    }
+                } else {
+                    $files = $_POST['fileurl'];
+                    $filesize = 0;
+                }
+
+                $outputAnnual = array (
+                    'type' =>  $filetype,
+                    'name' =>  $files,
+                    'size' =>  $filesize,
+                    'date' =>  $local_date
+                );
+                array_push($arr_item, $outputAnnual);
+                $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
+
+                $sqlAnnual = "INSERT INTO tbl_library_review (user_id, library_id, action_items, requirements, files, filetype, filesize, file_history, last_modified)
+                VALUES ('$portal_user', '$last_id', '$action_items', '$requirements', '$files', '$filetype', '$filesize', '$file_history', '$annual_due')";
+                mysqli_query($conn, $sqlAnnual);
+            }
+
+            $sql_description = "INSERT INTO tbl_library_description (user_id, portal_user, library_id, description, changes, date)
+            VALUES ('$user_id', '$portal_user', '$last_id', '$description', '$changes', '$local_date')";
+            mysqli_query($conn, $sql_description);
 
             // Select existing Child IDs and push to an array
             $selectParent = mysqli_query( $conn,'SELECT * FROM tbl_library WHERE ID="'. $parent_id .'"' );
@@ -55437,31 +56021,50 @@
             mysqli_query( $conn,"UPDATE tbl_library set description_approved = 0, approver = $approver WHERE ID = $parent_id" );
         }
 
+        // Insert Annual Review if YES
+        if ($_POST['enable_annual'] == 1) {
+            $action_items = addslashes($_POST['action_items']);
+            $requirements = addslashes($_POST['requirements']);
+            $annual_due = $_POST['annual_due'];
+            $filetype = $_POST['filetype'];
+            if ($filetype == 1) {
+                $files = $_FILES['file']['name'];
+                if (!empty($files)) {
+                    $fileValidation = fileValidation(0, 'file', 'library/');
+                    $files = $fileValidation['files'];
+                    $filesize = $fileValidation['size'];
+                    $process = $fileValidation['valid'];
+                }
+            } else {
+                $files = $_POST['fileurl'];
+                $filesize = 0;
+            }
+
+            $outputAnnual = array (
+                'type' =>  $filetype,
+                'name' =>  $files,
+                'size' =>  $filesize,
+                'date' =>  $local_date
+            );
+            array_push($arr_item, $outputAnnual);
+            $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
+
+            $sqlAnnual = "INSERT INTO tbl_library_review (user_id, library_id, action_items, requirements, files, filetype, filesize, file_history, last_modified)
+            VALUES ('$portal_user', '$parent_id', '$action_items', '$requirements', '$files', '$filetype', '$filesize', '$file_history', '$annual_due')";
+            mysqli_query($conn, $sqlAnnual);
+        }
+
         $revise = '';
         $description = addslashes($_POST['description']);
         $description_tmp = addslashes($_POST['description_tmp']);
-        if ($user_id == 1 OR $user_id == 464) {
+        $changes = addslashes($_POST['changes']);
+        // if ($user_id == 1 OR $user_id == 464) {
             if ($description <> $description_tmp) {
-                $arr_tmp = array();
-                $selectDesc = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE ID=$parent_id" );
-                $rowDesc = mysqli_fetch_array($selectDesc);
-                if (!empty($rowDesc["description_tmp"])) {
-                    $arr_tmp = json_decode($rowDesc["description_tmp"],true);
-                }
-
-                $desc_tmp = array (
-                    'editor' =>  $portal_user,
-                    'status' =>  0,
-                    'reviewed' =>  0,
-                    'approved' =>  0,
-                    'description' =>  addslashes($description)
-                );
-
-                array_push($arr_tmp, $desc_tmp);
-                $description = json_encode($arr_tmp, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
                 $revise = '<span class="help-block text-danger margin-top-15">New revision has been made. Click <a href="#modalChanges" data-toggle="modal" class="text-danger bold" onclick="btnChangesView('.$parent_id.')">here</a> to view</span>';
 
-                mysqli_query( $conn,"UPDATE tbl_library set description_reviewed = 0, description_approved = 0, description_tmp = '".$description."' WHERE ID = $parent_id" );
+                $sql_description = "INSERT INTO tbl_library_description (user_id, portal_user, library_id, description, changes, date)
+                VALUES ('$user_id', '$portal_user', '$parent_id', '$description', '$changes', '$local_date')";
+                mysqli_query($conn, $sql_description);
 
                 // Notify Reviewer and Approver
                 if (!empty($_POST['reviewer']) OR !empty($_POST['approver'])) {
@@ -55498,10 +56101,10 @@
                     php_mailer_dynamic($sender, $recipients, $subject, $body);
                 }
             }
-        } else {
-            mysqli_query( $conn,"UPDATE tbl_library set description_reviewed = 0, description_approved = 0, description = '".$description."' WHERE ID = $parent_id" );
-            $description_tmp = $description;
-        }
+        // } else {
+        //     mysqli_query( $conn,"UPDATE tbl_library set description_reviewed = 0, description_approved = 0, description = '".$description."' WHERE ID = $parent_id" );
+        //     $description_tmp = $description;
+        // }
 
         // mysqli_query( $conn,"UPDATE tbl_library SET type='". $type ."', name='". $name ."', description='". $description ."', due_date='". $due_date ."', last_modified='". $last_modified ."' WHERE ID='". $parent_id ."'" );
         if (!mysqli_error($conn)) {
@@ -55509,7 +56112,7 @@
                 'ID' => $parent_id,
                 'type' => $type,
                 'name' => stripcslashes(htmlentities($name ?? '')),
-                'description' => stripcslashes($description).$revise
+                'description' => stripcslashes($description_tmp).$revise
             );
             echo json_encode($output);
 
@@ -55586,6 +56189,8 @@
             }
 
             $output = array (
+                'date' =>  $local_date,
+                'time' =>  $local_time,
                 'user_id' =>  $portal_user,
                 'comment' =>  $comment
             );
@@ -58374,8 +58979,8 @@
 
         $current_userID = $_COOKIE['ID'];
         $parent_id = $_POST['parent_id'];
-        $requirements = addslashes($_POST['requirements']);
         $action_items = addslashes($_POST['action_items']);
+        $requirements = addslashes($_POST['requirements']);
         $last_modified = date('Y-m-d');
         $arr_item = array();
         $process = true;
@@ -61223,7 +61828,7 @@
     }
     
     // Clone Section
-    function cloneChild($req_user_id, $parent_id, $last_id, $include) {
+    function cloneChild($req_user_id, $portal_user, $facility_switch_user_id, $parent_id, $last_id, $include) {
         global $conn;
 
         $resultChild = mysqli_query( $conn,"SELECT * FROM tbl_library WHERE deleted = 0 AND parent_id = $parent_id");
@@ -61233,8 +61838,8 @@
                 $new_parent_id = $rowChild["ID"];
 
                 // CHILD CLONING
-                $sql = "INSERT INTO tbl_library (user_id, parent_id, child_id, type, name, program, description, assigned_to_id, due_date, last_modified)
-                SELECT $req_user_id, $last_id, '', type, name, program, description, assigned_to_id, due_date, last_modified
+                $sql = "INSERT INTO tbl_library (user_id, portal_user, facility_switch, parent_id, child_id, type, name, program, description, assigned_to_id, due_date, last_modified)
+                SELECT $req_user_id, $portal_user, $facility_switch_user_id, $last_id, '', type, name, program, description, assigned_to_id, due_date, last_modified
                 FROM tbl_library
                 WHERE ID = $new_parent_id";
 
@@ -61269,7 +61874,7 @@
                         $child_id = implode(", ",$child_id);
                         mysqli_query( $conn,"UPDATE tbl_library set child_id='". $child_id ."' WHERE ID='". $last_id ."'" );
                     }
-                    cloneChild($req_user_id, $new_parent_id, $new_last_id, $include);
+                    cloneChild($req_user_id, $portal_user, $facility_switch_user_id, $new_parent_id, $new_last_id, $include);
                 }
             }
         }
@@ -61488,10 +62093,19 @@
     if( isset($_POST['btnSave_Clone']) ) {
         $ID = $_POST['ID'];
         $user = $_POST['user'];
-        $include = $_POST['include'];
+        $include = '';
 
-        $sql = "INSERT INTO tbl_library (user_id, parent_id, child_id, type, name, program, description, assigned_to_id, due_date, last_modified)
-        SELECT $user, '0', '', type, name, program, description, assigned_to_id, due_date, last_modified
+        if (!empty($_COOKIE['switchAccount'])) {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = $_COOKIE['switchAccount'];
+        }
+        else {
+            $portal_user = $_COOKIE['ID'];
+            $user_id = employerID($portal_user);
+        }
+
+        $sql = "INSERT INTO tbl_library (user_id, portal_user, facility_switch, parent_id, child_id, type, name, program, description, assigned_to_id, due_date, last_modified)
+        SELECT $user, $portal_user, $facility_switch_user_id, '0', '', '0', name, program, description, assigned_to_id, due_date, last_modified
         FROM tbl_library
         WHERE ID = $ID";
 
@@ -61499,7 +62113,8 @@
             $last_id = mysqli_insert_id($conn);
 
             // Includes
-            if (!empty($include)) {
+            if (!empty($_POST['include'])) {
+                $include = $_POST['include'];
                 $includes = implode(', ', $include);
                 $include_arr = explode(", ", $includes);
                 foreach ($include_arr as $value) {
@@ -61521,7 +62136,7 @@
 
                 // Child
                 if (!empty($data_child_id)) {
-                    cloneChild($user, $ID, $last_id, $include);
+                    cloneChild($user, $portal_user, $facility_switch_user_id, $ID, $last_id, $include);
                 }
             }
 
@@ -61679,12 +62294,12 @@
                 <thead>
                     <tr>
                         <th>ITEM NAME</th>
-                        <th style="width: 100px;">ITEM TYPE</th>
-                        <th>LAST COMMENT</th>
-                        <th class="text-center">TEMPLATE</th>
-                        <th>DOCUMENT ATTACHED</th>
-                        <th style="width: 150px;" class="text-center">UPLOADED DATE</th>
-                        <th style="width: 150px;" class="text-center">REVIEW DUE DATE</th>
+                        <th style="width: 100px;">ITEM TYPE<br><i>(Identification if a Program, Policy, Procedure, Form, or Training Material)</i></th>
+                        <th>LAST COMMENT<br><i>(The "title placement only" comment means that the item name is only a hierarchy folder)</i></th>
+                        <th class="text-center">TEMPLATE<br><i>(If "View", CIG template is available)</i></th>
+                        <th>DOCUMENT ATTACHED<br><i>(Documents uploaded to Files tab)</i></th>
+                        <th style="width: 150px;" class="text-center">DOCUMENT DATE<br><i>(YYYYMMDD)</i></th>
+                        <th style="width: 150px;" class="text-center">REVIEW DUE DATE<br><i>(YYYYMMDD)</i></th>
                         <th style="width: 100px;" class="text-center">COMPLIANCE</th>
                         <th style="width: 100px;" class="text-center">EXPIRED</th>
                         <th style="width: 100px;" class="text-center">1-30 DAYS</th>
@@ -61700,6 +62315,7 @@
 
                         c_ID,
                         c2.comment AS c_comment,
+                        CASE WHEN c2.comment LIKE '%title placement only%' THEN 1 ELSE 0 END AS c_placement,
 
                         t_ID,
                         t2.files AS t_files,
@@ -61883,14 +62499,14 @@
                             if (!empty($rowItem["f_last_modified"])) {
                                 $files_uploaded = $rowItem["f_last_modified"];
                                 $files_uploaded = new DateTime($files_uploaded);
-                                $files_uploaded = $files_uploaded->format('Y-d-m');
+                                $files_uploaded = $files_uploaded->format('Y-m-d');
                             }
 
                             $due_date = '';
                             if (!empty($rowItem["f_due_date"])) {
                                 $due_date = $rowItem["f_due_date"];
                                 $due_date = new DateTime($due_date);
-                                $due_date = $due_date->format('Y-d-m');
+                                $due_date = $due_date->format('Y-m-d');
                             }
 
                             $filetype = $rowItem['f_filetype'];
@@ -61990,7 +62606,10 @@
                             $rowExpired90 = $rowItem["x90_ID"];
                             $totalCompliance = $rowItem["com_Total"];
 
-                            echo '<tr>
+                            $bg = '';
+                            if ($rowItem["c_placement"] == 1) { $bg = 'style="background: #FCE5CD;"'; }
+
+                            echo '<tr '.$bg.'>
                                 <td>'. htmlentities($name ?? '') .'</td>
                                 <td>'. $rtype .'</td>
                                 <td>'. htmlentities($comment ?? '') .'</td>
@@ -62646,5 +63265,109 @@
             }
         }
         echo $data;
+    }
+
+
+    // History Section
+    if( isset($_GET['modalHistory']) ) {
+        $ID = $_GET['modalHistory'];
+
+        echo '<div class="row">
+            <div class="col-md-4">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Revision No.</th>
+                            <th class="text-center">Revision Date</th>
+                            <th class="text-center">Description of Changes</th>
+                            <th class="text-center">Originator / Auditor Name</th>
+                            <th class="text-center">Title / Department</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+
+                        $r = 0;
+                        $selectData = mysqli_query( $conn,"
+                            SELECT 
+                            d.ID AS d_ID,
+                            d.library_id AS d_library_id,
+                            d.description AS d_description,
+                            d.changes AS d_changes,
+                            d.date AS d_date,
+                            u.first_name AS u_first_name,
+                            u.last_name AS u_last_name,
+                            GROUP_CONCAT(j.title SEPARATOR ', ') AS j_title
+
+                            FROM tbl_library_description AS d
+
+                            LEFT JOIN (
+                                SELECT
+                                *
+                                FROM tbl_user
+                            ) AS u
+                            ON d.portal_user = u.ID
+
+                            LEFT JOIN (
+                                SELECT
+                                *
+                                FROM tbl_hr_employee
+                            ) AS e
+                            ON e.ID = u.employee_id
+
+                            LEFT JOIN (
+                                SELECT
+                                *
+                                FROM tbl_hr_job_description
+                            ) AS j
+                            ON FIND_IN_SET(j.ID, REPLACE(e.job_description_id, ' ', '')) > 0
+
+                            WHERE d.status = 3
+                            AND d.library_id = $ID
+
+                            GROUP BY d.ID
+                        " );
+                        if ( mysqli_num_rows($selectData) > 0 ) {
+                            while($rowData = mysqli_fetch_array($selectData)) {
+                                $d_ID = $rowData["d_ID"];
+                                $d_changes = htmlentities($rowData["d_changes"] ?? '');
+                                $d_name = htmlentities($rowData["u_first_name"] ?? '') .' '. htmlentities($rowData["u_last_name"] ?? '');
+                                $j_title = htmlentities($rowData["j_title"] ?? '');
+
+                                $d_date = '';
+                                if (!empty($rowData["d_date"])) {
+                                    $d_date = $rowData["d_date"];
+                                    $d_date = new DateTime($d_date);
+                                    $d_date = $d_date->format('Ymd');
+                                }
+
+                                echo '<tr onClick="btnRevision('.$d_ID.')">
+                                    <td class="text-center">'.$r++.'</td>
+                                    <td class="text-center">'.$d_date.'</td>
+                                    <td class="text-center">'.$d_changes.'</td>
+                                    <td class="text-center">'.$d_name.'</td>
+                                    <td class="text-center">'.$j_title.'</td>
+                                </tr>';
+                            }
+                        }
+
+                    echo '</tbody>
+                </table>
+            </div>
+            <div class="col-md-8 revision"><i>Please select what revision</i></div>
+        </div>';
+
+        mysqli_close($conn);
+    }
+    if( isset($_GET['modalHistoryRevision']) ) {
+        $ID = $_GET['modalHistoryRevision'];
+
+        $selectData = mysqli_query( $conn,"SELECT description FROM tbl_library_description WHERE ID = $ID" );
+        if ( mysqli_num_rows($selectData) > 0 ) {
+            $rowData = mysqli_fetch_array($selectData);
+            echo '<a href="javascript:;" class="btn btn-info btn-sm" title="Print" onclick="printDiv()">Print <i class="fa fa-fw fa-print"></i></a><br><br>';
+            echo '<div id="revisionContent">'.stripcslashes($rowData["description"]).'</div>';
+        }
+        
+        mysqli_close($conn);
     }
 ?>

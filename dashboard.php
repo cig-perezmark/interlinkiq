@@ -110,6 +110,15 @@
             height: 250px;
         }
     }
+
+    /* Summer Note Table*/
+    #modalChanges table,
+    #modalHistory table,
+    #parent table {
+        width: 100% !important;
+        margin-left: unset !important;
+        margin-right: unset !important;
+    }
 </style>
 
 
@@ -1443,7 +1452,7 @@
 
                     <!-- Item Section -->
                     <div class="modal fade" id="modalArea" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
+                        <div class="modal-dialog modal-full">
                             <div class="modal-content">
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalArea">
                                     <div class="modal-header">
@@ -1670,8 +1679,58 @@
                                                 <span class="words_count label label-sm label-info hide"><span class="textcount">0</span></span>
                                             </div>
                                         </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Description of Changes</label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" type="text" name="changes" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Enable Annual Review?</label>
+                                            <div class="col-md-8">
+                                                <select class="form-control" name="enable_annual" onchange="changedAnnual(this.value)">
+                                                    <option value="0">No</option>
+                                                    <option value="1">Yes</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="enable_annual hide">
+                                            <div class="form-group">
+                                                <label class="col-md-3 control-label">Requirements</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control tagsinput" id="requirements" name="requirements" data-role="tagsinput" required />
+                                                    <span class="form-text text-muted">Enter multiple requirements separated by comma</span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-md-3 control-label">Compliance Action Items</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control tagsinput" id="action_items" name="action_items" data-role="tagsinput" required />
+                                                    <span class="form-text text-muted">Enter multiple action items separated by comma</span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-md-3 control-label">Upload Document</label>
+                                                <div class="col-md-8">
+                                                    <select class="form-control" name="filetype" onchange="changeType(this)" required>
+                                                        <option value="0">Select option</option>
+                                                        <option value="1">Manual Upload</option>
+                                                        <option value="3">Google Drive URL</option>
+                                                        <option value="4">Sharepoint URL</option>
+                                                    </select>
+                                                    <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
+                                                    <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-md-3 control-label">Annual Review Date</label>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" type="date" name="due_date" value="<?php echo date('Y-m-d'); ?>" required />
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="modal-footer">
+                                    <div class="modal-footer modal-footer--sticky bg-white">
                                         <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
                                         <button type="submit" class="btn green ladda-button" name="btnSave_Area" id="btnSave_Area" data-style="zoom-out"><span class="ladda-label">Save</span></button>
                                     </div>
@@ -1680,7 +1739,7 @@
                         </div>
                     </div>
                     <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
+                        <div class="modal-dialog modal-full">
                             <div class="modal-content">
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalEdit">
                                     <div class="modal-header">
@@ -1734,7 +1793,7 @@
                                         </h4>
                                     </div>
                                     <div class="modal-body"></div>
-                                    <div class="modal-footer">
+                                    <div class="modal-footer modal-footer--sticky bg-white">
                                         <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
                                         <button type="submit" class="btn green ladda-button" name="btnUpdate_Area" id="btnUpdate_Area" data-style="zoom-out"><span class="ladda-label">Save Changes</span></button>
                                     </div>
@@ -1743,7 +1802,7 @@
                         </div>
                     </div>
                     <div class="modal fade" id="modalChanges" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
+                        <div class="modal-dialog modal-full">
                             <div class="modal-content">
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalChanges">
                                     <div class="modal-header">
@@ -1751,7 +1810,7 @@
                                         <h4 class="modal-title">Description</h4>
                                     </div>
                                     <div class="modal-body"></div>
-                                    <div class="modal-footer">
+                                    <div class="modal-footer modal-footer--sticky bg-white">
                                         <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
                                     </div>
                                 </form>
@@ -1759,7 +1818,7 @@
                         </div>
                     </div>
                     <div class="modal fade" id="modalSubItem" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
+                        <div class="modal-dialog modal-full">
                             <div class="modal-content">
                                 <form method="post" class="form-horizontal modalForm modalSubItem">
                                     <div class="modal-header">
@@ -1813,7 +1872,7 @@
                                         </h4>
                                     </div>
                                     <div class="modal-body"></div>
-                                    <div class="modal-footer">
+                                    <div class="modal-footer modal-footer--sticky bg-white">
                                         <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
                                         <button type="submit" class="btn green ladda-button" name="btnSave_SubItem" id="btnSave_SubItem" data-style="zoom-out"><span class="ladda-label">Save</span></button>
                                     </div>
@@ -1822,7 +1881,7 @@
                         </div>
                     </div>
                     <div class="modal fade" id="modalEdit_SubItem" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
+                        <div class="modal-dialog modal-full">
                             <div class="modal-content">
                                 <form method="post" class="form-horizontal modalForm modalEdit_SubItem">
                                     <div class="modal-header">
@@ -1876,7 +1935,7 @@
                                         </h4>
                                     </div>
                                     <div class="modal-body"></div>
-                                    <div class="modal-footer">
+                                    <div class="modal-footer modal-footer--sticky bg-white">
                                         <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
                                         <button type="submit" class="btn green ladda-button" name="btnUpdate_Area_SubItem" id="btnUpdate_Area_SubItem" data-style="zoom-out"><span class="ladda-label">Save Changes</span></button>
                                     </div>
@@ -3499,6 +3558,70 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- History Section -->
+                    <div class="modal fade" id="modalHistory" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-full">
+                            <div class="modal-content">
+                                <form method="post" class="form-horizontal modalForm modalHistory">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                                        <h4 class="modal-title pictogram-align">
+                                            History
+                                            <?php
+                                                $pictogram = 'cd_history';
+                                                if ($switch_user_id == 5) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
+                                    </div>
+                                    <div class="modal-body"></div>
+                                    <div class="modal-footer modal-footer--sticky bg-white">
+                                        <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                     
                     <!--Emjay modal starts here-->
                     
@@ -3732,6 +3855,13 @@
                     $('.module_others').addClass('hide');
                 }
             }
+            function changedAnnual(val) {
+                if (val == 1) {
+                    $('.enable_annual').removeClass('hide');
+                } else {
+                    $('.enable_annual').addClass('hide');
+                }
+            }
             function changedFrequency(val) {
                 if (val == 1) {
                     $('.frequency').addClass('hide');
@@ -3788,6 +3918,8 @@
             $(document).ready(function(){
                 var collabUser = '<?php echo $collabUser; ?>';
                 widget_summernote();
+                widget_tagInput();
+                
                 $.ajax({
                     async: true,
                     type: 'GET',
@@ -4407,6 +4539,7 @@
                         $("#modalEdit .modal-body").html(data);
                         selectMulti();
                         widget_summernote();
+                        widget_tagInput();
                     }
                 });
             }
@@ -4466,6 +4599,7 @@
                         $("#modalSubItem .modal-body").html(data);
                         selectMulti();
                         widget_summernote();
+                        widget_tagInput();
                     }
                 });
             }
@@ -4689,6 +4823,7 @@
                         $("#modalEdit_SubItem .modal-body").html(data);
                         selectMulti();
                         widget_summernote();
+                        widget_tagInput();
                     }
                 });
             }
@@ -6788,11 +6923,26 @@
                                         columns: ':visible'
                                     }
                                 },
+                                // {
+                                //     extend: 'excel',
+                                //     autoFilter: true,
+                                //     exportOptions: {
+                                //         columns: ':visible'
+                                //     }
+                                // },
                                 {
-                                    extend: 'excel',
-                                    autoFilter: true,
-                                    exportOptions: {
-                                        columns: ':visible'
+                                    extend: 'excelHtml5',
+                                    customize: function ( xlsx ) {
+                                        var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                 
+                                        $('row', sheet).each(function(x) {
+                                            const str = $('c[r=C'+x+'] t', sheet).text();
+                                            const token = 'title placement only';
+                                            
+                                            if (str.toLowerCase().includes(token.toLowerCase()) == true) {
+                                                $('row:nth-child('+x+') c', sheet).attr('s', '39');
+                                            }
+                                        });
                                     }
                                 }
                             ]
@@ -6891,6 +7041,43 @@
                         $("#modalComplianceList .modal-body table tbody").html(data);
                     }
                 });
+            }
+
+            // History Section
+            function btnHistory(id) {
+                $("#modalHistory .modal-body").html('');
+
+                $.ajax({
+                    type: "GET",
+                    url: "function.php?modalHistory="+id,
+                    dataType: "html",
+                    success: function(data){
+                        $("#modalHistory .modal-body").html(data);
+                    }
+                });
+            }
+            function btnRevision(id) {
+                $("#modalHistory .revision").html('');
+
+                $.ajax({
+                    type: "GET",
+                    url: "function.php?modalHistoryRevision="+id,
+                    dataType: "html",
+                    success: function(data){
+                        $("#modalHistory .revision").html(data);
+                    }
+                });
+            }
+            function printDiv() {
+                var divContents = document.getElementById("revisionContent").innerHTML;
+                var a = window.open('', '');
+                a.document.write('<html>');
+                a.document.write('<body >');
+                a.document.write('<style>table { width: 100% !important; margin-left: unset !important; margin-right: unset !important; }</style>');
+                a.document.write(divContents);
+                a.document.write('</body></html>');
+                a.document.close();
+                a.print();
             }
         </script>
     </body>

@@ -48,21 +48,39 @@ if ($conn->connect_error) {
     exit();
 }
 
-$sql = "SELECT
-    SUM(LENGTH(category) - LENGTH(REPLACE(category, ',', '')) + 1) AS total_requirements,
-    SUM(CASE WHEN compliance = 1 THEN 1 ELSE 0 END) AS compliance_count,
-    SUM(CASE WHEN compliance = 0 THEN 1 ELSE 0 END) AS non_compliance_count,
-    SUM(LENGTH(material) - LENGTH(REPLACE(material, ',', '')) + 1) AS total_materials,
-    (SELECT COUNT(*) FROM tbl_supplier_material WHERE user_id = $user_id AND active = 1) AS total_active_materials,
-    (SELECT COUNT(*) FROM tbl_supplier_material WHERE user_id = $user_id AND active = 0) AS total_inactive_materials
-FROM
-    tbl_supplier
-WHERE
-    user_id = $user_id
-    AND page = 1
-    AND is_deleted = 0
-    AND material IS NOT NULL
-    AND material <> ''";
+// $sql = "SELECT
+//     SUM(LENGTH(material) - LENGTH(REPLACE(material, ',', '')) + 1) AS total_materials,
+//     (SELECT COUNT(*) FROM tbl_supplier_material WHERE user_id = $user_id AND active = 1) AS total_active_materials,
+//     (SELECT COUNT(*) FROM tbl_supplier_material WHERE user_id = $user_id AND active = 0) AS total_inactive_materials
+// FROM
+//     tbl_supplier
+// WHERE
+//     user_id = $user_id
+//     AND page = 1
+//     AND is_deleted = 0
+//     AND material IS NOT NULL
+//     AND material <> ''";
+    
+    
+$sql = "
+    SELECT
+    COUNT(m.ID) AS total_materials,
+    SUM(CASE WHEN m.active = 0 THEN 1 ELSE 0 END) AS total_inactive_materials,
+    SUM(CASE WHEN m.active = 1 THEN 1 ELSE 0 END) AS total_active_materials
+    
+    FROM tbl_supplier_material AS m
+    
+    INNER JOIN (
+    	SELECT
+        *
+        FROM tbl_supplier
+        WHERE page = 1 
+    	AND is_deleted = 0
+    ) AS s
+    ON FIND_IN_SET(m.ID, REPLACE(s.material, ' ', ''))
+    
+    WHERE m.user_id = $user_id
+";
 
 $result = $conn->query($sql);
 
@@ -70,9 +88,6 @@ if ($result->num_rows > 0) {
     $data = $result->fetch_assoc();
 } else {
     $data = [
-        "total_requirements" => 0,
-        "compliance_count" => 0,
-        "non_compliance_count" => 0,
         "total_materials" => 0,
         "total_active_materials" => 0,
         "total_inactive_materials" => 0
@@ -83,4 +98,3 @@ $conn->close();
 
 echo json_encode($data);
 ?>
-

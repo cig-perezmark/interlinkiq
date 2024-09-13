@@ -1236,12 +1236,26 @@
 
                     <script src="<?=$base_url?>assets/global/plugins/bootstrap-select/js/bootstrap-select.min.js" type="text/javascript"></script>
                     <script src="<?=$base_url?>assets/global/plugins/bootstrap-daterangepicker/daterangepicker.min.js" type="text/javascript"></script>
-                    <script src="<?=$base_url?>assets/global/plugins/bootstrap-summernote/summernote.min.js" type="text/javascript"></script>
+                    <!--<script src="assets/global/plugins/bootstrap-summernote/summernote.min.js" type="text/javascript"></script>-->
+		            <script src="//cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
 
                     <script src="//www.codehim.com/demo/checkall-select-all-checkboxes-in-table-column/js/checkAll.min.js"></script>
 
                     <script src="<?=$base_url?>assets/global/scripts/datatable.js" type="text/javascript"></script>
                     <script src="<?=$base_url?>assets/global/plugins/datatables/datatables.min.js" type="text/javascript"></script>
+                    <script src="//cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js" type="text/javascript"></script>
+                    <!--<script src="//cdn.datatables.net/buttons/1.0.3/js/dataTables.buttons.min.js" type="text/javascript"></script>-->
+		            <script src="//cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
+                    <!--<script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js" type="text/javascript"></script>-->
+		            <script src="//cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js" type="text/javascript" language="javascript"></script>
+                    <script src="//cdn.jsdelivr.net/gh/bpampuch/pdfmake@0.1.18/build/pdfmake.min.js" type="text/javascript"></script>
+                    <script src="//cdn.jsdelivr.net/gh/bpampuch/pdfmake@0.1.18/build/vfs_fonts.js" type="text/javascript"></script>
+                    <!--<script src="//cdn.datatables.net/buttons/1.0.3/js/buttons.html5.min.js" type="text/javascript"></script>-->
+		            <script src="//cdn.datatables.net/buttons/1.2.2/js/buttons.html5.js"></script>
+                    <!--<script src="//cdn.datatables.net/1.10.9/css/jquery.dataTables.min.css" type="text/javascript"></script>-->
+                    <!--<script src="//cdn.datatables.net/buttons/1.0.3/css/buttons.dataTables.min.css" type="text/javascript"></script>-->
+		            <link href="//cdn.datatables.net/buttons/1.5.1/css/buttons.dataTables.min.css" rel="stylesheet" type="text/css" />
+		            <script src="//cdn.datatables.net/buttons/1.5.1/js/buttons.colVis.min.js"></script>
                     <script src="<?=$base_url?>assets/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.js" type="text/javascript"></script>
 
                     <!-- END PAGE LEVEL PLUGINS -->
@@ -1535,6 +1549,16 @@
                                 }
                             });
                         }
+            			function btnFacilitySwitch(id) {
+            				$.ajax({
+            					type: "GET",
+            					url: "function.php?modalFacilitySwitch="+id,
+            					dataType: "html",
+            					success: function(data){
+            						window.location.href = 'dashboard';
+            					}
+            				});
+            			}
                         
                         function set_newCookie(id) {
                             const d = new Date();

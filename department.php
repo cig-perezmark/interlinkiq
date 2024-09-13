@@ -178,7 +178,7 @@
                                                     </thead>
                                                     <tbody>
                                                         <?php
-                                                            $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND status = 1 AND user_id = $switch_user_id ORDER BY title" );
+                                                            $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND status = 1 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 $table_counter = 1;
                                                                 while($row = mysqli_fetch_array($result)) {
@@ -261,7 +261,7 @@
                                                     </thead>
                                                     <tbody>
                                                         <?php
-                                                            $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND status = 0 AND user_id = $switch_user_id ORDER BY title" );
+                                                            $result = mysqli_query( $conn,"SELECT * FROM tbl_hr_department WHERE deleted = 0 AND status = 0 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 $table_counter = 1;
                                                                 while($row = mysqli_fetch_array($result)) {

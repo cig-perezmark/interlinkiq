@@ -90,7 +90,36 @@
         vertical-align: middle;
     }
 
+    #comchartdiv {
+        width: 100%;
+        height: 400px;
+        max-width: 100%;
+    }
+    @media (max-width: 1024px) {
+        #comchartdiv {
+            height: 350px;
+        }
+    }
+    @media (max-width: 768px) {
+        #comchartdiv {
+            height: 300px;
+        }
+    }
+    @media (max-width: 600px) {
+        #comchartdiv {
+            height: 250px;
+        }
+    }
 </style>
+
+
+                <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+                <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+                <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+                <script src="https://cdn.amcharts.com/lib/5/plugins/legend.js"></script>
+
 
                     <?php
                         function dashboardChild($parent_id, $user_id, $dashboard_result) {
@@ -200,42 +229,6 @@
                         // if($switch_user_id == 423) { $newUser = 0; }
                         $newUser = 0;
                     ?>
-                    
-                    <?php if($current_client == 0 AND $newUser == 1) { ?>
-                        <div class="row">
-                            <?php
-                                $get_category=mysqli_query($conn,"SELECT * FROM tbl_dashboard_cards ORDER BY sort_by");
-                                while ($row=mysqli_fetch_array($get_category)) {
-                                    
-                                    $category_name = $row['category_name'];
-                                    $get_videos = mysqli_query($conn,"SELECT youtube_link FROM tbl_pages_demo_video WHERE page = '$category_name'");
-                                    $get_videos_result = mysqli_fetch_array($get_videos);
-                                    if($get_videos_result) {
-                                        foreach($get_videos_result as $video_rows) {
-                                            echo '<div class="col-md-2">
-                                                <a data-toggle="modal" data-src="'.$video_rows.'" data-fancybox >
-                                                    <img src="/uploads/bgBlue.png" class="img-thumbnail" style="width: 100%;"/>
-                                                    <div class="cover" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; padding: 15px 30px; display: flex;">
-                                                        <h3 class="font-white" style="margin: auto; font-weight: bold; font-size: clamp(18px, 1.5vw, 22px); text-align: center;">'.$row['category_name'].'</h3>
-                                                    </div>
-                                                </a>
-                                            </div>';
-                                            break;
-                                        }
-                                    } else {
-                                        echo '<div class="col-md-2">
-                                            <a href="#modalService" data-toggle="modal">
-                                                <img src="/uploads/bgBlue.png" class="img-thumbnail" style="width: 100%;"/>
-                                                <div class="cover" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0; padding: 15px 30px; display: flex;">
-                                                    <h3 class="font-white" style="margin: auto; font-weight: bold; font-size: clamp(18px, 1.5vw, 22px); text-align: center;">'.$row['category_name'].'</h3>
-                                                </div>
-                                            </a>
-                                        </div>';
-                                    }
-                                }
-                            ?>
-                        </div>
-                    <?php } ?>
 
                     <?php
                         if($current_client == 0) {
@@ -258,11 +251,14 @@
                             		$file_url = $src.$url.rawurlencode($file_upload).$embed;
                                 }
                                 
-                                if ($type_id == 0) {
-                            		echo ' - <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><i class="fa '. $file_extension .'"></i> '.$file_title.'</a>';
-                            	} else {
-                            		echo ' - <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><i class="fa fa-youtube"></i> '.$file_title.'</a>';
-                            	}
+                                $icon = $row["icon"];
+                                if (!empty($icon)) { 
+                                    if ($type_id == 0) {
+                                        echo ' <a href="'.$src.$url.rawurlencode($file_upload).$embed.'" data-src="'.$src.$url.rawurlencode($file_upload).$embed.'" data-fancybox data-type="'.$type.'"><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                    } else {
+                                        echo ' <a href="'.$video_url.'" data-src="'.$video_url.'" data-fancybox><img src="'.$src.$url.rawurlencode($icon).'" style="width: 60px; height: 60px; object-fit: contain; object-position: center;" /></a>';
+                                    }
+                                }
                             }
                             
                             if($current_userEmployerID == 185 OR $current_userEmployerID == 1  OR $current_userEmployerID == 163) {
@@ -273,7 +269,22 @@
 
                     <?php if($newUser == 0) { ?>
                         <div class="row">
-                            <div class="col-md-3" style="margin-top: 5px;">
+
+                        <div class="actions">
+                                <ul class="nav nav-tabs">
+                                        <li class="active">
+                                            <a href="#home" data-toggle="tab">Home</a>
+                                        </li>         
+                                        <?php if($switch_user_id == 464 OR $switch_user_id == 1457) { ?>
+                                             <li>
+                                                <a href="#com_analytics" data-toggle="tab">Analytics </a>
+                                            </li>
+                                        <?php } ?>
+                                    </ul>
+                                </div>
+                             <div class="tab-content">
+                        <div class="tab-pane active" id="home"> 
+                            <div class="col-md-4" style="margin-top: 5px;">
                                 <div class="input-group">
                                     <input class="form-control" id="deliverable_search" type="text" placeholder="Search" />
                                     <?php if ($current_userID == 1 OR $current_userID == 2 OR $current_userID == 19 OR $current_userID == 163 OR $current_userEmployerID == 27 OR $switch_user_id == 464) { ?>
@@ -1375,12 +1386,59 @@
                                         }
                                     </style>
                             <?php } ?>
-                            
-                            <div class="col-md-9" id="dashboardData" style="min-height: 300px;">
-                                <div class="panel-group accordion" id="parent"></div>
+                          <div class="col-md-8" id="dashboardData" style="min-height: 300px;">
+                                <div class="panel-group accordion" id="parent">
                             </div>
-                            
                         </div>
+                    </div>   
+
+                    <!-- Nelmar Analytics -->
+                    <div class="tab-pane" id="com_analytics">                       
+                        <div class="row widget-row">                     
+                                <div class="col-md-6">                                     
+                                    <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">   
+                                        <!-- <h3 class="d-flex justify-content-center">Analytics</h3>    -->
+                                                <div class="widget-thumb-wrap">                                       
+                                                <div id="comchartdiv" style="width: 100%; height: 500px;">                                           
+                                                </div>
+                                            </div>     
+                                        </div>                           
+                                    </div>
+
+                                    <div class="col-md-6"> 
+                                    <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">                                         
+                                        <!-- <h3 class="d-flex justify-content-center">Analytics</h3>-->
+                                                <div class="widget-thumb-wrap">
+                                                <div id="comchartdiv1" style="width: 100%; height: 500px;">
+                                                </div>                                 
+                                            </div> 
+                                        </div>                               
+                                    </div>
+                                    
+                                    <div class="col-md-6">  
+                                    <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">                            
+                                            <h3 class="d-flex justify-content-center">Compliance</h3>
+                                                <div class="widget-thumb-wrap">
+                                                <div id="chartdiv4" style="width: 100%; height: 500px;">
+                                                </div>                                 
+                                            </div>     
+                                        </div>                           
+                                    </div>
+
+                                    <div class="col-md-6">  
+                                    <div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">                            
+                                            <h3 class="d-flex justify-content-center">Annual Review</h3>
+                                                <div class="widget-thumb-wrap">
+                                                <div id="chartdiv3" style="width: 100%; height: 500px;">
+                                                </div>                                 
+                                            </div>     
+                                        </div>                           
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                                                                                                     
+                     </div> 
+
                     <?php } ?>
 
                     <!-- Item Section -->
@@ -1390,10 +1448,55 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalArea">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">New Item in Dashboard</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            New Item in Dashboard
+                                            <?php
+                                                $pictogram = 'cd_item_add';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body">
-
                                         <?php
                                             echo '<div class="form-group">
                                                 <label class="col-md-3 control-label">Business Type</label>
@@ -1488,11 +1591,11 @@
                                                     <input type="text" class="form-control hide module_others" name="module_others" placeholder="Leave Blank or Enter Module / Section Name" style="margin-top: 15px;" />
                                                 </div>
                                             </div>
-                                            <div class="form-group '; echo $switch_user_id == 464 ? '':'hide'; echo '">
+                                            <div class="form-group '; echo $switch_user_id == 1 OR $switch_user_id == 464 ? '':'hide'; echo '">
                                                 <label class="col-md-3 control-label">Reviewer</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control mt-multiselect" name="reviewer">
-                                                        <option value="">Select</option>';
+                                                        <option value="0">Select</option>';
                                                         $selectEmployeee = mysqli_query( $conn,"SELECT 
                                                             u.ID AS u_ID,
                                                             e.ID AS e_ID,
@@ -1523,11 +1626,11 @@
                                                     echo '</select>
                                                 </div>
                                             </div>
-                                            <div class="form-group '; echo $switch_user_id == 464 ? '':'hide'; echo '">
+                                            <div class="form-group '; echo $switch_user_id == 1 OR $switch_user_id == 464 ? '':'hide'; echo '">
                                                 <label class="col-md-3 control-label">Approver</label>
                                                 <div class="col-md-8">
                                                     <select class="form-control mt-multiselect" name="approver">
-                                                        <option value="">Select</option>';
+                                                        <option value="0">Select</option>';
                                                         $selectEmployeee = mysqli_query( $conn,"SELECT 
                                                             u.ID AS u_ID,
                                                             e.ID AS e_ID,
@@ -1567,6 +1670,50 @@
                                                 <span class="words_count label label-sm label-info hide"><span class="textcount">0</span></span>
                                             </div>
                                         </div>
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label">Enable Annual Review?</label>
+                                            <div class="col-md-8">
+                                                <select class="form-control" name="enable_annual" onchange="changedAnnual(this.value)">
+                                                    <option value="0">No</option>
+                                                    <option value="1">Yes</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="enable_annual hide">
+                                            <div class="form-group">
+                                                <label class="col-md-3 control-label">Requirements</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control tagsinput" id="requirements" name="requirements" data-role="tagsinput" required />
+                                                    <span class="form-text text-muted">Enter multiple requirements separated by comma</span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-md-3 control-label">Compliance Action Items</label>
+                                                <div class="col-md-8">
+                                                    <input type="text" class="form-control tagsinput" id="action_items" name="action_items" data-role="tagsinput" required />
+                                                    <span class="form-text text-muted">Enter multiple action items separated by comma</span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-md-3 control-label">Upload Document</label>
+                                                <div class="col-md-8">
+                                                    <select class="form-control" name="filetype" onchange="changeType(this)" required>
+                                                        <option value="0">Select option</option>
+                                                        <option value="1">Manual Upload</option>
+                                                        <option value="3">Google Drive URL</option>
+                                                        <option value="4">Sharepoint URL</option>
+                                                    </select>
+                                                    <input class="form-control margin-top-15 fileUpload" type="file" name="file" style="display: none;" />
+                                                    <input class="form-control margin-top-15 fileURL" type="url" name="fileurl" style="display: none;" placeholder="https://" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-md-3 control-label">Annual Review Date</label>
+                                                <div class="col-md-8">
+                                                    <input class="form-control" type="date" name="due_date" value="<?php echo date('Y-m-d'); ?>" required />
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
                                         <input type="button" class="btn dark btn-outline" data-dismiss="modal" value="Close" />
@@ -1582,7 +1729,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalEdit">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Edit Item in Dashboard</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Edit Item in Dashboard
+                                            <?php
+                                                $pictogram = 'cd_item_edit';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1610,12 +1803,58 @@
                         </div>
                     </div>
                     <div class="modal fade" id="modalSubItem" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <form method="post" class="form-horizontal modalForm modalSubItem">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">New Sub-item in Dashboard</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            New Sub-item in Dashboard
+                                            <?php
+                                                $pictogram = 'cd_item_sub_add';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1627,12 +1866,58 @@
                         </div>
                     </div>
                     <div class="modal fade" id="modalEdit_SubItem" tabindex="-1" role="dialog" aria-hidden="true">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog modal-lg">
                             <div class="modal-content">
                                 <form method="post" class="form-horizontal modalForm modalEdit_SubItem">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Edit Item in Dashboard</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Edit Item in Dashboard
+                                            <?php
+                                                $pictogram = 'cd_item_sub_edit';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1651,7 +1936,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalAttached">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Add Files</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Add Files
+                                            <?php
+                                                $pictogram = 'cd_file_add';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1668,7 +1999,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalAttachedEdit">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Edit Files</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Edit Files
+                                            <?php
+                                                $pictogram = 'cd_file_edit';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1687,7 +2064,53 @@
                                 <form method="post" class="form-horizontal modalForm modalComment">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Add Comment</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Add Comment
+                                            <?php
+                                                $pictogram = 'cd_comment';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1706,7 +2129,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalCompliance">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Add Compliance Instruction</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Add Compliance Instruction
+                                            <?php
+                                                $pictogram = 'cd_com_add';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1723,7 +2192,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalComplianceEdit">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Edit Compliance Instruction</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Edit Compliance Instruction
+                                            <?php
+                                                $pictogram = 'cd_com_edit';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1740,7 +2255,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalComplianceMore">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Action Compliance</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Action Compliance
+                                            <?php
+                                                $pictogram = 'cd_com_more_add';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1757,7 +2318,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalComplianceMoreEdit">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Action Compliance</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Action Compliance
+                                            <?php
+                                                $pictogram = 'cd_com_more_edit';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1776,7 +2383,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalReview">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Add New Review</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Add New Review
+                                            <?php
+                                                $pictogram = 'cd_rev_add';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1793,7 +2446,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalReviewEdit">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Edit Review</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Edit Review
+                                            <?php
+                                                $pictogram = 'cd_rev_edit';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1810,7 +2509,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalReviewAction">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Action Review</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Action Review
+                                            <?php
+                                                $pictogram = 'cd_rev_act_add';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1827,7 +2572,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalReviewActionEdit">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Edit Action Review</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Edit Action Review
+                                            <?php
+                                                $pictogram = 'cd_rev_act_edit';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1844,7 +2635,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalReviewMore">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Action Review</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Action Review
+                                            <?php
+                                                $pictogram = 'cd_rev_more_add';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1861,7 +2698,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalReviewMoreEdit">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Edit Action Review</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Edit Action Review
+                                            <?php
+                                                $pictogram = 'cd_rev_more_edit';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1880,7 +2763,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalTemplate">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Add New Template</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Add New Template
+                                            <?php
+                                                $pictogram = 'cd_temp_add';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1897,7 +2826,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalTemplateEdit">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Edit Template</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Edit Template
+                                            <?php
+                                                $pictogram = 'cd_temp_edit';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1916,7 +2891,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalRef">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Add New Reference</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Add New Reference
+                                            <?php
+                                                $pictogram = 'cd_ref_add';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1933,7 +2954,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalRefEdit">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Edit Reference</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Edit Reference
+                                            <?php
+                                                $pictogram = 'cd_ref_edit';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1952,7 +3019,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalVideo">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Add New Video</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Add New Video
+                                            <?php
+                                                $pictogram = 'cd_vid_add';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1969,7 +3082,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalVideoEdit">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Edit Video</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Edit Video
+                                            <?php
+                                                $pictogram = 'cd_vid_edit';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -1988,7 +3147,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalTask">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Add New Task</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Add New Task
+                                            <?php
+                                                $pictogram = 'cd_task_add';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -2005,7 +3210,53 @@
                                 <form method="post" enctype="multipart/form-data" class="form-horizontal modalForm modalTaskEdit">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Edit Task</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Edit Task
+                                            <?php
+                                                $pictogram = 'cd_task_edit';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -2024,7 +3275,53 @@
                                 <form method="post" class="form-horizontal modalForm modalClone">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Clone</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Clone
+                                            <?php
+                                                $pictogram = 'cd_clone';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -2043,7 +3340,53 @@
                                 <form method="post" class="form-horizontal modalForm modalReport">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Table Report</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Table Report
+                                            <?php
+                                                $pictogram = 'cd_report';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer modal-footer--sticky bg-white">
@@ -2061,7 +3404,53 @@
                                 <form method="post" class="form-horizontal modalForm modalCollaborator">
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-                                        <h4 class="modal-title">Collaborator</h4>
+                                        <h4 class="modal-title pictogram-align">
+                                            Collaborator
+                                            <?php
+                                                $pictogram = 'cd_collab';
+                                                if ($switch_user_id == 163) {
+                                                    echo '<div class="pictogram" href="#modalPictogram" data-toggle="modal" onclick="btnPictogram(\''.$pictogram.'\')"></div>';
+                                                } else {
+                                                    $selectPictogram = mysqli_query( $conn,"SELECT * FROM tbl_pictogram WHERE code = '$pictogram'" );
+                                                    if ( mysqli_num_rows($selectPictogram) > 0 ) {
+                                                        $row = mysqli_fetch_array($selectPictogram);
+
+                                                        $files = '';
+                                                        $type = 'iframe';
+                                                        if (!empty($row["files"])) {
+                                                            $arr_filename = explode(' | ', $row["files"]);
+                                                            $arr_filetype = explode(' | ', $row["filetype"]);
+                                                            $str_filename = '';
+
+                                                            foreach($arr_filename as $val_filename) {
+                                                                $str_filename = $val_filename;
+                                                            }
+                                                            foreach($arr_filetype as $val_filetype) {
+                                                                $str_filetype = $val_filetype;
+                                                            }
+
+                                                            $files = $row["files"];
+                                                            if ($row["filetype"] == 1) {
+                                                                $fileExtension = fileExtension($files);
+                                                                $src = $fileExtension['src'];
+                                                                $embed = $fileExtension['embed'];
+                                                                $type = $fileExtension['type'];
+                                                                $file_extension = $fileExtension['file_extension'];
+                                                                $url = $base_url.'uploads/pictogram/';
+
+                                                                $files = $src.$url.rawurlencode($files).$embed;
+                                                            } else if ($row["filetype"] == 3) {
+                                                                $files = preg_replace('#[^/]*$#', '', $files).'preview';
+                                                            }
+                                                        }
+
+                                                        if (!empty($files)) {
+                                                            echo '<div class="pictogram" href="'.$files.'" data-src="'.$files.'" data-fancybox data-type="'.$type.'"></div>';
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </h4>
                                     </div>
                                     <div class="modal-body"></div>
                                     <div class="modal-footer">
@@ -2266,8 +3655,15 @@
         <script src="assets/global/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js" type="text/javascript"></script>
         <script src="assets/global/plugins/typeahead/handlebars.min.js" type="text/javascript"></script>
         <script src="assets/global/plugins/typeahead/typeahead.bundle.min.js" type="text/javascript"></script>
-
         <script src="assets/pages/scripts/jquery.table2excel.js" type="text/javascript"></script>
+
+        
+        <?php if($switch_user_id == 464 OR $switch_user_id == 1457) { ?>
+            <script src="AnalyticsIQ/compliance_chart.js"></script>
+        <?php } ?>
+
+
+
         <script>
             $("#btnExport").click(function(){
                 $("#table2excel").table2excel({
@@ -2330,6 +3726,35 @@
                     $('.type_others').addClass('hide');
                 } 
             }
+            function changeStatus(id, e) {
+                val = $(e).val();
+                swal_val = $(e).find("option:selected").text();
+
+                swal({
+                    title: "Are you sure?",
+                    text: "Please confirm if you select "+swal_val,
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-success",
+                    confirmButtonText: "Yes, confirm it!",
+                    closeOnConfirm: false
+                },
+                function(){
+                    $.ajax({
+                        type: "GET",
+                        url: "function.php?modalChangesStatus_Area="+id+"&v="+val,
+                        dataType: "html",
+                        success: function(response){
+                            if ($.trim(response)) {
+                                var obj = jQuery.parseJSON(response);
+                                $('.panel_'+obj.ID+' .panel-body > .row #tabDescription_'+obj.ID).html(obj.description);
+                            }
+                            // $('#modalChanges').modal('hide');
+                        }
+                    });
+                    swal(swal_val, "Status Updated", "success");
+                });
+            }
             function changedCategory(val) {
                 if (val == 9) {
                     $('.category_others').removeClass('hide');
@@ -2349,6 +3774,13 @@
                     $('.module_others').removeClass('hide');
                 } else {
                     $('.module_others').addClass('hide');
+                }
+            }
+            function changedAnnual(val) {
+                if (val == 1) {
+                    $('.enable_annual').removeClass('hide');
+                } else {
+                    $('.enable_annual').addClass('hide');
                 }
             }
             function changedFrequency(val) {
@@ -2407,61 +3839,16 @@
             $(document).ready(function(){
                 var collabUser = '<?php echo $collabUser; ?>';
                 widget_summernote();
+                widget_tagInput();
+                
                 $.ajax({
                     async: true,
                     type: 'GET',
-                    url: 'function.php?jstree_HTML2_new='+collabUser,
+                    url: 'function.php?jstree_HTML2='+collabUser,
                     dataType: 'json',
                     success: function (json) {
-                        // alert(json);
-                        // json.sort((a, b) => a.text.localeCompare(b.text));
-                        // json.sort((a, b) => a.text.localeCompare(b.text, 'en', { numeric: true }));
-                        // createJSTree(json);
                         
-                        
-                        
-                        // alert(json);
-                        // console.log(json);
-                        // json.sort((a, b) => a.text.localeCompare(b.text, 'en', { numeric: true }));
-
-                        // const sortArray = (sourceArray) => {
-                        //     const sortByLocation = (a, b) => a.text.localeCompare(b.text, 'en', { numeric: true });
-                        //     //Notice that I specify location here ^^       and here        ^^ using dot notation
-                        //     return sourceArray.sort(sortByLocation);
-                        // };
-                        // let arr = ["A1", "A10", "A11", "A12", "A2", "A3", "A4", "B10", "B2", "F1", "F12", "F3"]
-
-                        // json.sort(new Intl.Collator('en',{numeric:true, sensitivity:'accent'}).compare);
-
-                        // array_multisort($test, SORT_NUMERIC, $test);
-
-                        // Your JSON data (parsed from a string)
-                        // const jsonData = json;
-
-                        // // Create a dictionary of items by ID
-                        // const itemDict = {};
-                        // jsonData.forEach(item => {
-                        //     itemDict[item.id] = item;
-                        // });
-
-                        // // Filter out items with invalid parents
-                        // const filteredData = jsonData.filter(item => {
-                        //     return item.parent === '#' || itemDict[item.parent];
-                        // });
-
-                        // // Print the filtered data (you can adjust this as needed)
-                        // console.log(filteredData);
-
-                        // console.log(json);
-                        // createJSTree(filteredData);
-                        
-                        
-                        
-                        
-                        
-                        console.log(json);
                         const data = json;
-
 
                         // Create a map of id to its children
                         const childrenMap = data.reduce((acc, item) => {
@@ -2490,7 +3877,7 @@
 
                         // Filter the data to keep only valid items
                         const filteredData = data.filter(item => validIds.has(item.id));
-
+                        
                         
                         
                         
@@ -2501,6 +3888,13 @@
                         console.log(filteredData);
                         
                         createJSTree(filteredData);
+                        
+                        
+                        
+                        // alert(json);
+                        // json.sort((a, b) => a.text.localeCompare(b.text));
+                        // json.sort((a, b) => a.text.localeCompare(b.text, 'en', { numeric: true }));
+                        // createJSTree(json);
                     },
 
                     error: function (xhr, ajaxOptions, thrownError) {
@@ -2773,10 +4167,15 @@
             }
             <?php if (!empty($_GET['d'])) { ?>
                 var req_id = '<?php echo $_GET['d']; ?>';
+                var s = 0;
+                <?php if (isset($_GET['s']) AND $_GET['s'] == 1) { ?>
+                    s = '<?php echo $_GET['s']; ?>';
+                <?php }; ?>
+                
                 uiBlock();
                 $.ajax({
                     type: "GET",
-                    url: "function.php?modalDashboard="+req_id,
+                    url: "function.php?modalDashboard="+req_id+"&s="+s,
                     dataType: "html",
                     success: function(data){
                         $(".left").hide();
@@ -3061,6 +4460,7 @@
                         $("#modalEdit .modal-body").html(data);
                         selectMulti();
                         widget_summernote();
+                        widget_tagInput();
                     }
                 });
             }
@@ -3100,7 +4500,7 @@
 
                             var obj = jQuery.parseJSON(response);
                             $('.panel_'+obj.ID+' > .panel-heading h4 a').html(obj.name);
-                            $('.panel_'+obj.ID+' .panel-body > .row #tabDescription_'+obj.ID+' h5').html(obj.description);
+                            $('.panel_'+obj.ID+' .panel-body > .row #tabDescription_'+obj.ID).html(obj.description);
                             $('#modalEdit').modal('hide');
                         } else {
                             msg = "Error!"
@@ -3118,6 +4518,9 @@
                     dataType: "html",
                     success: function(data){
                         $("#modalSubItem .modal-body").html(data);
+                        selectMulti();
+                        widget_summernote();
+                        widget_tagInput();
                     }
                 });
             }
@@ -3339,6 +4742,9 @@
                     dataType: "html",
                     success: function(data){
                         $("#modalEdit_SubItem .modal-body").html(data);
+                        selectMulti();
+                        widget_summernote();
+                        widget_tagInput();
                     }
                 });
             }
@@ -3390,7 +4796,7 @@
 
                             $('.panel_'+obj.ID+' > div:first-child').attr( "class", "panel-heading "+panelBG );
                             $('.panel_'+obj.ID+' > .panel-heading h4 a').html(obj.name);
-                            $('.panel_'+obj.ID+' .panel-body > .row #tabDescription_'+obj.ID+' h5').html(obj.description);
+                            $('.panel_'+obj.ID+' .panel-body > .row #tabDescription_'+obj.ID).html(obj.description);
                             $('#modalEdit_SubItem').modal('hide');
                         } else {
                             msg = "Error!"
@@ -5438,11 +6844,26 @@
                                         columns: ':visible'
                                     }
                                 },
+                                // {
+                                //     extend: 'excel',
+                                //     autoFilter: true,
+                                //     exportOptions: {
+                                //         columns: ':visible'
+                                //     }
+                                // },
                                 {
-                                    extend: 'excel',
-                                    autoFilter: true,
-                                    exportOptions: {
-                                        columns: ':visible'
+                                    extend: 'excelHtml5',
+                                    customize: function ( xlsx ) {
+                                        var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                 
+                                        $('row', sheet).each(function(x) {
+                                            const str = $('c[r=C'+x+'] t', sheet).text();
+                                            const token = 'title placement only';
+                                            
+                                            if (str.toLowerCase().includes(token.toLowerCase()) == true) {
+                                                $('row:nth-child('+x+') c', sheet).attr('s', '39');
+                                            }
+                                        });
                                     }
                                 }
                             ]

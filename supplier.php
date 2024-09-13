@@ -371,352 +371,352 @@
                                 <div class="portlet-body">
                                     <div class="tab-content">
                                         <div class="tab-pane active" id="tab_actions_sent">
-										<div class="table-responsive">
-											<select class="form-control margin-bottom-15" id="filterSent">
-												<option value="">Select</option>
-												<option value="1">Foreign Supplier</option>
-												<option value="2">Local Supplier</option>
-												<option value="3">Contract Service Provider</option>
-												<option value="4">Contract Manufacturer</option>
-											</select>
-                                            <table class="table table-bordered table-hover" id="tableData_1">
-                                                <thead>
-                                                    <tr>
-                                                        <th rowspan="2">Vendor Code</th>
-                                                        <th rowspan="2">Vendor Name</th>
-                                                        <th rowspan="2">Category</th>
-                                                        <th rowspan="2">Materials/Services</th>
-														<th rowspan="2">Specification File</th>
-														<th rowspan="2">Address</th>
-														<th rowspan="2" class="hide">Country</th>
-                                                        <th colspan="2" class="text-center">Contact Details</th>
-                                                        <th rowspan="2" style="width: 100px;" class="text-center">Compliance</th>
-                                                        <th rowspan="2" style="width: 100px;" class="text-center">Status</th>
-                                                        <th rowspan="2" style="width: 135px;" class="text-center">Action</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <th>Name</th>
-                                                        <th>Contact Info</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php
-														$result = mysqli_query( $conn,"
-														    WITH RECURSIVE cte (s_ID, s_vendor_code, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
-															(
-															    SELECT
-															    s1.ID AS s_ID,
-															    s1.vendor_code AS s_vendor_code,
-															    s1.name AS s_name,
-															    s1.reviewed_due AS s_reviewed_due,
-															    s1.status AS s_status,
-															    s1.material AS s_material,
-															    s1.service AS s_service,
-															    s1.address AS s_address,
-															    s1.category AS s_category,
-															    s1.contact AS s_contact,
-															    s1.document AS s_document,
-															    d1.ID AS d_ID,
-															    d1.type AS d_type,
-															    d1.name AS d_name,
-															    d1.file AS d_file,
-															    d1.file_due AS d_file_due,
-															    CASE 
-															        WHEN 
-															            LENGTH(d1.file) > 0 
-															            AND (STR_TO_DATE(d1.file_due, '%m/%d/%Y') > CURDATE() OR DATE(d1.file_due) > CURDATE())
-															            AND d1.reviewed_by > 0
-															            AND d1.approved_by > 0
-															        THEN 1 
-															        ELSE 0 
-															    END AS d_status,
-															    CASE WHEN d1.ID > 0 THEN 1 ELSE 0 END AS d_count
-
-															    FROM tbl_supplier AS s1
-
-															    LEFT JOIN (
-															        SELECT
-															        * 
-															        FROM tbl_supplier_document 
-															        WHERE type = 0
-															        AND ID IN (
-															            SELECT
-															            MAX(ID)
-															            FROM tbl_supplier_document
-															            WHERE type = 0
-															            GROUP BY name, supplier_id
-															        )
-															    ) AS d1
-															    ON s1.ID = d1.supplier_ID
-															    AND FIND_IN_SET(d1.name, REPLACE(REPLACE(s1.document, ' ', ''), '|',','  )  ) > 0
-															    WHERE s1.page = 1 
-															    AND s1.is_deleted = 0 
-															    AND s1.user_id = $switch_user_id
-															    
-															    UNION ALL
-															    
-															    SELECT
-															    s2.ID AS s_ID,
-															    s2.vendor_code AS s_vendor_code,
-															    s2.name AS s_name,
-															    s2.reviewed_due AS s_reviewed_due,
-															    s2.status AS s_status,
-															    s2.material AS s_material,
-															    s2.service AS s_service,
-															    s2.address AS s_address,
-															    s2.category AS s_category,
-															    s2.contact AS s_contact,
-															    s2.document_other AS s_document,
-															    d2.ID AS d_ID,
-															    d2.type AS d_type,
-															    d2.name AS d_name,
-															    d2.file AS d_file,
-															    d2.file_due AS d_file_due,
-															    CASE 
-															        WHEN 
-															            LENGTH(d2.file) > 0 
-															            AND (STR_TO_DATE(d2.file_due, '%m/%d/%Y') > CURDATE() OR DATE(d2.file_due) > CURDATE())
-															            AND d2.reviewed_by > 0
-															            AND d2.approved_by > 0
-															        THEN 1 
-															        ELSE 0 
-															    END AS d_status,
-															    CASE WHEN d2.ID > 0 THEN 1 ELSE 0 END AS d_count
-
-															    FROM tbl_supplier AS s2
-
-															    LEFT JOIN (
-															        SELECT
-															        * 
-															        FROM tbl_supplier_document 
-															        WHERE type = 1
-															        AND ID IN (
-															            SELECT
-															            MAX(ID)
-															            FROM tbl_supplier_document
-															            WHERE type = 1
-															            GROUP BY name, supplier_id
-															        )
-															    ) AS d2
-															    ON s2.ID = d2.supplier_ID
-															    AND FIND_IN_SET(d2.name, REPLACE(s2.document_other, ' | ', ',')  )   > 0
-															    WHERE s2.page = 1 
-															    AND s2.is_deleted = 0 
-															    AND s2.user_id = $switch_user_id
-															)
-															SELECT
-															m.ID AS m_ID,
-															m.material_name AS m_material_name,
-															m.spec_file AS m_spec_file,
-															s_ID,
-															s_vendor_code,
-															s_name,
-															s_reviewed_due,
-															s_status,
-															s_material,
-															s_service,
-															s_address, 
-															s_category,
-															c_name,
-															d_compliance,
-															d_counting,
-															cn_name,
-															cn_address,
-															cn_email,
-															cn_phone,
-															cn_cell,
-															cn_fax
-															FROM (
-																SELECT
-																s_ID,
-																s_vendor_code,
-																s_name,
-																s_reviewed_due,
-																s_status,
-																s_material,
-																s_service,
-																s_address, 
-																s_category,
-																c_name,
-																d_compliance,
-																d_counting,
-																cn.name AS cn_name,
-																cn.address AS cn_address,
-																cn.email AS cn_email,
-																cn.phone AS cn_phone,
-																cn.cell AS cn_cell,
-																cn.fax AS cn_fax
-																FROM (
-																    SELECT 
-																    s_ID, 
-																    s_vendor_code,
-																    s_name, 
-																    s_reviewed_due, 
-																    s_status, 
-																	s_material,
-																	s_address,
-																	s_service, 
-																    s_contact,
-																    s_category,
-																    c.name AS c_name,
-																    SUM(d_status) AS d_compliance,
-																    SUM(d_count) AS d_counting
-																    FROM cte
-
-																    LEFT JOIN (
-																        SELECT
-																        *
-																        FROM tbl_supplier_category
-																        WHERE deleted = 0
-																    ) AS c
-																    ON s_category = c.ID
-
-																    GROUP BY s_ID
-																) AS r
-
-																LEFT JOIN (
-																    SELECT
-																    *
-																    FROM tbl_supplier_contact
-																) AS cn
-																ON FIND_IN_SET(cn.ID, REPLACE(s_contact, ' ', '')) > 0
-
-																GROUP BY s_ID
-
-																ORDER BY s_name
-															) AS r2
-
-															LEFT JOIN (
-																SELECT
-																*
-																FROM tbl_supplier_material
-																WHERE user_id = $switch_user_id
-															) AS m
-
-															ON FIND_IN_SET(m.ID, REPLACE(r2.s_material, ' ', '')) > 0
-														" );
-                                                        if ( mysqli_num_rows($result) > 0 ) {
-                                                            $table_counter = 1;
-                                                            while($row = mysqli_fetch_array($result)) {
-																$s_ID = $row["s_ID"];
-																$s_vendor_code = htmlentities($row["s_vendor_code"] ?? '');
-																$s_name = htmlentities($row["s_name"] ?? '');
-																$s_reviewed_due = htmlentities($row["s_reviewed_due"] ?? '');
-
-																$s_category = htmlentities($row["s_category"] ?? '');
-																$c_name = htmlentities($row["c_name"] ?? '');
-
-																$cn_name = htmlentities($row["cn_name"] ?? '');
-																$cn_address = htmlentities($row["cn_address"] ?? '');
-																$cn_email = htmlentities($row["cn_email"] ?? '');
-																$cn_phone = htmlentities($row["cn_phone"] ?? '');
-																$cn_cell = htmlentities($row["cn_cell"] ?? '');
-																$cn_fax = htmlentities($row["cn_fax"] ?? '');
-																$material = '';
-																$material_spec = '';
-
-																$compliance = 0;
-																$d_compliance = $row["d_compliance"];
-																$d_counting = $row["d_counting"];
-																if ($d_counting > 0) { $compliance = ($d_compliance / $d_counting) * 100; }
-
-																$s_status = $row["s_status"];
-																$status_type = array(
-																	0 => 'Pending',
-																	1 => 'Approved',
-																	2 => 'Non Approved',
-																	3 => 'Emergency Used Only / Spot Purchasing',
-																	4 => 'Do Not Use',
-																	5 => 'Active',
-																	6 => 'Inactive'
-																);
-
-																if ($s_category == "3") {
-																	$material = $row["s_service"];
-																	
-																	if (!empty($material)) {
-																		$material_result = array();
-																		$material_arr = explode(", ", $material);
-																		foreach ($material_arr as $value) {
-																			$selectMaterial = mysqli_query( $conn,"SELECT service_name FROM tbl_supplier_service WHERE ID=$value" );
-                                                                        	if ( mysqli_num_rows($selectMaterial) > 0 ) {
-																				$rowMaterial = mysqli_fetch_array($selectMaterial);
-																				array_push($material_result, htmlentities($rowMaterial['service_name'] ?? ''));
-																			}
-																		}
-																		$material = implode(', ', $material_result);
-																	}
-																} else {
-																	$material = $row["s_material"];
-																	
-																	if (!empty($row["m_material_name"])) {
-																		$material = '<a href="#modalEditMaterial" data-toggle="modal" class="btnEdit_Material" onclick="btnEdit_Material('.$row["m_ID"].', 2, \'modalEditMaterial\')">'.htmlentities($row["m_material_name"] ?? '').'</a>';
-																	}
-
-																	if (!empty($row["m_spec_file"])) {
-																        $spec_file = $row['m_spec_file'];
-																        $fileExtension = fileExtension($spec_file);
-																		$src = $fileExtension['src'];
-																		$embed = $fileExtension['embed'];
-																		$type = $fileExtension['type'];
-																		$file_extension = $fileExtension['file_extension'];
-																	    $url = $base_url.'uploads/supplier/';
-
-																		$material_spec = '<a href="'.$src.$url.rawurlencode($spec_file).$embed.'" data-src="'.$src.$url.rawurlencode($spec_file).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a>';
-																	}
-																}
-																
-																$address_array = array();
-																$address = htmlentities($row["s_address"] ?? '');
-													            $address_arr = explode(" | ", $address);
-													            if (COUNT($address_arr) < 5) {
-													                $address_arr = explode(", ", $address);
-													            }
-													            array_push($address_array, htmlentities($address_arr[1]));
-													            array_push($address_array, htmlentities($address_arr[2]));
-													            array_push($address_array, htmlentities($address_arr[3]));
-													            array_push($address_array, $address_arr[0]);
-													            array_push($address_array, $address_arr[4]);
-													            $address_arr_country = $address_arr[0];
-													            $address_arr = implode(", ", $address_array);
-
-																echo '<tr id="tr_'.$s_ID.'">
-																	<td>'.htmlentities($s_vendor_code ?? '').'</td>
-																	<td>'.htmlentities($s_name ?? '').'</td>
-																	<td>'.htmlentities($c_name ?? '').'</td>
-																	<td>'.$material.'</td>
-																	<td class="text-center">'.$material_spec.'</td>
-																	<td>'.$address_arr.'</td>
-																	<td class="hide">'.$address_arr_country.'</td>
-																	<td>'.htmlentities($cn_name ?? '').'</td>
-																	<td class="text-center">
-																		<ul class="list-inline">';
-																		if ($cn_email != "") { echo '<li><a href="mailto:'.$cn_email.'" target="_blank" title="Email"><i class="fa fa-envelope"></i></a></li>'; }
-																		if ($cn_phone != "") { echo '<li><a href="tel:'.$cn_phone.'" target="_blank" title="Phone"><i class="fa fa-phone-square"></i></a></li>'; }
-																		if ($cn_cell != "") { echo '<li><a href="tel:'.$cn_cell.'" target="_blank" title="Cell Number"><i class="fa fa-phone"></i></a></li>'; }
-																		if ($cn_fax != "") { echo '<li><a href="tel:'.$cn_fax.'" target="_blank" title="Fax"><i class="fa fa-print"></i></a></li>'; }
-																		echo '</ul>
-																	</td>
-																	<td class="text-center">'.intval($compliance).'%</td>
-																	<td class="text-center">'.$status_type[$s_status].'</td>
-																	<td class="text-center">
-																		<div class="btn-group btn-group-circle">
-																			<a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView('. $s_ID .')">View</a>
-
-																			<a href="#modalChart" class="btn btn-info btn-sm btnChart" data-toggle="modal" data-id="'. $s_ID .'">
-																			<i class="fa fa-line-chart"></i> </a>
-
-																			<a href="javascript:;" class="btn btn-danger btn-sm btnDelete" onclick="btnDelete('. $s_ID .')">Delete</a>
-																		</div>
-																	</td>
-																</tr>';
+    										<div class="table-responsive">
+    											<select class="form-control margin-bottom-15" id="filterSent">
+    												<option value="">Select</option>
+    												<option value="1">Foreign Supplier</option>
+    												<option value="2">Local Supplier</option>
+    												<option value="3">Contract Service Provider</option>
+    												<option value="4">Contract Manufacturer</option>
+    											</select>
+                                                <table class="table table-bordered table-hover" id="tableData_1">
+                                                    <thead>
+                                                        <tr>
+                                                            <th rowspan="2">Vendor Code</th>
+                                                            <th rowspan="2">Vendor Name</th>
+                                                            <th rowspan="2">Category</th>
+                                                            <th rowspan="2">Materials/Services</th>
+    														<th rowspan="2">Specification File</th>
+    														<th rowspan="2">Address</th>
+    														<th rowspan="2" class="text-center">Country</th>
+                                                            <th colspan="2" class="text-center">Contact Details</th>
+                                                            <th rowspan="2" style="width: 100px;" class="text-center">Compliance</th>
+                                                            <th rowspan="2" style="width: 100px;" class="text-center">Status</th>
+                                                            <th rowspan="2" style="width: 135px;" class="text-center">Action</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Name</th>
+                                                            <th>Contact Info</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php
+    														$result = mysqli_query( $conn,"
+    														    WITH RECURSIVE cte (s_ID, s_vendor_code, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
+    															(
+    															    SELECT
+    															    s1.ID AS s_ID,
+    															    s1.vendor_code AS s_vendor_code,
+    															    s1.name AS s_name,
+    															    s1.reviewed_due AS s_reviewed_due,
+    															    s1.status AS s_status,
+    															    s1.material AS s_material,
+    															    s1.service AS s_service,
+    															    s1.address AS s_address,
+    															    s1.category AS s_category,
+    															    s1.contact AS s_contact,
+    															    s1.document AS s_document,
+    															    d1.ID AS d_ID,
+    															    d1.type AS d_type,
+    															    d1.name AS d_name,
+    															    d1.file AS d_file,
+    															    d1.file_due AS d_file_due,
+    															    CASE 
+    															        WHEN 
+    															            LENGTH(d1.file) > 0 
+    															            AND (STR_TO_DATE(d1.file_due, '%m/%d/%Y') > CURDATE() OR DATE(d1.file_due) > CURDATE())
+    															            AND d1.reviewed_by > 0
+    															            AND d1.approved_by > 0
+    															        THEN 1 
+    															        ELSE 0 
+    															    END AS d_status,
+    															    CASE WHEN d1.ID > 0 THEN 1 ELSE 0 END AS d_count
+    
+    															    FROM tbl_supplier AS s1
+    
+    															    LEFT JOIN (
+    															        SELECT
+    															        * 
+    															        FROM tbl_supplier_document 
+    															        WHERE type = 0
+    															        AND ID IN (
+    															            SELECT
+    															            MAX(ID)
+    															            FROM tbl_supplier_document
+    															            WHERE type = 0
+    															            GROUP BY name, supplier_id
+    															        )
+    															    ) AS d1
+    															    ON s1.ID = d1.supplier_ID
+    															    AND FIND_IN_SET(d1.name, REPLACE(REPLACE(s1.document, ' ', ''), '|',','  )  ) > 0
+    															    WHERE s1.page = 1 
+    															    AND s1.is_deleted = 0 
+    															    AND s1.user_id = $switch_user_id
+                                                                    AND s1.facility_switch = $facility_switch_user_id
+    															    
+    															    UNION ALL
+    															    
+    															    SELECT
+    															    s2.ID AS s_ID,
+    															    s2.vendor_code AS s_vendor_code,
+    															    s2.name AS s_name,
+    															    s2.reviewed_due AS s_reviewed_due,
+    															    s2.status AS s_status,
+    															    s2.material AS s_material,
+    															    s2.service AS s_service,
+    															    s2.address AS s_address,
+    															    s2.category AS s_category,
+    															    s2.contact AS s_contact,
+    															    s2.document_other AS s_document,
+    															    d2.ID AS d_ID,
+    															    d2.type AS d_type,
+    															    d2.name AS d_name,
+    															    d2.file AS d_file,
+    															    d2.file_due AS d_file_due,
+    															    CASE 
+    															        WHEN 
+    															            LENGTH(d2.file) > 0 
+    															            AND (STR_TO_DATE(d2.file_due, '%m/%d/%Y') > CURDATE() OR DATE(d2.file_due) > CURDATE())
+    															            AND d2.reviewed_by > 0
+    															            AND d2.approved_by > 0
+    															        THEN 1 
+    															        ELSE 0 
+    															    END AS d_status,
+    															    CASE WHEN d2.ID > 0 THEN 1 ELSE 0 END AS d_count
+    
+    															    FROM tbl_supplier AS s2
+    
+    															    LEFT JOIN (
+    															        SELECT
+    															        * 
+    															        FROM tbl_supplier_document 
+    															        WHERE type = 1
+    															        AND ID IN (
+    															            SELECT
+    															            MAX(ID)
+    															            FROM tbl_supplier_document
+    															            WHERE type = 1
+    															            GROUP BY name, supplier_id
+    															        )
+    															    ) AS d2
+    															    ON s2.ID = d2.supplier_ID
+    															    AND FIND_IN_SET(d2.name, REPLACE(s2.document_other, ' | ', ',')  )   > 0
+    															    WHERE s2.page = 1 
+    															    AND s2.is_deleted = 0 
+    															    AND s2.user_id = $switch_user_id
+                                                                    AND s2.facility_switch = $facility_switch_user_id
+    															)
+    															SELECT
+    															m.ID AS m_ID,
+    															m.material_name AS m_material_name,
+    															m.spec_file AS m_spec_file,
+    															s_ID,
+    															s_vendor_code,
+    															s_name,
+    															s_reviewed_due,
+    															s_status,
+    															s_material,
+    															s_service,
+    															s_address, 
+    															s_category,
+    															c_name,
+    															d_compliance,
+    															d_counting,
+    															cn_name,
+    															cn_address,
+    															cn_email,
+    															cn_phone,
+    															cn_cell,
+    															cn_fax
+    															FROM (
+    																SELECT
+    																s_ID,
+    																s_vendor_code,
+    																s_name,
+    																s_reviewed_due,
+    																s_status,
+    																s_material,
+    																s_service,
+    																s_address, 
+    																s_category,
+    																c_name,
+    																d_compliance,
+    																d_counting,
+    																cn.name AS cn_name,
+    																cn.address AS cn_address,
+    																cn.email AS cn_email,
+    																cn.phone AS cn_phone,
+    																cn.cell AS cn_cell,
+    																cn.fax AS cn_fax
+    																FROM (
+    																    SELECT 
+    																    s_ID, 
+    																    s_vendor_code,
+    																    s_name, 
+    																    s_reviewed_due, 
+    																    s_status, 
+    																	s_material,
+    																	s_address,
+    																	s_service, 
+    																    s_contact,
+    																    s_category,
+    																    c.name AS c_name,
+    																    SUM(d_status) AS d_compliance,
+    																    SUM(d_count) AS d_counting
+    																    FROM cte
+    
+    																    LEFT JOIN (
+    																        SELECT
+    																        *
+    																        FROM tbl_supplier_category
+    																        WHERE deleted = 0
+    																    ) AS c
+    																    ON s_category = c.ID
+    
+    																    GROUP BY s_ID
+    																) AS r
+    
+    																LEFT JOIN (
+    																    SELECT
+    																    *
+    																    FROM tbl_supplier_contact
+    																) AS cn
+    																ON FIND_IN_SET(cn.ID, REPLACE(s_contact, ' ', '')) > 0
+    
+    																GROUP BY s_ID
+    
+    																ORDER BY s_name
+    															) AS r2
+    
+    															LEFT JOIN (
+    																SELECT
+    																*
+    																FROM tbl_supplier_material
+    																WHERE user_id = $switch_user_id
+                                                                    AND facility_switch = $facility_switch_user_id
+    															) AS m
+    
+    															ON FIND_IN_SET(m.ID, REPLACE(r2.s_material, ' ', '')) > 0
+    														" );
+                                                            if ( mysqli_num_rows($result) > 0 ) {
+                                                                $table_counter = 1;
+                                                                while($row = mysqli_fetch_array($result)) {
+    																$s_ID = $row["s_ID"];
+    																$s_vendor_code = htmlentities($row["s_vendor_code"] ?? '');
+    																$s_name = htmlentities($row["s_name"] ?? '');
+    																$s_reviewed_due = htmlentities($row["s_reviewed_due"] ?? '');
+    
+    																$s_category = htmlentities($row["s_category"] ?? '');
+    																$c_name = htmlentities($row["c_name"] ?? '');
+    
+    																$cn_name = htmlentities($row["cn_name"] ?? '');
+    																$cn_address = htmlentities($row["cn_address"] ?? '');
+    																$cn_email = htmlentities($row["cn_email"] ?? '');
+    																$cn_phone = htmlentities($row["cn_phone"] ?? '');
+    																$cn_cell = htmlentities($row["cn_cell"] ?? '');
+    																$cn_fax = htmlentities($row["cn_fax"] ?? '');
+    																$material = '';
+    																$material_spec = '';
+    
+    																$compliance = 0;
+    																$d_compliance = $row["d_compliance"];
+    																$d_counting = $row["d_counting"];
+    																if ($d_counting > 0) { $compliance = ($d_compliance / $d_counting) * 100; }
+    
+    																$s_status = $row["s_status"];
+    																$status_type = array(
+    																	0 => 'Pending',
+    																	1 => 'Approved',
+    																	2 => 'Non Approved',
+    																	3 => 'Emergency Used Only / Spot Purchasing',
+    																	4 => 'Do Not Use',
+    																	5 => 'Active',
+    																	6 => 'Inactive'
+    																);
+    
+    																if ($s_category == "3") {
+    																	$material = $row["s_service"];
+    																	
+    																	if (!empty($material)) {
+    																		$material_result = array();
+    																		$material_arr = explode(", ", $material);
+    																		foreach ($material_arr as $value) {
+    																			$selectMaterial = mysqli_query( $conn,"SELECT service_name FROM tbl_supplier_service WHERE ID=$value" );
+                                                                            	if ( mysqli_num_rows($selectMaterial) > 0 ) {
+    																				$rowMaterial = mysqli_fetch_array($selectMaterial);
+    																				array_push($material_result, htmlentities($rowMaterial['service_name'] ?? ''));
+    																			}
+    																		}
+    																		$material = implode(', ', $material_result);
+    																	}
+    																} else {
+    																	$material = $row["s_material"];
+    																	
+    																	if (!empty($row["m_material_name"])) {
+    																		$material = '<a href="#modalEditMaterial" data-toggle="modal" class="btnEdit_Material" onclick="btnEdit_Material('.$row["m_ID"].', 2, \'modalEditMaterial\')">'.htmlentities($row["m_material_name"] ?? '').'</a>';
+    																	}
+    
+    																	if (!empty($row["m_spec_file"])) {
+    																        $spec_file = $row['m_spec_file'];
+    																        $fileExtension = fileExtension($spec_file);
+    																		$src = $fileExtension['src'];
+    																		$embed = $fileExtension['embed'];
+    																		$type = $fileExtension['type'];
+    																		$file_extension = $fileExtension['file_extension'];
+    																	    $url = $base_url.'uploads/supplier/';
+    
+    																		$material_spec = '<a href="'.$src.$url.rawurlencode($spec_file).$embed.'" data-src="'.$src.$url.rawurlencode($spec_file).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">View</a>';
+    																	}
+    																}
+    																
+    																$address_array = array();
+    																$address = htmlentities($row["s_address"] ?? '');
+    													            $address_arr = explode(" | ", $address);
+    													            if (COUNT($address_arr) < 5) {
+    													                $address_arr = explode(", ", $address);
+    													            }
+    													            array_push($address_array, htmlentities($address_arr[1]));
+    													            array_push($address_array, htmlentities($address_arr[2]));
+    													            array_push($address_array, htmlentities($address_arr[3]));
+    													            array_push($address_array, $address_arr[0]);
+    													            array_push($address_array, $address_arr[4]);
+    													            $address_arr_country = $address_arr[0];
+    													            $address_arr = implode(", ", $address_array);
+    
+    																echo '<tr id="tr_'.$s_ID.'">
+    																	<td>'.htmlentities($s_vendor_code ?? '').'</td>
+    																	<td>'.$s_name.'</td>
+    																	<td>'.htmlentities($c_name ?? '').'</td>
+    																	<td>'.$material.'</td>
+    																	<td class="text-center">'.$material_spec.'</td>
+    																	<td>'.$address_arr.'</td>
+    																	<td class="text-center">'.$address_arr_country.'</td>
+    																	<td>'.htmlentities($cn_name ?? '').'</td>
+    																	<td class="text-center">
+    																		<ul class="list-inline">';
+    																		if ($cn_email != "") { echo '<li><a href="mailto:'.$cn_email.'" target="_blank" title="Email"><i class="fa fa-envelope"></i></a></li>'; }
+    																		if ($cn_phone != "") { echo '<li><a href="tel:'.$cn_phone.'" target="_blank" title="Phone"><i class="fa fa-phone-square"></i></a></li>'; }
+    																		if ($cn_cell != "") { echo '<li><a href="tel:'.$cn_cell.'" target="_blank" title="Cell Number"><i class="fa fa-phone"></i></a></li>'; }
+    																		if ($cn_fax != "") { echo '<li><a href="tel:'.$cn_fax.'" target="_blank" title="Fax"><i class="fa fa-print"></i></a></li>'; }
+    																		echo '</ul>
+    																	</td>
+    																	<td class="text-center">'.intval($compliance).'%</td>
+    																	<td class="text-center">'.$status_type[$s_status].'</td>
+    																	<td class="text-center">
+    																		<div class="btn-group btn-group-circle">
+    																			<a href="#modalView" class="btn btn-outline dark btn-sm btnView" data-toggle="modal" onclick="btnView('. $s_ID .')">View</a>
+    																			<a href="#modalChart" class="btn btn-info btn-sm btnChart" data-toggle="modal" data-id="'. $s_ID .'"><i class="fa fa-line-chart"></i></a>
+    																			<a href="javascript:;" class="btn btn-danger btn-sm btnDelete" onclick="btnDelete('. $s_ID .')">Delete</a>
+    																		</div>
+    																	</td>
+    																</tr>';
+                                                                }
                                                             }
-                                                        }
-                                                    ?>
-                                                </tbody>
-                                            </table>
-                                        </div>
-									</div>
+                                                        ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+    									</div>
                                         <div class="tab-pane" id="tab_actions_received">
 											<select class="form-control margin-bottom-15" id="filterReceived">
 												<option value="">Select</option>
@@ -733,7 +733,7 @@
                                                         <th rowspan="2">Materials/Services</th>
 														<th rowspan="2">Specification File</th>
                                                         <th rowspan="2">Address</th>
-														<th rowspan="2" class="hide">Country</th>
+														<th rowspan="2" class="text-center">Country</th>
                                                         <th colspan="2" class="text-center">Contact Details</th>
                                                         <th rowspan="2" style="width: 100px;" class="text-center">Compliance</th>
                                                         <th rowspan="2" style="width: 100px;" class="text-center">Status</th>
@@ -746,7 +746,8 @@
                                                 </thead>
                                                 <tbody>
                                                     <?php
-														$result = mysqli_query( $conn,"WITH RECURSIVE cte (s_ID, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
+														$result = mysqli_query( $conn,"
+														    WITH RECURSIVE cte (s_ID, s_name, s_reviewed_due, s_status, s_material, s_service, s_address, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
 															(
 															    SELECT
 															    s1.ID AS s_ID,
@@ -794,6 +795,7 @@
 															    AND FIND_IN_SET(d1.name, REPLACE(REPLACE(s1.document, ' ', ''), '|',','  )  ) > 0
 															    WHERE s1.page = 2
 															    AND s1.is_deleted = 0 
+                                                                AND s1.facility_switch = $facility_switch_user_id
 															    AND s1.email = '".$current_userEmail."'
 															    
 															    UNION ALL
@@ -844,6 +846,7 @@
 															    AND FIND_IN_SET(d2.name, REPLACE(s2.document_other, ' | ', ',')  )   > 0
 															    WHERE s2.page = 2
 															    AND s2.is_deleted = 0 
+                                                                AND s2.facility_switch = $facility_switch_user_id
 															    AND s2.email = '".$current_userEmail."'
 															)
 															SELECT
@@ -931,7 +934,8 @@
 																FROM tbl_supplier_material
 															) AS m
 
-															ON FIND_IN_SET(m.ID, REPLACE(r2.s_material, ' ', '')) > 0" );
+															ON FIND_IN_SET(m.ID, REPLACE(r2.s_material, ' ', '')) > 0
+														" );
                                                         if ( mysqli_num_rows($result) > 0 ) {
                                                             $table_counter = 1;
                                                             while($row = mysqli_fetch_array($result)) {
@@ -974,7 +978,8 @@
 																		$material_result = array();
 																		$material_arr = explode(", ", $material);
 																		foreach ($material_arr as $value) {
-																			$selectMaterial = mysqli_query( $conn,"SELECT
+																			$selectMaterial = mysqli_query( $conn,"
+																			    SELECT
 																				c.service_category AS c_service_category
 																				FROM tbl_supplier_service AS s
 
@@ -984,7 +989,8 @@
 																				    FROM tbl_service_category
 																				) AS c
 																				ON s.service_name = c.id
-																				WHERE s.ID = $value" );
+																				WHERE s.ID = $value
+																			" );
 																			$rowMaterial = mysqli_fetch_array($selectMaterial);
 																			array_push($material_result, htmlentities($rowMaterial['c_service_category'] ?? ''));
 																		}
@@ -1030,7 +1036,7 @@
 																	<td>'.$material.'</td>
 																	<td class="text-center">'.$material_spec.'</td>
                                                                     <td>'.$address_arr.'</td>
-                                                                    <td class="hide">'.$address_arr_country.'</td>
+                                                                    <td class="text-center">'.$address_arr_country.'</td>
 																	<td>'.htmlentities($cn_name ?? '').'</td>
 																	<td class="text-center">
 																		<ul class="list-inline">';
@@ -1113,6 +1119,7 @@
 														    FROM tbl_supplier
 														    WHERE page = 1 
 															AND is_deleted = 0
+                                                            AND facility_switch = $facility_switch_user_id
 														) AS s
 														ON FIND_IN_SET(m.ID, REPLACE(s.material, ' ', ''))
 
@@ -1125,6 +1132,7 @@
 														ON s.category = c.ID
 
 														WHERE m.user_id = $switch_user_id
+                                                        AND m.facility_switch = $facility_switch_user_id
 
 														GROUP BY c.ID
 													" );
@@ -1149,10 +1157,12 @@
     														    FROM tbl_supplier
     														    WHERE page = 1 
     														    AND is_deleted = 0
+                                                                AND facility_switch = $facility_switch_user_id
     														) AS s
     														ON FIND_IN_SET(m.ID, REPLACE(s.material, ' ', ''))
     
     														WHERE m.user_id = $switch_user_id
+                                                            AND m.facility_switch = $facility_switch_user_id
     														AND LENGTH(pc.name) > 0
     
     														GROUP BY pc.name
@@ -1201,6 +1211,7 @@
 															    FROM tbl_supplier
 															    WHERE page = 1 
 																AND is_deleted = 0 
+                                                                AND facility_switch = $facility_switch_user_id
 																-- AND user_id = 5 
 															) AS s
 															ON FIND_IN_SET(m.ID, REPLACE(s.material, ' ', ''))
@@ -1214,6 +1225,7 @@
 															ON s.category = c.ID
 
 															WHERE m.user_id = $switch_user_id
+                                                            AND m.facility_switch = $facility_switch_user_id
 														" );
 													    if ($switch_user_id == 1211) {
     														$result = mysqli_query( $conn,"
@@ -1243,10 +1255,12 @@
     															    FROM tbl_supplier
     															    WHERE page = 1 
     															    AND is_deleted = 0
+                                                                    AND facility_switch = $facility_switch_user_id
     															) AS s
     															ON FIND_IN_SET(m.ID, REPLACE(s.material, ' ', ''))
     
     															WHERE m.user_id = $switch_user_id
+                                                                AND m.facility_switch = $facility_switch_user_id
     														" );
 													    }
 													    
@@ -1373,12 +1387,13 @@
 														<th>Vendor Name</th>
 														<th>Category</th>
 														<th class="text-center" style="width: 100px;">Compliance</th>
-														<th class="text-center" style="width: 135px;">Action</th>
+														<th class="text-center" style="width: 185px;">Action</th>
 													</tr>
 												</thead>
 												<tbody>
 													<?php
-														$result = mysqli_query( $conn,"WITH RECURSIVE cte (s_ID, s_name, s_reviewed_due, s_status, s_material, s_service, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
+														$result = mysqli_query( $conn,"
+														    WITH RECURSIVE cte (s_ID, s_name, s_reviewed_due, s_status, s_material, s_service, s_category, s_contact, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
 															(
 															    SELECT
 															    s1.ID AS s_ID,
@@ -1426,6 +1441,7 @@
 															    WHERE s1.page = 1 
 															    AND s1.is_deleted = 0 
 															    AND s1.user_id = $switch_user_id
+															    AND s1.facility_switch = $facility_switch_user_id
 															    
 															    UNION ALL
 															    
@@ -1475,6 +1491,7 @@
 															    WHERE s2.page = 1 
 															    AND s2.is_deleted = 0 
 															    AND s2.user_id = $switch_user_id
+															    AND s2.facility_switch = $facility_switch_user_id
 															)
 															SELECT
 															s_ID,
@@ -1536,7 +1553,8 @@
 
 															GROUP BY s_ID
 
-															ORDER BY s_name" );
+															ORDER BY s_name
+														" );
 														if ( mysqli_num_rows($result) > 0 ) {
 															$table_counter = 1;
 															while($row = mysqli_fetch_array($result)) {
@@ -1672,59 +1690,54 @@
                                         </div>
 								
 										<!-- Nelmar Supplier Analytics -->
-											<div class="tab-pane" id="tab_supplier_analytics">                       
-												<div class="row widget-row">   																																	
-													<div class="col-md-6">                                     
-														<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">   
-															<h3 class="d-flex justify-content-center">Send</h3>   
-																<div class="widget-thumb-wrap">                                       
-																	<div id="waterfallChart1" style="width: 100%; height: 500px;">																		
-																	</div>                                        
-																</div>
-															</div>     
-														</div>  
-													<div class="col-md-6">                                     
-														<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">   
-															<h3 class="d-flex justify-content-center">Received</h3>   
-																<div class="widget-thumb-wrap">                                       
-																	<div id="receivedchartdiv" style="width: 100%; height: 500px;">																		
-																	</div>                                        
-																</div>
-															</div>     
-														</div>  													
-													<div class="col-md-6">                                     
-														<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">   
-															<h3 class="d-flex justify-content-center">Requirements</h3>   
-																<div class="widget-thumb-wrap">                                       
-																	<div id="requirementchartdiv" style="width: 100%; height: 500px;">																		
-																	</div>                                        
-																</div>
-															</div>     
-														</div> 
-													<div class="col-md-6">                                     
-														<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">   
-															<h3 class="d-flex justify-content-center">Materials</h3>   
-																<div class="widget-thumb-wrap">                                       
-																	<div id="materialchartdiv" style="width: 100%; height: 500px;">																	
-																</div>                                        
-															</div>
-														</div>     
-													</div> 
+										<div class="tab-pane" id="tab_supplier_analytics">                       
+											<div class="row widget-row">   																																	
+												<div class="col-md-6">                                     
+													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">   
+														<h3 class="d-flex justify-content-center">Send</h3>   
+														<div class="widget-thumb-wrap">                                       
+															<div id="waterfallChart1" style="width: 100%; height: 500px;"></div>                                        
+														</div>
+													</div>     
+												</div>  
+												<div class="col-md-6">                                     
+													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">   
+														<h3 class="d-flex justify-content-center">Received</h3>   
+														<div class="widget-thumb-wrap">                                       
+															<div id="receivedchartdiv" style="width: 100%; height: 500px;"></div>                                        
+														</div>
+													</div>     
+												</div>  													
+												<div class="col-md-6">                                     
+													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">   
+														<h3 class="d-flex justify-content-center">Requirements</h3>   
+														<div class="widget-thumb-wrap">                                       
+															<div id="requirementchartdiv" style="width: 100%; height: 500px;"></div>                                        
+														</div>
+													</div>     
+												</div> 
+												<div class="col-md-6">                                     
+													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">   
+														<h3 class="d-flex justify-content-center">Materials</h3>   
+														<div class="widget-thumb-wrap">                                       
+															<div id="materialchartdiv" style="width: 100%; height: 500px;"></div>                                        
+														</div>
+													</div>     
+												</div> 
 												<div class="col-md-12"> 
 													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-20">                                         
 														<h3 class="d-flex justify-content-center">Frequency</h3>
-															<div class="widget-thumb-wrap">
-																<div id="donutChart2" style="width: 90%; height: 400px;">
-																</div>                                 
-															</div> 
-														</div>                               
-													</div>																
-												</div>
+														<div class="widget-thumb-wrap">
+															<div id="donutChart2" style="width: 90%; height: 400px;"></div>                                 
+														</div> 
+													</div>                               
+												</div>																
 											</div>
 										</div>
-                                    </div>
+									</div>
                                 </div>
                             </div>
+                        </div>
                             <!-- END BORDERED TABLE PORTLET-->
                         </div>
 
@@ -2980,56 +2993,55 @@
                             </div>
                         </div>
                         
-					<!--Nelmar Supplier Analytics Modal -->
+					    <!--Nelmar Supplier Analytics Modal -->
 						<div id="modalChart" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
 							<div class="modal-dialog modal-lg">
 								<div class="modal-content">
 									<div class="modal-header">
 										<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
 										<h4 class="modal-title">Vendor Chart</h4>
-									  </div>
+									</div>
 									<div class="modal-body">																			
-										<div class="row ">   
-											<div class="col-md-12">   											                                  
-													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-10">   
-														<h3 class="d-flex justify-content-center">Requirements</h3>   
-																<div class="widget-thumb-wrap">                                       																
-																	<div id="requirementChartDiv" style="width: 100%; height: 500px;">																	
-																	</div>
-																</div>
-															</div>     
-														</div> 
-												<div class="col-md-12">                                     
-													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-10">   
-														<h3 class="d-flex justify-content-center">Compliance</h3>   
-																<div class="widget-thumb-wrap">                                       																
-																	<div id="complianceChartDiv" style="width: 100%; height: 500px;">																	
-																	</div>
-																</div>
-															</div>     
-														</div> 
-												<div class="col-md-12"> 
-													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-10">                                         
-														 <h3 class="d-flex justify-content-center">Materials</h3>
-																<div class="widget-thumb-wrap">
-																	<div id="materialsChartDiv" style="width: 100%; height: 500px;">																	
-																	</div>
-																</div>                                 
-															</div> 
-														</div>  
-																				
-												<div class="col-md-12"> 
-													<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-10">                                         
-														 <h3 class="d-flex justify-content-center">Audit & Review</h3>
-																<div class="widget-thumb-wrap">
-																	<div id="auditChartdiv" style="width: 100%; height: 500px;">																	
-																	</div>
-																</div>                                 
-															</div> 
+									    <div class="row ">   
+										    <div class="col-md-12">   											                                  
+												<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-10">   
+													<h3 class="d-flex justify-content-center">Requirements</h3>   
+													<div class="widget-thumb-wrap">                                       																
+														<div id="requirementChartDiv" style="width: 100%; height: 500px;">																	
 														</div>
-													</div>													
-												</div>
-										  	<div class="modal-footer">
+													</div>
+												</div>     
+											</div> 
+											<div class="col-md-12">                                     
+												<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-10">   
+													<h3 class="d-flex justify-content-center">Compliance</h3>   
+													<div class="widget-thumb-wrap">                                       																
+														<div id="complianceChartDiv" style="width: 100%; height: 500px;">																	
+														</div>
+													</div>
+												</div>     
+											</div> 
+											<div class="col-md-12"> 
+												<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-10">                                         
+													<h3 class="d-flex justify-content-center">Materials</h3>
+													<div class="widget-thumb-wrap">
+														<div id="materialsChartDiv" style="width: 100%; height: 500px;">																	
+														</div>
+													</div>                                 
+												</div> 
+											</div> 
+											<div class="col-md-12"> 
+												<div class="widget-thumb widget-bg-color-white text-uppercase margin-bottom-10">                                         
+													<h3 class="d-flex justify-content-center">Audit & Review</h3>
+													<div class="widget-thumb-wrap">
+														<div id="auditChartdiv" style="width: 100%; height: 500px;">																	
+														</div>
+													</div>                                 
+												</div> 
+											</div>
+										</div>													
+									</div>
+								    <div class="modal-footer">
 										<button type="button" class="btn btn-outline dark" data-dismiss="modal">Close</button>
 									</div>
 								</div>
@@ -3049,7 +3061,7 @@
         <script type="text/javascript" src="exes/tableExport.js"></script>
 
 
-        <?php if($switch_user_id == 464) { ?>
+        <?php if($switch_user_id == 464 OR $switch_user_id == 1106) { ?>
             <script src="AnalyticsIQ/supplier_chart.js"></script>
         <?php } ?>		
         
@@ -3948,7 +3960,7 @@
                                 html += '<td>'+obj.material+'</td>';
                                 html += '<td></td>';
                                 html += '<td>'+obj.address+'</td>';
-                                html += '<td class="hide"></td>';
+                                html += '<td class="text-center">'+obj.country+'</td>';
                                 html += '<td>'+obj.contact_name+'</td>';
                                 html += '<td class="text-center">'+obj.contact_info+'</td>';
                                 html += '<td class="text-center">'+obj.compliance+'%</td>';
@@ -4036,7 +4048,7 @@
                             html += '<td>'+obj.material+'</td>';
                             html += '<td></td>';
                             html += '<td>'+obj.address+'</td>';
-                            html += '<td class="hide"></td>';
+                            html += '<td class="text-center">'+obj.country+'</td>';
                             html += '<td>'+obj.contact_name+'</td>';
                             html += '<td class="text-center">'+obj.contact_info+'</td>';
                             html += '<td class="text-center">'+obj.compliance+'%</td>';

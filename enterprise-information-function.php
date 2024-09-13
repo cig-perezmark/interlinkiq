@@ -1901,6 +1901,7 @@ if(isset($_POST["submitPROCESS"]))
         $id = $_POST["ids"];
         $BusinessPurpose = mysqli_real_escape_string($conn,$_POST["BusinessPurpose"]);
         $enterpriseOperation = mysqli_real_escape_string($conn,$_POST["enterpriseOperation"]);
+        $facility_switch = mysqli_real_escape_string($conn,$_POST["facility_switch"]);
         $enterpriseEmployees = mysqli_real_escape_string($conn,$_POST["enterpriseEmployees"]);
         $NumberofEmployees = mysqli_real_escape_string($conn,$_POST["NumberofEmployees"]);
         $enterpriseImporter = mysqli_real_escape_string($conn,$_POST["enterpriseImporter"]);
@@ -1930,7 +1931,7 @@ if(isset($_POST["submitPROCESS"]))
     }
             $bPROCESS = substr($bPROCESS, 0, -2);
             $cCategories = substr($cCategories, 0, -2);
-            mysqli_query($conn,"update tblEnterpiseDetails set BusinessPROCESS ='$bPROCESS',Categories ='$cCategories', EnterpriseProcessSpecify = '$EnterpriseProcessSpecify', BusinessPurpose= '$BusinessPurpose',enterpriseOperation='$enterpriseOperation',enterpriseEmployees='$enterpriseEmployees',NumberofEmployees='$NumberofEmployees',enterpriseImporter='$enterpriseImporter',Country_importer='$Country_importer',enterpriseexporter='$enterpriseexporter',Country_exporter='$Country_exporter',enterpriseProducts='$enterpriseProducts',ProductDesc='$ProductDesc',enterpriseServices='$enterpriseServices' where enterp_id='$id'");  
+            mysqli_query($conn,"update tblEnterpiseDetails set BusinessPROCESS ='$bPROCESS',Categories ='$cCategories', EnterpriseProcessSpecify = '$EnterpriseProcessSpecify', BusinessPurpose= '$BusinessPurpose',enterpriseOperation='$enterpriseOperation', facility_switch='$facility_switch', enterpriseEmployees='$enterpriseEmployees',NumberofEmployees='$NumberofEmployees',enterpriseImporter='$enterpriseImporter',Country_importer='$Country_importer',enterpriseexporter='$enterpriseexporter',Country_exporter='$Country_exporter',enterpriseProducts='$enterpriseProducts',ProductDesc='$ProductDesc',enterpriseServices='$enterpriseServices' where enterp_id='$id'");  
             echo '<script> window.location.href = "enterprise-info#ED";</script>';
 }
 

@@ -107,7 +107,7 @@
                                             <tbody>
                                                 <tr>
                                                     <?php
-                                                        $result = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_department WHERE deleted = 0 AND status = 1 AND user_id = $switch_user_id ORDER BY title" );
+                                                        $result = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_department WHERE deleted = 0 AND status = 1 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id ORDER BY title" );
                                                         if ( mysqli_num_rows($result) > 0 ) {
                                                             while($row = mysqli_fetch_array($result)) {
 
@@ -229,11 +229,13 @@
                                                                     FROM tbl_hr_trainings
                                                                     WHERE status = 1
                                                                     AND user_id = $switch_user_id
+                                                                    AND facility_switch = $facility_switch_user_id
                                                                     AND deleted = 0
                                                                 ) AS t 
                                                                 ON FIND_IN_SET(j.ID, REPLACE(t.job_description_id, ' ', ''))
                                                                 WHERE j.status = 1
                                                                 AND j.user_id = $switch_user_id
+                                                                AND j.facility_switch = $facility_switch_user_id
                                                                 GROUP BY j.ID
 
                                                                 ORDER BY j.title" );
@@ -282,7 +284,6 @@
                                                                         </td>
                                                                     </tr>';
                                                                 }
-                                                                
                                                             } else {
                                                                 echo '<tr class="text-center text-default"><td colspan="6">Empty Record</td></tr>';
                                                             }
@@ -328,11 +329,13 @@
                                                                     FROM tbl_hr_trainings
                                                                     WHERE status = 1
                                                                     AND user_id = $switch_user_id
+                                                                    AND facility_switch = $facility_switch_user_id
                                                                     AND deleted = 0
                                                                 ) AS t 
                                                                 ON FIND_IN_SET(j.ID, REPLACE(t.job_description_id, ' ', ''))
                                                                 WHERE j.status = 0
                                                                 AND j.user_id = $switch_user_id
+                                                                AND j.facility_switch = $facility_switch_user_id
                                                                 GROUP BY j.ID
 
                                                                 ORDER BY j.title" );
@@ -381,7 +384,6 @@
                                                                         </td>
                                                                     </tr>';
                                                                 }
-                                                                
                                                             } else {
                                                                 echo '<tr class="text-center text-default"><td colspan="6">Empty Record</td></tr>';
                                                             }
@@ -426,7 +428,7 @@
                                                         <option value="">Select</option>
 
                                                         <?php
-                                                            $result = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_department WHERE status = 1 AND user_id = $switch_user_id" );
+                                                            $result = mysqli_query( $conn,"SELECT ID, title FROM tbl_hr_department WHERE status = 1 AND user_id = $switch_user_id AND facility_switch = $facility_switch_user_id" );
                                                             if ( mysqli_num_rows($result) > 0 ) {
                                                                 while($row = mysqli_fetch_array($result)) {
                                                                     echo '<option value="'. $row["ID"] .'">'. htmlentities($row["title"] ?? '') .'</option>';

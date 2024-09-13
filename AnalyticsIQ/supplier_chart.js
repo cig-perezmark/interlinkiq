@@ -339,11 +339,7 @@ $('#modalChart').on('shown.bs.modal', function (e) {
     });
 });
 
-
 //Send Tab
-
-
-
 am5.ready(function() {
   // First Waterfall Chart
   var root1 = am5.Root.new("waterfallChart1");
@@ -451,12 +447,7 @@ am5.ready(function() {
     .catch(error => console.error('Error fetching data:', error));
 });
 
-
-
-
-//FOR TOTAL RECEIVED Tab
-
-
+//Receive Tab
 am5.ready(function() {
   var root = am5.Root.new("receivedchartdiv");
 
@@ -560,52 +551,138 @@ am5.ready(function() {
       });
 });
 
-
-
-//Frequency 
-
+//Requiremnets Tab
 am5.ready(function() {
-  // Second Donut Chart
-  var root2 = am5.Root.new("donutChart2");
-  root2.setThemes([
-    am5themes_Animated.new(root2)
-  ]);
-
-  var chart2 = root2.container.children.push(
-    am5percent.PieChart.new(root2, {
-      layout: root2.verticalLayout,
-      innerRadius: am5.percent(50)
-    })
-  );
-
-  var series2 = chart2.series.push(
-    am5percent.PieSeries.new(root2, {
-      valueField: "value",
-      categoryField: "category"
-    })
-  );
-
-  fetch('AnalyticsIQ/supplier_send_data.php')
-    .then(response => response.json())
-    .then(data => {
-      series2.data.setAll([
-        { category: "Once Per Day", value: parseInt(data.lineData.once_per_day), color: am5.color(0xc0ff80) },
-        { category: "Once Per Week", value: parseInt(data.lineData.once_per_week), color: am5.color(0x90EE90) },
-        { category: "1st and 15th", value: parseInt(data.lineData.first_and_fifteenth) },
-        { category: "Once Per Month", value: parseInt(data.lineData.once_per_month) },
-        { category: "Once Per Year", value: parseInt(data.lineData.once_per_year) }
+    function createChart(rootElementId, chartData, maxVal) {
+      var root = am5.Root.new(rootElementId);
+  
+      root.setThemes([
+        am5themes_Animated.new(root)
       ]);
-
-      series2.labels.template.set("text", "{category}: {value}");
-    })
-    .catch(error => console.error('Error fetching data:', error));
-});
-
-
-
-//Materials and Requiremnets Tab
-
-  am5.ready(function() {
+  
+      var chart = root.container.children.push(am5radar.RadarChart.new(root, {
+        panX: false,
+        panY: false,
+        wheelX: "panX",
+        wheelY: "zoomX",
+        innerRadius: am5.percent(20),
+        startAngle: -90,
+        endAngle: 180
+      }));
+  
+      var cursor = chart.set("cursor", am5radar.RadarCursor.new(root, {
+        behavior: "zoomX"
+      }));
+  
+      cursor.lineY.set("visible", false);
+  
+      var xRenderer = am5radar.AxisRendererCircular.new(root, {});
+      xRenderer.labels.template.setAll({
+        radius: 10
+      });
+      xRenderer.grid.template.setAll({
+        forceHidden: true
+      });
+      var xAxis = chart.xAxes.push(am5xy.ValueAxis.new(root, {
+        renderer: xRenderer,
+        min: 0,
+        max: maxVal,
+        strictMinMax: true,
+        numberFormat: "#'%'",
+        tooltip: am5.Tooltip.new(root, {})
+      }));
+  
+      var yRenderer = am5radar.AxisRendererRadial.new(root, {
+        minGridDistance: 20
+      });
+      yRenderer.labels.template.setAll({
+        centerX: am5.p100,
+        fontWeight: "500",
+        fontSize: 18,
+        templateField: "columnSettings"
+      });
+      yRenderer.grid.template.setAll({
+        forceHidden: true
+      });
+      var yAxis = chart.yAxes.push(am5xy.CategoryAxis.new(root, {
+        categoryField: "category",
+        renderer: yRenderer
+      }));
+      yAxis.data.setAll(chartData);
+  
+      var series1 = chart.series.push(am5radar.RadarColumnSeries.new(root, {
+        xAxis: xAxis,
+        yAxis: yAxis,
+        clustered: false,
+        valueXField: "full",
+        categoryYField: "category",
+        fill: root.interfaceColors.get("alternativeBackground")
+      }));
+      series1.columns.template.setAll({
+        width: am5.p100,
+        fillOpacity: 0.08,
+        strokeOpacity: 0,
+        cornerRadius: 20
+      });
+      series1.data.setAll(chartData);
+  
+      var series2 = chart.series.push(am5radar.RadarColumnSeries.new(root, {
+        xAxis: xAxis,
+        yAxis: yAxis,
+        clustered: false,
+        valueXField: "value",
+        categoryYField: "category"
+      }));
+      series2.columns.template.setAll({
+        width: am5.p100,
+        strokeOpacity: 0,
+        tooltipText: "{category}: {valueX}%",
+        cornerRadius: 20,
+        templateField: "columnSettings"
+      });
+      series2.data.setAll(chartData);
+  
+      series1.appear(1000);
+      series2.appear(1000);
+      chart.appear(1000, 100);
+    }
+  
+    fetch('AnalyticsIQ/supplier_requirements_data.php')
+      .then(response => response.json())
+      .then(data => {
+        var totalRequirements = data.total_requirements;
+        var complianceValue = data.compliance_count;
+        var nonComplianceValue = data.non_compliance_count;
+        var requirementData = [{
+          category: totalRequirements + " Total Requirements",
+          value: totalRequirements,
+          full: totalRequirements,
+          columnSettings: {
+            fill: am5.color(0x4da6ff)
+          }
+        }, {
+          category: complianceValue + " Compliance",
+          value: totalRequirements === 0 ? 100 : (complianceValue / totalRequirements) * 100,
+          full: 100,
+          columnSettings: {
+            fill: am5.color(0x32CD32)
+          }
+        }, {
+          category: nonComplianceValue + " Non-Compliance",
+          value: totalRequirements === 0 ? 100 : (nonComplianceValue / totalRequirements) * 100,
+          full: 100,
+          columnSettings: {
+            fill: am5.color(0xff0000)
+          }
+        }];
+  
+        createChart("requirementchartdiv", requirementData, 100);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }); 
+  
+//Materials Tab
+am5.ready(function() {
     function createChart(rootElementId, chartData, maxVal) {
       var root = am5.Root.new(rootElementId);
   
@@ -703,32 +780,6 @@ am5.ready(function() {
     fetch('AnalyticsIQ/supplier_materials_data.php')
       .then(response => response.json())
       .then(data => {
-        var totalRequirements = data.total_requirements;
-        var complianceValue = data.compliance_count;
-        var nonComplianceValue = data.non_compliance_count;
-        var requirementData = [{
-          category: totalRequirements + " Total Requirements",
-          value: totalRequirements,
-          full: totalRequirements,
-          columnSettings: {
-            fill: am5.color(0x4da6ff)
-          }
-        }, {
-          category: complianceValue + " Compliance",
-          value: totalRequirements === 0 ? 100 : (complianceValue / totalRequirements) * 100,
-          full: 100,
-          columnSettings: {
-            fill: am5.color(0x32CD32)
-          }
-        }, {
-          category: nonComplianceValue + " Non-Compliance",
-          value: totalRequirements === 0 ? 100 : (nonComplianceValue / totalRequirements) * 100,
-          full: 100,
-          columnSettings: {
-            fill: am5.color(0xff0000)
-          }
-        }];
-  
         var totalMaterials = data.total_materials;
         var activeMaterialsValue = data.total_active_materials;
         var inactiveMaterialsValue = data.total_inactive_materials;
@@ -755,9 +806,47 @@ am5.ready(function() {
           }
         }];
   
-        createChart("requirementchartdiv", requirementData, 100);
         createChart("materialchartdiv", materialData, 100);
       })
       .catch(error => console.error('Error fetching data:', error));
-  }); // end am5.ready()
-  
+});
+
+//Frequency 
+am5.ready(function() {
+  // Second Donut Chart
+  var root2 = am5.Root.new("donutChart2");
+  root2.setThemes([
+    am5themes_Animated.new(root2)
+  ]);
+
+  var chart2 = root2.container.children.push(
+    am5percent.PieChart.new(root2, {
+      layout: root2.verticalLayout,
+      innerRadius: am5.percent(50)
+    })
+  );
+
+  var series2 = chart2.series.push(
+    am5percent.PieSeries.new(root2, {
+      valueField: "value",
+      categoryField: "category"
+    })
+  );
+
+  fetch('AnalyticsIQ/supplier_send_data.php')
+    .then(response => response.json())
+    .then(data => {
+      series2.data.setAll([
+        { category: "Once Per Day", value: parseInt(data.lineData.once_per_day), color: am5.color(0xc0ff80) },
+        { category: "Once Per Week", value: parseInt(data.lineData.once_per_week), color: am5.color(0x90EE90) },
+        { category: "1st and 15th", value: parseInt(data.lineData.first_and_fifteenth) },
+        { category: "Once Per Month", value: parseInt(data.lineData.once_per_month) },
+        { category: "Once Per Year", value: parseInt(data.lineData.once_per_year) }
+      ]);
+
+      series2.labels.template.set("text", "{category}: {value}");
+    })
+    .catch(error => console.error('Error fetching data:', error));
+});
+
+// end am5.ready()

@@ -456,30 +456,22 @@ $builderTabs = [
         </div>
         <div class="row" style="margin-bottom: 2rem;">
             <div class="col-md-12">
-                <p class="">
-                    Hazard identification (column 2) considers known or reasonably foreseeable hazards (i.e., potential hazards) that may be present in the food because the hazard occurs naturally, the hazard may be unintentionally introduced, or the hazard may be intentionally introduced for economic gain.
-                </p>
+                <h5 class="bold">Hazard Assessment</h5>
             </div>
             <div class="col-md-6">
-                <ul style="list-style-type: none; font-weight: 600; display:grid; gap:.5rem">
-                    <li>
-                        B = Biological hazards including bacteria, viruses, parasites, and environmental pathogens
-                    </li>
-                    <li>
-                        C = Chemical hazards, including radiological hazards, food allergens, substances such as pesticides and drug residues, natural toxins, decomposition, and unapproved food or color additives
-                    </li>
-                    <li>
-                        P = Physical hazards include potentially harmful extraneous matter that may cause choking, injury, or other adverse health effects
-                    </li>
-                    <li>
-                        A = Allergen Hazards
-                    </li>
-                    <li>
-                        I = Intentional Contamination
-                    </li>
-                    <li>
-                        E = Economic Fraud
-                    </li>
+                <h5 class="bold">Likelihood occurrence:</h5>
+                <ul>
+                    <li>Rarely&mdash;only one or two occurrences known historically, or has never happened </li>
+                    <li>Occassionally&mdash;known to occur, but less than once or twice a year</li>
+                    <li>Sometimes&mdash;known to occur, more frequently than a couple of times a year</li>
+                    <li>Frequently&mdash;known to occur on regular basis</li>
+                </ul>
+                <h5 class="bold">Severity of occurrence:</h5>
+                <ul>
+                    <li>Inconsequential&mdash;little to known risk to customer health or safety&mdash;nuisance or annoyance </li>
+                    <li>Limited&mdash;can cause some harm to a customer, but will not lead to a hospitalization clinic visit, even in a vulnerable population</li>
+                    <li>Moderate&mdash;will cause illness or injury to a customer, potentially leading to a hospital or clinic visit and hospitalization in a vulnerable population</li>
+                    <li>Catastrophic&mdash;will cause sever illness or injury with a significant chance of disability or death in all populations</li>
                 </ul>
             </div>
             <div class="col-md-6">
@@ -487,81 +479,64 @@ $builderTabs = [
                     <table class="table hazardAssessmentTable">
                         <tbody>
                             <tr>
-                                <td colspan="3">Risk Assessment Control Measure</td>
-                                <td colspan="5" class="bold" style="text-align:center;">Severity</td>
+                                <td colspan="2"></td>
+                                <td colspan="4" justlabel class="bold" style="text-align:center;">Likelihood</td>
                             </tr>
                             <tr>
-                                <td colspan="3" data-risk="low">1 &mdash; 4 = Low Risk</td>
-                                <td rowspan="2" style="width: 14%;" class="ll">Negligible</td>
-                                <td rowspan="2" style="width: 14%;" class="ll">Minor</td>
-                                <td rowspan="2" style="width: 14%;" class="ll">Moderate</td>
-                                <td rowspan="2" style="width: 14%;" class="ll">Major</td>
-                                <td rowspan="2" style="width: 14%;" class="ll">Extreme</td>
+                                <td colspan="2"></td>
+                                <td style="width: 16%;" class="ll">Rarely<br>(1)</td>
+                                <td style="width: 16%;" class="ll">Occassionally<br>(2)</td>
+                                <td style="width: 16%;" class="ll">Sometimes<br>(3)</td>
+                                <td style="width: 16%;" class="ll">Frequently<br>(4)</td>
                             </tr>
                             <tr>
-                                <td colspan="3" data-risk="medium">5 &mdash; 10 = Medium Risk</td>
+                                <td rowspan="4" justlabel class="bold" style="text-orientation: mixed;writing-mode: vertical-lr;transform: rotate(180deg); text-align:center;">
+                                    Severity </td>
+                                <td class="ll">Inconsequential<br>(1)</td>
+                                <td data-risk="low">I&mdash;R<br>(1)</td>
+                                <td data-risk="low">I&mdash;O<br>(2)</td>
+                                <td data-risk="low">I&mdash;S<br>(3)</td>
+                                <td data-risk="low">I&mdash;F<br>(4)</td>
                             </tr>
                             <tr>
-                                <td colspan="3" data-risk="high">12 &mdash; 25 = High Risk</td>
-                                <td>1</td>
-                                <td>2</td>
-                                <td>3</td>
-                                <td>4</td>
-                                <td>5</td>
+                                <td class="ll">Limited<br>(3)</td>
+                                <td data-risk="low">L&mdash;R<br>(3)</td>
+                                <td data-risk="acceptable">L&mdash;O<br>(6)</td>
+                                <td data-risk="acceptable">L&mdash;S<br>(9)</td>
+                                <td data-risk="significant">L&mdash;F<br>(12)</td>
                             </tr>
                             <tr>
-                                <td rowspan="5" class="bold" style="text-orientation: mixed;writing-mode: vertical-lr;transform: rotate(180deg); text-align:center;">
-                                    (Probability) <br> Likelihood
-                                </td>
-                                <td>Very Unlikely</td>
-                                <td>1</td>
-                                <td data-risk="low">1</td>
-                                <td data-risk="low">2</td>
-                                <td data-risk="low">3</td>
-                                <td data-risk="low">4</td>
-                                <td data-risk="medium">5</td>
+                                <td class="ll">Moderate<br>(5)</td>
+                                <td data-risk="acceptable">M&mdash;R<br>(5)</td>
+                                <td data-risk="significant">M&mdash;O<br>(10)</td>
+                                <td data-risk="significant">M&mdash;S<br>(15)</td>
+                                <td data-risk="high">M&mdash;F<br>(20)</td>
                             </tr>
                             <tr>
-                                <td>Rarely Occur</td>
-                                <td>2</td>
-                                <td data-risk="low">2</td>
-                                <td data-risk="low">4</td>
-                                <td data-risk="medium">6</td>
-                                <td data-risk="medium">8</td>
-                                <td data-risk="medium">10</td>
+                                <td class="ll">Catastrophic<br>(10)</td>
+                                <td data-risk="significant">C&mdash;R<br>(10)</td>
+                                <td data-risk="high">C&mdash;O<br>(20)</td>
+                                <td data-risk="high">C&mdash;S<br>(30)</td>
+                                <td data-risk="high">C&mdash;F<br>(40)</td>
                             </tr>
                             <tr>
-                                <td>Possible</td>
-                                <td>3</td>
-                                <td data-risk="low">3</td>
-                                <td data-risk="medium">6</td>
-                                <td data-risk="medium">9</td>
-                                <td data-risk="high">12</td>
-                                <td data-risk="high">15</td>
+                                <td colspan="6"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table hazardAssessmentLegend">
+                        <tbody>
+                            <tr>
+                                <td data-risk="low" style="width: 10%;"></td>
+                                <td style="width: 40%;">Low Risk</td>
+                                <td data-risk="significant" style="width: 10%;"></td>
+                                <td style="width: 40%;">Significant Risk (Preventive Control)</td>
                             </tr>
                             <tr>
-                                <td>Likely Occur</td>
-                                <td>4</td>
-                                <td data-risk="low">4</td>
-                                <td data-risk="medium">8</td>
-                                <td data-risk="high">12</td>
-                                <td data-risk="high">16</td>
-                                <td data-risk="high">20</td>
-                            </tr>
-                            <tr>
-                                <td>Occurs Frequently</td>
-                                <td>5</td>
-                                <td data-risk="medium">5</td>
-                                <td data-risk="medium">10</td>
-                                <td data-risk="high">15</td>
-                                <td data-risk="high">20</td>
-                                <td data-risk="high">25</td>
-                            </tr>
-                            <tr>
-                                <td colspan="8"></td>
-                            </tr>
-                            <tr>
-                                <td colspan="8">Risk = Severity x Likelihood (Probability)</td>
+                                <td data-risk="acceptable"></td>
+                                <td>Acceptable Risk</td>
+                                <td data-risk="high"></td>
+                                <td>High Risk (CCP)</td>
                             </tr>
                         </tbody>
                     </table>
@@ -572,7 +547,7 @@ $builderTabs = [
             <table id="hbHazardAnalysis">
                 <thead>
                     <tr>
-                        <th style="width: 13%;" rowspan="2">
+                        <th style="width: 13%;">
                             <div style="display:flex; align-items:center;flex-direction:column; justify-content:space-between;gap:3rem;">
                                 <span>Process Step </span>
                                 <label class="stepSelector">
@@ -583,42 +558,58 @@ $builderTabs = [
                                 </label>
                             </div>
                         </th>
-                        <th colspan="2" style="width: 26%;" rowspan="2">
+                        <th colspan="2" style="width: 26%;">
                             Identify potential hazards introduced, controlled, or enhanced at this step <br>
                             <small class="text-muted font-normal">
-                                Severity Level (S): <br>
-                                <ul style="list-style-type:none; margin:0;padding:0;">
-                                    <li>1 = Negligible</li>
-                                    <li>2 = Minor</li>
-                                    <li>3 = Moderate</li>
-                                    <li>4 = Major</li>
-                                    <li>5 = Extreme</li>
-                                </ul>
-                            </small>
+                                B = biological, C = chemical, P = physical </small>
                         </th>
-                        <th style="width: 11%;" colspan="2">
-                            Do any potential food safety hazards require preventive control?
+                        <th style="width: 5%;" class="tooltips" data-container="body" data-placement="bottom" data-html="true" data-original-title="Severity&mdash;Likelihood rating">S&mdash;L</th>
+                        <th style="width: 10%;">
+                            Is the Potential Food Safety Hazard Reasonably Likely to Occur (RLTO)? <br>
+                            <small class="text-muted font-normal"> (Yes or No) </small>
                         </th>
-                        <th style="width: 10%;" rowspan="2">
-                            Justify your decision
-                        </th>
-                        <th style="width: 20%;" rowspan="2">
-                            What preventive control measure(s) can be applied to significantly minimize or prevent the food safety hazard?<br>
-                            Process including CCPs, Allergen, Sanitation, Supply-chain, other preventive control
-                        </th>
-                        <th style="width: 10%;" colspan="2">
-                            Is the preventive control applied at this step?
-                        </th>
-                    </tr>
-                    <tr style="text-align: center;">
-                        <td class="noborder">Yes/No</td>
-                        <td>Likelihood (L)</td>
-                        <td>Yes/No</td>
-                        <td>Risk</td>
+                        <th style="width: 20%;"> Justification/Basis for Decision</th>
+                        <th style="width: 18%;">
+                            What measure(s) can be applied to prevent or eliminate the hazard or reduce it to an acceptable level? </th>
+                        <th style="width: 8%;">PC/CCP?</th>
                     </tr>
                 </thead>
                 <tbody class="haccp-builder-table-body"></tbody>
             </table>
+        </div>
+        <div class="hide" id="s-l-rating-selection-container">
+            <ul id="s-l-rating-selection" class="dropdown-menu">
+                <li style="padding: 1rem; width: 32rem;" class="bg-grey-cararra">
+                    <table class="table hazardAssessmentTable slratingtable" style="background-color: transparent;">
+                        <tbody>
+                            <tr>
+                                <td style="width: 25%" data-risk="low">I&mdash;R<br>(1)<span></span></td>
+                                <td style="width: 25%" data-risk="low">I&mdash;O<br>(2)<span></span></td>
+                                <td style="width: 25%" data-risk="low">I&mdash;S<br>(3)<span></span></td>
+                                <td style="width: 25%" data-risk="low">I&mdash;F<br>(4)<span></span></td>
+                            </tr>
+                            <tr>
+                                <td data-risk="low">L&mdash;R<br>(3)<span></span></td>
+                                <td data-risk="acceptable">L&mdash;O<br>(6)<span></span></td>
+                                <td data-risk="acceptable">L&mdash;S<br>(9)<span></span></td>
+                                <td data-risk="significant">L&mdash;F<br>(12)<span></span></td>
+                            </tr>
+                            <tr>
+                                <td data-risk="acceptable">M&mdash;R<br>(5)<span></span></td>
+                                <td data-risk="significant">M&mdash;O<br>(10)<span></span></td>
+                                <td data-risk="significant">M&mdash;S<br>(15)<span></span></td>
+                                <td data-risk="high">M&mdash;F<br>(20)<span></span></td>
+                            </tr>
+                            <tr>
+                                <td data-risk="significant">C&mdash;R<br>(10)<span></span></td>
+                                <td data-risk="high">C&mdash;O<br>(20)<span></span></td>
+                                <td data-risk="high">C&mdash;S<br>(30)<span></span></td>
+                                <td data-risk="high">C&mdash;F<br>(40)<span></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </li>
+            </ul>
         </div>
     </div>
     <div data-section="ccpDetermination" class="tab-pane" id="ccp_determination">

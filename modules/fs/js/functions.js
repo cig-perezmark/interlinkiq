@@ -243,7 +243,7 @@ function addProductBtnClick() {
         const tableBody = $("#addedProductsList");
         tableBody.append(`
             <tr>
-s                <td style="width: 18%">
+                <td style="width: 18%">
                     <div class="d-flex-center">
                         <img src="${__selectedProductData.image}" alt="Product Image" style="width: 8rem; margin-right: 1rem">
                         <div>

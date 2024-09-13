@@ -233,6 +233,10 @@ div + :has(table.table-borderless) {
     border-top-color: transparent;
 }
 
+#haccp_builder .tab-content {
+    /* min-height: 100vh; */
+}
+
 #builder-title {
     scroll-margin-top: 200px;
 }
@@ -323,7 +327,10 @@ p.form-control.borderless.hover:hover {
 [data-risk="low"] {
     background-color: #a1f1b2;
 }
-[data-risk="medium"] {
+[data-risk="significant"] {
+    background-color: #f3ca8b;
+}
+[data-risk="acceptable"] {
     background-color: #fef77d;
 }
 [data-risk="high"] {
@@ -554,7 +561,7 @@ td:has(.slRating) {
     margin-left: 15px !important;
 }
 
-.stepSelector select, .cell-select {
+.stepSelector select {
     outline: none;
 }
 
@@ -673,4 +680,8 @@ span[data-tasksbadge] {
 .ccp-error {
     background-color: #fbe1e3;
     display: inline;
+}
+
+.accordion .panel-heading h4 a.btn {
+    padding: 5px 10px !important;
 }

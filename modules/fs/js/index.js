@@ -1,6 +1,6 @@
 jQuery(document).ready(function () {
-    // initSelect2AddProducts();
-    // initHaccpTeamRosterTable();
+    initSelect2AddProducts();
+    initHaccpTeamRosterTable();
 
     events();
     submits();
@@ -54,7 +54,10 @@ jQuery(document).ready(function () {
                 dt.api().search(this.innerText).draw();
             };
 
-            $("#haccp-overview_table").find("td a[data-filter]").off("click").on("click", manualSearchTrigger);
+            $("#haccp-overview_table")
+                .find("td a[data-filter]")
+                .off("click")
+                .on("click", manualSearchTrigger);
         },
     });
 });

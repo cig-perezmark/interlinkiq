@@ -10,3 +10,34 @@ NOTE:
     good luck!
 
     author: Almario
+
+
+
+
+
+
+
+
+Food Allergen tabs
+    : which tab is user manual input required?
+    : clarify tab tree
+
+Other Preventive Controls tabs
+    : clarify their manual inputs
+    : reassess supplied-chain preventive control tab content
+
+: check validation tab
+: verify raw product list additional column(s)
+
+
+
+
+
+
+
+
+
+
+
+
+

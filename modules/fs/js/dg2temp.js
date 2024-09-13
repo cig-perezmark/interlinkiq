@@ -69,7 +69,7 @@ class DiagramObject {
                         E: ccpDData(),
                     },
                     processNarrative: "",
-                    vrk: {
+                    ppc: {
                         procedures: {
                             what: "",
                             when: "",
@@ -79,6 +79,9 @@ class DiagramObject {
                                 reviewed: "",
                             },
                         },
+                        criticalLimits: "",
+                        correctiveActions: "",
+                        verification: "",
                         records: "",
                     },
                 };

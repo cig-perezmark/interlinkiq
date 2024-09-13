@@ -64,15 +64,15 @@ function toFormData(obj, formData = null) {
     Object.entries(obj).forEach(([k, v]) => {
         // encode arrays or json objects
         let data = [];
-        if(Array.isArray(v)) {
+        if (Array.isArray(v)) {
             data = v;
-        } else if((typeof v === "object" && v !== null)) {
+        } else if (typeof v === "object" && v !== null) {
             data = {};
             Object.entries(v).forEach(([k, val]) => {
                 data[k] = val;
-            })
-        } 
-        formData.append(k, ((typeof v === "object" && v !== null) || Array.isArray(v) ? JSON.stringify(data) : v));
+            });
+        }
+        formData.append(k, (typeof v === "object" && v !== null) || Array.isArray(v) ? JSON.stringify(data) : v);
     });
 
     return formData;
@@ -140,17 +140,11 @@ function createTaskDom(data) {
     div.setAttribute("data-taskid", data.id);
     $(div).html(`
         <div class="todo-tasklist-item-title" title="Task title">${data.title || "(Untitled task)"}</div>
-        <div class="todo-tasklist-item-text" title="Task description"> ${
-            data.description || '<small class="text-muted">(No description has been added.)</small>'
-        } </div>
+        <div class="todo-tasklist-item-text" title="Task description"> ${data.description || '<small class="text-muted">(No description has been added.)</small>'} </div>
         <div class="todo-tasklist-controls pull-left" style="display:flex; align-items:center;justify-content:space-between;width:100%;">
             <div>
-                <span class="todo-tasklist-date" title="Due date"><i class="fa fa-calendar"></i> ${
-                    data.due_date || '<small class="text-muted">(No due date)</small>'
-                } </span>
-                <span class="todo-tasklist-date" title="Assigned to"><i class="fa fa-user"></i> ${
-                    data.assignee_name || '<small class="text-muted">(No assignee)</small>'
-                } </span>
+                <span class="todo-tasklist-date" title="Due date"><i class="fa fa-calendar"></i> ${data.due_date || '<small class="text-muted">(No due date)</small>'} </span>
+                <span class="todo-tasklist-date" title="Assigned to"><i class="fa fa-user"></i> ${data.assignee_name || '<small class="text-muted">(No assignee)</small>'} </span>
             </div>
             <div class="task-btns">
                 <a href="javascript:;" class="btn btn-xs red hide" style="border:none!important;"><i class="fa fa-times"></i></a>
@@ -199,7 +193,7 @@ function updateTasksContainer() {
         pendingTasks.addClass("is-empty");
         pendingCounter.innerText = 0;
     }
-    
+
     const badge = $("[data-tasksbadge]");
     badge.text(pendingCounter.innerText);
     badge.attr("data-tasksbadge", pendingCounter.innerText);
@@ -249,22 +243,18 @@ function addProductBtnClick() {
         const tableBody = $("#addedProductsList");
         tableBody.append(`
             <tr>
-                <td style="width: 88%">
-                <div class="d-flex-center">
-                    <img src="${
-                        __selectedProductData.image
-                    }" alt="Product Image" style="width: 8rem; margin-right: 1rem">
-                    <div>
-                    <span class="bold">${__selectedProductData.name}</span> <br>
-                    <span class="text-muted">Category: ${__selectedProductData.category || ""}</span>
+                <td style="width: 18%">
+                    <div class="d-flex-center">
+                        <img src="${__selectedProductData.image}" alt="Product Image" style="width: 8rem; margin-right: 1rem">
+                        <div>
+                            <span class="bold">${__selectedProductData.name}</span> <br>
+                            <span class="text-muted">${__selectedProductData.category || ""}</span>
+                        </div>
                     </div>
-                </div>
                 </td>
                 <td style="width: 12%">
                     <div class="d-flex-center">
-                        <a href="javascript:void(0)" class="btn btn-outlinex btn-circle red btn-sm" onclick="removeProductBtnClick(event, ${
-                            __selectedProductData.id
-                        })">Remove</a>
+                        <a href="javascript:void(0)" class="btn btn-outlinex btn-circle red btn-sm" onclick="removeProductBtnClick(event, ${__selectedProductData.id})">Remove</a>
                     </div>
                 </td>
             </tr>

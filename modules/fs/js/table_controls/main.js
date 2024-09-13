@@ -3,12 +3,7 @@ function wProcessStep(data, table) {
     const dd = table.querySelector(".stepSelector select");
     let shortLabel = data.label.substring(0, 8);
     shortLabel += data.label.length > 8 ? "..." : "";
-    dd?.insertAdjacentHTML(
-        "beforeend",
-        `<option title="${data.label}" value="${"stepselect_" + data.id}">(${
-            data.process
-        }) ${shortLabel}</option>`
-    );
+    dd?.insertAdjacentHTML("beforeend", `<option title="${data.label}" value="${"stepselect_" + data.id}">(${data.process}) ${shortLabel}</option>`);
 
     const div = document.createElement("div");
     div.setAttribute("style", "scroll-margin-top: 16rem;");
@@ -31,8 +26,7 @@ function tcTable(tabId) {
 
 tcTable.prototype = {
     tables: {
-        hazard_analysis_and_preventive_measures:
-            document.getElementById("hbHazardAnalysis"),
+        hazard_analysis_and_preventive_measures: document.getElementById("hbHazardAnalysis"),
         ccp_determination: document.getElementById("hbCCPdetermination"),
         process_narrative: document.getElementById("hbProcessNarrative"),
         process_preventive_control: document.getElementById("hbPPC"),

@@ -9,6 +9,10 @@ if (!isset($switch_user_id)) {
     $switch_user_id = $user_id ?? 0;
 }
 
+/** @var mysqli_extended $conn */
+
+/** @var IIQ_User $currentUser */
+
 $facilities = $conn->execute("SELECT facility_id, facility_category FROM tblFacilityDetails where users_entities = ?", $switch_user_id)->fetchAll();
 $organizationalChart  = $conn->execute("SELECT image FROM tbl_fsp_org_charts WHERE user_id = ?", $switch_user_id)->fetchAssoc()['image'] ?? null;
 $employees = $conn->execute("SELECT ID,CONCAT(first_name, ' ', last_name) AS name,department_id,job_description_id FROM tbl_hr_employee WHERE user_id=$switch_user_id AND status <> 0")->fetchAll();

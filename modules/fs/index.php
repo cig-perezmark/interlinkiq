@@ -3,6 +3,11 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 include_once __DIR__ . '/../../header.php';
 include_once __DIR__ . '/init.php';
+
+if ($_SERVER['SERVER_NAME'] == 'dev.local') {
+    $pageUrl = 'https://dev.local/interlink/food-safety-plan';
+}
+
 ?>
 <link href="assets/global/plugins/datatables/datatables.min.css" rel="stylesheet" type="text/css" />
 <link href="assets/global/plugins/jquery-notific8/jquery.notific8.min.css" rel="stylesheet" type="text/css" />
@@ -51,12 +56,11 @@ include_once __DIR__ . '/init.php';
                                 </thead>
                                 <tbody>
                                     <?php
-                                    if (false)
-                                        foreach ($haccps as $h) {
-                                            $res = $h->getResource();
-                                            $logs = $h->getLogs($portal_user)[0] ?? [];
-                                            $task = $h->getAllTasks();
-                                            $task = $task[count($task) - 1] ?? [];
+                                    foreach ($haccps as $h) {
+                                        $res = $h->getResource();
+                                        $logs = $h->getLogs($portal_user)[0] ?? [];
+                                        $task = $h->getAllTasks();
+                                        $task = $task[count($task) - 1] ?? [];
                                     ?>
                                         <tr>
                                             <td>
@@ -126,12 +130,12 @@ include_once __DIR__ . '/init.php';
                                                     <?php if ($res['status'] == 'Approved by CIG') : ?>
                                                         <a href="javascript:void(0)" onclick="openClientSignatures(this, <?= $res['id'] ?>)" class="btn btn-outlinex green btn-sm" title="Update signatures">Sign</a>
                                                     <?php endif; ?>
-                                                    <a href="haccp?pdf=<?= hash('md5', $h->id) ?>" target="_blank" class="btn blue btn-sm">PDF</a>
+                                                    <a href="./food-safety-plan?pdf=<?= hash('md5', $h->id) ?>" target="_blank" class="btn blue btn-sm">PDF</a>
                                                 </div>
                                             </td>
                                         </tr>
                                     <?php
-                                        }
+                                    }
                                     ?>
                                 </tbody>
                             </table>

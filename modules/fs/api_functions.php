@@ -86,7 +86,7 @@ function htmlDecode($string)
         return $string;
     }
 
-    return strip_tags(html_entity_decode($string));
+    return strip_tags(html_entity_decode($string ?? ''));
 }
 
 // calculating current time difference from a certain date 

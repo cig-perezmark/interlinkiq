@@ -1,5 +1,7 @@
 <?php
 
+/** @var mysqli_extended $conn */
+
 include_once __DIR__ . '/../../alt-setup/setup.php';
 include_once __DIR__ . '/api_functions.php';
 
@@ -8,7 +10,6 @@ require __DIR__ . '/../../PHPMailer/src/PHPMailer.php';
 require __DIR__ . '/../../PHPMailer/src/SMTP.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 if (!defined("CIG_USER_ID")) {
@@ -161,8 +162,8 @@ class Haccp
                     'process' => $c['process_step'],
                     'hazardAnalysis' => htmlDecode(json_decode($c['hazard_analysis'], true)),
                     'ccpDetermination' => htmlDecode(json_decode($c['ccp_determination'], true)),
-                    'clmca' => htmlDecode(json_decode($c['clmca'], true)),
-                    'vrk' => htmlDecode(json_decode($c['vrk'], true)),
+                    'processNarrative' => $c['process_narrative'],
+                    'ppc' => htmlDecode(json_decode($c['ppc'], true)),
                 );
             }
         }
@@ -705,8 +706,8 @@ class Haccp
                 'process_step' => $d['process'],
                 'hazard_analysis' => json_encode(html($d['hazardAnalysis'])),
                 'ccp_determination' => json_encode(html($d['ccpDetermination'])),
-                'clmca' => json_encode(html($d['clmca'])),
-                'vrk' => json_encode(html($d['vrk'])),
+                'process_narrative' => $d['processNarrative'],
+                'ppc' => json_encode(html($d['ppc'])),
             ]);
 
             $columns = $x['columns'];
@@ -977,14 +978,8 @@ class Haccp
     {
         global $conn;
         try {
-            /**
-             * @disregard P1009 Undefined type
-             */
             $conn->execute("UPDATE tbl_fsp_tasks SET status = ? WHERE id = ?", $status, $taskId);
 
-            /**
-             * @disregard P1009 Undefined type
-             */
             if ($conn->affectedRows()) {
                 return true;
             }
@@ -1020,9 +1015,6 @@ class Haccp
     public static function all($owner)
     {
         global $conn;
-        /**
-         * @disregard P1009 Undefined type
-         */
         $records = $conn->execute("SELECT id FROM tbl_fsp WHERE user_id = ? AND deleted_at IS NULL", $owner)->fetchAll();
 
         $arr = [];

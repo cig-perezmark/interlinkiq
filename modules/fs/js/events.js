@@ -2,9 +2,7 @@ function events() {
     // builder tabs event
     $('a[data-toggle="tab"]').on("show.bs.tab", function () {
         // reset step selector
-        $(".stepSelector select")
-            .html("<option selected disabled>None</option>")
-            .trigger("change");
+        $(".stepSelector select").html("<option selected disabled>None</option>").trigger("change");
         // closeSLRatingSelection();
         const target = this.getAttribute("href").replace("#", "");
         new tcTable(target);
@@ -76,4 +74,7 @@ function events() {
         modal.find(".upd-developer").val("");
         modal.find(".upd-develop").addClass("hide");
     });
+
+    // clicking on sl-rating tiles in the hazard analysis
+    $("#s-l-rating-selection .hazardAssessmentTable td span").on("click", selectSLRatingClickEvt);
 }

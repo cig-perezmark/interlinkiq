@@ -55,18 +55,12 @@ class DiagramObject {
                         B: haData(),
                         C: haData(),
                         P: haData(),
-                        A: haData(),
-                        I: haData(),
-                        E: haData(),
                     },
                     ccpDetermination: {
                         ccpNumber: null,
                         B: ccpDData(),
                         C: ccpDData(),
                         P: ccpDData(),
-                        A: ccpDData(),
-                        I: ccpDData(),
-                        E: ccpDData(),
                     },
                     processNarrative: "",
                     ppc: {

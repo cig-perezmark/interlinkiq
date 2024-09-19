@@ -2114,6 +2114,7 @@
                                                         <th class="text-center" style="width: 135px;">Compliance</th>
                                                         <th style="width: 200px;">Customer Name</th>
                                                         <th>Users</th>
+                                                        <th>Required Documents</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody></tbody>

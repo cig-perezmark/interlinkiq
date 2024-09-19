@@ -1039,51 +1039,64 @@ License: You must have a valid license purchased only from themeforest(the above
             <!-- BEGIN PAGE ACTIONS -->
             <!-- DOC: Remove "hide" class to enable the page header actions -->
             <?php if ($current_client == 0) { ?>
-            <div class="page-actions">
-                <div class="btn-group">
-                    <button type="button" class="btn btn-circle btn-outline red dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-plus"></i>&nbsp;
-                        <span class="hidden-sm hidden-xs">New&nbsp;</span>&nbsp;
-                        <i class="fa fa-angle-down"></i>
-                    </button>
-                    <ul class="dropdown-menu" role="menu">
-                        <?php if ($current_userType == 1) { ?>
-                        <li>
-                            <a href="employee#new"><i class="icon-user"></i> Employee Roster</a>
-                        </li>
-                        <li>
-                            <a href="job-description#new"><i class="icon-notebook"></i> Job Description</a>
-                        </li>
-                        <li>
-                            <a href="trainings#new"><i class="icon-graduation"></i> Trainings</a>
-                        </li>
-                        <li>
-                            <a href="department#new"><i class="icon-directions"></i> Department</a>
-                        </li>
-                        <li>
-                            <a href="customer#new"><i class="icon-users"></i> Customer</a>
-                        </li>
-                        <li>
-                            <a href="supplier#new"><i class="icon-basket-loaded"></i> Supplier</a>
-                        </li>
-                        <li class="divider hide"> </li>
-                        <?php } ?>
-
-                        <li class="hide">
-                            <a href="javascript:;">
-                                <i class="icon-flag"></i> Comments
-                                <span class="badge badge-success">4</span>
-                            </a>
-                        </li>
-                        <li class="hide">
-                            <a href="javascript:;">
-                                <i class="icon-users"></i> Feedbacks
-                                <span class="badge badge-danger">2</span>
-                            </a>
-                        </li>
-                    </ul>
+                <div class="page-actions">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-circle btn-outline red dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-plus"></i>&nbsp;
+                            <span class="hidden-sm hidden-xs">New&nbsp;</span>&nbsp;
+                            <i class="fa fa-angle-down"></i>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <?php if ($current_userType == 1) { ?>
+                            <li>
+                                <a href="employee#new"><i class="icon-user"></i> Employee Roster</a>
+                            </li>
+                            <li>
+                                <a href="job-description#new"><i class="icon-notebook"></i> Job Description</a>
+                            </li>
+                            <li>
+                                <a href="trainings#new"><i class="icon-graduation"></i> Trainings</a>
+                            </li>
+                            <li>
+                                <a href="department#new"><i class="icon-directions"></i> Department</a>
+                            </li>
+                            <li>
+                                <a href="customer#new"><i class="icon-users"></i> Customer</a>
+                            </li>
+                            <li>
+                                <a href="supplier#new"><i class="icon-basket-loaded"></i> Supplier</a>
+                            </li>
+                            <li class="divider hide"> </li>
+                            <?php } ?>
+    
+                            <li class="hide">
+                                <a href="javascript:;">
+                                    <i class="icon-flag"></i> Comments
+                                    <span class="badge badge-success">4</span>
+                                </a>
+                            </li>
+                            <li class="hide">
+                                <a href="javascript:;">
+                                    <i class="icon-users"></i> Feedbacks
+                                    <span class="badge badge-danger">2</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
+
+                <?php
+                    if ($facility_switch_user_id > 0) {
+                        $selectFacility = mysqli_query($conn, "SELECT facility_category FROM tblFacilityDetails WHERE facility_id = $facility_switch_user_id");
+                        if(mysqli_num_rows($selectFacility) > 0) {
+                            $rowFacilityData = mysqli_fetch_assoc($selectFacility);
+                            
+                            echo '<div class="page-actions">
+                                <div style="color: red; font-weight: 700; font-size: 2rem; line-height: 1.5;">'.htmlentities($rowFacilityData['facility_category'] ?? '').'</div>
+                            </div>';
+                        }
+                    }
+                ?>
             <?php } ?>
             <?php
                     if ($current_client == 1) {

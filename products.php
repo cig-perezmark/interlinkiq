@@ -2596,10 +2596,10 @@
                 });
             }
 
-            function btnView(id) {
+            function btnView(id, type) {
                 $.ajax({
                     type: "GET",
-                    url: "function.php?modalView_Products="+id,
+                    url: "function.php?modalView_Products="+id+"&t="+type,
                     dataType: "html",
                     success: function(data){
                         $("#modalView .modal-body").html(data);

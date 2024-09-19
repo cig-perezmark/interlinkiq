@@ -47,6 +47,367 @@ function employerID($ID) {
     return $current_userEmployerID;
 }
 
+
+function subChild2($view_id, $data1, $id) {
+	global $conn;
+	$response = '';
+	
+    $sql2 = $conn->query("
+        SELECT 
+        a.CAI_id AS a_ID,
+        a.CIA_Indent_Id AS a_subchild,
+        u.first_name AS u_first_name,
+        a.CAI_filename AS a_name,
+        a.CAI_description AS a_description,
+        a.CAI_Accounts AS a_account,
+        i.Action_Items_name AS i_name,
+        e.first_name AS e_first_name,
+        CASE 
+        	WHEN a.CIA_progress = 2 THEN 'Completed'
+            WHEN a.CIA_progress = 1 THEN 'Inprogress'
+            ELSE 'Not Started'
+        END AS a_status,
+        a.CAI_Rendered_Minutes AS a_rendered,
+        CASE WHEN a.CIA_progress = 2 THEN '100' ELSE '' END AS a_percentage,
+        a.CAI_Action_date AS a_date_start,
+        a.CAI_Action_due_date AS a_date_end,
+        a.CAI_files AS a_file,
+        COUNT(c.Task_ids) AS c_counts
+        
+        FROM tbl_MyProject_Services_Childs_action_Items  AS a
+        
+        LEFT JOIN (
+        	SELECT
+            ID,
+            first_name
+            FROM tbl_user
+        ) AS u
+        ON a.CAI_User_PK = u.ID
+        
+        LEFT JOIN (
+        	SELECT
+            ID,
+            first_name
+            FROM tbl_hr_employee
+        ) AS e
+        ON a.CAI_Assign_to = e.ID
+        
+        LEFT JOIN (
+        	SELECT
+            Action_Items_id,
+            Action_Items_name
+            FROM tbl_MyProject_Services_Action_Items
+        ) AS i
+        ON a.CAI_Action_taken = i.Action_Items_id
+        
+        LEFT JOIN (
+        	SELECT
+            Task_ids
+            FROM tbl_MyProject_Services_Comment
+        ) AS c
+        ON a.CAI_id = c.Task_ids
+        
+        WHERE a.is_deleted = 0
+        AND a.Parent_MyPro_PK = $view_id 
+        AND a.Services_History_PK = $data1
+        AND a.CIA_Indent_Id = $id
+        
+        GROUP BY a.CAI_id
+    ");
+    while($data2 = $sql2->fetch_array()) {
+        $a_ID = $data2['a_ID'];
+        $a_subchild = $data2['a_subchild'];
+        $u_first_name = htmlentities($data2['u_first_name'] ?? '' );
+        $a_name = htmlentities($data2['a_name'] ?? '' );
+        $a_description = htmlentities($data2['a_description'] ?? '' );
+        $a_account = htmlentities($data2['a_account'] ?? '' );
+        $i_name = htmlentities($data2['i_name'] ?? '' );
+        $e_first_name = htmlentities($data2['e_first_name'] ?? '' );
+        $a_status = $data2['a_status'];
+        $a_rendered = $data2['a_rendered'];
+        $a_percentage = $data2['a_percentage'];
+        $a_date_start = $data2['a_date_start'];
+        $a_date_end = $data2['a_date_end'];
+        $a_file = $data2['a_file'];
+        $c_counts = $data2['c_counts'];
+        
+        $response .= '<tr id="sub_two_'.$a_ID.'">
+    		<td id="'.$a_ID.'" class="child_border" width="50px">'.$a_ID.'</td>
+    		<td class="child_2">From: '.$u_first_name.'</td>
+    		<td class="child_2">';
+    			$stringProduct = strip_tags($a_name); 
+    			if(strlen($stringProduct) > 40) {
+    				$stringCut = substr($stringProduct,0,40);
+    				$endPoint = strrpos($stringCut,' ');
+    				$stringProduct = $endPoint?substr($stringCut,0,$endPoint):substr($stringCut,0);
+    				$stringProduct .='&nbsp;<a style="font-size:12px;" href="#modalGet_more_detail_sub2" data-toggle="modal" onclick="get_moreDetails_sub2('.$a_ID.')"><i style="color:black;">More...</i></a>';
+    			}
+    			$response .= "$stringProduct";
+    		$response .= '</td>
+    		<td class="child_2" >';
+    			$stringProduct = strip_tags($a_description); 
+    			if(strlen($stringProduct) > 35) {
+    				$stringCut = substr($stringProduct,0,35);
+    				$endPoint = strrpos($stringCut,' ');
+    				$stringProduct = $endPoint?substr($stringCut,0,$endPoint):substr($stringCut,0);
+    				$stringProduct .='&nbsp;<a style="font-size:12px;" href="#modalGet_more_detail2" data-toggle="modal" onclick="get_moreDetails2('.$a_ID.')"><i style="color:black;">More...</i></a>';
+    			}
+    			$response .= "$stringProduct";
+    		$response .= '</td>
+    		<td class="child_2">'.$a_account.'</td>
+    		<td class="child_2">'.$i_name.'</td>
+    		<td class="child_2">Assign to: '.$e_first_name.'</td>
+    		<td class="child_2"><b>'.$a_status.'</b></td>';
+    		
+    		if(!empty($a_rendered)){
+    			$response .= '<td class="child_2">Rendered: '.$a_rendered.' minute(s)';
+    		}
+    		if(!empty($a_percentage)){
+    			$response .= '<td class="child_2">'.$a_percentage.'%</td>';
+    		}
+    		
+    		$response .= '<td class="child_2">Start: '.date("Y-m-d", strtotime($a_date_start)).'</td>
+    		<td class="child_2">Due: '.date("Y-m-d", strtotime($a_date_end)).'</td>
+    		<td class="child_2">';
+    			if (!empty($a_file)) {
+                	$filesL9 = $a_file;
+                	$fileExtension = fileExtension($filesL9);
+                	$src = $fileExtension['src'];
+                	$embed = $fileExtension['embed'];
+                	$type = $fileExtension['type'];
+                	$file_extension = $fileExtension['file_extension'];
+                	$url = $base_url.'../MyPro_Folder_Files/';
+                	
+    				$response .= '<a style="color:#fff;" data-src="'.$src.$url.rawurlencode($filesL9).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">
+    					<i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+    					<span class="badge" style="background-color:blue;margin-left:-7px;"><b style="font-size:14px;">1</b></span>
+    				</a>';
+    			} else {
+    				$response .= '<a style="color:#fff;" href="javascript:;" class="btn btn-link">
+    					<i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+    					<span class="badge" style="background-color:red;margin-left:-7px;"><b style="font-size:14px;">0</b></span>
+    				</a>';
+    			}
+    		$response .= '</td>
+    		<td class="child_2" style="min-width:80px;">
+    		    <a href="#modalGet_Comments" data-toggle="modal" onclick="btn_Comments('.$a_ID.')">
+					<i class="icon-speech" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+					<span class="badge" style="margin-left:-7px;background-color:'; if($c_counts == 0) { $response .= '#DC3535'; } else { $response .= 'blue'; } $response .= ';">
+						<b>'.$c_counts.'</b>
+					</span>
+				</a>
+			</td>
+    		<td class="child_2" style="min-width:100px;">
+    	        <a style="font-weight:800;color:#fff;margin-right:3px;" href="#modalGetHistory_Child2b" data-toggle="modal" class="btn blue btn-xs" onclick="btnNew_History_Child2('.$a_ID.')">Add</a>
+    	        <a style="font-weight:800;color:#fff;" href="#modalGet_child2b" data-toggle="modal" class="btn red btn-xs" onclick="onclick_2('.$a_ID.')">Edit</a>
+            </td>
+    	</tr>';
+        
+        $response .= subChild($view_id, $data1, $a_ID);
+    }
+    
+    return $response;
+}
+
+
+function subChild($view_id, $data1, $id) {
+	global $conn;
+	$response = '';
+	
+    $sql2 = $conn->query("
+        WITH RECURSIVE cte (TreeLevel, a_ID, a_parent, a_user, a_name, a_description, a_account, a_item, a_assign, a_status, a_rendered, a_date_start, a_date_end, a_file) AS
+        (
+            SELECT
+            1 AS TreeLevel,
+            a.CAI_id AS a_ID,
+            a.CIA_Indent_Id AS a_parent,
+            a.CAI_User_PK AS a_user,
+            a.CAI_filename AS a_name,
+            a.CAI_description AS a_description,
+            a.CAI_Accounts AS a_account,
+            a.CAI_Action_taken AS a_item,
+            a.CAI_Assign_to AS a_assign,
+            a.CIA_progress AS a_status,
+            a.CAI_Rendered_Minutes AS a_rendered,
+            a.CAI_Action_date AS a_date_start,
+            a.CAI_Action_due_date AS a_date_end,
+            a.CAI_files AS a_file
+            FROM tbl_MyProject_Services_Childs_action_Items  AS a
+            WHERE a.is_deleted = 0
+            AND a.Parent_MyPro_PK = $view_id 
+            AND a.Services_History_PK = $data1
+            AND a.CIA_Indent_Id = $id
+            
+            UNION ALL
+        
+            SELECT 
+            cte.TreeLevel+1 AS TreeLevel,
+            a2.CAI_id AS a_ID,
+            a2.CIA_Indent_Id AS a_parent,
+            a2.CAI_User_PK AS a_user,
+            a2.CAI_filename AS a_name,
+            a2.CAI_description AS a_description,
+            a2.CAI_Accounts AS a_account,
+            a2.CAI_Action_taken AS a_item,
+            a2.CAI_Assign_to AS a_assign,
+            a2.CIA_progress AS a_status,
+            a2.CAI_Rendered_Minutes AS a_rendered,
+            a2.CAI_Action_date AS a_date_start,
+            a2.CAI_Action_due_date AS a_date_end,
+            a2.CAI_files AS a_file
+            FROM tbl_MyProject_Services_Childs_action_Items  AS a2
+            
+            JOIN cte ON cte.a_ID = a2.CIA_Indent_Id
+            
+            WHERE a2.is_deleted = 0
+            AND a2.Parent_MyPro_PK = $view_id 
+            AND a2.Services_History_PK = $data1
+        )
+        SELECT 
+        TreeLevel, a_ID, a_parent, a_user, a_name, a_description, a_account, a_item, a_assign, a_status, a_rendered, a_date_start, a_date_end, a_file,
+        u.first_name AS u_first_name,
+        i.Action_Items_name AS i_name,
+        e.first_name AS e_first_name,
+        CASE 
+        	WHEN a_status = 2 THEN 'Completed'
+            WHEN a_status = 1 THEN 'Inprogress'
+            ELSE 'Not Started'
+        END AS a_statuses,
+        CASE WHEN a_status = 2 THEN '100' ELSE '' END AS a_percentage,
+        COUNT(c.Task_ids) AS c_counts
+        FROM cte
+        
+        LEFT JOIN (
+        	SELECT
+            ID,
+            first_name
+            FROM tbl_user
+        ) AS u
+        ON a_user = u.ID
+        
+        LEFT JOIN (
+        	SELECT
+            ID,
+            first_name
+            FROM tbl_hr_employee
+        ) AS e
+        ON a_assign = e.ID
+        
+        LEFT JOIN (
+        	SELECT
+            Action_Items_id,
+            Action_Items_name
+            FROM tbl_MyProject_Services_Action_Items
+        ) AS i
+        ON a_item = i.Action_Items_id
+        
+        LEFT JOIN (
+        	SELECT
+            Task_ids
+            FROM tbl_MyProject_Services_Comment
+        ) AS c
+        ON a_ID = c.Task_ids
+
+        GROUP BY a_ID
+        
+        ORDER BY a_ID, a_parent
+    ");
+    while($data2 = $sql2->fetch_array()) {
+        $a_ID = $data2['a_ID'];
+        $TreeLevel = $data2['TreeLevel'];
+        $u_first_name = htmlentities($data2['u_first_name'] ?? '' );
+        $a_name = htmlentities($data2['a_name'] ?? '' );
+        $a_description = htmlentities($data2['a_description'] ?? '' );
+        $a_account = htmlentities($data2['a_account'] ?? '' );
+        $i_name = htmlentities($data2['i_name'] ?? '' );
+        $e_first_name = htmlentities($data2['e_first_name'] ?? '' );
+        $a_status = $data2['a_statuses'];
+        $a_rendered = $data2['a_rendered'];
+        $a_percentage = $data2['a_percentage'];
+        $a_date_start = $data2['a_date_start'];
+        $a_date_end = $data2['a_date_end'];
+        $a_file = $data2['a_file'];
+        $c_counts = $data2['c_counts'];
+        
+        $response .= '<tr id="sub_two_'.$a_ID.'">
+    		<td id="'.$a_ID.'" class="child_border" width="50px">'.$a_ID.'</td>
+    		<td class="child_border" colspan="'.$TreeLevel.'"></td>
+    		<td class="child_2">From: '.$u_first_name.'</td>
+    		<td class="child_2">';
+    			$stringProduct = strip_tags($a_name); 
+    			if(strlen($stringProduct) > 40) {
+    				$stringCut = substr($stringProduct,0,40);
+    				$endPoint = strrpos($stringCut,' ');
+    				$stringProduct = $endPoint?substr($stringCut,0,$endPoint):substr($stringCut,0);
+    				$stringProduct .='&nbsp;<a style="font-size:12px;" href="#modalGet_more_detail_sub2" data-toggle="modal" onclick="get_moreDetails_sub2('.$a_ID.')"><i style="color:black;">More...</i></a>';
+    			}
+    			$response .= "$stringProduct";
+    		$response .= '</td>
+    		<td class="child_2" >';
+    			$stringProduct = strip_tags($a_description); 
+    			if(strlen($stringProduct) > 35) {
+    				$stringCut = substr($stringProduct,0,35);
+    				$endPoint = strrpos($stringCut,' ');
+    				$stringProduct = $endPoint?substr($stringCut,0,$endPoint):substr($stringCut,0);
+    				$stringProduct .='&nbsp;<a style="font-size:12px;" href="#modalGet_more_detail2" data-toggle="modal" onclick="get_moreDetails2('.$a_ID.')"><i style="color:black;">More...</i></a>';
+    			}
+    			$response .= "$stringProduct";
+    		$response .= '</td>
+    		<td class="child_2">'.$a_account.'</td>
+    		<td class="child_2">'.$i_name.'</td>
+    		<td class="child_2">Assign to: '.$e_first_name.'</td>
+    		<td class="child_2"><b>'.$a_status.'</b></td>';
+    		
+    		if(!empty($a_rendered)){
+    			$response .= '<td class="child_2">Rendered: '.$a_rendered.' minute(s)';
+    		}
+    		if(!empty($a_percentage)){
+    			$response .= '<td class="child_2">'.$a_percentage.'%</td>';
+    		}
+    		
+    		$response .= '<td class="child_2">Start: '.date("Y-m-d", strtotime($a_date_start)).'</td>
+    		<td class="child_2">Due: '.date("Y-m-d", strtotime($a_date_end)).'</td>
+    		<td class="child_2">';
+    			if (!empty($a_file)) {
+                	$filesL9 = $a_file;
+                	$fileExtension = fileExtension($filesL9);
+                	$src = $fileExtension['src'];
+                	$embed = $fileExtension['embed'];
+                	$type = $fileExtension['type'];
+                	$file_extension = $fileExtension['file_extension'];
+                	$url = $base_url.'../MyPro_Folder_Files/';
+                	
+    				$response .= '<a style="color:#fff;" data-src="'.$src.$url.rawurlencode($filesL9).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">
+    					<i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+    					<span class="badge" style="background-color:blue;margin-left:-7px;"><b style="font-size:14px;">1</b></span>
+    				</a>';
+    			} else {
+    				$response .= '<a style="color:#fff;" href="javascript:;" class="btn btn-link">
+    					<i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+    					<span class="badge" style="background-color:red;margin-left:-7px;"><b style="font-size:14px;">0</b></span>
+    				</a>';
+    			}
+    		$response .= '</td>
+    		<td class="child_2" style="min-width:80px;">
+    		    <a href="#modalGet_Comments" data-toggle="modal" onclick="btn_Comments('.$a_ID.')">
+					<i class="icon-speech" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+					<span class="badge" style="margin-left:-7px;background-color:'; if($c_counts == 0) { $response .= '#DC3535'; } else { $response .= 'blue'; } $response .= ';">
+						<b>'.$c_counts.'</b>
+					</span>
+				</a>
+			</td>
+    		<td class="child_2" style="min-width:100px;">
+    	        <a style="font-weight:800;color:#fff;margin-right:3px;" href="#modalGetHistory_Child2b" data-toggle="modal" class="btn blue btn-xs" onclick="btnNew_History_Child2('.$a_ID.')">Add</a>
+    	        <a style="font-weight:800;color:#fff;" href="#modalGet_child2b" data-toggle="modal" class="btn red btn-xs" onclick="onclick_2('.$a_ID.')">Edit</a>
+            </td>
+    	</tr>';
+        
+        // $response .= subChild($view_id, $data1, $a_ID);
+    }
+    
+    return $response;
+}
+
 if (isset($_POST['key'])) {
 	$response = "";
 
@@ -330,6 +691,7 @@ if (isset($_POST['key'])) {
                             </div>
                             <div class="col-md-3">';
                             
+                                $ptc = 0;
                                 if($data1['i_count'] >= $data1['i_completed'] AND $data1['i_completed'] > 0){
                                     $ptc = round(($data1['i_completed'] / $data1['i_count']) * 100, 2);
                                 }
@@ -353,7 +715,7 @@ if (isset($_POST['key'])) {
 		}
 	}
 	
-	if($_POST['key'] == 'child_two'){
+	if($_POST['key'] == 'child_twos'){
        //layer 2
 		$data1 = $_POST['get_id'];
 	    $view_id = $_POST['view_id'];
@@ -835,6 +1197,938 @@ if (isset($_POST['key'])) {
 		}
 			
 		}
+	}
+	
+	if($_POST['key'] == 'child_twos2'){
+        //layer 2
+        $data1 = $_POST['get_id'];
+        $view_id = $_POST['view_id'];
+        
+        $sql2 = $conn->query("SELECT * FROM tbl_MyProject_Services_Childs_action_Items 
+        left join tbl_MyProject_Services_Action_Items on Action_Items_id = CAI_Action_taken
+        left join tbl_hr_employee on CAI_Assign_to = ID left join tbl_user on employee_id = tbl_hr_employee.ID
+        where Parent_MyPro_PK = $view_id and CIA_Indent_Id = '$data1' and Services_History_PK = '$data1' ");
+        
+        while($data2 = $sql2->fetch_array()) {
+        	$filesL9 = $data2["CAI_files"];
+        	$fileExtension = fileExtension($filesL9);
+        	$src = $fileExtension['src'];
+        	$embed = $fileExtension['embed'];
+        	$type = $fileExtension['type'];
+        	$file_extension = $fileExtension['file_extension'];
+        	$url = $base_url.'../MyPro_Folder_Files/';
+        	$response .= '<tr id="sub_two_'.$data2['CAI_id'].'">
+        		<td id="'.$data2['CAI_id'].'" class="child_border" width="50px">'.$data2['CAI_id'].'</td>';
+        		$owner  = $data2['CAI_User_PK'];
+        		$query = "SELECT * FROM tbl_user where ID = $owner";
+        		$result = mysqli_query($conn, $query);
+        		while($row = mysqli_fetch_array($result)){ 
+        			$response .= '<td class="child_2">From: '.$row['first_name'].'</td>';
+        		}
+        		$response .= '<td class="child_2">';
+        			$stringProduct = strip_tags($data2['CAI_filename']); 
+        			if(strlen($stringProduct) > 40) {
+        				$stringCut = substr($stringProduct,0,40);
+        				$endPoint = strrpos($stringCut,' ');
+        				$stringProduct = $endPoint?substr($stringCut,0,$endPoint):substr($stringCut,0);
+        				$stringProduct .='&nbsp;<a style="font-size:12px;" href="#modalGet_more_detail_sub2" data-toggle="modal" onclick="get_moreDetails_sub2('.$data2['CAI_id'].')"><i style="color:black;">More...</i></a>';
+        			}
+        			$response .= "$stringProduct";
+        		$response .= '</td>
+        		<td class="child_2" >';
+        			$stringProduct = strip_tags($data2['CAI_description']); 
+        			if(strlen($stringProduct) > 35) {
+        				$stringCut = substr($stringProduct,0,35);
+        				$endPoint = strrpos($stringCut,' ');
+        				$stringProduct = $endPoint?substr($stringCut,0,$endPoint):substr($stringCut,0);
+        				$stringProduct .='&nbsp;<a style="font-size:12px;" href="#modalGet_more_detail2" data-toggle="modal" onclick="get_moreDetails2('.$data2['CAI_id'].')"><i style="color:black;">More...</i></a>';
+        			}
+        			$response .= "$stringProduct";
+        		$response .= '</td>
+        
+        		<td class="child_2">'.$data2['CAI_Accounts'].'</td>
+        		<td class="child_2">'.$data2['Action_Items_name'].'</td>
+        		<td class="child_2">Assign to: '.$data2['first_name'].'</td>';
+        		if($data2['CIA_progress']== 1){ $response .= '<td class="child_2"><b>Inprogress</b></td>'; }
+        		else if($data2['CIA_progress']== 2){ $response .= '<td class="child_2"><b>Completed</b></td>';}
+        		else{ $response .= '<td class="child_2"><b>Not Started</b></td>';}
+        		//rendered time
+        		if(!empty($data2['CAI_Rendered_Minutes'])){
+        			$response .= '<td class="child_2">Rendered: '.$data2['CAI_Rendered_Minutes'].' minute(s)';
+        		}
+        		if($data2['CIA_progress']==2){
+        			$response .= '<td class="child_2">100%</td>';
+        		}
+        		$response .= '<td class="child_2">Start: '.date("Y-m-d", strtotime($data2['CAI_Action_date'])).'</td>
+        		<td class="child_2">Due: '.date("Y-m-d", strtotime($data2['CAI_Action_due_date'])).'</td>
+        		<td class="child_2">';
+        			if (!empty($filesL9)) {
+        				$response .= '<a style="color:#fff;" data-src="'.$src.$url.rawurlencode($filesL9).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">
+        					<i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+        					<span class="badge" style="background-color:blue;margin-left:-7px;"><b style="font-size:14px;">1</b></span>
+        				</a>';
+        			} else {
+        				$response .= '<a style="color:#fff;" data-src="'.$src.$url.rawurlencode($filesL9).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">
+        					<i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+        					<span class="badge" style="background-color:red;margin-left:-7px;"><b style="font-size:14px;">0</b></span>
+        				</a>';
+        			}
+        		$response .= '</td>
+        		<td class="child_2" style="min-width:80px;">';
+        			$_comment  = $data2['CAI_id'];
+        			$query_comment = "SELECT COUNT(*) as count FROM tbl_MyProject_Services_Comment where Task_ids = $_comment";
+        			$result_comment = mysqli_query($conn, $query_comment);
+        			while($row_comment = mysqli_fetch_array($result_comment)) { 
+        				$response .= '<a href="#modalGet_Comments" data-toggle="modal" onclick="btn_Comments('.$data2['CAI_id'].')">
+        					<i class="icon-speech" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+        					<span class="badge" style="margin-left:-7px;background-color:'; if($row_comment['count'] == 0){$response .= '#DC3535';}else{$response .= 'blue';}  $response .= ';">
+        						<b>'.$row_comment['count'].'</b>
+        					</span>
+        				</a>';
+        			}
+        		$response .= '  </td>
+        
+        		<td class="child_2" style="min-width:100px;">';
+        			$response .= '<a style="font-weight:800;color:#fff;margin-right:3px;" href="#modalGetHistory_Child2b" data-toggle="modal" class="btn blue btn-xs" onclick="btnNew_History_Child2('.$data2['CAI_id'].')">Add</a>';
+        			$response .= '<a style="font-weight:800;color:#fff;" href="#modalGet_child2b" data-toggle="modal" class="btn red btn-xs" onclick="onclick_2('.$data2['CAI_id'].')">Edit</a>';
+        		$response .= '</td>
+        	</tr>';
+        
+        	//layer 3
+        	$data2 = $data2['CAI_id'];
+        	$view_id = $_POST['view_id'];
+        
+        	$sql3 = $conn->query("SELECT * FROM tbl_MyProject_Services_Childs_action_Items 
+        	left join tbl_MyProject_Services_Action_Items on Action_Items_id = CAI_Action_taken
+        	left join tbl_hr_employee on CAI_Assign_to = ID left join tbl_user on employee_id = tbl_hr_employee.ID
+        	where Parent_MyPro_PK = $view_id and CIA_Indent_Id = '$data2'");
+        
+        	while($data3 = $sql3->fetch_array()) {
+        		$filesL9 = $data3["CAI_files"];
+        		$fileExtension = fileExtension($filesL9);
+        		$src = $fileExtension['src'];
+        		$embed = $fileExtension['embed'];
+        		$type = $fileExtension['type'];
+        		$file_extension = $fileExtension['file_extension'];
+        		$url = $base_url.'../MyPro_Folder_Files/';
+        		$response .= '<tr id="sub_three_main'.$data3['CAI_id'].'">
+        			<td  class="child_border" width="50px">'.$data3['CAI_id'].'</td>
+        			<td class="child_border" width="80px"></td>';
+        			$owner  = $data3['CAI_User_PK'];
+        			$query = "SELECT * FROM tbl_user where ID = $owner";
+        			$result = mysqli_query($conn, $query);
+        			while($row = mysqli_fetch_array($result)){ 
+        				$response .= '<td class="child_2">From: '.$row['first_name'].'</td>';
+        			}
+        			$response .= '<td class="child_2" style="width:;">';
+        				$stringProduct = strip_tags($data3['CAI_filename']); 
+        				if(strlen($stringProduct) > 40) {
+        					$stringCut = substr($stringProduct,0,40);
+        					$endPoint = strrpos($stringCut,' ');
+        					$stringProduct = $endPoint?substr($stringCut,0,$endPoint):substr($stringCut,0);
+        					$stringProduct .='&nbsp;<a style="font-size:12px;" href="#modalGet_more_detail_sub3" data-toggle="modal" onclick="get_moreDetails_sub3('.$data3['CAI_id'].')"><i style="color:black;">More...</i></a>';
+        				}
+        				$response .= "$stringProduct";
+        			$response .= '</td>
+        			<td class="child_2" style="width:;">';
+        				$stringProduct = strip_tags($data3['CAI_description']); 
+        				if(strlen($stringProduct) > 35) {
+        					$stringCut = substr($stringProduct,0,35);
+        					$endPoint = strrpos($stringCut,' ');
+        					$stringProduct = $endPoint?substr($stringCut,0,$endPoint):substr($stringCut,0);
+        					$stringProduct .='&nbsp;<a style="font-size:12px;" href="#modalGet_more_detail3" data-toggle="modal" onclick="get_moreDetails3('.$data3['CAI_id'].')"><i style="color:black;">More...</i></a>';
+        				}
+        				$response .= "$stringProduct";
+        			$response .= '</td>
+        			<td class="child_2">'.$data3['CAI_Accounts'].'</td>
+        			<td class="child_2">'.$data3['Action_Items_name'].'</td>
+        			<td class="child_2">Assign to: '.$data3['first_name'].'</td>';
+        			if($data3['CIA_progress']== 1){ $response .= '<td class="child_2"><b>Inprogress</b></td>'; }
+        			else if($data3['CIA_progress']== 2){ $response .= '<td class="child_2"><b>Completed</b></td>';}
+        			else{ $response .= '<td class="child_2"><b>Not Started</b></td>';}
+        			//rendered time
+        			if(!empty($data3['CAI_Rendered_Minutes'])){
+        				$response .= '<td class="child_2">Rendered: '.$data3['CAI_Rendered_Minutes'].' minute(s)';
+        			}
+        			if($data3['CIA_progress']==2){
+        				$response .= '<td class="child_2">100%</td>';
+        			}
+        			$response .= '<td class="child_2">Start: '.date("Y-m-d", strtotime($data3['CAI_Action_date'])).'</td>
+        			<td class="child_2">Due: '.date("Y-m-d", strtotime($data3['CAI_Action_due_date'])).'</td>
+        			<td class="child_2">';
+        				if (!empty($filesL9)) {
+        					$response .= '<a style="color:#fff;" data-src="'.$src.$url.rawurlencode($filesL9).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">
+        						<i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+        						<span class="badge" style="background-color:blue;margin-left:-7px;"><b style="font-size:14px;">1</b></span>
+        					</a>';
+        				} else {
+        					$response .= '<a style="color:#fff;" data-src="'.$src.$url.rawurlencode($filesL9).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">
+        						<i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+        						<span class="badge" style="background-color:red;margin-left:-7px;"><b style="font-size:14px;">0</b></span>
+        					</a>';
+        				}
+        			$response .= '</td>
+        			<td class="child_2">';
+        				$_comment  = $data3['CAI_id'];
+        				$query_comment = "SELECT COUNT(*) as count FROM tbl_MyProject_Services_Comment where Task_ids = $_comment";
+        				$result_comment = mysqli_query($conn, $query_comment);
+        				while($row_comment = mysqli_fetch_array($result_comment)) { 
+        					$response .= '<a href="#modalGet_Comments3" data-toggle="modal" onclick="btn_Comments3('.$data3['CAI_id'].')">
+        						<i class="icon-speech" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+        						<span class="badge" style="background-color:'; if($row_comment['count'] == 0){$response .= '#DC3535';}else{$response .= 'blue';}  $response .= ';margin-left:-7px;">
+        							<b>'.$row_comment['count'].'</b>
+        						</span>
+        					</a>';
+        				}
+        			$response .= '</td>
+        			<td class="child_2" style="min-width:100px;">';
+        				$response .= '<a style="font-weight:800;color:#fff;margin-right:3px;" href="#modalGetHistory_Child3b" data-toggle="modal" class="btn blue btn-xs" onclick="btnNew_History_Child3('.$data3['CAI_id'].')">Add</a>';
+        				$response .= '<a style="font-weight:800;color:#fff;" href="#modalGet_child3b" data-toggle="modal" class="btn red btn-xs" onclick="onclick_3('.$data3['CAI_id'].')">Edit</a>';
+        			$response .= '</td>
+        		</tr>';
+        
+        		//layer 4
+        		$data3 = $data3['CAI_id'];
+        		$view_id = $_POST['view_id'];
+        
+        		$sql4 = $conn->query("SELECT * FROM tbl_MyProject_Services_Childs_action_Items 
+        		left join tbl_MyProject_Services_Action_Items on Action_Items_id = CAI_Action_taken
+        		left join tbl_hr_employee on CAI_Assign_to = ID left join tbl_user on employee_id = tbl_hr_employee.ID
+        		where Parent_MyPro_PK = $view_id and CIA_Indent_Id = '$data3'");
+        
+        		while($data4 = $sql4->fetch_array()) {
+        			$filesL9 = $data4["CAI_files"];
+        			$fileExtension = fileExtension($filesL9);
+        			$src = $fileExtension['src'];
+        			$embed = $fileExtension['embed'];
+        			$type = $fileExtension['type'];
+        			$file_extension = $fileExtension['file_extension'];
+        			$url = $base_url.'../MyPro_Folder_Files/';
+        			$response .= '<tr id="sub_four_'.$data4['CAI_id'].'">
+        				<td class="child_border" width="50px">'.$data4['CAI_id'].'</td>
+        				<td class="child_border" width="80px"></td>
+        				<td class="child_border" ></td>';
+        				$owner  = $data4['CAI_User_PK'];
+        				$query = "SELECT * FROM tbl_user where ID = $owner";
+        				$result = mysqli_query($conn, $query);
+        				while($row = mysqli_fetch_array($result)) { 
+        					$response .= '<td class="child_2">From: '.$row['first_name'].'</td>';
+        				}
+        				$response .= '<td class="child_2" style="width:;">';
+        					$stringProduct = strip_tags($data4['CAI_filename']); 
+        					if(strlen($stringProduct) > 40) {
+        						$stringCut = substr($stringProduct,0,40);
+        						$endPoint = strrpos($stringCut,' ');
+        						$stringProduct = $endPoint?substr($stringCut,0,$endPoint):substr($stringCut,0);
+        						$stringProduct .='&nbsp;<a style="font-size:12px;" href="#modalGet_more_detail_sub4" data-toggle="modal" onclick="get_moreDetails_sub4('.$data4['CAI_id'].')"><i style="color:black;">More...</i></a>';
+        					}
+        					$response .= "$stringProduct";
+        				$response .= '</td>
+        				<td class="child_2" style="width:;">';
+        					$stringProduct = strip_tags($data4['CAI_description']); 
+        					if(strlen($stringProduct) > 35) {
+        						$stringCut = substr($stringProduct,0,35);
+        						$endPoint = strrpos($stringCut,' ');
+        						$stringProduct = $endPoint?substr($stringCut,0,$endPoint):substr($stringCut,0);
+        						$stringProduct .='&nbsp;<a style="font-size:12px;" href="#modalGet_more_detail4" data-toggle="modal" onclick="get_moreDetails4('.$data4['CAI_id'].')"><i style="color:black;">More...</i></a>';
+        					}
+        					$response .= "$stringProduct";
+        				$response .= '</td>
+        				<td class="child_2" >'.$data4['CAI_Accounts'].'</td>
+        				<td class="child_2">'.$data4['Action_Items_name'].'</td>
+        				<td class="child_2">Assign to: '.$data4['first_name'].'</td>';
+        				if($data4['CIA_progress']== 1){ $response .= '<td class="child_2"><b>Inprogress</b></td>'; }
+        				else if($data4['CIA_progress']== 2){ $response .= '<td class="child_2"><b>Completed</b></td>';}
+        				else{ $response .= '<td class="child_2"><b>Not Started</b></td>';}
+        				//rendered time
+        				if(!empty($data4['CAI_Rendered_Minutes'])){
+        					$response .= '<td class="child_2">Rendered: '.$data4['CAI_Rendered_Minutes'].' minute(s)';
+        				}
+        				if($data4['CIA_progress']==2){
+        					$response .= '<td class="child_2">100%</td>';
+        				}
+        				$response .= '<td class="child_2">Start: '.date("Y-m-d", strtotime($data4['CAI_Action_date'])).'</td>
+        				<td class="child_2">Due: '.date("Y-m-d", strtotime($data4['CAI_Action_due_date'])).'</td>
+        				<td class="child_2">';
+        					if (!empty($filesL9)) {
+        						$response .= '<a style="color:#fff;" data-src="'.$src.$url.rawurlencode($filesL9).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">
+        							<i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+        							<span class="badge" style="background-color:blue;margin-left:-7px;"><b style="font-size:14px;">1</b></span>
+        						</a>';
+        					} else {
+        						$response .= '<a style="color:#fff;" data-src="'.$src.$url.rawurlencode($filesL9).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">
+        							<i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+        							<span class="badge" style="background-color:red;margin-left:-7px;"><b style="font-size:14px;">0</b></span>
+        						</a>';
+        					}
+        				$response .= '</td>
+        				<td class="child_2">';
+        					$_comment  = $data4['CAI_id'];
+        					$query_comment = "SELECT COUNT(*) as count FROM tbl_MyProject_Services_Comment where Task_ids = $_comment";
+        					$result_comment = mysqli_query($conn, $query_comment);
+        					while($row_comment = mysqli_fetch_array($result_comment)){ 
+        						$response .= '<a href="#modalGet_Comments4" data-toggle="modal" onclick="btn_Comments4('.$data4['CAI_id'].')">
+        							<i class="icon-speech" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+        							<span class="badge" style="background-color:'; if($row_comment['count'] == 0){ $response .= '#DC3535'; } else { $response .= 'blue'; }  $response .= '; margin-left:-7px;">
+        								<b>'.$row_comment['count'].'</b>
+        							</span>
+        						</a>';
+        					}
+        				$response .= '</td>';
+        				$response .= '<td class="child_2" style="min-width:100px;">';
+        					$response .= '<a style="font-weight:800;color:#fff;margin-right:3px;" href="#modalGetHistory_Child4b" data-toggle="modal" class="btn blue btn-xs" onclick="btnNew_History_Child4('.$data4['CAI_id'].')">Add</a>';
+        					$response .= '<a style="font-weight:800;color:#fff;" href="#modalGet_child4b" data-toggle="modal" class="btn red btn-xs" onclick="onclick_4('.$data4['CAI_id'].')">Edit</a>';
+        				$response .= '</td>
+        			</tr>';
+        
+        			//layer 5
+        			$data4 = $data4['CAI_id'];
+        			$view_id = $_POST['view_id'];
+        
+        			$sql5 = $conn->query("SELECT * FROM tbl_MyProject_Services_Childs_action_Items 
+        			left join tbl_MyProject_Services_Action_Items on Action_Items_id = CAI_Action_taken
+        			left join tbl_hr_employee on CAI_Assign_to = ID left join tbl_user on employee_id = tbl_hr_employee.ID
+        			where Parent_MyPro_PK = $view_id and CIA_Indent_Id = '$data4'");
+        
+        			while($data5 = $sql5->fetch_array()) {
+        				$filesL9 = $data5["CAI_files"];
+        				$fileExtension = fileExtension($filesL9);
+        				$src = $fileExtension['src'];
+        				$embed = $fileExtension['embed'];
+        				$type = $fileExtension['type'];
+        				$file_extension = $fileExtension['file_extension'];
+        				$url = $base_url.'../MyPro_Folder_Files/';
+        				$response .= '<tr id="sub_five_'.$data5['CAI_id'].'">
+        					<td class="child_border" width="50px">'.$data5['CAI_id'].'</td>
+        					<td class="child_border" width="80px"></td>
+        					<td class="child_border"></td>
+        					<td class="child_border"></td>';
+        					$owner  = $data5['CAI_User_PK'];
+        					$query = "SELECT * FROM tbl_user where ID = '$owner'";
+        					$result = mysqli_query($conn, $query);
+        					while($row = mysqli_fetch_array($result)){ 
+        					$response .= '<td class="child_2">From: '.$row['first_name'].'</td>';
+        					}
+        					$response .= '<td class="child_2" style="width:;">';
+        						$stringProduct = strip_tags($data5['CAI_filename']); 
+        						if(strlen($stringProduct) > 40) {
+        							$stringCut = substr($stringProduct,0,40);
+        							$endPoint = strrpos($stringCut,' ');
+        							$stringProduct = $endPoint?substr($stringCut,0,$endPoint):substr($stringCut,0);
+        							$stringProduct .='&nbsp;<a style="font-size:12px;" href="#modalGet_more_detail_sub5" data-toggle="modal" onclick="get_moreDetails_sub5('.$data5['CAI_id'].')"><i style="color:black;">More...</i></a>';
+        						}
+        						$response .= "$stringProduct";
+        					$response .= '</td>
+        					<td class="child_2" style="width:;">';
+        						$stringProduct = strip_tags($data5['CAI_description']); 
+        						if(strlen($stringProduct) > 35) {
+        							$stringCut = substr($stringProduct,0,35);
+        							$endPoint = strrpos($stringCut,' ');
+        							$stringProduct = $endPoint?substr($stringCut,0,$endPoint):substr($stringCut,0);
+        							$stringProduct .='&nbsp;<a style="font-size:12px;" href="#modalGet_more_detail5" data-toggle="modal" onclick="get_moreDetails5('.$data5['CAI_id'].')"><i style="color:black;">More...</i></a>';
+        						}
+        						$response .= "$stringProduct";
+        					$response .= '</td>
+        					<td class="child_2">'.$data5['CAI_Accounts'].'</td>
+        					<td class="child_2">'.$data5['Action_Items_name'].'</td>
+        					<td class="child_2">Assign to: '.$data5['first_name'].'</td>';
+        					if($data5['CIA_progress']== 1){ $response .= '<td class="child_2"><b>Inprogress</b></td>'; }
+        					else if($data5['CIA_progress']== 2){ $response .= '<td class="child_2"><b>Completed</b></td>';}
+        					else{ $response .= '<td class="child_2"><b>Not Started</b></td>';}
+        					//rendered time
+        					if(!empty($data5['CAI_Rendered_Minutes'])){
+        						$response .= '<td class="child_2">Rendered: '.$data5['CAI_Rendered_Minutes'].' minute(s)';
+        					}
+        					if($data5['CIA_progress']==2){
+        						$response .= '<td class="child_2">100%</td>';
+        					}
+        					$response .= '<td class="child_2">Start: '.date("Y-m-d", strtotime($data5['CAI_Action_date'])).'</td>
+        					<td class="child_2">Due: '.date("Y-m-d", strtotime($data5['CAI_Action_due_date'])).'</td>
+        					<td class="child_2">';
+        						if (!empty($filesL9))
+        						{
+        							$response .= '<a style="color:#fff;" data-src="'.$src.$url.rawurlencode($filesL9).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">
+        								<i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+        								<span class="badge" style="background-color:blue;margin-left:-7px;"><b style="font-size:14px;">1</b></span>
+        							</a>';
+        						} else {
+        							$response .= '<a style="color:#fff;" data-src="'.$src.$url.rawurlencode($filesL9).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">
+        								<i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+        								<span class="badge" style="background-color:red;margin-left:-7px;"><b style="font-size:14px;">0</b></span>
+        							</a>';
+        						}
+        					$response .= '</td>
+        					<td class="child_2">';
+        						$_comment  = $data5['CAI_id'];
+        						$query_comment = "SELECT COUNT(*) as count FROM tbl_MyProject_Services_Comment where Task_ids = $_comment";
+        						$result_comment = mysqli_query($conn, $query_comment);
+        						while($row_comment = mysqli_fetch_array($result_comment)){ 
+        							$response .= '<a href="#modalGet_Comments5" data-toggle="modal" onclick="btn_Comments5('.$data5['CAI_id'].')" >
+        								<i class="icon-speech" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+        								<span class="badge" style="background-color:'; if($row_comment['count'] == 0){$response .= '#DC3535';}else{$response .= 'blue';}  $response .= ';margin-left:-7px;">
+        									<b>'.$row_comment['count'].'</b>
+        								</span>
+        							</a>';
+        						}
+        					$response .= '</td>
+        					<td class="child_2" style="min-width:100px;">';
+        						$response .= '<a style="font-weight:800;color:#fff;" href="#modalGet_child5b" data-toggle="modal" class="btn red btn-xs" onclick="onclick_5('.$data5['CAI_id'].')">Edit</a>';
+        					$response .= '</td>
+        				</tr>';
+        			}
+        
+        		}
+        
+        	}
+        
+        }
+	}
+	
+	if($_POST['key'] == 'child_two3'){
+        //layer 2
+        $data1 = $_POST['get_id'];
+        $view_id = $_POST['view_id'];
+        
+        $sql2 = $conn->query("
+            SELECT 
+            a.CAI_id AS a_ID,
+            a.CIA_Indent_Id AS a_subchild,
+            u.first_name AS u_first_name,
+            a.CAI_filename AS a_name,
+            a.CAI_description AS a_description,
+            a.CAI_Accounts AS a_account,
+            i.Action_Items_name AS i_name,
+            e.first_name AS e_first_name,
+            CASE 
+            	WHEN a.CIA_progress = 2 THEN 'Completed'
+                WHEN a.CIA_progress = 1 THEN 'Inprogress'
+                ELSE 'Not Started'
+            END AS a_status,
+            a.CAI_Rendered_Minutes AS a_rendered,
+            CASE WHEN a.CIA_progress = 2 THEN '100' ELSE '' END AS a_percentage,
+            a.CAI_Action_date AS a_date_start,
+            a.CAI_Action_due_date AS a_date_end,
+            a.CAI_files AS a_file,
+            COUNT(c.Task_ids) AS c_counts
+            
+            FROM tbl_MyProject_Services_Childs_action_Items  AS a
+            
+            LEFT JOIN (
+            	SELECT
+                ID,
+                first_name
+                FROM tbl_user
+            ) AS u
+            ON a.CAI_User_PK = u.ID
+            
+            LEFT JOIN (
+            	SELECT
+                ID,
+                first_name
+                FROM tbl_hr_employee
+            ) AS e
+            ON a.CAI_Assign_to = e.ID
+            
+            LEFT JOIN (
+            	SELECT
+                Action_Items_id,
+                Action_Items_name
+                FROM tbl_MyProject_Services_Action_Items
+            ) AS i
+            ON a.CAI_Action_taken = i.Action_Items_id
+            
+            LEFT JOIN (
+            	SELECT
+                Task_ids
+                FROM tbl_MyProject_Services_Comment
+            ) AS c
+            ON a.CAI_id = c.Task_ids
+            
+            WHERE a.is_deleted = 0
+            AND a.Parent_MyPro_PK = $view_id 
+            AND a.Services_History_PK = $data1
+            AND a.CIA_Indent_Id = $data1
+            
+            GROUP BY a.CAI_id
+        ");
+        while($data2 = $sql2->fetch_array()) {
+            $a_ID = $data2['a_ID'];
+            $a_subchild = $data2['a_subchild'];
+            $u_first_name = htmlentities($data2['u_first_name'] ?? '' );
+            $a_name = htmlentities($data2['a_name'] ?? '' );
+            $a_description = htmlentities($data2['a_description'] ?? '' );
+            $a_account = htmlentities($data2['a_account'] ?? '' );
+            $i_name = htmlentities($data2['i_name'] ?? '' );
+            $e_first_name = htmlentities($data2['e_first_name'] ?? '' );
+            $a_status = $data2['a_status'];
+            $a_rendered = $data2['a_rendered'];
+            $a_percentage = $data2['a_percentage'];
+            $a_date_start = $data2['a_date_start'];
+            $a_date_end = $data2['a_date_end'];
+            $a_file = $data2['a_file'];
+            $c_counts = $data2['c_counts'];
+            
+            $response .= '<tr id="sub_two_'.$a_ID.'">
+        		<td id="'.$a_ID.'" class="child_border" width="50px">'.$a_ID.'</td>
+        		<td class="child_2">From: '.$u_first_name.'</td>
+        		<td class="child_2">';
+        			$stringProduct = strip_tags($a_name); 
+        			if(strlen($stringProduct) > 40) {
+        				$stringCut = substr($stringProduct,0,40);
+        				$endPoint = strrpos($stringCut,' ');
+        				$stringProduct = $endPoint?substr($stringCut,0,$endPoint):substr($stringCut,0);
+        				$stringProduct .='&nbsp;<a style="font-size:12px;" href="#modalGet_more_detail_sub2" data-toggle="modal" onclick="get_moreDetails_sub2('.$a_ID.')"><i style="color:black;">More...</i></a>';
+        			}
+        			$response .= "$stringProduct";
+        		$response .= '</td>
+        		<td class="child_2" >';
+        			$stringProduct = strip_tags($a_description); 
+        			if(strlen($stringProduct) > 35) {
+        				$stringCut = substr($stringProduct,0,35);
+        				$endPoint = strrpos($stringCut,' ');
+        				$stringProduct = $endPoint?substr($stringCut,0,$endPoint):substr($stringCut,0);
+        				$stringProduct .='&nbsp;<a style="font-size:12px;" href="#modalGet_more_detail2" data-toggle="modal" onclick="get_moreDetails2('.$a_ID.')"><i style="color:black;">More...</i></a>';
+        			}
+        			$response .= "$stringProduct";
+        		$response .= '</td>
+        		<td class="child_2">'.$a_account.'</td>
+        		<td class="child_2">'.$i_name.'</td>
+        		<td class="child_2">Assign to: '.$e_first_name.'</td>
+        		<td class="child_2"><b>'.$a_status.'</b></td>';
+        		
+        		if(!empty($a_rendered)){
+        			$response .= '<td class="child_2">Rendered: '.$a_rendered.' minute(s)';
+        		}
+        		if(!empty($a_percentage)){
+        			$response .= '<td class="child_2">'.$a_percentage.'%</td>';
+        		}
+        		
+        		$response .= '<td class="child_2">Start: '.date("Y-m-d", strtotime($a_date_start)).'</td>
+        		<td class="child_2">Due: '.date("Y-m-d", strtotime($a_date_end)).'</td>
+        		<td class="child_2">';
+        			if (!empty($a_file)) {
+                    	$filesL9 = $a_file;
+                    	$fileExtension = fileExtension($filesL9);
+                    	$src = $fileExtension['src'];
+                    	$embed = $fileExtension['embed'];
+                    	$type = $fileExtension['type'];
+                    	$file_extension = $fileExtension['file_extension'];
+                    	$url = $base_url.'../MyPro_Folder_Files/';
+                    	
+        				$response .= '<a style="color:#fff;" data-src="'.$src.$url.rawurlencode($filesL9).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">
+        					<i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+        					<span class="badge" style="background-color:blue;margin-left:-7px;"><b style="font-size:14px;">1</b></span>
+        				</a>';
+        			} else {
+        				$response .= '<a style="color:#fff;" href="javascript:;" class="btn btn-link">
+        					<i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+        					<span class="badge" style="background-color:red;margin-left:-7px;"><b style="font-size:14px;">0</b></span>
+        				</a>';
+        			}
+        		$response .= '</td>
+        		<td class="child_2" style="min-width:80px;">
+        		    <a href="#modalGet_Comments" data-toggle="modal" onclick="btn_Comments('.$a_ID.')">
+    					<i class="icon-speech" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+    					<span class="badge" style="margin-left:-7px;background-color:'; if($c_counts == 0) { $response .= '#DC3535'; } else { $response .= 'blue'; } $response .= ';">
+    						<b>'.$c_counts.'</b>
+    					</span>
+    				</a>
+    			</td>
+        		<td class="child_2" style="min-width:100px;">
+        	        <a style="font-weight:800;color:#fff;margin-right:3px;" href="#modalGetHistory_Child2b" data-toggle="modal" class="btn blue btn-xs" onclick="btnNew_History_Child2('.$a_ID.')">Add</a>
+        	        <a style="font-weight:800;color:#fff;" href="#modalGet_child2b" data-toggle="modal" class="btn red btn-xs" onclick="onclick_2('.$a_ID.')">Edit</a>
+                </td>
+        	</tr>';
+            
+            $response .= subChild($view_id, $data1, $a_ID);
+        }
+	}
+	
+	if($_POST['key'] == 'child_two4'){
+        //layer 2
+        $data1 = $_POST['get_id'];
+        $view_id = $_POST['view_id'];
+        
+        $sql2 = $conn->query("
+            SELECT 
+            a.CAI_id AS a_ID,
+            a.CIA_Indent_Id AS a_subchild,
+            u.first_name AS u_first_name,
+            a.CAI_filename AS a_name,
+            a.CAI_description AS a_description,
+            a.CAI_Accounts AS a_account,
+            i.Action_Items_name AS i_name,
+            e.first_name AS e_first_name,
+            CASE 
+            	WHEN a.CIA_progress = 2 THEN 'Completed'
+                WHEN a.CIA_progress = 1 THEN 'Inprogress'
+                ELSE 'Not Started'
+            END AS a_status,
+            a.CAI_Rendered_Minutes AS a_rendered,
+            CASE WHEN a.CIA_progress = 2 THEN '100' ELSE '' END AS a_percentage,
+            a.CAI_Action_date AS a_date_start,
+            a.CAI_Action_due_date AS a_date_end,
+            a.CAI_files AS a_file,
+            COUNT(c.Task_ids) AS c_counts,
+            COUNT(a2.CAI_id) AS a2_counts
+            
+            FROM tbl_MyProject_Services_Childs_action_Items  AS a
+            
+            LEFT JOIN (
+            	SELECT
+                ID,
+                first_name
+                FROM tbl_user
+            ) AS u
+            ON a.CAI_User_PK = u.ID
+            
+            LEFT JOIN (
+            	SELECT
+                ID,
+                first_name
+                FROM tbl_hr_employee
+            ) AS e
+            ON a.CAI_Assign_to = e.ID
+            
+            LEFT JOIN (
+            	SELECT
+                Action_Items_id,
+                Action_Items_name
+                FROM tbl_MyProject_Services_Action_Items
+            ) AS i
+            ON a.CAI_Action_taken = i.Action_Items_id
+            
+            LEFT JOIN (
+            	SELECT
+                Task_ids
+                FROM tbl_MyProject_Services_Comment
+            ) AS c
+            ON a.CAI_id = c.Task_ids
+
+            LEFT JOIN (
+            	SELECT
+                CAI_id,
+                CIA_Indent_Id
+                FROM tbl_MyProject_Services_Childs_action_Items
+            	WHERE is_deleted = 0
+                AND Parent_MyPro_PK = $view_id 
+                AND Services_History_PK = $data1
+            ) AS a2
+            ON a.CAI_id = a2.CIA_Indent_Id
+            
+            WHERE a.is_deleted = 0
+            AND a.Parent_MyPro_PK = $view_id 
+            AND a.Services_History_PK = $data1
+            AND a.CIA_Indent_Id = $data1
+            
+            GROUP BY a.CAI_id
+        ");
+        while($data2 = $sql2->fetch_array()) {
+            $a_ID = $data2['a_ID'];
+            $a_subchild = $data2['a_subchild'];
+            $u_first_name = htmlentities($data2['u_first_name'] ?? '' );
+            $a_name = htmlentities($data2['a_name'] ?? '' );
+            $a_description = htmlentities($data2['a_description'] ?? '' );
+            $a_account = htmlentities($data2['a_account'] ?? '' );
+            $i_name = htmlentities($data2['i_name'] ?? '' );
+            $e_first_name = htmlentities($data2['e_first_name'] ?? '' );
+            $a_status = $data2['a_status'];
+            $a_rendered = $data2['a_rendered'];
+            $a_percentage = $data2['a_percentage'];
+            $a_date_start = $data2['a_date_start'];
+            $a_date_end = $data2['a_date_end'];
+            $a_file = $data2['a_file'];
+            $c_counts = $data2['c_counts'];
+            
+            $response .= '<tr id="sub_two_'.$a_ID.'">
+        		<td id="'.$a_ID.'" class="child_border" width="50px">'.$a_ID.'</td>
+        		<td class="child_2">From: '.$u_first_name.'</td>
+        		<td class="child_2">';
+        			$stringProduct = strip_tags($a_name); 
+        			if(strlen($stringProduct) > 40) {
+        				$stringCut = substr($stringProduct,0,40);
+        				$endPoint = strrpos($stringCut,' ');
+        				$stringProduct = $endPoint?substr($stringCut,0,$endPoint):substr($stringCut,0);
+        				$stringProduct .='&nbsp;<a style="font-size:12px;" href="#modalGet_more_detail_sub2" data-toggle="modal" onclick="get_moreDetails_sub2('.$a_ID.')"><i style="color:black;">More...</i></a>';
+        			}
+        			$response .= "$stringProduct";
+        		$response .= '</td>
+        		<td class="child_2" >';
+        			$stringProduct = strip_tags($a_description); 
+        			if(strlen($stringProduct) > 35) {
+        				$stringCut = substr($stringProduct,0,35);
+        				$endPoint = strrpos($stringCut,' ');
+        				$stringProduct = $endPoint?substr($stringCut,0,$endPoint):substr($stringCut,0);
+        				$stringProduct .='&nbsp;<a style="font-size:12px;" href="#modalGet_more_detail2" data-toggle="modal" onclick="get_moreDetails2('.$a_ID.')"><i style="color:black;">More...</i></a>';
+        			}
+        			$response .= "$stringProduct";
+        		$response .= '</td>
+        		<td class="child_2">'.$a_account.'</td>
+        		<td class="child_2">'.$i_name.'</td>
+        		<td class="child_2">Assign to: '.$e_first_name.'</td>
+        		<td class="child_2"><b>'.$a_status.'</b></td>';
+        		
+        		if(!empty($a_rendered)){
+        			$response .= '<td class="child_2">Rendered: '.$a_rendered.' minute(s)';
+        		}
+        		if(!empty($a_percentage)){
+        			$response .= '<td class="child_2">'.$a_percentage.'%</td>';
+        		}
+        		
+        		$response .= '<td class="child_2">Start: '.date("Y-m-d", strtotime($a_date_start)).'</td>
+        		<td class="child_2">Due: '.date("Y-m-d", strtotime($a_date_end)).'</td>
+        		<td class="child_2">';
+        			if (!empty($a_file)) {
+                    	$filesL9 = $a_file;
+                    	$fileExtension = fileExtension($filesL9);
+                    	$src = $fileExtension['src'];
+                    	$embed = $fileExtension['embed'];
+                    	$type = $fileExtension['type'];
+                    	$file_extension = $fileExtension['file_extension'];
+                    	$url = $base_url.'../MyPro_Folder_Files/';
+                    	
+        				$response .= '<a style="color:#fff;" data-src="'.$src.$url.rawurlencode($filesL9).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">
+        					<i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+        					<span class="badge" style="background-color:blue;margin-left:-7px;"><b style="font-size:14px;">1</b></span>
+        				</a>';
+        			} else {
+        				$response .= '<a style="color:#fff;" href="javascript:;" class="btn btn-link">
+        					<i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+        					<span class="badge" style="background-color:red;margin-left:-7px;"><b style="font-size:14px;">0</b></span>
+        				</a>';
+        			}
+        		$response .= '</td>
+        		<td class="child_2" style="min-width:80px;">
+        		    <a href="#modalGet_Comments" data-toggle="modal" onclick="btn_Comments('.$a_ID.')">
+    					<i class="icon-speech" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+    					<span class="badge" style="margin-left:-7px;background-color:'; if($c_counts == 0) { $response .= '#DC3535'; } else { $response .= 'blue'; } $response .= ';">
+    						<b>'.$c_counts.'</b>
+    					</span>
+    				</a>
+    			</td>
+        		<td class="child_2" style="min-width:100px;">
+        	        <a style="font-weight:800;color:#fff;margin-right:3px;" href="#modalGetHistory_Child2b" data-toggle="modal" class="btn blue btn-xs" onclick="btnNew_History_Child2('.$a_ID.')">Add</a>
+        	        <a style="font-weight:800;color:#fff;" href="#modalGet_child2b" data-toggle="modal" class="btn red btn-xs" onclick="onclick_2('.$a_ID.')">Edit</a>
+                </td>
+        	</tr>';
+        	
+        	if ($data2['a2_counts'] > 0) {
+                $response .= subChild($view_id, $data1, $a_ID);
+        	}
+        }
+	}
+	
+	if($_POST['key'] == 'child_two'){
+        //layer 2
+        $data1 = $_POST['get_id'];
+        $view_id = $_POST['view_id'];
+        
+        $sql2 = $conn->query("
+            WITH RECURSIVE cte (TreeLevel, path, a_ID, a_parent, a_user, a_name, a_description, a_account, a_item, a_assign, a_status, a_rendered, a_date_start, a_date_end, a_file) AS
+            (
+                SELECT
+                0 AS TreeLevel,
+                CAST(a.CAI_id AS CHAR(255)) AS path,
+                -- a.CAI_id AS path,
+                -- CONCAT(a.CAI_id,'') AS path,
+                a.CAI_id AS a_ID,
+                a.CIA_Indent_Id AS a_parent,
+                a.CAI_User_PK AS a_user,
+                a.CAI_filename AS a_name,
+                a.CAI_description AS a_description,
+                a.CAI_Accounts AS a_account,
+                a.CAI_Action_taken AS a_item,
+                a.CAI_Assign_to AS a_assign,
+                a.CIA_progress AS a_status,
+                a.CAI_Rendered_Minutes AS a_rendered,
+                a.CAI_Action_date AS a_date_start,
+                a.CAI_Action_due_date AS a_date_end,
+                a.CAI_files AS a_file
+                FROM tbl_MyProject_Services_Childs_action_Items  AS a
+                WHERE a.is_deleted = 0
+                AND a.Parent_MyPro_PK = $view_id 
+                AND a.Services_History_PK = $data1
+                AND a.CIA_Indent_Id = $data1
+                
+                UNION ALL
+            
+                SELECT 
+                cte.TreeLevel+1 AS TreeLevel,
+                CONCAT(cte.path, '.', CONCAT(a2.CAI_id,'')) AS path,
+                -- cte.path+a2.CAI_id AS path,
+                -- CONCAT(cte.path, '.', CONCAT(a2.CAI_id,'')) AS path,
+                a2.CAI_id AS a_ID,
+                a2.CIA_Indent_Id AS a_parent,
+                a2.CAI_User_PK AS a_user,
+                a2.CAI_filename AS a_name,
+                a2.CAI_description AS a_description,
+                a2.CAI_Accounts AS a_account,
+                a2.CAI_Action_taken AS a_item,
+                a2.CAI_Assign_to AS a_assign,
+                a2.CIA_progress AS a_status,
+                a2.CAI_Rendered_Minutes AS a_rendered,
+                a2.CAI_Action_date AS a_date_start,
+                a2.CAI_Action_due_date AS a_date_end,
+                a2.CAI_files AS a_file
+                FROM tbl_MyProject_Services_Childs_action_Items  AS a2
+                
+                INNER JOIN cte ON cte.a_ID = a2.CIA_Indent_Id
+                
+                WHERE a2.is_deleted = 0
+                AND a2.Parent_MyPro_PK = $view_id 
+                AND a2.Services_History_PK = $data1
+            )
+            SELECT 
+            TreeLevel, path, a_ID, a_parent, a_user, a_name, a_description, a_account, a_item, a_assign, a_status, a_rendered, a_date_start, a_date_end, a_file,
+            u.first_name AS u_first_name,
+            i.Action_Items_name AS i_name,
+            e.first_name AS e_first_name,
+            CASE 
+            	WHEN a_status = 2 THEN 'Completed'
+                WHEN a_status = 1 THEN 'Inprogress'
+                ELSE 'Not Started'
+            END AS a_statuses,
+            CASE WHEN a_status = 2 THEN '100' ELSE '' END AS a_percentage,
+            COUNT(c.Task_ids) AS c_counts
+            FROM cte
+            
+            LEFT JOIN (
+            	SELECT
+                ID,
+                first_name
+                FROM tbl_user
+            ) AS u
+            ON a_user = u.ID
+            
+            LEFT JOIN (
+            	SELECT
+                ID,
+                first_name
+                FROM tbl_hr_employee
+            ) AS e
+            ON a_assign = e.ID
+            
+            LEFT JOIN (
+            	SELECT
+                Action_Items_id,
+                Action_Items_name
+                FROM tbl_MyProject_Services_Action_Items
+            ) AS i
+            ON a_item = i.Action_Items_id
+            
+            LEFT JOIN (
+            	SELECT
+                Task_ids
+                FROM tbl_MyProject_Services_Comment
+            ) AS c
+            ON a_ID = c.Task_ids
+    
+            GROUP BY a_ID
+            
+            -- ORDER BY a_ID, a_parent
+            ORDER BY cast(substring_index(path,'.',1) as unsigned),
+            cast(substring_index(substring_index(path,'.',2),'.',-1) as unsigned),
+            cast(substring_index(substring_index(path,'.',3),'.',-1) as unsigned),
+            cast(substring_index(substring_index(path,'.',4),'.',-1) as unsigned),
+            cast(substring_index(substring_index(path,'.',5),'.',-1) as unsigned),
+            cast(substring_index(substring_index(path,'.',6),'.',-1) as unsigned),
+            cast(substring_index(substring_index(path,'.',7),'.',-1) as unsigned)
+        ");
+        while($data2 = $sql2->fetch_array()) {
+            $a_ID = $data2['a_ID'];
+            $TreeLevel = $data2['TreeLevel'];
+            $a_parent = $data2['a_parent'];
+            $u_first_name = htmlentities($data2['u_first_name'] ?? '' );
+            $a_name = htmlentities($data2['a_name'] ?? '' );
+            $a_description = htmlentities($data2['a_description'] ?? '' );
+            $a_account = htmlentities($data2['a_account'] ?? '' );
+            $i_name = htmlentities($data2['i_name'] ?? '' );
+            $e_first_name = htmlentities($data2['e_first_name'] ?? '' );
+            $a_status = $data2['a_statuses'];
+            $a_rendered = $data2['a_rendered'];
+            $a_percentage = $data2['a_percentage'];
+            $a_date_start = $data2['a_date_start'];
+            $a_date_end = $data2['a_date_end'];
+            $a_file = $data2['a_file'];
+            $c_counts = $data2['c_counts'];
+            
+            $response .= '<tr id="sub_two_'.$a_ID.'">
+        		<td id="'.$a_ID.'" class="child_border" width="50px">'.$a_ID.'</td>';
+        		
+        		if ($TreeLevel > 0) {
+            		$response .= '<td class="child_border" colspan="'.$TreeLevel.'"></td>';
+        		}
+        		
+        		$response .= '<td class="child_2">From: '.$u_first_name.'</td>
+        		<td class="child_2">';
+        			$stringProduct = strip_tags($a_name); 
+        			if(strlen($stringProduct) > 40) {
+        				$stringCut = substr($stringProduct,0,40);
+        				$endPoint = strrpos($stringCut,' ');
+        				$stringProduct = $endPoint?substr($stringCut,0,$endPoint):substr($stringCut,0);
+        				$stringProduct .='&nbsp;<a style="font-size:12px;" href="#modalGet_more_detail_sub2" data-toggle="modal" onclick="get_moreDetails_sub2('.$a_ID.')"><i style="color:black;">More...</i></a>';
+        			}
+        			$response .= "$stringProduct";
+        		$response .= '</td>
+        		<td class="child_2" >';
+        			$stringProduct = strip_tags($a_description); 
+        			if(strlen($stringProduct) > 35) {
+        				$stringCut = substr($stringProduct,0,35);
+        				$endPoint = strrpos($stringCut,' ');
+        				$stringProduct = $endPoint?substr($stringCut,0,$endPoint):substr($stringCut,0);
+        				$stringProduct .='&nbsp;<a style="font-size:12px;" href="#modalGet_more_detail2" data-toggle="modal" onclick="get_moreDetails2('.$a_ID.')"><i style="color:black;">More...</i></a>';
+        			}
+        			$response .= "$stringProduct";
+        		$response .= '</td>
+        		<td class="child_2">'.$a_account.'</td>
+        		<td class="child_2">'.$i_name.'</td>
+        		<td class="child_2">Assign to: '.$e_first_name.'</td>
+        		<td class="child_2"><b>'.$a_status.'</b></td>';
+        		
+        		if(!empty($a_rendered)){
+        			$response .= '<td class="child_2">Rendered: '.$a_rendered.' minute(s)';
+        		}
+        		if(!empty($a_percentage)){
+        			$response .= '<td class="child_2">'.$a_percentage.'%</td>';
+        		}
+        		
+        		$response .= '<td class="child_2">Start: '.date("Y-m-d", strtotime($a_date_start)).'</td>
+        		<td class="child_2">Due: '.date("Y-m-d", strtotime($a_date_end)).'</td>
+        		<td class="child_2">';
+        			if (!empty($a_file)) {
+                    	$filesL9 = $a_file;
+                    	$fileExtension = fileExtension($filesL9);
+                    	$src = $fileExtension['src'];
+                    	$embed = $fileExtension['embed'];
+                    	$type = $fileExtension['type'];
+                    	$file_extension = $fileExtension['file_extension'];
+                    	$url = $base_url.'../MyPro_Folder_Files/';
+                    	
+        				$response .= '<a style="color:#fff;" data-src="'.$src.$url.rawurlencode($filesL9).$embed.'" data-fancybox data-type="'.$type.'" class="btn btn-link">
+        					<i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+        					<span class="badge" style="background-color:blue;margin-left:-7px;"><b style="font-size:14px;">1</b></span>
+        				</a>';
+        			} else {
+        				$response .= '<a style="color:#fff;" href="javascript:;" class="btn btn-link">
+        					<i class="icon-doc" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+        					<span class="badge" style="background-color:red;margin-left:-7px;"><b style="font-size:14px;">0</b></span>
+        				</a>';
+        			}
+        		$response .= '</td>
+        		<td class="child_2" style="min-width:80px;">
+        		    <a href="#modalGet_Comments" data-toggle="modal" onclick="btn_Comments('.$a_ID.')">
+    					<i class="icon-speech" style="font-size:18px;color:#fff;margin-left:12px;"></i>
+    					<span class="badge" style="margin-left:-7px;background-color:'; if($c_counts == 0) { $response .= '#DC3535'; } else { $response .= 'blue'; } $response .= ';">
+    						<b>'.$c_counts.'</b>
+    					</span>
+    				</a>
+    			</td>
+        		<td class="child_2" style="min-width:100px;">
+        	        <a style="font-weight:800;color:#fff;margin-right:3px;" href="#modalGetHistory_Child2b" data-toggle="modal" class="btn blue btn-xs" onclick="btnNew_History_Child2('.$a_ID.')">Add</a>
+        	        <a style="font-weight:800;color:#fff;" href="#modalGet_child2b" data-toggle="modal" class="btn red btn-xs" onclick="onclick_2('.$a_ID.')">Edit</a>
+                </td>
+        	</tr>';
+        }
 	}
 	exit($response);
 }

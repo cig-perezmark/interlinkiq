@@ -381,7 +381,7 @@
                                                                     <td class="text-center">'.$due_date.'</td>
                                                                     <td class="text-center">'.$status.'</td>
                                                                     <td class="text-center">';
-                                                                        if (isset($_COOKIE['switchAccount']) || $current_userEmployeeID == 0 || $current_userID == 481) {
+                                                                        // if (isset($_COOKIE['switchAccount']) || $current_userEmployeeID == 0 || $current_userID == 481) {
                                                                             echo '<div class="btn-group btn-group-circle">
                                                                                 <a href="pdf_ffva?id='.$supplier_id.'&signed=1" class="btn btn-outline dark btn-sm" target="_blank" title="PDF"><i class="fa fa-fw fa-file-pdf-o"></i></a>
                                                                                 <a href="pdf_ffva_excel?id='.$supplier_id.'&signed=1" class="btn green-jungle btn-sm" target="_blank" title="Excel"><i class="fa fa-fw fa-file-excel-o"></i></a>
@@ -397,9 +397,9 @@
                                                                                 }
 
                                                                             echo '</div>';
-                                                                        } else {
-                                                                            echo '<a href="pdf_ffva?id='.$supplier_id.'" class="btn btn-outline dark btn-sm" target="_blank" title="PDF"><i class="fa fa-fw fa-file-pdf-o"></i></a>';
-                                                                        }
+                                                                        // } else {
+                                                                        //     echo '<a href="pdf_ffva?id='.$supplier_id.'" class="btn btn-outline dark btn-sm" target="_blank" title="PDF"><i class="fa fa-fw fa-file-pdf-o"></i></a>';
+                                                                        // }
                                                                     echo '</td>
                                                                 </tr>';
                                                             }
@@ -655,7 +655,7 @@
                                                                     <td class="text-center">'.$due_date.'</td>
                                                                     <td class="text-center">'.$status.'</td>
                                                                     <td class="text-center">';
-                                                                        if (isset($_COOKIE['switchAccount']) || $current_userEmployeeID == 0 || $current_userID == 481) {
+                                                                        // if (isset($_COOKIE['switchAccount']) || $current_userEmployeeID == 0 || $current_userID == 481) {
                                                                             echo '<div class="btn-group btn-group-circle">
                                                                                 <a href="pdf_ffva?id='.$supplier_id.'&signed=1" class="btn btn-outline dark btn-sm" target="_blank" title="PDF"><i class="fa fa-fw fa-file-pdf-o"></i></a>
                                                                                 <a href="pdf_ffva_excel?id='.$supplier_id.'&signed=1" class="btn green-jungle btn-sm" target="_blank" title="Excel"><i class="fa fa-fw fa-file-excel-o"></i></a>
@@ -671,9 +671,9 @@
                                                                                 }
 
                                                                             echo '</div>';
-                                                                        } else {
-                                                                            echo '<a href="pdf_ffva?id='.$supplier_id.'" class="btn btn-outline dark btn-sm" target="_blank" title="PDF"><i class="fa fa-fw fa-file-pdf-o"></i></a>';
-                                                                        }
+                                                                        // } else {
+                                                                        //     echo '<a href="pdf_ffva?id='.$supplier_id.'" class="btn btn-outline dark btn-sm" target="_blank" title="PDF"><i class="fa fa-fw fa-file-pdf-o"></i></a>';
+                                                                        // }
                                                                     echo '</td>
                                                                 </tr>';
                                                             }

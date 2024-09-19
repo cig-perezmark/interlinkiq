@@ -15887,16 +15887,18 @@
         }
 
         $selectData = mysqli_query( $conn,"
-            WITH RECURSIVE cte (s_ID, s_name, s_employee_id, s_document, d_ID, d_type, d_name, d_file, d_file_due, d_status, d_count) AS
+            WITH RECURSIVE cte (s_ID, s_name, s_employee_id, s_material, s_document, d_ID, d_type, d_name, sr_name, d_file, d_file_due, d_status, d_count) AS
             (
                 SELECT
                 s1.ID AS s_ID,
                 s1.name AS s_name,
                 s1.employee_id AS s_employee_id,
+                s1.material AS s_material,
                 s1.document AS s_document,
                 d1.ID AS d_ID,
                 d1.type AS d_type,
                 d1.name AS d_name,
+                sr.name AS sr_name,
                 d1.file AS d_file,
                 d1.file_due AS d_file_due,
                 CASE 
@@ -15927,6 +15929,15 @@
                 ) AS d1
                 ON s1.ID = d1.supplier_ID
                 AND FIND_IN_SET(d1.name, REPLACE(REPLACE(s1.document, ' ', ''), '|',','  )  ) > 0
+        
+                LEFT JOIN (
+                    SELECT
+                    ID,
+                    name
+                    FROM tbl_supplier_requirement
+                ) AS sr
+                ON d1.name = sr.ID
+
                 WHERE s1.page = $id
                 AND s1.is_deleted = 0 
                 AND s1.user_id = $user_id
@@ -15938,10 +15949,12 @@
                 s2.ID AS s_ID,
                 s2.name AS s_name,
                 s2.employee_id AS s_employee_id,
+                s2.material AS s_material,
                 s2.document_other AS s_document,
                 d2.ID AS d_ID,
                 d2.type AS d_type,
                 d2.name AS d_name,
+                '' AS sr_name,
                 d2.file AS d_file,
                 d2.file_due AS d_file_due,
                 CASE 
@@ -15972,18 +15985,42 @@
                 ) AS d2
                 ON s2.ID = d2.supplier_ID
                 AND FIND_IN_SET(d2.name, REPLACE(s2.document_other, ' | ', ',')  )   > 0
+
                 WHERE s2.page = $id
                 AND s2.is_deleted = 0 
                 AND s2.user_id = $user_id
                 AND s2.facility_switch = $facility_switch_user_id
             )
-            SELECT 
+
+            SELECT
             s_ID, 
             s_name, 
             s_employee_id,
-            SUM(d_status) AS d_compliance,
-            SUM(d_count) AS d_counting
-            FROM cte
+            GROUP_CONCAT(m.material_name SEPARATOR ', ') AS m_name,
+            d_compliance,
+            d_counting,
+            d_name
+
+            FROM (
+                SELECT 
+                s_ID, 
+                s_name, 
+                s_employee_id,
+                s_material,
+                SUM(d_status) AS d_compliance,
+                SUM(d_count) AS d_counting,
+                GROUP_CONCAT(sr_name SEPARATOR ', ') AS d_name
+                FROM cte
+                GROUP BY s_ID
+            ) r
+
+            LEFT JOIN (
+                SELECT
+                ID,
+                material_name
+                FROM tbl_supplier_material
+            ) AS m
+            ON FIND_IN_SET(m.ID, REPLACE(r.s_material, ' ', '')  ) > 0
 
             GROUP BY s_ID
 
@@ -15993,6 +16030,8 @@
             while($row = mysqli_fetch_array($selectData)) {
                 $ID = $row["s_ID"];
                 $name = htmlentities($row["s_name"] ?? '');
+                $d_name = htmlentities($row["d_name"] ?? '');
+                $m_name = htmlentities($row["m_name"] ?? '');
 
                 $compliance = 0;
                 $d_compliance = $row["d_compliance"];
@@ -16036,8 +16075,10 @@
 
                 echo '<tr>
                     <td class="text-center">'.intval($compliance).'%</td>
-                    <td>'.htmlentities($name ?? '').'</td>
+                    <td>'.$name.'</td>
                     <td>'.implode(', ', $employee_arr).'</td>
+                    <td>'.$d_name.'</td>
+                    <td>'.$m_name.'</td>
                 </tr>';
             }
         }
@@ -26771,7 +26812,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">Reviewer</label>';
 
@@ -26798,7 +26839,19 @@
 
                 echo '</div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label">Date</label>';
+
+                    if ($row['spec_reviewer'] == 0 OR $row['spec_reviewer'] == $portal_user) {
+                        echo '<input type="date" class="form-control" name="spec_reviewer_date" value="'.$row['spec_reviewer_date'].'" />';
+                    } else {
+                        echo '<input type="date" class="form-control" name="spec_reviewer_date" value="'.$row['spec_reviewer_date'].'" readonly />';
+                    }
+
+                echo '</div>
+            </div>
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="control-label">Approver</label>';
 
@@ -26823,6 +26876,18 @@
                         <input class="form-control" type="text" value="'.$name.'" readonly />';
                     }
                     
+                echo '</div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="control-label">Date</label>';
+
+                    if ($row['spec_approver'] == 0 OR $row['spec_approver'] == $portal_user) {
+                        echo '<input type="date" class="form-control" name="spec_approver_date" value="'.$row['spec_approver_date'].'" />';
+                    } else {
+                        echo '<input type="date" class="form-control" name="spec_approver_date" value="'.$row['spec_approver_date'].'" readonly />';
+                    }
+
                 echo '</div>
             </div>
         </div>
@@ -26893,7 +26958,7 @@
                                 <label style="visibility: hidden; display: block;">Remove</label>
                                 <a href="javascript:;" data-repeater-delete class="btn btn-danger"><i class="fa fa-close"></i></a>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label class="control-label">Reviewer</label>';
 
@@ -26923,7 +26988,22 @@
 
                                 echo '</div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Date</label>';
+
+                                    $val_reviewer_date = '';
+                                    if (isset($value['reviewer_date'])) { $val_reviewer_date = $value['reviewer_date']; }
+
+                                    if ($val_reviewer == 0 OR $val_reviewer == $portal_user) {
+                                        echo '<input type="date" class="form-control" name="reviewer_date" value="'.$val_reviewer_date.'" />';
+                                    } else {
+                                        echo '<input type="date" class="form-control" name="reviewer_date" value="'.$val_reviewer_date.'" readonly />';
+                                    }
+
+                                echo '</div>
+                            </div>
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label class="control-label">Approver</label>';
 
@@ -26951,6 +27031,21 @@
                                         <input class="form-control" type="text" value="'.$name.'" readonly />';
                                     }
                                     
+                                echo '</div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">Date</label>';
+
+                                    $val_approver_date = '';
+                                    if (isset($value['approver_date'])) { $val_approver_date = $value['approver_date']; }
+
+                                    if ($val_approver == 0 OR $val_approver == $portal_user) {
+                                        echo '<input type="date" class="form-control" name="approver_date" value="'.$val_approver_date.'" />';
+                                    } else {
+                                        echo '<input type="date" class="form-control" name="approver_date" value="'.$val_approver_date.'" readonly />';
+                                    }
+
                                 echo '</div>
                             </div>
                         </div>';
@@ -27068,7 +27163,9 @@
                         'from' => $material_file_from,
                         'to' => $material_file_to,
                         'reviewer' => 0,
-                        'approver' => 0
+                        'approver' => 0,
+                        'reviewer_date' => '',
+                        'approver_date' => ''
                     );
                     array_push( $material_other_arr, $material_other_data );
                 }
@@ -27129,6 +27226,8 @@
         $material_notes = addslashes($_POST['material_notes']);
         $spec_reviewer = $_POST['spec_reviewer'];
         $spec_approver = $_POST['spec_approver'];
+        $spec_reviewer_date = $_POST['spec_reviewer_date'];
+        $spec_approver_date = $_POST['spec_approver_date'];
 
         $allergen = "";
         if (!empty($_POST["allergen"])) { $allergen = implode(", ", $_POST["allergen"]); }
@@ -27168,6 +27267,8 @@
                 $material_file_name = $_POST['material_other'][$i]['material_file_name'];
                 $material_file_reviewer = $_POST['material_other'][$i]['reviewer'];
                 $material_file_approver = $_POST['material_other'][$i]['approver'];
+                $material_file_reviewer_date = $_POST['material_other'][$i]['reviewer_date'];
+                $material_file_approver_date = $_POST['material_other'][$i]['approver_date'];
 
                 $material_file_from = '';
                 $material_file_to = '';
@@ -27216,7 +27317,9 @@
                     'from' =>$material_file_from,
                     'to' =>$material_file_to,
                     'reviewer' =>$material_file_reviewer,
-                    'approver' =>$material_file_approver
+                    'approver' =>$material_file_approver,
+                    'reviewer_date' =>$material_file_reviewer_date,
+                    'approver_date' =>$material_file_approver_date
                 );
                 array_push( $material_other_arr, $material_other_data );
             }
@@ -27225,7 +27328,7 @@
         $file_history = json_encode($arr_item, JSON_HEX_APOS | JSON_UNESCAPED_UNICODE);
 
         if ($process == true) {
-            mysqli_query( $conn,"UPDATE tbl_supplier_material set active='". $material_active ."', material_name='". $material_name ."', brand_name='". $brand_name ."', category='". $category ."', material_id='". $material_id ."', material_uom='". $material_uom ."', material_count='". $material_count ."', material_ppu='". $material_ppu ."', cost_kg='". $cost_kg ."', cost_lb='". $cost_lb ."', cost_oz='". $cost_oz ."', description='". $material_description ."', notes='". $material_notes ."', allergen='". $allergen ."', allergen_other='". $allergen_other ."', spec_file='". $material_spec_file_final ."', spec_filesize='". $spec_filesize ."', spec_date_from='". $material_spec_date_from ."', spec_date_to='". $material_spec_date_to ."', spec_reviewer='". $spec_reviewer ."', spec_approver='". $spec_approver ."', other='". $material_other ."', other_filesize='". $filesize ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
+            mysqli_query( $conn,"UPDATE tbl_supplier_material set active='". $material_active ."', material_name='". $material_name ."', brand_name='". $brand_name ."', category='". $category ."', material_id='". $material_id ."', material_uom='". $material_uom ."', material_count='". $material_count ."', material_ppu='". $material_ppu ."', cost_kg='". $cost_kg ."', cost_lb='". $cost_lb ."', cost_oz='". $cost_oz ."', description='". $material_description ."', notes='". $material_notes ."', allergen='". $allergen ."', allergen_other='". $allergen_other ."', spec_file='". $material_spec_file_final ."', spec_filesize='". $spec_filesize ."', spec_date_from='". $material_spec_date_from ."', spec_date_to='". $material_spec_date_to ."', spec_reviewer='". $spec_reviewer ."', spec_reviewer_date='". $spec_reviewer_date ."', spec_approver='". $spec_approver ."', spec_approver_date='". $spec_approver_date ."', other='". $material_other ."', other_filesize='". $filesize ."', file_history='". $file_history ."' WHERE ID='". $ID ."'" );
 
             $output = array(
                 "ID" => $ID,

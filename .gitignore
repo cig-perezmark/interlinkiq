@@ -77,7 +77,6 @@ function-10.php
 function-11.php
 function-99.php
 rvm-2.php
-wp-*
 
 .htaccess
 .vscode
@@ -91,3 +90,4 @@ companyDetailsFolder/264053 - FWCC-Storage Area-PM 20221101.mp4
 companyDetailsFolder/310728 - FWCC-Production Area 20221101.mp4
 companyDetailsFolder/345714 - GFS-Facility Walkthrough-20221028.mp4
 wp-content/ai1wm-backups/interlinkiq-com-wp-wp-interlinkiq-master-20240629-110015-ugo5o0.wpress
+wp/wp-interlinkiq-master/wp-content/ai1wm-backups/interlinkiq-com-wp-wp-interlinkiq-master-20240629-110015-ugo5o0.wpress

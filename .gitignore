@@ -2,10 +2,7 @@
 /.DS_Store
 
 # CI
-Accounting/
-Accounting_development/
-Accounting_system/
-e-forms/
+
 pcqilms/
 
 *.zip
@@ -93,3 +90,9 @@ function-*.php
 
 testing-bash-script/
 dompdf-x/
+
+meeting_references/946658 - RFP-OSHA SQF FM Training  (2023-12-08 13_05 GMT-6).mp4
+companyDetailsFolder/264053 - FWCC-Storage Area-PM 20221101.mp4
+companyDetailsFolder/310728 - FWCC-Production Area 20221101.mp4
+companyDetailsFolder/345714 - GFS-Facility Walkthrough-20221028.mp4
+wp-content/ai1wm-backups/interlinkiq-com-wp-wp-interlinkiq-master-20240629-110015-ugo5o0.wpress
